@@ -1,0 +1,55 @@
+pipeline {
+    agent {
+        dockerfile { dir 'docker/ubuntu_16_04_x86_64' }
+    }
+    stages {
+        stage('Git Clone') {
+            steps {
+                sh 'if [ -d sapmachine ]; then rm -rf sapmachine; fi'
+                sh 'git clone -b sapmachine https://github.com/SAP/SapMachine.git sapmachine'
+            }
+        }
+        stage('Copy Artifacts') {
+            steps {
+                script {
+                    step ([$class: 'CopyArtifact',
+                    projectName: 'SapMachine-build-test',
+                    filter: "build.tar.gz",
+                    target: 'sapmachine']);
+                }
+                sh 'cd sapmachine && tar xzf build.tar.gz'
+                script {
+                    step ([$class: 'CopyArtifact',
+                    projectName: 'jtreg',
+                    filter: "jtreg.zip",
+                    target: 'sapmachine']);
+                }
+                sh 'cd sapmachine && unzip jtreg.zip'
+            }
+        }
+        stage('Run jtreg') {
+            steps {
+                sh "cd sapmachine && bash ../run_jtreg.sh ${env.WORKSPACE}/sapmachine ${env.WORKSPACE}/sapmachine/jtreg ${params.test_suite} ${params.test_groups} || true"
+            }
+        }
+        stage('Publish jtreg report') {
+            steps {
+                sh 'cd sapmachine && mkdir test_report'
+                sh 'cd sapmachine && mv JTreport test_report'
+                sh 'cd sapmachine && mv JTwork test_report'
+                sh "python jtreg_to_junit.py sapmachine/test_report/JTreport/text/summary.txt junit_report.xml \"${params.test_suite}/${params.test_groups}\""
+
+                publishHTML target: [
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: false,
+                    keepAll: true,
+                    reportDir: 'sapmachine/test_report',
+                    reportFiles: 'JTreport/index.html',
+                    reportName: 'JT Report'
+                ]
+
+                junit 'junit_report.xml'
+            }
+        }
+    }
+}
