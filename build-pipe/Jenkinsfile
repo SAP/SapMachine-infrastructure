@@ -27,6 +27,7 @@ pipeline {
                     sh '''
                       build-pipe/publish.sh
                       '''
+                    archive 'build.tar.gz'
                 }
             }
         }
