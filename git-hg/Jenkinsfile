@@ -1,0 +1,20 @@
+
+pipeline {
+    agent any
+      stages {
+        stage('Build') {
+
+            agent {
+              dockerfile { dir 'git-hg'
+                }
+            }
+            steps {
+              withCredentials([
+                    [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
+                    ]) {
+                    sh '$PWD/git-hg/update_repo.sh'
+                }
+            }
+        }
+    }
+}
