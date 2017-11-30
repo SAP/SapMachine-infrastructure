@@ -16,7 +16,9 @@ else
   bash ./configure --with-boot-jdk=$BOOT_JDK --with-version-opt="sapmachine"
 fi
 
-make JOBS=12 images
+make JOBS=12 images test-image
+
+tar czf ../build.tar.gz build
 
 cd build
 cd "$(ls)"/images

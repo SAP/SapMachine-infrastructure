@@ -13,7 +13,7 @@ pipeline {
             steps {
                 script {
                     step ([$class: 'CopyArtifact',
-                    projectName: 'SapMachine-build-test',
+                    projectName: 'build-pipeline',
                     filter: "build.tar.gz",
                     target: 'sapmachine']);
                 }
