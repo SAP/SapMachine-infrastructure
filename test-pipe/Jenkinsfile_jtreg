@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Build') {
             agent {
-                dockerfile { dir 'docker/ubuntu_16_04_x86_64' }
+                dockerfile { dir 'test-pipe/docker/ubuntu_16_04_x86_64' }
             }
             steps {
                 sh 'cd test-pipe && python build_jtreg.py'
