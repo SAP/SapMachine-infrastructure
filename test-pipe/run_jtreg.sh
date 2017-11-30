@@ -21,5 +21,5 @@ if [ "${TEST_SUITE}" == "jdk" ]; then
 fi
 
 if [ "${TEST_SUITE}" == "langtools" ]; then
-    ${JT_HOME}/bin/jtreg -dir:${JDK_LOCATION}/test/${TEST_SUITE} -verbose:summary -exclude:${JDK_LOCATION}/test/${TEST_SUITE}/ProblemList.txt -conc:auto -a -ignore:quiet -timeoutFactor:5 -agentvm -testjdk:-testjdk:${TEST_JDK} ${TEST_GROUPS}
+    ${JT_HOME}/bin/jtreg -dir:${JDK_LOCATION}/test/${TEST_SUITE} -verbose:summary -exclude:${JDK_LOCATION}/test/${TEST_SUITE}/ProblemList.txt -conc:auto -a -ignore:quiet -timeoutFactor:5 -agentvm -testjdk:${TEST_JDK} ${TEST_GROUPS}
 fi
