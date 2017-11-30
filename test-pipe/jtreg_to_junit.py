@@ -2,6 +2,13 @@ import os
 import sys
 import re
 
+def escape(input):
+    input = input.replace("&", "&amp;")
+    input = input.replace("<", "&lt;")
+    input = input.replace(">", "&gt;")
+    input = input.replace("\"", "&quot;")
+    return input
+
 def main(argv=None):
     jtreg_in = argv[0]
     junit_out = argv[1]
@@ -21,13 +28,14 @@ def main(argv=None):
             match = pattern.match(line)
 
             if match is not None:
-                classname = match.group(1).replace('/', '.')
-                name = match.group(2)
+                classname = escape(match.group(1).replace('/', '.'))
+                name = escape(match.group(2))
                 test_id = match.group(4)
-                test_result = match.group(5)
-                test_detail = match.group(6)
+                test_result = escape(match.group(5))
+                test_detail = escape(match.group(6))
 
                 if test_id is not None:
+                    test_id = escape(test_id)
                     name = name + test_id
 
                 if test_result == 'Passed':
