@@ -2,6 +2,8 @@ import os
 import sys
 import shutil
 import re
+import zipfile
+import tarfile
 
 jtharness_repo = 'http://hg.openjdk.java.net/code-tools/jtharness'
 jtharness_dependencies = [
@@ -36,9 +38,6 @@ def download_artifact(url, target):
         file.write(urllib.urlopen(url, proxies={}).read())
 
 def extract_archive(archive, target):
-    import zipfile
-    import tarfile
-
     if archive.endswith('.zip'):
         with zipfile.ZipFile(archive, 'r') as zip_ref:
             print(str.format('Extracting zip archive {0} ...', archive))
@@ -97,14 +96,25 @@ def get_latest_hg_tag(prefix=''):
     return prefix+latest_tag
 
 def make_tgz_archive(src, dest):
-    import tarfile
-
     if os.path.exists(dest):
         os.remove(dest)
 
     archive = tarfile.open(dest, "w:gz", compresslevel=9)
     archive.add(src)
     archive.close()
+
+def make_zip_archive(src, dest, top_dir):
+    if os.path.exists(dest):
+        os.remove(dest)
+
+    zip = zipfile.ZipFile(dest, 'w')
+
+    for root, dirs, files in os.walk(src):
+        for file in files:
+            zip.write(os.path.join(root, file),
+                      os.path.join(top_dir, os.path.relpath(os.path.join(root, file), src)),
+                      zipfile.ZIP_DEFLATED)
+    zip.close()
 
 def build_jtharness(target):
     global jtharness_version
@@ -230,7 +240,11 @@ def build_jtreg(target):
              '-Djh.jar=' + os.path.join(dependencies_dir, 'jh2.0', 'javahelp', 'lib', 'jh.jar'),
              '-Djcov.home=' + os.path.join(dependencies_dir, 'jcov')])
 
-    shutil.copy(os.path.join('dist', 'jtreg.zip'), target)
+    # shutil.copy(os.path.join('dist', 'jtreg.zip'), target)
+    shutil.copy(os.path.join(dependencies_dir, 'asmtools.jar'), os.path.join('dist', 'jtreg', 'lib'))
+    shutil.copy(os.path.join(dependencies_dir, 'jcommander-1.48.jar'), os.path.join('dist', 'jtreg', 'lib'))
+    make_zip_archive(os.path.join('dist', 'jtreg'), os.path.join(target, 'jtreg.zip'), 'jtreg')
+
 
 
 def main(argv=None):
