@@ -11,4 +11,5 @@ curl \
 python \
 mercurial \
 openjdk-8-jdk \
-ant
+ant \
+make
