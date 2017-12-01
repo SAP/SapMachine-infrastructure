@@ -21,10 +21,6 @@ pipeline {
                   ]) {
                 sh '''
                   docker/generate_dockerfile.sh
-                  git config user.email "sapmachine@sap.com"
-                  git config user.name "SapMachine"
-                  git commit -a -m "Update Dockerfile for $VERSION_TAG"
-                  git push
                   '''
                 }
             }

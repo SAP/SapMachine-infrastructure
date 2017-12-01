@@ -6,6 +6,8 @@ if [ -z "$VERSION_TAG" ]; then
   echo "Missing mandatory environment variable VERSION_TAG"
 fi
 
+cd "$(dirname $0)"
+rm $FILENAME
 read VERSION_MAJOR VERSION_MINOR <<< $(echo $VERSION_TAG | sed -r 's/jdk\-([0-9]+)\+([0-9]*)/\1 \2/')
 
 BASE_URL="https://github.com/SAP/SapMachine/releases/download/jdk-${VERSION_MAJOR}%2B${VERSION_MINOR}/"
@@ -35,3 +37,8 @@ RUN set -eux;\\
 ENV PATH=/opt/java/sapmachine/jdk/bin:\$PATH
 
 EOI
+
+git config user.email "sapmachine@sap.com"
+git config user.name "SapMachine"
+git commit -a -m "Update Dockerfile for $VERSION_TAG"
+git push origin docker-jenkins
