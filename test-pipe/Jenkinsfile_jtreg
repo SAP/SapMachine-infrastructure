@@ -6,7 +6,10 @@ pipeline {
                 dockerfile { dir 'test-pipe/docker/ubuntu_16_04_x86_64' }
             }
             steps {
-                sh 'python test-pipe/build_jtreg.py'
+                sh '''
+                    python test-pipe/build_jtreg.py
+                    mv test-pipe jtreg.zip ./
+                '''
             }
             post {
                 success {

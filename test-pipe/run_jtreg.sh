@@ -11,7 +11,6 @@ TEST_NATIVE_LIB=${JDK_LOCATION}/build/linux-x86_64-normal-server-release/images/
 TEST_JDK=${JDK_LOCATION}/build/linux-x86_64-normal-server-release/images/jdk
 
 chmod +x ${JT_HOME}/bin/jtreg
-export ASMTOOLS_HOME=${JT_HOME}/lib
 
 if [ "${TEST_SUITE}" == "hotspot" ]; then
     ${JT_HOME}/bin/jtreg -dir:${JDK_LOCATION}/test/${TEST_SUITE}/jtreg -verbose:summary -nativepath:${TEST_NATIVE_LIB} -exclude:${JDK_LOCATION}/test/${TEST_SUITE}/jtreg/ProblemList.txt -conc:auto -a -ignore:quiet -timeoutFactor:5 -agentvm -javaoption:-Djava.awt.headless=true "-k:(!ignore)&(!stress)" -testjdk:${TEST_JDK} ${TEST_GROUPS}
