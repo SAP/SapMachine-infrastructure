@@ -11,7 +11,7 @@ pipeline {
               SAPMACHINE_PUBLISH_GITHUB_USER = 'SAP'
             }
             agent {
-                dockerfile { dir 'build-pipe/docker/ubuntu_16_04_x86_64' }
+                dockerfile { dir 'build-pipe/docker/ubuntu_14_04_x86_64' }
             }
             steps {
               withCredentials([
