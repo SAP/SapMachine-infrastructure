@@ -8,7 +8,7 @@ pipeline {
             steps {
                 sh '''
                     python test-pipe/build_jtreg.py
-                    mv test-pipe jtreg.zip ./
+                    mv test-pipe/jtreg.zip ./
                 '''
             }
             post {
