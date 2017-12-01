@@ -1,0 +1,29 @@
+pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            environment {
+              SAPMACHINE_GIT_REPO = 'github.com/SAP/SapMachine.git'
+              SAPMACHINE_GIT_BRANCH = 'sapmachine'
+              SAPMACHINE_ARCHIVE_NAME_PREFIX = 'sapmachine_linux-x64'
+              SAPMACHINE_PUBLISH_GITHUB_TOKEN = credentials('SapMachine-Github-Token')
+              SAPMACHINE_PUBLISH_GITHUB_REPO_NAME = 'SapMachine'
+              SAPMACHINE_PUBLISH_GITHUB_USER = 'SAP'
+            }
+            agent {
+                dockerfile { dir 'build-pipe/docker/ubuntu_14_04_x86_64' }
+            }
+            steps {
+              withCredentials([
+                  [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
+                  ]) {
+                sh '''
+                  docker/generate_dockerfile.sh
+                  git commit -a -m "Update Dockerfile for $VERSION_TAG"
+                  git push
+                  '''
+                }
+            }
+        }
+    }
+}
