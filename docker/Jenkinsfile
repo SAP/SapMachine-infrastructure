@@ -9,6 +9,8 @@ pipeline {
               SAPMACHINE_PUBLISH_GITHUB_TOKEN = credentials('SapMachine-Github-Token')
               SAPMACHINE_PUBLISH_GITHUB_REPO_NAME = 'SapMachine'
               SAPMACHINE_PUBLISH_GITHUB_USER = 'SAP'
+              GIT_COMMITTER_NAME = 'SapMachine'
+              GIT_COMMITTER_EMAIL = 'sapmachine@sap.com'
             }
             agent {
                 dockerfile { dir 'build-pipe/docker/ubuntu_14_04_x86_64' }
