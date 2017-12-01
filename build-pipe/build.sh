@@ -4,7 +4,8 @@ set -ex
 if [ -d SapMachine ]; then
     rm -rf SapMachine;
 fi
-
+export GIT_COMMITTER_NAME=$GIT_USER
+export GIT_COMMITTER_EMAIL="sapmachine@sap.com"
 git clone -b $SAPMACHINE_GIT_BRANCH "http://$GIT_USER:$GIT_PASSWORD@$SAPMACHINE_GIT_REPO" SapMachine
 
 cd SapMachine
