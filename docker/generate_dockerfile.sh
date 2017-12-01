@@ -1,4 +1,5 @@
 #!/bin/bash
+set -ex
 
 FILENAME="Dockerfile"
 
@@ -6,8 +7,16 @@ if [ -z "$VERSION_TAG" ]; then
   echo "Missing mandatory environment variable VERSION_TAG"
 fi
 
-cd "$(dirname $0)"
+if [ -d infra ]; then
+    rm -rf infra;
+fi
+
+REPO_URL="http://$GIT_USER:$GIT_PASSWORD@github.com/SAP/SapMachine-infrastructure/"
+git clone -b docker-jenkins $REPO_URL infra
+
+cd "infra/docker"
 rm $FILENAME
+
 read VERSION_MAJOR VERSION_MINOR <<< $(echo $VERSION_TAG | sed -r 's/jdk\-([0-9]+)\+([0-9]*)/\1 \2/')
 
 BASE_URL="https://github.com/SAP/SapMachine/releases/download/jdk-${VERSION_MAJOR}%2B${VERSION_MINOR}/"
@@ -38,6 +47,8 @@ ENV PATH=/opt/java/sapmachine/jdk/bin:\$PATH
 
 EOI
 
+git remote remove origin
+git remote add origin $REPO_URL
 git config user.email "sapmachine@sap.com"
 git config user.name "SapMachine"
 git commit -a -m "Update Dockerfile for $VERSION_TAG"
