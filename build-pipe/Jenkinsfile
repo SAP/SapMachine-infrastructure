@@ -42,6 +42,13 @@ pipeline {
                             string(name: 'test_suite', value: 'jdk'),
                             string(name: 'test_groups', value: ':tier1')
                         ]
+
+                    build job: 'test-pipeline-jtreg-langtools', propagate: false, wait: false, parameters:
+                        [
+                            string(name: 'GIT_TAG_NAME', value: GIT_TAG_NAME),
+                            string(name: 'test_suite', value: 'langtools'),
+                            string(name: 'test_groups', value: 'jdk tools lib')
+                        ]
                 }
             }
         }
