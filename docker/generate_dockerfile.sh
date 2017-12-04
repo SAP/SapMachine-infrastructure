@@ -12,7 +12,7 @@ if [ -d infra ]; then
 fi
 
 REPO_URL="http://$GIT_USER:$GIT_PASSWORD@github.com/SAP/SapMachine-infrastructure/"
-git clone -b docker-jenkins $REPO_URL infra
+git clone -b master $REPO_URL infra
 
 cd "infra/docker"
 rm $FILENAME
