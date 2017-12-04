@@ -5,8 +5,17 @@ pipeline {
     stages {
         stage('Git Clone') {
             steps {
-                sh 'if [ -d sapmachine ]; then rm -rf sapmachine; fi'
-                sh 'git clone -b sapmachine https://github.com/SAP/SapMachine.git sapmachine'
+                sh '''
+                    if [ -d sapmachine ]; then
+                        rm -rf sapmachine;
+                    fi
+
+                    'git clone -b sapmachine https://github.com/SAP/SapMachine.git sapmachine'
+
+                    if [ ! -z ${params.GIT_TAG_NAME} ]; then
+                        git checkout tags/${params.GIT_TAG_NAME}
+                    fi
+                '''
             }
         }
         stage('Copy Artifacts') {
