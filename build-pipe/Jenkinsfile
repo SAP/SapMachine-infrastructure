@@ -1,5 +1,7 @@
 pipeline {
-    agent any
+    agent {
+        dockerfile { dir 'build-pipe/docker/ubuntu_14_04_x86_64' }
+    }
     stages {
         stage('Build') {
             environment {
@@ -9,9 +11,6 @@ pipeline {
               SAPMACHINE_PUBLISH_GITHUB_TOKEN = credentials('SapMachine-Github-Token')
               SAPMACHINE_PUBLISH_GITHUB_REPO_NAME = 'SapMachine'
               SAPMACHINE_PUBLISH_GITHUB_USER = 'SAP'
-            }
-            agent {
-                dockerfile { dir 'build-pipe/docker/ubuntu_14_04_x86_64' }
             }
             steps {
               withCredentials([
