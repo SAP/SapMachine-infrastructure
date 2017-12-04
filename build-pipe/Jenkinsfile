@@ -35,6 +35,13 @@ pipeline {
                             string(name: 'test_suite', value: 'hotspot'),
                             string(name: 'test_groups', value: ':hotspot_tier1')
                         ]
+
+                    build job: 'test-pipeline-jtreg-jdk', propagate: false, wait: false, parameters:
+                        [
+                            string(name: 'GIT_TAG_NAME', value: GIT_TAG_NAME),
+                            string(name: 'test_suite', value: 'jdk'),
+                            string(name: 'test_groups', value: ':tier1')
+                        ]
                 }
             }
         }
