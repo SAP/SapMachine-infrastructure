@@ -54,6 +54,6 @@ git config user.name "SapMachine"
 git commit -a -m "Update Dockerfile for $VERSION_TAG"
 git push origin master
 
-docker build -t "$DOCKER_USER/sapmachine:${VERSION_MAJOR}.${VERSION_MINOR}" .
+docker build -t "$DOCKER_USER/sapmachine:${VERSION_MAJOR}.${VERSION_MINOR}" -t "$DOCKER_USER/sapmachine:latest" .
 docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
-docker push "$DOCKER_USER/sapmachine:${VERSION_MAJOR}.${VERSION_MINOR}"
+docker push "$DOCKER_USER/sapmachine"
