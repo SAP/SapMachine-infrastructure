@@ -9,7 +9,7 @@ pipeline {
               SAPMACHINE_GIT_BRANCH = 'sapmachine'
             }
             steps {
-                sh 'bash ./test_jtreg_prepare.sh'
+                sh 'bash test-pipe/test_jtreg_prepare.sh'
             }
         }
         stage('Copy Artifacts') {
