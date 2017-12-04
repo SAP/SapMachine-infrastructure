@@ -52,4 +52,4 @@ git remote add origin $REPO_URL
 git config user.email "33904789+SapMachine@users.noreply.github.com"
 git config user.name "SapMachine"
 git commit -a -m "Update Dockerfile for $VERSION_TAG"
-git push origin docker-jenkins
+git push origin master
