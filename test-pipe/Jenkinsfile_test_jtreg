@@ -11,9 +11,10 @@ pipeline {
                     fi
 
                     git clone -b sapmachine https://github.com/SAP/SapMachine.git sapmachine
+                    echo "git tag is: ${params.GIT_TAG_NAME}"
 
                     if [ "x${params.GIT_TAG_NAME}" != "x" ]; then
-                        git checkout tags/${params.GIT_TAG_NAME}
+                        git checkout "tags/${params.GIT_TAG_NAME}"
                     fi
                 '''
             }
