@@ -10,13 +10,13 @@ pipeline {
               SAPMACHINE_PUBLISH_GITHUB_REPO_NAME = 'SapMachine'
               SAPMACHINE_PUBLISH_GITHUB_USER = 'SAP'
             }
-            agent {
-                dockerfile { dir 'build-pipe/docker/ubuntu_16_04_x86_64' }
-            }
+
             steps {
               withCredentials([
-                  [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
-                  ]) {
+                  [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD'],
+                  [$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-axel7born', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD']
+                  ]
+                  ) {
                 sh '''
                   docker/generate_dockerfile.sh
                   '''
