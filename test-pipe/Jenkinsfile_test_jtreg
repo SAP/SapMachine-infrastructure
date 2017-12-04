@@ -12,7 +12,7 @@ pipeline {
 
                     git clone -b sapmachine https://github.com/SAP/SapMachine.git sapmachine
 
-                    if [ ! -z ${params.GIT_TAG_NAME} ]; then
+                    if [ "x${params.GIT_TAG_NAME}" != "x" ]; then
                         git checkout tags/${params.GIT_TAG_NAME}
                     fi
                 '''
