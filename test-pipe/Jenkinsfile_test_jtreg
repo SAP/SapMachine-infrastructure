@@ -3,20 +3,13 @@ pipeline {
         dockerfile { dir 'test-pipe/docker/ubuntu_16_04_x86_64' }
     }
     stages {
-        stage('Git Clone') {
+        stage('Prepare') {
+            environment {
+              SAPMACHINE_GIT_REPO = 'github.com/SAP/SapMachine.git'
+              SAPMACHINE_GIT_BRANCH = 'sapmachine'
+            }
             steps {
-                sh '''
-                    if [ -d sapmachine ]; then
-                        rm -rf sapmachine;
-                    fi
-
-                    git clone -b sapmachine https://github.com/SAP/SapMachine.git sapmachine
-                    echo "git tag is: ${params.GIT_TAG_NAME}"
-
-                    if [ "x${params.GIT_TAG_NAME}" != "x" ]; then
-                        git checkout "tags/${params.GIT_TAG_NAME}"
-                    fi
-                '''
+                sh 'bash ./test_jtreg_prepare.sh'
             }
         }
         stage('Copy Artifacts') {
@@ -44,9 +37,12 @@ pipeline {
         }
         stage('Publish jtreg report') {
             steps {
-                sh 'cd sapmachine && mkdir test_report'
-                sh 'cd sapmachine && mv JTreport test_report'
-                sh 'cd sapmachine && mv JTwork test_report'
+                sh '''
+                    cd sapmachine
+                    mkdir test_report
+                    mv JTreport test_report
+                    mv JTwork test_report
+                '''
                 sh "python test-pipe/jtreg_to_junit.py sapmachine/test_report/JTreport/text/summary.txt junit_report.xml \"${params.test_suite}/${params.test_groups}\""
 
                 publishHTML target: [
