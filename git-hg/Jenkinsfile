@@ -1,13 +1,10 @@
 
 pipeline {
-    agent any
+     agent {
+        dockerfile { dir 'git-hg' }
+      }
       stages {
         stage('Build') {
-
-            agent {
-              dockerfile { dir 'git-hg'
-                }
-            }
             steps {
               withCredentials([
                     [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
