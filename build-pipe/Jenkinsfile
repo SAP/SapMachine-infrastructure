@@ -28,6 +28,13 @@ pipeline {
                       build-pipe/publish.sh
                       '''
                     archive 'build.tar.gz'
+
+                    build job: 'test-pipeline-jtreg-test', parameters:
+                        [
+                            string(name: 'GIT_TAG_NAME', value: GIT_TAG_NAME),
+                            string(name: 'test_suite', value: 'hotspot'),
+                            string(name: 'test_groups', value: ':hotspot_tier1')
+                        ]
                 }
             }
         }
