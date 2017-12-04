@@ -1,6 +1,9 @@
 FROM ubuntu:16.04
 
 RUN apt-get update && apt-get install -qq -y --no-install-recommends \
+make \
+gcc \
+g++ \
 zip \
 wget \
 git \
