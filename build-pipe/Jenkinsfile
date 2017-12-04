@@ -29,7 +29,7 @@ pipeline {
                       '''
                     archive 'build.tar.gz'
 
-                    build job: 'test-pipeline-jtreg-hotspot', propagate: false, parameters:
+                    build job: 'test-pipeline-jtreg-hotspot', propagate: false, wait: false, parameters:
                         [
                             string(name: 'GIT_TAG_NAME', value: GIT_TAG_NAME),
                             string(name: 'test_suite', value: 'hotspot'),
