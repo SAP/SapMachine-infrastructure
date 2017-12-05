@@ -21,34 +21,47 @@ pipeline {
                   '''
                 }
             }
-            post {
-                success {
-                    sh '''
-                      build-pipe/publish.sh
-                      '''
-                    archive 'build.tar.gz'
+        }
+        stage('Publish') {
+            when {
+                expression { params.PUBLISH == true }
+            }
+            steps {
+                sh '''
+                build-pipe/publish.sh
+                '''
+            }
+        }
+        stage('Archive') {
+            steps {
+                archive 'build.tar.gz'
+            }
+        }
+        stage('Trigger Tests') {
+            when {
+                expression { params.RUN_TESTS == true }
+            }
+            steps {
+            build job: 'test-pipeline-jtreg-hotspot', propagate: false, wait: false, parameters:
+                [
+                    string(name: 'GIT_TAG_NAME', value: GIT_TAG_NAME),
+                    string(name: 'test_suite', value: 'hotspot'),
+                    string(name: 'test_groups', value: ':hotspot_tier1')
+                ]
 
-                    build job: 'test-pipeline-jtreg-hotspot', propagate: false, wait: false, parameters:
-                        [
-                            string(name: 'GIT_TAG_NAME', value: GIT_TAG_NAME),
-                            string(name: 'test_suite', value: 'hotspot'),
-                            string(name: 'test_groups', value: ':hotspot_tier1')
-                        ]
+            build job: 'test-pipeline-jtreg-jdk', propagate: false, wait: false, parameters:
+                [
+                    string(name: 'GIT_TAG_NAME', value: GIT_TAG_NAME),
+                    string(name: 'test_suite', value: 'jdk'),
+                    string(name: 'test_groups', value: ':tier1')
+                ]
 
-                    build job: 'test-pipeline-jtreg-jdk', propagate: false, wait: false, parameters:
-                        [
-                            string(name: 'GIT_TAG_NAME', value: GIT_TAG_NAME),
-                            string(name: 'test_suite', value: 'jdk'),
-                            string(name: 'test_groups', value: ':tier1')
-                        ]
-
-                    build job: 'test-pipeline-jtreg-langtools', propagate: false, wait: false, parameters:
-                        [
-                            string(name: 'GIT_TAG_NAME', value: GIT_TAG_NAME),
-                            string(name: 'test_suite', value: 'langtools'),
-                            string(name: 'test_groups', value: 'jdk tools lib')
-                        ]
-                }
+            build job: 'test-pipeline-jtreg-langtools', propagate: false, wait: false, parameters:
+                [
+                    string(name: 'GIT_TAG_NAME', value: GIT_TAG_NAME),
+                    string(name: 'test_suite', value: 'langtools'),
+                    string(name: 'test_groups', value: 'jdk tools lib')
+                ]
             }
         }
     }
