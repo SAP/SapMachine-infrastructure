@@ -1,6 +1,8 @@
 #!/bin/bash
 set -ex
 
+RESULT_FILE=$1
+
 if [ -d SapMachine ]; then
     rm -rf SapMachine;
 fi
@@ -8,7 +10,7 @@ export GIT_COMMITTER_NAME=$GIT_USER
 export GIT_COMMITTER_EMAIL="sapmachine@sap.com"
 git clone -b "sapmachine-test-merge" "http://$GIT_USER:$GIT_PASSWORD@$SAPMACHINE_GIT_REPO" SapMachine
 
-cd SapMachine
+pushd SapMachine
 
 LAST_BUILD_JDK_TAG=$(git tag | sed -rn 's/jdk\-10\+([0-9]*)/\1/p' | sort -nr | head -n1)
 
@@ -21,6 +23,10 @@ if [ -z "$(git branch -a --contains tags/jdk-10+$LAST_BUILD_JDK_TAG | grep sapma
   git checkout -b "merge-$GIT_TAG"
   git merge ${GIT_TAG}^0
   git push origin "merge-$GIT_TAG"
+  popd
+  echo "merge-$GIT_TAG" > $RESULT_FILE
 else
   echo "Already merged, nothing to do."
+  popd
+  touch $RESULT_FILE
 fi
