@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        dockerfile { dir 'build-pipe/docker/ubuntu_16_04_x86_64' }
+        dockerfile { dir 'docker/ubuntu_16_04_x86_64' }
     }
     stages {
         stage('Build') {
