@@ -1,0 +1,40 @@
+pipeline {
+    agent {
+        dockerfile { dir 'build-pipe/docker/ubuntu_16_04_x86_64' }
+    }
+    stages {
+        stage('Build') {
+            steps {
+                build job: 'build-pipeline', propagate: true, wait: true, parameters:
+                    [
+                        booleanParam(name: 'PUBLISH', value: false),
+                        booleanParam(name: 'RUN_TESTS', value: false)
+                    ]
+            }
+        }
+        stage('Run jtreg tests') {
+            steps {
+                build job: 'test-pipeline-jtreg-hotspot', propagate: false, wait: false, parameters:
+                    [
+                        string(name: 'GIT_TAG_NAME', value: GIT_TAG_NAME),
+                        string(name: 'test_suite', value: 'hotspot'),
+                        string(name: 'test_groups', value: 'gc native_sanity runtime sanity serviceability testlibrary testlibrary_tests compiler')
+                    ]
+
+                build job: 'test-pipeline-jtreg-jdk', propagate: false, wait: false, parameters:
+                    [
+                        string(name: 'GIT_TAG_NAME', value: GIT_TAG_NAME),
+                        string(name: 'test_suite', value: 'jdk'),
+                        string(name: 'test_groups', value: ':jdk_stable')
+                    ]
+
+                build job: 'test-pipeline-jtreg-langtools', propagate: false, wait: false, parameters:
+                    [
+                        string(name: 'GIT_TAG_NAME', value: GIT_TAG_NAME),
+                        string(name: 'test_suite', value: 'langtools'),
+                        string(name: 'test_groups', value: 'jdk tools lib')
+                    ]
+            }
+        }
+    }
+}
