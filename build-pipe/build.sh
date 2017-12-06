@@ -18,6 +18,7 @@ else
 fi
 
 make JOBS=12 images test-image
+make run-test-gtest
 
 tar czf ../build.tar.gz build
 
@@ -26,3 +27,5 @@ cd "$(ls)"/images
 
 tar czf ../../../../"${SAPMACHINE_ARCHIVE_NAME_PREFIX}-jdk.tar.gz" jdk
 tar czf ../../../../"${SAPMACHINE_ARCHIVE_NAME_PREFIX}-jre.tar.gz" jre
+
+cp test-results/gtest_all/gtest.xml ../../../..

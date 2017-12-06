@@ -22,6 +22,11 @@ pipeline {
                 }
             }
         }
+        post {
+            success {
+                junit 'gtest.xml'
+            }
+        }
         stage('Publish') {
             when {
                 expression { params.PUBLISH == true }
