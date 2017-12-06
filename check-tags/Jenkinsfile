@@ -38,9 +38,8 @@ pipeline {
         build job: 'build-pipeline', propagate: true, wait: true, parameters:
           [
               string(name: 'GIT_TAG_NAME', value: test_branch),
-              booleanParam(name: 'PUBLISH', value: true),
+              booleanParam(name: 'PUBLISH', value: false),
               booleanParam(name: 'RUN_TESTS', value: true)
-            ]
           ]
         }
       }
