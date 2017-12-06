@@ -1,8 +1,6 @@
 #!/bin/bash
 set -ex
 
-RESULT_FILE=$1
-
 if [ -d SapMachine ]; then
     rm -rf SapMachine;
 fi
@@ -24,9 +22,12 @@ if [ -z "$(git branch -a --contains tags/jdk-10+$LAST_BUILD_JDK_TAG | grep sapma
   git merge ${GIT_TAG}^0
   git push origin "merge-$GIT_TAG"
   popd
-  echo "merge-$GIT_TAG" > $RESULT_FILE
 else
   echo "Already merged, nothing to do."
   popd
-  touch $RESULT_FILE
 fi
+
+PR_DATA="{\"title\":\"Merge to tag $GIT_TAG\",\"body\":\"please pull\",\"head\":\"merge-$GIT_TAG\",\"base\":\"sapmachine-test-merge\"}"
+
+curl -H "Content-Type: application/json" \
+ --data "$PR_DATA" "https://$GIT_USER:$SAPMACHINE_PUBLISH_GITHUB_TOKEN@api.github.com/repos/SAP/SapMachine/pulls"
