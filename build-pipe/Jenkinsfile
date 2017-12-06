@@ -21,10 +21,10 @@ pipeline {
                   '''
                 }
             }
-        }
-        post {
-            success {
-                junit 'gtest.xml'
+            post {
+                success {
+                    junit 'gtest.xml'
+                }
             }
         }
         stage('Publish') {
