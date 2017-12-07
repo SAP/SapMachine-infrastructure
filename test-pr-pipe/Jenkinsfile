@@ -1,0 +1,50 @@
+pipeline {
+    agent {
+        dockerfile { dir 'test-nightly-pipe/docker/ubuntu_16_04_x86_64' }
+    }
+    stages {
+        stage('Build') {
+            steps {
+                build job: 'build-pipeline', propagate: true, wait: true, parameters:
+                    [
+                        string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER)
+                        booleanParam(name: 'PUBLISH', value: false),
+                        booleanParam(name: 'RUN_TESTS', value: false)
+                    ]
+            }
+        }
+        // stage('Run jtreg tests') {
+        //     steps {
+        //         build job: 'test-pipeline-jtreg-hotspot', propagate: false, wait: false, parameters:
+        //             [
+        //                 string(name: 'test_suite', value: 'hotspot'),
+        //                 string(name: 'test_groups', value: 'gc native_sanity runtime sanity serviceability testlibrary testlibrary_tests compiler')
+        //             ]
+        //
+        //         build job: 'test-pipeline-jtreg-jdk', propagate: false, wait: false, parameters:
+        //             [
+        //                 string(name: 'test_suite', value: 'jdk'),
+        //                 string(name: 'test_groups', value: ':jdk_stable')
+        //             ]
+        //
+        //         build job: 'test-pipeline-jtreg-langtools', propagate: false, wait: false, parameters:
+        //             [
+        //                 string(name: 'test_suite', value: 'langtools'),
+        //                 string(name: 'test_groups', value: 'jdk tools lib')
+        //             ]
+        //     }
+            post {
+                success {
+                    githubNotify account: 'SAP', context: 'Final Test', credentialsId: 'SapMachine-github',
+                    description: 'This is an example', repo: 'SapMachine', sha: '0b5936eb903d439ac0c0bf84940d73128d5e9487',
+                    status: 'SUCCESS'
+                  }
+                failure {
+                    githubNotify account: 'SAP', context: 'Final Test', credentialsId: 'SapMachine-github',
+                    description: 'This is an example', repo: 'SapMachine', sha: '0b5936eb903d439ac0c0bf84940d73128d5e9487',
+                    status: 'FAILURE'
+                  }
+              }
+        }
+    }
+}

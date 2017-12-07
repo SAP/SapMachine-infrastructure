@@ -17,6 +17,11 @@ else
   bash ./configure --with-boot-jdk=$BOOT_JDK --with-version-opt="sapmachine"
 fi
 
+if [ "$GITHUB_PR_NUMBER" ]; then
+  git fetch origin "pull/$GITHUB_PR_NUMBER/head"
+  git merge FETCH_HEAD
+fi
+
 make JOBS=12 images test-image
 make run-test-gtest
 
