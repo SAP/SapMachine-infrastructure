@@ -7,12 +7,12 @@ pipeline {
             steps {
                 build job: 'build-pipeline', propagate: true, wait: true, parameters:
                     [
-                        string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER)
+                        string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER),
                         booleanParam(name: 'PUBLISH', value: false),
                         booleanParam(name: 'RUN_TESTS', value: false)
                     ]
             }
-        }
+        //}
         // stage('Run jtreg tests') {
         //     steps {
         //         build job: 'test-pipeline-jtreg-hotspot', propagate: false, wait: false, parameters:
