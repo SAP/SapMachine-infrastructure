@@ -10,6 +10,11 @@ git clone -b $SAPMACHINE_GIT_BRANCH "http://$GIT_USER:$GIT_PASSWORD@$SAPMACHINE_
 
 cd SapMachine
 
+if [ "$GITHUB_PR_NUMBER" ]; then
+  git fetch origin "pull/$GITHUB_PR_NUMBER/head"
+  git merge FETCH_HEAD
+fi
+
 if [[ ! -z $GIT_TAG_NAME ]] && [[ $GIT_TAG_NAME == jdk-* ]]; then
   git checkout $GIT_TAG_NAME
   bash ./configure --with-boot-jdk=$BOOT_JDK --with-version-string=${GIT_TAG_NAME: 4} --with-version-opt="sapmachine"
