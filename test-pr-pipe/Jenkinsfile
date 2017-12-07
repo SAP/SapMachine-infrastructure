@@ -35,14 +35,10 @@ pipeline {
         //     }
             post {
                 success {
-                    githubNotify account: 'SAP', context: 'Final Test', credentialsId: 'SapMachine-github',
-                    description: 'This is an example', repo: 'SapMachine', sha: '0b5936eb903d439ac0c0bf84940d73128d5e9487',
-                    status: 'SUCCESS'
-                  }
+                    setGitHubPullRequestStatus context: 'validate_pr_pipe', state: 'SUCCESS'
+                }
                 failure {
-                    githubNotify account: 'SAP', context: 'Final Test', credentialsId: 'SapMachine-github',
-                    description: 'This is an example', repo: 'SapMachine', sha: '0b5936eb903d439ac0c0bf84940d73128d5e9487',
-                    status: 'FAILURE'
+                    setGitHubPullRequestStatus context: 'validate_pr_pipe', state: 'FAILURE'
                   }
               }
         }
