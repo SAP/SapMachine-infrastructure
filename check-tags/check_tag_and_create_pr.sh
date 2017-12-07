@@ -28,7 +28,7 @@ else
   exit 0
 fi
 
-PR_DATA="{\"title\":\"Merge to tag $GIT_TAG\",\"body\":\"please pull\",\"head\":\"merge-$GIT_TAG\",\"base\":\"sapmachine-test-merge\"}"
+PR_DATA="{\"title\":\"Merge to tag $GIT_TAG\",\"body\":\"please pull\",\"head\":\"merge-$GIT_TAG\",\"base\":\"sapmachine\"}"
 
 curl -H "Content-Type: application/json" \
  --data "$PR_DATA" "https://$GIT_USER:$SAPMACHINE_PUBLISH_GITHUB_TOKEN@api.github.com/repos/SAP/SapMachine/pulls"
