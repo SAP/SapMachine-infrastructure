@@ -1,0 +1,28 @@
+Source: sapmachine-jdk
+Section: java
+Priority: optional
+Maintainer: SapMachine Team <sapmachine@sap.com>
+Build-Depends: debhelper (>=9)
+Standards-Version: 3.9.6
+Homepage: https://sapmachine.org
+#Vcs-Git: https://github.com/SAP/sapmachine.git
+#Vcs-Browser: https://github.com/SAP/sapmachine
+
+Package: sapmachine-jdk
+Architecture: amd64
+Provides: java-sdk,
+  java2-sdk, java5-sdk, java6-sdk,
+  java7-sdk, java8-sdk, java-compiler
+Depends:
+  ${jredefault:Depends},
+  ${cacert:Depends},
+  ${tzdata:Depends},
+  ${jcommon:Depends},
+  ${dlopenhl:Depends},
+  ${mountpoint:Depends},
+  ${xandsound:Depends},
+  ${dlopenjre:Depends}
+  ${shlibs:Depends},
+  ${misc:Depends}
+Description: SapMachine JDK
+ The SapMachine Java Development Kit

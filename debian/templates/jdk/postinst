@@ -1,0 +1,15 @@
+#!/bin/sh
+
+set -e
+
+jdk_tools='${tools}'
+
+case "$$1" in
+    configure)
+        for i in $$jdk_tools; do
+            update-alternatives --install /usr/bin/$$i $$i /opt/sapmachine-10-jdk/bin/$$i 100
+        done
+    ;;
+esac
+
+exit 0
