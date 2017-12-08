@@ -6,9 +6,13 @@ if [ -d SapMachine ]; then
 fi
 export GIT_COMMITTER_NAME=$GIT_USER
 export GIT_COMMITTER_EMAIL="sapmachine@sap.com"
+
 git clone -b $SAPMACHINE_GIT_BRANCH "http://$GIT_USER:$GIT_PASSWORD@$SAPMACHINE_GIT_REPO" SapMachine
 
 cd SapMachine
+
+git config user.email $GIT_COMMITTER_EMAIL
+git config user.name $GIT_USER
 
 if [ "$GITHUB_PR_NUMBER" ]; then
   git fetch origin "pull/$GITHUB_PR_NUMBER/head"
