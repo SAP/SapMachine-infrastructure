@@ -37,4 +37,4 @@ cd "$(ls)"/images
 tar czf ../../../../"${SAPMACHINE_ARCHIVE_NAME_PREFIX}-jdk.tar.gz" jdk
 tar czf ../../../../"${SAPMACHINE_ARCHIVE_NAME_PREFIX}-jre.tar.gz" jre
 
-cp ../test-results/gtest_all/gtest.xml ../../../..
+cp ../test-results/gtest_all_server/gtest.xml ../../../..
