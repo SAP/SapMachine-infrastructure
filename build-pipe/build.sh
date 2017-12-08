@@ -19,7 +19,7 @@ if [ "$GITHUB_PR_NUMBER" ]; then
   git merge FETCH_HEAD
 fi
 
-if [[ ! -z $GIT_TAG_NAME ]] && [[ $GIT_TAG_NAME == jdk-* ]]; then
+if [[ ! -z $GIT_TAG_NAME ]] && [[ $GIT_TAG_NAME == sapmachine-* ]]; then
   git checkout $GIT_TAG_NAME
   bash ./configure --with-boot-jdk=$BOOT_JDK --with-version-string=${GIT_TAG_NAME: 4} --with-version-opt="sapmachine"
 else
