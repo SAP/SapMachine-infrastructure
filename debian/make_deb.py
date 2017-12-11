@@ -4,6 +4,9 @@ import shutil
 import zipfile
 import tarfile
 import urllib
+import glob
+import re
+import datetime
 
 from string import Template
 
@@ -23,6 +26,42 @@ from shutil import rmtree
 from shutil import copytree
 from shutil import move
 from shutil import copy
+
+def run_cmd(cmdline, throw=True, cwd=None, env=None, std=False, shell=False):
+    import subprocess
+
+    print str.format('calling {0}', cmdline)
+    if std:
+        subproc = subprocess.Popen(cmdline, cwd=cwd, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=shell)
+        out, err = subproc.communicate()
+    else:
+        subproc = subprocess.Popen(cmdline, cwd=cwd, env=env, shell=shell)
+    retcode = subproc.wait()
+    if throw and retcode != 0:
+        raise Exception(str.format('command failed with exit code {0}: {1}', retcode, cmdline))
+    if std:
+        return (retcode, out, err)
+    return retcode
+
+def extract_archive(archive, target):
+    if archive.endswith('.zip'):
+        with zipfile.ZipFile(archive, 'r') as zip_ref:
+            print(str.format('Extracting zip archive {0} ...', archive))
+            zip_ref.extractall(target)
+
+        remove(archive)
+    elif archive.endswith('tar.gz'):
+        print(str.format('Extracting tar.gz archive {0} ...', archive))
+        with tarfile.open(archive, 'r') as tar_ref:
+            tar_ref.extractall(target)
+
+        remove(archive)
+    else:
+        move(archive, target)
+
+def clone_sapmachine(target):
+    sapmachine_repo = 'https://github.com/SAP/SapMachine.git'
+    run_cmd(['git', 'clone', '-b', 'master', sapmachine_repo, target])
 
 def fetch_tag(tag):
     import json
@@ -59,40 +98,9 @@ def download(url, target):
     with open(target, 'w+') as f:
         f.write(urllib.urlopen(url, proxies={}).read())
 
-def run_cmd(cmdline, throw=True, cwd=None, env=None, std=False, shell=False):
-    import subprocess
-
-    print str.format('calling {0}', cmdline)
-    if std:
-        subproc = subprocess.Popen(cmdline, cwd=cwd, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=shell)
-        out, err = subproc.communicate()
-    else:
-        subproc = subprocess.Popen(cmdline, cwd=cwd, env=env, shell=shell)
-    retcode = subproc.wait()
-    if throw and retcode != 0:
-        raise Exception(str.format('command failed with exit code {0}: {1}', retcode, cmdline))
-    if std:
-        return (retcode, out, err)
-    return retcode
-
-def extract_archive(archive, target):
-    if archive.endswith('.zip'):
-        with zipfile.ZipFile(archive, 'r') as zip_ref:
-            print(str.format('Extracting zip archive {0} ...', archive))
-            zip_ref.extractall(target)
-
-        remove(archive)
-    elif archive.endswith('tar.gz'):
-        print(str.format('Extracting tar.gz archive {0} ...', archive))
-        with tarfile.open(archive, 'r') as tar_ref:
-            tar_ref.extractall(target)
-
-        remove(archive)
-    else:
-        move(archive, target)
-
-def generate_configuration(templates_dir, tag, target_dir, bin_dir):
-    major = tag.split('+', 1)[0]
+def generate_configuration(templates_dir, tag, target_dir, bin_dir, license_file, download_url):
+    pattern = re.compile('jdk-([0-9]+)\+[0-9]+')
+    major = pattern.match(tag).group(1)
     tools = [f for f in listdir(bin_dir) if isfile(join(bin_dir, f))]
 
     with open(join(templates_dir, 'install'), 'r') as install_template:
@@ -102,6 +110,17 @@ def generate_configuration(templates_dir, tag, target_dir, bin_dir):
     with open(join(templates_dir, 'postinst'), 'r') as postinst_template:
         with open(join(target_dir, 'postinst'), 'w+') as postinst_out:
             postinst_out.write(Template(postinst_template.read()).substitute(tools=' '.join([tool for tool in tools])))
+
+    with open(join(templates_dir, '..', 'copyright'), 'r') as copyright_template:
+        with open(license_file, 'r') as license_in:
+            with open(join(target_dir, 'copyright'), 'w+') as copyright_out:
+                now = datetime.datetime.utcnow().isoformat()
+                template = Template(copyright_template.read())
+                copyright_out.write(template.substitute(
+                    date_and_time=now,
+                    download_url=download_url,
+                    license=license_in.read()
+                ))
 
     copy(join(templates_dir, 'control'), join(target_dir, 'control'))
 
@@ -113,6 +132,8 @@ def main(argv=None):
     tag = 'jdk-10+34'
     version = tag.rsplit('-', 1)[-1]
     templates_dir = join(cwd, 'templates')
+    jdk_name = str.format('sapmachine-jdk-{0}', version)
+    jre_name = str.format('sapmachine-jre-{0}', version)
 
     jdk_url, jre_url = fetch_tag(tag)
 
@@ -127,8 +148,11 @@ def main(argv=None):
     download(jdk_url, jdk_archive)
     download(jre_url, jre_archive)
 
-    jdk_dir = join(work_dir, str.format('sapmachine-{0}', version))
-    jre_dir = join(work_dir, str.format('sapmachine-jre-{0}', version))
+    clone_sapmachine(join(work_dir, 'sapmachine_master'))
+    license_file = join(work_dir, 'sapmachine_master', 'LICENSE')
+
+    jdk_dir = join(work_dir, jdk_name)
+    jre_dir = join(work_dir, jre_name)
 
     mkdir(jdk_dir)
     mkdir(jre_dir)
@@ -139,11 +163,17 @@ def main(argv=None):
     run_cmd(['dh_make', '-n', '-s', '-y'], cwd=jdk_dir)
     run_cmd(['dh_make', '-n', '-s', '-y'], cwd=jre_dir)
 
-    generate_configuration(join(templates_dir, 'jre'), tag, join(jre_dir, 'debian'), join(jre_dir, 'jre', 'bin'))
-    generate_configuration(join(templates_dir, 'jdk'), tag, join(jdk_dir, 'debian'), join(jdk_dir, 'jdk', 'bin'))
+    generate_configuration(join(templates_dir, 'jre'), tag, join(jre_dir, 'debian'), join(jre_dir, 'jre', 'bin'), license_file, jdk_url)
+    generate_configuration(join(templates_dir, 'jdk'), tag, join(jdk_dir, 'debian'), join(jdk_dir, 'jdk', 'bin'), license_file, jre_url)
 
     run_cmd(['debuild', '-b', '-uc', '-us'], cwd=jre_dir)
     run_cmd(['debuild', '-b', '-uc', '-us'], cwd=jdk_dir)
+
+    deb_files = glob.glob(join(work_dir, '*.deb'))
+
+    for deb_file in deb_files:
+        copy(deb_file, cwd)
+        remove(deb_file)
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv[1:]))
