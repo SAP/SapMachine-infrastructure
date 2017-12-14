@@ -19,8 +19,11 @@ if [ "$GITHUB_PR_NUMBER" ]; then
   git merge FETCH_HEAD
 fi
 
-if [[ ! -z $GIT_TAG_NAME ]] && [[ $GIT_TAG_NAME == sapmachine-* ]]; then
+if [[ ! -z $GIT_TAG_NAME ]]; then
   git checkout $GIT_TAG_NAME
+fi
+
+if [[ $GIT_TAG_NAME == sapmachine-* ]]; then
   VERSION_MINOR=$(echo $GIT_TAG_NAME | sed -rn 's/sapmachine\-10\+([0-9]*)/\1/p')
   bash ./configure --with-boot-jdk=$BOOT_JDK --with-version-string="10+$VERSION_MINOR" --with-version-opt="sapmachine"
 else
