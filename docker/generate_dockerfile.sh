@@ -17,7 +17,7 @@ git clone -b master $REPO_URL infra
 cd "infra/docker"
 rm $FILENAME
 
-read VERSION_MAJOR VERSION_MINOR <<< $(echo $VERSION_TAG | sed -r 's/jdk\-([0-9]+)\+([0-9]*)/\1 \2/')
+read VERSION_MAJOR VERSION_MINOR <<< $(echo $VERSION_TAG | sed -r 's/sapmachine\-([0-9]+)\+([0-9]*)/\1 \2/')
 
 BASE_URL="https://github.com/SAP/SapMachine/releases/download/jdk-${VERSION_MAJOR}%2B${VERSION_MINOR}/"
 ARCHIVE_NAME="sapmachine_linux-x64-jdk-${VERSION_MAJOR}.${VERSION_MINOR}.tar.gz"
@@ -26,7 +26,7 @@ cat >> $FILENAME << EOI
 
 FROM ubuntu:16.04
 
-MAINTAINER Axel Siebenborn <axel.siebenborn@sap.com>
+MAINTAINER Sapmachine <sapmachine@sap.com>
 
 RUN rm -rf /var/lib/apt/lists/* && apt-get clean && apt-get update \\
     && apt-get install -y --no-install-recommends curl ca-certificates \\
@@ -49,7 +49,7 @@ EOI
 
 git remote remove origin
 git remote add origin $REPO_URL
-git config user.email "33904789+SapMachine@users.noreply.github.com"
+git config user.email "sapmachine@sap.com"
 git config user.name "SapMachine"
 git commit -a -m "Update Dockerfile for $VERSION_TAG"
 git push origin master

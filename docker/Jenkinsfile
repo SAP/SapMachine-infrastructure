@@ -14,7 +14,7 @@ pipeline {
             steps {
               withCredentials([
                   [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD'],
-                  [$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-axel7born', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD']
+                  [$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-sapmachine', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD']
                   ]
                   ) {
                 sh '''
