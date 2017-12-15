@@ -6,7 +6,7 @@ if [ -d SapMachine ]; then
 fi
 export GIT_COMMITTER_NAME=$GIT_USER
 export GIT_COMMITTER_EMAIL="sapmachine@sap.com"
-git clone -b "sapmachine-test-merge" "http://$GIT_USER:$GIT_PASSWORD@$SAPMACHINE_GIT_REPO" SapMachine
+git clone -b "sapmachine" "http://$GIT_USER:$GIT_PASSWORD@$SAPMACHINE_GIT_REPO" SapMachine
 
 pushd SapMachine
 
