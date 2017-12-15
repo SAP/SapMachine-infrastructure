@@ -11,12 +11,12 @@ ENV JAVA_VERSION sapmachine-10+35
 
 RUN set -eux;\
     cd /tmp;\
-    curl -Lso sapmachine_linux-x64-sapmachine-10.35.tar.gz https://github.com/SAP/SapMachine/releases/download/jdk-10%2B35/sapmachine_linux-x64-sapmachine-10.35.tar.gz;\
-    curl -Ls https://github.com/SAP/SapMachine/releases/download/jdk-10%2B35/sapmachine_linux-x64-sapmachine-10.35.sha256.txt | sha256sum -c -;\
+    curl -Lso sapmachine_linux-x64-jdk-10.35.tar.gz https://github.com/SAP/SapMachine/releases/download/sapmachine-10%2B35/sapmachine_linux-x64-jdk-10.35.tar.gz;\
+    curl -Ls https://github.com/SAP/SapMachine/releases/download/sapmachine-10%2B35/sapmachine_linux-x64-jdk-10.35.sha256.txt | sha256sum -c -;\
     mkdir -p /opt/java/sapmachine;\
     cd /opt/java/sapmachine;\
-    tar -xf /tmp/sapmachine_linux-x64-sapmachine-10.35.tar.gz;\
-    rm -f /tmp/sapmachine_linux-x64-sapmachine-10.35.tar.gz;
+    tar -xf /tmp/sapmachine_linux-x64-jdk-10.35.tar.gz;\
+    rm -f /tmp/sapmachine_linux-x64-jdk-10.35.tar.gz;
 
 ENV PATH=/opt/java/sapmachine/jdk/bin:$PATH
 
