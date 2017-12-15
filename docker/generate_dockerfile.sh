@@ -51,8 +51,11 @@ git remote remove origin
 git remote add origin $REPO_URL
 git config user.email "sapmachine@sap.com"
 git config user.name "SapMachine"
+
+set +e
 git commit -a -m "Update Dockerfile for $VERSION_TAG"
 git push origin master
+set -e
 
 docker build -t "$DOCKER_USER/sapmachine:${VERSION_MAJOR}.${VERSION_MINOR}" -t "$DOCKER_USER/sapmachine:latest" .
 docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
