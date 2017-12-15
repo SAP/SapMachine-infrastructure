@@ -20,8 +20,8 @@ rm $FILENAME
 read VERSION_MAJOR VERSION_MINOR <<< $(echo $VERSION_TAG | sed -r 's/sapmachine\-([0-9]+)\+([0-9]*)/\1 \2/')
 
 BASE_URL="https://github.com/SAP/SapMachine/releases/download/sapmachine-${VERSION_MAJOR}%2B${VERSION_MINOR}/"
-ARCHIVE_NAME="sapmachine_linux-x64-jdk-${VERSION_MAJOR}.${VERSION_MINOR}.tar.gz"
-SUM_NAME="sapmachine_linux-x64-jdk-${VERSION_MAJOR}.${VERSION_MINOR}.sha256.txt"
+ARCHIVE_NAME="sapmachine_linux-x64-sapmachine-${VERSION_MAJOR}.${VERSION_MINOR}.tar.gz"
+SUM_NAME="sapmachine_linux-x64-sapmachine-${VERSION_MAJOR}.${VERSION_MINOR}.sha256.txt"
 cat >> $FILENAME << EOI
 
 FROM ubuntu:16.04
