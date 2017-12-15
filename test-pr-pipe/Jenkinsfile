@@ -15,19 +15,19 @@ pipeline {
         }
         stage('Run jtreg tests') {
             steps {
-                build job: 'test-pipeline-jtreg-hotspot', propagate: false, wait: false, parameters:
+                build job: 'test-pipeline-jtreg-hotspot', propagate: false, wait: true, parameters:
                     [
                         string(name: 'test_suite', value: 'hotspot'),
                         string(name: 'test_groups', value: 'gc native_sanity runtime sanity serviceability testlibrary testlibrary_tests compiler')
                     ]
 
-                build job: 'test-pipeline-jtreg-jdk', propagate: false, wait: false, parameters:
+                build job: 'test-pipeline-jtreg-jdk', propagate: false, wait: true, parameters:
                     [
                         string(name: 'test_suite', value: 'jdk'),
                         string(name: 'test_groups', value: ':jdk_stable')
                     ]
 
-                build job: 'test-pipeline-jtreg-langtools', propagate: false, wait: false, parameters:
+                build job: 'test-pipeline-jtreg-langtools', propagate: false, wait: true, parameters:
                     [
                         string(name: 'test_suite', value: 'langtools'),
                         string(name: 'test_groups', value: 'jdk tools lib')
