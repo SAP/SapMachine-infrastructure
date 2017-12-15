@@ -10,12 +10,12 @@ git clone -b "sapmachine-test-merge" "http://$GIT_USER:$GIT_PASSWORD@$SAPMACHINE
 
 pushd SapMachine
 
-LAST_BUILD_JDK_TAG=$(git tag | sed -rn 's/jdk\-10\+([0-9]*)/\1/p' | sort -nr | head -n1)
+LAST_BUILD_JDK_TAG=$(git tag | sed -rn 's/jdk\-11\+([0-9]*)/\1/p' | sort -nr | head -n1)
 
-GIT_TAG="jdk-10+$LAST_BUILD_JDK_TAG"
+GIT_TAG="jdk-11+$LAST_BUILD_JDK_TAG"
 echo "LAST_JDK_TAG=$GIT_TAG"
 set +e
-CONTAINING_BRANCHES=$(git branch -a --contains tags/jdk-10+$LAST_BUILD_JDK_TAG | grep -E "(sapmachine|merge-$GIT_TAG )")
+CONTAINING_BRANCHES=$(git branch -a --contains tags/jdk-11+$LAST_BUILD_JDK_TAG | grep -E "(sapmachine|merge-$GIT_TAG )")
 set -e
 if [ -z "$CONTAINING_BRANCHES" ]; then
   echo "Merging tag ${GIT_TAG}"
