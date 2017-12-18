@@ -9,7 +9,10 @@ pipeline {
               withCredentials([
                     [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
                     ]) {
-                    sh '$PWD/git-hg/update_repo.sh'
+                      sh '''
+                        $PWD/git-hg/update_repo.sh jdk/jdk
+                        $PWD/git-hg/update_repo.sh jdk/jdk10
+                        '''
                 }
             }
         }

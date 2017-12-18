@@ -2,9 +2,8 @@
 set -ex
 
 HG_HOST="hg.openjdk.java.net"
-HG_PATH="jdk/jdk"
-#HG_HOST="bitbucket.org"
-#HG_PATH="axel7born/mercurial2git"
+HG_PATH=$1
+
 
 if [[ -z "$GIT_USER" ]] || [[ -z "$GIT_PASSWORD" ]]; then
     echo "Missing mandatory environment variables GIT_USER or GIT_PASSWORD"
@@ -30,4 +29,4 @@ else
   git checkout "$HG_PATH"
 fi
 
-git push --tags origin "$HG_PATH"
+git push --tags --force origin "$HG_PATH"
