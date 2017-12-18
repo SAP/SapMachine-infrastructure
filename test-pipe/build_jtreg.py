@@ -72,6 +72,7 @@ def extract_archive(archive, target):
 
 def run_cmd(cmdline, throw=True, cwd=None, env=None, std=False, shell=False):
     import subprocess
+    import time
 
     print str.format('calling {0}', cmdline)
     if std:
@@ -81,6 +82,8 @@ def run_cmd(cmdline, throw=True, cwd=None, env=None, std=False, shell=False):
         subproc = subprocess.Popen(cmdline, cwd=cwd, env=env, shell=shell)
     retcode = subproc.wait()
     if throw and retcode != 0:
+        sys.stdout.flush()
+        time.sleep(2)
         raise Exception(str.format('command failed with exit code {0}: {1}', retcode, cmdline))
     if std:
         return (retcode, out, err)
