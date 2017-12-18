@@ -24,8 +24,8 @@ if [[ ! -z $GIT_TAG_NAME ]]; then
 fi
 
 if [[ $GIT_TAG_NAME == sapmachine-* ]]; then
-  VERSION_MINOR=$(echo $GIT_TAG_NAME | sed -rn 's/sapmachine\-10\+([0-9]*)/\1/p')
-  bash ./configure --with-boot-jdk=$BOOT_JDK --with-version-string="10+$VERSION_MINOR" --with-version-opt="sapmachine"
+  read VERSION_MAJOR VERSION_MINOR <<< $(echo $GIT_TAG_NAME | sed -r 's/sapmachine\-([0-9]+)\+([0-9]*)/\1 \2/')
+  bash ./configure --with-boot-jdk=$BOOT_JDK --with-version-string="$VERSION_MAJOR+$VERSION_MINOR" --with-version-opt="sapmachine"
 else
   bash ./configure --with-boot-jdk=$BOOT_JDK --with-version-opt="sapmachine"
 fi
