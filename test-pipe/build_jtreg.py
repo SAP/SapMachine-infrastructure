@@ -4,6 +4,8 @@ import shutil
 import re
 import zipfile
 import tarfile
+import glob
+import argparse
 
 from os import remove
 from os import mkdir
@@ -138,7 +140,7 @@ def which(file):
 
     return None
 
-def build_jtharness(top_dir):
+def build_jtharness(top_dir, tag=None):
     global jtharness_version
 
     work_dir = join(top_dir, 'jtharness_work')
@@ -152,12 +154,12 @@ def build_jtharness(top_dir):
     hg_clone(jtharness_repo)
     chdir(hg_dir)
 
-    # find the latest tag
-    tag = get_latest_hg_tag('jt')
+    if tag is None:
+        # find the latest tag
+        tag = get_latest_hg_tag('jt')
 
     hg_switch_tag(tag)
     print(str.format('Using jtharness tag {0}', tag))
-    jtharness_version = tag[2:]
 
     # download and extract dependencies
     for jtharness_dependecy in jtharness_dependencies:
@@ -185,11 +187,12 @@ def build_jtharness(top_dir):
     run_cmd(['ant', 'build', '-propertyfile', build_properties, '-Djvmargs="-Xdoclint:none"', '-debug'])
 
     # copy the archive
-    copy(join(hg_dir, 'JTHarness-build', 'bundles', str.format('jtharness-{0}.zip', jtharness_version)),
-                join(top_dir, 'jtharness.zip'))
+    jtharness_archive = glob.glob(join(hg_dir, 'JTHarness-build', 'bundles', 'jtharness-*.zip'))
+    jtharness_version = re.match('.*([0-9]+\.[0-9]+).*', jtharness_archive[0]).group(1)
+    copy(jtharness_archive[0], join(top_dir, 'jtharness.zip'))
 
 
-def build_asmtools(top_dir):
+def build_asmtools(top_dir, tag=None):
     work_dir = join(top_dir, 'asmtools_work')
     hg_dir = join(work_dir, 'asmtools')
     build_dir = join(hg_dir, 'build')
@@ -201,31 +204,43 @@ def build_asmtools(top_dir):
     hg_clone(asmtools_repo)
     chdir(hg_dir)
 
-    # find the latest tag
-    latest_tag = get_latest_hg_tag('')
-    print(str.format('Using asmtools tag {0}', latest_tag))
-    hg_switch_tag(latest_tag)
+    if tag is None:
+        # find the latest tag
+        tag = get_latest_hg_tag('')
+
+    print(str.format('Using asmtools tag {0}', tag))
+    hg_switch_tag(tag)
 
     chdir(build_dir)
 
-    asmtools_pseudo_version = latest_tag
-    with open('build.properties', 'r') as build_properties:
-        lines = build_properties.readlines()
-        pattern = re.compile('.*BUILD_DIR.*=.*asmtools-([0-9]+\.[0-9])+-build.*')
-        for line in lines:
-            match = pattern.match(line)
-            if match is not None:
-                asmtools_pseudo_version = match.group(1)
+    asmtools_version = tag
+
+    if exists(join(build_dir, 'productinfo.properties')):
+        with open('productinfo.properties', 'r') as productinfo_properties:
+            lines = productinfo_properties.readlines()
+            pattern = re.compile('.*PRODUCT_VERSION.*=.*([0-9]+\.[0-9])+.*')
+            for line in lines:
+                match = pattern.match(line)
+                if match is not None:
+                    asmtools_version = match.group(1)
+    else:
+        with open('build.properties', 'r') as build_properties:
+            lines = build_properties.readlines()
+            pattern = re.compile('.*BUILD_DIR.*=.*asmtools-([0-9]+\.[0-9])+-build.*')
+            for line in lines:
+                match = pattern.match(line)
+                if match is not None:
+                    asmtools_version = match.group(1)
 
     # run the ant build
     run_cmd(['ant', 'build'])
 
     # copy the build result
-    asmtools_pseudo_version_string = str.format('asmtools-{0}', asmtools_pseudo_version)
-    copytree(join(work_dir, str.format('{0}-build', asmtools_pseudo_version_string), 'release'),
+    asmtools_version_string = str.format('asmtools-{0}', asmtools_version)
+    copytree(join(work_dir, str.format('{0}-build', asmtools_version_string), 'release'),
                     join(top_dir, 'asmtools-release'))
 
-def build_jtreg(top_dir):
+def build_jtreg(top_dir, tag=None):
     work_dir = join(top_dir, 'jtreg_work')
     hg_dir = join(work_dir, 'jtreg')
     build_dir = join(hg_dir, 'build')
@@ -240,11 +255,12 @@ def build_jtreg(top_dir):
     chdir(hg_dir)
     mkdir(dependencies_dir)
 
-    # find the latest tag
-    tag = get_latest_hg_tag('jtreg')
+    if tag is None:
+        # find the latest tag
+        tag = get_latest_hg_tag('jtreg')
 
     hg_switch_tag(tag)
-    build_number = tag.split('-')[1]
+    #build_number = tag.split('-')[1]
     print(str.format('Using jtreg tag {0}', tag))
 
     # download and extract dependencies
@@ -262,8 +278,11 @@ def build_jtreg(top_dir):
     copytree(join(top_dir, 'asmtools-release'), join(dependencies_dir, 'asmtools'))
 
     # build configuration
+    javac = dirname(dirname(realpath(which('javac'))))
     make_build_env = os.environ.copy()
-    make_build_env['JDK17HOME']              = dirname(dirname(realpath(which('javac'))))
+    make_build_env['JDK17HOME']              = javac
+    make_build_env['JDK18HOME']              = javac
+    make_build_env['JDKHOME']                = javac
     make_build_env['ANTHOME']                = dirname(dirname(realpath(which('ant'))))
     make_build_env['ASMTOOLS_HOME']          = join(dependencies_dir, 'asmtools')
     make_build_env['JAVAHELP_HOME']          = join(dependencies_dir, 'jh2.0', 'javahelp')
@@ -275,7 +294,8 @@ def build_jtreg(top_dir):
     make_build_env['JCOMMANDER_JAR']         = join(dependencies_dir, 'jcommander-1.48.jar')
 
     # run make
-    run_cmd(['make', '-C', 'make', 'BUILD_NUMBER=' + build_number], env=make_build_env)
+    # run_cmd(['make', '-C', 'make', 'BUILD_NUMBER=' + build_number], env=make_build_env)
+    run_cmd(['make', '-C', 'make'], env=make_build_env)
 
     # add additional libraries to the archive
     with zipfile.ZipFile(join(images_dir, 'jtreg.zip'), 'a') as jtreg_archive:
@@ -286,6 +306,15 @@ def build_jtreg(top_dir):
     copy(join(images_dir, 'jtreg.zip'), top_dir)
 
 def main(argv=None):
+    tag = None
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--build-tip', help='build tip instead of latest tag', action='store_true', default=False)
+    args = parser.parse_args()
+
+    if args.build_tip is True:
+        tag = 'tip'
+
     cwd = os.getcwd()
     work_dir = join(cwd, 'jtreg_build')
 
@@ -294,9 +323,9 @@ def main(argv=None):
 
     mkdir(work_dir)
 
-    build_jtharness(work_dir)
-    build_asmtools(work_dir)
-    build_jtreg(work_dir)
+    build_jtharness(work_dir, tag=tag)
+    build_asmtools(work_dir, tag=tag)
+    build_jtreg(work_dir, tag=tag)
 
     if os.path.isfile(join(cwd, 'jtreg.zip')):
         remove(join(cwd, 'jtreg.zip'))
@@ -305,5 +334,5 @@ def main(argv=None):
     rmtree(work_dir)
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1:]))
+    sys.exit(main())
 
