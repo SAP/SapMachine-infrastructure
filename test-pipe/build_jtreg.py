@@ -4,7 +4,6 @@ import shutil
 import re
 import zipfile
 import tarfile
-import glob
 import argparse
 
 from os import remove
@@ -184,9 +183,14 @@ def build_jtharness(top_dir, tag=None):
     run_cmd(['ant', 'build', '-propertyfile', build_properties, '-Djvmargs="-Xdoclint:none"', '-debug'])
 
     # copy the archive
-    jtharness_archive = glob.glob(join(hg_dir, 'JTHarness-build', 'bundles', 'jtharness-*.zip'))
-    jtharness_version = re.match('.*([0-9]+\.[0-9]+).*', jtharness_archive[0]).group(1)
-    copy(jtharness_archive[0], join(top_dir, 'jtharness.zip'))
+    bundles = os.listdir(join(hg_dir, 'JTHarness-build', 'bundles'))
+    bundle_pattern = re.compile('jtharness-([0-9]+\.[0-9]+)\.zip')
+    for bundle in bundles:
+        match = bundle_pattern.match(bundle)
+
+        if match is not None:
+            jtharness_version = match.group(1)
+            copy(join(hg_dir, 'JTHarness-build', 'bundles', bundle), join(top_dir, 'jtharness.zip'))
 
     return jtharness_version
 
@@ -294,8 +298,6 @@ def build_jtreg(top_dir, jtharness_version, tag=None):
     make_build_env['JCOV_JAR']               = join(dependencies_dir, 'JCOV_BUILD', 'jcov_2.0', 'jcov.jar')
     make_build_env['JCOV_NETWORK_SAVER_JAR'] = join(dependencies_dir, 'JCOV_BUILD', 'jcov_2.0', 'jcov_network_saver.jar')
     make_build_env['JCOMMANDER_JAR']         = join(dependencies_dir, 'jcommander-1.48.jar')
-
-    print(os.listdir(dependencies_dir))
 
     # run make
     run_cmd(['make', '-C', 'make', 'BUILD_NUMBER=' + build_number], env=make_build_env)
