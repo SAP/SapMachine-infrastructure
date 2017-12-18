@@ -56,12 +56,12 @@ def download_artifact(url, target):
 def extract_archive(archive, target):
     if archive.endswith('.zip'):
         with zipfile.ZipFile(archive, 'r') as zip_ref:
-            print(str.format('Extracting zip archive {0} ...', archive))
+            print(str.format('Extracting zip archive {0} to {1} ...', archive, target))
             zip_ref.extractall(target)
 
         remove(archive)
     elif archive.endswith('tar.gz'):
-        print(str.format('Extracting tar.gz archive {0} ...', archive))
+        print(str.format('Extracting tar.gz archive {0} to {1} ...', archive, target))
         with tarfile.open(archive, 'r') as tar_ref:
             tar_ref.extractall(target)
 
@@ -280,19 +280,22 @@ def build_jtreg(top_dir, jtharness_version, tag=None):
 
     # build configuration
     javac = dirname(dirname(realpath(which('javac'))))
+    ant = dirname(dirname(realpath(which('ant'))))
     make_build_env = os.environ.copy()
     make_build_env['JDK17HOME']              = javac
     make_build_env['JDK18HOME']              = javac
     make_build_env['JDKHOME']                = javac
-    make_build_env['ANTHOME']                = dirname(dirname(realpath(which('ant'))))
+    make_build_env['ANTHOME']                = ant
     make_build_env['ASMTOOLS_HOME']          = join(dependencies_dir, 'asmtools')
     make_build_env['JAVAHELP_HOME']          = join(dependencies_dir, 'jh2.0', 'javahelp')
-    make_build_env['JTHARNESS_HOME']         = join(dependencies_dir,'jtharness-' + jtharness_version)
+    make_build_env['JTHARNESS_HOME']         = join(dependencies_dir, 'jtharness-' + jtharness_version)
     make_build_env['TESTNG_JAR']             = join(dependencies_dir, 'testng.jar')
     make_build_env['JUNIT_JAR']              = join(dependencies_dir, 'junit.jar')
     make_build_env['JCOV_JAR']               = join(dependencies_dir, 'JCOV_BUILD', 'jcov_2.0', 'jcov.jar')
     make_build_env['JCOV_NETWORK_SAVER_JAR'] = join(dependencies_dir, 'JCOV_BUILD', 'jcov_2.0', 'jcov_network_saver.jar')
     make_build_env['JCOMMANDER_JAR']         = join(dependencies_dir, 'jcommander-1.48.jar')
+
+    print(os.listdir(dependencies_dir))
 
     # run make
     run_cmd(['make', '-C', 'make', 'BUILD_NUMBER=' + build_number], env=make_build_env)
