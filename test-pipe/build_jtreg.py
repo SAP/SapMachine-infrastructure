@@ -258,9 +258,11 @@ def build_jtreg(top_dir, tag=None):
     if tag is None:
         # find the latest tag
         tag = get_latest_hg_tag('jtreg')
+        build_number = tag.split('-')[1]
+    else:
+        build_number = 'b01'
 
     hg_switch_tag(tag)
-    #build_number = tag.split('-')[1]
     print(str.format('Using jtreg tag {0}', tag))
 
     # download and extract dependencies
@@ -294,8 +296,7 @@ def build_jtreg(top_dir, tag=None):
     make_build_env['JCOMMANDER_JAR']         = join(dependencies_dir, 'jcommander-1.48.jar')
 
     # run make
-    # run_cmd(['make', '-C', 'make', 'BUILD_NUMBER=' + build_number], env=make_build_env)
-    run_cmd(['make', '-C', 'make'], env=make_build_env)
+    run_cmd(['make', '-C', 'make', 'BUILD_NUMBER=' + build_number], env=make_build_env)
 
     # add additional libraries to the archive
     with zipfile.ZipFile(join(images_dir, 'jtreg.zip'), 'a') as jtreg_archive:
