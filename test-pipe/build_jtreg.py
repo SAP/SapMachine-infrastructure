@@ -303,9 +303,9 @@ def build_jtreg(top_dir, jtharness_version, tag=None):
     run_cmd(['make', '-C', 'make', 'BUILD_NUMBER=' + build_number], env=make_build_env)
 
     # add additional libraries to the archive
-    with zipfile.ZipFile(join(images_dir, 'jtreg.zip'), 'a') as jtreg_archive:
-        jtreg_archive.write(join(dependencies_dir, 'jcommander-1.48.jar'), join('jtreg', 'lib', 'jcommander.jar'))
-        jtreg_archive.write(join(dependencies_dir, 'testng.jar'), join('jtreg', 'lib', 'testng.jar'))
+    # with zipfile.ZipFile(join(images_dir, 'jtreg.zip'), 'a') as jtreg_archive:
+    #    jtreg_archive.write(join(dependencies_dir, 'jcommander-1.48.jar'), join('jtreg', 'lib', 'jcommander.jar'))
+    #    jtreg_archive.write(join(dependencies_dir, 'testng.jar'), join('jtreg', 'lib', 'testng.jar'))
 
     # copy the build result
     copy(join(images_dir, 'jtreg.zip'), top_dir)
