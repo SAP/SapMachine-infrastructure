@@ -243,7 +243,7 @@ def build_asmtools(top_dir, tag=None):
     copytree(join(work_dir, str.format('{0}-build', asmtools_version_string), 'release'),
                     join(top_dir, 'asmtools-release'))
 
-def build_jtreg(top_dir, jtharness_version, tag=None):
+def build_jtreg(top_dir, jtharness_version, tag=None, build_number=None):
     work_dir = join(top_dir, 'jtreg_work')
     hg_dir = join(work_dir, 'jtreg')
     build_dir = join(hg_dir, 'build')
@@ -261,9 +261,12 @@ def build_jtreg(top_dir, jtharness_version, tag=None):
     if tag is None:
         # find the latest tag
         tag = get_latest_hg_tag('jtreg')
-        build_number = tag.split('-')[1]
+
+        if build_number is None:
+            build_number = tag.split('-')[1]
     else:
-        build_number = 'b01'
+        if build_number is None:
+            build_number = 'b01'
 
     hg_switch_tag(tag)
     print(str.format('Using jtreg tag {0}', tag))
@@ -312,13 +315,17 @@ def build_jtreg(top_dir, jtharness_version, tag=None):
 
 def main(argv=None):
     tag = None
+    build_number=None
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--build-tip', help='build tip instead of latest tag', action='store_true', default=False)
+    parser.add_argument('--build-number', help='overrides the build number', metavar='BUILD_NUMBER', default=None)
     args = parser.parse_args()
 
     if args.build_tip is True:
         tag = 'tip'
+
+    build_number = args.build_number
 
     cwd = os.getcwd()
     work_dir = join(cwd, 'jtreg_build')
@@ -330,13 +337,13 @@ def main(argv=None):
 
     jtharness_version = build_jtharness(work_dir, tag=tag)
     build_asmtools(work_dir, tag=tag)
-    build_jtreg(work_dir, jtharness_version, tag=tag)
+    build_jtreg(work_dir, jtharness_version, tag=tag, build_number=build_number)
 
     if os.path.isfile(join(cwd, 'jtreg.zip')):
         remove(join(cwd, 'jtreg.zip'))
 
     move(join(work_dir, 'jtreg.zip'), cwd)
-    rmtree(work_dir)
+    #rmtree(work_dir)
 
 if __name__ == "__main__":
     sys.exit(main())
