@@ -72,7 +72,6 @@ def extract_archive(archive, target):
 
 def run_cmd(cmdline, throw=True, cwd=None, env=None, std=False, shell=False):
     import subprocess
-    import time
 
     print str.format('calling {0}', cmdline)
     if std:
@@ -82,8 +81,6 @@ def run_cmd(cmdline, throw=True, cwd=None, env=None, std=False, shell=False):
         subproc = subprocess.Popen(cmdline, cwd=cwd, env=env, shell=shell)
     retcode = subproc.wait()
     if throw and retcode != 0:
-        sys.stdout.flush()
-        time.sleep(2)
         raise Exception(str.format('command failed with exit code {0}: {1}', retcode, cmdline))
     if std:
         return (retcode, out, err)
@@ -299,7 +296,7 @@ def build_jtreg(top_dir, tag=None):
     make_build_env['JCOMMANDER_JAR']         = join(dependencies_dir, 'jcommander-1.48.jar')
 
     # run make
-    run_cmd(['make', '-C', 'make', 'BUILD_NUMBER=' + build_number], env=make_build_env)
+    run_cmd(['make', 'V=1', '-C', 'make', 'BUILD_NUMBER=' + build_number], env=make_build_env)
 
     # add additional libraries to the archive
     with zipfile.ZipFile(join(images_dir, 'jtreg.zip'), 'a') as jtreg_archive:
