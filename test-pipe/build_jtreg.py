@@ -31,7 +31,6 @@ jtharness_dependencies = [
     ['http://www.java2s.com/Code/JarDownload/asm/asm-3.1.jar.zip', 'asm-3.1.jar.zip'],
     ['http://www.java2s.com/Code/JarDownload/asm/asm-commons-3.1.jar.zip', 'asm-commons-3.1.jar.zip']
 ]
-jtharness_version = '5.0'
 
 asmtools_repo = 'http://hg.openjdk.java.net/code-tools/asmtools'
 
@@ -141,8 +140,6 @@ def which(file):
     return None
 
 def build_jtharness(top_dir, tag=None):
-    global jtharness_version
-
     work_dir = join(top_dir, 'jtharness_work')
     hg_dir = join(work_dir, 'jtharness')
     build_dir = join(hg_dir, 'build')
@@ -190,6 +187,8 @@ def build_jtharness(top_dir, tag=None):
     jtharness_archive = glob.glob(join(hg_dir, 'JTHarness-build', 'bundles', 'jtharness-*.zip'))
     jtharness_version = re.match('.*([0-9]+\.[0-9]+).*', jtharness_archive[0]).group(1)
     copy(jtharness_archive[0], join(top_dir, 'jtharness.zip'))
+
+    return jtharness_version
 
 
 def build_asmtools(top_dir, tag=None):
@@ -240,7 +239,7 @@ def build_asmtools(top_dir, tag=None):
     copytree(join(work_dir, str.format('{0}-build', asmtools_version_string), 'release'),
                     join(top_dir, 'asmtools-release'))
 
-def build_jtreg(top_dir, tag=None):
+def build_jtreg(top_dir, jtharness_version, tag=None):
     work_dir = join(top_dir, 'jtreg_work')
     hg_dir = join(work_dir, 'jtreg')
     build_dir = join(hg_dir, 'build')
@@ -296,7 +295,7 @@ def build_jtreg(top_dir, tag=None):
     make_build_env['JCOMMANDER_JAR']         = join(dependencies_dir, 'jcommander-1.48.jar')
 
     # run make
-    run_cmd(['make', 'V=1', '-C', 'make', 'BUILD_NUMBER=' + build_number], env=make_build_env)
+    run_cmd(['make', '-C', 'make', 'BUILD_NUMBER=' + build_number], env=make_build_env)
 
     # add additional libraries to the archive
     with zipfile.ZipFile(join(images_dir, 'jtreg.zip'), 'a') as jtreg_archive:
@@ -324,9 +323,9 @@ def main(argv=None):
 
     mkdir(work_dir)
 
-    build_jtharness(work_dir, tag=tag)
+    jtharness_version = build_jtharness(work_dir, tag=tag)
     build_asmtools(work_dir, tag=tag)
-    build_jtreg(work_dir, tag=tag)
+    build_jtreg(work_dir, jtharness_version, tag=tag)
 
     if os.path.isfile(join(cwd, 'jtreg.zip')):
         remove(join(cwd, 'jtreg.zip'))
