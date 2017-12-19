@@ -1,8 +1,6 @@
 #!/bin/bash
 set -ex
 
-FILENAME="Dockerfile"
-
 if [ -z "$VERSION_TAG" ]; then
   echo "Missing mandatory environment variable VERSION_TAG"
 fi
@@ -14,10 +12,13 @@ fi
 REPO_URL="http://$GIT_USER:$GIT_PASSWORD@github.com/SAP/SapMachine-infrastructure/"
 git clone -b master $REPO_URL infra
 
-cd "infra/docker"
-rm $FILENAME
-
 read VERSION_MAJOR VERSION_MINOR <<< $(echo $VERSION_TAG | sed -r 's/sapmachine\-([0-9]+)\+([0-9]*)/\1 \2/')
+
+cd "infra/docker"
+
+FILENAME="sapmachine-$VERSION_MAJOR/Dockerfile"
+
+rm $FILENAME || true
 
 BASE_URL="https://github.com/SAP/SapMachine/releases/download/sapmachine-${VERSION_MAJOR}%2B${VERSION_MINOR}/"
 ARCHIVE_NAME="sapmachine_linux-x64-sapmachine-${VERSION_MAJOR}.${VERSION_MINOR}.tar.gz"
@@ -57,6 +58,6 @@ git commit -a -m "Update Dockerfile for $VERSION_TAG"
 git push origin master
 set -e
 
-docker build -t "$DOCKER_USER/sapmachine:${VERSION_MAJOR}.${VERSION_MINOR}" -t "$DOCKER_USER/sapmachine:latest" .
+docker build -t "$DOCKER_USER/jdk${VERSION_MAJOR}:${VERSION_MAJOR}.${VERSION_MINOR}" -t "$DOCKER_USER/jdk${VERSION_MAJOR}:latest"  "sapmachine-$VERSION_MAJOR/."
 docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
-docker push "$DOCKER_USER/sapmachine"
+docker push "$DOCKER_USER/jdk${VERSION_MAJOR}"
