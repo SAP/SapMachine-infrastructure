@@ -55,6 +55,8 @@ pipeline {
                 ]
 
                 junit 'junit_report.xml'
+
+                archive 'JTwork/**/hs_err_pid*.log'
             }
         }
     }
