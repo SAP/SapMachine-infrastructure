@@ -21,6 +21,8 @@ from shutil import copytree
 from shutil import move
 from shutil import copy
 
+import utils
+
 jtharness_repo = 'http://hg.openjdk.java.net/code-tools/jtharness'
 jtharness_dependencies = [
     ['https://github.com/glub/secureftp/raw/master/contrib/javahelp2_0_05.zip', 'javahelp2_0_05.zip'],
@@ -42,58 +44,16 @@ jtreg_dependencies = [
     ['http://repo1.maven.org/maven2/com/beust/jcommander/1.48/jcommander-1.48.jar', 'jcommander-1.48.jar']
 ]
 
-def download_artifact(url, target):
-    import urllib
-
-    if exists(target):
-        remove(target)
-
-    with open(target,'wb') as file:
-        print(str.format('Downloading {0} ...', url))
-        file.write(urllib.urlopen(url, proxies={}).read())
-
-def extract_archive(archive, target):
-    if archive.endswith('.zip'):
-        with zipfile.ZipFile(archive, 'r') as zip_ref:
-            print(str.format('Extracting zip archive {0} to {1} ...', archive, target))
-            zip_ref.extractall(target)
-
-        remove(archive)
-    elif archive.endswith('tar.gz'):
-        print(str.format('Extracting tar.gz archive {0} to {1} ...', archive, target))
-        with tarfile.open(archive, 'r') as tar_ref:
-            tar_ref.extractall(target)
-
-        remove(archive)
-    else:
-        move(archive, target)
-
-def run_cmd(cmdline, throw=True, cwd=None, env=None, std=False, shell=False):
-    import subprocess
-
-    print str.format('calling {0}', cmdline)
-    if std:
-        subproc = subprocess.Popen(cmdline, cwd=cwd, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=shell)
-        out, err = subproc.communicate()
-    else:
-        subproc = subprocess.Popen(cmdline, cwd=cwd, env=env, shell=shell)
-    retcode = subproc.wait()
-    if throw and retcode != 0:
-        raise Exception(str.format('command failed with exit code {0}: {1}', retcode, cmdline))
-    if std:
-        return (retcode, out, err)
-    return retcode
-
 def hg_clone(repo, tag='tip'):
-    run_cmd(['hg', 'clone', repo, '-r', tag])
+    utils.run_cmd(['hg', 'clone', repo, '-r', tag])
 
 def hg_switch_tag(tag):
-    run_cmd(cmdline = ['hg', 'up', tag])
+    utils.run_cmd(cmdline = ['hg', 'up', tag])
 
 def get_latest_hg_tag(prefix=''):
     from distutils.version import StrictVersion
 
-    tags_ret, tags_out, tags_err = run_cmd(['hg', 'tags', '-q'], std=True)
+    tags_ret, tags_out, tags_err = utils.run_cmd(['hg', 'tags', '-q'], std=True)
     tags = tags_out.splitlines()
 
     if len(prefix) > 0:
@@ -109,34 +69,6 @@ def get_latest_hg_tag(prefix=''):
             latest_tag = tag
 
     return prefix+latest_tag
-
-def make_tgz_archive(src, dest):
-    if exists(dest):
-        remove(dest)
-
-    archive = tarfile.open(dest, "w:gz", compresslevel=9)
-    archive.add(src)
-    archive.close()
-
-def make_zip_archive(src, dest, top_dir):
-    if exists(dest):
-        rmtree(top_dir)
-
-    zip = zipfile.ZipFile(dest, 'w')
-
-    for root, dirs, files in os.walk(src):
-        for file in files:
-            zip.write(join(root, file),
-                      join(top_dir, os.path.relpath(join(root, file), src)),
-                      zipfile.ZIP_DEFLATED)
-    zip.close()
-
-def which(file):
-    for path in os.environ['PATH'].split(os.pathsep):
-        if exists(join(path, file)):
-                return join(path, file)
-
-    return None
 
 def build_jtharness(top_dir, tag=None):
     work_dir = join(top_dir, 'jtharness_work')
@@ -159,8 +91,8 @@ def build_jtharness(top_dir, tag=None):
 
     # download and extract dependencies
     for jtharness_dependecy in jtharness_dependencies:
-        download_artifact(jtharness_dependecy[0], jtharness_dependecy[1])
-        extract_archive(jtharness_dependecy[1], build_dir)
+        utils.download_artifact(jtharness_dependecy[0], jtharness_dependecy[1])
+        utils.extract_archive(jtharness_dependecy[1], build_dir)
 
     move(join('build', 'jh2.0', 'javahelp', 'lib', 'jhall.jar'), build_dir)
     move(join('build', 'jh2.0', 'javahelp', 'lib', 'jh.jar'), build_dir)
@@ -180,7 +112,7 @@ def build_jtharness(top_dir, tag=None):
         properties.write('BUILD_DIR = ./JTHarness-build\n')
 
     # run the ant build
-    run_cmd(['ant', 'build', '-propertyfile', build_properties, '-Djvmargs="-Xdoclint:none"', '-debug'])
+    utils.run_cmd(['ant', 'build', '-propertyfile', build_properties, '-Djvmargs="-Xdoclint:none"', '-debug'])
 
     # copy the archive
     bundles = os.listdir(join(hg_dir, 'JTHarness-build', 'bundles'))
@@ -236,7 +168,7 @@ def build_asmtools(top_dir, tag=None):
                     asmtools_version = match.group(1)
 
     # run the ant build
-    run_cmd(['ant', 'build'])
+    utils.run_cmd(['ant', 'build'])
 
     # copy the build result
     asmtools_version_string = str.format('asmtools-{0}', asmtools_version)
@@ -273,8 +205,8 @@ def build_jtreg(top_dir, jtharness_version, tag=None, build_number=None):
 
     # download and extract dependencies
     for jtreg_dependecy in jtreg_dependencies:
-        download_artifact(jtreg_dependecy[0], jtreg_dependecy[1])
-        extract_archive(jtreg_dependecy[1], dependencies_dir)
+        utils.download_artifact(jtreg_dependecy[0], jtreg_dependecy[1])
+        utils.extract_archive(jtreg_dependecy[1], dependencies_dir)
 
     # workaround for jtreg.gmk JAVAHELP_JAR rule
     with open('DUMMY.SF', 'w+') as dummy:
@@ -282,12 +214,12 @@ def build_jtreg(top_dir, jtharness_version, tag=None, build_number=None):
     with zipfile.ZipFile(join(dependencies_dir, 'jh2.0', 'javahelp', 'lib', 'jh.jar'), 'a') as java_help:
         java_help.write('DUMMY.SF', join('META-INF', 'DUMMY.SF'))
 
-    extract_archive(join(top_dir, 'jtharness.zip'), dependencies_dir)
+    utils.extract_archive(join(top_dir, 'jtharness.zip'), dependencies_dir)
     copytree(join(top_dir, 'asmtools-release'), join(dependencies_dir, 'asmtools'))
 
     # build configuration
-    javac = dirname(dirname(realpath(which('javac'))))
-    ant = dirname(dirname(realpath(which('ant'))))
+    javac = dirname(dirname(realpath(utils.which('javac'))))
+    ant = dirname(dirname(realpath(utils.which('ant'))))
     make_build_env = os.environ.copy()
     make_build_env['JDK17HOME']              = javac
     make_build_env['JDK18HOME']              = javac
@@ -303,7 +235,7 @@ def build_jtreg(top_dir, jtharness_version, tag=None, build_number=None):
     make_build_env['JCOMMANDER_JAR']         = join(dependencies_dir, 'jcommander-1.48.jar')
 
     # run make
-    run_cmd(['make', '-C', 'make', 'BUILD_NUMBER=' + build_number], env=make_build_env)
+    utils.run_cmd(['make', '-C', 'make', 'BUILD_NUMBER=' + build_number], env=make_build_env)
 
     # add additional libraries to the archive
     # with zipfile.ZipFile(join(images_dir, 'jtreg.zip'), 'a') as jtreg_archive:
@@ -343,7 +275,7 @@ def main(argv=None):
         remove(join(cwd, 'jtreg.zip'))
 
     move(join(work_dir, 'jtreg.zip'), cwd)
-    #rmtree(work_dir)
+    rmtree(work_dir)
 
 if __name__ == "__main__":
     sys.exit(main())
