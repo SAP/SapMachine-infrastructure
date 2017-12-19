@@ -7,6 +7,7 @@ import urllib
 import glob
 import re
 import datetime
+import argparse
 
 from string import Template
 
@@ -31,7 +32,8 @@ import utils
 
 def clone_sapmachine(target):
     sapmachine_repo = 'https://github.com/SAP/SapMachine.git'
-    utils.run_cmd(['git', 'clone', '-b', 'master', sapmachine_repo, target])
+    sapmachine_branch = 'sapmachine'
+    utils.run_cmd(['git', 'clone', '-b', sapmachine_branch, '--depth', '1', sapmachine_repo, target])
 
 def fetch_tag(tag):
     import json
@@ -59,10 +61,12 @@ def fetch_tag(tag):
 
     return jdk_url, jre_url
 
-def generate_configuration(templates_dir, tag, target_dir, bin_dir, license_file, download_url):
-    pattern = re.compile('jdk-([0-9]+)\+[0-9]+')
-    major = pattern.match(tag).group(1)
+def generate_configuration(templates_dir, major, target_dir, bin_dir, license_file, download_url):
     tools = [f for f in listdir(bin_dir) if isfile(join(bin_dir, f))]
+
+    with open(join(templates_dir, 'control'), 'r') as control_template:
+        with open(join(target_dir, 'control'), 'w+') as control_out:
+            control_out.write(Template(control_template.read()).substitute(major=major))
 
     with open(join(templates_dir, 'install'), 'r') as install_template:
         with open(join(target_dir, 'install'), 'w+') as install_out:
@@ -83,18 +87,22 @@ def generate_configuration(templates_dir, tag, target_dir, bin_dir, license_file
                     license=license_in.read()
                 ))
 
-    copy(join(templates_dir, 'control'), join(target_dir, 'control'))
-
-
 def main(argv=None):
-    cwd = os.getcwd()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-t', '--tag', help='the tag to create the debian packages from', metavar='TAG', required=True)
+    parser.add_argument('-d', '--templates-directory', help='specify the templates directory', metavar='DIR', required=True)
+    args = parser.parse_args()
 
+    templates_dir = realpath(args.templates_directory)
+    tag = args.tag
+    cwd = os.getcwd()
     work_dir = join(cwd, 'deb_work')
-    tag = 'jdk-10+34'
-    version = tag.rsplit('-', 1)[-1]
-    templates_dir = join(cwd, '..', 'debian', 'templates')
-    jdk_name = str.format('sapmachine-jdk-{0}', version)
-    jre_name = str.format('sapmachine-jre-{0}', version)
+    pattern = re.compile('(jdk|sapmachine)-(([0-9]+)\+[0-9])+')
+    match = pattern.match(tag)
+    version = match.group(2)
+    major = match.group(3)
+    jdk_name = str.format('sapmachine-{0}-jdk-{1}', major, version)
+    jre_name = str.format('sapmachine-{0}-jre-{1}', major, version)
 
     jdk_url, jre_url = fetch_tag(tag)
 
@@ -126,7 +134,7 @@ def main(argv=None):
 
     generate_configuration(
         templates_dir=join(templates_dir, 'jre'),
-        tag=tag,
+        major=major,
         target_dir=join(jre_dir, 'debian'),
         bin_dir=join(jre_dir, 'jre', 'bin'),
         license_file=license_file,
@@ -134,7 +142,7 @@ def main(argv=None):
 
     generate_configuration(
         templates_dir=join(templates_dir, 'jdk'),
-        tag=tag,
+        major=major,
         target_dir=join(jdk_dir, 'debian'),
         bin_dir=join(jdk_dir, 'jdk', 'bin'),
         license_file=license_file,
@@ -149,5 +157,7 @@ def main(argv=None):
         copy(deb_file, cwd)
         remove(deb_file)
 
+    rmtree(work_dir)
+
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1:]))
+    sys.exit(main())
