@@ -5,4 +5,5 @@ dh-make \
 devscripts \
 python \
 git \
-ca-certificates
+ca-certificates \
+fakeroot
