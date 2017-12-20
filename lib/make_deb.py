@@ -158,7 +158,8 @@ def main(argv=None):
     utils.extract_archive(jre_archive, jre_dir)
 
     env = os.environ.copy()
-    env['USER'] = 'SapMachine'
+    env['DEBFULLNAME'] = 'SapMachine'
+    env['DEBEMAIL'] = 'sapmachine@sap.com'
     utils.run_cmd(['dh_make', '-n', '-s', '-y'], cwd=jdk_dir, env=env)
     utils.run_cmd(['dh_make', '-n', '-s', '-y'], cwd=jre_dir, env=env)
 
