@@ -1,3 +1,8 @@
+'''
+Copyright (c) 2001-2017 by SAP SE, Walldorf, Germany.
+All rights reserved. Confidential and proprietary.
+'''
+
 import os
 import sys
 import shutil
