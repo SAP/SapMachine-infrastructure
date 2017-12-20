@@ -4,4 +4,5 @@ RUN apt-get update && apt-get install -qq -y --no-install-recommends \
 dh-make \
 devscripts \
 python \
-git
+git \
+ca-certificates
