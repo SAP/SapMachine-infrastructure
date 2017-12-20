@@ -136,7 +136,8 @@ def main(argv=None):
 
     if exists(work_dir):
         rmtree(work_dir)
-        mkdir(work_dir)
+
+    mkdir(work_dir)
 
     jdk_archive = join(work_dir, jdk_url.rsplit('/', 1)[-1])
     jre_archive = join(work_dir, jre_url.rsplit('/', 1)[-1])
