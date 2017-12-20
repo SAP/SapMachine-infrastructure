@@ -9,4 +9,5 @@ ca-certificates \
 fakeroot \
 make \
 gcc \
-g++
+g++ \
+build-essential
