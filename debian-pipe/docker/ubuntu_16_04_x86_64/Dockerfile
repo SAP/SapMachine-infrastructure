@@ -6,4 +6,7 @@ devscripts \
 python \
 git \
 ca-certificates \
-fakeroot
+fakeroot \
+make \
+gcc \
+g++
