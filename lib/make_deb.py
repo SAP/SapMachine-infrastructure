@@ -1,13 +1,19 @@
+'''
+Copyright (c) 2001-2017 by SAP SE, Walldorf, Germany.
+All rights reserved. Confidential and proprietary.
+'''
+
 import os
 import sys
 import shutil
 import zipfile
 import tarfile
 import urllib
-import glob
 import re
 import datetime
 import argparse
+import codecs
+import glob
 
 from string import Template
 
@@ -61,8 +67,32 @@ def fetch_tag(tag):
 
     return jdk_url, jre_url
 
-def generate_configuration(templates_dir, major, target_dir, bin_dir, license_file, download_url):
+def gather_licenses(src_dir):
+    licenses = []
+    separator = '------------------------------------------------------------------------------'
+
+    license_files = [
+        join(src_dir, 'LICENSE'),
+        join(src_dir, 'ASSEMBLY_EXCEPTION')
+    ]
+
+    for root, dirs, files in os.walk(join(src_dir, 'src'), topdown=False):
+        if root.endswith('legal'):
+            for entry in files:
+                license_files.append(join(root, entry))
+
+    for license_file in license_files:
+        with codecs.open(license_file, 'r', 'utf-8') as f:
+            content = f.read()
+            content = content.replace('<pre>', '').replace('</pre>', '')
+            licenses.append(content)
+            licenses.append(separator)
+
+    return '\n'.join([license for license in licenses])
+
+def generate_configuration(templates_dir, major, target_dir, bin_dir, src_dir, download_url):
     tools = [f for f in listdir(bin_dir) if isfile(join(bin_dir, f))]
+    now = datetime.datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S UTC')
 
     with open(join(templates_dir, 'control'), 'r') as control_template:
         with open(join(target_dir, 'control'), 'w+') as control_out:
@@ -77,15 +107,13 @@ def generate_configuration(templates_dir, major, target_dir, bin_dir, license_fi
             postinst_out.write(Template(postinst_template.read()).substitute(tools=' '.join([tool for tool in tools])))
 
     with open(join(templates_dir, '..', 'copyright'), 'r') as copyright_template:
-        with open(license_file, 'r') as license_in:
-            with open(join(target_dir, 'copyright'), 'w+') as copyright_out:
-                now = datetime.datetime.utcnow().isoformat()
-                template = Template(copyright_template.read())
-                copyright_out.write(template.substitute(
-                    date_and_time=now,
-                    download_url=download_url,
-                    license=license_in.read()
-                ))
+        with codecs.open(join(target_dir, 'copyright'), 'w+', 'utf-8') as copyright_out:
+            template = Template(copyright_template.read())
+            copyright_out.write(template.substitute(
+                date_and_time=now,
+                download_url=download_url,
+                license=gather_licenses(src_dir)
+            ))
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
@@ -108,8 +136,7 @@ def main(argv=None):
 
     if exists(work_dir):
         rmtree(work_dir)
-
-    mkdir(work_dir)
+        mkdir(work_dir)
 
     jdk_archive = join(work_dir, jdk_url.rsplit('/', 1)[-1])
     jre_archive = join(work_dir, jre_url.rsplit('/', 1)[-1])
@@ -118,7 +145,7 @@ def main(argv=None):
     utils.download_artifact(jre_url, jre_archive)
 
     clone_sapmachine(join(work_dir, 'sapmachine_master'))
-    license_file = join(work_dir, 'sapmachine_master', 'LICENSE')
+    src_dir = join(work_dir, 'sapmachine_master')
 
     jdk_dir = join(work_dir, jdk_name)
     jre_dir = join(work_dir, jre_name)
@@ -137,7 +164,7 @@ def main(argv=None):
         major=major,
         target_dir=join(jre_dir, 'debian'),
         bin_dir=join(jre_dir, 'jre', 'bin'),
-        license_file=license_file,
+        src_dir=src_dir,
         download_url=jdk_url)
 
     generate_configuration(
@@ -145,7 +172,7 @@ def main(argv=None):
         major=major,
         target_dir=join(jdk_dir, 'debian'),
         bin_dir=join(jdk_dir, 'jdk', 'bin'),
-        license_file=license_file,
+        src_dir=src_dir,
         download_url=jre_url)
 
     utils.run_cmd(['debuild', '-b', '-uc', '-us'], cwd=jre_dir)
