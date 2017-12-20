@@ -10,4 +10,5 @@ fakeroot \
 make \
 gcc \
 g++ \
-build-essential
+build-essential \
+openjdk-8-jdk
