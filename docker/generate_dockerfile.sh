@@ -1,6 +1,10 @@
 #!/bin/bash
 set -ex
 
+if [[ $1 == "jre" ]]; then
+  JRE=true
+fi
+
 if [ -z "$VERSION_TAG" ]; then
   echo "Missing mandatory environment variable VERSION_TAG"
 fi
@@ -21,8 +25,15 @@ FILENAME="sapmachine-$VERSION_MAJOR/Dockerfile"
 rm $FILENAME || true
 
 BASE_URL="https://github.com/SAP/SapMachine/releases/download/sapmachine-${VERSION_MAJOR}%2B${VERSION_MINOR}/"
-ARCHIVE_NAME="sapmachine_linux-x64-sapmachine-${VERSION_MAJOR}.${VERSION_MINOR}.tar.gz"
-SUM_NAME="sapmachine_linux-x64-sapmachine-${VERSION_MAJOR}.${VERSION_MINOR}.sha256.txt"
+
+if $JRE ; then
+    ARCHIVE_NAME="sapmachine_linux-x64-sapmachine-${VERSION_MAJOR}.${VERSION_MINOR}-jre.tar.gz"
+    SUM_NAME="sapmachine_linux-x64-sapmachine-${VERSION_MAJOR}.${VERSION_MINOR}-jre.sha256.txt"
+else
+  ARCHIVE_NAME="sapmachine_linux-x64-sapmachine-${VERSION_MAJOR}.${VERSION_MINOR}.tar.gz"
+  SUM_NAME="sapmachine_linux-x64-sapmachine-${VERSION_MAJOR}.${VERSION_MINOR}.sha256.txt"
+fi
+
 cat >> $FILENAME << EOI
 
 FROM ubuntu:16.04
@@ -58,6 +69,12 @@ git commit -a -m "Update Dockerfile for $VERSION_TAG"
 git push origin master
 set -e
 
-docker build -t "$DOCKER_USER/jdk${VERSION_MAJOR}:${VERSION_MAJOR}.${VERSION_MINOR}" -t "$DOCKER_USER/jdk${VERSION_MAJOR}:latest"  "sapmachine-$VERSION_MAJOR/."
+if $JRE ; then
+  docker build -t "$DOCKER_USER/jdk${VERSION_MAJOR}:${VERSION_MAJOR}.${VERSION_MINOR}-jre" \
+  -t "$DOCKER_USER/jdk${VERSION_MAJOR}:latest-jre"  "sapmachine-$VERSION_MAJOR/."
+else
+  docker build -t "$DOCKER_USER/jdk${VERSION_MAJOR}:${VERSION_MAJOR}.${VERSION_MINOR}" \
+  -t "$DOCKER_USER/jdk${VERSION_MAJOR}:latest"  "sapmachine-$VERSION_MAJOR/."
+fi
 docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
 docker push "$DOCKER_USER/jdk${VERSION_MAJOR}"
