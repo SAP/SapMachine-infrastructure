@@ -1,0 +1,17 @@
+pipeline {
+    agent {
+        dockerfile { dir 'debian-pipe/docker/ubuntu_16_04_x86_64' }
+    }
+    stages {
+        stage('Build') {
+            steps {
+                sh "python lib/make_deb.py --tag=${params.tag} --templates-directory=debian-pipe/templates"
+            }
+            post {
+                success {
+                    archive '*.deb'
+                }
+            }
+        }
+    }
+}
