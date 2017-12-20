@@ -3,6 +3,8 @@ set -ex
 
 if [[ $1 == "jre" ]]; then
   JRE=true
+else
+  JRE=false
 fi
 
 if [ -z "$VERSION_TAG" ]; then
