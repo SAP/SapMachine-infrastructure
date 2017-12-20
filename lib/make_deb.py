@@ -157,8 +157,10 @@ def main(argv=None):
     utils.extract_archive(jdk_archive, jdk_dir)
     utils.extract_archive(jre_archive, jre_dir)
 
-    utils.run_cmd(['dh_make', '-n', '-s', '-y'], cwd=jdk_dir)
-    utils.run_cmd(['dh_make', '-n', '-s', '-y'], cwd=jre_dir)
+    env = os.environ.copy()
+    env['USER'] = 'SapMachine'
+    utils.run_cmd(['dh_make', '-n', '-s', '-y'], cwd=jdk_dir, env=env)
+    utils.run_cmd(['dh_make', '-n', '-s', '-y'], cwd=jre_dir, env=env)
 
     generate_configuration(
         templates_dir=join(templates_dir, 'jre'),
@@ -176,8 +178,8 @@ def main(argv=None):
         src_dir=src_dir,
         download_url=jre_url)
 
-    utils.run_cmd(['debuild', '-b', '-uc', '-us'], cwd=jre_dir)
-    utils.run_cmd(['debuild', '-b', '-uc', '-us'], cwd=jdk_dir)
+    utils.run_cmd(['debuild', '-b', '-uc', '-us'], cwd=jre_dir, env=env)
+    utils.run_cmd(['debuild', '-b', '-uc', '-us'], cwd=jdk_dir, env=env)
 
     deb_files = glob.glob(join(work_dir, '*.deb'))
 
