@@ -18,6 +18,7 @@ pipeline {
                   ]
                   ) {
                 sh '''
+                  docker/generate_dockerfile.sh jre
                   docker/generate_dockerfile.sh
                   '''
                 }
