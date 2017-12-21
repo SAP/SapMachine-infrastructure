@@ -20,12 +20,10 @@ pipeline {
             }
             steps {
                 sshagent (credentials: ['jenkins_ssh_key']) {
-                    sh "
-                        mkdir /home/jenkins/.ssh;
-                        chmod 700 /home/jenkins/.ssh;
-                        ssh-keyscan -t rsa ${params.deploy_host} > /home/jenkins/.ssh/known_hosts;
-                        scp *.deb jenkins@${params.deploy_host}:${params.deploy_folder};
-                    "
+                    sh " mkdir /home/jenkins/.ssh"
+                    sh "chmod 700 /home/jenkins/.ssh"
+                    sh "ssh-keyscan -t rsa ${params.deploy_host} > /home/jenkins/.ssh/known_hosts"
+                    sh "scp *.deb jenkins@${params.deploy_host}:${params.deploy_folder};"
                 }
             }
         }
