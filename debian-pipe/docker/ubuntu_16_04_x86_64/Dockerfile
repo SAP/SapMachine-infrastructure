@@ -13,3 +13,5 @@ g++ \
 build-essential \
 openjdk-8-jdk \
 openssh-client
+
+RUN useradd -ms /bin/bash jenkins -u 1001
