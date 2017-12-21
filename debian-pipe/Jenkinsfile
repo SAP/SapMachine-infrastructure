@@ -16,6 +16,8 @@ pipeline {
         stage('Deploy') {
             steps {
                 sshagent (credentials: ['jenkins_ssh_key']) {
+                    sh 'mkdir .ssh & chmod 700 .ssh'
+                    sh 'ssh-keyscan -t rsa sapmachine-ubuntu.sapcloud.io > ~/.ssh/known_hosts'
                     sh 'scp *.deb jenkins@sapmachine-ubuntu.sapcloud.io:deb/amd64'
                 }
             }
