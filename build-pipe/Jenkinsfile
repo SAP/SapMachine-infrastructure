@@ -34,7 +34,7 @@ pipeline {
         }
         stage('Run Minimal Tests') {
             when {
-                expression { params.PUBLISH == true && params.RUN_TESTS == false }
+                expression { params.PUBLISH == true || params.RUN_TESTS_MINIMAL == true }
             }
             steps {
             build job: 'test-pipeline-jtreg-hotspot', propagate: false, wait: true, parameters:
