@@ -5,6 +5,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
+                sh 'rm *.deb'
                 sh "python lib/make_deb.py --tag=${params.tag} --templates-directory=debian-pipe/templates"
             }
             post {
@@ -14,14 +15,17 @@ pipeline {
             }
         }
         stage('Deploy') {
+            when {
+                expression { params.deploy == true }
+            }
             steps {
                 sshagent (credentials: ['jenkins_ssh_key']) {
-                    sh '''
-                        mkdir /home/jenkins/.ssh
-                        chmod 700 /home/jenkins/.ssh
-                        ssh-keyscan -t rsa sapmachine-ubuntu.sapcloud.io > /home/jenkins/.ssh/known_hosts
-                        scp *.deb jenkins@sapmachine-ubuntu.sapcloud.io:deb/amd64
-                    '''
+                    sh "
+                        mkdir /home/jenkins/.ssh;
+                        chmod 700 /home/jenkins/.ssh;
+                        ssh-keyscan -t rsa ${params.deploy_host} > /home/jenkins/.ssh/known_hosts;
+                        scp *.deb jenkins@${params.deploy_host}:${params.deploy_folder};
+                    "
                 }
             }
         }
