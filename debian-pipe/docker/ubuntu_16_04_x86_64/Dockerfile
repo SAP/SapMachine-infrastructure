@@ -11,4 +11,5 @@ make \
 gcc \
 g++ \
 build-essential \
-openjdk-8-jdk
+openjdk-8-jdk \
+openssh-client
