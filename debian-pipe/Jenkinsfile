@@ -14,8 +14,10 @@ pipeline {
             }
         }
         stage('Deploy') {
-            sshagent (credentials: ['jenkins_ssh_key']) {
-                sh 'scp *.deb jenkins@sapmachine-ubuntu.sapcloud.io:deb/amd64'
+            steps {
+                sshagent (credentials: ['jenkins_ssh_key']) {
+                    sh 'scp *.deb jenkins@sapmachine-ubuntu.sapcloud.io:deb/amd64'
+                }
             }
         }
     }
