@@ -1,0 +1,63 @@
+pipeline {
+    agent {
+        dockerfile { dir 'test-docker/sapmachine-10' }
+    }
+    stages {
+        stage('Prepare') {
+            environment {
+              SAPMACHINE_GIT_REPO = 'github.com/SAP/SapMachine.git'
+              SAPMACHINE_GIT_BRANCH = 'sapmachine'
+            }
+            steps {
+              sh 'bash test-pipe/test_jtreg_prepare.sh'
+          }
+        }
+        stage('Copy Artifacts') {
+            steps {
+                script {
+                    step ([$class: 'CopyArtifact',
+                    projectName: 'build-pipeline',
+                    filter: "build.tar.gz",
+                    target: 'sapmachine']);
+                  }
+                sh 'cd sapmachine && tar xzf build.tar.gz'
+                script {
+                    step ([$class: 'CopyArtifact',
+                    projectName: 'jtreg',
+                    filter: "jtreg.zip",
+                    target: 'sapmachine']);
+                  }
+                  sh 'cd sapmachine && unzip jtreg.zip'
+              }
+        }
+        stage('Run jtreg') {
+            steps {
+                sh "cd sapmachine && bash ../test-docker/run_jtreg.sh ${env.WORKSPACE}/sapmachine ${env.WORKSPACE}/sapmachine/jtreg ${params.test_suite} \"${params.test_groups}\" /opt/java/sapmachine/jdk/ || true"
+            }
+        }
+        stage('Publish jtreg report') {
+            steps {
+                sh '''
+                    cd sapmachine
+                    mkdir test_report
+                    mv JTreport test_report
+                    mv JTwork test_report
+                '''
+                sh "python lib/jtreg_to_junit.py sapmachine/test_report/JTreport/text/summary.txt junit_report.xml \"${params.test_suite}/${params.test_groups}\""
+
+                publishHTML target: [
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: false,
+                    keepAll: true,
+                    reportDir: 'sapmachine/test_report',
+                    reportFiles: 'JTreport/index.html',
+                    reportName: 'JT Report'
+                ]
+
+                junit 'junit_report.xml'
+
+                archive 'JTwork/**/hs_err_pid*.log'
+            }
+        }
+    }
+}
