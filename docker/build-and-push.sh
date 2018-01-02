@@ -7,6 +7,16 @@ else
   JRE=false
 fi
 
+REPO_URL="http://$GIT_USER:$GIT_PASSWORD@github.com/SAP/SapMachine-infrastructure/"
+
+if [ ! -d infra ]; then
+  git clone -b master $REPO_URL infra
+fi
+
+cd "infra/docker"
+
+read VERSION_MAJOR VERSION_MINOR <<< $(echo $VERSION_TAG | sed -r 's/sapmachine\-([0-9]+)\+([0-9]*)/\1 \2/')
+
 if $JRE ; then
   docker build -t "$DOCKER_USER/jdk${VERSION_MAJOR}:${VERSION_MAJOR}.${VERSION_MINOR}-jre" \
   -t "$DOCKER_USER/jdk${VERSION_MAJOR}:latest-jre"  "sapmachine-$VERSION_MAJOR/."
