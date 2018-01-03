@@ -16,11 +16,12 @@ if [ -d infra ]; then
 fi
 
 REPO_URL="http://$GIT_USER:$GIT_PASSWORD@github.com/SAP/SapMachine-infrastructure/"
-git clone -b master $REPO_URL infra
+# TODO. change branch
+git clone -b test-docker $REPO_URL infra
 
 read VERSION_MAJOR VERSION_MINOR <<< $(echo $VERSION_TAG | sed -r 's/sapmachine\-([0-9]+)\+([0-9]*)/\1 \2/')
 
-cd "infra/docker"
+cd "infra/test-docker"
 
 FILENAME="sapmachine-$VERSION_MAJOR/Dockerfile"
 
@@ -43,7 +44,7 @@ FROM ubuntu:16.04
 MAINTAINER Sapmachine <sapmachine@sap.com>
 
 RUN rm -rf /var/lib/apt/lists/* && apt-get clean && apt-get update \\
-    && apt-get install -y --no-install-recommends curl ca-certificates \\
+    && apt-get install -y --no-install-recommends curl ca-certificates zip git unzip realpath python \\
     && rm -rf /var/lib/apt/lists/*
 
 ENV JAVA_VERSION ${VERSION_TAG}
@@ -68,5 +69,6 @@ git config user.name "SapMachine"
 
 set +e
 git commit -a -m "Update Dockerfile for $VERSION_TAG"
-git push origin master
+#TODO change branch
+git push origin test-docker
 set -e
