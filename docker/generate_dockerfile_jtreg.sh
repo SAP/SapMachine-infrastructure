@@ -16,8 +16,8 @@ if [ -d infra ]; then
 fi
 
 REPO_URL="http://$GIT_USER:$GIT_PASSWORD@github.com/SAP/SapMachine-infrastructure/"
-# TODO. change branch
-git clone -b test-docker $REPO_URL infra
+
+git clone -b master $REPO_URL infra
 
 read VERSION_MAJOR VERSION_MINOR <<< $(echo $VERSION_TAG | sed -r 's/sapmachine\-([0-9]+)\+([0-9]*)/\1 \2/')
 
