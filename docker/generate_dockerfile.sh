@@ -30,8 +30,7 @@ if [ -d infra ]; then
 fi
 
 REPO_URL="http://$GIT_USER:$GIT_PASSWORD@github.com/SAP/SapMachine-infrastructure/"
-#TODO change branch to master
-git clone -b use-package-in-docker $REPO_URL infra
+git clone -b master $REPO_URL infra
 
 read VERSION_MAJOR VERSION_MINOR <<< $(echo $VERSION_TAG | sed -r 's/sapmachine\-([0-9]+)\+([0-9]*)/\1 \2/')
 
@@ -80,6 +79,6 @@ git config user.name "SapMachine"
 
 set +e
 git commit -a -m "Update Dockerfile for $VERSION_TAG"
-#TODO change branch to master
-git push origin use-package-in-docker
+
+git push origin master
 set -e
