@@ -16,7 +16,8 @@ if [ -d infra ]; then
 fi
 
 REPO_URL="http://$GIT_USER:$GIT_PASSWORD@github.com/SAP/SapMachine-infrastructure/"
-git clone -b master $REPO_URL infra
+#TODO change branch to master
+git clone -b use-package-in-docker $REPO_URL infra
 
 read VERSION_MAJOR VERSION_MINOR <<< $(echo $VERSION_TAG | sed -r 's/sapmachine\-([0-9]+)\+([0-9]*)/\1 \2/')
 
@@ -26,14 +27,10 @@ FILENAME="sapmachine-$VERSION_MAJOR/Dockerfile"
 
 rm $FILENAME || true
 
-BASE_URL="https://github.com/SAP/SapMachine/releases/download/sapmachine-${VERSION_MAJOR}%2B${VERSION_MINOR}/"
-
 if $JRE ; then
-    ARCHIVE_NAME="sapmachine_linux-x64-sapmachine-${VERSION_MAJOR}.${VERSION_MINOR}-jre.tar.gz"
-    SUM_NAME="sapmachine_linux-x64-sapmachine-${VERSION_MAJOR}.${VERSION_MINOR}-jre.sha256.txt"
+    PACKAGE=sapmachine-$VERSION_MAJOR-jre=$VERSION_MAJOR+$VERSION_MINOR
 else
-  ARCHIVE_NAME="sapmachine_linux-x64-sapmachine-${VERSION_MAJOR}.${VERSION_MINOR}.tar.gz"
-  SUM_NAME="sapmachine_linux-x64-sapmachine-${VERSION_MAJOR}.${VERSION_MINOR}.sha256.txt"
+    PACKAGE=sapmachine-$VERSION_MAJOR-jdk=$VERSION_MAJOR+$VERSION_MINOR
 fi
 
 cat >> $FILENAME << EOI
@@ -43,21 +40,13 @@ FROM ubuntu:16.04
 MAINTAINER Sapmachine <sapmachine@sap.com>
 
 RUN rm -rf /var/lib/apt/lists/* && apt-get clean && apt-get update \\
-    && apt-get install -y --no-install-recommends curl ca-certificates \\
+    && apt-get install -y --no-install-recommends wget ca-certificates \\
     && rm -rf /var/lib/apt/lists/*
 
-ENV JAVA_VERSION ${VERSION_TAG}
-
-RUN set -eux;\\
-    cd /tmp;\\
-    curl -Lso $ARCHIVE_NAME $BASE_URL$ARCHIVE_NAME;\\
-    curl -Ls $BASE_URL$SUM_NAME | sha256sum -c -;\\
-    mkdir -p /opt/java/sapmachine;\\
-    cd /opt/java/sapmachine;\\
-    tar -xf /tmp/$ARCHIVE_NAME;\\
-    rm -f /tmp/$ARCHIVE_NAME;
-
-ENV PATH=/opt/java/sapmachine/jdk/bin:\$PATH
+RUN wget -q -O - http://sapmachine-ubuntu.sapcloud.io/sapmachine-debian.key | apt-key add - \\
+    && echo "deb http://sapmachine-ubuntu.sapcloud.io/amd64/ ./" >> /etc/apt/sources.list \\
+    && apt-get update \\
+    && apt-get install $PACKAGE
 
 EOI
 
@@ -68,5 +57,6 @@ git config user.name "SapMachine"
 
 set +e
 git commit -a -m "Update Dockerfile for $VERSION_TAG"
-git push origin master
+#TODO change branch to master
+git push origin use-package-in-docker
 set -e
