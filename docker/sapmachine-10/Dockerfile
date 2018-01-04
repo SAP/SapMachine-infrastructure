@@ -4,19 +4,11 @@ FROM ubuntu:16.04
 MAINTAINER Sapmachine <sapmachine@sap.com>
 
 RUN rm -rf /var/lib/apt/lists/* && apt-get clean && apt-get update \
-    && apt-get install -y --no-install-recommends curl ca-certificates \
+    && apt-get install -y --no-install-recommends wget ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
-ENV JAVA_VERSION sapmachine-10+37
-
-RUN set -eux;\
-    cd /tmp;\
-    curl -Lso sapmachine_linux-x64-sapmachine-10.37.tar.gz https://github.com/SAP/SapMachine/releases/download/sapmachine-10%2B37/sapmachine_linux-x64-sapmachine-10.37.tar.gz;\
-    curl -Ls https://github.com/SAP/SapMachine/releases/download/sapmachine-10%2B37/sapmachine_linux-x64-sapmachine-10.37.sha256.txt | sha256sum -c -;\
-    mkdir -p /opt/java/sapmachine;\
-    cd /opt/java/sapmachine;\
-    tar -xf /tmp/sapmachine_linux-x64-sapmachine-10.37.tar.gz;\
-    rm -f /tmp/sapmachine_linux-x64-sapmachine-10.37.tar.gz;
-
-ENV PATH=/opt/java/sapmachine/jdk/bin:$PATH
+RUN wget -q -O - http://sapmachine-ubuntu.sapcloud.io/sapmachine-debian.key | apt-key add - \
+    && echo "deb http://sapmachine-ubuntu.sapcloud.io/amd64/ ./" >> /etc/apt/sources.list \
+    && apt-get update \
+    && apt-get -y --no-install-recommends install sapmachine-10-jdk=10+37
 

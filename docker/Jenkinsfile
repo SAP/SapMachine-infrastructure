@@ -17,10 +17,10 @@ pipeline {
                   ]
                   ) {
                 sh '''
-                  docker/generate_dockerfile.sh jre
+                  docker/generate_dockerfile.sh -j
                   docker/generate_dockerfile.sh
-                  docker/generate_dockerfile_jtreg.sh jre
-                  docker/generate_dockerfile_jtreg.sh
+                  docker/generate_dockerfile.sh -j -t
+                  docker/generate_dockerfile.sh -t
                   '''
                 }
             }
