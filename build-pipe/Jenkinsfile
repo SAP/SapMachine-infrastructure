@@ -36,11 +36,11 @@ pipeline {
                 expression { params.RUN_TESTS == true }
             }
             steps {
-            build job: HOTSPOT_TEST_JOB, propagate: true, wait: true
+            build job: HOTSPOT_TEST_JOB, propagate: PROPAGATE_TESTS, wait: true
 
-            build job: JDK_TEST_JOB, propagate: true, wait: true
+            build job: JDK_TEST_JOB, propagate: PROPAGATE_TESTS, wait: true
 
-            build job: LANG_TOOLS_TEST_JOB, propagate: true, wait: true
+            build job: LANG_TOOLS_TEST_JOB, propagate: PROPAGATE_TESTS, wait: true
 
             }
         }
