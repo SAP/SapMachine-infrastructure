@@ -27,21 +27,21 @@ pipeline {
         }
         stage('Run Tests') {
           steps {
-          build job: 'test-docker', propagate: false, wait: true, parameters:
+          build job: 'test-docker', propagate: true, wait: true, parameters:
               [
                   string(name: 'GIT_TAG_NAME', value: VERSION_TAG),
                   string(name: 'test_suite', value: 'hotspot'),
                   string(name: 'test_groups', value: ':hotspot_tier1')
               ]
 
-          build job: 'test-docker', propagate: false, wait: true, parameters:
+          build job: 'test-docker', propagate: true, wait: true, parameters:
               [
                   string(name: 'GIT_TAG_NAME', value: VERSION_TAG),
                   string(name: 'test_suite', value: 'jdk'),
                   string(name: 'test_groups', value: ':tier1')
               ]
 
-          build job: 'test-docker', propagate: false, wait: true, parameters:
+          build job: 'test-docker', propagate: true, wait: true, parameters:
               [
                   string(name: 'GIT_TAG_NAME', value: VERSION_TAG),
                   string(name: 'test_suite', value: 'langtools'),
