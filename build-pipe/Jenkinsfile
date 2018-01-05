@@ -36,21 +36,16 @@ pipeline {
                 expression { params.PUBLISH == true || params.RUN_TESTS_MINIMAL == true }
             }
             steps {
-            build job: 'test-pipeline-jtreg-hotspot', propagate: true, wait: true, parameters:
-                [
-                    string(name: 'GIT_TAG_NAME', value: GIT_TAG_NAME),
-                    string(name: 'test_suite', value: 'hotspot'),
-                    string(name: 'test_groups', value: ':hotspot_tier1')
-                ]
+            build job: HOTSPOT_TEST_JOB, propagate: true, wait: true
 
-            build job: 'test-pipeline-jtreg-jdk', propagate: true, wait: true, parameters:
+            build job: JDK_TEST_JOB, propagate: true, wait: true, parameters:
                 [
                     string(name: 'GIT_TAG_NAME', value: GIT_TAG_NAME),
                     string(name: 'test_suite', value: 'jdk'),
                     string(name: 'test_groups', value: ':tier1')
                 ]
 
-            build job: 'test-pipeline-jtreg-langtools', propagate: true, wait: true, parameters:
+            build job: LANG_TOOLS_TEST_JOB, propagate: true, wait: true, parameters:
                 [
                     string(name: 'GIT_TAG_NAME', value: GIT_TAG_NAME),
                     string(name: 'test_suite', value: 'langtools'),
