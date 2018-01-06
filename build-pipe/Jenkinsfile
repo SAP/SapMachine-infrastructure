@@ -40,7 +40,7 @@ pipeline {
 
             build job: JDK_TEST_JOB, propagate: false, wait: true
 
-            build job: LANG_TOOLS_TEST_JOB, propagate: false, wait: true
+            build job: LANGTOOLS_TEST_JOB, propagate: false, wait: true
 
             }
         }
