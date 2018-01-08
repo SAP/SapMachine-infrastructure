@@ -16,9 +16,11 @@ from os.path import exists
 def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('-r', '--repository', help='specify the repository directory', metavar='DIR', required=True)
+    parser.add_argument('-s', '--sign', help='PGP sign the repository', action='store_true', default=False)
     args = parser.parse_args()
 
     repository = args.repository
+    pgp_sign = args.sign
 
     if exists('Packages'):
         remove('Packages')
@@ -74,6 +76,9 @@ def main(argv=None):
         release_file.write(str.format(' {0} {1:>16s} Packages.gz\n', packages_gz_sha512sum, str(packages_gz_size)))
         release_file.write(str.format(' {0} {1:>16s} Packages\n', packages_sha512sum, str(packages_size)))
         release_file.write('\n')
+
+    if pgp_sign is True:
+        utils.run_cmd(['gpg', '--clearsign', '--digest-algo', 'SHA512', '-o', 'InRelease', 'Release'], cwd=repository)
 
 if __name__ == "__main__":
     sys.exit(main())
