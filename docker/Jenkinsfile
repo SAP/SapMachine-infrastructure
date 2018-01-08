@@ -17,9 +17,9 @@ pipeline {
                   ]
                   ) {
                 sh '''
-                  docker/generate_dockerfile.sh -j
+                  docker/generate_dockerfile.sh -r
                   docker/generate_dockerfile.sh
-                  docker/generate_dockerfile.sh -j -t
+                  docker/generate_dockerfile.sh -r -t
                   docker/generate_dockerfile.sh -t
                   '''
                 }
@@ -27,26 +27,9 @@ pipeline {
         }
         stage('Run Tests') {
           steps {
-          build job: 'test-docker', propagate: true, wait: true, parameters:
-              [
-                  string(name: 'GIT_TAG_NAME', value: VERSION_TAG),
-                  string(name: 'test_suite', value: 'hotspot'),
-                  string(name: 'test_groups', value: ':hotspot_tier1')
-              ]
-
-          build job: 'test-docker', propagate: true, wait: true, parameters:
-              [
-                  string(name: 'GIT_TAG_NAME', value: VERSION_TAG),
-                  string(name: 'test_suite', value: 'jdk'),
-                  string(name: 'test_groups', value: ':tier1')
-              ]
-
-          build job: 'test-docker', propagate: true, wait: true, parameters:
-              [
-                  string(name: 'GIT_TAG_NAME', value: VERSION_TAG),
-                  string(name: 'test_suite', value: 'langtools'),
-                  string(name: 'test_groups', value: 'jdk tools lib')
-              ]
+            build job: HOTSPOT_TEST_JOB, propagate: false, wait: true
+            build job: JDK_TEST_JOB, propagate: false, wait: true
+            build job: LANGTOOLS_TEST_JOB, propagate: false, wait: true
           }
         }
         stage ('Publish Images') {

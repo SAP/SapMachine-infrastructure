@@ -21,7 +21,7 @@ while getopts ":rt" opt; do
 done
 
 
-if [ -z "$VERSION_TAG" ]; then
+if [ -z "$GIT_TAG_NAME" ]; then
   echo "Missing mandatory environment variable VERSION_TAG"
 fi
 
@@ -32,7 +32,7 @@ fi
 REPO_URL="http://$GIT_USER:$GIT_PASSWORD@github.com/SAP/SapMachine-infrastructure/"
 git clone -b master $REPO_URL infra
 
-read VERSION_MAJOR VERSION_MINOR <<< $(echo $VERSION_TAG | sed -r 's/sapmachine\-([0-9]+)\+([0-9]*)/\1 \2/')
+read VERSION_MAJOR VERSION_MINOR <<< $(echo $GIT_TAG_NAME | sed -r 's/sapmachine\-([0-9]+)\+([0-9]*)/\1 \2/')
 
 if [ $JTREG == true ]; then
   cd "infra/test-docker"
@@ -78,7 +78,7 @@ git config user.email "sapmachine@sap.com"
 git config user.name "SapMachine"
 
 set +e
-git commit -a -m "Update Dockerfile for $VERSION_TAG"
+git commit -a -m "Update Dockerfile for $GIT_TAG_NAME"
 
 git push origin master
 set -e
