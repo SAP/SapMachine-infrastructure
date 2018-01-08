@@ -25,7 +25,8 @@ LAST_BUILD_JDK_TAG=$(git tag | sed -rn $REGEXP | sort -nr | head -n1)
 GIT_TAG="jdk-$MAJOR_VERSION+$LAST_BUILD_JDK_TAG"
 echo "LAST_JDK_TAG=$GIT_TAG"
 set +e
-CONTAINING_BRANCHES=$(git branch -a --contains tags/jdk-$MAJOR_VERSION+$LAST_BUILD_JDK_TAG | grep -E "(sapmachine|merge-$GIT_TAG )")
+CONTAINING_BRANCHES=$(git branch -a --contains tags/jdk-$MAJOR_VERSION+$LAST_BUILD_JDK_TAG | \
+ grep -E "(sapmachine|merge-jdk-$MAJOR_VERSION\+$LAST_BUILD_JDK_TAG)")
 set -e
 if [ -z "$CONTAINING_BRANCHES" ]; then
   echo "Merging tag ${GIT_TAG}"
