@@ -26,6 +26,7 @@ pipeline {
                     sh "scp *.deb jenkins@${params.deploy_host}:${params.deploy_folder}"
                     sh "scp lib/utils.py lib/recreate_deb_repository.py jenkins@${params.deploy_host}:"
                     sh "ssh jenkins@${params.deploy_host} python recreate_deb_repository.py -r ${params.deploy_folder}"
+                    sh "ssh jenkins@${params.deploy_host} gpg --clearsign --digest-algo SHA512 -o ${params.deploy_folder}/InRelease ${params.deploy_folder}/Release"
                 }
             }
         }
