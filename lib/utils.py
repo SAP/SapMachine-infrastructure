@@ -8,6 +8,7 @@ import sys
 import shutil
 import zipfile
 import tarfile
+import gzip
 
 from os import remove
 from os.path import join
@@ -57,12 +58,20 @@ def download_artifact(url, target):
         print(str.format('Downloading {0} ...', url))
         file.write(urllib.urlopen(url, proxies={}).read())
 
-def make_tgz_archive(src, dest):
+def make_tgz_archive(src, dest, arcname=None):
     if exists(dest):
         remove(dest)
 
     archive = tarfile.open(dest, "w:gz", compresslevel=9)
-    archive.add(src)
+    archive.add(src, arcname=arcname)
+    archive.close()
+
+def make_gz_archive(src, dest):
+    if exists(dest):
+        remove(dest)
+
+    archive = gzip.open(dest, "w", compresslevel=9)
+    archive.write(src)
     archive.close()
 
 def make_zip_archive(src, dest, top_dir):
