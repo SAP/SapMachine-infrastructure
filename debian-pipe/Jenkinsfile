@@ -24,7 +24,7 @@ pipeline {
                     sh "chmod 700 /home/jenkins/.ssh"
                     sh "ssh-keyscan -t rsa ${params.deploy_host} > /home/jenkins/.ssh/known_hosts"
                     sh "scp *.deb jenkins@${params.deploy_host}:${params.deploy_folder}"
-                    sh "scp lib/recreate_deb_repository.py jenkins@${params.deploy_host}:"
+                    sh "scp lib/utils.py lib/recreate_deb_repository.py jenkins@${params.deploy_host}:"
                     sh "ssh jenkins@${params.deploy_host} python recreate_deb_repository.py -r ${params.deploy_folder}"
                 }
             }
