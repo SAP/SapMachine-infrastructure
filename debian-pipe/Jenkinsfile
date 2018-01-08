@@ -5,7 +5,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'rm *.deb'
+                sh 'rm -f *.deb'
                 sh "python lib/make_deb.py --tag=${params.tag} --templates-directory=debian-pipe/templates"
             }
             post {
