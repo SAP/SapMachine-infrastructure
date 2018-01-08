@@ -10,7 +10,7 @@ pipeline {
             }
             post {
                 success {
-                    archive "${params.tag}-debrepository.tar.gz"
+                    archive "*.deb"
                 }
             }
         }
@@ -20,10 +20,12 @@ pipeline {
             }
             steps {
                 sshagent (credentials: ['jenkins_ssh_key']) {
-                    sh " mkdir /home/jenkins/.ssh"
+                    sh "mkdir /home/jenkins/.ssh"
                     sh "chmod 700 /home/jenkins/.ssh"
                     sh "ssh-keyscan -t rsa ${params.deploy_host} > /home/jenkins/.ssh/known_hosts"
-                    sh "scp ${params.tag}-debrepository.tar.gz jenkins@${params.deploy_host}:${params.deploy_folder};"
+                    sh "scp *.deb jenkins@${params.deploy_host}:${params.deploy_folder}"
+                    sh "scp lib/recreate_deb_repository.py jenkins@${params.deploy_host}:"
+                    sh "ssh jenkins@${params.deploy_host} python recreate_deb_repository.py -r ${params.deploy_folder}"
                 }
             }
         }

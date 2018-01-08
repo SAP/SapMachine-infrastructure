@@ -182,45 +182,12 @@ def main(argv=None):
     utils.run_cmd(['debuild', '-b', '-uc', '-us'], cwd=jre_dir, env=env)
     utils.run_cmd(['debuild', '-b', '-uc', '-us'], cwd=jdk_dir, env=env)
 
-    repository = join(work_dir, 'repository')
-    mkdir(repository)
     deb_files = glob.glob(join(work_dir, '*.deb'))
 
     for deb_file in deb_files:
-        copy(deb_file, repository)
+        copy(deb_file, cwd)
         remove(deb_file)
 
-    retcode, out, err = utils.run_cmd(['dpkg-scanpackages', '.', '/dev/null'], cwd=repository, std=True)
-    with open(join(repository, 'Packages'), 'w+') as packages_file:
-        packages_file.write(out)
-
-    utils.make_gz_archive(join(repository, 'Packages'), join(repository, 'Packages.gz'))
-
-    retcode, out, err = utils.run_cmd(['md5sum', 'Packages'], cwd=repository, std=True)
-    packages_md5sum = out.split(' ')[0]
-    retcode, out, err = utils.run_cmd(['sha256sum', 'Packages'], cwd=repository, std=True)
-    packages_sha256sum = out.split(' ')[0]
-
-    retcode, out, err = utils.run_cmd(['md5sum', 'Packages.gz'], cwd=repository, std=True)
-    packages_gz_md5sum = out.split(' ')[0]
-    retcode, out, err = utils.run_cmd(['sha256sum', 'Packages.gz'], cwd=repository, std=True)
-    packages_gz_sha256sum = out.split(' ')[0]
-
-    packages_size = os.path.getsize(join(repository, 'Packages'))
-    packages_gz_size = os.path.getsize(join(repository, 'Packages.gz'))
-
-    now = datetime.datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S +0000')
-    with open(join(repository, 'Source'), 'w+') as source_file:
-        source_file.write(str.format('Date: {0}\n', now))
-        source_file.write('MD5Sum:\n')
-        source_file.write(str.format(' {0} {1:>16s} Packages.gz\n', packages_gz_md5sum, str(packages_gz_size)))
-        source_file.write(str.format(' {0} {1:>16s} Packages\n', packages_md5sum, str(packages_size)))
-        source_file.write('SHA256:\n')
-        source_file.write(str.format(' {0} {1:>16s} Packages.gz\n', packages_gz_sha256sum, str(packages_gz_size)))
-        source_file.write(str.format(' {0} {1:>16s} Packages\n', packages_sha256sum, str(packages_size)))
-        source_file.write('\n')
-
-    utils.make_tgz_archive(repository, join(cwd, str.format('{0}-debrepository.tar.gz', tag)), arcname=str.format('{0}-debrepository', tag))
     rmtree(work_dir)
 
 if __name__ == "__main__":
