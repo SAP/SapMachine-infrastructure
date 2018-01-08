@@ -26,8 +26,8 @@ def main(argv=None):
     if exists('Packages.gz'):
         remove('Packages.gz')
 
-    if exists('Source'):
-        remove('Source')
+    if exists('Release'):
+        remove('Release')
 
     retcode, out, err = utils.run_cmd(['dpkg-scanpackages', '.', '/dev/null'], cwd=repository, std=True)
 
@@ -58,21 +58,22 @@ def main(argv=None):
     packages_gz_size = os.path.getsize(join(repository, 'Packages.gz'))
 
     now = datetime.datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S +0000')
-    with open(join(repository, 'Source'), 'w+') as source_file:
-        source_file.write(str.format('Date: {0}\n', now))
-        source_file.write('MD5Sum:\n')
-        source_file.write(str.format(' {0} {1:>16s} Packages.gz\n', packages_gz_md5sum, str(packages_gz_size)))
-        source_file.write(str.format(' {0} {1:>16s} Packages\n', packages_md5sum, str(packages_size)))
-        source_file.write('SHA1:\n')
-        source_file.write(str.format(' {0} {1:>16s} Packages.gz\n', packages_gz_sha1sum, str(packages_gz_size)))
-        source_file.write(str.format(' {0} {1:>16s} Packages\n', packages_sha1sum, str(packages_size)))
-        source_file.write('SHA256:\n')
-        source_file.write(str.format(' {0} {1:>16s} Packages.gz\n', packages_gz_sha256sum, str(packages_gz_size)))
-        source_file.write(str.format(' {0} {1:>16s} Packages\n', packages_sha256sum, str(packages_size)))
-        source_file.write('SHA512:\n')
-        source_file.write(str.format(' {0} {1:>16s} Packages.gz\n', packages_gz_sha512sum, str(packages_gz_size)))
-        source_file.write(str.format(' {0} {1:>16s} Packages\n', packages_sha512sum, str(packages_size)))
-        source_file.write('\n')
+
+    with open(join(repository, 'Release'), 'w+') as release_file:
+        release_file.write(str.format('Date: {0}\n', now))
+        release_file.write('MD5Sum:\n')
+        release_file.write(str.format(' {0} {1:>16s} Packages.gz\n', packages_gz_md5sum, str(packages_gz_size)))
+        release_file.write(str.format(' {0} {1:>16s} Packages\n', packages_md5sum, str(packages_size)))
+        release_file.write('SHA1:\n')
+        release_file.write(str.format(' {0} {1:>16s} Packages.gz\n', packages_gz_sha1sum, str(packages_gz_size)))
+        release_file.write(str.format(' {0} {1:>16s} Packages\n', packages_sha1sum, str(packages_size)))
+        release_file.write('SHA256:\n')
+        release_file.write(str.format(' {0} {1:>16s} Packages.gz\n', packages_gz_sha256sum, str(packages_gz_size)))
+        release_file.write(str.format(' {0} {1:>16s} Packages\n', packages_sha256sum, str(packages_size)))
+        release_file.write('SHA512:\n')
+        release_file.write(str.format(' {0} {1:>16s} Packages.gz\n', packages_gz_sha512sum, str(packages_gz_size)))
+        release_file.write(str.format(' {0} {1:>16s} Packages\n', packages_sha512sum, str(packages_size)))
+        release_file.write('\n')
 
 if __name__ == "__main__":
     sys.exit(main())
