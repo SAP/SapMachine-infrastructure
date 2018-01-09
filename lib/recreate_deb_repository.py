@@ -75,6 +75,7 @@ def main(argv=None):
 
     if pgp_sign is True:
         utils.run_cmd(['gpg', '--clearsign', '--digest-algo', 'SHA512', '--no-tty', '-o', 'InRelease', 'Release'], cwd=repository)
+        utils.run_cmd(['gpg', '-abs',        '--digest-algo', 'SHA512', '--no-tty', '-o', 'Release.gpg', 'Release'], cwd=repository)
 
 if __name__ == "__main__":
     sys.exit(main())
