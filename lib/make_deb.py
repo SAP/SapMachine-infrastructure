@@ -104,7 +104,7 @@ def generate_configuration(templates_dir, major, target_dir, bin_dir, src_dir, d
 
     with open(join(templates_dir, 'postinst'), 'r') as postinst_template:
         with open(join(target_dir, 'postinst'), 'w+') as postinst_out:
-            postinst_out.write(Template(postinst_template.read()).substitute(tools=' '.join([tool for tool in tools])))
+            postinst_out.write(Template(postinst_template.read()).substitute(tools=' '.join([tool for tool in tools]), major=major))
 
     with open(join(templates_dir, '..', 'copyright'), 'r') as copyright_template:
         with codecs.open(join(target_dir, 'copyright'), 'w+', 'utf-8') as copyright_out:

@@ -7,7 +7,7 @@ jdk_tools='${tools}'
 case "$$1" in
     configure)
         for i in $$jdk_tools; do
-            update-alternatives --install /usr/bin/$$i $$i /opt/sapmachine-10-jdk/bin/$$i 100
+            update-alternatives --install /usr/bin/$$i $$i /opt/sapmachine-${major}-jdk/bin/$$i 100
         done
     ;;
 esac
