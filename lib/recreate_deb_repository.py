@@ -26,6 +26,7 @@ def main(argv=None):
     utils.remove_if_exists(join(repository, 'Packages.gz'))
     utils.remove_if_exists(join(repository, 'Release'))
     utils.remove_if_exists(join(repository, 'InRelease'))
+    utils.remove_if_exists(join(repository, 'Release.gpg'))
 
     retcode, out, err = utils.run_cmd(['dpkg-scanpackages', '.', '/dev/null'], cwd=repository, std=True)
 
