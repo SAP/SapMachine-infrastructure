@@ -3,10 +3,10 @@
 set -x
 
 JDK_LOCATION=$1
-JT_HOME=$2
-TEST_SUITE=$3
-TEST_GROUPS=$4
-TEST_JDK=$5
+TEST_JDK=$2
+JT_HOME=$3
+TEST_SUITE=$4
+TEST_GROUPS=$5
 
 TEST_NATIVE_LIB=${JDK_LOCATION}/build/linux-x86_64-normal-server-release/images/test/${TEST_SUITE}/jtreg/native
 
