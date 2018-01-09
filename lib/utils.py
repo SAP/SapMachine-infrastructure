@@ -71,7 +71,10 @@ def make_gz_archive(src, dest):
         remove(dest)
 
     archive = gzip.open(dest, "w", compresslevel=9)
-    archive.write(src)
+
+    with open(src, 'r') as src_file:
+        archive.write(src_file.read())
+
     archive.close()
 
 def make_zip_archive(src, dest, top_dir):
