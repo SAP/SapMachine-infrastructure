@@ -22,17 +22,10 @@ def main(argv=None):
     repository = args.repository
     pgp_sign = args.sign
 
-    if exists('Packages'):
-        remove('Packages')
-
-    if exists('Packages.gz'):
-        remove('Packages.gz')
-
-    if exists('Release'):
-        remove('Release')
-
-    if exists('InRelease'):
-        remove('InRelease')
+    utils.remove_if_exists(join(repository, 'Packages'))
+    utils.remove_if_exists(join(repository, 'Packages.gz'))
+    utils.remove_if_exists(join(repository, 'Release'))
+    utils.remove_if_exists(join(repository, 'InRelease'))
 
     retcode, out, err = utils.run_cmd(['dpkg-scanpackages', '.', '/dev/null'], cwd=repository, std=True)
 

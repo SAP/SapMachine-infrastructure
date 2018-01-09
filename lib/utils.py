@@ -93,3 +93,10 @@ def which(file):
                 return join(path, file)
 
     return None
+
+def remove_if_exists(path):
+    if exists(path):
+        if os.path.isdir(path):
+            rmtree(path)
+        else:
+            remove(path)
