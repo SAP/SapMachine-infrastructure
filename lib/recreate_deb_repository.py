@@ -31,6 +31,9 @@ def main(argv=None):
     if exists('Release'):
         remove('Release')
 
+    if exists('InRelease'):
+        remove('InRelease')
+
     retcode, out, err = utils.run_cmd(['dpkg-scanpackages', '.', '/dev/null'], cwd=repository, std=True)
 
     with open(join(repository, 'Packages'), 'w+') as packages_file:
