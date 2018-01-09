@@ -32,7 +32,7 @@ pipeline {
         }
         stage('Run jtreg') {
             steps {
-                sh "cd sapmachine && bash ../test-docker/run_jtreg.sh ${env.WORKSPACE}/sapmachine ${env.WORKSPACE}/sapmachine/jtreg ${params.test_suite} \"${params.test_groups}\" /opt/java/sapmachine/jdk/ || true"
+                sh "cd sapmachine && bash ../test-docker/run_jtreg.sh ${env.WORKSPACE}/sapmachine ${env.WORKSPACE}/sapmachine/jtreg ${params.test_suite} \"${params.test_groups}\" \"${params.test_jdk}\" || true"
             }
         }
         stage('Publish jtreg report') {
