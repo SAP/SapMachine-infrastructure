@@ -177,7 +177,7 @@ def main(argv=None):
         target_dir=join(jdk_dir, 'debian'),
         bin_dir=join(jdk_dir, 'jdk', 'bin'),
         src_dir=src_dir,
-        download_url=jre_url)
+        download_url=jdk_url)
 
     utils.run_cmd(['debuild', '-b', '-uc', '-us'], cwd=jre_dir, env=env)
     utils.run_cmd(['debuild', '-b', '-uc', '-us'], cwd=jdk_dir, env=env)
