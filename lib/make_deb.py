@@ -169,7 +169,7 @@ def main(argv=None):
         target_dir=join(jre_dir, 'debian'),
         bin_dir=join(jre_dir, 'jre', 'bin'),
         src_dir=src_dir,
-        download_url=jdk_url)
+        download_url=jre_url)
 
     generate_configuration(
         templates_dir=join(templates_dir, 'jdk'),
