@@ -9,11 +9,19 @@
     <id>10</id>
   </flow-owner>
   <flow-owner plugin="workflow-job@2.16">
-    <job>test-jtreg-hotspot-10-release</job>
-    <id>6</id>
-  </flow-owner>
-  <flow-owner plugin="workflow-job@2.16">
     <job>test-jtreg-langtools-10-snapshot</job>
     <id>11</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@2.16">
+    <job>update-pipeline</job>
+    <id>413</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@2.16">
+    <job>test-jtreg-jdk-10-release</job>
+    <id>5</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@2.16">
+    <job>jenkins-backup</job>
+    <id>1</id>
   </flow-owner>
 </list>
