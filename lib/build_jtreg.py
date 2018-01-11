@@ -45,7 +45,7 @@ jtreg_dependencies = [
     ['https://github.com/glub/secureftp/raw/master/contrib/javahelp2_0_05.zip', 'javahelp2_0_05.zip'],
     ['http://repo1.maven.org/maven2/junit/junit/4.10/junit-4.10.jar', 'junit.jar'],
     ['http://jcenter.bintray.com/org/testng/testng/6.9.5/testng-6.9.5.jar', 'testng.jar'],
-    ['https://ci.adoptopenjdk.net/job/jcov/lastSuccessfulBuild/artifact/jcov-2.0-beta-1.tar.gz', 'jcov-2.0-beta-1.tar.gz'],
+    ['https://ci.adoptopenjdk.net/job/jcov/lastSuccessfulBuild/artifact/jcov-3.0-beta-2.tar.gz', 'jcov-3.0-beta-2.tar.gz'],
     ['http://repo1.maven.org/maven2/com/beust/jcommander/1.48/jcommander-1.48.jar', 'jcommander-1.48.jar']
 ]
 
@@ -235,8 +235,8 @@ def build_jtreg(top_dir, jtharness_version, tag=None, build_number=None):
     make_build_env['JTHARNESS_HOME']         = join(dependencies_dir, 'jtharness-' + jtharness_version)
     make_build_env['TESTNG_JAR']             = join(dependencies_dir, 'testng.jar')
     make_build_env['JUNIT_JAR']              = join(dependencies_dir, 'junit.jar')
-    make_build_env['JCOV_JAR']               = join(dependencies_dir, 'JCOV_BUILD', 'jcov_2.0', 'jcov.jar')
-    make_build_env['JCOV_NETWORK_SAVER_JAR'] = join(dependencies_dir, 'JCOV_BUILD', 'jcov_2.0', 'jcov_network_saver.jar')
+    make_build_env['JCOV_JAR']               = join(dependencies_dir, 'JCOV_BUILD', 'jcov_3.0', 'jcov.jar')
+    make_build_env['JCOV_NETWORK_SAVER_JAR'] = join(dependencies_dir, 'JCOV_BUILD', 'jcov_3.0', 'jcov_network_saver.jar')
     make_build_env['JCOMMANDER_JAR']         = join(dependencies_dir, 'jcommander-1.48.jar')
 
     # run make
