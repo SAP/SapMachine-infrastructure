@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<list>
+  <flow-owner plugin="workflow-job@2.16">
+    <job>build-10-snapshot</job>
+    <id>27</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@2.16">
+    <job>build-10-release</job>
+    <id>10</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@2.16">
+    <job>test-jtreg-hotspot-10-release</job>
+    <id>6</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@2.16">
+    <job>test-jtreg-langtools-10-snapshot</job>
+    <id>11</id>
+  </flow-owner>
+</list>
