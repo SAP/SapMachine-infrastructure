@@ -49,7 +49,6 @@ pipeline {
             }
             environment {
               SAPMACHINE_GIT_REPO = 'github.com/SAP/SapMachine.git'
-              SAPMACHINE_GIT_BRANCH = 'sapmachine'
               SAPMACHINE_PUBLISH_GITHUB_TOKEN = credentials('SapMachine-Github-Token')
               SAPMACHINE_PUBLISH_GITHUB_REPO_NAME = 'SapMachine'
               SAPMACHINE_PUBLISH_GITHUB_USER = 'SAP'
