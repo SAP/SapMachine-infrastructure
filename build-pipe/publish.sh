@@ -9,17 +9,19 @@ export GITHUB_USER=$SAPMACHINE_PUBLISH_GITHUB_USER
 export GITHUB_REPO=$SAPMACHINE_PUBLISH_GITHUB_REPO_NAME
 
 if [ -z $GIT_TAG_NAME ]; then
-    GIT_TAG_NAME="${SAPMACHINE_ARCHIVE_NAME_PREFIX}_snapshot-${TIMESTAMP}"
-    GIT_TAG_DESCRIPTION="${SAPMACHINE_ARCHIVE_NAME_PREFIX} Snapshot ${TIMESTAMP_LONG}"
-    github-release release -t $GIT_TAG_NAME --pre-release -d "$GIT_TAG_DESCRIPTION"
-else
-    git clone -b $SAPMACHINE_GIT_BRANCH "http://$GIT_USER:$GIT_PASSWORD@$SAPMACHINE_GIT_REPO" SapMachine
+     git clone -b $SAPMACHINE_GIT_BRANCH "http://$GIT_USER:$GIT_PASSWORD@$SAPMACHINE_GIT_REPO" SapMachine
     cd SapMachine
     SNAPSHOT_TAG=$(git tag --contains | grep snapshot)
     if [ ! -z $SNAPSHOT_TAG ]; then
         echo "Snapshot already published"
         exit 0
     fi
+    git tag $GIT_TAG_NAME
+    git push --tags
+    GIT_TAG_NAME="${SAPMACHINE_ARCHIVE_NAME_PREFIX}_snapshot-${TIMESTAMP}"
+    GIT_TAG_DESCRIPTION="${SAPMACHINE_ARCHIVE_NAME_PREFIX} Snapshot ${TIMESTAMP_LONG}"
+    github-release release -t $GIT_TAG_NAME --pre-release -d "$GIT_TAG_DESCRIPTION"
+else
     github-release release -t $GIT_TAG_NAME
 fi
 
