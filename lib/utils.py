@@ -103,3 +103,16 @@ def remove_if_exists(path):
             rmtree(path)
         else:
             remove(path)
+
+def copytree(source, dest):
+    for root, dirs, files in os.walk(source, topdown=False):
+        for file in files:
+            full_path = join(root, file)
+            rel_path = os.path.relpath(root, start=source)
+            dest_path = os.path.join(dest, rel_path, file)
+            dest_dir = os.path.dirname(dest_path)
+
+            if not os.path.exists(dest_dir):
+                os.makedirs(dest_dir)
+
+            shutil.copyfile(full_path, dest_path)
