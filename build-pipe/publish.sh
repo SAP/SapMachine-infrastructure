@@ -9,7 +9,10 @@ export GITHUB_USER=$SAPMACHINE_PUBLISH_GITHUB_USER
 export GITHUB_REPO=$SAPMACHINE_PUBLISH_GITHUB_REPO_NAME
 
 if [ -z $GIT_TAG_NAME ]; then
-     git clone -b $SAPMACHINE_GIT_BRANCH "http://$GIT_USER:$GIT_PASSWORD@$SAPMACHINE_GIT_REPO" SapMachine
+    if [ ! -d SapMachine ]; then
+        git clone -b $SAPMACHINE_GIT_BRANCH "http://$GIT_USER:$GIT_PASSWORD@$SAPMACHINE_GIT_REPO" SapMachine
+    fi
+    
     cd SapMachine
     SNAPSHOT_TAG=$(git tag --contains | grep snapshot)
     if [ ! -z $SNAPSHOT_TAG ]; then
