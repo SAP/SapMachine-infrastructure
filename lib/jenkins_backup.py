@@ -22,11 +22,14 @@ def clone_sapmachine_infra(target):
     utils.run_cmd(['git', 'clone', '-b', branch, repo, target])
 
 def push_sapmachine_infra(local_repo):
+    env = os.environ.copy()
+    env['GIT_AUTHOR_NAME'] = 'SapMachine'
+    env['GIT_AUTHOR_EMAIL'] = 'sapmachine@sap.com'
     utils.run_cmd(['git', 'add', jenkins_configuration], cwd=local_repo)
-    utils.run_cmd(['git', 'commit', '-m', 'Updated Jenkins configuration.'], cwd=local_repo)
-    utils.run_cmd(['git', 'fetch'], cwd=local_repo)
-    utils.run_cmd(['git', 'rebase'], cwd=local_repo)
-    utils.run_cmd(['git', 'push'], cwd=local_repo)
+    utils.run_cmd(['git', 'commit', '-m', 'Updated Jenkins configuration.'], cwd=local_repo, env=env)
+    utils.run_cmd(['git', 'fetch'], cwd=local_repo, env=env)
+    utils.run_cmd(['git', 'rebase'], cwd=local_repo, env=env)
+    utils.run_cmd(['git', 'push'], cwd=local_repo, env=env)
 
 def copy_configurations(src_dir, target_dir):
     exclude_dirs = ['users', 'secrets', 'workspace', '.cache', 'caches', 'logs', 'plugins', 'fingerprints']
