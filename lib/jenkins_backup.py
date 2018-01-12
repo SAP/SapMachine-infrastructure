@@ -25,6 +25,8 @@ def push_sapmachine_infra(local_repo):
     env = os.environ.copy()
     env['GIT_AUTHOR_NAME'] = 'SapMachine'
     env['GIT_AUTHOR_EMAIL'] = 'sapmachine@sap.com'
+    env['GIT_COMMITTER_NAME'] = env['GIT_AUTHOR_NAME']
+    env['GIT_COMMITTER_EMAIL'] = env['GIT_AUTHOR_EMAIL']
     utils.run_cmd(['git', 'add', jenkins_configuration], cwd=local_repo)
     utils.run_cmd(['git', 'commit', '-m', 'Updated Jenkins configuration.'], cwd=local_repo, env=env)
     utils.run_cmd(['git', 'fetch'], cwd=local_repo, env=env)
