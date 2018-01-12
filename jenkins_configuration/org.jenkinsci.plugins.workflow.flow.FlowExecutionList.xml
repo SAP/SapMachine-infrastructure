@@ -1,27 +1,31 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <list>
   <flow-owner plugin="workflow-job@2.16">
-    <job>build-10-snapshot</job>
-    <id>27</id>
-  </flow-owner>
-  <flow-owner plugin="workflow-job@2.16">
-    <job>build-10-release</job>
-    <id>10</id>
-  </flow-owner>
-  <flow-owner plugin="workflow-job@2.16">
-    <job>test-jtreg-langtools-10-snapshot</job>
+    <job>build-snapshot</job>
     <id>11</id>
   </flow-owner>
   <flow-owner plugin="workflow-job@2.16">
-    <job>update-pipeline</job>
-    <id>413</id>
+    <job>validate-pr-pipe</job>
+    <id>42</id>
   </flow-owner>
   <flow-owner plugin="workflow-job@2.16">
-    <job>test-jtreg-jdk-10-release</job>
-    <id>5</id>
+    <job>build-10-pr-validation</job>
+    <id>4</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@2.16">
+    <job>test-jtreg-jdk-snapshot</job>
+    <id>7</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@2.16">
+    <job>test-jtreg-hotspot-10-pr-validation</job>
+    <id>2</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@2.16">
+    <job>build-10-release</job>
+    <id>12</id>
   </flow-owner>
   <flow-owner plugin="workflow-job@2.16">
     <job>jenkins-backup</job>
-    <id>1</id>
+    <id>2</id>
   </flow-owner>
 </list>
