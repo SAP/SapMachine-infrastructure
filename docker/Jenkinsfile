@@ -26,6 +26,9 @@ pipeline {
             }
         }
         stage('Run Tests') {
+          when {
+            expression { params.RUN_TESTS == true }
+          }
           steps {
             build job: HOTSPOT_TEST_JOB, propagate: false, wait: true
             build job: JDK_TEST_JOB, propagate: false, wait: true
