@@ -1,4 +1,5 @@
 #!/bin/bash
+set -ex
 
 if [ -d sapmachine ]; then
     rm -rf sapmachine;
