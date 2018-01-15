@@ -46,7 +46,7 @@ rm $FILENAME || true
 
 DEPENDENCIES="wget ca-certificates"
 if [ $JTREG == true ]; then
-  DEPENDENCIES="$DEPENDENCIES zip git unzip realpath python"
+  DEPENDENCIES="$DEPENDENCIES zip git unzip realpath python binutils"
 fi
 
 if $JRE ; then
