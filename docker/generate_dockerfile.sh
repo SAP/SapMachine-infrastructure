@@ -47,6 +47,7 @@ rm $FILENAME || true
 DEPENDENCIES="wget ca-certificates"
 if [ $JTREG == true ]; then
   DEPENDENCIES="$DEPENDENCIES zip git unzip realpath python binutils"
+  ADD_USER="RUN useradd -ms /bin/bash jenkins -u 1001"
 fi
 
 if $JRE ; then
@@ -69,6 +70,8 @@ RUN wget -q -O - https://sapmachine-ubuntu.sapcloud.io/debian/sapmachine-debian.
     && echo "deb http://sapmachine-ubuntu.sapcloud.io/debian/amd64/ ./" >> /etc/apt/sources.list \\
     && apt-get update \\
     && apt-get -y --no-install-recommends install $PACKAGE
+
+$ADD_USER
 
 EOI
 
