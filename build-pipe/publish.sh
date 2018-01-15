@@ -14,7 +14,9 @@ if [ -z $GIT_TAG_NAME ]; then
     fi
     
     cd SapMachine
+    set +e
     SNAPSHOT_TAG=$(git tag --contains | grep snapshot)
+    set -e
     if [ ! -z $SNAPSHOT_TAG ]; then
         echo "Snapshot already published"
         exit 0
