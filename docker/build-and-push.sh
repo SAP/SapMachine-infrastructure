@@ -19,7 +19,7 @@ read VERSION_MAJOR VERSION_MINOR <<< $(echo $GIT_TAG_NAME | sed -r 's/sapmachine
 
 set +e
 docker ps -a | grep sapmachine | awk '{print $1}' | xargs docker rm
-docker images | grep sapmachine | awk '{print $3}' | xargs docker rmi
+docker images | grep sapmachine | awk '{print $3}' | xargs docker rmi -f
 set -e
 
 if $JRE ; then
