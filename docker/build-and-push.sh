@@ -17,8 +17,10 @@ cd "infra/docker"
 
 read VERSION_MAJOR VERSION_MINOR <<< $(echo $GIT_TAG_NAME | sed -r 's/sapmachine\-([0-9]+)\+([0-9]*)/\1 \2/')
 
+set +e
 docker ps -a | grep sapmachine | awk '{print $1}' | xargs docker rm
 docker images | grep sapmachine | awk '{print $3}' | xargs docker rmi
+set -e
 
 if $JRE ; then
   docker build -t "$DOCKER_USER/jdk${VERSION_MAJOR}:${VERSION_MAJOR}.${VERSION_MINOR}-jre" \
