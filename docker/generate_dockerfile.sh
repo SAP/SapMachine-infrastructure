@@ -40,10 +40,6 @@ else
   cd "infra/docker"
 fi
 
-FILENAME="sapmachine-$VERSION_MAJOR/Dockerfile"
-
-rm $FILENAME || true
-
 DEPENDENCIES="wget ca-certificates"
 if [ $JTREG == true ]; then
   DEPENDENCIES="$DEPENDENCIES zip git unzip realpath python binutils"
@@ -51,10 +47,14 @@ if [ $JTREG == true ]; then
 fi
 
 if $JRE ; then
+    FILENAME="sapmachine-$VERSION_MAJOR-jre/Dockerfile"
     PACKAGE=sapmachine-$VERSION_MAJOR-jre=$VERSION_MAJOR+$VERSION_MINOR
 else
+    FILENAME="sapmachine-$VERSION_MAJOR/Dockerfile"
     PACKAGE=sapmachine-$VERSION_MAJOR-jdk=$VERSION_MAJOR+$VERSION_MINOR
 fi
+
+rm $FILENAME || true
 
 cat >> $FILENAME << EOI
 
