@@ -2,17 +2,17 @@
 <flow-definition plugin="workflow-job@2.16">
   <actions>
     <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.2.5"/>
-    <io.jenkins.blueocean.service.embedded.BlueOceanUrlAction plugin="blueocean-rest-impl@1.3.5">
-      <blueOceanUrlObject class="io.jenkins.blueocean.service.embedded.BlueOceanUrlObjectImpl">
-        <mappedUrl>blue/organizations/jenkins/build-11-release</mappedUrl>
-        <modelObject class="flow-definition" reference="../../../.."/>
-      </blueOceanUrlObject>
-    </io.jenkins.blueocean.service.embedded.BlueOceanUrlAction>
     <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.2.5">
       <jobProperties/>
       <triggers/>
       <parameters/>
     </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
+    <io.jenkins.blueocean.service.embedded.BlueOceanUrlAction plugin="blueocean-rest-impl@1.3.5">
+      <blueOceanUrlObject class="io.jenkins.blueocean.service.embedded.BlueOceanUrlObjectImpl">
+        <mappedUrl>blue/organizations/jenkins/build-10-release-new</mappedUrl>
+        <modelObject class="flow-definition" reference="../../../.."/>
+      </blueOceanUrlObject>
+    </io.jenkins.blueocean.service.embedded.BlueOceanUrlAction>
   </actions>
   <description></description>
   <keepDependencies>false</keepDependencies>
@@ -22,7 +22,7 @@
         <hudson.model.StringParameterDefinition>
           <name>GIT_TAG_NAME</name>
           <description></description>
-          <defaultValue>sapmachine-11+0</defaultValue>
+          <defaultValue>sapmachine-10+37</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>PUBLISH</name>
@@ -37,27 +37,27 @@
         <hudson.model.StringParameterDefinition>
           <name>HOTSPOT_TEST_JOB</name>
           <description></description>
-          <defaultValue>test-jtreg-hotspot-11-release</defaultValue>
+          <defaultValue>test-jtreg-hotspot-10-release</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>JDK_TEST_JOB</name>
           <description></description>
-          <defaultValue>test-jtreg-jdk-11-release</defaultValue>
+          <defaultValue>test-jtreg-jdk-10-release</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>LANGTOOLS_TEST_JOB</name>
           <description></description>
-          <defaultValue>test-jtreg-langtools-11-release</defaultValue>
+          <defaultValue>test-jtreg-langtools-10-release</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>SAPMACHINE_GIT_BRANCH</name>
           <description></description>
-          <defaultValue>sapmachine</defaultValue>
+          <defaultValue>sapmachine10</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>SAPMACHINE_ARCHIVE_NAME_PREFIX</name>
           <description></description>
-          <defaultValue>sapmachine-11_linux-x64</defaultValue>
+          <defaultValue>sapmachine10_linux-x64</defaultValue>
         </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
@@ -86,7 +86,7 @@
       </userRemoteConfigs>
       <branches>
         <hudson.plugins.git.BranchSpec>
-          <name>*/master</name>
+          <name>*/new-version-schema</name>
         </hudson.plugins.git.BranchSpec>
       </branches>
       <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
