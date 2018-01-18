@@ -11,6 +11,14 @@ git clone -b $SAPMACHINE_GIT_BRANCH "http://$GIT_USER:$GIT_PASSWORD@$SAPMACHINE_
 
 cd SapMachine
 
+ALPINE_OPTS=""
+GTEST_RESULT_PATH="gtest_all_server"
+
+if [[ $SAPMACHINE_GIT_BRANCH == *-alpine ]] || [[ $GIT_TAG_NAME == *-alpine ]]; then 
+  ALPINE_OPTS="--disable-warnings-as-errors"
+  GTEST_RESULT_PATH="gtest]all]server"
+fi
+
 git config user.email $GIT_COMMITTER_EMAIL
 git config user.name $GIT_USER
 
@@ -24,17 +32,23 @@ if [[ ! -z $GIT_TAG_NAME ]]; then
 fi
 
 if [[ $GIT_TAG_NAME == sapmachine-* ]]; then
-  read VERSION_MAJOR VERSION_MINOR SAPMACHINE_VERSION<<< $(echo $GIT_TAG_NAME | sed -rn 's/sapmachine\-([0-9]+)\+([0-9]+)\-?([0-9]*)/ \1 \2 \3 /p')
-  if [ -z $SAPMACHINE_VERSION]; then
-    bash ./configure --with-boot-jdk=$BOOT_JDK --with-vendor-name='SAP SE' --with-version-opt=sapmachine --with-version-pre=ea --with-version-build=$VERSION_MINOR
+  read VERSION_MAJOR VERSION_MINOR SAPMACHINE_VERSION<<< $(echo $GIT_TAG_NAME \
+  | sed -rn 's/sapmachine\-([0-9]+)\+([0-9]+)\-?([0-9]*)(\-alpine)?/ \1 \2 \3 /p')
+  
+  if [ -z $SAPMACHINE_VERSION ]; then
+    bash ./configure --with-boot-jdk=$BOOT_JDK --with-vendor-name='SAP SE' --with-version-opt=sapmachine \
+     --with-version-pre=ea --with-version-build=$VERSION_MINOR $ALPINE_OPTS
   else
-    bash ./configure --with-boot-jdk=$BOOT_JDK --with-vendor-name='SAP SE' --with-version-opt=sapmachine-$SAPMACHINE_VERSION --with-version-pre=ea --with-version-build=$VERSION_MINOR
+    bash ./configure --with-boot-jdk=$BOOT_JDK --with-vendor-name='SAP SE' --with-version-opt=sapmachine-$SAPMACHINE_VERSION \
+     --with-version-pre=ea --with-version-build=$VERSION_MINOR $ALPINE_OPTS
   fi
 else
-  bash ./configure --with-boot-jdk=$BOOT_JDK --with-vendor-name='SAP SE' --with-version-opt=sapmachine --with-version-pre=snapshot --with-version-build=$BUILD_NUMBER
+  bash ./configure --with-boot-jdk=$BOOT_JDK --with-vendor-name='SAP SE' --with-version-opt=sapmachine \
+   --with-version-pre=snapshot --with-version-build=$BUILD_NUMBER $ALPINE_OPTS
 fi
 
 make JOBS=12 product-bundles test-image
+
 make run-test-gtest
 
 tar czf ../build.tar.gz build
@@ -50,4 +64,4 @@ ls
 cp sapmachine-jdk-*_bin.tar.gz ../../../..
 cp sapmachine-jre-*_bin.tar.gz ../../../..
 
-cp ../test-results/gtest_all_server/gtest.xml ../../../..
+cp ../test-results/$GTEST_RESULT_PATH/gtest.xml ../../../..

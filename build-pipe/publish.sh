@@ -29,6 +29,7 @@ if [ -z $GIT_TAG_NAME ]; then
     github-release release -t $GIT_TAG_NAME --pre-release -d "$GIT_TAG_DESCRIPTION"
 
 else
+    GIT_TAG_NAME=$(echo $GIT_TAG_NAME | sed 's/-alpine//')
     github-release release -t $GIT_TAG_NAME
 fi
 

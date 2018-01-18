@@ -38,9 +38,5 @@ RUN apk update; \
 
 ENV PATH=/opt/sapmachine-jdk-10/bin:$PATH
 
-RUN mkdir -p /opt/github-release
-WORKDIR /opt/github-release
-RUN wget -q https://github.com/aktau/github-release/releases/download/v0.7.2/linux-amd64-github-release.tar.bz2
-RUN bunzip2 linux-amd64-github-release.tar.bz2
-RUN tar xf linux-amd64-github-release.tar
-RUN ln -s /opt/github-release/bin/linux/amd64/github-release /usr/bin/github-release
+RUN addgroup -g 1001 jenkins && \
+    adduser -D -u 1001 -G jenkins jenkins
