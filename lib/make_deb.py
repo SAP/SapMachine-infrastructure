@@ -51,19 +51,26 @@ def fetch_tag(tag):
     jdk_url = None
 
     response = json.loads(urllib.urlopen(github_api, proxies={}).read())
+    asset_pattern = re.compile('[^-]+-([^-]+)-([^_]+)_([^_]+)_bin\.tar\.gz')
 
     if 'assets' in response:
         assets = response['assets']
         for asset in assets:
             name = asset['name']
             download_url = asset['browser_download_url']
-            if name.endswith('tar.gz'):
-                if 'jre' in name:
-                    # JRE
-                    jre_url = download_url
-                else:
-                    # JDK
+            match = asset_pattern.match(name)
+
+            if match is not None:
+                image_type = match.group(1)
+                version = match.group(2)
+                platform = match.group(3)
+
+                print(str.format('found asset image_type={0}, version={1}, platform={2}', image_type, version, platform))
+
+                if image_type == 'jdk' and platform == 'linux-x64':
                     jdk_url = download_url
+                else:
+                    jre_url = download_url
 
     return jdk_url, jre_url
 
@@ -125,10 +132,10 @@ def main(argv=None):
     tag = args.tag
     cwd = os.getcwd()
     work_dir = join(cwd, 'deb_work')
-    pattern = re.compile('(jdk|sapmachine)-(([0-9]+)\+[0-9]+)')
+    pattern = re.compile('([^-]+)-(((([0-9]+)((\.([0-9]+))*)?)\+([0-9]+))(-([0-9]+))?)')
     match = pattern.match(tag)
-    version = match.group(2)
-    major = match.group(3)
+    version = match.group(3)
+    major = match.group(5)
     jdk_name = str.format('sapmachine-{0}-jdk-{1}', major, version)
     jre_name = str.format('sapmachine-{0}-jre-{1}', major, version)
 
@@ -167,7 +174,7 @@ def main(argv=None):
         templates_dir=join(templates_dir, 'jre'),
         major=major,
         target_dir=join(jre_dir, 'debian'),
-        bin_dir=join(jre_dir, 'jre', 'bin'),
+        bin_dir=join(jre_dir, 'sapmachine-jre-' + major, 'bin'),
         src_dir=src_dir,
         download_url=jre_url)
 
@@ -175,7 +182,7 @@ def main(argv=None):
         templates_dir=join(templates_dir, 'jdk'),
         major=major,
         target_dir=join(jdk_dir, 'debian'),
-        bin_dir=join(jdk_dir, 'jdk', 'bin'),
+        bin_dir=join(jdk_dir, 'sapmachine-jdk-' + major, 'bin'),
         src_dir=src_dir,
         download_url=jdk_url)
 
