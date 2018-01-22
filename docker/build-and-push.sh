@@ -15,7 +15,7 @@ fi
 
 cd "infra/docker"
 
-read VERSION_MAJOR VERSION_MINOR <<< $(echo $GIT_TAG_NAME | sed -r 's/sapmachine\-([0-9]+)\+([0-9]*)/\1 \2/')
+read VERSION_MAJOR VERSION_MINOR SAPMACHINE_VERSION<<< $(echo $GIT_TAG_NAME | sed -rn 's/sapmachine\-([0-9]+)\+([0-9]+)\-?([0-9]*)/ \1 \2 \3 /p')
 
 set +e
 docker ps -a | grep sapmachine | awk '{print $1}' | xargs docker rm
@@ -23,10 +23,10 @@ docker images | grep sapmachine | awk '{print $3}' | xargs docker rmi -f
 set -e
 
 if $JRE ; then
-  docker build -t "$DOCKER_USER/jdk${VERSION_MAJOR}:${VERSION_MAJOR}.${VERSION_MINOR}-jre" \
+  docker build -t "$DOCKER_USER/jdk${VERSION_MAJOR}:${VERSION_MAJOR}.${VERSION_MINOR}.{$SAPMACHINE_VERSION}-jre" \
   -t "$DOCKER_USER/jdk${VERSION_MAJOR}:latest-jre"  "sapmachine-$VERSION_MAJOR-jre/."
 else
-  docker build -t "$DOCKER_USER/jdk${VERSION_MAJOR}:${VERSION_MAJOR}.${VERSION_MINOR}" \
+  docker build -t "$DOCKER_USER/jdk${VERSION_MAJOR}:${VERSION_MAJOR}.${VERSION_MINOR}.{$SAPMACHINE_VERSION}" \
   -t "$DOCKER_USER/jdk${VERSION_MAJOR}:latest"  "sapmachine-$VERSION_MAJOR/."
 fi
 docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
