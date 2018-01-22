@@ -60,8 +60,6 @@ cat >> $FILENAME << EOI
 
 FROM ubuntu:16.04
 
-MAINTAINER Sapmachine <sapmachine@sap.com>
-
 RUN rm -rf /var/lib/apt/lists/* && apt-get clean && apt-get update \\
     && apt-get install -y --no-install-recommends $DEPENDENCIES \\
     && rm -rf /var/lib/apt/lists/*
