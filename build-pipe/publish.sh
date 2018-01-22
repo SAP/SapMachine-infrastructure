@@ -12,8 +12,8 @@ if [ -z $GIT_TAG_NAME ]; then
     if [ ! -d SapMachine ]; then
         git clone -b $SAPMACHINE_GIT_BRANCH "http://$GIT_USER:$GIT_PASSWORD@$SAPMACHINE_GIT_REPO" SapMachine
     fi
-    
-    cd SapMachine
+
+    pushd SapMachine
     set +e
     SNAPSHOT_TAG=$(git tag --contains | grep snapshot)
     set -e
