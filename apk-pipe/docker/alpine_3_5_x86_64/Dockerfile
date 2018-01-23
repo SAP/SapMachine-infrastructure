@@ -17,5 +17,9 @@ RUN apk update; \
 RUN mkdir -p /var/cache/distfiles
 RUN chmod a+w /var/cache/distfiles
 
-RUN useradd -ms /bin/bash jenkins -u 1001
+RUN groupadd -g 1001 jenkins
+RUN useradd -ms /bin/bash jenkins -u 1001 -g 1001 -G abuild
 RUN echo "jenkins    ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+
+USER jenkins
+RUN abuild-keygen -a -i -n
