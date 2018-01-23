@@ -2,6 +2,9 @@ pipeline {
     agent any
     stages {
         stage('Genrate Dockerfiles') {
+            when {
+              expression { params.PUBLISH == true }
+            }
             environment {
               SAPMACHINE_GIT_REPO = 'github.com/SAP/SapMachine.git'
               SAPMACHINE_GIT_BRANCH = 'sapmachine'
@@ -36,6 +39,9 @@ pipeline {
           }
         }
         stage ('Publish Images') {
+          when {
+            expression { params.PUBLISH == true }
+          }
           steps {
             withCredentials([
                 [$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-sapmachine', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD']
@@ -47,6 +53,14 @@ pipeline {
                 '''
               }
             }
+        }
+        stage('Smoke Test') {
+          steps {
+            sh '''
+              docker/pull-and-test.sh
+              docker/pull-and-test.sh jre
+              '''
+          }
         }
     }
 }
