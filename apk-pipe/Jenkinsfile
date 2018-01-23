@@ -8,6 +8,8 @@ pipeline {
               GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
             }
             steps {
+                sh "sudo addgroup jenkins abuild"
+                sh "abuild-keygen -a -i -n"
                 sh "python lib/make_apk.py --tag=${params.tag} --templates-directory=apk-pipe/templates"
             }
             post {

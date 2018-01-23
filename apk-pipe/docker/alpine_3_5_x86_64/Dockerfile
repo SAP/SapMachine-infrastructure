@@ -18,8 +18,4 @@ RUN mkdir -p /var/cache/distfiles
 RUN chmod a+w /var/cache/distfiles
 
 RUN useradd -ms /bin/bash jenkins -u 1001
-RUN addgroup jenkins abuild
 RUN echo "jenkins    ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
-
-USER jenkins
-RUN abuild-keygen -a -i -n
