@@ -1,0 +1,20 @@
+pipeline {
+    agent {
+        dockerfile { dir 'apk-pipe/docker/alpine_3_5_x86_64' }
+    }
+    stages {
+        stage('Build') {
+            environment {
+              GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
+            }
+            steps {
+                sh "python lib/make_apk.py --tag=${params.tag} --templates-directory=apk-pipe/templates"
+            }
+            post {
+                success {
+                    archive "packages.tar.gz"
+                }
+            }
+        }
+    }
+}

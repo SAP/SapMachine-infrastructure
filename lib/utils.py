@@ -9,6 +9,7 @@ import shutil
 import zipfile
 import tarfile
 import gzip
+import re
 
 from os import remove
 from os.path import join
@@ -116,3 +117,64 @@ def copytree(source, dest):
                 os.makedirs(dest_dir)
 
             shutil.copyfile(full_path, dest_path)
+
+def fetch_tag(tag, platform, token=None):
+    import json
+    from urllib2 import urlopen, Request, quote
+
+    org = 'SAP'
+    repository = 'SapMachine'
+    github_api = str.format('https://api.github.com/repos/{0}/{1}/releases/tags/{2}', org, repository, quote(tag))
+    jre_url = None
+    jdk_url = None
+
+    request = Request(github_api)
+
+    if token is not None:
+        request.add_header('Authorization', str.format('token {0}', token))
+
+    response = json.loads(urlopen(request).read())
+    asset_pattern = re.compile('[^-]+-([^-]+)-([^_]+)_([^_]+)_bin\.tar\.gz')
+
+    if 'assets' in response:
+        assets = response['assets']
+        for asset in assets:
+            name = asset['name']
+            download_url = asset['browser_download_url']
+            match = asset_pattern.match(name)
+
+            if match is not None:
+                asset_image_type = match.group(1)
+                asset_version = match.group(2)
+                asset_platform = match.group(3)
+
+                if asset_image_type == 'jdk' and asset_platform == platform:
+                    jdk_url = download_url
+                else:
+                    jre_url = download_url
+
+    return jdk_url, jre_url
+
+def sapmachine_tag_pattern():
+    return '([^-]+)-(((([0-9]+)((\.([0-9]+))*)?)\+([0-9]+))(-([0-9]+))?)'
+
+def sapmachine_tag_components(tag):
+    pattern = re.compile(sapmachine_tag_pattern())
+    match = pattern.match(tag)
+
+    version = match.group(2)
+    major = match.group(5)
+    build_number = match.group(9)
+
+    if len(match.groups()) == 11:
+        sap_build_number = match.group(11)
+    else:
+        sap_build_number = ''
+
+    return version, major, build_number, sap_build_number
+
+def get_github_api_accesstoken():
+    key = 'GITHUB_API_ACCESS_TOKEN'
+    if key in os.environ:
+        return os.environ[key]
+    return None

@@ -1,0 +1,38 @@
+# Contributor: SapMachine <sapmachine@sap.com>
+# Maintainer: SapMachine <sapmachine@sap.com>
+pkgname=${package_name}
+pkgver=${package_version}
+pkgrel=${package_release}
+pkgdesc="${package_description}"
+url="http://sapmachine.org"
+arch="x86_64"
+license="GPL"
+depends="libx11 libxext libxi libxrender libxtst zlib alsa-lib freetype"
+makedepends="tar"
+install=""
+subpackages=""
+archivename="${archive_name}"
+source="${archive_url}"
+builddir="$$srcdir/"
+java_home="/usr/lib/jvm/$$pkgname"
+
+#prepare() {
+#        default_prepare
+#}
+
+#build() {
+#        cd "$$builddir"
+#}
+
+package() {
+        mkdir -p "$$pkgdir/$$java_home"
+        cd "$$pkgdir/$$java_home"
+        tar xf "$$srcdir/$$archivename" --strip-components=1
+
+        mkdir -p "$$pkgdir/usr/bin"
+        cd $$pkgdir/$$java_home/bin
+
+        for tool in *; do
+          ln -sf "../lib/jvm/$$pkgname/bin/$$tool" "$$pkgdir/usr/bin"
+        done
+}
