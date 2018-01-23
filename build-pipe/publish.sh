@@ -21,10 +21,10 @@ if [ -z $GIT_TAG_NAME ]; then
         echo "Snapshot already published"
         exit 0
     fi
+    GIT_TAG_NAME="${SAPMACHINE_ARCHIVE_NAME_PREFIX}_snapshot-${TIMESTAMP}"
     git tag $GIT_TAG_NAME
     git push --tags
-    cd ..
-    GIT_TAG_NAME="${SAPMACHINE_ARCHIVE_NAME_PREFIX}_snapshot-${TIMESTAMP}"
+    popd
     GIT_TAG_DESCRIPTION="${SAPMACHINE_ARCHIVE_NAME_PREFIX} Snapshot ${TIMESTAMP_LONG}"
     github-release release -t $GIT_TAG_NAME --pre-release -d "$GIT_TAG_DESCRIPTION"
 
