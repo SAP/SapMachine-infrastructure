@@ -9,6 +9,7 @@ pipeline {
             }
             steps {
                 sh "sudo addgroup jenkins abuild"
+                sh "sudo su jenkins"
                 sh "abuild-keygen -a -i -n"
                 sh "python lib/make_apk.py --tag=${params.tag} --templates-directory=apk-pipe/templates"
             }
