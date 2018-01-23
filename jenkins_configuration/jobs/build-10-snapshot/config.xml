@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<flow-definition plugin="workflow-job@2.16">
+<flow-definition plugin="workflow-job@2.17">
   <actions>
     <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.2.6"/>
     <io.jenkins.blueocean.service.embedded.BlueOceanUrlAction plugin="blueocean-rest-impl@1.4.0">
@@ -65,6 +65,11 @@
           <description></description>
           <defaultValue>sapmachine10_linux-x64</defaultValue>
         </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>DOCKER_DIR</name>
+          <description></description>
+          <defaultValue>build-pipe/docker/ubuntu_16_04_x86_64</defaultValue>
+        </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
     <jenkins.model.BuildDiscarderProperty>
@@ -76,7 +81,7 @@
       </strategy>
     </jenkins.model.BuildDiscarderProperty>
   </properties>
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@2.42">
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@2.43">
     <scm class="hudson.plugins.git.GitSCM" plugin="git@3.7.0">
       <configVersion>2</configVersion>
       <userRemoteConfigs>

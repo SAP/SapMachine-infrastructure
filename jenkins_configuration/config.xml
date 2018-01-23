@@ -81,7 +81,6 @@
         <string>test-jtreg-langtools-10-release</string>
         <string>test-jtreg-langtools-10-snapshot</string>
         <string>test-jtreg-langtools-snapshot</string>
-        <string>test-nightly-pipeline</string>
         <string>test-pipeline-jtreg-hotspot</string>
         <string>test-pipeline-jtreg-langtools</string>
       </jobNames>
@@ -107,7 +106,6 @@
       <jobNames>
         <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
         <string>build-10-snapshot-alpine</string>
-        <string>new_snapshot10_build</string>
       </jobNames>
       <jobFilters/>
       <columns>
@@ -154,7 +152,6 @@
       <properties class="hudson.model.View$PropertyList"/>
       <jobNames>
         <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
-        <string>build-10-release-new</string>
       </jobNames>
       <jobFilters/>
       <columns>
@@ -253,6 +250,83 @@
         <comparator class="hudson.util.CaseInsensitiveComparator"/>
         <string>jenkins-backup</string>
         <string>jenkins-restore</string>
+      </jobNames>
+      <jobFilters/>
+      <columns>
+        <hudson.views.StatusColumn/>
+        <hudson.views.WeatherColumn/>
+        <hudson.views.JobColumn/>
+        <hudson.views.LastSuccessColumn/>
+        <hudson.views.LastFailureColumn/>
+        <hudson.views.LastDurationColumn/>
+        <hudson.views.BuildButtonColumn/>
+        <hudson.plugins.favorite.column.FavoriteColumn plugin="favorite@2.3.1"/>
+      </columns>
+      <recurse>false</recurse>
+    </listView>
+    <listView>
+      <owner class="hudson" reference="../../.."/>
+      <name>snapshot-10-alpine</name>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <properties class="hudson.model.View$PropertyList"/>
+      <jobNames>
+        <comparator class="hudson.util.CaseInsensitiveComparator"/>
+        <string>build-10-snapshot-alpine</string>
+        <string>test-jtreg-hotspot-10-snapshot-alpine</string>
+        <string>test-jtreg-jdk-10-snapshot-alpine</string>
+        <string>test-jtreg-langtools-10-snapshot-alpine</string>
+      </jobNames>
+      <jobFilters/>
+      <columns>
+        <hudson.views.StatusColumn/>
+        <hudson.views.WeatherColumn/>
+        <hudson.views.JobColumn/>
+        <hudson.views.LastSuccessColumn/>
+        <hudson.views.LastFailureColumn/>
+        <hudson.views.LastDurationColumn/>
+        <hudson.views.BuildButtonColumn/>
+        <hudson.plugins.favorite.column.FavoriteColumn plugin="favorite@2.3.1"/>
+      </columns>
+      <recurse>false</recurse>
+    </listView>
+    <listView>
+      <owner class="hudson" reference="../../.."/>
+      <name>repository-update</name>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <properties class="hudson.model.View$PropertyList"/>
+      <jobNames>
+        <comparator class="hudson.util.CaseInsensitiveComparator"/>
+        <string>check-tag-pipeline</string>
+        <string>update-pipeline</string>
+        <string>validate-pr-pipe</string>
+      </jobNames>
+      <jobFilters/>
+      <columns>
+        <hudson.views.StatusColumn/>
+        <hudson.views.WeatherColumn/>
+        <hudson.views.JobColumn/>
+        <hudson.views.LastSuccessColumn/>
+        <hudson.views.LastFailureColumn/>
+        <hudson.views.LastDurationColumn/>
+        <hudson.views.BuildButtonColumn/>
+        <hudson.plugins.favorite.column.FavoriteColumn plugin="favorite@2.3.1"/>
+      </columns>
+      <recurse>false</recurse>
+    </listView>
+    <listView>
+      <owner class="hudson" reference="../../.."/>
+      <name>release-10-alpine</name>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <properties class="hudson.model.View$PropertyList"/>
+      <jobNames>
+        <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView[11]/jobNames/comparator"/>
+        <string>build-10-release-alpine</string>
+        <string>test-jtreg-hotspot-10-release-alpine</string>
+        <string>test-jtreg-jdk-10-release-alpine</string>
+        <string>test-jtreg-langtools-10-release-alpine</string>
       </jobNames>
       <jobFilters/>
       <columns>

@@ -1,12 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<flow-definition plugin="workflow-job@2.16">
+<flow-definition plugin="workflow-job@2.17">
   <actions>
     <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.2.6"/>
-    <io.jenkins.blueocean.service.embedded.BlueOceanUrlAction plugin="blueocean-rest-impl@1.4.0">
-      <blueOceanUrlObject class="io.jenkins.blueocean.service.embedded.BlueOceanUrlObjectImpl">
-        <mappedUrl>blue/organizations/jenkins/new_snapshot10_build</mappedUrl>
-      </blueOceanUrlObject>
-    </io.jenkins.blueocean.service.embedded.BlueOceanUrlAction>
     <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.2.6">
       <jobProperties/>
       <triggers/>
@@ -16,19 +11,12 @@
   <description></description>
   <keepDependencies>false</keepDependencies>
   <properties>
-    <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
-      <triggers>
-        <hudson.triggers.TimerTrigger>
-          <spec>H H(3-7) * * *</spec>
-        </hudson.triggers.TimerTrigger>
-      </triggers>
-    </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
         <hudson.model.StringParameterDefinition>
-          <name>SAPMACHINE_GIT_BRANCH</name>
+          <name>GIT_TAG_NAME</name>
           <description></description>
-          <defaultValue>sapmachine10</defaultValue>
+          <defaultValue>sapmachine-10+39-1-alpine</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>PUBLISH</name>
@@ -41,29 +29,34 @@
           <defaultValue>true</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>GIT_TAG_NAME</name>
-          <description></description>
-          <defaultValue></defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
           <name>HOTSPOT_TEST_JOB</name>
           <description></description>
-          <defaultValue>test-jtreg-hotspot-10-snapshot</defaultValue>
+          <defaultValue>test-jtreg-hotspot-10-release-alpine</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>JDK_TEST_JOB</name>
           <description></description>
-          <defaultValue>test-jtreg-jdk-10-snapshot</defaultValue>
+          <defaultValue>test-jtreg-jdk-10-release-alpine</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>LANGTOOLS_TEST_JOB</name>
           <description></description>
-          <defaultValue>test-jtreg-langtools-10-snapshot</defaultValue>
+          <defaultValue>test-jtreg-langtools-10-release-alpine</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>SAPMACHINE_GIT_BRANCH</name>
+          <description></description>
+          <defaultValue>sapmachine10-alpine</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>SAPMACHINE_ARCHIVE_NAME_PREFIX</name>
           <description></description>
           <defaultValue>sapmachine10_linux-x64</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>DOCKER_DIR</name>
+          <description></description>
+          <defaultValue>build-pipe/docker/alpine_3_5_x86_64</defaultValue>
         </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
@@ -75,8 +68,13 @@
         <artifactNumToKeep>1</artifactNumToKeep>
       </strategy>
     </jenkins.model.BuildDiscarderProperty>
+    <hudson.plugins.copyartifact.CopyArtifactPermissionProperty plugin="copyartifact@1.39">
+      <projectNameList>
+        <string>*</string>
+      </projectNameList>
+    </hudson.plugins.copyartifact.CopyArtifactPermissionProperty>
   </properties>
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@2.42">
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@2.43">
     <scm class="hudson.plugins.git.GitSCM" plugin="git@3.7.0">
       <configVersion>2</configVersion>
       <userRemoteConfigs>
@@ -87,7 +85,7 @@
       </userRemoteConfigs>
       <branches>
         <hudson.plugins.git.BranchSpec>
-          <name>*/new-version-schema</name>
+          <name>*/master</name>
         </hudson.plugins.git.BranchSpec>
       </branches>
       <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
@@ -99,5 +97,5 @@
   </definition>
   <triggers/>
   <authToken>test-token</authToken>
-  <disabled>true</disabled>
+  <disabled>false</disabled>
 </flow-definition>

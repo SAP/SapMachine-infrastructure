@@ -1,12 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<flow-definition plugin="workflow-job@2.16">
+<flow-definition plugin="workflow-job@2.17">
   <actions>
     <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.2.6"/>
-    <io.jenkins.blueocean.service.embedded.BlueOceanUrlAction plugin="blueocean-rest-impl@1.4.0">
-      <blueOceanUrlObject class="io.jenkins.blueocean.service.embedded.BlueOceanUrlObjectImpl">
-        <mappedUrl>blue/organizations/jenkins/build-10-release-new</mappedUrl>
-      </blueOceanUrlObject>
-    </io.jenkins.blueocean.service.embedded.BlueOceanUrlAction>
     <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.2.6">
       <jobProperties/>
       <triggers/>
@@ -19,62 +14,37 @@
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
         <hudson.model.StringParameterDefinition>
-          <name>GIT_TAG_NAME</name>
+          <name>tag</name>
           <description></description>
-          <defaultValue>sapmachine-10+37</defaultValue>
+          <defaultValue></defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
-          <name>PUBLISH</name>
+          <name>deploy</name>
           <description></description>
-          <defaultValue>true</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
-        <hudson.model.BooleanParameterDefinition>
-          <name>RUN_TESTS</name>
-          <description></description>
-          <defaultValue>true</defaultValue>
+          <defaultValue>false</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>HOTSPOT_TEST_JOB</name>
+          <name>deploy_host</name>
           <description></description>
-          <defaultValue>test-jtreg-hotspot-10-release</defaultValue>
+          <defaultValue>sapmachine-ubuntu.sapcloud.io</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>JDK_TEST_JOB</name>
+          <name>deploy_folder</name>
           <description></description>
-          <defaultValue>test-jtreg-jdk-10-release</defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>LANGTOOLS_TEST_JOB</name>
-          <description></description>
-          <defaultValue>test-jtreg-langtools-10-release</defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>SAPMACHINE_GIT_BRANCH</name>
-          <description></description>
-          <defaultValue>sapmachine10</defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>SAPMACHINE_ARCHIVE_NAME_PREFIX</name>
-          <description></description>
-          <defaultValue>sapmachine10_linux-x64</defaultValue>
+          <defaultValue>deb/amd64</defaultValue>
         </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
     <jenkins.model.BuildDiscarderProperty>
       <strategy class="hudson.tasks.LogRotator">
         <daysToKeep>-1</daysToKeep>
-        <numToKeep>-1</numToKeep>
+        <numToKeep>10</numToKeep>
         <artifactDaysToKeep>-1</artifactDaysToKeep>
         <artifactNumToKeep>1</artifactNumToKeep>
       </strategy>
     </jenkins.model.BuildDiscarderProperty>
-    <hudson.plugins.copyartifact.CopyArtifactPermissionProperty plugin="copyartifact@1.39">
-      <projectNameList>
-        <string>*</string>
-      </projectNameList>
-    </hudson.plugins.copyartifact.CopyArtifactPermissionProperty>
   </properties>
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@2.42">
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@2.43">
     <scm class="hudson.plugins.git.GitSCM" plugin="git@3.7.0">
       <configVersion>2</configVersion>
       <userRemoteConfigs>
@@ -85,17 +55,16 @@
       </userRemoteConfigs>
       <branches>
         <hudson.plugins.git.BranchSpec>
-          <name>*/new-version-schema</name>
+          <name>*/master</name>
         </hudson.plugins.git.BranchSpec>
       </branches>
       <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
       <submoduleCfg class="list"/>
       <extensions/>
     </scm>
-    <scriptPath>build-pipe/Jenkinsfile</scriptPath>
+    <scriptPath>apk-pipe/Jenkinsfile</scriptPath>
     <lightweight>true</lightweight>
   </definition>
   <triggers/>
-  <authToken>test-token</authToken>
   <disabled>false</disabled>
 </flow-definition>
