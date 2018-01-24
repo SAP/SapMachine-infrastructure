@@ -3,8 +3,10 @@ set -ex
 
 JRE=false
 JTREG=false
+ALPINE=false
+ALPINE_EXT=
 
-while getopts ":rt" opt; do
+while getopts ":rta" opt; do
   case $opt in
       r)
           echo "Build JRE image."
@@ -13,6 +15,11 @@ while getopts ":rt" opt; do
       t)
           echo "Build JTREG image."
           JTREG=true
+          ;;
+      a)
+          echo "Build Alpine Linux image"
+          ALPINE=true
+          ALPINE_EXT="-alpine"
           ;;
       \?)
           echo "Invalid option: -$OPTARG" >&2
@@ -47,15 +54,47 @@ if [ $JTREG == true ]; then
 fi
 
 if $JRE ; then
-    FILENAME="sapmachine-$VERSION_MAJOR-jre/Dockerfile"
-    PACKAGE=sapmachine-$VERSION_MAJOR-jre=$VERSION_MAJOR+$VERSION_MINOR.$SAPMACHINE_VERSION
+    FILENAME="sapmachine-$VERSION_MAJOR-jre$ALPINE_EXT/Dockerfile"
+
+    if $ALPINE; then
+        PACKAGE=sapmachine-$VERSION_MAJOR-jre=$VERSION_MAJOR.$VERSION_MINOR.$SAPMACHINE_VERSION-r0
+    else
+        PACKAGE=sapmachine-$VERSION_MAJOR-jre=$VERSION_MAJOR+$VERSION_MINOR.$SAPMACHINE_VERSION
+    fi
 else
-    FILENAME="sapmachine-$VERSION_MAJOR/Dockerfile"
-    PACKAGE=sapmachine-$VERSION_MAJOR-jdk=$VERSION_MAJOR+$VERSION_MINOR.$SAPMACHINE_VERSION
+    FILENAME="sapmachine-$VERSION_MAJOR$ALPINE_EXT/Dockerfile"
+
+    if $ALPINE; then
+        PACKAGE=sapmachine-$VERSION_MAJOR-jdk=$VERSION_MAJOR.$VERSION_MINOR.$SAPMACHINE_VERSION-r0
+    else
+        PACKAGE=sapmachine-$VERSION_MAJOR-jdk=$VERSION_MAJOR+$VERSION_MINOR.$SAPMACHINE_VERSION
+    fi
 fi
 
 rm $FILENAME || true
 
+if $ALPINE; then
+cat >> $FILENAME << EOI
+
+FROM alpine:3.5
+
+RUN apk update; \
+    apk add $DEPENDENCIES;
+
+WORKDIR /etc/apk/keys
+RUN wget https://sapmachine-ubuntu.sapcloud.io/alpine/sapmachine%40sap.com-5a673212.rsa.pub
+
+WORKDIR /
+
+RUN echo "http://sapmachine-ubuntu.sapcloud.io/alpine" >> /etc/apk/repositories
+
+RUN apk update; \
+    apk add $PACKAGE;
+
+$ADD_USER
+
+EOI
+else
 cat >> $FILENAME << EOI
 
 FROM ubuntu:16.04
@@ -72,6 +111,7 @@ RUN wget -q -O - https://sapmachine-ubuntu.sapcloud.io/debian/sapmachine-debian.
 $ADD_USER
 
 EOI
+fi
 
 git remote remove origin
 git remote add origin $REPO_URL
