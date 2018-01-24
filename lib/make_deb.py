@@ -132,18 +132,14 @@ def main(argv=None):
     tag = args.tag
     cwd = os.getcwd()
     work_dir = join(cwd, 'deb_work')
-    pattern = re.compile('([^-]+)-(((([0-9]+)((\.([0-9]+))*)?)\+([0-9]+))(-([0-9]+))?)')
-    match = pattern.match(tag)
-    version = match.group(2).replace('-', '.')
-    major = match.group(5)
+    version, major, build_number, sap_build_number = utils.sapmachine_tag_components(tag)
+    version = version.replace('-', '.')
     jdk_name = str.format('sapmachine-{0}-jdk-{1}', major, version)
     jre_name = str.format('sapmachine-{0}-jre-{1}', major, version)
 
-    jdk_url, jre_url = fetch_tag(tag)
+    jdk_url, jre_url = utils.fetch_tag(tag, 'linux-x64', utils.get_github_api_accesstoken())
 
-    if exists(work_dir):
-        rmtree(work_dir)
-
+    utils.remove_if_exists(work_dir)
     mkdir(work_dir)
 
     jdk_archive = join(work_dir, jdk_url.rsplit('/', 1)[-1])

@@ -55,8 +55,7 @@ def main(argv=None):
     jdk_dir = join(work_dir, jdk_name)
     jre_dir = join(work_dir, jre_name)
 
-    if exists(work_dir):
-        rmtree(work_dir)
+    utils.remove_if_exists(work_dir)
 
     mkdir(work_dir)
     mkdir(jdk_dir)

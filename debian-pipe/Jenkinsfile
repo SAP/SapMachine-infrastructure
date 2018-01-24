@@ -4,6 +4,9 @@ pipeline {
     }
     stages {
         stage('Build') {
+            environment {
+              GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
+            }
             steps {
                 sh 'rm -f *.deb'
                 sh "python lib/make_deb.py --tag=${params.tag} --templates-directory=debian-pipe/templates"
