@@ -31,7 +31,7 @@ def main(argv=None):
     docker_run_args = ['docker', 'run',
         '-v', str.format('{0}:/apk_repo:rw,z', repository),
         '-v', str.format('{0}:/apk_keys:ro,z', keydir),
-        '-it', docker_container_name, 'bash', '-lic', docker_run_cmd]
+        '-t', docker_container_name, 'bash', '-lic', docker_run_cmd]
     utils.run_cmd(docker_run_args)
 
 if __name__ == "__main__":
