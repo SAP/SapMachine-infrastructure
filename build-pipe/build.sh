@@ -45,8 +45,7 @@ if [[ $GIT_TAG_NAME == sapmachine-* ]]; then
     --with-version-pre=ea --with-version-build=$VERSION_MINOR $ALPINE_OPTS
   fi
 else
-  bash ./configure --with-boot-jdk=$BOOT_JDK --with-vendor-name='SAP SE' --with-version-feature=$VERSION_MAJOR \
-  --with-version-opt=sapmachine \
+  bash ./configure --with-boot-jdk=$BOOT_JDK --with-vendor-name='SAP SE' --with-version-opt=sapmachine \
   --with-version-pre=snapshot --with-version-build=$BUILD_NUMBER $ALPINE_OPTS
 fi
 
