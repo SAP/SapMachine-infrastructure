@@ -36,15 +36,18 @@ if [[ $GIT_TAG_NAME == sapmachine-* ]]; then
   | sed -rn 's/sapmachine\-([0-9]+)\+([0-9]+)\-?([0-9]*)(\-alpine)?/ \1 \2 \3 /p')
   
   if [ -z $SAPMACHINE_VERSION ]; then
-    bash ./configure --with-boot-jdk=$BOOT_JDK --with-vendor-name='SAP SE' --with-version-opt=sapmachine \
-     --with-version-pre=ea --with-version-build=$VERSION_MINOR $ALPINE_OPTS
+    bash ./configure --with-boot-jdk=$BOOT_JDK --with-vendor-name='SAP SE'  --with-version-feature=$VERSION_MAJOR \
+    --with-version-opt=sapmachine \
+    --with-version-pre=ea --with-version-build=$VERSION_MINOR $ALPINE_OPTS
   else
-    bash ./configure --with-boot-jdk=$BOOT_JDK --with-vendor-name='SAP SE' --with-version-opt=sapmachine-$SAPMACHINE_VERSION \
-     --with-version-pre=ea --with-version-build=$VERSION_MINOR $ALPINE_OPTS
+    bash ./configure --with-boot-jdk=$BOOT_JDK --with-vendor-name='SAP SE' --with-version-feature=$VERSION_MAJOR \
+    --with-version-opt=sapmachine-$SAPMACHINE_VERSION \
+    --with-version-pre=ea --with-version-build=$VERSION_MINOR $ALPINE_OPTS
   fi
 else
-  bash ./configure --with-boot-jdk=$BOOT_JDK --with-vendor-name='SAP SE' --with-version-opt=sapmachine \
-   --with-version-pre=snapshot --with-version-build=$BUILD_NUMBER $ALPINE_OPTS
+  bash ./configure --with-boot-jdk=$BOOT_JDK --with-vendor-name='SAP SE' --with-version-feature=$VERSION_MAJOR \
+  --with-version-opt=sapmachine \
+  --with-version-pre=snapshot --with-version-build=$BUILD_NUMBER $ALPINE_OPTS
 fi
 
 make JOBS=12 product-bundles test-image
