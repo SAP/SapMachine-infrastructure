@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<flow-definition plugin="workflow-job@2.16">
+<flow-definition plugin="workflow-job@2.17">
   <actions>
     <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.2.6"/>
     <io.jenkins.blueocean.service.embedded.BlueOceanUrlAction plugin="blueocean-rest-impl@1.4.0">
@@ -16,14 +16,6 @@
   <description></description>
   <keepDependencies>false</keepDependencies>
   <properties>
-    <jenkins.model.BuildDiscarderProperty>
-      <strategy class="hudson.tasks.LogRotator">
-        <daysToKeep>-1</daysToKeep>
-        <numToKeep>-1</numToKeep>
-        <artifactDaysToKeep>-1</artifactDaysToKeep>
-        <artifactNumToKeep>1</artifactNumToKeep>
-      </strategy>
-    </jenkins.model.BuildDiscarderProperty>
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
         <hudson.model.StringParameterDefinition>
@@ -68,8 +60,16 @@
         </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>-1</daysToKeep>
+        <numToKeep>-1</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>1</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
   </properties>
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@2.42">
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@2.43">
     <scm class="hudson.plugins.git.GitSCM" plugin="git@3.7.0">
       <configVersion>2</configVersion>
       <userRemoteConfigs>
@@ -80,7 +80,7 @@
       </userRemoteConfigs>
       <branches>
         <hudson.plugins.git.BranchSpec>
-          <name>*/test-pr</name>
+          <name>*/master</name>
         </hudson.plugins.git.BranchSpec>
       </branches>
       <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>

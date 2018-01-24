@@ -105,7 +105,6 @@
       <properties class="hudson.model.View$PropertyList"/>
       <jobNames>
         <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
-        <string>build-10-snapshot-alpine</string>
       </jobNames>
       <jobFilters/>
       <columns>
@@ -223,6 +222,7 @@
       <jobNames>
         <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
         <string>build-10-docker</string>
+        <string>build-10-docker-new</string>
         <string>test-jtreg-hotspot-10-docker</string>
         <string>test-jtreg-jdk-10-docker</string>
         <string>test-jtreg-langtools-10-docker</string>
@@ -299,6 +299,7 @@
       <jobNames>
         <comparator class="hudson.util.CaseInsensitiveComparator"/>
         <string>check-tag-pipeline</string>
+        <string>check-tag-pipeline-new</string>
         <string>update-pipeline</string>
         <string>validate-pr-pipe</string>
       </jobNames>
@@ -327,6 +328,30 @@
         <string>test-jtreg-hotspot-10-release-alpine</string>
         <string>test-jtreg-jdk-10-release-alpine</string>
         <string>test-jtreg-langtools-10-release-alpine</string>
+      </jobNames>
+      <jobFilters/>
+      <columns>
+        <hudson.views.StatusColumn/>
+        <hudson.views.WeatherColumn/>
+        <hudson.views.JobColumn/>
+        <hudson.views.LastSuccessColumn/>
+        <hudson.views.LastFailureColumn/>
+        <hudson.views.LastDurationColumn/>
+        <hudson.views.BuildButtonColumn/>
+        <hudson.plugins.favorite.column.FavoriteColumn plugin="favorite@2.3.1"/>
+      </columns>
+      <recurse>false</recurse>
+    </listView>
+    <listView>
+      <owner class="hudson" reference="../../.."/>
+      <name>package</name>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <properties class="hudson.model.View$PropertyList"/>
+      <jobNames>
+        <comparator class="hudson.util.CaseInsensitiveComparator"/>
+        <string>apk-pipeline</string>
+        <string>debian-pipeline</string>
       </jobNames>
       <jobFilters/>
       <columns>
