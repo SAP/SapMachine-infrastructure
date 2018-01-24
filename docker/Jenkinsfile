@@ -1,7 +1,7 @@
 pipeline {
     agent any
     stages {
-        stage('Genrate Dockerfiles') {
+        stage('Generate Dockerfiles') {
             when {
               expression { params.PUBLISH == true }
             }
