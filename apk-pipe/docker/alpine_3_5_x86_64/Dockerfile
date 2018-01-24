@@ -20,6 +20,8 @@ RUN chmod a+w /var/cache/distfiles
 RUN groupadd -g 1001 jenkins
 RUN useradd -ms /bin/bash jenkins -u 1001 -g 1001 -G abuild
 RUN echo "jenkins    ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+RUN echo "PACKAGER=\"SapMachine <sapmachine@sap.com>\"" >> /etc/abuild.conf
+RUN echo "MAINTAINER=\"$PACKAGER\"" >> /etc/abuild.conf
 
 USER jenkins
 RUN abuild-keygen -a -i -n

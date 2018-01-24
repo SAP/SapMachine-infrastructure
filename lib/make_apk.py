@@ -7,6 +7,7 @@ import os
 import sys
 import shutil
 import argparse
+import glob
 import utils
 
 from string import Template
@@ -19,6 +20,9 @@ from os.path import exists
 from os.path import expanduser
 
 from shutil import rmtree
+from shutil import copytree
+from shutil import move
+from shutil import copy
 
 def generate_configuration(templates_dir, target_dir, package_name, version, package_release, description, archive_url):
     archive_name = archive_url.rsplit('/', 1)[-1]
@@ -64,12 +68,15 @@ def main(argv=None):
     utils.run_cmd(['abuild', 'checksum'], cwd=jdk_dir)
     utils.run_cmd(['abuild', 'checksum'], cwd=jre_dir)
 
-    utils.run_cmd(['abuild', '-r'], cwd=jdk_dir)
-    utils.run_cmd(['abuild', '-r'], cwd=jre_dir)
+    utils.run_cmd(['abuild', '-r', '-K'], cwd=jdk_dir)
+    utils.run_cmd(['abuild', '-r', '-K'], cwd=jre_dir)
 
     rmtree(work_dir)
 
-    utils.make_tgz_archive(join(home, 'packages'), join(cwd, 'packages.tar.gz'))
+    apk_files = glob.glob(join(home, 'packages', 'apk_work','*', '*.apk'))
+
+    for apk_file in apk_files:
+        copy(apk_file, cwd)
 
 if __name__ == "__main__":
     sys.exit(main())
