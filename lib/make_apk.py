@@ -31,7 +31,7 @@ def generate_configuration(templates_dir, target_dir, package_name, version, pac
         with open(join(target_dir, 'APKBUILD'), 'w+') as apkbuild_out:
             apkbuild_out.write(Template(apkbuild_template.read()).substitute(
                 package_name=package_name,
-                package_version=version.replace('+', '.'),
+                package_version=version.replace('+', '.').replace('-', '.'),
                 package_release=package_release,
                 package_description=description,
                 archive_url=archive_url,
