@@ -13,7 +13,7 @@ git clone -b $SAPMACHINE_GIT_BRANCH "https://$SAPMACHINE_GIT_REPO" sapmachine
 cd sapmachine
 
 git config user.email $GIT_COMMITTER_EMAIL
-git config user.name $GIT_COMMITER_NAME
+git config user.name $GIT_COMMITTER_NAME
 
 if [[ ! -z $GIT_TAG_NAME ]] && [[ $GIT_TAG_NAME == sapmachine* ]]; then
   git checkout $GIT_TAG_NAME
