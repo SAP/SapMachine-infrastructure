@@ -5,9 +5,15 @@ if [ -d sapmachine ]; then
     rm -rf sapmachine;
 fi
 
+export GIT_COMMITTER_NAME=$GIT_USER
+export GIT_COMMITTER_EMAIL="sapmachine@sap.com"
+
 git clone -b $SAPMACHINE_GIT_BRANCH "https://$SAPMACHINE_GIT_REPO" sapmachine
 
 cd sapmachine
+
+git config user.email $GIT_COMMITTER_EMAIL
+git config user.name $GIT_USER
 
 if [[ ! -z $GIT_TAG_NAME ]] && [[ $GIT_TAG_NAME == sapmachine* ]]; then
   git checkout $GIT_TAG_NAME
