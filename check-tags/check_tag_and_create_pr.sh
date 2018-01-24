@@ -29,10 +29,10 @@ CONTAINING_BRANCHES=$(git branch -a --contains tags/jdk-$MAJOR_VERSION+$LAST_BUI
  grep -E "(sapmachine|merge-jdk-$MAJOR_VERSION\+$LAST_BUILD_JDK_TAG)")
 set -e
 if [ -z "$CONTAINING_BRANCHES" ]; then
-  echo "Merging tag ${GIT_TAG}"
-  git checkout -b "merge-$GIT_TAG"
-  git merge ${GIT_TAG}^0
-  git push origin "merge-$GIT_TAG"
+  echo "Create head branch to tag ${GIT_TAG}"
+  git checkout ${GIT_TAG}
+  git checkout -b "pr-$GIT_TAG"
+  git push origin "pr-$GIT_TAG"
   popd
 else
   echo "Already merged, nothing to do."
