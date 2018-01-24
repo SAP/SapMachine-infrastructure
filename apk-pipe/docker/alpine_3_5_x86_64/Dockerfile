@@ -12,6 +12,7 @@ RUN apk update; \
     apk add python; \
     apk add git; \
     apk add shadow; \
+    apk add openssh; \
     apk add alpine-sdk;
 
 RUN mkdir -p /var/cache/distfiles
