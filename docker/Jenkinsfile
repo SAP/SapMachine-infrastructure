@@ -22,6 +22,8 @@ pipeline {
                 sh '''
                   docker/generate_dockerfile.sh -r
                   docker/generate_dockerfile.sh
+                  docker/generate_dockerfile.sh -r -a
+                  docker/generate_dockerfile.sh -a
                   docker/generate_dockerfile.sh -r -t
                   docker/generate_dockerfile.sh -t
                   '''
@@ -50,6 +52,8 @@ pipeline {
               sh '''
                 docker/build-and-push.sh
                 docker/build-and-push.sh jre
+                docker/build-and-push.sh jdk alpine
+                docker/build-and-push.sh jre alpine
                 '''
               }
             }
