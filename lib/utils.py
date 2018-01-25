@@ -150,7 +150,7 @@ def fetch_tag(tag, platform, token=None):
 
                 if asset_image_type == 'jdk' and asset_platform == platform:
                     jdk_url = download_url
-                else:
+                else if asset_image_type == 'jre' and asset_platform == platform:
                     jre_url = download_url
 
     return jdk_url, jre_url
