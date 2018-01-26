@@ -31,22 +31,29 @@ if [[ ! -z $GIT_TAG_NAME ]]; then
   git checkout $GIT_TAG_NAME
 fi
 
+VENDOR_INFO="--with-vendor-name='SAP SE' --with-vendor-url='http://sapmachine.org' \
+--with-vendor-bug-url='https://github.com/SAP/SapMachine/issues/new' \
+--with-vendor-vm-bug-url='https://github.com/SAP/SapMachine/issues/new' "
+
 if [[ $GIT_TAG_NAME == sapmachine-* ]]; then
   read VERSION_MAJOR VERSION_MINOR SAPMACHINE_VERSION<<< $(echo $GIT_TAG_NAME \
   | sed -rn 's/sapmachine\-([0-9]+)\+([0-9]+)\-?([0-9]*)(\-alpine)?/ \1 \2 \3 /p')
   
   if [ -z $SAPMACHINE_VERSION ]; then
-    bash ./configure --with-boot-jdk=$BOOT_JDK --with-vendor-name='SAP SE'  --with-version-feature=$VERSION_MAJOR \
+    bash ./configure --with-boot-jdk=$BOOT_JDK --with-version-feature=$VERSION_MAJOR \
     --with-version-opt=sapmachine \
-    --with-version-pre=ea --with-version-build=$VERSION_MINOR $ALPINE_OPTS
+    --with-version-pre=ea --with-version-build=$VERSION_MINOR $ALPINE_OPTS \
+    $VENDOR_INFO
   else
     bash ./configure --with-boot-jdk=$BOOT_JDK --with-vendor-name='SAP SE' --with-version-feature=$VERSION_MAJOR \
     --with-version-opt=sapmachine-$SAPMACHINE_VERSION \
-    --with-version-pre=ea --with-version-build=$VERSION_MINOR $ALPINE_OPTS
+    --with-version-pre=ea --with-version-build=$VERSION_MINOR $ALPINE_OPTS \
+    $VENDOR_INFO
   fi
 else
   bash ./configure --with-boot-jdk=$BOOT_JDK --with-vendor-name='SAP SE' --with-version-opt=sapmachine \
-  --with-version-pre=snapshot --with-version-build=$BUILD_NUMBER $ALPINE_OPTS
+  --with-version-pre=snapshot --with-version-build=$BUILD_NUMBER $ALPINE_OPTS \
+  $VENDOR_INFO
 fi
 
 make JOBS=12 product-bundles test-image
