@@ -31,9 +31,9 @@ if [[ ! -z $GIT_TAG_NAME ]]; then
   git checkout $GIT_TAG_NAME
 fi
 
-VENDOR_INFO="--with-vendor-name='SAP SE' --with-vendor-url='http://sapmachine.org' \
---with-vendor-bug-url='https://github.com/SAP/SapMachine/issues/new' \
---with-vendor-vm-bug-url='https://github.com/SAP/SapMachine/issues/new' "
+VENDOR_INFO="--with-vendor-name=\'SAP SE\' --with-vendor-url=http://sapmachine.org \
+--with-vendor-bug-url=https://github.com/SAP/SapMachine/issues/new \
+--with-vendor-vm-bug-url=https://github.com/SAP/SapMachine/issues/new"
 
 if [[ $GIT_TAG_NAME == sapmachine-* ]]; then
   read VERSION_MAJOR VERSION_MINOR SAPMACHINE_VERSION<<< $(echo $GIT_TAG_NAME \
