@@ -43,17 +43,24 @@ if [[ $GIT_TAG_NAME == sapmachine-* ]]; then
     bash ./configure --with-boot-jdk=$BOOT_JDK --with-version-feature=$VERSION_MAJOR \
     --with-version-opt=sapmachine \
     --with-version-pre=ea --with-version-build=$VERSION_MINOR $ALPINE_OPTS \
-    $VENDOR_INFO
+    --with-vendor-name='SAP SE' --with-vendor-url='http://sapmachine.org' \
+    --with-vendor-bug-url='https://github.com/SAP/SapMachine/issues/new' \
+    --with-vendor-vm-bug-url='https://github.com/SAP/SapMachine/issues/new'
   else
     bash ./configure --with-boot-jdk=$BOOT_JDK --with-vendor-name='SAP SE' --with-version-feature=$VERSION_MAJOR \
     --with-version-opt=sapmachine-$SAPMACHINE_VERSION \
     --with-version-pre=ea --with-version-build=$VERSION_MINOR $ALPINE_OPTS \
-    $VENDOR_INFO
+    --with-vendor-name='SAP SE' --with-vendor-url='http://sapmachine.org' \
+    --with-vendor-bug-url='https://github.com/SAP/SapMachine/issues/new' \
+    --with-vendor-vm-bug-url='https://github.com/SAP/SapMachine/issues/new'
+
   fi
 else
   bash ./configure --with-boot-jdk=$BOOT_JDK --with-vendor-name='SAP SE' --with-version-opt=sapmachine \
   --with-version-pre=snapshot --with-version-build=$BUILD_NUMBER $ALPINE_OPTS \
-  $VENDOR_INFO
+  --with-vendor-name='SAP SE' --with-vendor-url='http://sapmachine.org' \
+  --with-vendor-bug-url='https://github.com/SAP/SapMachine/issues/new' \
+  --with-vendor-vm-bug-url='https://github.com/SAP/SapMachine/issues/new'
 fi
 
 make JOBS=12 product-bundles test-image
