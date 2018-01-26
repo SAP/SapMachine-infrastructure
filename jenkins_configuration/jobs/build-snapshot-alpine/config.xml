@@ -2,11 +2,6 @@
 <flow-definition plugin="workflow-job@2.17">
   <actions>
     <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.2.6"/>
-    <io.jenkins.blueocean.service.embedded.BlueOceanUrlAction plugin="blueocean-rest-impl@1.4.0">
-      <blueOceanUrlObject class="io.jenkins.blueocean.service.embedded.BlueOceanUrlObjectImpl">
-        <mappedUrl>blue/organizations/jenkins/build-10-release</mappedUrl>
-      </blueOceanUrlObject>
-    </io.jenkins.blueocean.service.embedded.BlueOceanUrlAction>
     <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.2.6">
       <jobProperties/>
       <triggers/>
@@ -16,12 +11,19 @@
   <description></description>
   <keepDependencies>false</keepDependencies>
   <properties>
+    <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+      <triggers>
+        <hudson.triggers.TimerTrigger>
+          <spec>H H(3-7) * * *</spec>
+        </hudson.triggers.TimerTrigger>
+      </triggers>
+    </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
         <hudson.model.StringParameterDefinition>
-          <name>GIT_TAG_NAME</name>
+          <name>SAPMACHINE_GIT_BRANCH</name>
           <description></description>
-          <defaultValue>sapmachine-10+40-0</defaultValue>
+          <defaultValue>sapmachine-alpine</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>PUBLISH</name>
@@ -34,34 +36,34 @@
           <defaultValue>true</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.StringParameterDefinition>
+          <name>GIT_TAG_NAME</name>
+          <description></description>
+          <defaultValue></defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
           <name>HOTSPOT_TEST_JOB</name>
           <description></description>
-          <defaultValue>test-jtreg-hotspot-10-release</defaultValue>
+          <defaultValue>test-jtreg-hotspot-snapshot-alpine</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>JDK_TEST_JOB</name>
           <description></description>
-          <defaultValue>test-jtreg-jdk-10-release</defaultValue>
+          <defaultValue>test-jtreg-jdk-snapshot-alpine</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>LANGTOOLS_TEST_JOB</name>
           <description></description>
-          <defaultValue>test-jtreg-langtools-10-release</defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>SAPMACHINE_GIT_BRANCH</name>
-          <description></description>
-          <defaultValue>sapmachine10</defaultValue>
+          <defaultValue>test-jtreg-langtools-snapshot-alpine</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>SAPMACHINE_ARCHIVE_NAME_PREFIX</name>
           <description></description>
-          <defaultValue>sapmachine10_linux-x64</defaultValue>
+          <defaultValue>sapmachine_linux-x64</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>DOCKER_DIR</name>
           <description></description>
-          <defaultValue>build-pipe/docker/ubuntu_16_04_x86_64</defaultValue>
+          <defaultValue>build-pipe/docker/alpine_3_5_x86_64</defaultValue>
         </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
@@ -75,7 +77,9 @@
     </jenkins.model.BuildDiscarderProperty>
     <hudson.plugins.copyartifact.CopyArtifactPermissionProperty plugin="copyartifact@1.39">
       <projectNameList>
-        <string>*</string>
+        <string>test-jtreg-hotspot-snapshot-alpine</string>
+        <string>test-jtreg-jdk-snapshot-alpine</string>
+        <string>test-jtreg-langtools-snapshot-alpine</string>
       </projectNameList>
     </hudson.plugins.copyartifact.CopyArtifactPermissionProperty>
   </properties>
