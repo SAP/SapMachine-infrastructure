@@ -41,39 +41,6 @@ def clone_sapmachine(target):
     sapmachine_branch = 'sapmachine'
     utils.run_cmd(['git', 'clone', '-b', sapmachine_branch, '--depth', '1', sapmachine_repo, target])
 
-def fetch_tag(tag):
-    import json
-
-    org = 'SAP'
-    repository = 'SapMachine'
-    github_api = str.format('https://api.github.com/repos/{0}/{1}/releases/tags/{2}', org, repository, urllib.quote(tag))
-    jre_url = None
-    jdk_url = None
-
-    response = json.loads(urllib.urlopen(github_api, proxies={}).read())
-    asset_pattern = re.compile('[^-]+-([^-]+)-([^_]+)_([^_]+)_bin\.tar\.gz')
-
-    if 'assets' in response:
-        assets = response['assets']
-        for asset in assets:
-            name = asset['name']
-            download_url = asset['browser_download_url']
-            match = asset_pattern.match(name)
-
-            if match is not None:
-                image_type = match.group(1)
-                version = match.group(2)
-                platform = match.group(3)
-
-                print(str.format('found asset image_type={0}, version={1}, platform={2}', image_type, version, platform))
-
-                if image_type == 'jdk' and platform == 'linux-x64':
-                    jdk_url = download_url
-                else:
-                    jre_url = download_url
-
-    return jdk_url, jre_url
-
 def gather_licenses(src_dir):
     licenses = []
     separator = '------------------------------------------------------------------------------'

@@ -127,31 +127,43 @@ def fetch_tag(tag, platform, token=None):
     github_api = str.format('https://api.github.com/repos/{0}/{1}/releases/tags/{2}', org, repository, quote(tag))
     jre_url = None
     jdk_url = None
+    error_msg = str.format('failed to fetch assets for tag "{0}" and platform="{1}', tag, platform)
 
     request = Request(github_api)
 
     if token is not None:
         request.add_header('Authorization', str.format('token {0}', token))
 
-    response = json.loads(urlopen(request).read())
-    asset_pattern = re.compile('[^-]+-([^-]+)-([^_]+)_([^_]+)_bin\.tar\.gz')
+    try:
+        response = json.loads(urlopen(request).read())
+        asset_pattern = re.compile('[^-]+-([^-]+)-([^_]+)_([^_]+)_bin\.tar\.gz')
 
-    if 'assets' in response:
-        assets = response['assets']
-        for asset in assets:
-            name = asset['name']
-            download_url = asset['browser_download_url']
-            match = asset_pattern.match(name)
+        if 'assets' in response:
+            assets = response['assets']
+            for asset in assets:
+                name = asset['name']
+                download_url = asset['browser_download_url']
+                match = asset_pattern.match(name)
 
-            if match is not None:
-                asset_image_type = match.group(1)
-                asset_version = match.group(2)
-                asset_platform = match.group(3)
+                if match is not None:
+                    asset_image_type = match.group(1)
+                    asset_version = match.group(2)
+                    asset_platform = match.group(3)
 
-                if asset_image_type == 'jdk' and asset_platform == platform:
-                    jdk_url = download_url
-                elif asset_image_type == 'jre' and asset_platform == platform:
-                    jre_url = download_url
+                    print(str.format('found {0} image with version={1} and platform={2}', 
+                        asset_image_type,
+                        asset_version,
+                        asset_platform))
+
+                    if asset_image_type == 'jdk' and asset_platform == platform:
+                        jdk_url = download_url
+                    elif asset_image_type == 'jre' and asset_platform == platform:
+                        jre_url = download_url
+    except Exception:
+        raise Exception(error_msg)
+
+    if jdk_url is None or jre_url is None:
+        raise Exception(error_msg)
 
     return jdk_url, jre_url
 
