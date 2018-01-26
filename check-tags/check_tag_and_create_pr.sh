@@ -26,7 +26,7 @@ GIT_TAG="jdk-$MAJOR_VERSION+$LAST_BUILD_JDK_TAG"
 echo "LAST_JDK_TAG=$GIT_TAG"
 set +e
 CONTAINING_BRANCHES=$(git branch -a --contains tags/jdk-$MAJOR_VERSION+$LAST_BUILD_JDK_TAG | \
- grep -E "(sapmachine|merge-jdk-$MAJOR_VERSION\+$LAST_BUILD_JDK_TAG)")
+ grep -E "(sapmachine|pr-$GIT_TAG)")
 set -e
 if [ -z "$CONTAINING_BRANCHES" ]; then
   echo "Create head branch to tag ${GIT_TAG}"
@@ -40,7 +40,7 @@ else
   exit 0
 fi
 
-PR_DATA="{\"title\":\"Merge to tag $GIT_TAG\",\"body\":\"please pull\",\"head\":\"merge-$GIT_TAG\",\"base\":\"$PR_BASE\"}"
+PR_DATA="{\"title\":\"Merge to tag $GIT_TAG\",\"body\":\"please pull\",\"head\":\"pr-$GIT_TAG\",\"base\":\"$PR_BASE\"}"
 
 curl -H "Content-Type: application/json" \
  --data "$PR_DATA" "https://$GIT_USER:$SAPMACHINE_PUBLISH_GITHUB_TOKEN@api.github.com/repos/SAP/SapMachine/pulls"
