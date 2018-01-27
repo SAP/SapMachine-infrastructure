@@ -235,7 +235,6 @@
       <jobNames>
         <comparator class="hudson.util.CaseInsensitiveComparator"/>
         <string>check-tag-pipeline</string>
-        <string>check-tag-pipeline-new</string>
         <string>update-pipeline</string>
         <string>validate-pr-pipe</string>
       </jobNames>
@@ -457,6 +456,24 @@
             <hudson.views.JobColumn/>
           </columns>
         </hudson.plugins.sectioned__view.ListViewSection>
+        <hudson.plugins.sectioned__view.ListViewSection>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../listView[11]/jobNames/comparator"/>
+            <string>build-11-release-alpine</string>
+            <string>test-jtreg-hotspot-11-release-alpine</string>
+            <string>test-jtreg-jdk-11-release-alpine</string>
+            <string>test-jtreg-langtools-11-release-alpine</string>
+          </jobNames>
+          <jobFilters/>
+          <name>alpine release 11</name>
+          <width>THIRD</width>
+          <alignment>LEFT</alignment>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+          </columns>
+        </hudson.plugins.sectioned__view.ListViewSection>
         <hudson.plugins.sectioned__view.TextSection>
           <jobNames>
             <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../listView[11]/jobNames/comparator"/>
@@ -537,6 +554,22 @@
             <hudson.views.JobColumn/>
           </columns>
         </hudson.plugins.sectioned__view.ListViewSection>
+        <hudson.plugins.sectioned__view.ListViewSection>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../listView[11]/jobNames/comparator"/>
+            <string>check-tag-pipeline</string>
+            <string>update-pipeline</string>
+          </jobNames>
+          <jobFilters/>
+          <name>repository update</name>
+          <width>THIRD</width>
+          <alignment>CENTER</alignment>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+          </columns>
+        </hudson.plugins.sectioned__view.ListViewSection>
       </sections>
     </hudson.plugins.sectioned__view.SectionedView>
     <listView>
@@ -577,6 +610,28 @@
         <string>test-jtreg-hotspot-11-release-alpine</string>
         <string>test-jtreg-jdk-11-release-alpine</string>
         <string>test-jtreg-langtools-11-release-alpine</string>
+      </jobNames>
+      <jobFilters/>
+      <columns>
+        <hudson.views.StatusColumn/>
+        <hudson.views.WeatherColumn/>
+        <hudson.views.JobColumn/>
+        <hudson.views.LastSuccessColumn/>
+        <hudson.views.LastFailureColumn/>
+        <hudson.views.LastDurationColumn/>
+        <hudson.views.BuildButtonColumn/>
+        <hudson.plugins.favorite.column.FavoriteColumn plugin="favorite@2.3.1"/>
+      </columns>
+      <recurse>false</recurse>
+    </listView>
+    <listView>
+      <owner class="hudson" reference="../../.."/>
+      <name>alpine-release</name>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <properties class="hudson.model.View$PropertyList"/>
+      <jobNames>
+        <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView[11]/jobNames/comparator"/>
       </jobNames>
       <jobFilters/>
       <columns>
