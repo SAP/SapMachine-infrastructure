@@ -5,7 +5,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                build job: 'build-10-pr-validation', propagate: true, wait: true, parameters:
+                build job: PR_BUILD_JOB, propagate: true, wait: true, parameters:
                     [
                         string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER),
                         booleanParam(name: 'PUBLISH', value: false),
