@@ -105,13 +105,13 @@
     </listView>
     <listView>
       <owner class="hudson" reference="../../.."/>
-      <name>pr-validation</name>
+      <name>pr-validation-10</name>
       <filterExecutors>false</filterExecutors>
       <filterQueue>false</filterQueue>
       <properties class="hudson.model.View$PropertyList"/>
       <jobNames>
         <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
-        <string>validate-pr-pipe</string>
+        <string>validate-pr-pipe-10</string>
       </jobNames>
       <jobFilters/>
       <columns>
@@ -236,7 +236,7 @@
         <comparator class="hudson.util.CaseInsensitiveComparator"/>
         <string>check-tag-pipeline</string>
         <string>update-pipeline</string>
-        <string>validate-pr-pipe</string>
+        <string>validate-pr-pipe-10</string>
       </jobNames>
       <jobFilters/>
       <columns>
@@ -325,7 +325,7 @@
             <string>build-snapshot</string>
             <string>test-jtreg-hotspot-snapshot</string>
             <string>test-jtreg-jdk-snapshot</string>
-            <string>test-pipeline-jtreg-langtools</string>
+            <string>test-jtreg-langtools-snapshot</string>
           </jobNames>
           <jobFilters/>
           <name>snapshot</name>
@@ -479,7 +479,7 @@
             <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../listView[11]/jobNames/comparator"/>
           </jobNames>
           <jobFilters/>
-          <name>Misc</name>
+          <name>Pull Request Validation</name>
           <width>FULL</width>
           <alignment>CENTER</alignment>
           <text></text>
@@ -488,14 +488,14 @@
         <hudson.plugins.sectioned__view.ListViewSection>
           <jobNames>
             <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../listView[11]/jobNames/comparator"/>
-            <string>build-10-pr-validation</string>
-            <string>test-jtreg-hotspot-10-pr-validation</string>
-            <string>test-jtreg-jdk-10-pr-validation</string>
-            <string>test-jtreg-langtools-10-pr-validation</string>
+            <string>build-pr-validation</string>
+            <string>test-jtreg-hotspot-pr-validation</string>
+            <string>test-jtreg-jdk-pr-validation</string>
+            <string>test-jtreg-langtools-pr-validation</string>
             <string>validate-pr-pipe</string>
           </jobNames>
           <jobFilters/>
-          <name>pull request validation</name>
+          <name>sapmachine</name>
           <width>THIRD</width>
           <alignment>LEFT</alignment>
           <columns>
@@ -504,6 +504,36 @@
             <hudson.views.JobColumn/>
           </columns>
         </hudson.plugins.sectioned__view.ListViewSection>
+        <hudson.plugins.sectioned__view.ListViewSection>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../listView[11]/jobNames/comparator"/>
+            <string>build-10-pr-validation</string>
+            <string>test-jtreg-hotspot-10-pr-validation</string>
+            <string>test-jtreg-jdk-10-pr-validation</string>
+            <string>test-jtreg-langtools-10-pr-validation</string>
+            <string>validate-pr-pipe-10</string>
+          </jobNames>
+          <jobFilters/>
+          <name>sapmachine10</name>
+          <width>THIRD</width>
+          <alignment>CENTER</alignment>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+          </columns>
+        </hudson.plugins.sectioned__view.ListViewSection>
+        <hudson.plugins.sectioned__view.TextSection>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../listView[11]/jobNames/comparator"/>
+          </jobNames>
+          <jobFilters/>
+          <name>Misc</name>
+          <width>FULL</width>
+          <alignment>CENTER</alignment>
+          <text></text>
+          <style>NONE</style>
+        </hudson.plugins.sectioned__view.TextSection>
         <hudson.plugins.sectioned__view.ListViewSection>
           <jobNames>
             <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../listView[11]/jobNames/comparator"/>
@@ -531,7 +561,7 @@
           <jobFilters/>
           <name>packages</name>
           <width>THIRD</width>
-          <alignment>RIGHT</alignment>
+          <alignment>CENTER</alignment>
           <columns>
             <hudson.views.StatusColumn/>
             <hudson.views.WeatherColumn/>
@@ -632,6 +662,33 @@
       <properties class="hudson.model.View$PropertyList"/>
       <jobNames>
         <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView[11]/jobNames/comparator"/>
+      </jobNames>
+      <jobFilters/>
+      <columns>
+        <hudson.views.StatusColumn/>
+        <hudson.views.WeatherColumn/>
+        <hudson.views.JobColumn/>
+        <hudson.views.LastSuccessColumn/>
+        <hudson.views.LastFailureColumn/>
+        <hudson.views.LastDurationColumn/>
+        <hudson.views.BuildButtonColumn/>
+        <hudson.plugins.favorite.column.FavoriteColumn plugin="favorite@2.3.1"/>
+      </columns>
+      <recurse>false</recurse>
+    </listView>
+    <listView>
+      <owner class="hudson" reference="../../.."/>
+      <name>pr-validation</name>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <properties class="hudson.model.View$PropertyList"/>
+      <jobNames>
+        <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView[11]/jobNames/comparator"/>
+        <string>build-pr-validation</string>
+        <string>test-jtreg-hotspot-pr-validation</string>
+        <string>test-jtreg-jdk-pr-validation</string>
+        <string>test-jtreg-langtools-pr-validation</string>
+        <string>validate-pr-pipe</string>
       </jobNames>
       <jobFilters/>
       <columns>
