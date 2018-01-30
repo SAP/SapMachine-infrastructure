@@ -73,7 +73,7 @@ pipeline {
         }
         stage('Publish Linux Packages') {
             when {
-                expression { params.PUBLISH == true && JOB_NAME ==~ /(\S*(release))/ }
+                expression { JOB_NAME ==~ /(\S*(release))/ }
             }
             steps {
             build job: 'debian-pipeline', propagate: false, wait: true, parameters:
@@ -91,7 +91,7 @@ pipeline {
         }
         stage('Publish Docker Images') {
             when {
-                expression { params.PUBLISH == true && JOB_NAME ==~ /(\S*(release))/ }
+                expression { JOB_NAME ==~ /(\S*(release))/ }
             }
             steps {
             build job: DOCKER_BUILD_JOB, propagate: false, wait: true, parameters:
