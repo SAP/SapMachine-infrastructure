@@ -54,7 +54,11 @@ if [ $JTREG == true ]; then
   else
     DEPENDENCIES="$DEPENDENCIES zip git unzip realpath python binutils"
   fi
-  ADD_USER="RUN useradd -ms /bin/bash jenkins -u 1001"
+  if $ALPINE; then
+    ADD_USER="RUN groupadd -g 1001 jenkins; useradd -ms /bin/bash jenkins -u 1001 -g 1001"
+  else
+    ADD_USER="RUN useradd -ms /bin/bash jenkins -u 1001"
+  fi
 fi
 
 if $JRE ; then
