@@ -50,9 +50,9 @@ fi
 DEPENDENCIES="wget ca-certificates"
 if [ $JTREG == true ]; then
   if $ALPINE; then
-    DEPENDENCIES="$DEPENDENCIES zip git unzip coreutils python binutils"
+    DEPENDENCIES="$DEPENDENCIES zip git unzip coreutils python binutils shadow"
   else
-    DEPENDENCIES="$DEPENDENCIES zip git unzip realpath python binutils"
+    DEPENDENCIES="$DEPENDENCIES zip git unzip realpath python binutils shadow"
   fi
   if $ALPINE; then
     ADD_USER="RUN groupadd -g 1001 jenkins; useradd -ms /bin/bash jenkins -u 1001 -g 1001"
