@@ -9,7 +9,7 @@ pipeline {
             }
             steps {
                 sh 'rm -f *.apk'
-                sh "sudo -H -u jenkins python lib/make_apk.py --tag=${params.tag} --templates-directory=apk-pipe/templates"
+                sh "sudo -H -u jenkins python lib/make_apk.py --tag=${params.GIT_TAG_NAME} --templates-directory=apk-pipe/templates"
             }
             post {
                 success {
@@ -25,10 +25,10 @@ pipeline {
                 sshagent (credentials: ['jenkins_ssh_key']) {
                     sh "mkdir /home/jenkins/.ssh"
                     sh "chmod 700 /home/jenkins/.ssh"
-                    sh "ssh-keyscan -t rsa ${params.deploy_host} > /home/jenkins/.ssh/known_hosts"
-                    sh "scp *.apk jenkins@${params.deploy_host}:${params.deploy_folder}"
-                    sh "scp lib/utils.py lib/recreate_apk_repository.py lib/docker/alpine_3_5_x86_64/Dockerfile jenkins@${params.deploy_host}:"
-                    sh "ssh jenkins@${params.deploy_host} python recreate_apk_repository.py -r ${params.deploy_folder} -d /home/jenkins -k /home/jenkins/apk/keys/sapmachine@sap.com-5a673212.rsa"
+                    sh "ssh-keyscan -t rsa ${params.DEPLOY_HOST} > /home/jenkins/.ssh/known_hosts"
+                    sh "scp *.apk jenkins@${params.DEPLOY_HOST}:${params.DEPLOY_FOLDER}"
+                    sh "scp lib/utils.py lib/recreate_apk_repository.py lib/docker/alpine_3_5_x86_64/Dockerfile jenkins@${params.DEPLOY_HOST}:"
+                    sh "ssh jenkins@${params.DEPLOY_HOST} python recreate_apk_repository.py -r ${params.DEPLOY_FOLDER} -d /home/jenkins -k /home/jenkins/apk/keys/sapmachine@sap.com-5a673212.rsa"
                 }
             }
         }
