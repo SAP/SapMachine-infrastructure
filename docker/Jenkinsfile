@@ -26,6 +26,8 @@ pipeline {
                   docker/generate_dockerfile.sh -a
                   docker/generate_dockerfile.sh -r -t
                   docker/generate_dockerfile.sh -t
+                  docker/generate_dockerfile.sh -r -a -t
+                  docker/generate_dockerfile.sh -a -t
                   '''
                 }
             }

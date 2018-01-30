@@ -49,7 +49,11 @@ fi
 
 DEPENDENCIES="wget ca-certificates"
 if [ $JTREG == true ]; then
-  DEPENDENCIES="$DEPENDENCIES zip git unzip realpath python binutils"
+  if $ALPINE; then
+    DEPENDENCIES="$DEPENDENCIES zip git unzip coreutils python binutils"
+  else
+    DEPENDENCIES="$DEPENDENCIES zip git unzip realpath python binutils"
+  fi
   ADD_USER="RUN useradd -ms /bin/bash jenkins -u 1001"
 fi
 
