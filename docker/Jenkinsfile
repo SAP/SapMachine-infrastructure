@@ -35,9 +35,9 @@ pipeline {
             expression { params.RUN_TESTS == true }
           }
           steps {
-            build job: HOTSPOT_TEST_JOB, propagate: false, wait: true
-            build job: JDK_TEST_JOB, propagate: false, wait: true
-            build job: LANGTOOLS_TEST_JOB, propagate: false, wait: true
+            build job: HOTSPOT_TEST_JOB, propagate: false, wait: false
+            build job: JDK_TEST_JOB, propagate: false, wait: false
+            build job: LANGTOOLS_TEST_JOB, propagate: false, wait: false
           }
         }
         stage ('Publish Images') {

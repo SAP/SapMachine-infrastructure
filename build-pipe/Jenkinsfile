@@ -35,19 +35,19 @@ pipeline {
                 expression { params.RUN_TESTS == true }
             }
             steps {
-            build job: HOTSPOT_TEST_JOB, propagate: false, wait: true, parameters:
+            build job: HOTSPOT_TEST_JOB, propagate: false, wait: false, parameters:
                     [
                         string(name: 'GITHUB_PR_NUMBER', value: params.GITHUB_PR_NUMBER),
                         string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME)
                     ]
 
-            build job: JDK_TEST_JOB, propagate: false, wait: true, parameters:
+            build job: JDK_TEST_JOB, propagate: false, wait: false, parameters:
                     [
                         string(name: 'GITHUB_PR_NUMBER', value: params.GITHUB_PR_NUMBER),
                         string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME)
                     ]
 
-            build job: LANGTOOLS_TEST_JOB, propagate: false, wait: true, parameters:
+            build job: LANGTOOLS_TEST_JOB, propagate: false, wait: false, parameters:
                     [
                         string(name: 'GITHUB_PR_NUMBER', value: params.GITHUB_PR_NUMBER),
                         string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME)
