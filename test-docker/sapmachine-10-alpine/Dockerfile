@@ -12,5 +12,5 @@ RUN echo "http://sapmachine-ubuntu.sapcloud.io/alpine" >> /etc/apk/repositories
 
 RUN apk update;     apk add sapmachine-10-jdk=10.41.0-r0;
 
-
+RUN useradd -ms /bin/bash jenkins -u 1001
 
