@@ -19,7 +19,7 @@ pipeline {
         }
         stage('Deploy') {
             when {
-                expression { params.deploy == true }
+                expression { params.DEPLOY == true }
             }
             steps {
                 sshagent (credentials: ['jenkins_ssh_key']) {
