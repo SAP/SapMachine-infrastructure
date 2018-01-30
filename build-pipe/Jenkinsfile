@@ -38,19 +38,19 @@ pipeline {
             build job: HOTSPOT_TEST_JOB, propagate: false, wait: true, parameters:
                     [
                         string(name: 'GITHUB_PR_NUMBER', value: params.GITHUB_PR_NUMBER),
-                        string(name: 'GITHUB_TAG_NAME', value: params.GITHUB_TAG_NAME)
+                        string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME)
                     ]
 
             build job: JDK_TEST_JOB, propagate: false, wait: true, parameters:
                     [
                         string(name: 'GITHUB_PR_NUMBER', value: params.GITHUB_PR_NUMBER),
-                        string(name: 'GITHUB_TAG_NAME', value: params.GITHUB_TAG_NAME)
+                        string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME)
                     ]
 
             build job: LANGTOOLS_TEST_JOB, propagate: false, wait: true, parameters:
                     [
                         string(name: 'GITHUB_PR_NUMBER', value: params.GITHUB_PR_NUMBER),
-                        string(name: 'GITHUB_TAG_NAME', value: params.GITHUB_TAG_NAME)
+                        string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME)
                     ]
 
             }
@@ -78,14 +78,14 @@ pipeline {
             steps {
             build job: 'debian-pipeline', propagate: false, wait: true, parameters:
                 [
-                    string(name: 'tag', value: params.GITHUB_TAG_NAME),
-                    [$class: 'BooleanParameterValue', name: 'deploy', value: true]
+                    string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
+                    [$class: 'BooleanParameterValue', name: 'DEPLOY', value: true]
                 ]
 
             build job: 'apk-pipeline', propagate: false, wait: true, parameters:
                 [
-                    string(name: 'tag', value: params.GITHUB_TAG_NAME),
-                    [$class: 'BooleanParameterValue', name: 'deploy', value: true]
+                    string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
+                    [$class: 'BooleanParameterValue', name: 'DEPLOY', value: true]
                 ]
             }
         }
@@ -96,7 +96,7 @@ pipeline {
             steps {
             build job: DOCKER_BUILD_JOB, propagate: false, wait: true, parameters:
                 [
-                    string(name: 'GITHUB_TAG_NAME', value: params.GITHUB_TAG_NAME),
+                    string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
                     [$class: 'BooleanParameterValue', name: 'PUBLISH', value: true],
                     [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: true]
                 ]
