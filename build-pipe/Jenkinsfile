@@ -97,7 +97,7 @@ pipeline {
             build job: DOCKER_BUILD_JOB, propagate: false, wait: true, parameters:
                 [
                     string(name: 'GITHUB_TAG_NAME', value: params.GITHUB_TAG_NAME),
-                    [$class: 'BooleanParameterValue', name: 'PUBLISH', value: true]
+                    [$class: 'BooleanParameterValue', name: 'PUBLISH', value: true],
                     [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: true]
                 ]
             }
