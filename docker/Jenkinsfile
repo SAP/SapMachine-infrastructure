@@ -38,8 +38,11 @@ pipeline {
           }
           steps {
             build job: HOTSPOT_TEST_JOB, propagate: false, wait: false
+            build job: HOTSPOT_TEST_JOB_ALPINE, propagate: false, wait: false
             build job: JDK_TEST_JOB, propagate: false, wait: false
+            build job: JDK_TEST_JOB_ALPINE, propagate: false, wait: false
             build job: LANGTOOLS_TEST_JOB, propagate: false, wait: false
+            build job: LANGTOOLS_TEST_JOB_ALPINE, propagate: false, wait: false
           }
         }
         stage ('Publish Images') {

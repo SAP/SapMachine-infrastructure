@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        dockerfile { dir 'test-docker/sapmachine-10' }
+        dockerfile { dir params.DOCKER_DIR }
     }
     stages {
         stage('Prepare') {

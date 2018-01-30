@@ -1,0 +1,16 @@
+
+FROM alpine:3.5
+
+RUN apk update;     apk add wget ca-certificates;
+
+WORKDIR /etc/apk/keys
+RUN wget https://sapmachine-ubuntu.sapcloud.io/alpine/sapmachine%40sap.com-5a673212.rsa.pub
+
+WORKDIR /
+
+RUN echo "http://sapmachine-ubuntu.sapcloud.io/alpine" >> /etc/apk/repositories
+
+RUN apk update;     apk add sapmachine-11-jre=11.0-r0;
+
+
+
