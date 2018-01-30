@@ -55,7 +55,7 @@ pipeline {
 
             }
         }
-        stage('Publish') {
+        stage('Publish GitHub') {
             when {
                 expression { params.PUBLISH == true }
             }
@@ -71,9 +71,40 @@ pipeline {
                 '''
             }
         }
+        stage('Publish Linux Packages') {
+            when {
+                expression { params.PUBLISH == true && JOB_NAME ==~ /(\S*(release))/ }
+            }
+            steps {
+            build job: 'debian-pipeline', propagate: false, wait: true, parameters:
+                [
+                    string(name: 'tag', value: params.GITHUB_TAG_NAME),
+                    [$class: 'BooleanParameterValue', name: 'deploy', value: true]
+                ]
+
+            build job: 'apk-pipeline', propagate: false, wait: true, parameters:
+                [
+                    string(name: 'tag', value: params.GITHUB_TAG_NAME),
+                    [$class: 'BooleanParameterValue', name: 'deploy', value: true]
+                ]
+            }
+        }
+        stage('Publish Docker Images') {
+            when {
+                expression { params.PUBLISH == true && JOB_NAME ==~ /(\S*(release))/ }
+            }
+            steps {
+            build job: DOCKER_BUILD_JOB, propagate: false, wait: true, parameters:
+                [
+                    string(name: 'GITHUB_TAG_NAME', value: params.GITHUB_TAG_NAME),
+                    [$class: 'BooleanParameterValue', name: 'PUBLISH', value: true]
+                    [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: true]
+                ]
+            }
+        }
     }
-    post { 
-        always { 
+    post {
+        always {
             cleanWs()
         }
     }
