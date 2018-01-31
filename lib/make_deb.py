@@ -97,6 +97,11 @@ def main(argv=None):
 
     templates_dir = realpath(args.templates_directory)
     tag = args.tag
+
+    if tag.endswith('-alpine'):
+        # the "-alpine" tags do not contain any assets
+        tag = tag[:-len('-alpine')]
+
     cwd = os.getcwd()
     work_dir = join(cwd, 'deb_work')
     version, major, build_number, sap_build_number = utils.sapmachine_tag_components(tag)

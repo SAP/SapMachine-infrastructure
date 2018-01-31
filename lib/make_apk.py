@@ -45,6 +45,11 @@ def main(argv=None):
 
     templates_dir = realpath(args.templates_directory)
     tag = args.tag
+
+    if tag.endswith('-alpine'):
+        # the "-alpine" tags do not contain any assets
+        tag = tag[:-len('-alpine')]
+
     cwd = os.getcwd()
     home = expanduser("~")
     work_dir = join(cwd, 'apk_work')
