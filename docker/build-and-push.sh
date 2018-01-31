@@ -23,7 +23,7 @@ fi
 
 cd "infra/docker"
 
-read VERSION_MAJOR VERSION_MINOR SAPMACHINE_VERSION<<< $(echo $GIT_TAG_NAME | sed -rn 's/sapmachine\-([0-9]+)\+([0-9]+)\-?([0-9]*)/ \1 \2 \3 /p')
+read VERSION_MAJOR VERSION_MINOR SAPMACHINE_VERSION VERSION_EXTENSION <<< $(echo $GIT_TAG_NAME | sed -rn 's/sapmachine\-([0-9]+)\+([0-9]+)\-?([0-9]*)(\-alpine)?/ \1 \2 \3 \4 /p')
 
 set +e
 docker ps -a | grep sapmachine | awk '{print $1}' | xargs docker rm

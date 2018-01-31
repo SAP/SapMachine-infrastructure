@@ -39,7 +39,7 @@ fi
 REPO_URL="http://$GIT_USER:$GIT_PASSWORD@github.com/SAP/SapMachine-infrastructure/"
 git clone -b master $REPO_URL infra
 
-read VERSION_MAJOR VERSION_MINOR SAPMACHINE_VERSION<<< $(echo $GIT_TAG_NAME | sed -rn 's/sapmachine\-([0-9]+)\+([0-9]+)\-?([0-9]*)/ \1 \2 \3 /p')
+read VERSION_MAJOR VERSION_MINOR SAPMACHINE_VERSION VERSION_EXTENSION<<< $(echo $GIT_TAG_NAME | sed -rn 's/sapmachine\-([0-9]+)\+([0-9]+)\-?([0-9]*)(\-alpine)?/ \1 \2 \3 \4/p')
 
 if [ $JTREG == true ]; then
   cd "infra/test-docker"
