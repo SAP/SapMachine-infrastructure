@@ -16,7 +16,7 @@ docker ps -a | grep sapmachine | awk '{print $1}' | xargs docker rm
 docker images | grep sapmachine | awk '{print $3}' | xargs docker rmi -f
 set -e
 
-read VERSION_MAJOR VERSION_MINOR SAPMACHINE_VERSION<<< $(echo $GIT_TAG_NAME | sed -rn 's/sapmachine\-([0-9]+)\+([0-9]+)\-?([0-9]*)/ \1 \2 \3 /p')
+read VERSION_MAJOR VERSION_MINOR SAPMACHINE_VERSION VERSION_EXTENSION<<< $(echo $GIT_TAG_NAME | sed -rn 's/sapmachine\-([0-9]+)\+([0-9]+)\-?([0-9]*)(\-alpine)?/ \1 \2 \3 \4 /p')
 COMPARE_VERSION="OpenJDK Runtime Environment (build $VERSION_MAJOR-ea+$VERSION_MINOR-sapmachine-$SAPMACHINE_VERSION)"
 
 TEST_VERSION=$(docker run "sapmachine/jdk${VERSION_MAJOR}:${VERSION_MAJOR}.${VERSION_MINOR}.${SAPMACHINE_VERSION}${JRE_EXT}" \
@@ -25,7 +25,7 @@ TEST_VERSION=$(docker run "sapmachine/jdk${VERSION_MAJOR}:${VERSION_MAJOR}.${VER
 if [ "$TEST_VERSION" != "$COMPARE_VERSION" ]; then
     echo "Wrong version string"
     echo "Expected: $COMPARE_VERSION"
-    echo "Got: $TEST_VERSION" 
+    echo "Got: $TEST_VERSION"
     exit 1
 fi
 
