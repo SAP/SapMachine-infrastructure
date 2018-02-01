@@ -38,14 +38,22 @@ echo "$SAPMACHINE_TAG_CONTAINING_BRANCH"
 set -e
 
 if [ "$JDK_TAG_CONTAINING_BRANCH" ] && [ -z "$SAPMACHINE_TAG_CONTAINING_BRANCH" ] ; then
-  echo "Create tag"
-  git checkout $BASE_BRANCH
-  SAPMACHINE_TAG="sapmachine-$MAJOR_VERSION+$LAST_BUILD_JDK_TAG-0"
-  git tag $SAPMACHINE_TAG
-  git push --tags
 
-  URL_TAG=$(echo $SAPMACHINE_TAG | sed 's/\+/\%2B/g')
-  CRUMB=$(curl --user $JENKINS_USER:$JENKINS_PASSWORD  $JENKINS_URL/crumbIssuer/api/xml?xpath=concat\(//crumbRequestField,%22:%22,//crumb\))
-  curl -H $CRUMB -X POST --user $JENKINS_USER:$JENKINS_PASSWORD \
-  "$JENKINS_URL/job/build-$MAJOR_VERSION-release/buildWithParameters?TOKEN=test-token&GIT_TAG_NAME=$URL_TAG&PUBLISH=false&RUN_TESTS=false"
+  BRANCHES=( "$BASE_BRANCH" "$BASE_BRANCH-alpine" )
+  for base in "${BRANCHES[@]}"
+  do
+	  echo $base
+    TAG_EXT=$(echo $base |  sed -rn "s/sapmachine[0-9]*(\-alpine)?/\1/p")
+    SAPMACHINE_TAG="sapmachine-$MAJOR_VERSION+$LAST_BUILD_JDK_TAG-0$TAG_EXT"
+    echo "Create tag $SAPMACHINE_TAG" 
+    git checkout $base
+    
+    git tag $SAPMACHINE_TAG
+    git push --tags
+
+    URL_TAG=$(echo $SAPMACHINE_TAG | sed 's/\+/\%2B/g')
+    CRUMB=$(curl --user $JENKINS_USER:$JENKINS_PASSWORD  $JENKINS_URL/crumbIssuer/api/xml?xpath=concat\(//crumbRequestField,%22:%22,//crumb\))
+    curl -H $CRUMB -X POST --user $JENKINS_USER:$JENKINS_PASSWORD \
+    "$JENKINS_URL/job/build-$MAJOR_VERSION-release$TAG_EXT/buildWithParameters?TOKEN=test-token&GIT_TAG_NAME=$URL_TAG&PUBLISH=false&RUN_TESTS=false"
+  done
 fi

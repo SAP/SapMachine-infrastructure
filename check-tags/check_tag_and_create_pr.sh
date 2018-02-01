@@ -28,19 +28,25 @@ set +e
 CONTAINING_BRANCHES=$(git branch -a --contains tags/jdk-$MAJOR_VERSION+$LAST_BUILD_JDK_TAG | \
  grep -E "(sapmachine|pr-$GIT_TAG)")
 set -e
-if [ -z "$CONTAINING_BRANCHES" ]; then
-  echo "Create head branch to tag ${GIT_TAG}"
-  git checkout ${GIT_TAG}
-  git checkout -b "pr-$GIT_TAG"
-  git push origin "pr-$GIT_TAG"
-  popd
-else
+if [ ! -z "$CONTAINING_BRANCHES" ]; then
   echo "Already merged, nothing to do."
   popd
   exit 0
 fi
 
-PR_DATA="{\"title\":\"Merge to tag $GIT_TAG\",\"body\":\"please pull\",\"head\":\"pr-$GIT_TAG\",\"base\":\"$PR_BASE\"}"
+echo "Create head branch to tag ${GIT_TAG}"
+git checkout ${GIT_TAG}
+git checkout -b "pr-$GIT_TAG"
+git push origin "pr-$GIT_TAG"
+popd
 
-curl -H "Content-Type: application/json" \
- --data "$PR_DATA" "https://$GIT_USER:$SAPMACHINE_PUBLISH_GITHUB_TOKEN@api.github.com/repos/SAP/SapMachine/pulls"
+BRANCHES=( "$PR_BASE" "$PR_BASE-alpine" )
+for base in "${BRANCHES[@]}"
+do
+	echo $base
+  PR_DATA="{\"title\":\"Merge to tag $GIT_TAG\",\"body\":\"please pull\",\"head\":\"pr-$GIT_TAG\",\"base\":\"$base\"}"
+
+  curl -H "Content-Type: application/json" \
+  --data "$PR_DATA" "https://$GIT_USER:$SAPMACHINE_PUBLISH_GITHUB_TOKEN@api.github.com/repos/axel7born/SapMachine-1/pulls"
+done
+
