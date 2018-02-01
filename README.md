@@ -1,22 +1,22 @@
 # SapMachine - Repositories and Build Infrastructure
 
 1. SapMachine Github Repository https://github.com/SAP/SapMachine
-    * Mercurial repos are imported to branches jdk/jdk and jdk/jdk10
-        * We look every 3 h and add new changes and tags from the mercurial repository
-        * On jenkins: *update-pipeline* https://sapmachine-ci.sapcloud.io/view/repository-update/job/update-pipeline/
-    * sapmachine10: jdk/jdk10 + our changes
-    * sapmachine: jdk/jdk + our changes
-    * sapmachine10-alpine: sapmachine10 + alpine changes
-    * sapmachine-alpine: sapmachine + alpine changes
+    * Mercurial repos are imported to branches jdk/jdk and jdk/jdk10.
+        * We look every 3 h and add new changes and tags from the mercurial repository.
+        * On jenkins: *update-pipeline* https://sapmachine-ci.sapcloud.io/view/repository-update/job/update-pipeline/.
+    * sapmachine10: jdk/jdk10 + our changes.
+    * sapmachine: jdk/jdk + our changes.
+    * sapmachine10-alpine: sapmachine10 + alpine changes.
+    * sapmachine-alpine: sapmachine + alpine changes.
     * We cherry-pick our changes between sapmachine and sapmachine10
-    * We merge jdk/jdk10 and jdk/jdk with new build tags
+    * We merge jdk/jdk10 and jdk/jdk with new build tags.
         * Jenkins look for new tags, open pull request and validate.
         * Check for new tags: *check-tag-pipeline* 
-            * triggered by *update-pipeline*
-        * Merge is triggered manually (Push the button on github)
+            * Triggered by *update-pipeline*
+        * Merge is triggered manually (Push the button on github).
 
 2. Build-Jobs
-    * We use Pipeline defintions for our build jobs checked-in in http://github.com/SAP/SapMachine-infrastructure
+    * We use Pipeline defintions for our build jobs checked-in in http://github.com/SAP/SapMachine-infrastructure.
     * Build-jobs run in docker containers to have a reproducible build envrironment.
     * Different build-jobs use the same Pipeline with different parameters.
     * Build jobs start test jobs. However, we don't use the result of the tests as indicator of a failure of the build job. Mostly, there are errors in the openjdk
@@ -77,8 +77,8 @@
     Both jobs are able to build the Linux Packages for a given Git Tag and deploy them to the SapMachine Linux Package server.
 
 3. Docker
-    * Generate Dockerfiles and check-in Dockerfile for new versions
-    * Run jtreg tests in Docker images build from the dockerfiles
-    * build and push images to https://hub.docker.com/r/sapmachine/
-    * Jenkins: https://sapmachine-ci.sapcloud.io/view/docker/job/build-10-docker/
+    * Generate Dockerfiles and check-in Dockerfile for new versions.
+    * Run jtreg tests in Docker images build from the dockerfiles.
+    * Build and push images to https://hub.docker.com/r/sapmachine/.
+    * Jenkins: https://sapmachine-ci.sapcloud.io/view/docker/job/build-10-docker/.
 
