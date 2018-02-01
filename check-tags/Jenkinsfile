@@ -19,8 +19,8 @@ pipeline {
                     sh '''
                     check-tags/check_tag_and_create_pr.sh 10
                     check-tags/check_tag_and_create_pr.sh 11
-                    check-tags/check_tag_and_build_release 10
-                    check-tags/check_tag_and_build_release 11
+                    check-tags/check_tag_and_build_release.sh 10
+                    check-tags/check_tag_and_build_release.sh 11
                     '''
                 }
             }
