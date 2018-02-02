@@ -118,6 +118,9 @@ def copytree(source, dest):
 
             shutil.copyfile(full_path, dest_path)
 
+def sapmachine_asset_pattern():
+    return '[^-]+-([^-]+)-([^_]+)_([^_]+)_bin\.tar\.gz'
+
 def fetch_tag(tag, platform, token=None):
     import json
     from urllib2 import urlopen, Request, quote
@@ -136,7 +139,7 @@ def fetch_tag(tag, platform, token=None):
 
     try:
         response = json.loads(urlopen(request).read())
-        asset_pattern = re.compile('[^-]+-([^-]+)-([^_]+)_([^_]+)_bin\.tar\.gz')
+        asset_pattern = re.compile(sapmachine_asset_pattern())
 
         if 'assets' in response:
             assets = response['assets']
@@ -150,7 +153,7 @@ def fetch_tag(tag, platform, token=None):
                     asset_version = match.group(2)
                     asset_platform = match.group(3)
 
-                    print(str.format('found {0} image with version={1} and platform={2}', 
+                    print(str.format('found {0} image with version={1} and platform={2}',
                         asset_image_type,
                         asset_version,
                         asset_platform))
@@ -168,11 +171,14 @@ def fetch_tag(tag, platform, token=None):
     return jdk_url, jre_url
 
 def sapmachine_tag_pattern():
-    return '([^-]+)-(((([0-9]+)((\.([0-9]+))*)?)\+([0-9]+))(-([0-9]+))?)'
+    return '(sapmachine)-(((([0-9]+)((\.([0-9]+))*)?)\+([0-9]+))(-([0-9]+))?)'
 
 def sapmachine_tag_components(tag):
     pattern = re.compile(sapmachine_tag_pattern())
     match = pattern.match(tag)
+
+    if match is None:
+        return None, None, None, None
 
     version = match.group(2)
     major = match.group(5)
