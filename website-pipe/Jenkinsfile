@@ -3,7 +3,7 @@ pipeline {
         dockerfile { dir 'debian-pipe/docker/ubuntu_16_04_x86_64' }
     }
     stages {
-        stage('Build') {
+        stage('Generate') {
             environment {
               GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
             }
@@ -11,6 +11,7 @@ pipeline {
                 sh "python lib/generate_website_data.py"
             }
         }
+    }
     post {
         always {
             cleanWs()
