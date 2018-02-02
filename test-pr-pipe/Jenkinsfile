@@ -16,10 +16,10 @@ pipeline {
             }
             post {
                 success {
-                    setGitHubPullRequestStatus context: 'validate_pr_pipe', state: 'SUCCESS'
+                    setGitHubPullRequestStatus context: PR_CONTEXT, state: 'SUCCESS'
                 }
                 failure {
-                    setGitHubPullRequestStatus context: 'validate_pr_pipe', state: 'FAILURE'
+                    setGitHubPullRequestStatus context: PR_CONTEXT, state: 'FAILURE'
                 }
             }
         }
