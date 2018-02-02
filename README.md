@@ -26,9 +26,9 @@
     
     
 3. Linux Packages
-	We provide Linux Packages for Debian based distributions and Alpine Linux.
-    * Debian
-    	For Ubuntu, you need to install the SapMachine public key into the apt key store.
+    
+    We provide Linux Packages for Debian based distributions and Alpine Linux.
+    * For Debian / Ubuntu, you need to install the SapMachine public key into the apt key store.
         ```
         wget -q -O - https://sapmachine-ubuntu.sapcloud.io/debian/sapmachine-debian.key | apt-key add -
         ```
@@ -46,8 +46,7 @@
         ```
         apt-get install sapmachine-10-jre=10+39-1
         ```
-    * Alpine
-		For Alpine linux, you need to download and save the SapMachine public key into the APK key location.
+    * For Alpine Linux, you need to download and save the SapMachine public key into the APK key location.
         ```
         cd /etc/apk/keys
         wget https://sapmachine-ubuntu.sapcloud.io/alpine/sapmachine%40sap.com-5a673212.rsa.pub
