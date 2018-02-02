@@ -47,6 +47,6 @@ do
   PR_DATA="{\"title\":\"Merge to tag $GIT_TAG\",\"body\":\"please pull\",\"head\":\"pr-$GIT_TAG\",\"base\":\"$base\"}"
 
   curl -H "Content-Type: application/json" \
-  --data "$PR_DATA" "https://$GIT_USER:$SAPMACHINE_PUBLISH_GITHUB_TOKEN@api.github.com/repos/axel7born/SapMachine-1/pulls"
+  --data "$PR_DATA" "https://$GIT_USER:$SAPMACHINE_PUBLISH_GITHUB_TOKEN@api.github.com/repos/SAP/SapMachine/pulls"
 done
 
