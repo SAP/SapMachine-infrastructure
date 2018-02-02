@@ -119,17 +119,17 @@ def main(argv=None):
     json_root = {
         'imageTypes':[],
         'os':[],
-        'assets':[]
+        'assets':{}
     }
 
-    for image_type in image_type_dict:
+    for image_type in sorted(image_type_dict):
         json_root['imageTypes'].append({'key': image_type, 'value': image_type_dict[image_type]})
 
-    for os in os_description:
+    for os in sorted(os_description):
         json_root['os'].append({'key': os, 'value': os_description[os]})
 
     for release in releases_dict:
-        json_root['assets'].append(releases_dict[release].transform())
+        json_root['assets'].update(releases_dict[release].transform())
 
     push_to_git(json.dumps(json_root, indent=4))
 
