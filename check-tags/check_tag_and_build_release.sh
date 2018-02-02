@@ -52,6 +52,6 @@ do
     URL_TAG=$(echo $SAPMACHINE_TAG | sed 's/\+/\%2B/g')
     CRUMB=$(curl --user $JENKINS_USER:$JENKINS_PASSWORD  $JENKINS_URL/crumbIssuer/api/xml?xpath=concat\(//crumbRequestField,%22:%22,//crumb\))
     curl -H $CRUMB -X POST --user $JENKINS_USER:$JENKINS_PASSWORD \
-    "$JENKINS_URL/job/build-$MAJOR_VERSION-release$TAG_EXT/buildWithParameters?TOKEN=test-token&GIT_TAG_NAME=$URL_TAG&PUBLISH=false&RUN_TESTS=false"
+    "$JENKINS_URL/job/build-$MAJOR_VERSION-release$TAG_EXT/buildWithParameters?TOKEN=test-token&GIT_TAG_NAME=$URL_TAG&PUBLISH=true&RUN_TESTS=true"
   fi
 done
