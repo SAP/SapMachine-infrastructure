@@ -48,7 +48,9 @@ class Releases:
         return json_root
 
 def push_to_git(data):
-    repo = 'https://github.com/SAP/SapMachine.git'
+    git_user = os.environ['GIT_USER']
+    git_password = os.environ['GIT_PASSWORD']
+    repo = str.format('https://{0}:{1}@github.com/SAP/SapMachine.git', git_user, git_password)
     branch = 'gh-pages'
     local_repo = join(os.getcwd(), 'gh-pages')
 
