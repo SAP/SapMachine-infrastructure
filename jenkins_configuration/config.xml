@@ -111,6 +111,11 @@
       <properties class="hudson.model.View$PropertyList"/>
       <jobNames>
         <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
+        <string>build-10-pr-validation-alpine</string>
+        <string>test-jtreg-hotspot-10-pr-validation-alpine</string>
+        <string>test-jtreg-jdk-10-pr-validation-alpine</string>
+        <string>test-jtreg-langtools-10-pr-validation-alpine</string>
+        <string>validate-10-pr-pipe-alpine</string>
         <string>validate-pr-pipe-10</string>
       </jobNames>
       <jobFilters/>
@@ -526,6 +531,25 @@
             <hudson.views.JobColumn/>
           </columns>
         </hudson.plugins.sectioned__view.ListViewSection>
+        <hudson.plugins.sectioned__view.ListViewSection>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
+            <string>build-10-pr-validation-alpine</string>
+            <string>test-jtreg-hotspot-10-pr-validation-alpine</string>
+            <string>test-jtreg-jdk-10-pr-validation-alpine</string>
+            <string>test-jtreg-langtools-10-pr-validation-alpine</string>
+            <string>validate-10-pr-pipe-alpine</string>
+          </jobNames>
+          <jobFilters/>
+          <name>sapmachine10-alpine</name>
+          <width>THIRD</width>
+          <alignment>CENTER</alignment>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+          </columns>
+        </hudson.plugins.sectioned__view.ListViewSection>
         <hudson.plugins.sectioned__view.TextSection>
           <jobNames>
             <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
@@ -753,10 +777,15 @@
       <jobNames>
         <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView[11]/jobNames/comparator"/>
         <string>build-pr-validation</string>
+        <string>build-pr-validation-alpine</string>
         <string>test-jtreg-hotspot-pr-validation</string>
+        <string>test-jtreg-hotspot-pr-validation-alpine</string>
         <string>test-jtreg-jdk-pr-validation</string>
+        <string>test-jtreg-jdk-pr-validation-alpine</string>
         <string>test-jtreg-langtools-pr-validation</string>
+        <string>test-jtreg-langtools-pr-validation-alpine</string>
         <string>validate-pr-pipe</string>
+        <string>validate-pr-pipe-alpine</string>
       </jobNames>
       <jobFilters/>
       <columns>

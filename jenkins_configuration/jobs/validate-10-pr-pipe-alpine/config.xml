@@ -47,7 +47,7 @@
           <preStatus>false</preStatus>
           <branchRestriction>
             <targetBranchList>
-              <string>sapmachine10</string>
+              <string>sapmachine10-alpine</string>
             </targetBranchList>
           </branchRestriction>
         </org.jenkinsci.plugins.github.pullrequest.GitHubPRTrigger>
@@ -58,12 +58,12 @@
         <hudson.model.StringParameterDefinition>
           <name>PR_BUILD_JOB</name>
           <description></description>
-          <defaultValue>build-10-pr-validation</defaultValue>
+          <defaultValue>build-10-pr-validation-alpine</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>PR_CONTEXT</name>
           <description></description>
-          <defaultValue>validate-pr-10</defaultValue>
+          <defaultValue>validate-pr-10-alpine</defaultValue>
         </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
