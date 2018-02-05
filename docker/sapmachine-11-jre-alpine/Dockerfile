@@ -10,7 +10,7 @@ WORKDIR /
 
 RUN echo "http://sapmachine-ubuntu.sapcloud.io/alpine" >> /etc/apk/repositories
 
-RUN apk update;     apk add sapmachine-11-jre=11.0.2-r0;
+RUN apk update;     apk add sapmachine-11-jre=11.0.0-r0;
 
 
 
