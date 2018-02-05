@@ -2,7 +2,7 @@
 
 ## Description
 
-This repository contains tools, scripts and infrastructure required to built, test and maintain the [SapMachine project](https://github.com/SAP/SapMachine). 
+This repository contains tools, scripts and infrastructure required to build, test and maintain the [SapMachine project](https://github.com/SAP/SapMachine). 
 
 The jobs run on our Jenkins installation https://sapmachine-ci.sapcloud.io/.
 
