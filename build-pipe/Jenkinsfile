@@ -71,6 +71,14 @@ pipeline {
                 '''
             }
         }
+        stage('Publish Website Data') {
+            when {
+                expression { params.PUBLISH == true }
+            }
+            steps {
+                build job: 'generate website data', propagate: false, wait: false
+            }
+        }
         stage('Publish Linux Packages') {
             when {
                 expression { JOB_NAME ==~ /((\S*)(release)(\S*))/ }
