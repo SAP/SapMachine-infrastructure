@@ -36,14 +36,16 @@ do
   grep -E $GREP_PATTERN )
 
   echo "$JDK_TAG_CONTAINING_BRANCH"
-  SAPMACHINE_TAG_CONTAINING_BRANCH=$(git branch -a --contains tags/sapmachine-$MAJOR_VERSION+$LAST_BUILD_JDK_TAG-0 2> /dev/null | \
+
+  TAG_EXT=$(echo $base |  sed -rn "s/sapmachine[0-9]*(\-alpine)?/\1/p")
+  SAPMACHINE_TAG="sapmachine-$MAJOR_VERSION+$LAST_BUILD_JDK_TAG-0$TAG_EXT"
+  SAPMACHINE_TAG_CONTAINING_BRANCH=$(git branch -a --contains tags/$SAPMACHINE_TAG 2> /dev/null | \
   grep -E $GREP_PATTERN )
   echo "$SAPMACHINE_TAG_CONTAINING_BRANCH"
   set -e
 
   if [ "$JDK_TAG_CONTAINING_BRANCH" ] && [ -z "$SAPMACHINE_TAG_CONTAINING_BRANCH" ] ; then
-    TAG_EXT=$(echo $base |  sed -rn "s/sapmachine[0-9]*(\-alpine)?/\1/p")
-    SAPMACHINE_TAG="sapmachine-$MAJOR_VERSION+$LAST_BUILD_JDK_TAG-0$TAG_EXT"
+
     echo "Create tag $SAPMACHINE_TAG" 
     git checkout $base
     git tag $SAPMACHINE_TAG
