@@ -84,6 +84,8 @@ def main(argv=None):
     os.mkdir(target_dir)
     copy_configurations(src_dir, target_dir)
 
+    utils.download_artifact(str.format('{0}pluginManager/api/xml?depth=1', os.environ['JENKINS_URL']), join(target_dir, 'sapmachine_jenkins_plugins.xml'))
+
     if not args.dryrun:
         push_sapmachine_infra(git_dir)
 
