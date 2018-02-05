@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<scriptApproval plugin="script-security@1.35">
+<scriptApproval plugin="script-security@1.40">
   <approvedScriptHashes>
     <string>017d0db438428731cd600b6ebda805065433520f</string>
   </approvedScriptHashes>
@@ -11,6 +11,11 @@
     <pendingSignature>
       <context/>
       <signature>staticMethod java.lang.System getenv java.lang.String</signature>
+      <dangerous>true</dangerous>
+    </pendingSignature>
+    <pendingSignature>
+      <context/>
+      <signature>staticMethod jenkins.model.Jenkins getInstance</signature>
       <dangerous>true</dangerous>
     </pendingSignature>
   </pendingSignatures>

@@ -17,7 +17,12 @@
     stages {
         stage(&quot;Get Plugins&quot;) {
             steps {
-                sh &quot;curl ${JENKINS_URL}pluginManager/api/xml?depth=1 -o plugin_list.xml&quot;
+                script {
+                Jenkins.instance.pluginManager.plugins.sort { it.getDisplayName() }.each{
+                    plugin -&gt; 
+                        println (&quot;${plugin.getDisplayName()} (${plugin.getShortName()}): ${plugin.getVersion()}&quot;)
+                    }
+                }
             }
         }
     }

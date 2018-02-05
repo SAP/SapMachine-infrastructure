@@ -1,0 +1,2743 @@
+Manifest-Version: 1.0
+Plugin-Dependencies: structs:1.3
+Long-Name: Gradle Plugin
+Compatible-Since-Version: 1.0
+Plugin-Developers: Stefan Wolf:wolfs:
+Group-Id: org.jenkins-ci.plugins
+Extension-Name: gradle
+Plugin-Version: 1.28
+Jenkins-Version: 1.642.1
+Url: http://wiki.jenkins-ci.org/display/JENKINS/Gradle+Plugin
+Short-Name: gradle
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: mdonohue
+Build-Jdk: 1.7.0_101
+Extension-Name: configurationslicing
+Specification-Title: Allows configuration of a single property across 
+ a group of projects
+Implementation-Title: configurationslicing
+Implementation-Version: 1.47
+Group-Id: org.jenkins-ci.plugins
+Short-Name: configurationslicing
+Long-Name: Configuration Slicing plugin
+Url: http://wiki.jenkins-ci.org/display/JENKINS/Configuration+Slicing+
+ Plugin
+Plugin-Version: 1.47
+Hudson-Version: 1.625.3
+Jenkins-Version: 1.625.3
+Plugin-Dependencies: email-ext:2.37;resolution:=optional,build-timeout
+ :1.16;resolution:=optional,logstash:1.2.0;resolution:=optional,logfil
+ esizechecker:1.2;resolution:=optional,maven-plugin:2.14;resolution:=o
+ ptional,mask-passwords:2.8;resolution:=optional,timestamper:1.2.2;res
+ olution:=optional,jython:1.9;resolution:=optional,matrix-project:1.6;
+ resolution:=optional,ant:1.1;resolution:=optional,gradle:1.24;resolut
+ ion:=optional,python:1.2;resolution:=optional,PrioritySorter:1.3;reso
+ lution:=optional,config-file-provider:2.7.1;resolution:=optional,groo
+ vy:1.9;resolution:=optional,claim:2.3;resolution:=optional
+Plugin-Developers: Jacob Robertson:jacob_robertson:jacob.robertson.wor
+ k@gmail.com
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: root
+Build-Jdk: 1.8.0_121
+Extension-Name: blueocean-pipeline-scm-api
+Specification-Title: The Jenkins Plugins Parent POM Project
+Implementation-Title: blueocean-pipeline-scm-api
+Implementation-Version: 1.4.0
+Group-Id: io.jenkins.blueocean
+Short-Name: blueocean-pipeline-scm-api
+Long-Name: Pipeline SCM API for Blue Ocean
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Blue+Ocean+Plugin
+Plugin-Version: 1.4.0
+Hudson-Version: 2.73.3
+Jenkins-Version: 2.73.3
+Plugin-Dependencies: blueocean-rest:1.4.0,workflow-multibranch:2.16,br
+ anch-api:2.0.11,credentials:2.1.14,pubsub-light:1.12
+Plugin-Developers: Thorsten Iberian Sumurai:scherler:,Cliff Meyers:cli
+ ffmeyers:,Tom Fennelly:tfennelly:,Vivek Pandey:vivek:,Kohsuke:kohsuke
+ :,Josh McDonald:sophistifunk:,Ivan Meredith:imeredith:,Michael Neale:
+ michaelneale:,Keith Zantow:kzantow:,James Dumay:i386:,Marc:marcesher:
+ ,Paul Dragoonis:dragoonis:,Ivan Santos:pragmaticivan:,Peter Dave Hell
+ o:PeterDaveHello:,Alexandru Somai:alexsomai:
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: svanoort
+Build-Jdk: 1.8.0_151
+Extension-Name: structs
+Specification-Title: Library plugin for DSL plugins that need names fo
+ r Jenkins objects.
+Implementation-Title: structs
+Implementation-Version: 1.13
+Group-Id: org.jenkins-ci.plugins
+Short-Name: structs
+Long-Name: Structs Plugin
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Structs+plugin
+Plugin-Version: 1.13
+Hudson-Version: 1.580.1
+Jenkins-Version: 1.580.1
+Plugin-Developers: 
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: root
+Build-Jdk: 1.8.0_121
+Extension-Name: blueocean-dashboard
+Specification-Title: The Jenkins Plugins Parent POM Project
+Implementation-Title: blueocean-dashboard
+Implementation-Version: 1.4.0
+Group-Id: io.jenkins.blueocean
+Short-Name: blueocean-dashboard
+Long-Name: Dashboard for Blue Ocean
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Blue+Ocean+Plugin
+Plugin-Version: 1.4.0
+Hudson-Version: 2.73.3
+Jenkins-Version: 2.73.3
+Plugin-Dependencies: blueocean-web:1.4.0
+Plugin-Developers: Thorsten Iberian Sumurai:scherler:,Cliff Meyers:cli
+ ffmeyers:,Tom Fennelly:tfennelly:,Vivek Pandey:vivek:,Kohsuke:kohsuke
+ :,Josh McDonald:sophistifunk:,Ivan Meredith:imeredith:,Michael Neale:
+ michaelneale:,Keith Zantow:kzantow:,James Dumay:i386:,Marc:marcesher:
+ ,Paul Dragoonis:dragoonis:,Ivan Santos:pragmaticivan:,Peter Dave Hell
+ o:PeterDaveHello:,Alexandru Somai:alexsomai:
+Support-Dynamic-Loading: true
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: tfennelly
+Build-Jdk: 1.8.0_102
+Extension-Name: sse-gateway
+Specification-Title: Server Sent Events (SSE) Gateway Plugin
+Implementation-Title: sse-gateway
+Implementation-Version: 1.15
+Group-Id: org.jenkins-ci.plugins
+Short-Name: sse-gateway
+Long-Name: Server Sent Events (SSE) Gateway Plugin
+Url: https://wiki.jenkins-ci.org/display/JENKINS/SSE+Gateway+Plugin
+Plugin-Version: 1.15
+Hudson-Version: 2.2
+Jenkins-Version: 2.2
+Plugin-Dependencies: pubsub-light:1.6
+Plugin-Developers: 
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: root
+Build-Jdk: 1.8.0_121
+Extension-Name: blueocean-events
+Specification-Title: The Jenkins Plugins Parent POM Project
+Implementation-Title: blueocean-events
+Implementation-Version: 1.4.0
+Group-Id: io.jenkins.blueocean
+Short-Name: blueocean-events
+Long-Name: Events API for Blue Ocean
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Blue+Ocean+Plugin
+Plugin-Version: 1.4.0
+Hudson-Version: 2.73.3
+Jenkins-Version: 2.73.3
+Plugin-Dependencies: blueocean-pipeline-api-impl:1.4.0,pubsub-light:1.
+ 12,sse-gateway:1.15
+Plugin-Developers: Thorsten Iberian Sumurai:scherler:,Cliff Meyers:cli
+ ffmeyers:,Tom Fennelly:tfennelly:,Vivek Pandey:vivek:,Kohsuke:kohsuke
+ :,Josh McDonald:sophistifunk:,Ivan Meredith:imeredith:,Michael Neale:
+ michaelneale:,Keith Zantow:kzantow:,James Dumay:i386:,Marc:marcesher:
+ ,Paul Dragoonis:dragoonis:,Ivan Santos:pragmaticivan:,Peter Dave Hell
+ o:PeterDaveHello:,Alexandru Somai:alexsomai:
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: light
+Build-Jdk: 1.8.0_60
+Extension-Name: parameterized-trigger
+Specification-Title: The Jenkins Plugins Parent POM Project
+Implementation-Title: parameterized-trigger
+Implementation-Version: 2.35.2
+Plugin-Class: hudson.plugins.parameterizedtrigger.Plugin
+Group-Id: org.jenkins-ci.plugins
+Short-Name: parameterized-trigger
+Long-Name: Jenkins Parameterized Trigger plugin
+Url: http://wiki.jenkins-ci.org/display/JENKINS/Parameterized+Trigger+
+ Plugin
+Plugin-Version: 2.35.2
+Hudson-Version: 1.642.3
+Jenkins-Version: 1.642.3
+Plugin-Dependencies: conditional-buildstep:1.3.1,matrix-project:1.6,pr
+ omoted-builds:2.25;resolution:=optional,script-security:1.25,subversi
+ on:2.5.7;resolution:=optional
+Plugin-Developers: Tom Huybrechts:huybrechts:,Kohsuke Kawaguchi:kohsuke:
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: stephenc
+Build-Jdk: 1.7.0_15
+Extension-Name: simple-theme-plugin
+Implementation-Title: simple-theme-plugin
+Implementation-Version: 0.3
+Group-Id: org.codefirst.jenkins.simplethemeplugin
+Short-Name: simple-theme-plugin
+Long-Name: Simple Theme Plugin
+Url: http://wiki.jenkins-ci.org/display/JENKINS/Simple+Theme+Plugin
+Plugin-Version: 0.3
+Hudson-Version: 1.424
+Jenkins-Version: 1.424
+Plugin-Developers: mallowlabs:mallowlabs:mallowlabs@gmail.com
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: jglick
+Build-Jdk: 1.8.0_151
+Extension-Name: cloudbees-folder
+Specification-Title: This plugin allows users to create "folders" to o
+ rganize jobs. Users can define custom taxonomies (like
+     by project type, organization type etc). Folders are nestable and
+  you can define views within folders. Maintained by CloudBees, Inc.
+Implementation-Title: cloudbees-folder
+Implementation-Version: 6.3
+Group-Id: org.jenkins-ci.plugins
+Short-Name: cloudbees-folder
+Long-Name: Folders Plugin
+Url: https://wiki.jenkins.io/display/JENKINS/CloudBees+Folders+Plugin
+Compatible-Since-Version: 5.2
+Plugin-Version: 6.3
+Hudson-Version: 2.60.3
+Jenkins-Version: 2.60.3
+Plugin-Dependencies: credentials:2.1.11;resolution:=optional
+Plugin-Developers: 
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: svanoort
+Build-Jdk: 1.8.0_151
+Extension-Name: workflow-cps
+Specification-Title: The Jenkins Plugins Parent POM Project
+Implementation-Title: workflow-cps
+Implementation-Version: 2.44
+Group-Id: org.jenkins-ci.plugins.workflow
+Short-Name: workflow-cps
+Long-Name: Pipeline: Groovy
+Url: https://wiki.jenkins.io/display/JENKINS/Pipeline+Groovy+Plugin
+Compatible-Since-Version: 2.18
+Plugin-Version: 2.44
+Hudson-Version: 2.60.3
+Jenkins-Version: 2.60.3
+Plugin-Dependencies: workflow-api:2.25,workflow-scm-step:2.4,workflow-
+ step-api:2.13,workflow-support:2.17,scm-api:2.0.8,script-security:1.3
+ 9,structs:1.7,support-core:2.32;resolution:=optional,ace-editor:1.0.1
+ ,jquery-detached:1.2.1
+Plugin-Developers: 
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: svanoort
+Build-Jdk: 1.8.0_151
+Extension-Name: workflow-job
+Specification-Title: The Jenkins Plugins Parent POM Project
+Implementation-Title: workflow-job
+Implementation-Version: 2.17
+Group-Id: org.jenkins-ci.plugins.workflow
+Short-Name: workflow-job
+Long-Name: Pipeline: Job
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Pipeline+Job+Plugin
+Plugin-Version: 2.17
+Hudson-Version: 2.62
+Jenkins-Version: 2.62
+Plugin-Dependencies: workflow-api:2.25,workflow-step-api:2.13,workflow
+ -support:2.17
+Plugin-Developers: 
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: stephenc
+Build-Jdk: 1.8.0_111
+Extension-Name: pipeline-github-lib
+Specification-Title: Allows Pipeline Groovy libraries to be loaded on 
+ the fly from GitHub.
+Implementation-Title: pipeline-github-lib
+Implementation-Version: 1.0
+Group-Id: org.jenkins-ci.plugins
+Short-Name: pipeline-github-lib
+Long-Name: Pipeline: GitHub Groovy Libraries
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Pipeline+GitHub+Libra
+ ry+Plugin
+Plugin-Version: 1.0
+Hudson-Version: 1.642.3
+Jenkins-Version: 1.642.3
+Plugin-Dependencies: workflow-cps-global-lib:2.5,git:3.0.2
+Plugin-Developers: 
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: andresrc
+Build-Jdk: 1.8.0_112
+Extension-Name: variant
+Specification-Title: This user-invisible library plugin allows other m
+ ulti-modal plugins to behave differently depending on where they run.
+Implementation-Title: variant
+Implementation-Version: 1.1
+Group-Id: org.jenkins-ci.plugins
+Short-Name: variant
+Long-Name: Variant Plugin
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Variant+Plugin
+Plugin-Version: 1.1
+Hudson-Version: 1.580.1
+Jenkins-Version: 1.580.1
+Plugin-Developers: 
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: tfennelly
+Build-Jdk: 1.7.0_51
+Extension-Name: ace-editor
+Implementation-Title: ace-editor
+Implementation-Version: 1.1
+Group-Id: org.jenkins-ci.ui
+Short-Name: ace-editor
+Long-Name: JavaScript GUI Lib: ACE Editor bundle plugin
+Url: https://wiki.jenkins-ci.org/display/JENKINS/ACE+Editor+Plugin
+Plugin-Version: 1.1
+Hudson-Version: 1.580.1
+Jenkins-Version: 1.580.1
+Plugin-Developers: 
+Support-Dynamic-Loading: true
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: tfennelly
+Build-Jdk: 1.8.0_131
+Extension-Name: pubsub-light
+Specification-Title: A simple Publish-Subscribe light-weight event bus
+  for Jenkins
+Implementation-Title: pubsub-light
+Implementation-Version: 1.12
+Group-Id: org.jenkins-ci.plugins
+Short-Name: pubsub-light
+Long-Name: Jenkins Pub-Sub "light" Bus
+Url: https://wiki.jenkins-ci.org/display/JENKINS/PubSub+Light+Plugin
+Plugin-Version: 1.12
+Hudson-Version: 2.0
+Jenkins-Version: 2.0
+Plugin-Developers: 
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: stephenc
+Build-Jdk: 1.7.0_80
+Extension-Name: mapdb-api
+Specification-Title: This plugin provides a shared dependency on the M
+ apDB library so that other plugins can co-operate when using this lib
+ rary.
+Implementation-Title: mapdb-api
+Implementation-Version: 1.0.9.0
+Group-Id: org.jenkins-ci.plugins
+Short-Name: mapdb-api
+Long-Name: MapDB API Plugin
+Url: http://wiki.jenkins-ci.org/display/JENKINS/MapDB+API+Plugin
+Plugin-Version: 1.0.9.0
+Hudson-Version: 1.565
+Jenkins-Version: 1.565
+Plugin-Developers: Stephen Connolly:stephenc:
+Support-Dynamic-Loading: true
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: svanoort
+Build-Jdk: 1.8.0_151
+Extension-Name: workflow-api
+Specification-Title: The Jenkins Plugins Parent POM Project
+Implementation-Title: workflow-api
+Implementation-Version: 2.25
+Group-Id: org.jenkins-ci.plugins.workflow
+Short-Name: workflow-api
+Long-Name: Pipeline: API
+Url: https://wiki.jenkins.io/display/JENKINS/Pipeline+API+Plugin
+Plugin-Version: 2.25
+Hudson-Version: 2.60.3
+Jenkins-Version: 2.60.3
+Plugin-Dependencies: workflow-step-api:2.10,scm-api:2.0.8,structs:1.7
+Plugin-Developers: 
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: svanoort
+Build-Jdk: 1.8.0_151
+Extension-Name: pipeline-graph-analysis
+Specification-Title: The Jenkins Plugins Parent POM Project
+Implementation-Title: pipeline-graph-analysis
+Implementation-Version: 1.6
+Group-Id: org.jenkins-ci.plugins
+Short-Name: pipeline-graph-analysis
+Long-Name: Pipeline Graph Analysis Plugin
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Pipeline+Graph+Analys
+ is+Plugin
+Plugin-Version: 1.6
+Hudson-Version: 2.7.3
+Jenkins-Version: 2.7.3
+Plugin-Dependencies: workflow-api:2.19,workflow-cps:2.37,workflow-job:
+ 2.4,workflow-step-api:2.10,workflow-support:2.14,pipeline-input-step:
+ 2.0,pipeline-stage-step:2.2,structs:1.7
+Plugin-Developers: 
+Support-Dynamic-Loading: true
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: jglick
+Build-Jdk: 1.8.0_151
+Extension-Name: branch-api
+Specification-Title: This plugin provides an API for multiple branch b
+ ased projects.
+Implementation-Title: branch-api
+Implementation-Version: 2.0.18
+Group-Id: org.jenkins-ci.plugins
+Short-Name: branch-api
+Long-Name: Branch API Plugin
+Url: http://wiki.jenkins-ci.org/display/JENKINS/Branch+API+Plugin
+Compatible-Since-Version: 2.0.0
+Plugin-Version: 2.0.18
+Hudson-Version: 1.642.3
+Jenkins-Version: 1.642.3
+Plugin-Dependencies: cloudbees-folder:6.1.0,scm-api:2.2.6,structs:1.9
+Plugin-Developers: Stephen Connolly:stephenconnolly:
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: stevengbrown
+Build-Jdk: 1.8.0_152
+Extension-Name: timestamper
+Specification-Title: Adds timestamps to the Console Output
+Implementation-Title: timestamper
+Implementation-Version: 1.8.9
+Group-Id: org.jenkins-ci.plugins
+Short-Name: timestamper
+Long-Name: Timestamper
+Url: http://wiki.jenkins-ci.org/display/JENKINS/Timestamper
+Plugin-Version: 1.8.9
+Hudson-Version: 1.608
+Jenkins-Version: 1.608
+Plugin-Dependencies: workflow-step-api:1.7;resolution:=optional
+Plugin-Developers: Steven Brown:stevengbrown:StevenGBrown@gmail.com
+Support-Dynamic-Loading: true
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: jglick
+Build-Jdk: 1.8.0_112
+Extension-Name: workflow-aggregator
+Specification-Title: A suite of plugins that lets you orchestrate auto
+ mation, simple or complex. See http://jenkins-ci.org/solutions/pipeli
+ ne/ for more details
+Implementation-Title: workflow-aggregator
+Implementation-Version: 2.5
+Group-Id: org.jenkins-ci.plugins.workflow
+Short-Name: workflow-aggregator
+Long-Name: Pipeline
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Pipeline+Plugin
+Plugin-Version: 2.5
+Hudson-Version: 2.7.3
+Jenkins-Version: 2.7.3
+Plugin-Dependencies: pipeline-input-step:2.5,workflow-job:2.9,workflow
+ -basic-steps:2.3,workflow-durable-task-step:2.8,workflow-api:2.8,work
+ flow-cps:2.24,workflow-support:2.12,workflow-cps-global-lib:2.5,workf
+ low-multibranch:2.9.2,pipeline-stage-view:2.4,workflow-scm-step:2.3,w
+ orkflow-step-api:2.7,pipeline-model-definition:1.0,pipeline-stage-ste
+ p:2.2,pipeline-build-step:2.4,pipeline-milestone-step:1.3
+Plugin-Developers: 
+Support-Dynamic-Loading: true
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: root
+Build-Jdk: 1.8.0_121
+Extension-Name: blueocean-jira
+Specification-Title: The Jenkins Plugins Parent POM Project
+Implementation-Title: blueocean-jira
+Implementation-Version: 1.4.0
+Group-Id: io.jenkins.blueocean
+Short-Name: blueocean-jira
+Long-Name: JIRA Integration for Blue Ocean
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Blue+Ocean+Plugin
+Plugin-Version: 1.4.0
+Hudson-Version: 2.73.3
+Jenkins-Version: 2.73.3
+Plugin-Dependencies: blueocean-rest:1.4.0,jira:2.4.2
+Plugin-Developers: Thorsten Iberian Sumurai:scherler:,Cliff Meyers:cli
+ ffmeyers:,Tom Fennelly:tfennelly:,Vivek Pandey:vivek:,Kohsuke:kohsuke
+ :,Josh McDonald:sophistifunk:,Ivan Meredith:imeredith:,Michael Neale:
+ michaelneale:,Keith Zantow:kzantow:,James Dumay:i386:,Marc:marcesher:
+ ,Paul Dragoonis:dragoonis:,Ivan Santos:pragmaticivan:,Peter Dave Hell
+ o:PeterDaveHello:,Alexandru Somai:alexsomai:
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: shinsuke.nakajima
+Build-Jdk: 1.8.0_121
+Extension-Name: global-slack-notifier
+Specification-Title: Global Slack Notifier Plugin
+Implementation-Title: global-slack-notifier
+Implementation-Version: 1.3
+Group-Id: org.jenkins-ci.plugins
+Short-Name: global-slack-notifier
+Long-Name: Global Slack Notifier Plugin
+Url: https://wiki.jenkins.io/display/JENKINS/Global+Slack+Notifier+Plu
+ gin
+Plugin-Version: 1.3
+Hudson-Version: 2.1
+Jenkins-Version: 2.1
+Plugin-Dependencies: slack:2.2
+Plugin-Developers: shinsuke nakajima:marimoiro:marimoncolor@gmail.com
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: root
+Build-Jdk: 1.8.0_121
+Extension-Name: blueocean-github-pipeline
+Specification-Title: The Jenkins Plugins Parent POM Project
+Implementation-Title: blueocean-github-pipeline
+Implementation-Version: 1.4.0
+Group-Id: io.jenkins.blueocean
+Short-Name: blueocean-github-pipeline
+Long-Name: GitHub Pipeline for Blue Ocean
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Blue+Ocean+Plugin
+Plugin-Version: 1.4.0
+Hudson-Version: 2.73.3
+Jenkins-Version: 2.73.3
+Plugin-Dependencies: blueocean-pipeline-api-impl:1.4.0,github-api:1.86
+ ,github-branch-source:2.2.3,jackson2-api:2.7.3,pubsub-light:1.12
+Plugin-Developers: Thorsten Iberian Sumurai:scherler:,Cliff Meyers:cli
+ ffmeyers:,Tom Fennelly:tfennelly:,Vivek Pandey:vivek:,Kohsuke:kohsuke
+ :,Josh McDonald:sophistifunk:,Ivan Meredith:imeredith:,Michael Neale:
+ michaelneale:,Keith Zantow:kzantow:,James Dumay:i386:,Marc:marcesher:
+ ,Paul Dragoonis:dragoonis:,Ivan Santos:pragmaticivan:,Peter Dave Hell
+ o:PeterDaveHello:,Alexandru Somai:alexsomai:
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: abayer
+Build-Jdk: 1.8.0_144
+Extension-Name: pipeline-model-api
+Specification-Title: Model API for Declarative Pipeline
+Implementation-Title: pipeline-model-api
+Implementation-Version: 1.2.7
+Group-Id: org.jenkinsci.plugins
+Short-Name: pipeline-model-api
+Long-Name: Pipeline: Model API
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Pipeline+Model+Defini
+ tion+Plugin
+Plugin-Version: 1.2.7
+Hudson-Version: 2.7.3
+Jenkins-Version: 2.7.3
+Plugin-Dependencies: workflow-step-api:2.14,structs:1.9
+Plugin-Developers: Andrew Bayer:abayer:
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: root
+Build-Jdk: 1.8.0_121
+Extension-Name: blueocean-config
+Specification-Title: The Jenkins Plugins Parent POM Project
+Implementation-Title: blueocean-config
+Implementation-Version: 1.4.0
+Group-Id: io.jenkins.blueocean
+Short-Name: blueocean-config
+Long-Name: Config API for Blue Ocean
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Blue+Ocean+Plugin
+Plugin-Version: 1.4.0
+Hudson-Version: 2.73.3
+Jenkins-Version: 2.73.3
+Plugin-Dependencies: blueocean-commons:1.4.0,blueocean-jwt:1.4.0,blueo
+ cean-rest:1.4.0,blueocean-web:1.4.0
+Plugin-Developers: Thorsten Iberian Sumurai:scherler:,Cliff Meyers:cli
+ ffmeyers:,Tom Fennelly:tfennelly:,Vivek Pandey:vivek:,Kohsuke:kohsuke
+ :,Josh McDonald:sophistifunk:,Ivan Meredith:imeredith:,Michael Neale:
+ michaelneale:,Keith Zantow:kzantow:,James Dumay:i386:,Marc:marcesher:
+ ,Paul Dragoonis:dragoonis:,Ivan Santos:pragmaticivan:,Peter Dave Hell
+ o:PeterDaveHello:,Alexandru Somai:alexsomai:
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: abayer
+Build-Jdk: 1.8.0_144
+Extension-Name: docker-workflow
+Specification-Title: Build and use Docker containers from pipelines
+Implementation-Title: docker-workflow
+Implementation-Version: 1.15
+Group-Id: org.jenkins-ci.plugins
+Short-Name: docker-workflow
+Long-Name: Docker Pipeline
+Url: http://wiki.jenkins-ci.org/display/JENKINS/Docker+Pipeline+Plugin
+Plugin-Version: 1.15
+Hudson-Version: 1.642.3
+Jenkins-Version: 1.642.3
+Plugin-Dependencies: workflow-cps:2.25,workflow-durable-task-step:2.8,
+ docker-commons:1.5
+Plugin-Developers: 
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: recena
+Build-Jdk: 1.8.0_40
+Extension-Name: pam-auth
+Specification-Title: Adds Unix Pluggable Authentication Module (PAM) s
+ upport to Jenkins
+Implementation-Title: pam-auth
+Implementation-Version: 1.3
+Group-Id: org.jenkins-ci.plugins
+Short-Name: pam-auth
+Long-Name: PAM Authentication plugin
+Url: http://wiki.jenkins-ci.org/display/JENKINS/PAM+Authentication+Plu
+ gin
+Plugin-Version: 1.3
+Hudson-Version: 1.566
+Jenkins-Version: 1.566
+Plugin-Developers: 
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: svanoort
+Build-Jdk: 1.8.0_151
+Extension-Name: workflow-multibranch
+Specification-Title: Enhances Pipeline plugin to handle branches bette
+ r by automatically grouping builds from different branches
+Implementation-Title: workflow-multibranch
+Implementation-Version: 2.17
+Group-Id: org.jenkins-ci.plugins.workflow
+Short-Name: workflow-multibranch
+Long-Name: Pipeline: Multibranch
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Pipeline+Multibranch+
+ Plugin
+Plugin-Version: 2.17
+Hudson-Version: 2.62
+Jenkins-Version: 2.62
+Plugin-Dependencies: workflow-api:2.25,workflow-cps:2.43,workflow-job:
+ 2.17,workflow-scm-step:2.4,workflow-step-api:2.13,workflow-support:2.
+ 17,branch-api:2.0.18,cloudbees-folder:6.1.2,scm-api:2.2.6,script-secu
+ rity:1.39,structs:1.10
+Plugin-Developers: 
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: abayer
+Build-Jdk: 1.8.0_144
+Extension-Name: pipeline-model-extensions
+Specification-Title: APIs for extension points used in Declarative Pip
+ elines
+Implementation-Title: pipeline-model-extensions
+Implementation-Version: 1.2.7
+Group-Id: org.jenkinsci.plugins
+Short-Name: pipeline-model-extensions
+Long-Name: Pipeline: Declarative Extension Points API
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Pipeline+Model+Defini
+ tion+Plugin
+Compatible-Since-Version: 1.2-beta-4
+Plugin-Version: 1.2.7
+Hudson-Version: 2.7.3
+Jenkins-Version: 2.7.3
+Plugin-Dependencies: workflow-cps:2.41,workflow-job:2.11,pipeline-mode
+ l-api:1.2.7
+Plugin-Developers: Andrew Bayer:abayer:
+Support-Dynamic-Loading: true
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: tfennelly
+Build-Jdk: 1.7.0_51
+Extension-Name: momentjs
+Implementation-Title: momentjs
+Implementation-Version: 1.1.1
+Group-Id: org.jenkins-ci.ui
+Short-Name: momentjs
+Long-Name: JavaScript GUI Lib: Moment.js bundle plugin
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Moment.js
+Plugin-Version: 1.1.1
+Hudson-Version: 1.580.1
+Jenkins-Version: 1.580.1
+Plugin-Developers: 
+Support-Dynamic-Loading: true
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: jglick
+Build-Jdk: 1.8.0_112
+Extension-Name: mailer
+Specification-Title: This plugin allows you to configure email notific
+ ations for build results
+Implementation-Title: mailer
+Implementation-Version: 1.20
+Plugin-Class: hudson.tasks.PluginImpl
+Group-Id: org.jenkins-ci.plugins
+Short-Name: mailer
+Long-Name: Jenkins Mailer Plugin
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Mailer
+Plugin-Version: 1.20
+Hudson-Version: 1.625.3
+Jenkins-Version: 1.625.3
+Plugin-Dependencies: display-url-api:1.0
+Plugin-Developers: 
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: svanoort
+Build-Jdk: 1.8.0_102
+Extension-Name: pipeline-stage-view
+Specification-Title: Provides a swimlane view of the different stages 
+ in a pipeline.
+Implementation-Title: pipeline-stage-view
+Implementation-Version: 2.9
+Plugin-Class: com.cloudbees.workflow.ui.view.PluginImpl
+Group-Id: org.jenkins-ci.plugins.pipeline-stage-view
+Short-Name: pipeline-stage-view
+Long-Name: Pipeline: Stage View Plugin
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Pipeline+Stage+View+P
+ lugin
+Plugin-Version: 2.9
+Hudson-Version: 1.642.3
+Jenkins-Version: 1.642.3
+Plugin-Dependencies: pipeline-rest-api:2.9,workflow-job:2.0,handlebars
+ :1.1,jquery-detached:1.2.1,momentjs:1.1
+Plugin-Developers: 
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: jglick
+Build-Jdk: 1.8.0_151
+Extension-Name: command-launcher
+Specification-Title: Allows agents to be launched using a specified co
+ mmand.
+Implementation-Title: command-launcher
+Implementation-Version: 1.2
+Group-Id: org.jenkins-ci.plugins
+Short-Name: command-launcher
+Long-Name: Command Agent Launcher Plugin
+Url: https://wiki.jenkins.io/display/JENKINS/Command+Agent+Launcher+Pl
+ ugin
+Plugin-Version: 1.2
+Hudson-Version: 2.86
+Jenkins-Version: 2.86
+Plugin-Dependencies: script-security:1.36
+Plugin-Developers: 
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: stephenc
+Build-Jdk: 1.8.0_144
+Extension-Name: github-branch-source
+Specification-Title: Multibranch projects and organization folders fro
+ m GitHub. Maintained by CloudBees, Inc.
+Implementation-Title: github-branch-source
+Implementation-Version: 2.3.2
+Group-Id: org.jenkins-ci.plugins
+Short-Name: github-branch-source
+Long-Name: GitHub Branch Source Plugin
+Url: https://wiki.jenkins-ci.org/display/JENKINS/GitHub+Branch+Source+
+ Plugin
+Compatible-Since-Version: 2.2.0
+Plugin-Version: 2.3.2
+Hudson-Version: 1.642.3
+Jenkins-Version: 1.642.3
+Plugin-Dependencies: github:1.26.0,credentials:2.1.15,display-url-api:
+ 0.2,git:3.6.0,github-api:1.90,scm-api:2.2.3,structs:1.10
+Plugin-Developers: 
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: nenashev
+Build-Jdk: 1.8.0_121
+Extension-Name: apache-httpcomponents-client-4-api
+Specification-Title: Bundles Apache HttpComponents Client 4.x and allo
+ ws it to be used by Jenkins plugins
+Implementation-Title: apache-httpcomponents-client-4-api
+Implementation-Version: 4.5.3-2.1
+Group-Id: org.jenkins-ci.plugins
+Short-Name: apache-httpcomponents-client-4-api
+Long-Name: Jenkins Apache HttpComponents Client 4.x API Plugin
+Url: https://wiki.jenkins.io/display/JENKINS/Apache+HttpComponents+Cli
+ ent+4.x+API+Plugin
+Plugin-Version: 4.5.3-2.1
+Hudson-Version: 1.625.3
+Jenkins-Version: 1.625.3
+Plugin-Developers: Oleg Nenashev:oleg_nenashev:
+Support-Dynamic-Loading: true
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: jglick
+Build-Jdk: 1.8.0_131
+Extension-Name: mercurial
+Specification-Title: Allows Jenkins to check out projects from the Mer
+ curial SCM.
+Implementation-Title: mercurial
+Implementation-Version: 2.2
+Group-Id: org.jenkins-ci.plugins
+Short-Name: mercurial
+Long-Name: Jenkins Mercurial plugin
+Url: https://wiki.jenkins.io/display/JENKINS/Mercurial+Plugin
+Compatible-Since-Version: 2.0
+Plugin-Version: 2.2
+Hudson-Version: 1.642.3
+Jenkins-Version: 1.642.3
+Plugin-Dependencies: credentials:2.1.10,jsch:0.1.54.1,matrix-project:1
+ .2,multiple-scms:0.4-beta-1;resolution:=optional,scm-api:2.2.0,ssh-cr
+ edentials:1.12,structs:1.9
+Plugin-Developers: Jesse Glick:jglick:jglick@cloudbees.com,Mirko Fried
+ enhagen:mfriedenhagen:mfriedenhagen@gmail.com,Kohsuke Kawaguchi:kohsu
+ ke:kk@kohsuke.org,David M. Carr:davidmc24:david@carrclan.us,Willem Ve
+ rstraeten:willemv:willem.verstraeten@gmail.com
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: stephenc
+Build-Jdk: 1.8.0_144
+Extension-Name: github-api
+Specification-Title: The Jenkins Plugins Parent POM Project
+Implementation-Title: github-api
+Implementation-Version: 1.90
+Group-Id: org.jenkins-ci.plugins
+Short-Name: github-api
+Long-Name: GitHub API Plugin
+Url: https://wiki.jenkins-ci.org/display/JENKINS/GitHub+API+Plugin
+Plugin-Version: 1.90
+Hudson-Version: 1.615
+Jenkins-Version: 1.615
+Plugin-Dependencies: jackson2-api:2.7.3
+Plugin-Developers: 
+Support-Dynamic-Loading: true
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: alexc
+Build-Jdk: 1.8.0_91
+Extension-Name: token-macro
+Specification-Title: This plugin adds reusable macro expansion capabil
+ ity for other plugins to use.
+Implementation-Title: token-macro
+Implementation-Version: 2.3
+Group-Id: org.jenkins-ci.plugins
+Short-Name: token-macro
+Long-Name: Token Macro Plugin
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Token+Macro+Plugin
+Plugin-Version: 2.3
+Hudson-Version: 1.642.3
+Jenkins-Version: 1.642.3
+Plugin-Dependencies: workflow-job:2.0,workflow-step-api:2.7
+Plugin-Developers: Kohsuke Kawaguchi:kohsuke:kkawaguchi@cloudbees.com,
+ Alex Earl:slide_o_mix:slide.o.mix@gmail.com
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: root
+Build-Jdk: 1.8.0_121
+Extension-Name: blueocean-bitbucket-pipeline
+Specification-Title: The Jenkins Plugins Parent POM Project
+Implementation-Title: blueocean-bitbucket-pipeline
+Implementation-Version: 1.4.0
+Group-Id: io.jenkins.blueocean
+Short-Name: blueocean-bitbucket-pipeline
+Long-Name: Bitbucket Pipeline for Blue Ocean
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Blue+Ocean+Plugin
+Plugin-Version: 1.4.0
+Hudson-Version: 2.73.3
+Jenkins-Version: 2.73.3
+Plugin-Dependencies: blueocean-pipeline-api-impl:1.4.0,cloudbees-bitbu
+ cket-branch-source:2.2.5,pubsub-light:1.12
+Plugin-Developers: Thorsten Iberian Sumurai:scherler:,Cliff Meyers:cli
+ ffmeyers:,Tom Fennelly:tfennelly:,Vivek Pandey:vivek:,Kohsuke:kohsuke
+ :,Josh McDonald:sophistifunk:,Ivan Meredith:imeredith:,Michael Neale:
+ michaelneale:,Keith Zantow:kzantow:,James Dumay:i386:,Marc:marcesher:
+ ,Paul Dragoonis:dragoonis:,Ivan Santos:pragmaticivan:,Peter Dave Hell
+ o:PeterDaveHello:,Alexandru Somai:alexsomai:
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: kohsuke
+Build-Jdk: 1.7.0_07
+Extension-Name: git-server
+Specification-Title: This library plugin provides embedded Git server 
+ capability inside Jenkins
+Implementation-Title: git-server
+Implementation-Version: 1.7
+Group-Id: org.jenkins-ci.plugins
+Short-Name: git-server
+Long-Name: Jenkins GIT server Plugin
+Url: http://wiki.jenkins-ci.org/display/JENKINS/Git+Server+Plugin
+Plugin-Version: 1.7
+Hudson-Version: 1.580.1
+Jenkins-Version: 1.580.1
+Plugin-Dependencies: git-client:1.11.0
+Plugin-Developers: 
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: nenashev
+Build-Jdk: 1.7.0_75
+Extension-Name: windows-slaves
+Specification-Title: Allows you to connect to Windows machines and sta
+ rt slave agents on them.
+Implementation-Title: windows-slaves
+Implementation-Version: 1.3.1
+Group-Id: org.jenkins-ci.plugins
+Short-Name: windows-slaves
+Long-Name: Windows Slaves Plugin
+Url: http://wiki.jenkins-ci.org/display/JENKINS/Windows+Slaves+Plugin
+Plugin-Version: 1.3.1
+Hudson-Version: 1.580.1
+Jenkins-Version: 1.580.1
+Plugin-Developers: 
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: root
+Build-Jdk: 1.8.0_131
+Extension-Name: email-ext
+Specification-Title: Allows to configure every aspect of email notific
+ ations: when an email is sent, who should receive it and what the ema
+ il says
+Implementation-Title: email-ext
+Implementation-Version: 2.61
+Plugin-Class: hudson.plugins.emailext.EmailExtensionPlugin
+Group-Id: org.jenkins-ci.plugins
+Short-Name: email-ext
+Long-Name: Email Extension Plugin
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Email-ext+plugin
+Compatible-Since-Version: 2.57.2
+Plugin-Version: 2.61
+Hudson-Version: 2.0
+Jenkins-Version: 2.0
+Plugin-Dependencies: workflow-job:2.11;resolution:=optional,workflow-s
+ tep-api:2.9;resolution:=optional,config-file-provider:2.15.6;resoluti
+ on:=optional,junit:1.2,mailer:1.13,matrix-project:1.4,script-security
+ :1.27,structs:1.6,token-macro:2.0,analysis-core:1.54;resolution:=opti
+ onal
+Plugin-Developers: David van Laatum:davidvanlaatum:david@vanlaatum.id.au
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: Wadeck
+Build-Jdk: 1.8.0_144
+Extension-Name: ant
+Specification-Title: Adds Apache Ant support to Jenkins
+Implementation-Title: ant
+Implementation-Version: 1.8
+Group-Id: org.jenkins-ci.plugins
+Short-Name: ant
+Long-Name: Ant Plugin
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Ant+Plugin
+Plugin-Version: 1.8
+Hudson-Version: 1.651.3
+Jenkins-Version: 1.651.3
+Plugin-Dependencies: structs:1.6
+Plugin-Developers: Armando Fernandez:armfergom:
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: jenkins
+Build-Jdk: 1.7.0_79
+Extension-Name: build-monitor-plugin
+Specification-Title: Provides a highly visible view of the status of s
+ elected Jenkins jobs.
+         It easily accommodates different computer screen sizes and is
+  ideal as an Extreme Feedback Device to be
+         displayed on a screen on your office wall.
+Implementation-Title: build-monitor-plugin
+Implementation-Version: 1.12+build.201708172343
+Plugin-Class: com.smartcodeltd.jenkinsci.plugin.assetbundler.Dispatcher
+Group-Id: org.jenkins-ci.plugins
+Short-Name: build-monitor-plugin
+Long-Name: Build Monitor View
+Url: http://wiki.jenkins-ci.org/display/JENKINS/Build+Monitor+Plugin
+Plugin-Version: 1.12+build.201708172343
+Hudson-Version: 1.642.3
+Jenkins-Version: 1.642.3
+Plugin-Dependencies: view-job-filters:1.26;resolution:=optional,creden
+ tials:2.1.10;resolution:=optional,claim:2.8;resolution:=optional,groo
+ vy-postbuild:2.3.1;resolution:=optional,build-failure-analyzer:1.9.0;
+ resolution:=optional,cloudbees-folder:5.16;resolution:=optional,workf
+ low-aggregator:2.4;resolution:=optional
+Plugin-Developers: Jan Molak:jan-molak:jan.molak+build.monitor@smartco
+ deltd.co.uk
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: root
+Build-Jdk: 1.8.0_121
+Extension-Name: blueocean-pipeline-editor
+Specification-Title: The Blue Ocean Pipeline Editor is the simplest wa
+ y for anyone wanting to get started with creating Pipelines in Jenkins
+Implementation-Title: blueocean-pipeline-editor
+Implementation-Version: 1.4.0
+Group-Id: io.jenkins.blueocean
+Short-Name: blueocean-pipeline-editor
+Long-Name: Blue Ocean Pipeline Editor
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Blue+Ocean+Plugin
+Plugin-Version: 1.4.0
+Hudson-Version: 2.73.3
+Jenkins-Version: 2.73.3
+Plugin-Dependencies: blueocean-commons:1.4.0,blueocean-dashboard:1.4.0
+ ,blueocean-pipeline-api-impl:1.4.0,blueocean-rest:1.4.0,pipeline-mode
+ l-definition:1.2.5
+Plugin-Developers: Josh McDonald:sophistifunk:,Keith Zantow:kzantow:,A
+ ndrew Bayer:abayer:
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: amuniz
+Build-Jdk: 1.8.0_60
+Extension-Name: pipeline-milestone-step
+Specification-Title: Plugin that provides the milestone step
+Implementation-Title: pipeline-milestone-step
+Implementation-Version: 1.3.1
+Group-Id: org.jenkins-ci.plugins
+Short-Name: pipeline-milestone-step
+Long-Name: Pipeline: Milestone Step
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Pipeline+Milestone+St
+ ep+Plugin
+Plugin-Version: 1.3.1
+Hudson-Version: 1.642.3
+Jenkins-Version: 1.642.3
+Plugin-Dependencies: workflow-api:2.11,workflow-step-api:2.9
+Plugin-Developers: 
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: jdumay
+Build-Jdk: 1.8.0_131
+Extension-Name: display-url-api
+Specification-Title: Provides the DisplayURLProvider extension point t
+ o provide alternate URLs for use in notifications
+Implementation-Title: display-url-api
+Implementation-Version: 2.2.0
+Group-Id: org.jenkins-ci.plugins
+Short-Name: display-url-api
+Long-Name: Display URL API
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Display+URL+API+Plugin
+Plugin-Version: 2.2.0
+Hudson-Version: 1.609.3
+Jenkins-Version: 1.609.3
+Plugin-Developers: James Dumay:jdumay:jdumay@cloudbees.com
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: danielbeck
+Build-Jdk: 1.8.0_121
+Extension-Name: matrix-auth
+Specification-Title: Offers matrix-based security authorization strate
+ gies (global and per-project).
+Implementation-Title: matrix-auth
+Implementation-Version: 2.2
+Group-Id: org.jenkins-ci.plugins
+Short-Name: matrix-auth
+Long-Name: Matrix Authorization Strategy Plugin
+Url: http://wiki.jenkins-ci.org/display/JENKINS/Matrix+Authorization+S
+ trategy+Plugin
+Compatible-Since-Version: 2.0
+Plugin-Version: 2.2
+Hudson-Version: 2.60.1
+Jenkins-Version: 2.60.1
+Plugin-Dependencies: cloudbees-folder:6.1.0;resolution:=optional
+Plugin-Developers: 
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: root
+Build-Jdk: 1.8.0_121
+Extension-Name: blueocean-rest
+Specification-Title: The Jenkins Plugins Parent POM Project
+Implementation-Title: blueocean-rest
+Implementation-Version: 1.4.0
+Group-Id: io.jenkins.blueocean
+Short-Name: blueocean-rest
+Long-Name: REST API for Blue Ocean
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Blue+Ocean+Plugin
+Plugin-Version: 1.4.0
+Hudson-Version: 2.73.3
+Jenkins-Version: 2.73.3
+Plugin-Dependencies: blueocean-commons:1.4.0
+Plugin-Developers: Thorsten Iberian Sumurai:scherler:,Cliff Meyers:cli
+ ffmeyers:,Tom Fennelly:tfennelly:,Vivek Pandey:vivek:,Kohsuke:kohsuke
+ :,Josh McDonald:sophistifunk:,Ivan Meredith:imeredith:,Michael Neale:
+ michaelneale:,Keith Zantow:kzantow:,James Dumay:i386:,Marc:marcesher:
+ ,Paul Dragoonis:dragoonis:,Ivan Santos:pragmaticivan:,Peter Dave Hell
+ o:PeterDaveHello:,Alexandru Somai:alexsomai:
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: jglick
+Build-Jdk: 1.8.0_151
+Extension-Name: workflow-durable-task-step
+Specification-Title: The Jenkins Plugins Parent POM Project
+Implementation-Title: workflow-durable-task-step
+Implementation-Version: 2.18
+Group-Id: org.jenkins-ci.plugins.workflow
+Short-Name: workflow-durable-task-step
+Long-Name: Pipeline: Nodes and Processes
+Url: https://wiki.jenkins.io/display/JENKINS/Pipeline+Nodes+and+Proces
+ ses+Plugin
+Plugin-Version: 2.18
+Hudson-Version: 2.60.3
+Jenkins-Version: 2.60.3
+Plugin-Dependencies: workflow-api:2.22,workflow-step-api:2.13,workflow
+ -support:2.16,durable-task:1.16,script-security:1.27,structs:1.7
+Plugin-Developers: 
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: jenkins
+Build-Jdk: 1.8.0_141
+Extension-Name: github
+Specification-Title: The Jenkins Plugins Parent POM Project
+Implementation-Title: github
+Implementation-Version: 1.29.0
+Plugin-Class: org.jenkinsci.plugins.github.GitHubPlugin
+Group-Id: com.coravy.hudson.plugins.github
+Short-Name: github
+Long-Name: GitHub plugin
+Url: http://wiki.jenkins-ci.org/display/JENKINS/Github+Plugin
+Plugin-Version: 1.29.0
+Hudson-Version: 1.625.3
+Jenkins-Version: 1.625.3
+Plugin-Dependencies: credentials:2.1.8,display-url-api:2.0,git:3.4.0,g
+ ithub-api:1.90,plain-credentials:1.1,scm-api:2.2.0,structs:1.10,token
+ -macro:1.11
+Plugin-Developers: Merkushev Kirill:lanwen:,Kanstantsin Shautsou:Kosty
+ aSha:
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: stephenc
+Build-Jdk: 1.8.0_45
+Extension-Name: ssh-credentials
+Specification-Title: Allows storage of SSH credentials in Jenkins
+Implementation-Title: ssh-credentials
+Implementation-Version: 1.13
+Group-Id: org.jenkins-ci.plugins
+Short-Name: ssh-credentials
+Long-Name: SSH Credentials Plugin
+Url: https://wiki.jenkins-ci.org/display/JENKINS/SSH+Credentials+Plugin
+Plugin-Version: 1.13
+Hudson-Version: 1.609
+Jenkins-Version: 1.609
+Plugin-Dependencies: credentials:2.1.0
+Plugin-Developers: Stephen Connolly:stephenconnolly:
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: ogondza
+Build-Jdk: 1.8.0_144
+Extension-Name: sectioned-view
+Specification-Title: The Jenkins Plugins Parent POM Project
+Implementation-Title: sectioned-view
+Implementation-Version: 1.24
+Group-Id: org.jenkins-ci.plugins
+Short-Name: sectioned-view
+Long-Name: Sectioned View Plugin
+Url: http://wiki.jenkins-ci.org/display/JENKINS/Sectioned+View+Plugin
+Plugin-Version: 1.24
+Hudson-Version: 1.580.3
+Jenkins-Version: 1.580.3
+Plugin-Developers: Timothy Bingaman:tbingaman:timothy.bingaman@gmail.com
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: ogondza
+Build-Jdk: 1.8.0_144
+Extension-Name: matrix-project
+Specification-Title: Multi-configuration (matrix) project type.
+Implementation-Title: matrix-project
+Implementation-Version: 1.12
+Group-Id: org.jenkins-ci.plugins
+Short-Name: matrix-project
+Long-Name: Matrix Project Plugin
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Matrix+Project+Plugin
+Plugin-Version: 1.12
+Hudson-Version: 1.609
+Jenkins-Version: 1.609
+Plugin-Dependencies: junit:1.20,script-security:1.13
+Plugin-Developers: Oliver Gondza:olivergondza:
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: Wadeck
+Build-Jdk: 1.8.0_144
+Extension-Name: junit
+Specification-Title: Allows JUnit-format test results to be published.
+Implementation-Title: junit
+Implementation-Version: 1.24
+Group-Id: org.jenkins-ci.plugins
+Short-Name: junit
+Long-Name: JUnit Plugin
+Url: http://wiki.jenkins-ci.org/display/JENKINS/JUnit+Plugin
+Plugin-Version: 1.24
+Hudson-Version: 2.7.3
+Jenkins-Version: 2.7.3
+Plugin-Dependencies: workflow-api:2.22,workflow-step-api:2.12,script-s
+ ecurity:1.30,structs:1.7
+Plugin-Developers: 
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: abayer
+Build-Jdk: 1.8.0_144
+Extension-Name: pipeline-model-definition
+Specification-Title: An opinionated, declarative Pipeline
+Implementation-Title: pipeline-model-definition
+Implementation-Version: 1.2.7
+Group-Id: org.jenkinsci.plugins
+Short-Name: pipeline-model-definition
+Long-Name: Pipeline: Declarative
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Pipeline+Model+Defini
+ tion+Plugin
+Compatible-Since-Version: 1.2-beta-4
+Plugin-Version: 1.2.7
+Hudson-Version: 2.7.3
+Jenkins-Version: 2.7.3
+Plugin-Dependencies: workflow-api:2.22,workflow-basic-steps:2.3,workfl
+ ow-cps-global-lib:2.7,workflow-cps:2.41,workflow-durable-task-step:2.
+ 9,workflow-multibranch:2.9.2,workflow-scm-step:2.4,workflow-support:2
+ .14,credentials-binding:1.13,credentials:2.1.13,docker-workflow:1.9,g
+ it-client:2.5.0,mailer:1.18,pipeline-input-step:2.8,pipeline-stage-st
+ ep:2.2,scm-api:2.2.2,pipeline-model-api:1.2.7,pipeline-model-declarat
+ ive-agent:1.1.1,pipeline-model-extensions:1.2.7,pipeline-stage-tags-m
+ etadata:1.2.7
+Plugin-Developers: Andrew Bayer:abayer:
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: jglick
+Build-Jdk: 1.8.0_112
+Extension-Name: ssh-agent
+Specification-Title: The Jenkins Plugins Parent POM Project
+Implementation-Title: ssh-agent
+Implementation-Version: 1.15
+Group-Id: org.jenkins-ci.plugins
+Short-Name: ssh-agent
+Long-Name: SSH Agent Plugin
+Url: http://wiki.jenkins-ci.org/display/JENKINS/SSH+Agent+Plugin
+Compatible-Since-Version: 1.5
+Plugin-Version: 1.15
+Hudson-Version: 1.609.3
+Jenkins-Version: 1.609.3
+PluginFirstClassLoader: true
+Plugin-Dependencies: workflow-step-api:1.14.2,bouncycastle-api:1.0.2,c
+ redentials:2.1.1,ssh-credentials:1.11
+Plugin-Developers: Stephen Connolly:stephenconnolly:
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: nenashev
+Build-Jdk: 1.8.0_121
+Extension-Name: subversion
+Specification-Title: The Jenkins Plugins Parent POM Project
+Implementation-Title: subversion
+Implementation-Version: 2.10.2
+Group-Id: org.jenkins-ci.plugins
+Short-Name: subversion
+Long-Name: Jenkins Subversion Plug-in
+Url: http://wiki.jenkins-ci.org/display/JENKINS/Subversion+Plugin
+Plugin-Version: 2.10.2
+Hudson-Version: 1.625.3
+Jenkins-Version: 1.625.3
+Mask-Classes: com.trilead.ssh2.
+Plugin-Dependencies: workflow-scm-step:1.14.2,credentials:2.1.15,mapdb
+ -api:1.0.1.0,scm-api:2.0.8,ssh-credentials:1.11
+Plugin-Developers: 
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: stevenchristou
+Build-Jdk: 1.7.0_80
+Extension-Name: antisamy-markup-formatter
+Specification-Title: Uses policy definitions to allow limited HTML mar
+ kup in user-submitted text.
+Implementation-Title: antisamy-markup-formatter
+Implementation-Version: 1.5
+Group-Id: org.jenkins-ci.plugins
+Short-Name: antisamy-markup-formatter
+Long-Name: OWASP Markup Formatter Plugin
+Url: http://wiki.jenkins-ci.org/display/JENKINS/OWASP+Markup+Formatter
+ +Plugin
+Plugin-Version: 1.5
+Hudson-Version: 1.565.3
+Jenkins-Version: 1.565.3
+Plugin-Developers: 
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: abayer
+Build-Jdk: 1.8.0_144
+Extension-Name: pipeline-stage-step
+Specification-Title: The Jenkins Plugins Parent POM Project
+Implementation-Title: pipeline-stage-step
+Implementation-Version: 2.3
+Group-Id: org.jenkins-ci.plugins
+Short-Name: pipeline-stage-step
+Long-Name: Pipeline: Stage Step
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Pipeline+Stage+Step+P
+ lugin
+Plugin-Version: 2.3
+Hudson-Version: 1.642.3
+Jenkins-Version: 1.642.3
+Plugin-Dependencies: workflow-api:2.15,workflow-step-api:2.11,scm-api:
+ 2.0.7,structs:1.6
+Plugin-Developers: 
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: root
+Build-Jdk: 1.8.0_121
+Extension-Name: blueocean
+Specification-Title: Blue Ocean is a new project that rethinks the use
+ r experience of Jenkins. Designed from the ground up for Jenkins Pipe
+ line and compatible with Freestyle jobs, Blue Ocean reduces clutter a
+ nd increases clarity for every member of your team.
+Implementation-Title: blueocean
+Implementation-Version: 1.4.0
+Group-Id: io.jenkins.blueocean
+Short-Name: blueocean
+Long-Name: Blue Ocean
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Blue+Ocean+Plugin
+Plugin-Version: 1.4.0
+Hudson-Version: 2.73.3
+Jenkins-Version: 2.73.3
+Plugin-Dependencies: blueocean-bitbucket-pipeline:1.4.0,blueocean-comm
+ ons:1.4.0,blueocean-config:1.4.0,blueocean-core-js:1.4.0,blueocean-da
+ shboard:1.4.0,blueocean-events:1.4.0,blueocean-git-pipeline:1.4.0,blu
+ eocean-github-pipeline:1.4.0,blueocean-i18n:1.4.0,blueocean-jira:1.4.
+ 0,blueocean-jwt:1.4.0,blueocean-personalization:1.4.0,blueocean-pipel
+ ine-api-impl:1.4.0,blueocean-pipeline-editor:1.4.0,blueocean-rest-imp
+ l:1.4.0,blueocean-rest:1.4.0,blueocean-web:1.4.0,jenkins-design-langu
+ age:1.4.0,blueocean-autofavorite:1.2.0,blueocean-display-url:2.1.1,pi
+ peline-build-step:2.5.1,pipeline-milestone-step:1.3.1
+Plugin-Developers: Thorsten Iberian Sumurai:scherler:,Cliff Meyers:cli
+ ffmeyers:,Tom Fennelly:tfennelly:,Vivek Pandey:vivek:,Kohsuke:kohsuke
+ :,Josh McDonald:sophistifunk:,Ivan Meredith:imeredith:,Michael Neale:
+ michaelneale:,Keith Zantow:kzantow:,James Dumay:i386:,Marc:marcesher:
+ ,Paul Dragoonis:dragoonis:,Ivan Santos:pragmaticivan:,Peter Dave Hell
+ o:PeterDaveHello:,Alexandru Somai:alexsomai:
+Support-Dynamic-Loading: true
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: jdumay
+Build-Jdk: 1.8.0_131
+Extension-Name: favorite
+Specification-Title: The Jenkins Plugins Parent POM Project
+Implementation-Title: favorite
+Implementation-Version: 2.3.1
+Plugin-Class: hudson.plugins.favorite.FavoritePlugin
+Group-Id: org.jvnet.hudson.plugins
+Short-Name: favorite
+Long-Name: Favorite
+Url: http://wiki.jenkins-ci.org/display/JENKINS/Favorite+Plugin
+Plugin-Version: 2.3.1
+Hudson-Version: 1.625.3
+Jenkins-Version: 1.625.3
+Plugin-Dependencies: mailer:1.18,matrix-project:1.7.1,token-macro:2.0
+Plugin-Developers: Larry Shatzer, Jr.:lshatzer:larrys@gmail.com,James 
+ Dumay:jamesdumay:jdumay@cloudbees.com,Michael Neale:michaelneale:mnea
+ le@cloudbees.com
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: abayer
+Build-Jdk: 1.7.0_79
+Extension-Name: pipeline-model-declarative-agent
+Specification-Title: Replaced by Pipeline: Declarative Extension Point
+ s API plugin
+Implementation-Title: pipeline-model-declarative-agent
+Implementation-Version: 1.1.1
+Group-Id: org.jenkinsci.plugins
+Short-Name: pipeline-model-declarative-agent
+Long-Name: Pipeline: Declarative Agent API
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Pipeline+Model+Defini
+ tion+Plugin
+Plugin-Version: 1.1.1
+Hudson-Version: 2.7.1
+Jenkins-Version: 2.7.1
+Plugin-Dependencies: pipeline-model-extensions:1.1.1
+Plugin-Developers: Andrew Bayer:abayer:
+Support-Dynamic-Loading: true
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: ljader
+Build-Jdk: 1.8.0_45
+Extension-Name: jsch
+Specification-Title: Jenkins plugin that brings the JSch library as a 
+ plugin dependency, and provides        an SSHAuthenticatorFactory for
+  using JSch with the ssh-credentials plugin.
+Implementation-Title: jsch
+Implementation-Version: 0.1.54.1
+Group-Id: org.jenkins-ci.plugins
+Short-Name: jsch
+Long-Name: Jenkins JSch dependency plugin
+Url: http://wiki.jenkins-ci.org/display/JENKINS/JSch+plugin
+Plugin-Version: 0.1.54.1
+Hudson-Version: 1.477
+Jenkins-Version: 1.477
+Plugin-Dependencies: credentials:1.21,ssh-credentials:1.12
+Plugin-Developers: Lukasz Jader:ljader:,Zoran Regvart:zregvart:,Brando
+ n Pedersen:bpedman:
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: root
+Build-Jdk: 1.8.0_121
+Extension-Name: blueocean-i18n
+Specification-Title: The Jenkins Plugins Parent POM Project
+Implementation-Title: blueocean-i18n
+Implementation-Version: 1.4.0
+Group-Id: io.jenkins.blueocean
+Short-Name: blueocean-i18n
+Long-Name: i18n for Blue Ocean
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Blue+Ocean+Plugin
+Plugin-Version: 1.4.0
+Hudson-Version: 2.73.3
+Jenkins-Version: 2.73.3
+Plugin-Dependencies: blueocean-rest:1.4.0
+Plugin-Developers: Thorsten Iberian Sumurai:scherler:,Cliff Meyers:cli
+ ffmeyers:,Tom Fennelly:tfennelly:,Vivek Pandey:vivek:,Kohsuke:kohsuke
+ :,Josh McDonald:sophistifunk:,Ivan Meredith:imeredith:,Michael Neale:
+ michaelneale:,Keith Zantow:kzantow:,James Dumay:i386:,Marc:marcesher:
+ ,Paul Dragoonis:dragoonis:,Ivan Santos:pragmaticivan:,Peter Dave Hell
+ o:PeterDaveHello:,Alexandru Somai:alexsomai:
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: jglick
+Build-Jdk: 1.8.0_131
+Extension-Name: workflow-scm-step
+Specification-Title: The Jenkins Plugins Parent POM Project
+Implementation-Title: workflow-scm-step
+Implementation-Version: 2.6
+Group-Id: org.jenkins-ci.plugins.workflow
+Short-Name: workflow-scm-step
+Long-Name: Pipeline: SCM Step
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Pipeline+SCM+Step+Plu
+ gin
+Plugin-Version: 2.6
+Hudson-Version: 2.60
+Jenkins-Version: 2.60
+Plugin-Dependencies: workflow-step-api:2.9
+Plugin-Developers: 
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: mwaite
+Build-Jdk: 1.8.0_161
+Extension-Name: git-client
+Specification-Title: Utility plugin for Git support in Jenkins
+Implementation-Title: git-client
+Implementation-Version: 2.7.1
+Group-Id: org.jenkins-ci.plugins
+Short-Name: git-client
+Long-Name: Jenkins Git client plugin
+Url: https://wiki.jenkins.io/display/JENKINS/Git+Client+Plugin
+Plugin-Version: 2.7.1
+Hudson-Version: 1.625.3
+Jenkins-Version: 1.625.3
+Plugin-Dependencies: apache-httpcomponents-client-4-api:4.5.3-2.0,cred
+ entials:2.1.13,jsch:0.1.54.1,ssh-credentials:1.13,structs:1.9
+Plugin-Developers: Mark Waite:markewaite:mark.earl.waite@gmail.com
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: ikedam
+Build-Jdk: 1.8.0_92
+Extension-Name: copyartifact
+Specification-Title: Adds a build step to copy artifacts from another 
+ project.
+Implementation-Title: copyartifact
+Implementation-Version: 1.39
+Plugin-Class: hudson.plugins.copyartifact.CopyArtifactPlugin
+Group-Id: org.jenkins-ci.plugins
+Short-Name: copyartifact
+Long-Name: Copy Artifact Plugin
+Url: http://wiki.jenkins-ci.org/display/JENKINS/Copy+Artifact+Plugin
+Plugin-Version: 1.39
+Hudson-Version: 1.642.3
+Jenkins-Version: 1.642.3
+Plugin-Dependencies: maven-plugin:2.7.1;resolution:=optional,matrix-pr
+ oject:1.3,structs:1.6
+Plugin-Developers: 
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: abayer
+Build-Jdk: 1.8.0_144
+Extension-Name: pipeline-build-step
+Specification-Title: The Jenkins Plugins Parent POM Project
+Implementation-Title: pipeline-build-step
+Implementation-Version: 2.7
+Group-Id: org.jenkins-ci.plugins
+Short-Name: pipeline-build-step
+Long-Name: Pipeline: Build Step
+Url: https://wiki.jenkins.io/display/JENKINS/Pipeline+Build+Step+Plugin
+Plugin-Version: 2.7
+Hudson-Version: 2.32.2
+Jenkins-Version: 2.32.2
+Plugin-Dependencies: workflow-api:2.22,workflow-step-api:2.14,workflow
+ -support:2.14,script-security:1.39
+Plugin-Developers: 
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: nenashev
+Build-Jdk: 1.8.0_121
+Extension-Name: ssh-slaves
+Specification-Title: Allows to launch agents over SSH, using a Java im
+ plementation of the SSH protocol
+Implementation-Title: ssh-slaves
+Implementation-Version: 1.25.1
+Plugin-Class: hudson.plugins.sshslaves.PluginImpl
+Group-Id: org.jenkins-ci.plugins
+Short-Name: ssh-slaves
+Long-Name: Jenkins SSH Slaves plugin
+Url: https://wiki.jenkins-ci.org/display/JENKINS/SSH+Slaves+plugin
+Plugin-Version: 1.25.1
+Hudson-Version: 1.625
+Jenkins-Version: 1.625
+Plugin-Dependencies: credentials:2.1.2,ssh-credentials:1.6.1
+Plugin-Developers: Stephen Connolly:stephenconnolly:,Kohsuke Kawaguchi
+ :kohsuke:,Olivier Lamy:olamy:,Michael Clarke:mc1arke:,Oleg Nenashev:o
+ leg_nenashev:
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: ikedam
+Build-Jdk: 1.8.0_92
+Extension-Name: build-timeout
+Specification-Title: Aborts a build if it's taking too long
+Implementation-Title: build-timeout
+Implementation-Version: 1.19
+Group-Id: org.jenkins-ci.plugins
+Short-Name: build-timeout
+Long-Name: Build Timeout
+Url: http://wiki.jenkins-ci.org/display/JENKINS/Build-timeout+Plugin
+Plugin-Version: 1.19
+Hudson-Version: 1.625.1
+Jenkins-Version: 1.625.1
+Plugin-Dependencies: naginator:1.16;resolution:=optional,token-macro:1
+ .5.1
+Plugin-Developers: 
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: abayer
+Build-Jdk: 1.8.0
+Extension-Name: pipeline-input-step
+Specification-Title: The Jenkins Plugins Parent POM Project
+Implementation-Title: pipeline-input-step
+Implementation-Version: 2.8
+Group-Id: org.jenkins-ci.plugins
+Short-Name: pipeline-input-step
+Long-Name: Pipeline: Input Step
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Pipeline+Input+Step+P
+ lugin
+Plugin-Version: 2.8
+Hudson-Version: 1.642.4
+Jenkins-Version: 1.642.4
+Plugin-Dependencies: workflow-api:2.6,workflow-step-api:2.5,workflow-s
+ upport:2.10
+Plugin-Developers: 
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: root
+Build-Jdk: 1.8.0_121
+Extension-Name: blueocean-commons
+Specification-Title: The Jenkins Plugins Parent POM Project
+Implementation-Title: blueocean-commons
+Implementation-Version: 1.4.0
+Group-Id: io.jenkins.blueocean
+Short-Name: blueocean-commons
+Long-Name: Common API for Blue Ocean
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Blue+Ocean+Plugin
+Plugin-Version: 1.4.0
+Hudson-Version: 2.73.3
+Jenkins-Version: 2.73.3
+Plugin-Developers: Thorsten Iberian Sumurai:scherler:,Cliff Meyers:cli
+ ffmeyers:,Tom Fennelly:tfennelly:,Vivek Pandey:vivek:,Kohsuke:kohsuke
+ :,Josh McDonald:sophistifunk:,Ivan Meredith:imeredith:,Michael Neale:
+ michaelneale:,Keith Zantow:kzantow:,James Dumay:i386:,Marc:marcesher:
+ ,Paul Dragoonis:dragoonis:,Ivan Santos:pragmaticivan:,Peter Dave Hell
+ o:PeterDaveHello:,Alexandru Somai:alexsomai:
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: discus
+Build-Jdk: 1.6.0_51
+Extension-Name: run-condition
+Specification-Title: Define conditions for the execution of build steps
+Implementation-Title: run-condition
+Implementation-Version: 1.0
+Plugin-Class: org.jenkins_ci.plugins.run_condition.RunConditionPlugin
+Group-Id: org.jenkins-ci.plugins
+Short-Name: run-condition
+Long-Name: Run Condition Plugin
+Url: http://wiki.jenkins-ci.org/display/JENKINS/Run+Condition+Plugin
+Plugin-Version: 1.0
+Hudson-Version: 1.424
+Jenkins-Version: 1.424
+Plugin-Dependencies: token-macro:1.5.1
+Plugin-Developers: Bap:bap:bap-jenkins@BapIT.co.uk
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: abayer
+Build-Jdk: 1.8.0_144
+Extension-Name: workflow-step-api
+Specification-Title: The Jenkins Plugins Parent POM Project
+Implementation-Title: workflow-step-api
+Implementation-Version: 2.14
+Group-Id: org.jenkins-ci.plugins.workflow
+Short-Name: workflow-step-api
+Long-Name: Pipeline: Step API
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Pipeline+Step+API+Plu
+ gin
+Plugin-Version: 2.14
+Hudson-Version: 1.642.3
+Jenkins-Version: 1.642.3
+Plugin-Dependencies: structs:1.5
+Plugin-Developers: 
+Support-Dynamic-Loading: true
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: warden
+Build-Jdk: 1.8.0_144
+Extension-Name: jira
+Specification-Title: Integrates Jenkins to JIRA
+Implementation-Title: jira
+Implementation-Version: 2.5.1
+Group-Id: org.jenkins-ci.plugins
+Short-Name: jira
+Long-Name: Jenkins JIRA plugin
+Url: https://wiki.jenkins-ci.org/display/JENKINS/JIRA+Plugin
+Plugin-Version: 2.5.1
+Hudson-Version: 1.642.3
+Jenkins-Version: 1.642.3
+Plugin-Dependencies: workflow-job:2.0,workflow-step-api:2.0;resolution
+ :=optional,apache-httpcomponents-client-4-api:4.5.3-2.0,branch-api:2.
+ 0.0,junit:1.3,mailer:1.20,matrix-project:1.6,p4:1.3.8;resolution:=opt
+ ional,script-security:1.16,structs:1.4,perforce:1.3.9;resolution:=opt
+ ional
+Plugin-Developers: Olivier Lamy:olamy:,Radek Antoniuk:warden:
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: josep
+Build-Jdk: 1.8.0_152
+Extension-Name: handy-uri-templates-2-api
+Specification-Title: Bundles Handy Uri Templates 2.x and allows it to 
+ be used by Jenkins plugins
+Implementation-Title: handy-uri-templates-2-api
+Implementation-Version: 2.1.6-1.0
+Group-Id: org.jenkins-ci.plugins
+Short-Name: handy-uri-templates-2-api
+Long-Name: Handy Uri Templates 2.x API Plugin
+Url: https://wiki.jenkins.io/display/JENKINS/Handy+Uri+Templates+2+API
+ +Plugin
+Plugin-Version: 2.1.6-1.0
+Hudson-Version: 1.625.3
+Jenkins-Version: 1.625.3
+Plugin-Developers: Joseph Petersen:casz:
+Support-Dynamic-Loading: true
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: gustavo
+Build-Jdk: 1.8.0_111
+Extension-Name: slack
+Specification-Title: A Build status publisher that notifies channels o
+ n a Slack team
+Implementation-Title: slack
+Implementation-Version: 2.3
+Group-Id: org.jenkins-ci.plugins
+Short-Name: slack
+Long-Name: Slack Notification Plugin
+Url: http://wiki.jenkins-ci.org/display/JENKINS/Slack+Plugin
+Compatible-Since-Version: 2.0
+Plugin-Version: 2.3
+Hudson-Version: 1.609.2
+Jenkins-Version: 1.609.2
+Plugin-Dependencies: credentials:1.25,plain-credentials:1.1,junit:1.3,
+ workflow-step-api:1.11,display-url-api:0.4
+Plugin-Developers: Kurt Madel:kmadel:kmadel@cloudbees.com,Gustavo Maia
+ :gurumaia:gurumaia@gmail.com
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: domi
+Build-Jdk: 1.8.0_121
+Extension-Name: conditional-buildstep
+Specification-Title: A buildstep wrapping any number of other buildste
+ ps, controlling there execution based on a defined condition.
+Implementation-Title: conditional-buildstep
+Implementation-Version: 1.3.6
+Group-Id: org.jenkins-ci.plugins
+Short-Name: conditional-buildstep
+Long-Name: Conditional BuildStep
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Conditional+BuildStep
+ +Plugin
+Plugin-Version: 1.3.6
+Hudson-Version: 1.580.1
+Jenkins-Version: 1.580.1
+Plugin-Dependencies: maven-plugin:2.13,matrix-project:1.0,run-conditio
+ n:1.0,token-macro:1.5.1
+Plugin-Developers: Dominik Bartholdi:imod:,Bap:bap:bap-jenkins@BapIT.c
+ o.uk
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: jglick
+Build-Jdk: 1.8.0_131
+Extension-Name: workflow-basic-steps
+Specification-Title: The Jenkins Plugins Parent POM Project
+Implementation-Title: workflow-basic-steps
+Implementation-Version: 2.6
+Group-Id: org.jenkins-ci.plugins.workflow
+Short-Name: workflow-basic-steps
+Long-Name: Pipeline: Basic Steps
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Pipeline+Basic+Steps+
+ Plugin
+Plugin-Version: 2.6
+Hudson-Version: 1.642.3
+Jenkins-Version: 1.642.3
+Plugin-Dependencies: workflow-api:2.16,workflow-step-api:2.12,mailer:1
+ .18,structs:1.6
+Plugin-Developers: 
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: nenashev
+Build-Jdk: 1.8.0_121
+Extension-Name: jackson2-api
+Specification-Title: This plugin exposes the Jackson 2 JSON APIs to ot
+ her Jenkins plugins.
+Implementation-Title: jackson2-api
+Implementation-Version: 2.8.10.1
+Group-Id: org.jenkins-ci.plugins
+Short-Name: jackson2-api
+Long-Name: Jackson 2 API Plugin
+Url: https://wiki.jenkins.io/display/JENKINS/Jackson2+API+Plugin
+Plugin-Version: 2.8.10.1
+Hudson-Version: 2.60
+Jenkins-Version: 2.60
+Plugin-Developers: Stephen Connolly:stephenconnolly:,Oleg Nenashev:ole
+ g_nenashev:
+Support-Dynamic-Loading: true
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: vmenon
+Build-Jdk: 1.8.0_51
+Extension-Name: test-results-analyzer
+Implementation-Title: test-results-analyzer
+Implementation-Version: 0.3.4
+Group-Id: org.jenkins-ci.plugins
+Short-Name: test-results-analyzer
+Long-Name: Test Results Analyzer Plugin
+Url: http://wiki.jenkins-ci.org/display/JENKINS/Test+Results+Analyzer+
+ Plugin
+Plugin-Version: 0.3.4
+Hudson-Version: 1.594
+Jenkins-Version: 1.594
+Plugin-Dependencies: junit:1.2-beta-4
+Plugin-Developers: Varun Menon:menonvarun:mr.varun.menon@gmail.com
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: stephenc
+Build-Jdk: 1.8.0_92
+Extension-Name: authentication-tokens
+Specification-Title: This plugin provides an API for converting creden
+ tials into authentication tokens in Jenkins.
+Implementation-Title: authentication-tokens
+Implementation-Version: 1.3
+Group-Id: org.jenkins-ci.plugins
+Short-Name: authentication-tokens
+Long-Name: Authentication Tokens API Plugin
+Url: http://wiki.jenkins-ci.org/display/JENKINS/Authentication+Tokens+
+ API+Plugin
+Plugin-Version: 1.3
+Hudson-Version: 1.580.1
+Jenkins-Version: 1.580.1
+Plugin-Dependencies: credentials:1.22
+Plugin-Developers: Stephen Connolly:stephenconnolly:
+Support-Dynamic-Loading: true
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: jglick
+Build-Jdk: 1.8.0_151
+Extension-Name: docker-commons
+Specification-Title: APIs useful to Docker-based plugins.
+Implementation-Title: docker-commons
+Implementation-Version: 1.11
+Plugin-Class: org.jenkinsci.plugins.docker.commons.DockerCommonsPlugin
+Group-Id: org.jenkins-ci.plugins
+Short-Name: docker-commons
+Long-Name: Docker Commons Plugin
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Docker+Commons+Plugin
+Plugin-Version: 1.11
+Hudson-Version: 1.642.4
+Jenkins-Version: 1.642.4
+Plugin-Dependencies: authentication-tokens:1.1,credentials-binding:1.1
+ 2,credentials:2.1.11
+Plugin-Developers: 
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: ogondza
+Build-Jdk: 1.8.0_144
+Extension-Name: resource-disposer
+Specification-Title: Dispose resources asynchronously. Utility plugin 
+ for resources that require more retries or take a long time to delete.
+Implementation-Title: resource-disposer
+Implementation-Version: 0.8
+Group-Id: org.jenkins-ci.plugins
+Short-Name: resource-disposer
+Long-Name: Resource Disposer Plugin
+Url: http://wiki.jenkins-ci.org/display/JENKINS/Resource+Disposer+Plugin
+Plugin-Version: 0.8
+Hudson-Version: 1.565
+Jenkins-Version: 1.565
+Plugin-Developers: Oliver Gondža:olivergondza:ogondza@gmail.com
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: abayer
+Build-Jdk: 1.8.0_144
+Extension-Name: pipeline-stage-tags-metadata
+Specification-Title: Library plugin for Pipeline stage tag metadata
+Implementation-Title: pipeline-stage-tags-metadata
+Implementation-Version: 1.2.7
+Group-Id: org.jenkinsci.plugins
+Short-Name: pipeline-stage-tags-metadata
+Long-Name: Pipeline: Stage Tags Metadata
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Pipeline+Model+Defini
+ tion+Plugin
+Plugin-Version: 1.2.7
+Hudson-Version: 2.7.3
+Jenkins-Version: 2.7.3
+Plugin-Developers: Andrew Bayer:abayer:
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: root
+Build-Jdk: 1.8.0_121
+Extension-Name: blueocean-jwt
+Specification-Title: The Jenkins Plugins Parent POM Project
+Implementation-Title: blueocean-jwt
+Implementation-Version: 1.4.0
+Group-Id: io.jenkins.blueocean
+Short-Name: blueocean-jwt
+Long-Name: JWT for Blue Ocean
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Blue+Ocean+Plugin
+Plugin-Version: 1.4.0
+Hudson-Version: 2.73.3
+Jenkins-Version: 2.73.3
+Plugin-Dependencies: blueocean-commons:1.4.0,mailer:1.20
+Plugin-Developers: Thorsten Iberian Sumurai:scherler:,Cliff Meyers:cli
+ ffmeyers:,Tom Fennelly:tfennelly:,Vivek Pandey:vivek:,Kohsuke:kohsuke
+ :,Josh McDonald:sophistifunk:,Ivan Meredith:imeredith:,Michael Neale:
+ michaelneale:,Keith Zantow:kzantow:,James Dumay:i386:,Marc:marcesher:
+ ,Paul Dragoonis:dragoonis:,Ivan Santos:pragmaticivan:,Peter Dave Hell
+ o:PeterDaveHello:,Alexandru Somai:alexsomai:
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: stephenc
+Build-Jdk: 1.8.0_144
+Extension-Name: scm-api
+Specification-Title: This plugin provides a new enhanced API for inter
+ acting with SCM systems.
+Implementation-Title: scm-api
+Implementation-Version: 2.2.6
+Group-Id: org.jenkins-ci.plugins
+Short-Name: scm-api
+Long-Name: SCM API Plugin
+Url: http://wiki.jenkins-ci.org/display/JENKINS/SCM+API+Plugin
+Compatible-Since-Version: 2.0.0
+Plugin-Version: 2.2.6
+Hudson-Version: 1.609.3
+Jenkins-Version: 1.609.3
+Plugin-Dependencies: structs:1.9
+Plugin-Developers: Stephen Connolly:stephenconnolly:
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: abayer
+Build-Jdk: 1.8.0_131
+Extension-Name: workflow-cps-global-lib
+Specification-Title: The Jenkins Plugins Parent POM Project
+Implementation-Title: workflow-cps-global-lib
+Implementation-Version: 2.9
+Group-Id: org.jenkins-ci.plugins.workflow
+Short-Name: workflow-cps-global-lib
+Long-Name: Pipeline: Shared Groovy Libraries
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Pipeline+Shared+Groov
+ y+Libraries+Plugin
+Plugin-Version: 2.9
+Hudson-Version: 1.642.3
+Jenkins-Version: 1.642.3
+Plugin-Dependencies: workflow-cps:2.30,workflow-scm-step:2.4,cloudbees
+ -folder:5.12,git-client:2.3.0,git-server:1.7,scm-api:2.1.1,script-sec
+ urity:1.27
+Plugin-Developers: 
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: stephenc
+Build-Jdk: 1.8.0_111
+Extension-Name: plain-credentials
+Specification-Title: Allows use of plain strings and files as credenti
+ als.
+Implementation-Title: plain-credentials
+Implementation-Version: 1.4
+Group-Id: org.jenkins-ci.plugins
+Short-Name: plain-credentials
+Long-Name: Plain Credentials Plugin
+Url: http://wiki.jenkins-ci.org/display/JENKINS/Plain+Credentials+Plugin
+Plugin-Version: 1.4
+Hudson-Version: 1.609
+Jenkins-Version: 1.609
+Plugin-Dependencies: credentials:2.1.5
+Plugin-Developers: 
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: tfennelly
+Build-Jdk: 1.7.0_51
+Extension-Name: handlebars
+Implementation-Title: handlebars
+Implementation-Version: 1.1.1
+Group-Id: org.jenkins-ci.ui
+Short-Name: handlebars
+Long-Name: JavaScript GUI Lib: Handlebars bundle plugin
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Handlebars.js
+Plugin-Version: 1.1.1
+Hudson-Version: 1.580.1
+Jenkins-Version: 1.580.1
+Plugin-Developers: 
+Support-Dynamic-Loading: true
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: root
+Build-Jdk: 1.8.0_121
+Extension-Name: blueocean-pipeline-api-impl
+Specification-Title: The Jenkins Plugins Parent POM Project
+Implementation-Title: blueocean-pipeline-api-impl
+Implementation-Version: 1.4.0
+Group-Id: io.jenkins.blueocean
+Short-Name: blueocean-pipeline-api-impl
+Long-Name: Pipeline implementation for Blue Ocean
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Blue+Ocean+Plugin
+Plugin-Version: 1.4.0
+Hudson-Version: 2.73.3
+Jenkins-Version: 2.73.3
+Plugin-Dependencies: blueocean-pipeline-scm-api:1.4.0,blueocean-rest-i
+ mpl:1.4.0,workflow-api:2.22,workflow-cps:2.42,workflow-durable-task-s
+ tep:2.13,workflow-job:2.14.1,workflow-multibranch:2.16,workflow-step-
+ api:2.14,workflow-support:2.14,branch-api:2.0.11,credentials:2.1.14,g
+ it:3.6.0,github-branch-source:2.2.3,htmlpublisher:1.14,pipeline-graph
+ -analysis:1.6,pipeline-input-step:2.8,pipeline-stage-step:2.2,plain-c
+ redentials:1.3,scm-api:2.2.2,pipeline-model-definition:1.2.5
+Plugin-Developers: Thorsten Iberian Sumurai:scherler:,Cliff Meyers:cli
+ ffmeyers:,Tom Fennelly:tfennelly:,Vivek Pandey:vivek:,Kohsuke:kohsuke
+ :,Josh McDonald:sophistifunk:,Ivan Meredith:imeredith:,Michael Neale:
+ michaelneale:,Keith Zantow:kzantow:,James Dumay:i386:,Marc:marcesher:
+ ,Paul Dragoonis:dragoonis:,Ivan Santos:pragmaticivan:,Peter Dave Hell
+ o:PeterDaveHello:,Alexandru Somai:alexsomai:
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: stephenc
+Build-Jdk: 1.8.0_144
+Extension-Name: credentials
+Specification-Title: This plugin allows you to store credentials in Je
+ nkins.
+Implementation-Title: credentials
+Implementation-Version: 2.1.16
+Plugin-Class: com.cloudbees.plugins.credentials.PluginImpl
+Group-Id: org.jenkins-ci.plugins
+Short-Name: credentials
+Long-Name: Credentials Plugin
+Url: https://wiki.jenkins.io/display/JENKINS/Credentials+Plugin
+Plugin-Version: 2.1.16
+Hudson-Version: 1.625.3
+Jenkins-Version: 1.625.3
+Plugin-Dependencies: structs:1.7
+Plugin-Developers: Stephen Connolly:stephenconnolly:
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: jglick
+Build-Jdk: 1.8.0_151
+Extension-Name: durable-task
+Specification-Title: Library offering an extension point for processes
+  which can run outside of Jenkins yet be monitored.
+Implementation-Title: durable-task
+Implementation-Version: 1.17
+Group-Id: org.jenkins-ci.plugins
+Short-Name: durable-task
+Long-Name: Durable Task Plugin
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Durable+Task+Plugin
+Plugin-Version: 1.17
+Hudson-Version: 2.7.3
+Jenkins-Version: 2.7.3
+Plugin-Developers: 
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: jglick
+Build-Jdk: 1.8.0_92
+Extension-Name: javadoc
+Specification-Title: The Jenkins Plugins Parent POM Project
+Implementation-Title: javadoc
+Implementation-Version: 1.4
+Group-Id: org.jenkins-ci.plugins
+Short-Name: javadoc
+Long-Name: Javadoc Plugin
+Url: http://wiki.jenkins-ci.org/display/JENKINS/Javadoc+Plugin
+Plugin-Version: 1.4
+Hudson-Version: 1.580.1
+Jenkins-Version: 1.580.1
+Plugin-Developers: 
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: root
+Build-Jdk: 1.8.0_121
+Extension-Name: blueocean-git-pipeline
+Specification-Title: The Jenkins Plugins Parent POM Project
+Implementation-Title: blueocean-git-pipeline
+Implementation-Version: 1.4.0
+Group-Id: io.jenkins.blueocean
+Short-Name: blueocean-git-pipeline
+Long-Name: Git Pipeline for Blue Ocean
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Blue+Ocean+Plugin
+Plugin-Version: 1.4.0
+Hudson-Version: 2.73.3
+Jenkins-Version: 2.73.3
+Plugin-Dependencies: blueocean-pipeline-api-impl:1.4.0,blueocean-pipel
+ ine-scm-api:1.4.0,git:3.6.0
+Plugin-Developers: Thorsten Iberian Sumurai:scherler:,Cliff Meyers:cli
+ ffmeyers:,Tom Fennelly:tfennelly:,Vivek Pandey:vivek:,Kohsuke:kohsuke
+ :,Josh McDonald:sophistifunk:,Ivan Meredith:imeredith:,Michael Neale:
+ michaelneale:,Keith Zantow:kzantow:,James Dumay:i386:,Marc:marcesher:
+ ,Paul Dragoonis:dragoonis:,Ivan Santos:pragmaticivan:,Peter Dave Hell
+ o:PeterDaveHello:,Alexandru Somai:alexsomai:
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: root
+Build-Jdk: 1.8.0_121
+Extension-Name: blueocean-personalization
+Specification-Title: The Jenkins Plugins Parent POM Project
+Implementation-Title: blueocean-personalization
+Implementation-Version: 1.4.0
+Group-Id: io.jenkins.blueocean
+Short-Name: blueocean-personalization
+Long-Name: Personalization for Blue Ocean
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Blue+Ocean+Plugin
+Plugin-Version: 1.4.0
+Hudson-Version: 2.73.3
+Jenkins-Version: 2.73.3
+Plugin-Dependencies: blueocean-dashboard:1.4.0
+Plugin-Developers: Thorsten Iberian Sumurai:scherler:,Cliff Meyers:cli
+ ffmeyers:,Tom Fennelly:tfennelly:,Vivek Pandey:vivek:,Kohsuke:kohsuke
+ :,Josh McDonald:sophistifunk:,Ivan Meredith:imeredith:,Michael Neale:
+ michaelneale:,Keith Zantow:kzantow:,James Dumay:i386:,Marc:marcesher:
+ ,Paul Dragoonis:dragoonis:,Ivan Santos:pragmaticivan:,Peter Dave Hell
+ o:PeterDaveHello:,Alexandru Somai:alexsomai:
+Support-Dynamic-Loading: true
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: root
+Build-Jdk: 1.8.0_121
+Extension-Name: blueocean-core-js
+Specification-Title: The Jenkins Plugins Parent POM Project
+Implementation-Title: blueocean-core-js
+Implementation-Version: 1.4.0
+Group-Id: io.jenkins.blueocean
+Short-Name: blueocean-core-js
+Long-Name: Blue Ocean Core JS
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Blue+Ocean+Core+JS
+Plugin-Version: 1.4.0
+Hudson-Version: 2.73.3
+Jenkins-Version: 2.73.3
+Plugin-Dependencies: jenkins-design-language:1.4.0
+Plugin-Developers: Thorsten Iberian Sumurai:scherler:,Cliff Meyers:cli
+ ffmeyers:,Tom Fennelly:tfennelly:,Vivek Pandey:vivek:,Kohsuke:kohsuke
+ :,Josh McDonald:sophistifunk:,Ivan Meredith:imeredith:,Michael Neale:
+ michaelneale:,Keith Zantow:kzantow:,James Dumay:i386:,Marc:marcesher:
+ ,Paul Dragoonis:dragoonis:,Ivan Santos:pragmaticivan:,Peter Dave Hell
+ o:PeterDaveHello:,Alexandru Somai:alexsomai:
+Support-Dynamic-Loading: true
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: root
+Build-Jdk: 1.8.0_121
+Extension-Name: blueocean-rest-impl
+Specification-Title: The Jenkins Plugins Parent POM Project
+Implementation-Title: blueocean-rest-impl
+Implementation-Version: 1.4.0
+Group-Id: io.jenkins.blueocean
+Short-Name: blueocean-rest-impl
+Long-Name: REST Implementation for Blue Ocean
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Blue+Ocean+Plugin
+Plugin-Version: 1.4.0
+Hudson-Version: 2.73.3
+Jenkins-Version: 2.73.3
+Plugin-Dependencies: blueocean-jwt:1.4.0,blueocean-rest:1.4.0,blueocea
+ n-web:1.4.0,cloudbees-folder:6.1.2,credentials:2.1.14,display-url-api
+ :2.1.0,junit:1.23,mailer:1.20,favorite:2.3.1
+Plugin-Developers: Thorsten Iberian Sumurai:scherler:,Cliff Meyers:cli
+ ffmeyers:,Tom Fennelly:tfennelly:,Vivek Pandey:vivek:,Kohsuke:kohsuke
+ :,Josh McDonald:sophistifunk:,Ivan Meredith:imeredith:,Michael Neale:
+ michaelneale:,Keith Zantow:kzantow:,James Dumay:i386:,Marc:marcesher:
+ ,Paul Dragoonis:dragoonis:,Ivan Santos:pragmaticivan:,Peter Dave Hell
+ o:PeterDaveHello:,Alexandru Somai:alexsomai:
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: ogondza
+Build-Jdk: 1.8.0_131
+Extension-Name: ws-cleanup
+Specification-Title: The Jenkins Plugins Parent POM Project
+Implementation-Title: ws-cleanup
+Implementation-Version: 0.34
+Group-Id: org.jenkins-ci.plugins
+Short-Name: ws-cleanup
+Long-Name: Jenkins Workspace Cleanup Plugin
+Url: http://wiki.jenkins-ci.org/display/JENKINS/Workspace+Cleanup+Plugin
+Plugin-Version: 0.34
+Hudson-Version: 1.642.1
+Jenkins-Version: 1.642.1
+Plugin-Dependencies: workflow-durable-task-step:2.4,matrix-project:1.7
+ .1,resource-disposer:0.3,structs:1.5
+Plugin-Developers: Oliver Gondža:olivergondza:
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: integer
+Build-Jdk: 1.8.0_112
+Extension-Name: github-pullrequest
+Specification-Title: GitHub Integration Plugin for Jenkins
+Implementation-Title: github-pullrequest
+Implementation-Version: 0.1.0-rc29
+Group-Id: org.jenkins-ci.plugins
+Short-Name: github-pullrequest
+Long-Name: GitHub Integration Plugin
+Url: https://wiki.jenkins-ci.org/display/JENKINS/GitHub+Integration+Pl
+ ugin
+Plugin-Version: 0.1.0-rc29
+Hudson-Version: 1.625.3
+Jenkins-Version: 1.625.3
+Plugin-Dependencies: github:1.22.1,workflow-step-api:1.14,block-queued
+ -job:0.2.0;resolution:=optional,email-ext:2.38.2;resolution:=optional
+ ,github-api:1.80,job-dsl:1.38;resolution:=optional,jucies:0.2.1;resol
+ ution:=optional,matrix-project:1.6,token-macro:1.10;resolution:=optio
+ nal
+Plugin-Developers: Kanstantsin Shautsou:KostyaSha:
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: Richard
+Build-Jdk: 1.8.0_131
+Extension-Name: htmlpublisher
+Specification-Title: This plugin publishes HTML reports.
+Implementation-Title: htmlpublisher
+Implementation-Version: 1.14
+Group-Id: org.jenkins-ci.plugins
+Short-Name: htmlpublisher
+Long-Name: HTML Publisher plugin
+Url: http://wiki.jenkins-ci.org/display/JENKINS/HTML+Publisher+Plugin
+Plugin-Version: 1.14
+Hudson-Version: 1.609.3
+Jenkins-Version: 1.609.3
+Plugin-Dependencies: workflow-step-api:1.14.2,matrix-project:1.0
+Plugin-Developers: Richard Bywater:r2b2_nz:
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: mwaite
+Build-Jdk: 1.8.0_151
+Extension-Name: git
+Specification-Title: Integrates Jenkins with GIT SCM
+Implementation-Title: git
+Implementation-Version: 3.7.0
+Group-Id: org.jenkins-ci.plugins
+Short-Name: git
+Long-Name: Jenkins Git plugin
+Url: http://wiki.jenkins-ci.org/display/JENKINS/Git+Plugin
+Plugin-Version: 3.7.0
+Hudson-Version: 1.625.3
+Jenkins-Version: 1.625.3
+Plugin-Dependencies: workflow-scm-step:1.14.2,credentials:2.1.14,git-c
+ lient:2.7.0,mailer:1.18,matrix-project:1.7.1,parameterized-trigger:2.
+ 33;resolution:=optional,promoted-builds:2.27;resolution:=optional,scm
+ -api:2.2.0,ssh-credentials:1.13,structs:1.10,token-macro:1.12.1;resol
+ ution:=optional
+Plugin-Developers: Kohsuke Kawaguchi:kohsuke:,Mark Waite:MarkEWaite:ma
+ rk.earl.waite@gmail.com
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: ivan
+Build-Jdk: 1.8.0_101
+Extension-Name: blueocean-display-url
+Specification-Title: Provides an implementation of the display url plu
+ gin for BlueOcean URLs
+Implementation-Title: blueocean-display-url
+Implementation-Version: 2.2.0
+Group-Id: org.jenkins-ci.plugins
+Short-Name: blueocean-display-url
+Long-Name: Display URL for Blue Ocean
+Url: https://wiki.jenkins-ci.org/display/JENKINS/BlueOcean+Display+URL
+ +Plugin
+Plugin-Version: 2.2.0
+Hudson-Version: 2.7.1
+Jenkins-Version: 2.7.1
+Plugin-Dependencies: workflow-job:2.6,workflow-multibranch:2.8,scm-api
+ :2.1.1,display-url-api:2.2.0,blueocean-rest:1.1.5
+Plugin-Developers: Ivan Meredith:imeredith:ivan@ivan.net.nz
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: andresrc
+Build-Jdk: 1.8.0_141
+Extension-Name: ldap
+Specification-Title: Adds LDAP authentication to Jenkins
+Implementation-Title: ldap
+Implementation-Version: 1.19
+Group-Id: org.jenkins-ci.plugins
+Short-Name: ldap
+Long-Name: LDAP Plugin
+Url: https://wiki.jenkins-ci.org/display/JENKINS/LDAP+Plugin
+Plugin-Version: 1.19
+Hudson-Version: 1.651.3
+Jenkins-Version: 1.651.3
+Plugin-Dependencies: mailer:1.20
+Plugin-Developers: 
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: tfennelly
+Build-Jdk: 1.7.0_51
+Extension-Name: jquery-detached
+Implementation-Title: jquery-detached
+Implementation-Version: 1.2.1
+Group-Id: org.jenkins-ci.ui
+Short-Name: jquery-detached
+Long-Name: JavaScript GUI Lib: jQuery bundles (jQuery and jQuery UI) p
+ lugin
+Url: https://wiki.jenkins-ci.org/display/JENKINS/jQuery+Detached+Plugin
+Plugin-Version: 1.2.1
+Hudson-Version: 1.580.1
+Jenkins-Version: 1.580.1
+Plugin-Developers: 
+Support-Dynamic-Loading: true
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: root
+Build-Jdk: 1.8.0_121
+Extension-Name: blueocean-web
+Specification-Title: The Jenkins Plugins Parent POM Project
+Implementation-Title: blueocean-web
+Implementation-Version: 1.4.0
+Group-Id: io.jenkins.blueocean
+Short-Name: blueocean-web
+Long-Name: Web for Blue Ocean
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Blue+Ocean+Plugin
+Plugin-Version: 1.4.0
+Hudson-Version: 2.73.3
+Jenkins-Version: 2.73.3
+Plugin-Dependencies: blueocean-core-js:1.4.0,blueocean-rest:1.4.0,jenk
+ ins-design-language:1.4.0,variant:1.1
+Plugin-Developers: Thorsten Iberian Sumurai:scherler:,Cliff Meyers:cli
+ ffmeyers:,Tom Fennelly:tfennelly:,Vivek Pandey:vivek:,Kohsuke:kohsuke
+ :,Josh McDonald:sophistifunk:,Ivan Meredith:imeredith:,Michael Neale:
+ michaelneale:,Keith Zantow:kzantow:,James Dumay:i386:,Marc:marcesher:
+ ,Paul Dragoonis:dragoonis:,Ivan Santos:pragmaticivan:,Peter Dave Hell
+ o:PeterDaveHello:,Alexandru Somai:alexsomai:
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: rsandell
+Build-Jdk: 1.8.0_144
+Extension-Name: cloudbees-bitbucket-branch-source
+Specification-Title: Discover and build Bitbucket Cloud and Bitbucket 
+ Server pull requests and branches and send status
+     notifications with the build result.
+Implementation-Title: cloudbees-bitbucket-branch-source
+Implementation-Version: 2.2.9
+Group-Id: org.jenkins-ci.plugins
+Short-Name: cloudbees-bitbucket-branch-source
+Long-Name: Bitbucket Branch Source Plugin
+Url: https://wiki.jenkins.io/display/JENKINS/Bitbucket+Branch+Source+P
+ lugin
+Compatible-Since-Version: 2.0.0
+Plugin-Version: 2.2.9
+Hudson-Version: 1.642.3
+Jenkins-Version: 1.642.3
+Plugin-Dependencies: apache-httpcomponents-client-4-api:4.5.3-2.0,disp
+ lay-url-api:0.2,git:3.5.0,handy-uri-templates-2-api:2.1.6-1.0,mercuri
+ al:2.0,scm-api:2.2.0,structs:1.9
+Plugin-Developers: 
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: jglick
+Build-Jdk: 1.8.0_151
+Extension-Name: workflow-support
+Specification-Title: The Jenkins Plugins Parent POM Project
+Implementation-Title: workflow-support
+Implementation-Version: 2.18
+Group-Id: org.jenkins-ci.plugins.workflow
+Short-Name: workflow-support
+Long-Name: Pipeline: Supporting APIs
+Url: https://wiki.jenkins.io/display/JENKINS/Pipeline+Supporting+APIs+
+ Plugin
+Compatible-Since-Version: 2.17
+Plugin-Version: 2.18
+Hudson-Version: 2.60.3
+Jenkins-Version: 2.60.3
+Plugin-Dependencies: workflow-api:2.25,workflow-step-api:2.13,scm-api:
+ 2.2.6,script-security:1.39
+Plugin-Developers: 
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: svanoort
+Build-Jdk: 1.8.0_102
+Extension-Name: pipeline-rest-api
+Specification-Title: Provides a REST API to access pipeline and pipeli
+ ne run data
+Implementation-Title: pipeline-rest-api
+Implementation-Version: 2.9
+Group-Id: org.jenkins-ci.plugins.pipeline-stage-view
+Short-Name: pipeline-rest-api
+Long-Name: Pipeline: REST API Plugin
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Pipeline+Stage+View+P
+ lugin
+Plugin-Version: 2.9
+Hudson-Version: 1.642.3
+Jenkins-Version: 1.642.3
+Plugin-Dependencies: workflow-api:2.15,workflow-job:2.0,workflow-step-
+ api:2.10,workflow-support:2.14,jackson2-api:2.7.3,pipeline-graph-anal
+ ysis:1.1,pipeline-input-step:2.0,pipeline-stage-step:2.2
+Plugin-Developers: 
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: abayer
+Build-Jdk: 1.8.0_144
+Extension-Name: script-security
+Specification-Title: Allows Jenkins administrators to control what in-
+ process scripts can be run by less-privileged users.
+Implementation-Title: script-security
+Implementation-Version: 1.40
+Group-Id: org.jenkins-ci.plugins
+Short-Name: script-security
+Long-Name: Script Security Plugin
+Url: https://wiki.jenkins.io/display/JENKINS/Script+Security+Plugin
+Plugin-Version: 1.40
+Hudson-Version: 2.7.3
+Jenkins-Version: 2.7.3
+Plugin-Developers: 
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: alobato
+Build-Jdk: 1.8.0_112
+Extension-Name: bouncycastle-api
+Specification-Title: This plugin provides an stable API to Bouncy Cast
+ le related tasks.
+Implementation-Title: bouncycastle-api
+Implementation-Version: 2.16.2
+Plugin-Class: jenkins.bouncycastle.api.SecurityProviderInitializer
+Group-Id: org.jenkins-ci.plugins
+Short-Name: bouncycastle-api
+Long-Name: bouncycastle API Plugin
+Url: http://wiki.jenkins-ci.org/display/JENKINS/Bouncy+Castle+API+Plugin
+Plugin-Version: 2.16.2
+Hudson-Version: 2.16
+Jenkins-Version: 2.16
+Plugin-Developers: Alvaro Lobato:alvarolobato:alobato@cloudbees.com
+Support-Dynamic-Loading: true
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: root
+Build-Jdk: 1.8.0_121
+Extension-Name: jenkins-design-language
+Specification-Title: The Jenkins Plugins Parent POM Project
+Implementation-Title: jenkins-design-language
+Implementation-Version: 1.4.0
+Group-Id: io.jenkins.blueocean
+Short-Name: jenkins-design-language
+Long-Name: Jenkins Design Language
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Jenkins+Design+Language
+Plugin-Version: 1.4.0
+Hudson-Version: 2.73.3
+Jenkins-Version: 2.73.3
+Plugin-Developers: Thorsten Iberian Sumurai:scherler:,Cliff Meyers:cli
+ ffmeyers:,Tom Fennelly:tfennelly:,Vivek Pandey:vivek:,Kohsuke:kohsuke
+ :,Josh McDonald:sophistifunk:,Ivan Meredith:imeredith:,Michael Neale:
+ michaelneale:,Keith Zantow:kzantow:,James Dumay:i386:,Marc:marcesher:
+ ,Paul Dragoonis:dragoonis:,Ivan Santos:pragmaticivan:,Peter Dave Hell
+ o:PeterDaveHello:,Alexandru Somai:alexsomai:
+Support-Dynamic-Loading: true
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: raul
+Build-Jdk: 1.8.0_131
+Extension-Name: pipeline-githubnotify-step
+Specification-Title: Plugin that provides a GitHub status notification
+  step
+Implementation-Title: pipeline-githubnotify-step
+Implementation-Version: 1.0.3
+Group-Id: org.jenkins-ci.plugins
+Short-Name: pipeline-githubnotify-step
+Long-Name: Pipeline GitHub Notify Step Plugin
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Pipeline+Githubnotify
+ +Step+Plugin
+Plugin-Version: 1.0.3
+Hudson-Version: 1.642.3
+Jenkins-Version: 1.642.3
+Plugin-Dependencies: github-api:1.77,credentials:2.1.5,display-url-api
+ :0.5,workflow-api:1.15,github-branch-source:1.10.1,workflow-step-api:
+ 1.15
+Plugin-Developers: Raul Arabaolaza:raul-arabaolaza:rarabaolaza@cloudbe
+ es.com
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: jglick
+Build-Jdk: 1.8.0_112
+Extension-Name: external-monitor-job
+Specification-Title: Adds the ability to monitor the result of externa
+ lly executed jobs
+Implementation-Title: external-monitor-job
+Implementation-Version: 1.7
+Group-Id: org.jenkins-ci.plugins
+Short-Name: external-monitor-job
+Long-Name: External Monitor Job Type Plugin
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Monitoring+external+j
+ obs
+Plugin-Version: 1.7
+Hudson-Version: 1.609.3
+Jenkins-Version: 1.609.3
+Plugin-Developers: 
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: jglick
+Build-Jdk: 1.8.0_151
+Extension-Name: credentials-binding
+Specification-Title: Allows credentials to be bound to environment var
+ iables for use from miscellaneous build steps.
+Implementation-Title: credentials-binding
+Implementation-Version: 1.15
+Group-Id: org.jenkins-ci.plugins
+Short-Name: credentials-binding
+Long-Name: Credentials Binding Plugin
+Url: https://wiki.jenkins.io/display/JENKINS/Credentials+Binding+Plugin
+Plugin-Version: 1.15
+Hudson-Version: 2.7.3
+Jenkins-Version: 2.7.3
+Plugin-Dependencies: workflow-step-api:2.10,credentials:2.1.7,plain-cr
+ edentials:1.3,ssh-credentials:1.11,structs:1.7
+Plugin-Developers: 
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: jdumay
+Build-Jdk: 1.8.0_131
+Extension-Name: blueocean-autofavorite
+Specification-Title: Automatically favorites multibranch pipeline jobs
+  when user is the author
+Implementation-Title: blueocean-autofavorite
+Implementation-Version: 1.2.1
+Group-Id: org.jenkins-ci.plugins
+Short-Name: blueocean-autofavorite
+Long-Name: Autofavorite for Blue Ocean
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Blue+Ocean+Autofavori
+ te+Plugin
+Plugin-Version: 1.2.1
+Hudson-Version: 2.73.3
+Jenkins-Version: 2.73.3
+Plugin-Dependencies: workflow-api:2.22,workflow-job:2.14.1,branch-api:
+ 2.0.11,git:3.6.0,junit:1.21,favorite:2.3.1
+Plugin-Developers: James Dumay:jdumay:jdumay@cloudbees.com
+
+
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: arnaud
+Build-Jdk: 1.8.0_152
+Extension-Name: maven-plugin
+Specification-Title: This plug-in provides, for better and for worse, 
+ a deep integration of Jenkins and Maven: Automatic triggers between p
+ rojects depending on SNAPSHOTs, automated configuration of various Je
+ nkins publishers (Junit, ...).
+Implementation-Title: maven-plugin
+Implementation-Version: 3.1
+Plugin-Class: hudson.maven.PluginImpl
+Group-Id: org.jenkins-ci.main
+Short-Name: maven-plugin
+Long-Name: Maven Integration plugin
+Url: https://wiki.jenkins.io/display/JENKINS/Maven+Project+Plugin
+Plugin-Version: 3.1
+Hudson-Version: 1.625.3
+Jenkins-Version: 1.625.3
+Plugin-Dependencies: apache-httpcomponents-client-4-api:4.5.3-2.1,java
+ doc:1.0,jsch:0.1.54.1,junit:1.6,mailer:1.7,token-macro:1.10;resolutio
+ n:=optional
+Plugin-Developers: 
+
