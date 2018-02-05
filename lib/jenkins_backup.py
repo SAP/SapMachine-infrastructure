@@ -67,6 +67,18 @@ def copy_configurations(src_dir, target_dir):
 
                 shutil.copy(config_xml, config_xml_target_dir)
 
+def create_plugin_list(src_dir, target_dir):
+    plugin_list = []
+
+    for root, dirs, files in os.walk(join(src_dir, 'plugins'), topdown=True):
+        for file in files:
+            if file == 'MANIFEST.MF':
+                with open(join(root, file), 'r') as manifest:
+                    plugin_list.append(manifest.read())
+
+    with open(join(target_dir, 'plugin_list.txt'), 'w+') as out:
+        out.write('\n'.join([plugin for plugin in plugin_list]))
+
 def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('-s', '--srcdir', help='the Jenkins home directory', metavar='DIR', required=True)
@@ -83,8 +95,7 @@ def main(argv=None):
     utils.remove_if_exists(target_dir)
     os.mkdir(target_dir)
     copy_configurations(src_dir, target_dir)
-
-    utils.download_artifact(str.format('{0}pluginManager/api/xml?depth=1', os.environ['JENKINS_URL']), join(target_dir, 'sapmachine_jenkins_plugins.xml'))
+    create_plugin_list(src_dir, target_dir)
 
     if not args.dryrun:
         push_sapmachine_infra(git_dir)
