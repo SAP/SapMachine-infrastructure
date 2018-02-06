@@ -68,16 +68,33 @@ def copy_configurations(src_dir, target_dir):
                 shutil.copy(config_xml, config_xml_target_dir)
 
 def create_plugin_list(src_dir, target_dir):
+    import json
+
     plugin_list = []
 
     for root, dirs, files in os.walk(join(src_dir, 'plugins'), topdown=True):
         for file in files:
             if file == 'MANIFEST.MF':
                 with open(join(root, file), 'r') as manifest:
-                    plugin_list.append(manifest.read())
+                    _lines = manifest.read().splitlines()
+                    lines = []
+                    current_line = None
 
-    with open(join(target_dir, 'plugin_list.txt'), 'w+') as out:
-        out.write('\n'.join([plugin for plugin in plugin_list]))
+                    for line in _lines:
+                        if line.startswith(' '):
+                            lines[-1] += line
+                        else:
+                            lines.append(line)
+
+                    properties = {}
+                    for line in lines:
+                        prop = line.split(': ', 1)
+                        if len(prop) == 2:
+                            properties[prop[0]] = prop[1]
+                    plugin_list.append(properties)
+
+    with open(join(target_dir, 'plugin_list.json'), 'w+') as out:
+        out.write(json.dumps(plugin_list, indent=4, sort_keys=True))
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
@@ -87,7 +104,7 @@ def main(argv=None):
     args = parser.parse_args()
 
     src_dir = args.srcdir
-    git_dir = tempfile.mkdtemp()
+    git_dir = tempfile.mkdtemp(suffix='sapmachine_jenkins_backup')
     target_dir = join(git_dir, jenkins_configuration)
 
     utils.remove_if_exists(git_dir)
