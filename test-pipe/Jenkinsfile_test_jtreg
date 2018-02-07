@@ -1,6 +1,9 @@
 pipeline {
     agent {
-        dockerfile { dir params.DOCKER_DIR }
+        dockerfile {
+            dir params.DOCKER_DIR
+            args "--ulimit nofile=90000:90000"
+        }
     }
     stages {
         stage('Prepare') {
@@ -59,8 +62,8 @@ pipeline {
             }
         }
     }
-    post { 
-        always { 
+    post {
+        always {
             cleanWs()
         }
     }
