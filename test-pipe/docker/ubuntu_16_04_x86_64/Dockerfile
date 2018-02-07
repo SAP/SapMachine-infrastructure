@@ -18,4 +18,3 @@ ant \
 make
 
 RUN useradd -ms /bin/bash jenkins -u 1001
-RUN sysctl -w net.ipv4.ip_local_port_range="1024 65535"
