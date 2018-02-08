@@ -14,6 +14,8 @@ NUM_CPUS=`grep -c ^processor /proc/cpuinfo`
 CONCURRENCY=`expr $NUM_CPUS / 2`
 MAX_RAM_PERCENTAGE=`expr 25 / $CONCURRENCY`
 
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 chmod +x ${JT_HOME}/bin/jtreg
 
 if [ "${TEST_SUITE}" == "hotspot" ]; then
@@ -21,7 +23,7 @@ if [ "${TEST_SUITE}" == "hotspot" ]; then
 fi
 
 if [ "${TEST_SUITE}" == "jdk" ]; then
-    ${JT_HOME}/bin/jtreg -dir:${JDK_LOCATION}/test/${TEST_SUITE} -verbose:summary -nativepath:${TEST_NATIVE_LIB} -exclude:${JDK_LOCATION}/test/${TEST_SUITE}/ProblemList.txt -conc:1 -vmoption:-XX:MaxRAMPercentage=${MAX_RAM_PERCENTAGE} -a -ignore:quiet -timeoutFactor:5 -javaoption:-Djava.awt.headless=true "-k:(!headful)&(!printer)" -testjdk:${TEST_JDK} ${TEST_GROUPS}
+    ${JT_HOME}/bin/jtreg -dir:${JDK_LOCATION}/test/${TEST_SUITE} -verbose:summary -nativepath:${TEST_NATIVE_LIB} -exclude:${JDK_LOCATION}/test/${TEST_SUITE}/ProblemList.txt -exclude:${SCRIPT_DIR}/exclude/ProblemList_jdk.txt -conc:1 -vmoption:-XX:MaxRAMPercentage=${MAX_RAM_PERCENTAGE} -a -ignore:quiet -timeoutFactor:5 -javaoption:-Djava.awt.headless=true "-k:(!headful)&(!printer)" -testjdk:${TEST_JDK} ${TEST_GROUPS}
 fi
 
 if [ "${TEST_SUITE}" == "langtools" ]; then
