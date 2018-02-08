@@ -1,3 +1,8 @@
+# SapMachine Problem List for JDK tests
+
 # java/nio
 
+# This test opens as many sockets as possible and fails after a timeout.
+# When running in concurrency mode, all tests that need a socket and run in
+# parallel to this test will fail.
 java/nio/channels/AsyncCloseAndInterrupt.java 0 generic-all
