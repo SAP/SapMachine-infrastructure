@@ -26,7 +26,7 @@ GIT_TAG="jdk-$MAJOR_VERSION+$LAST_BUILD_JDK_TAG"
 echo "LAST_JDK_TAG=$GIT_TAG"
 set +e
 CONTAINING_BRANCHES=$(git branch -a --contains tags/jdk-$MAJOR_VERSION+$LAST_BUILD_JDK_TAG | \
- grep -E "(sapmachine|pr-$GIT_TAG)")
+ grep -E "(sapmachine|pr-jdk-$MAJOR_VERSION\+$LAST_BUILD_JDK_TAG)")
 set -e
 if [ ! -z "$CONTAINING_BRANCHES" ]; then
   echo "Already merged, nothing to do."
