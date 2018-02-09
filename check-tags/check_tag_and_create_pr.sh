@@ -44,16 +44,12 @@ git push origin "pr-$GIT_TAG-alpine"
 
 popd
 
-#BRANCHES=( "$PR_BASE" "$PR_BASE-alpine" )
-#for base in "${BRANCHES[@]}"
-#do
-#echo $PR_BASE
 PR_DATA="{\"title\":\"Merge to tag $GIT_TAG\",\"body\":\"please pull\",\"head\":\"pr-$GIT_TAG\",\"base\":\"$PR_BASE\"}"
 
 curl -H "Content-Type: application/json" \
   --data "$PR_DATA" "https://$GIT_USER:$SAPMACHINE_PUBLISH_GITHUB_TOKEN@api.github.com/repos/SAP/SapMachine/pulls"
 
-PR_DATA="{\"title\":\"Merge to tag $GIT_TAG\",\"body\":\"please pull\",\"head\":\"pr-$GIT_TAG-alpin\",\"base\":\"$PR_BASE-alpine\"}"
+PR_DATA="{\"title\":\"Merge to tag $GIT_TAG\",\"body\":\"please pull\",\"head\":\"pr-$GIT_TAG-alpine\",\"base\":\"$PR_BASE-alpine\"}"
 
 curl -H "Content-Type: application/json" \
   --data "$PR_DATA" "https://$GIT_USER:$SAPMACHINE_PUBLISH_GITHUB_TOKEN@api.github.com/repos/SAP/SapMachine/pulls"
