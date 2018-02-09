@@ -550,6 +550,25 @@
             <hudson.views.JobColumn/>
           </columns>
         </hudson.plugins.sectioned__view.ListViewSection>
+        <hudson.plugins.sectioned__view.ListViewSection>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
+            <string>build-pr-validation-alpine</string>
+            <string>test-jtreg-hotspot-pr-validation-alpine</string>
+            <string>test-jtreg-jdk-pr-validation-alpine</string>
+            <string>test-jtreg-langtools-pr-validation-alpine</string>
+            <string>validate-pr-pipe-alpine</string>
+          </jobNames>
+          <jobFilters/>
+          <name>sapmachine-alpine</name>
+          <width>THIRD</width>
+          <alignment>CENTER</alignment>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+          </columns>
+        </hudson.plugins.sectioned__view.ListViewSection>
         <hudson.plugins.sectioned__view.TextSection>
           <jobNames>
             <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
@@ -807,7 +826,7 @@
       <filterQueue>false</filterQueue>
       <properties class="hudson.model.View$PropertyList"/>
       <jobNames>
-        <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.SectionedView/sections/hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
+        <comparator class="hudson.util.CaseInsensitiveComparator"/>
         <string>build-11-docker</string>
         <string>test-jtreg-hotspot-11-docker</string>
         <string>test-jtreg-jdk-11-docker</string>
@@ -833,7 +852,7 @@
       <filterQueue>false</filterQueue>
       <properties class="hudson.model.View$PropertyList"/>
       <jobNames>
-        <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.SectionedView/sections/hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
+        <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView[16]/jobNames/comparator"/>
       </jobNames>
       <jobFilters/>
       <columns/>
