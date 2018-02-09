@@ -38,15 +38,23 @@ echo "Create head branch to tag ${GIT_TAG}"
 git checkout ${GIT_TAG}
 git checkout -b "pr-$GIT_TAG"
 git push origin "pr-$GIT_TAG"
+
+git checkout -b "pr-$GIT_TAG-alpine"
+git push origin "pr-$GIT_TAG-alpine"
+
 popd
 
-BRANCHES=( "$PR_BASE" "$PR_BASE-alpine" )
-for base in "${BRANCHES[@]}"
-do
-	echo $base
-  PR_DATA="{\"title\":\"Merge to tag $GIT_TAG\",\"body\":\"please pull\",\"head\":\"pr-$GIT_TAG\",\"base\":\"$base\"}"
+#BRANCHES=( "$PR_BASE" "$PR_BASE-alpine" )
+#for base in "${BRANCHES[@]}"
+#do
+#echo $PR_BASE
+PR_DATA="{\"title\":\"Merge to tag $GIT_TAG\",\"body\":\"please pull\",\"head\":\"pr-$GIT_TAG\",\"base\":\"$PR_BASE\"}"
 
-  curl -H "Content-Type: application/json" \
+curl -H "Content-Type: application/json" \
   --data "$PR_DATA" "https://$GIT_USER:$SAPMACHINE_PUBLISH_GITHUB_TOKEN@api.github.com/repos/SAP/SapMachine/pulls"
-done
+
+PR_DATA="{\"title\":\"Merge to tag $GIT_TAG\",\"body\":\"please pull\",\"head\":\"pr-$GIT_TAG-alpin\",\"base\":\"$PR_BASE-alpine\"}"
+
+curl -H "Content-Type: application/json" \
+  --data "$PR_DATA" "https://$GIT_USER:$SAPMACHINE_PUBLISH_GITHUB_TOKEN@api.github.com/repos/SAP/SapMachine/pulls"
 
