@@ -76,7 +76,7 @@ pipeline {
                 expression { params.PUBLISH == true }
             }
             steps {
-                build job: 'generate website data', propagate: false, wait: false
+                build job: 'generate-website-data', propagate: false, wait: false
             }
         }
         stage('Publish Linux Packages') {
