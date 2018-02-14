@@ -30,9 +30,34 @@ pipeline {
                 archive 'build.tar.gz'
             }
         }
-        stage('Run Tests') {
+        stage('Run Required Tests') {
             when {
-                expression { params.RUN_TESTS == true }
+                expression { params.RUN_TESTS == true && params.PROPAGATE_RESULT == true}
+            }
+            steps {
+            build job: HOTSPOT_TEST_JOB, propagate: true, wait: true, parameters:
+                    [
+                        string(name: 'GITHUB_PR_NUMBER', value: params.GITHUB_PR_NUMBER),
+                        string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME)
+                    ]
+
+            build job: JDK_TEST_JOB, propagate: true, wait: true, parameters:
+                    [
+                        string(name: 'GITHUB_PR_NUMBER', value: params.GITHUB_PR_NUMBER),
+                        string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME)
+                    ]
+
+            build job: LANGTOOLS_TEST_JOB, propagate: true, wait: true, parameters:
+                    [
+                        string(name: 'GITHUB_PR_NUMBER', value: params.GITHUB_PR_NUMBER),
+                        string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME)
+                    ]
+
+            }
+        }
+        stage('Trigger Tests') {
+            when {
+                expression { params.RUN_TESTS == true && params.PROPAGATE_RESULT != true}
             }
             steps {
             build job: HOTSPOT_TEST_JOB, propagate: false, wait: false, parameters:
@@ -52,7 +77,6 @@ pipeline {
                         string(name: 'GITHUB_PR_NUMBER', value: params.GITHUB_PR_NUMBER),
                         string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME)
                     ]
-
             }
         }
         stage('Publish GitHub') {
@@ -81,7 +105,7 @@ pipeline {
         }
         stage('Publish Linux Packages') {
             when {
-                expression { JOB_NAME ==~ /((\S*)(release)(\S*))/ }
+                expression { JOB_NAME ==~ /((\S*)(release)(\S*))/  && params.PUBLISH == true }
             }
             steps {
             build job: 'debian-pipeline', propagate: false, wait: true, parameters:
@@ -99,7 +123,7 @@ pipeline {
         }
         stage('Publish Docker Images') {
             when {
-                expression { JOB_NAME ==~ /((\S*)(release)(\S*))/ }
+                expression { JOB_NAME ==~ /((\S*)(release)(\S*))/ && params.PUBLISH == true }
             }
             steps {
             build job: DOCKER_BUILD_JOB, propagate: false, wait: true, parameters:
