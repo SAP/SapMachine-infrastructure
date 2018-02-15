@@ -19,13 +19,22 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 chmod +x ${JT_HOME}/bin/jtreg
 
 if [ "${TEST_SUITE}" == "hotspot" ]; then
-    ${JT_HOME}/bin/jtreg -dir:${JDK_LOCATION}/test/${TEST_SUITE}/jtreg -verbose:summary -nativepath:${TEST_NATIVE_LIB} -exclude:${JDK_LOCATION}/test/${TEST_SUITE}/jtreg/ProblemList.txt -exclude:${SCRIPT_DIR}/exclude/ProblemList_hotspot.txt -conc:${CONCURRENCY} -vmoption:-XX:MaxRAMPercentage=${MAX_RAM_PERCENTAGE} -a -ignore:quiet -timeoutFactor:5 -agentvm -javaoption:-Djava.awt.headless=true "-k:(!ignore)&(!stress)" -testjdk:${TEST_JDK} ${TEST_GROUPS}
+    ${JT_HOME}/bin/jtreg -dir:${JDK_LOCATION}/test/${TEST_SUITE}/jtreg -verbose:summary -nativepath:${TEST_NATIVE_LIB} \
+     -exclude:${JDK_LOCATION}/test/${TEST_SUITE}/jtreg/ProblemList.txt -exclude:${JDK_LOCATION}/test/${TEST_SUITE}/jtreg/ProblemList-SapMachine.txt \
+     -conc:${CONCURRENCY} -vmoption:-XX:MaxRAMPercentage=${MAX_RAM_PERCENTAGE} \
+     -a -ignore:quiet -timeoutFactor:5 -agentvm -javaoption:-Djava.awt.headless=true "-k:(!ignore)&(!stress)" -testjdk:${TEST_JDK} ${TEST_GROUPS}
 fi
 
 if [ "${TEST_SUITE}" == "jdk" ]; then
-    ${JT_HOME}/bin/jtreg -dir:${JDK_LOCATION}/test/${TEST_SUITE} -verbose:summary -nativepath:${TEST_NATIVE_LIB} -exclude:${JDK_LOCATION}/test/${TEST_SUITE}/ProblemList.txt -exclude:${SCRIPT_DIR}/exclude/ProblemList_jdk.txt -conc:${CONCURRENCY} -vmoption:-XX:MaxRAMPercentage=${MAX_RAM_PERCENTAGE} -a -ignore:quiet -timeoutFactor:5 -agentvm -javaoption:-Djava.awt.headless=true "-k:(!headful)&(!printer)" -testjdk:${TEST_JDK} ${TEST_GROUPS}
+    ${JT_HOME}/bin/jtreg -dir:${JDK_LOCATION}/test/${TEST_SUITE} -verbose:summary -nativepath:${TEST_NATIVE_LIB} \
+    -exclude:${JDK_LOCATION}/test/${TEST_SUITE}/ProblemList.txt -exclude:${JDK_LOCATION}/test/${TEST_SUITE}/jtreg/ProblemList-SapMachine.txt  \
+    -conc:${CONCURRENCY} -vmoption:-XX:MaxRAMPercentage=${MAX_RAM_PERCENTAGE} \
+    -a -ignore:quiet -timeoutFactor:5 -agentvm -javaoption:-Djava.awt.headless=true "-k:(!headful)&(!printer)" -testjdk:${TEST_JDK} ${TEST_GROUPS}
 fi
 
 if [ "${TEST_SUITE}" == "langtools" ]; then
-    ${JT_HOME}/bin/jtreg -dir:${JDK_LOCATION}/test/${TEST_SUITE} -verbose:summary -exclude:${JDK_LOCATION}/test/${TEST_SUITE}/ProblemList.txt -conc:${CONCURRENCY} -exclude:${SCRIPT_DIR}/exclude/ProblemList_langtools.txt -vmoption:-XX:MaxRAMPercentage=${MAX_RAM_PERCENTAGE} -a -ignore:quiet -timeoutFactor:5 -agentvm -testjdk:${TEST_JDK} ${TEST_GROUPS}
+    ${JT_HOME}/bin/jtreg -dir:${JDK_LOCATION}/test/${TEST_SUITE} -verbose:summary \
+    -exclude:${JDK_LOCATION}/test/${TEST_SUITE}/ProblemList.txt -exclude:${JDK_LOCATION}/test/${TEST_SUITE}/jtreg/ProblemList-SapMachine.txt \
+    -conc:${CONCURRENCY} -vmoption:-XX:MaxRAMPercentage=${MAX_RAM_PERCENTAGE} \
+    -a -ignore:quiet -timeoutFactor:5 -agentvm -testjdk:${TEST_JDK} ${TEST_GROUPS}
 fi
