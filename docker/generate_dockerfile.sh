@@ -90,11 +90,11 @@ RUN apk update; \
     apk add $DEPENDENCIES;
 
 WORKDIR /etc/apk/keys
-RUN wget https://sapmachine-ubuntu.sapcloud.io/alpine/sapmachine%40sap.com-5a673212.rsa.pub
+RUN wget https://dist.sapmachine.io/alpine/sapmachine%40sap.com-5a673212.rsa.pub
 
 WORKDIR /
 
-RUN echo "http://sapmachine-ubuntu.sapcloud.io/alpine" >> /etc/apk/repositories
+RUN echo "http://dist.sapmachine.io/alpine/3.5" >> /etc/apk/repositories
 
 RUN apk update; \
     apk add $PACKAGE;
@@ -111,8 +111,8 @@ RUN rm -rf /var/lib/apt/lists/* && apt-get clean && apt-get update \\
     && apt-get install -y --no-install-recommends $DEPENDENCIES \\
     && rm -rf /var/lib/apt/lists/*
 
-RUN wget -q -O - https://sapmachine-ubuntu.sapcloud.io/debian/sapmachine-debian.key | apt-key add - \\
-    && echo "deb http://sapmachine-ubuntu.sapcloud.io/debian/amd64/ ./" >> /etc/apt/sources.list \\
+RUN wget -q -O - https://dist.sapmachine.io/debian/sapmachine.key | apt-key add - \\
+    && echo "deb http://dist.sapmachine.io/debian/amd64/ ./" >> /etc/apt/sources.list \\
     && apt-get update \\
     && apt-get -y --no-install-recommends install $PACKAGE
 
