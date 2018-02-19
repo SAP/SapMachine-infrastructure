@@ -103,6 +103,21 @@ pipeline {
                 build job: 'generate-website-data', propagate: false, wait: false
             }
         }
+        stage('Publish CF Java Buildpack Data') {
+            when {
+                expression { params.PUBLISH == true }
+            }
+            steps {
+                script {
+                    def match = params.GIT_TAG_NAME =~ /[^-]*-([0-9]+)[\.0-9]*\+.*/
+                    env.MAJOR_VERSION = match[0][1]
+                }
+                build job: 'generate-cf-data', propagate: false, wait: false, parameters:
+                    [
+                        string(name: 'MAJOR', value: env.MAJOR_VERSION)
+                    ]
+            }
+        }
         stage('Publish Linux Packages') {
             when {
                 expression { JOB_NAME ==~ /((\S*)(release)(\S*))/  && params.PUBLISH == true }
