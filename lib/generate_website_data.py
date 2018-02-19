@@ -48,31 +48,14 @@ class Releases:
         return json_root
 
 def push_to_git(data):
-    git_user = os.environ['GIT_USER']
-    git_password = os.environ['GIT_PASSWORD']
-    repo = str.format('https://{0}:{1}@github.com/SAP/SapMachine.git', git_user, git_password)
-    branch = 'gh-pages'
     local_repo = join(os.getcwd(), 'gh-pages')
-
-    utils.remove_if_exists(local_repo)
-
-    env = os.environ.copy()
-    env['GIT_AUTHOR_NAME'] = 'SapMachine'
-    env['GIT_AUTHOR_EMAIL'] = 'sapmachine@sap.com'
-    env['GIT_COMMITTER_NAME'] = env['GIT_AUTHOR_NAME']
-    env['GIT_COMMITTER_EMAIL'] = env['GIT_AUTHOR_EMAIL']
-
-    utils.run_cmd(['git', 'clone', '-b', branch, repo, local_repo])
+    utils.git_clone('github.com/SAP/SapMachine.git', 'gh-pages', local_repo)
 
     with open(join(local_repo, 'assets', 'data', 'sapmachine_releases.json'), 'w+') as sapmachine_releases:
         sapmachine_releases.write(data)
 
-    utils.run_cmd(['git', 'add', 'assets'], cwd=local_repo)
-    utils.run_cmd(['git', 'commit', '-m', 'Updated release data.'], cwd=local_repo, env=env)
-    utils.run_cmd(['git', 'fetch'], cwd=local_repo, env=env)
-    utils.run_cmd(['git', 'rebase'], cwd=local_repo, env=env)
-    utils.run_cmd(['git', 'push'], cwd=local_repo, env=env)
-
+    utils.git_commit(local_repo, 'Updated release data.', ['assets'])
+    utils.git_push(local_repo)
     utils.remove_if_exists(local_repo)
 
 def main(argv=None):
@@ -93,7 +76,7 @@ def main(argv=None):
         if release['prerelease'] is True:
             continue
 
-        version, major, build_number, sap_build_number = utils.sapmachine_tag_components(release['name'])
+        version, version_part, major, build_number, sap_build_number = utils.sapmachine_tag_components(release['name'])
         assets = release['assets']
 
         for asset in assets:

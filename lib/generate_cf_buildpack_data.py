@@ -73,6 +73,7 @@ def main(argv=None):
     write_index_yaml(asset_map, join(local_repo, 'assets', 'cf', 'jre', args.major, 'linux', 'x86_64'))
     utils.git_commit(local_repo, 'Updated index.yml', ['assets'])
     utils.git_push(local_repo)
+    utils.remove_if_exists(local_repo)
 
 if __name__ == "__main__":
     sys.exit(main())

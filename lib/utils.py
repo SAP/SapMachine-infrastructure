@@ -10,7 +10,9 @@ import zipfile
 import tarfile
 import gzip
 import re
+import json
 
+from urllib2 import urlopen, Request, quote
 from os import remove
 from os.path import join
 from os.path import exists
@@ -122,12 +124,7 @@ def sapmachine_asset_pattern():
     return '[^-]+-([^-]+)-([^_]+)_([^_]+)_bin\.tar\.gz'
 
 def fetch_tag(tag, platform, token=None):
-    import json
-    from urllib2 import urlopen, Request, quote
-
-    org = 'SAP'
-    repository = 'SapMachine'
-    github_api = str.format('https://api.github.com/repos/{0}/{1}/releases/tags/{2}', org, repository, quote(tag))
+    github_api = str.format('https://api.github.com/repos/SAP/SapMachine/releases/tags/{1}', quote(tag))
     jre_url = None
     jdk_url = None
     error_msg = str.format('failed to fetch assets for tag "{0}" and platform="{1}', tag, platform)
@@ -178,9 +175,10 @@ def sapmachine_tag_components(tag):
     match = pattern.match(tag)
 
     if match is None:
-        return None, None, None, None
+        return None, None, None, None, None
 
     version = match.group(2)
+    version_part = match.group(4)
     major = match.group(5)
     build_number = match.group(9)
 
@@ -189,10 +187,33 @@ def sapmachine_tag_components(tag):
     else:
         sap_build_number = ''
 
-    return version, major, build_number, sap_build_number
+    return version, version_part, major, build_number, sap_build_number
 
 def get_github_api_accesstoken():
     key = 'GITHUB_API_ACCESS_TOKEN'
     if key in os.environ:
         return os.environ[key]
     return None
+
+def git_clone(repo, branch, target):
+    git_user = os.environ['GIT_USER']
+    git_password = os.environ['GIT_PASSWORD']
+    remove_if_exists(target)
+    run_cmd(['git', 'clone', '-b', branch, str.format('https://{0}:{1}@{2}', git_user, git_password, repo), target])
+
+def git_commit(dir, message, to_add):
+    env = os.environ.copy()
+    env['GIT_AUTHOR_NAME'] = 'SapMachine'
+    env['GIT_AUTHOR_EMAIL'] = 'sapmachine@sap.com'
+    env['GIT_COMMITTER_NAME'] = env['GIT_AUTHOR_NAME']
+    env['GIT_COMMITTER_EMAIL'] = env['GIT_AUTHOR_EMAIL']
+
+    for e in to_add:
+        run_cmd(['git', 'add', e], cwd=dir)
+
+    run_cmd(['git', 'commit', '-m', 'Updated release data.'], cwd=dir, env=env)
+
+def git_push(dir):
+    run_cmd(['git', 'fetch'], cwd=dir)
+    run_cmd(['git', 'rebase'], cwd=dir)
+    run_cmd(['git', 'push'], cwd=dir)
