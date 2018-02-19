@@ -211,9 +211,15 @@ def git_commit(dir, message, to_add):
     for e in to_add:
         run_cmd(['git', 'add', e], cwd=dir)
 
-    run_cmd(['git', 'commit', '-m', 'Updated release data.'], cwd=dir, env=env)
+    try:
+        run_cmd(['git', 'commit', '-m', message], cwd=dir, env=env)
+    except Exception:
+        print('git commit failed')
 
 def git_push(dir):
-    run_cmd(['git', 'fetch'], cwd=dir)
-    run_cmd(['git', 'rebase'], cwd=dir)
-    run_cmd(['git', 'push'], cwd=dir)
+    try:
+        run_cmd(['git', 'fetch'], cwd=dir)
+        run_cmd(['git', 'rebase'], cwd=dir)
+        run_cmd(['git', 'push'], cwd=dir)
+    except Exception:
+        print('git push failed')
