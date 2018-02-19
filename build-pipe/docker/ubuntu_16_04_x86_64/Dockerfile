@@ -5,6 +5,7 @@ cpio \
 make \
 gcc \
 g++ \
+autoconf \
 file \
 libx11-dev \
 libxext-dev \

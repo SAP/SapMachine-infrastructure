@@ -27,6 +27,7 @@ RUN apk update; \
     apk add mercurial; \
     apk add ttf-dejavu; \
     apk add sed; \
+    apk add autoconf; \
     apk add --update openssl; \
     mkdir /opt; \
     cd /opt; \
