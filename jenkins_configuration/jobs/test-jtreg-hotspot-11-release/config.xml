@@ -2,7 +2,7 @@
 <flow-definition plugin="workflow-job@2.17">
   <actions>
     <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.2.7"/>
-    <io.jenkins.blueocean.service.embedded.BlueOceanUrlAction plugin="blueocean-rest-impl@1.4.0">
+    <io.jenkins.blueocean.service.embedded.BlueOceanUrlAction plugin="blueocean-rest-impl@1.4.1">
       <blueOceanUrlObject class="io.jenkins.blueocean.service.embedded.BlueOceanUrlObjectImpl">
         <mappedUrl>blue/organizations/jenkins/test-jtreg-hotspot-11-release</mappedUrl>
       </blueOceanUrlObject>
@@ -26,7 +26,7 @@
         <hudson.model.TextParameterDefinition>
           <name>test_groups</name>
           <description></description>
-          <defaultValue>gc native_sanity runtime sanity serviceability testlibrary testlibrary_tests compiler</defaultValue>
+          <defaultValue>:hotspot_tier1</defaultValue>
         </hudson.model.TextParameterDefinition>
         <hudson.model.TextParameterDefinition>
           <name>GIT_TAG_NAME</name>
@@ -51,7 +51,7 @@
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@2.43">
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@2.45">
     <scm class="hudson.plugins.git.GitSCM" plugin="git@3.7.0">
       <configVersion>2</configVersion>
       <userRemoteConfigs>

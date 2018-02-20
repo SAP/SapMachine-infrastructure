@@ -13,33 +13,21 @@
   <properties>
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
-        <hudson.model.TextParameterDefinition>
-          <name>test_suite</name>
-          <description></description>
-          <defaultValue>jdk</defaultValue>
-        </hudson.model.TextParameterDefinition>
-        <hudson.model.TextParameterDefinition>
-          <name>test_groups</name>
-          <description></description>
-          <defaultValue>:tier1</defaultValue>
-        </hudson.model.TextParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>JDK_BUILD_JOB</name>
+          <name>MAJOR</name>
           <description></description>
-          <defaultValue>build-10-snapshot-alpine</defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>SAPMACHINE_GIT_BRANCH</name>
-          <description></description>
-          <defaultValue>sapmachine10</defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>DOCKER_DIR</name>
-          <description></description>
-          <defaultValue>test-pipe/docker/alpine_3_5_x86_64</defaultValue>
+          <defaultValue>10</defaultValue>
         </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>-1</daysToKeep>
+        <numToKeep>10</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>1</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
   </properties>
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@2.45">
     <scm class="hudson.plugins.git.GitSCM" plugin="git@3.7.0">
@@ -59,7 +47,7 @@
       <submoduleCfg class="list"/>
       <extensions/>
     </scm>
-    <scriptPath>test-pipe/Jenkinsfile_test_jtreg</scriptPath>
+    <scriptPath>cf-pipe/Jenkinsfile</scriptPath>
     <lightweight>true</lightweight>
   </definition>
   <triggers/>
