@@ -40,6 +40,12 @@ After installing jenkins, one pipelin job has to be configured that runs the Pip
 To get all the jobs to function, missing credentials have to be added. Depending on the jenkins installation, some missing plugins have to be installed. 
 If working with a forked SapMachine repository, the repository URL in most of the Jenkinsfiles has to be changed accordingly.
 
+## Known Issues
+
+A list of known issues is available on the GitHub issues page of this project.
+
+## How to Obtain Support
+
 This project is provided as is.
 
 ## License
