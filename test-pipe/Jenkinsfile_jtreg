@@ -5,7 +5,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh "python lib/build_jtreg.py --build-tip --build-number=${params.build_number}"
+                sh "python lib/build_jtreg.py --build-number=${params.build_number}"
             }
             post {
                 success {
