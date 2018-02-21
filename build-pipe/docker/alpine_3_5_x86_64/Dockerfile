@@ -1,5 +1,5 @@
 #
-# Alpine based Docker image for building OpenJDK/SapMachine on and for Alpine Linux 
+# Alpine based Docker image for building OpenJDK/SapMachine on and for Alpine Linux
 #
 
 FROM alpine:3.5
@@ -31,7 +31,7 @@ RUN apk update; \
     apk add --update openssl; \
     mkdir /opt; \
     cd /opt; \
-    wget 'https://github.com/SAP/SapMachine/releases/download/sapmachine-10+43/sapmachine-jdk-10-ea.43_linux-x64-musl_bin.tar.gz'; \
+    wget 'https://github.com/SAP/SapMachine/releases/download/sapmachine-10+43-0/sapmachine-jdk-10-ea.43_linux-x64-musl_bin.tar.gz'; \
     tar -xzf 'sapmachine-jdk-10-ea.43_linux-x64-musl_bin.tar.gz'; \
     rm 'sapmachine-jdk-10-ea.43_linux-x64-musl_bin.tar.gz'
 
