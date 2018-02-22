@@ -28,7 +28,7 @@ pipeline {
         stage('Archive') {
             steps {
                 archive 'build.tar.gz'
-                sh "tar czf test.tar.gz test"
+                sh "tar czf test.tar.gz SapMachine/test"
                 archive 'test.tar.gz'
             }
         }
