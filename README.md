@@ -42,7 +42,7 @@ If working with a forked SapMachine repository, the repository URL in most of th
 
 ## Known Issues
 
-A list of known issues is available on the GitHub issues page of this project.
+There are no known issues.
 
 ## How to Obtain Support
 
