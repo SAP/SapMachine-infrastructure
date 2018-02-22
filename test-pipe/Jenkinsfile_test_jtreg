@@ -18,8 +18,7 @@ pipeline {
             steps {
                 script {
                     step ([$class: 'CopyArtifact',
-                    selector: specific("specific("${downstream.number}")"),
-                    
+                    selector: buildParameter("${BUILD_SELECTOR}"),
                     projectName: JDK_BUILD_JOB,
                     filter: "build.tar.gz",
                     target: 'sapmachine']);
