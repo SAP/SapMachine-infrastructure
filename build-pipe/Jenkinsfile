@@ -28,8 +28,8 @@ pipeline {
         stage('Archive') {
             steps {
                 archive 'build.tar.gz'
-                archive "sapmachine-jdk-*_bin.tar.gz"
-                archive "sapmachine-jre-*_bin.tar.gz"
+                sh "tar xzf test.tar.gz test"
+                archive 'test.tar.gz'
             }
         }
         stage('Run Required Tests') {
