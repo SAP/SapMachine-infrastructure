@@ -1,0 +1,20 @@
+FROM ubuntu:14.04
+
+RUN apt-get update && apt-get install -qq -y --no-install-recommends \
+make \
+gcc \
+g++ \
+zip \
+wget \
+git \
+unzip \
+realpath \
+ca-certificates \
+curl \
+python \
+mercurial \
+openjdk-8-jdk \
+ant \
+make
+
+RUN useradd -ms /bin/bash jenkins -u 1001
