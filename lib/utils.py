@@ -124,7 +124,7 @@ def sapmachine_asset_pattern():
     return '[^-]+-([^-]+)-([^_]+)_([^_]+)_bin\.tar\.gz'
 
 def fetch_tag(tag, platform, token=None):
-    github_api = str.format('https://api.github.com/repos/SAP/SapMachine/releases/tags/{1}', quote(tag))
+    github_api = str.format('https://api.github.com/repos/SAP/SapMachine/releases/tags/{0}', quote(tag))
     jre_url = None
     jdk_url = None
     error_msg = str.format('failed to fetch assets for tag "{0}" and platform="{1}', tag, platform)
