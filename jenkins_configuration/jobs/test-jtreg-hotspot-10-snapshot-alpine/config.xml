@@ -43,6 +43,15 @@
           <description></description>
           <defaultValue>test-pipe/docker/alpine_3_5_x86_64</defaultValue>
         </hudson.model.TextParameterDefinition>
+        <hudson.plugins.copyartifact.BuildSelectorParameter plugin="copyartifact@1.39">
+          <name>BUILD_SELECTOR</name>
+          <description></description>
+          <defaultSelector class="hudson.plugins.copyartifact.TriggeredBuildSelector">
+            <fallbackToLastSuccessful>true</fallbackToLastSuccessful>
+            <upstreamFilterStrategy>UseGlobalSetting</upstreamFilterStrategy>
+            <allowUpstreamDependencies>false</allowUpstreamDependencies>
+          </defaultSelector>
+        </hudson.plugins.copyartifact.BuildSelectorParameter>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>

@@ -38,11 +38,15 @@
           <description></description>
           <defaultValue>test-pipe/docker/alpine_3_5_x86_64</defaultValue>
         </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>GITHUB_PR_NUMBER</name>
+        <hudson.plugins.copyartifact.BuildSelectorParameter plugin="copyartifact@1.39">
+          <name>BUILD_SELECTOR</name>
           <description></description>
-          <defaultValue></defaultValue>
-        </hudson.model.StringParameterDefinition>
+          <defaultSelector class="hudson.plugins.copyartifact.TriggeredBuildSelector">
+            <fallbackToLastSuccessful>true</fallbackToLastSuccessful>
+            <upstreamFilterStrategy>UseGlobalSetting</upstreamFilterStrategy>
+            <allowUpstreamDependencies>false</allowUpstreamDependencies>
+          </defaultSelector>
+        </hudson.plugins.copyartifact.BuildSelectorParameter>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>
