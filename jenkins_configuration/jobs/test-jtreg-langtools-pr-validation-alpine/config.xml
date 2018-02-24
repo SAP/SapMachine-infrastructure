@@ -47,6 +47,11 @@
             <allowUpstreamDependencies>false</allowUpstreamDependencies>
           </defaultSelector>
         </hudson.plugins.copyartifact.BuildSelectorParameter>
+        <hudson.model.StringParameterDefinition>
+          <name>GITHUB_PR_NUMBER</name>
+          <description></description>
+          <defaultValue></defaultValue>
+        </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>
