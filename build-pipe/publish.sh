@@ -30,7 +30,7 @@ if [ -z $GIT_TAG_NAME ]; then
 
 else
     GIT_TAG_NAME=$(echo $GIT_TAG_NAME | sed 's/-alpine//')
-    github-release release -t $GIT_TAG_NAME || true
+    github-release release -t $GIT_TAG_NAME --pre-release || true
 fi
 
 # replace the '+' by '.' - github replaces it anyway, but we want to have it consistent for sha256sum
