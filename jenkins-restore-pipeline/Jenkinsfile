@@ -11,7 +11,7 @@ pipeline {
                   [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
                   ]) {
                 sh '''
-                  python lib/jenkins_restore.py -t /var/lib/jenkins
+                  python lib/jenkins_restore.py -s . -t /var/lib/jenkins
                   '''
                 }
             }
