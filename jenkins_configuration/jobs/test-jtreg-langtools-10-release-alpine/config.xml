@@ -21,17 +21,17 @@
         <hudson.model.TextParameterDefinition>
           <name>test_groups</name>
           <description></description>
-          <defaultValue>&quot;jdk tools lib&quot;</defaultValue>
+          <defaultValue>:tier1</defaultValue>
         </hudson.model.TextParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>JDK_BUILD_JOB</name>
           <description></description>
-          <defaultValue>build-10-snapshot-alpine</defaultValue>
+          <defaultValue>build-10-release-alpine</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>SAPMACHINE_GIT_BRANCH</name>
           <description></description>
-          <defaultValue>sapmachine10</defaultValue>
+          <defaultValue>sapmachine10-alpine</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>DOCKER_DIR</name>
