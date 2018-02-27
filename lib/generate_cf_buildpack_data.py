@@ -36,8 +36,9 @@ def main(argv=None):
 
     response = json.loads(urlopen(request).read())
     for release in response:
-        if release['prerelease'] is True:
-            continue
+        # switch back on when when 10 is released
+        # if release['prerelease'] is True:
+        #    continue
 
         version, version_part, major, build_number, sap_build_number = utils.sapmachine_tag_components(release['name'])
         assets = release['assets']
