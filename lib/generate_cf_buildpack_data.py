@@ -43,6 +43,9 @@ def main(argv=None):
         version, version_part, major, build_number, sap_build_number = utils.sapmachine_tag_components(release['name'])
         assets = release['assets']
 
+        if version is None:
+            continue
+
         if args.major == major:
             for asset in assets:
                 match = asset_pattern.match(asset['name'])
