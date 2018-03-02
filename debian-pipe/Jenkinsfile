@@ -1,6 +1,8 @@
 pipeline {
     agent {
-        dockerfile { dir 'debian-pipe/docker/ubuntu_16_04_x86_64' }
+        node {
+            label 'agent-ubuntu-local'
+        }
     }
     stages {
         stage('Build') {
@@ -22,14 +24,8 @@ pipeline {
                 expression { params.DEPLOY == true }
             }
             steps {
-                sshagent (credentials: ['jenkins_ssh_key']) {
-                    sh "mkdir /home/jenkins/.ssh"
-                    sh "chmod 700 /home/jenkins/.ssh"
-                    sh "ssh-keyscan -t rsa ${params.DEPLOY_HOST} > /home/jenkins/.ssh/known_hosts"
-                    sh "scp *.deb jenkins@${params.DEPLOY_HOST}:${params.DEPLOY_FOLDER}"
-                    sh "scp lib/utils.py lib/recreate_deb_repository.py jenkins@${params.DEPLOY_HOST}:"
-                    sh "ssh jenkins@${params.DEPLOY_HOST} python recreate_deb_repository.py -s -r ${params.DEPLOY_FOLDER}"
-                }
+                    sh "cp *.deb ${params.DEPLOY_FOLDER}"
+                    sh "python lib/recreate_deb_repository.py -s -r ${params.DEPLOY_FOLDER}"
             }
         }
     }
