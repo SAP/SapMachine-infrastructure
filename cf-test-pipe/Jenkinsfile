@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        dockerfile { dir 'docker' }
+        dockerfile { dir 'cf-test-pipe/docker' }
     }
     stages {
         stage('Test') {
