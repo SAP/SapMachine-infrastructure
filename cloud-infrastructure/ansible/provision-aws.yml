@@ -1,0 +1,141 @@
+# Copyright (c) 2001-2018 by SAP SE, Walldorf, Germany.
+# All rights reserved. Confidential and proprietary.
+
+# ansible 2.4
+---
+  - name: Setup AWS for SapMachine
+    hosts: local
+    connection: local
+    gather_facts: False
+
+    vars:
+      instance_type: m4.2xlarge
+      instance_name: SapMachine Master
+      security_group: SapMachine Master
+      image: ami-66506c1c # Ubuntu 16.04
+      keypair: SapMachine
+      region: us-east-1
+      zone: sapmachine.net
+
+    tasks:
+
+      - name: allocate a new elastic IP
+        local_action:
+          module: ec2_eip
+          state: present
+          region: "{{ region }}"
+        register: eip
+
+      - name: Create a security group
+        local_action:
+          module: ec2_group
+          name: "{{ security_group }}"
+          description: "{{ security_group }}"
+          region: "{{ region }}"
+          rules:
+            - proto: tcp
+              from_port: 22
+              to_port: 22
+              cidr_ip: 155.56.0.0/16
+            - proto: tcp
+              from_port: 80
+              to_port: 80
+              cidr_ip: 0.0.0.0/0
+            - proto: tcp
+              from_port: 443
+              to_port: 443
+              cidr_ip: 0.0.0.0/0
+            - proto: tcp
+              from_port: 50000
+              to_port: 50000
+              cidr_ip: "{{ eip.public_ip }}/32"
+          rules_egress:
+            - proto: all
+              cidr_ip: 0.0.0.0/0
+        register: basic_firewall
+
+      - name: Launch the new EC2 Instance
+        local_action:
+          module: ec2
+          group: "{{ security_group }}"
+          instance_type: "{{ instance_type}}"
+          image: "{{ image }}"
+          wait: yes
+          region: "{{ region }}"
+          keypair: "{{ keypair }}"
+          count: 1
+          volumes:
+            - device_name: /dev/sda1
+              volume_type: gp2
+              volume_size: 1024
+              tags:
+                Name: "{{ instance_name }}"
+        register: ec2
+
+      - name: associate the elastic IP with the new EC2 instance
+        local_action:
+          module: ec2_eip
+          device_id: "{{ item.id }}"
+          ip: "{{ eip.public_ip }}"
+          region: "{{ region }}"
+        with_items: "{{ ec2.instances }}"
+
+      - name: Add tag to EC2 instance
+        local_action:
+          module: ec2_tag
+          resource: "{{ item.id }}"
+          state: present
+          region: "{{ region }}"
+          tags:
+            Name: "{{ instance_name }}"
+        with_items: "{{ ec2.instances }}"
+
+      - name: Add the newly created EC2 instance to the local host group (located inside the directory)
+        local_action: lineinfile
+                      dest="./hosts"
+                      regexp={{ eip.public_ip }}
+                      insertafter="[SapMachineMaster]" line={{ eip.public_ip }}
+        with_items: ec2.instances
+
+      - name: Wait for SSH to come up
+        local_action: wait_for
+                      host={{ eip.public_ip }}
+                      port=22
+                      state=started
+        with_items: ec2.instances
+
+      - name: Create DNS A record for ci
+        local_action:
+          module: route53
+          state: present
+          zone: "{{ zone }}"
+          record: "ci.{{ zone }}"
+          type: A
+          ttl: 300
+          value: "{{ eip.public_ip }}"
+          overwrite: yes
+          wait: yes
+
+      - name: Create DNS A record for dist
+        local_action:
+          module: route53
+          state: present
+          zone: "{{ zone }}"
+          record: "dist.{{ zone }}"
+          type: A
+          ttl: 300
+          value: "{{ eip.public_ip }}"
+          overwrite: yes
+          wait: yes
+
+      - name: Create DNS A record for "root"
+        local_action:
+          module: route53
+          state: present
+          zone: "{{ zone }}"
+          record: "{{ zone }}"
+          type: A
+          ttl: 300
+          value: "{{ eip.public_ip }}"
+          overwrite: yes
+          wait: yes

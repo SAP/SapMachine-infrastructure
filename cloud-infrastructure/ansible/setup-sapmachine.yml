@@ -1,0 +1,197 @@
+# Copyright (c) 2001-2018 by SAP SE, Walldorf, Germany.
+# All rights reserved. Confidential and proprietary.
+
+# ansible 2.4
+---
+  - name: Setup SapMachine Master server
+    hosts: SapMachineMaster
+    gather_facts: False
+    pre_tasks:
+      - name: 'install python2'
+        raw: sudo apt-get -qq -y --no-install-recommends install python
+    vars:
+      ansible_user: ubuntu
+      ansible_ssh_private_key_file: SapMachine.pem
+      slave_jar_version: 3.16
+      jenkins_master_url: https://ci.sapmachine.io/computer/agent-linux-x86_64-1/slave-agent.jnlp
+      jenkins_slave_name: agent-linux-x86_64-1
+
+    tasks:
+
+      # install docke, docker-compose, OpenJDK 8 JRE
+      - name: install docker
+        apt:
+          name: docker.io
+          state: latest
+          update_cache: yes
+          install_recommends: no
+        become: yes
+
+      - name: install docker-compose
+        apt:
+          name: docker-compose
+          state: latest
+          install_recommends: no
+        become: yes
+
+      - name: install OpenJDK 8 JRE
+        apt:
+         name: openjdk-8-jre
+         state: latest
+         install_recommends: no
+        become: yes
+
+      # create sapmachine group and user
+      # used for running the docker container
+      - name: create sapmachine group
+        group:
+          name: sapmachine
+          state: present
+        become: yes
+
+      - name: create sapmachine user
+        user:
+          name: sapmachine
+          comment: "SapMachine user"
+          group: sapmachine
+          groups: sapmachine, docker
+        become: yes
+
+      # create jenkins group and user
+      # used for running the jenkins slave
+      - name: create jenkins group
+        group:
+          name: jenkins
+          state: present
+        become: yes
+
+      - name: create jenkins user
+        user:
+          name: jenkins
+          comment: "Jenkins user"
+          groups: jenkins, docker
+        become: yes
+
+      # copy the sapmachine master files, containing the docker container
+      # and docker compose configuration
+      - name: copy sapmachine_master files
+        synchronize:
+          src: ../../
+          dest: /home/sapmachine/sapmachine_master
+          recursive: yes
+          rsync_opts:
+            - "--exclude=.git*"
+            - "--exclude=ansible"
+        become: yes
+        become_user: sapmachine
+
+      # set the ownership of samachine_master to sapmachine:sapmachine
+      - name: set ownership of sapmachine_master
+        file:
+          path: /home/sapmachine/sapmachine_master
+          owner: sapmachine
+          group: sapmachine
+          recurse: yes
+        become: yes
+
+      # create the jenkins slave home directory
+      - name: create Jenkins Slave home directory
+        file:
+          path: /home/jenkins/slave-home
+          state: directory
+        become: yes
+        become_user: jenkins
+
+      # download the jenkins slave jar file
+      - name: download Jenkins Slave jar
+        get_url:
+          url: "https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/{{ slave_jar_version }}/remoting-{{ slave_jar_version }}.jar"
+          dest: /home/jenkins/slave.jar
+        become: yes
+        become_user: jenkins
+
+      # copy the script file to start the jenkins slave
+      - name: copy Jenkins Slave files
+        synchronize:
+          src: ../ci-slave-local/start-slave.sh
+          dest: /home/jenkins/start-slave.sh
+        become: yes
+        become_user: jenkins
+
+      # in case any docker container is running, stop them
+      - name: stop all running docker container
+        shell: docker stop $(docker ps -a -q)
+        become: yes
+        become_user: sapmachine
+        failed_when: false
+
+      # stop all running java processes (jenkins slave)
+      - name: stop all Java processes
+        command: killall -9 java
+        become: yes
+        failed_when: false
+
+      # update docker images
+      - name: remove all docker container
+        shell: docker rm $(docker ps -a -q)
+        become: yes
+        become_user: sapmachine
+        failed_when: false
+
+      - name: purge dangling docker images
+        command: docker images purge
+        become: yes
+        become_user: sapmachine
+
+      - name: remove all docker images
+        shell: docker rmi $(docker images -a -q)
+        become: yes
+        become_user: sapmachine
+        failed_when: false
+
+      # start all docker container
+      - name: run docker-compose
+        command: docker-compose -f ./compose.yml up -d --build
+        args:
+          chdir: /home/sapmachine/sapmachine_master
+        become: yes
+        become_user: sapmachine
+
+      # these files are no longer needed and contain sensitive data
+      # remove them
+      - name: remove sapmachine_master
+        file:
+          path: /home/sapmachine/sapmachine_master
+          state: absent
+        become: yes
+        become_user: sapmachine
+
+      # wait for the jenkins master server to come up
+      # and read the SapMachine user password
+      - name: wait for Jenkins Master to come up
+        command: docker exec ci bash /usr/share/jenkins/read-sapmachine-pw.sh
+        become: yes
+        become_user: sapmachine
+        register: sapmachine_pw
+
+      # read the jenkins slave secret for the jenkins slave
+      - name: read Jenkins Slave secret
+        command: "docker exec ci bash /usr/share/jenkins/read-slave-secret.sh {{ jenkins_slave_name }}"
+        become: yes
+        become_user: jenkins
+        register: slave_secret
+
+      # start the jenkins slave
+      - name: start Jenkins Slave
+        command: "/home/jenkins/start-slave.sh {{ jenkins_master_url }} {{ slave_secret.stdout }}"
+        args:
+          chdir: /home/jenkins
+        become: yes
+        become_user: jenkins
+
+      # display the jenkins SapMachine password
+      - name: show Jenkins SapMachine password
+        debug:
+          msg:
+            - "user: SapMachine"
+            - "password: {{ sapmachine_pw.stdout }}"

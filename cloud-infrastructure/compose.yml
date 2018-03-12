@@ -1,0 +1,164 @@
+# Copyright (c) 2001-2018 by SAP SE, Walldorf, Germany.
+# All rights reserved. Confidential and proprietary.
+
+version: '2'
+networks:
+  ext:
+volumes:
+  certs:
+  vhosts:
+  html:
+  jenkins_home:
+  pkg:
+  slaves:
+  ci_slave_ubuntu-jenkins:
+  ci_slave_ubuntu-gpg:
+  ci_slave_ubuntu-agent:
+  ci_slave_alpine-jenkins:
+  ci_slave_alpine-agent:
+services:
+  # reverse proxy
+  nginxproxy:
+    image: jwilder/nginx-proxy
+    container_name: nginxproxy
+    hostname: nginxproxy
+    restart:
+      unless-stopped
+    networks:
+      - ext
+    volumes:
+      - certs:/etc/nginx/certs:ro
+      - vhosts:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    ports:
+      - 80:80
+      - 443:443
+    labels:
+      - com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy
+  # companion for lets encrypt certificates
+  nginxproxy_comp:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    container_name: nginxproxy_comp
+    hostname: nginxproxy_comp
+    restart:
+      unless-stopped
+    depends_on:
+      - nginxproxy
+    networks:
+      - ext
+    volumes:
+      - certs:/etc/nginx/certs
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    volumes_from:
+      - nginxproxy
+  # uncomment this for testing
+  #  environment:
+  #    - ACME_CA_URI=https://acme-staging.api.letsencrypt.org/directory
+  # jenkins master server
+  jenkins_master:
+    build:
+      context: ./ci
+      dockerfile: Dockerfile
+    container_name: ci
+    restart:
+      unless-stopped
+    depends_on:
+      - nginxproxy
+      - nginxproxy_comp
+    networks:
+      - ext
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - pkg:/var/pkg
+      - slaves:/var/slaves
+    ports:
+      # exposed port for jenkins slaves
+      - 50000:50000
+    environment:
+      - VIRTUAL_PORT=8080
+      - VIRTUAL_HOST=ci.${URL_ROOT}
+      - LETSENCRYPT_HOST=ci.${URL_ROOT}
+      - LETSENCRYPT_EMAIL=${SAPMACHINE_EMAIL}
+  # linux package distribution server
+  dist_server:
+    build:
+      context: ./dist
+      dockerfile: Dockerfile
+    container_name: dist
+    restart:
+      unless-stopped
+    depends_on:
+      - nginxproxy
+      - nginxproxy_comp
+      - jenkins_master
+    networks:
+      - ext
+    volumes:
+      - pkg:/var/pkg
+    environment:
+      - VIRTUAL_PORT=80
+      - VIRTUAL_HOST=dist.${URL_ROOT}
+      - LETSENCRYPT_HOST=dist.${URL_ROOT}
+      - LETSENCRYPT_EMAIL=${SAPMACHINE_EMAIL}
+  # redirects to the sapmachine github page
+  redirect_server:
+    build:
+      context: ./redirect
+      dockerfile: Dockerfile
+    container_name: redirect
+    restart:
+      unless-stopped
+    depends_on:
+      - nginxproxy
+      - nginxproxy_comp
+    networks:
+      - ext
+    environment:
+      - VIRTUAL_PORT=80
+      - VIRTUAL_HOST=${URL_ROOT}
+      - LETSENCRYPT_HOST=${URL_ROOT}
+      - LETSENCRYPT_EMAIL=${SAPMACHINE_EMAIL}
+  # jenkins ubuntu slave
+  ci_slave_ubuntu:
+      build:
+        context: ./ci-slave-ubuntu
+        dockerfile: Dockerfile
+      container_name: ci-slave-ubuntu
+      restart:
+        unless-stopped
+      depends_on:
+        - jenkins_master
+      networks:
+        - ext
+      volumes:
+        - ci_slave_ubuntu-jenkins:/home/jenkins/.jenkins
+        - ci_slave_ubuntu-gpg:/home/jenkins/.gnupg
+        - ci_slave_ubuntu-agent:/home/jenkins/agent
+        - pkg:/var/pkg
+        - slaves:/var/slaves
+      environment:
+        - MASTER_URL=https://ci.${URL_ROOT}/computer/${UBUNTU_SLAVE_NAME}/slave-agent.jnlp
+        - SLAVE_NAME=${UBUNTU_SLAVE_NAME}
+        - SLAVE_NO_CERTIFICATE_CHECK=${SLAVE_NO_CERTIFICATE_CHECK}
+  # jenkins alpine slave
+  ci_slave_alpine:
+      build:
+        context: ./ci-slave-alpine
+        dockerfile: Dockerfile
+      container_name: ci-slave-alpine
+      restart:
+        unless-stopped
+      depends_on:
+        - jenkins_master
+      networks:
+        - ext
+      volumes:
+        - ci_slave_alpine-jenkins:/home/jenkins/.jenkins
+        - ci_slave_alpine-agent:/home/jenkins/agent
+        - pkg:/var/pkg
+        - slaves:/var/slaves
+      environment:
+        - MASTER_URL=https://ci.${URL_ROOT}/computer/${ALPINE_SLAVE_NAME}/slave-agent.jnlp
+        - SLAVE_NAME=${ALPINE_SLAVE_NAME}
+        - SLAVE_NO_CERTIFICATE_CHECK=${SLAVE_NO_CERTIFICATE_CHECK}
