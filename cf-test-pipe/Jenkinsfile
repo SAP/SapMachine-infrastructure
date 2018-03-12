@@ -1,0 +1,22 @@
+pipeline {
+    agent {
+        dockerfile { dir 'docker' }
+    }
+    stages {
+        stage('Test') {
+            steps {
+                sh '''
+                    git clone https://github.com/cloudfoundry/java-buildpack.git
+                    cd java-buildpack
+                    bundle install
+                    bundle exec rake
+                '''
+            }
+        }
+    }
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}
