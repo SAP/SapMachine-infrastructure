@@ -16,6 +16,7 @@ RUN apt-get update && apt-get install -qq -y --no-install-recommends \
     libssl-dev
 
 RUN useradd -ms /bin/bash jenkins -u 1001
+RUN echo "jenkins    ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 WORKDIR /tmp
 RUN wget https://cache.ruby-lang.org/pub/ruby/2.5/ruby-2.5.0.tar.gz
