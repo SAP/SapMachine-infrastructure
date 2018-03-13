@@ -8,7 +8,6 @@ gcc \
 ca-certificates \
 python-dev \
 python-setuptools \
-libffi \
 libffi-dev
 
 RUN easy_install hg-git
