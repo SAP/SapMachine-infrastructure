@@ -15,7 +15,7 @@
       image: ami-66506c1c # Ubuntu 16.04
       keypair: SapMachine
       region: us-east-1
-      zone: sapmachine.net
+      zone: sapmachine.io
 
     tasks:
 
@@ -122,6 +122,18 @@
           state: present
           zone: "{{ zone }}"
           record: "dist.{{ zone }}"
+          type: A
+          ttl: 300
+          value: "{{ eip.public_ip }}"
+          overwrite: yes
+          wait: yes
+
+      - name: Create DNS A record for www
+        local_action:
+          module: route53
+          state: present
+          zone: "{{ zone }}"
+          record: "www.{{ zone }}"
           type: A
           ttl: 300
           value: "{{ eip.public_ip }}"
