@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@2.17">
+  <actions>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.2.7"/>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.2.7">
+      <jobProperties/>
+      <triggers/>
+      <parameters/>
+    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
+  </actions>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.TextParameterDefinition>
+          <name>test_suite</name>
+          <description></description>
+          <defaultValue>langtools</defaultValue>
+        </hudson.model.TextParameterDefinition>
+        <hudson.model.TextParameterDefinition>
+          <name>test_groups</name>
+          <description></description>
+          <defaultValue>&quot;jdk tools lib&quot;</defaultValue>
+        </hudson.model.TextParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>JDK_BUILD_JOB</name>
+          <description></description>
+          <defaultValue>build-10-snapshot-alpine</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>SAPMACHINE_GIT_BRANCH</name>
+          <description></description>
+          <defaultValue>sapmachine10-alpine</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>DOCKER_DIR</name>
+          <description></description>
+          <defaultValue>test-pipe/docker/alpine_3_5_x86_64</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.plugins.copyartifact.BuildSelectorParameter plugin="copyartifact@1.39">
+          <name>BUILD_SELECTOR</name>
+          <description></description>
+          <defaultSelector class="hudson.plugins.copyartifact.TriggeredBuildSelector">
+            <fallbackToLastSuccessful>true</fallbackToLastSuccessful>
+            <upstreamFilterStrategy>UseGlobalSetting</upstreamFilterStrategy>
+            <allowUpstreamDependencies>false</allowUpstreamDependencies>
+          </defaultSelector>
+        </hudson.plugins.copyartifact.BuildSelectorParameter>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@2.45">
+    <scm class="hudson.plugins.git.GitSCM" plugin="git@3.8.0">
+      <configVersion>2</configVersion>
+      <userRemoteConfigs>
+        <hudson.plugins.git.UserRemoteConfig>
+          <url>https://github.com/SAP/SapMachine-infrastructure.git</url>
+          <credentialsId>SapMachine-github</credentialsId>
+        </hudson.plugins.git.UserRemoteConfig>
+      </userRemoteConfigs>
+      <branches>
+        <hudson.plugins.git.BranchSpec>
+          <name>*/master</name>
+        </hudson.plugins.git.BranchSpec>
+      </branches>
+      <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+      <submoduleCfg class="list"/>
+      <extensions/>
+    </scm>
+    <scriptPath>test-pipe/Jenkinsfile_test_jtreg</scriptPath>
+    <lightweight>true</lightweight>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
+</flow-definition>
