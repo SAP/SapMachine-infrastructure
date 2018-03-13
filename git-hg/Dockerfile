@@ -9,7 +9,8 @@ ca-certificates \
 python-dev \
 python-setuptools \
 libffi-dev \
-openssl openssl-dev
+openssl \
+libssl-dev
 
 RUN easy_install hg-git
 RUN echo "[extensions]\nhgext.bookmarks =\nhggit =" > /etc/mercurial/hgrc
