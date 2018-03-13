@@ -7,7 +7,9 @@ mercurial \
 gcc \
 ca-certificates \
 python-dev \
-python-setuptools
+python-setuptools \
+libffi \
+libffi-dev
 
 RUN easy_install hg-git
 RUN echo "[extensions]\nhgext.bookmarks =\nhggit =" > /etc/mercurial/hgrc
