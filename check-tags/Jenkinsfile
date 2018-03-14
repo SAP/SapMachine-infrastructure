@@ -9,8 +9,8 @@ pipeline {
                 SAPMACHINE_PUBLISH_GITHUB_TOKEN = credentials('SapMachine-Github-Token')
                 SAPMACHINE_PUBLISH_GITHUB_REPO_NAME = 'SapMachine'
                 SAPMACHINE_PUBLISH_GITHUB_USER = 'SAP'
-                JENKINS_USER='axel7born'
-                JENKINS_PASSWORD=credentials( 'axel7born-jenkins')
+                JENKINS_USER='sapmachine'
+                JENKINS_PASSWORD=credentials( 'sapmachine-jenkins')
             }
             steps {
               withCredentials([
