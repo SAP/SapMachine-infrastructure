@@ -29,14 +29,9 @@
           <defaultValue>false</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>DEPLOY_HOST</name>
-          <description></description>
-          <defaultValue>dist.sapmachine.io</defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
           <name>DEPLOY_FOLDER</name>
           <description></description>
-          <defaultValue>deb/amd64</defaultValue>
+          <defaultValue>/var/pkg/deb/amd64</defaultValue>
         </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>

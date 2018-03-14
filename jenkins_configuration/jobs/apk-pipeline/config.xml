@@ -24,14 +24,14 @@
           <defaultValue>false</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>DEPLOY_HOST</name>
-          <description></description>
-          <defaultValue>dist.sapmachine.io</defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
           <name>DEPLOY_FOLDER</name>
           <description></description>
-          <defaultValue>apk/3.5/x86_64</defaultValue>
+          <defaultValue>/var/pkg/apk/3.5/x86_64</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>KEY_DIR</name>
+          <description></description>
+          <defaultValue>/var/pkg/apk/keys</defaultValue>
         </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
