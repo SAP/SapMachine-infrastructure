@@ -1,5 +1,5 @@
 #
-# Alpine based Docker image for building OpenJDK/SapMachine on and for Alpine Linux 
+# Alpine based Docker image for building OpenJDK/SapMachine on and for Alpine Linux
 #
 
 FROM alpine:3.5
@@ -36,5 +36,5 @@ RUN apk update; \
 
 ENV PATH=/opt/sapmachine-jdk-10/bin:$PATH
 
-RUN addgroup -g 1001 jenkins && \
-    adduser -D -u 1001 -G jenkins jenkins
+RUN addgroup -g 1002 jenkins && \
+    adduser -D -u 1002 -G jenkins jenkins

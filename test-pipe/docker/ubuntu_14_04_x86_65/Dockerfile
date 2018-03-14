@@ -17,4 +17,4 @@ openjdk-8-jdk \
 ant \
 make
 
-RUN useradd -ms /bin/bash jenkins -u 1001
+RUN useradd -ms /bin/bash jenkins -u 1002
