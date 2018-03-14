@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -qq -y --no-install-recommends \
     openssl \
     libssl-dev
 
-RUN useradd -ms /bin/bash jenkins -u 1001
+RUN useradd -ms /bin/bash jenkins -u 1002
 RUN echo "jenkins    ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 WORKDIR /tmp
