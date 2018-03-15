@@ -54,8 +54,8 @@ services:
     volumes_from:
       - nginxproxy
   # uncomment this for testing
-  #  environment:
-  #    - ACME_CA_URI=https://acme-staging.api.letsencrypt.org/directory
+    environment:
+      - ACME_CA_URI=https://acme-staging.api.letsencrypt.org/directory
   # jenkins master server
   jenkins_master:
     build:
