@@ -71,7 +71,7 @@
           volumes:
             - device_name: /dev/sda1
               volume_type: gp2
-              volume_size: 1024
+              volume_size: 128
               tags:
                 Name: "{{ instance_name }}"
         register: ec2
