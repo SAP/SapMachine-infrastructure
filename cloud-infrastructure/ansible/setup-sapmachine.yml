@@ -13,17 +13,34 @@
       ansible_user: ubuntu
       ansible_ssh_private_key_file: SapMachine.pem
       slave_jar_version: 3.16
-      jenkins_master_url: https://ci.sapmachine.io/computer/agent-linux-x86_64-1/slave-agent.jnlp
+      jenkins_master_url: https://ci.sapmachine.net/computer/agent-linux-x86_64-1/slave-agent.jnlp
       jenkins_slave_name: agent-linux-x86_64-1
 
     tasks:
 
-      # install docke, docker-compose, OpenJDK 8 JRE
-      - name: install docker
+      - name: install apt-transport-https
         apt:
-          name: docker.io
+          name: apt-transport-https
           state: latest
           update_cache: yes
+          install_recommends: no
+        become: yes
+
+      - name: add docker apt key
+        apt_key:
+          url: https://download.docker.com/linux/ubuntu/gpg
+          state: present
+
+      -name: add docker repository
+       apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable
+        state: present
+
+      # install docker, docker-compose, OpenJDK 8 JRE
+      - name: install docker-ce
+        apt:
+          name: docker-ce
+          state: latest
           install_recommends: no
         become: yes
 
@@ -183,11 +200,28 @@
 
       # start the jenkins slave
       - name: start Jenkins Slave
-        command: "/home/jenkins/start-slave.sh {{ jenkins_master_url }} {{ slave_secret.stdout }}"
+        command: "/home/jenkins/start-slave.sh {{ jenkins_master_url }} {{ slave_secret.stdout }} -noCertificateCheck"
         args:
           chdir: /home/jenkins
         become: yes
         become_user: jenkins
+
+      # start the cAdvisor Docker container
+      # see: https://github.com/google/cadvisor
+      - name: start cAdvisor Docker container
+        docker_container:
+          name: cadvisor
+          image: google/cadvisor:latest
+          volumes:
+            - /:/rootfs:ro
+            - /var/run:/var/run:rw
+            - /sys:/sys:ro
+            - /var/lib/docker/:/var/lib/docker:ro
+            - /dev/disk/:/dev/disk:ro
+          ports:
+            - 8080:8080
+          detach: yes
+        become: yes
 
       # display the jenkins SapMachine password
       - name: show Jenkins SapMachine password
