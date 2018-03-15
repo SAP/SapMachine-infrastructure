@@ -122,6 +122,24 @@ services:
       - VIRTUAL_HOST=${URL_ROOT}
       - LETSENCRYPT_HOST=${URL_ROOT}
       - LETSENCRYPT_EMAIL=${SAPMACHINE_EMAIL}
+  # redirects "www" to the sapmachine github page
+  redirect_server_www:
+    build:
+      context: ./redirect
+      dockerfile: Dockerfile
+    container_name: redirect_www
+    restart:
+      unless-stopped
+    depends_on:
+      - nginxproxy
+      - nginxproxy_comp
+    networks:
+      - ext
+    environment:
+      - VIRTUAL_PORT=80
+      - VIRTUAL_HOST=www.${URL_ROOT}
+      - LETSENCRYPT_HOST=www.${URL_ROOT}
+      - LETSENCRYPT_EMAIL=${SAPMACHINE_EMAIL}
   # jenkins ubuntu slave
   ci_slave_ubuntu:
       build:
