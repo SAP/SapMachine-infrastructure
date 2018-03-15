@@ -1,7 +1,7 @@
 # SapMachine Cloud Infrastructure
 
 The SapMachine cloud infrastructure hosts Jenkins Master and Slave instances as well as the hosting of the SapMachine Linux Package server.
-The [docker-compose configuration](compose.yml) describes a set of 7 Docker container.
+The [docker-compose configuration](compose.yml) describes a set of 8 Docker container.
 
 1. **jwilder/nginx-proxy** (https://hub.docker.com/r/jwilder/nginx-proxy/): Starts a nginx reverse proxy and automatically redirects HTTP(S) requests based on the request URL to the corresponding Docker container. This routing is defined by the environment variable *VIRTUAL_HOST* of each Docker container.
 2. **jrcs/letsencrypt-nginx-proxy-companion** (https://hub.docker.com/r/jrcs/letsencrypt-nginx-proxy-companion/): Automatically requests Let's Encrypt SSL certificates for the domains/subdomains which are used by the HTTPS server running in the Docker container:
@@ -12,8 +12,9 @@ The [docker-compose configuration](compose.yml) describes a set of 7 Docker cont
 3. [jenkins_master](ci/Dockerfile): The Jenkins Master instance
 4. [dist_server](dist/Dockerfile): The Linux Package server
 5. [redirect_server](redirect/Dockerfile): Redirects requests to sapmachine.io to the Sapmachine GitHup Page.
-6. [ci_slave_ubuntu](ci-slave-ubuntu/Dockerfile): Jenkins Slave used for building Debian packages.
-7. [ci_slave_alpine](ci-slave-alpine/Dockerfile): Jenkins Slave used for building Alpine packages.
+6. [redirect_server_www](redirect/Dockerfile): Redirects requests to www.sapmachine.io to the Sapmachine GitHup Page.
+7. [ci_slave_ubuntu](ci-slave-ubuntu/Dockerfile): Jenkins Slave used for building Debian packages.
+8. [ci_slave_alpine](ci-slave-alpine/Dockerfile): Jenkins Slave used for building Alpine packages.
 
 The docker-compose configuration uses the [.env](.env) file for defining common environment variables.
 
