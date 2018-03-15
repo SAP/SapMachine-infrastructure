@@ -8,7 +8,7 @@
     gather_facts: False
     pre_tasks:
       - name: 'install python2'
-        raw: sudo apt-get -qq -y --no-install-recommends install python
+        raw: sudo apt-get update && sudo apt-get -qq -y --no-install-recommends install python
     vars:
       ansible_user: ubuntu
       ansible_ssh_private_key_file: SapMachine.pem
@@ -22,7 +22,6 @@
         apt:
           name: apt-transport-https
           state: latest
-          update_cache: yes
           install_recommends: no
         become: yes
 
