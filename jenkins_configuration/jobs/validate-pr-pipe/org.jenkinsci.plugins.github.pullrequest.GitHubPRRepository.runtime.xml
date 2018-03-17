@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version='1.1' encoding='UTF-8'?>
 <org.jenkinsci.plugins.github.pullrequest.GitHubPRRepository plugin="github-pullrequest@0.1.0-rc29">
   <fullName>GitHubRepositoryName[host=github.com,username=SAP,repository=SapMachine]</fullName>
   <githubUrl>https://github.com/SAP/SapMachine/</githubUrl>
@@ -48,22 +48,44 @@
       </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
     </entry>
     <entry>
-      <int>70</int>
+      <int>71</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>70</number>
-        <issueUpdatedAt>2018-03-15 10:12:35.0 UTC</issueUpdatedAt>
+        <number>71</number>
+        <issueUpdatedAt>2018-03-16 09:29:53.0 UTC</issueUpdatedAt>
         <title>8199557: Assert in fromTonga/vm/runtime/defmeth/scenarios/Stress_nore…</title>
-        <body>Integrate from jdk11:  8199557: Assert in fromTonga/vm/runtime/defmeth/scenarios/Stress_noredefine/TestDescription.java&#xd;
+        <body>…define/TestDescription.java&#xd;
 &#xd;
-&#xd;
-</body>
-        <prUpdatedAt>2018-03-15 10:12:35.0 UTC</prUpdatedAt>
-        <headSha>29a95a31d88ada9bf8b58c266f7f60837130ab47</headSha>
-        <headRef>JDK-8199557</headRef>
+Reviewed-by: coleenp&#xd;
+GL: integrated from jdk11</body>
+        <prUpdatedAt>2018-03-16 09:29:53.0 UTC</prUpdatedAt>
+        <headSha>467621575d2bcfc8ffb18ff1168e55a2759170c8</headSha>
+        <headRef>JDK-8199557-alpine10</headRef>
         <mergeable>true</mergeable>
-        <baseRef>sapmachine10</baseRef>
-        <userLogin>GoeLin</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/70</htmlUrl>
+        <baseRef>sapmachine10-alpine</baseRef>
+        <userEmail>axel.siebenborn@sap.com</userEmail>
+        <userLogin>axel7born</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/71</htmlUrl>
+        <labels/>
+        <sourceRepoOwner>SAP</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>72</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>72</number>
+        <issueUpdatedAt>2018-03-16 11:16:40.0 UTC</issueUpdatedAt>
+        <title>Add test runtime/ElfDecoder/TestElfDirectRead.java to exclude list.</title>
+        <body></body>
+        <prUpdatedAt>2018-03-16 11:16:40.0 UTC</prUpdatedAt>
+        <headSha>375dc3df7bae3813fbc90a1fb8a0071e45beff72</headSha>
+        <headRef>axel7born-alpine10-exclude-elf-test</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine-alpine</baseRef>
+        <userEmail>axel.siebenborn@sap.com</userEmail>
+        <userLogin>axel7born</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/72</htmlUrl>
         <labels/>
         <sourceRepoOwner>SAP</sourceRepoOwner>
         <state>OPEN</state>

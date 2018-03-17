@@ -1,23 +1,15 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<scriptApproval plugin="script-security@1.40">
+<?xml version='1.1' encoding='UTF-8'?>
+<scriptApproval plugin="script-security@1.42">
   <approvedScriptHashes>
     <string>017d0db438428731cd600b6ebda805065433520f</string>
   </approvedScriptHashes>
-  <approvedSignatures/>
+  <approvedSignatures>
+    <string>staticMethod java.lang.System getenv java.lang.String</string>
+    <string>staticMethod jenkins.model.Jenkins getInstance</string>
+  </approvedSignatures>
   <aclApprovedSignatures/>
   <approvedClasspathEntries/>
   <pendingScripts/>
-  <pendingSignatures>
-    <pendingSignature>
-      <context/>
-      <signature>staticMethod java.lang.System getenv java.lang.String</signature>
-      <dangerous>true</dangerous>
-    </pendingSignature>
-    <pendingSignature>
-      <context/>
-      <signature>staticMethod jenkins.model.Jenkins getInstance</signature>
-      <dangerous>true</dangerous>
-    </pendingSignature>
-  </pendingSignatures>
+  <pendingSignatures/>
   <pendingClasspathEntries/>
 </scriptApproval>
