@@ -9,13 +9,13 @@
     gather_facts: False
 
     vars:
-      instance_type: t2.medium
+      instance_type: m4.4xlarge
       instance_name: (TEST) SapMachine Master
       security_group: (TEST) SapMachine Master
       image: ami-66506c1c # Ubuntu 16.04
       keypair: SapMachine
       region: us-east-1
-      zone: sapmachine.net
+      zone: sapmachine.io
 
     tasks:
 
@@ -71,7 +71,7 @@
           volumes:
             - device_name: /dev/sda1
               volume_type: gp2
-              volume_size: 128
+              volume_size: 1024
               tags:
                 Name: "{{ instance_name }}"
         register: ec2

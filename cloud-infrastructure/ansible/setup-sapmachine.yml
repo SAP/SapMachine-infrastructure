@@ -13,7 +13,7 @@
       ansible_user: ubuntu
       ansible_ssh_private_key_file: SapMachine.pem
       slave_jar_version: 3.16
-      jenkins_master_url: https://ci.sapmachine.net/computer/agent-linux-x86_64-1/slave-agent.jnlp
+      jenkins_master_url: https://ci.sapmachine.io/computer/agent-linux-x86_64-1/slave-agent.jnlp
       jenkins_slave_name: agent-linux-x86_64-1
 
     tasks:
@@ -201,7 +201,7 @@
 
       # start the jenkins slave
       - name: start Jenkins Slave
-        command: "/home/jenkins/start-slave.sh {{ jenkins_master_url }} {{ slave_secret.stdout }} -noCertificateCheck"
+        command: "/home/jenkins/start-slave.sh {{ jenkins_master_url }} {{ slave_secret.stdout }}"
         args:
           chdir: /home/jenkins
         become: yes
@@ -213,6 +213,7 @@
         docker_container:
           name: cadvisor
           image: google/cadvisor:latest
+          restart_policy: unless-stopped
           volumes:
             - /:/rootfs:ro
             - /var/run:/var/run:rw
