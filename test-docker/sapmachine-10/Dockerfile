@@ -10,5 +10,5 @@ RUN wget -q -O - https://dist.sapmachine.io/debian/sapmachine.key | apt-key add 
     && apt-get update \
     && apt-get -y --no-install-recommends install sapmachine-10-jdk=10+46.1
 
-RUN useradd -ms /bin/bash jenkins -u 1001
+RUN useradd -ms /bin/bash jenkins -u 1002
 
