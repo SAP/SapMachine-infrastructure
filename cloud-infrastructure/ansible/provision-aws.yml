@@ -9,9 +9,9 @@
     gather_facts: False
 
     vars:
-      instance_type: m4.2xlarge
-      instance_name: SapMachine Master
-      security_group: SapMachine Master
+      instance_type: m4.4xlarge
+      instance_name: (TEST) SapMachine Master
+      security_group: (TEST) SapMachine Master
       image: ami-66506c1c # Ubuntu 16.04
       keypair: SapMachine
       region: us-east-1
@@ -36,6 +36,10 @@
             - proto: tcp
               from_port: 22
               to_port: 22
+              cidr_ip: 155.56.0.0/16
+            - proto: tcp
+              from_port: 8080
+              to_port: 8080
               cidr_ip: 155.56.0.0/16
             - proto: tcp
               from_port: 80

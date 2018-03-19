@@ -8,7 +8,7 @@
     gather_facts: False
     pre_tasks:
       - name: 'install python2'
-        raw: sudo apt-get -qq -y --no-install-recommends install python
+        raw: sudo apt-get update && sudo apt-get -qq -y --no-install-recommends install python
     vars:
       ansible_user: ubuntu
       ansible_ssh_private_key_file: SapMachine.pem
@@ -18,12 +18,30 @@
 
     tasks:
 
-      # install docke, docker-compose, OpenJDK 8 JRE
-      - name: install docker
+      - name: install apt-transport-https
         apt:
-          name: docker.io
+          name: apt-transport-https
           state: latest
-          update_cache: yes
+          install_recommends: no
+        become: yes
+
+      - name: add docker apt key
+        apt_key:
+          url: https://download.docker.com/linux/ubuntu/gpg
+          state: present
+        become: yes
+
+      - name: add docker repository
+        apt_repository:
+         repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable
+         state: present
+        become: yes
+
+      # install docker, docker-compose, OpenJDK 8 JRE
+      - name: install docker-ce
+        apt:
+          name: docker-ce
+          state: latest
           install_recommends: no
         become: yes
 
@@ -188,6 +206,24 @@
           chdir: /home/jenkins
         become: yes
         become_user: jenkins
+
+      # start the cAdvisor Docker container
+      # see: https://github.com/google/cadvisor
+      - name: start cAdvisor Docker container
+        docker_container:
+          name: cadvisor
+          image: google/cadvisor:latest
+          restart_policy: unless-stopped
+          volumes:
+            - /:/rootfs:ro
+            - /var/run:/var/run:rw
+            - /sys:/sys:ro
+            - /var/lib/docker/:/var/lib/docker:ro
+            - /dev/disk/:/dev/disk:ro
+          ports:
+            - 8080:8080
+          detach: yes
+        become: yes
 
       # display the jenkins SapMachine password
       - name: show Jenkins SapMachine password
