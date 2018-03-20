@@ -10,7 +10,7 @@ TEST_JDK=$5
 
 TEST_NATIVE_LIB=${JDK_LOCATION}/build/linux-x86_64-normal-server-release/images/test/${TEST_SUITE}/jtreg/native
 
-if [ -z "$TEST_JDK" ];
+if [ -z "$TEST_JDK" ]; then
     TEST_JDK=${JDK_LOCATION}/build/linux-x86_64-normal-server-release/images/jdk
 fi
 
