@@ -1,6 +1,9 @@
 pipeline {
     agent {
-        dockerfile { dir params.DOCKER_DIR }
+        dockerfile {
+            dir params.DOCKER_DIR
+            args '--ulimit nofile=90000:90000 --sysctl net.ipv4.ip_local_port_range="1024 65535" -h sapmachine.local'
+        }
     }
     stages {
         stage('Prepare') {
