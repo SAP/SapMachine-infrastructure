@@ -35,7 +35,7 @@ pipeline {
         }
         stage('Run jtreg') {
             steps {
-                sh "cd sapmachine && bash ../test-pipe/run_jtreg.sh ${env.WORKSPACE}/sapmachine ${env.WORKSPACE}/sapmachine/jtreg ${params.test_suite} \\"${params.test_groups}\\" || true"
+                sh "cd sapmachine && bash ../test-pipe/run_jtreg.sh ${env.WORKSPACE}/sapmachine ${env.WORKSPACE}/sapmachine/jtreg ${params.test_suite} \"${params.test_groups}\" || true"
             }
         }
         stage('Publish jtreg report') {
