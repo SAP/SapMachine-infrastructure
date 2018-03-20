@@ -6,9 +6,13 @@ JDK_LOCATION=$1
 JT_HOME=$2
 TEST_SUITE=$3
 TEST_GROUPS=$4
+TEST_JDK=$5
 
 TEST_NATIVE_LIB=${JDK_LOCATION}/build/linux-x86_64-normal-server-release/images/test/${TEST_SUITE}/jtreg/native
-TEST_JDK=${JDK_LOCATION}/build/linux-x86_64-normal-server-release/images/jdk
+
+if [ -z "$TEST_JDK" ];
+    TEST_JDK=${JDK_LOCATION}/build/linux-x86_64-normal-server-release/images/jdk
+fi
 
 NUM_CPUS=`grep -c ^processor /proc/cpuinfo`
 CONCURRENCY=`expr $NUM_CPUS / 2`
