@@ -69,17 +69,6 @@
         </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
-    <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
-      <triggers>
-        <org.jenkinsci.plugins.github.pullrequest.GitHubPRTrigger reference="../../../org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty/triggers/org.jenkinsci.plugins.github.pullrequest.GitHubPRTrigger"/>
-      </triggers>
-    </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
-    <hudson.model.ParametersDefinitionProperty>
-      <parameterDefinitions>
-        <hudson.model.StringParameterDefinition reference="../../../hudson.model.ParametersDefinitionProperty/parameterDefinitions/hudson.model.StringParameterDefinition"/>
-        <hudson.model.StringParameterDefinition reference="../../../hudson.model.ParametersDefinitionProperty/parameterDefinitions/hudson.model.StringParameterDefinition[2]"/>
-      </parameterDefinitions>
-    </hudson.model.ParametersDefinitionProperty>
     <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.29.0">
       <projectUrl>https://github.com/SAP/SapMachine/</projectUrl>
       <displayName></displayName>
