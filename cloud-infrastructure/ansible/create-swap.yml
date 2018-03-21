@@ -1,0 +1,58 @@
+# Copyright (c) 2001-2018 by SAP SE, Walldorf, Germany.
+# All rights reserved. Confidential and proprietary.
+
+# ansible 2.4
+---
+  - name: Setup Swap File
+    hosts: SapMachineMaster
+    gather_facts: yes
+    vars:
+      ansible_user: ubuntu
+      ansible_ssh_private_key_file: SapMachine.pem
+      swap_file_path: /swap
+      swap_file_size_kb: 67108864
+      swappiness: 1
+
+    tasks:
+
+      - name: create swap file
+        command: dd if=/dev/zero of={{ swap_file_path }} bs=1024 count={{ swap_file_size_kb }} creates="{{ swap_file_path }}"
+        become: yes
+
+      - name: set swap file permissions
+        file: path="{{ swap_file_path }}"
+              owner=root
+              group=root
+              mode=0600
+        become: yes
+
+      - name: "check swap file type"
+        command: file {{ swap_file_path }}
+        register: swapfile
+        become: yes
+
+      - name: make swap file
+        command: "sudo mkswap {{ swap_file_path }}"
+        when: swapfile.stdout.find('swap file') == -1
+        become: yes
+
+      - name: write swap entry in fstab
+        mount: name=none
+              src={{ swap_file_path }}
+              fstype=swap
+              opts=sw
+              passno=0
+              dump=0
+              state=present
+        become: yes
+
+      - name: mount swap
+        command: "swapon {{ swap_file_path }}"
+        when: ansible_swaptotal_mb < 1
+        become: yes
+
+      - name: set swappiness
+        sysctl:
+          name: vm.swappiness
+          value: "{{swappiness}}"
+        become: yes
