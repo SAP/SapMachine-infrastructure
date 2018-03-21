@@ -2,22 +2,52 @@
 
 set -x
 
-JDK_LOCATION=$1
-JT_HOME=$2
-TEST_SUITE=$3
-TEST_GROUPS=$4
-TEST_JDK=$5
+while getopts l:h:s:j: opt
+do
+   case $opt in
+       l) JDK_LOCATION=$OPTARG;;
+       h) JT_HOME=$OPTARG;;
+       j) TEST_JDK=$OPTARG;;
+       s) TEST_SUITE=$OPTARG;;
+   esac
+done
 
-TEST_NATIVE_LIB=${JDK_LOCATION}/build/linux-x86_64-normal-server-release/images/test/${TEST_SUITE}/jtreg/native
+shift $((OPTIND-1))
+TEST_GROUPS=$@
 
 if [ -z "$TEST_JDK" ]; then
     TEST_JDK=${JDK_LOCATION}/build/linux-x86_64-normal-server-release/images/jdk
 fi
 
+if [ -z "$JDK_LOCATION" ]; then
+    echo "JDK Location not specified (-l)" >&2
+    exit 1
+fi
+
+if [ -z "$JT_HOME" ]; then
+    echo "JavaTest Home not specified (-h)" >&2
+    exit 1
+fi
+
+if [ -z "$TEST_JDK" ]; then
+    echo "Test JDK not specified (-j)" >&2
+    exit 1
+fi
+
+if [ -z "$TEST_SUITE" ]; then
+    echo "Test Suite not specified (-s)" >&2
+    exit 1
+fi
+
+if [ -z "$TEST_GROUPS" ]; then
+    echo "Test Groups not specified" >&2
+    exit 1
+fi
+
+TEST_NATIVE_LIB=${JDK_LOCATION}/build/linux-x86_64-normal-server-release/images/test/${TEST_SUITE}/jtreg/native
 NUM_CPUS=`grep -c ^processor /proc/cpuinfo`
 CONCURRENCY=`expr $NUM_CPUS / 2`
 MAX_RAM_PERCENTAGE=`expr 25 / $CONCURRENCY`
-
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 chmod +x ${JT_HOME}/bin/jtreg
