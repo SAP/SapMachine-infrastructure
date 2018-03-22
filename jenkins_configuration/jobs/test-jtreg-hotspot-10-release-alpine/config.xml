@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version='1.1' encoding='UTF-8'?>
 <flow-definition plugin="workflow-job@2.17">
   <actions>
     <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.2.7"/>
@@ -17,31 +17,37 @@
           <name>test_suite</name>
           <description></description>
           <defaultValue>hotspot</defaultValue>
+          <trim>false</trim>
         </hudson.model.TextParameterDefinition>
         <hudson.model.TextParameterDefinition>
           <name>test_groups</name>
           <description></description>
           <defaultValue>:hotspot_tier1 </defaultValue>
+          <trim>false</trim>
         </hudson.model.TextParameterDefinition>
         <hudson.model.TextParameterDefinition>
           <name>GIT_TAG_NAME</name>
           <description></description>
           <defaultValue></defaultValue>
+          <trim>false</trim>
         </hudson.model.TextParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>JDK_BUILD_JOB</name>
           <description></description>
           <defaultValue>build-10-release-alpine</defaultValue>
+          <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>SAPMACHINE_GIT_BRANCH</name>
           <description></description>
           <defaultValue>sapmachine10-alpine</defaultValue>
+          <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.TextParameterDefinition>
           <name>DOCKER_DIR</name>
           <description></description>
           <defaultValue>test-pipe/docker/alpine_3_5_x86_64</defaultValue>
+          <trim>false</trim>
         </hudson.model.TextParameterDefinition>
         <hudson.plugins.copyartifact.BuildSelectorParameter plugin="copyartifact@1.39">
           <name>BUILD_SELECTOR</name>

@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version='1.1' encoding='UTF-8'?>
 <flow-definition plugin="workflow-job@2.17">
   <actions>
     <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.2.7"/>
@@ -17,6 +17,7 @@
           <name>GIT_TAG_NAME</name>
           <description></description>
           <defaultValue></defaultValue>
+          <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>DEPLOY</name>
@@ -27,11 +28,13 @@
           <name>DEPLOY_FOLDER</name>
           <description></description>
           <defaultValue>/var/pkg/apk/3.5/x86_64</defaultValue>
+          <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>KEY_DIR</name>
           <description></description>
           <defaultValue>/var/pkg/apk/keys</defaultValue>
+          <trim>false</trim>
         </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
