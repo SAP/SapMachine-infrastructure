@@ -24,7 +24,8 @@ Depends:
   $${xandsound:Depends},
   $${dlopenjre:Depends}
   $${shlibs:Depends},
-  $${misc:Depends}
-  libfontconfig1 (>= 2)
+  $${misc:Depends},
+  libfontconfig1,
+  libnss3 (>= 2:3.17.1)
 Description: SapMachine JRE
  The SapMachine Java Runtime Environment
