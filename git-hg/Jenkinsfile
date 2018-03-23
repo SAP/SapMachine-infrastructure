@@ -12,6 +12,7 @@ pipeline {
                       sh '''
                         $PWD/git-hg/update_repo.sh jdk/jdk
                         $PWD/git-hg/update_repo.sh jdk/jdk10
+                        $PWD/git-hg/update_repo.sh portola/portola
                         '''
                 }
             }
