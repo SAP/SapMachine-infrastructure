@@ -24,18 +24,24 @@
           state: latest
           install_recommends: no
         become: yes
+        tags:
+          - packages.apt-transport-https
 
       - name: add docker apt key
         apt_key:
           url: https://download.docker.com/linux/ubuntu/gpg
           state: present
         become: yes
+        tags:
+          - packages.docker_key
 
       - name: add docker repository
         apt_repository:
          repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable
          state: present
         become: yes
+        tags:
+          - packages.docker_repository
 
       # install docker, docker-compose, OpenJDK 8 JRE
       - name: install docker-ce
@@ -44,6 +50,8 @@
           state: latest
           install_recommends: no
         become: yes
+        tags:
+          - packages.docker-ce
 
       - name: install docker-compose
         apt:
@@ -51,6 +59,8 @@
           state: latest
           install_recommends: no
         become: yes
+        tags:
+          - packages.docker-compose
 
       - name: install OpenJDK 8 JRE
         apt:
@@ -58,6 +68,9 @@
          state: latest
          install_recommends: no
         become: yes
+        tags:
+          - packages.openjdk
+          - jenkins_slave
 
       # create sapmachine group and user
       # used for running the docker container
@@ -66,6 +79,8 @@
           name: sapmachine
           state: present
         become: yes
+        tags:
+          - groups.create_sapmachine
 
       - name: create sapmachine user
         user:
@@ -74,6 +89,8 @@
           group: sapmachine
           groups: sapmachine, docker
         become: yes
+        tags:
+          - users.create_sapmachine
 
       # create jenkins group and user
       # used for running the jenkins slave
@@ -82,6 +99,9 @@
           name: jenkins
           state: present
         become: yes
+        tags:
+          - jenkins_slave
+          - groups.create_jenkins
 
       - name: create jenkins user
         user:
@@ -89,6 +109,9 @@
           comment: "Jenkins user"
           groups: jenkins, docker
         become: yes
+        tags:
+          - jenkins_slave
+          - users.create_jenkins
 
       # copy the sapmachine master files, containing the docker container
       # and docker compose configuration
@@ -102,6 +125,8 @@
             - "--exclude=ansible"
         become: yes
         become_user: sapmachine
+        tags:
+          - sapmachine.copy
 
       # set the ownership of samachine_master to sapmachine:sapmachine
       - name: set ownership of sapmachine_master
@@ -111,6 +136,8 @@
           group: sapmachine
           recurse: yes
         become: yes
+        tags:
+          - sapmachine.set_ownership
 
       # create the jenkins slave home directory
       - name: create Jenkins Slave home directory
@@ -119,6 +146,9 @@
           state: directory
         become: yes
         become_user: jenkins
+        tags:
+          - jenkins_slave
+          - jenkins_slave.create_home
 
       # download the jenkins slave jar file
       - name: download Jenkins Slave jar
@@ -127,6 +157,9 @@
           dest: /home/jenkins/slave.jar
         become: yes
         become_user: jenkins
+        tags:
+          - jenkins_slave
+          - jenkins_slave.download_slave_jar
 
       # copy the script file to start the jenkins slave
       - name: copy Jenkins Slave files
@@ -135,6 +168,9 @@
           dest: /home/jenkins/start-slave.sh
         become: yes
         become_user: jenkins
+        tags:
+          - jenkins_slave
+          - jenkins_slave.copy_files
 
       # in case any docker container is running, stop them
       - name: stop all running docker container
@@ -142,12 +178,35 @@
         become: yes
         become_user: sapmachine
         failed_when: false
+        tags:
+          - docker.container_stop
+
+      # enable Docker IPv6
+      - name: install Docker Daemon configuration
+        copy:
+          src: daemon.json
+          dest: /etc/docker/daemon.json
+          owner: root
+          group: root
+          mode: 0644
+        become: yes
+        tags:
+          - docker.config_install
+
+      - name: reload the Docker Daemon configuration
+        systemd: state=restarted name=docker
+        become: yes
+        tags:
+          - docker.config_reload
 
       # stop all running java processes (jenkins slave)
       - name: stop all Java processes
         command: killall -9 java
         become: yes
         failed_when: false
+        tags:
+          - jenkins_slave
+          - java.kill_all
 
       # update docker images
       - name: remove all docker container
@@ -155,17 +214,23 @@
         become: yes
         become_user: sapmachine
         failed_when: false
+        tags:
+          - docker.container_remove
 
       - name: purge dangling docker images
         command: docker images purge
         become: yes
         become_user: sapmachine
+        tags:
+          - docker.images_purge
 
       - name: remove all docker images
         shell: docker rmi $(docker images -a -q)
         become: yes
         become_user: sapmachine
         failed_when: false
+        tags:
+          - docker.images_remove
 
       # start all docker container
       - name: run docker-compose
@@ -174,6 +239,8 @@
           chdir: /home/sapmachine/sapmachine_master
         become: yes
         become_user: sapmachine
+        tags:
+          - docker.compose
 
       # these files are no longer needed and contain sensitive data
       # remove them
@@ -183,6 +250,8 @@
           state: absent
         become: yes
         become_user: sapmachine
+        tags:
+          - sapmachine_master.remove
 
       # wait for the jenkins master server to come up
       # and read the SapMachine user password
@@ -191,6 +260,8 @@
         become: yes
         become_user: sapmachine
         register: sapmachine_pw
+        tags:
+          - jenkins_master.wait_for
 
       # read the jenkins slave secret for the jenkins slave
       - name: read Jenkins Slave secret
@@ -198,6 +269,9 @@
         become: yes
         become_user: jenkins
         register: slave_secret
+        tags:
+          - jenkins_slave
+          - jenkins_slave.secret
 
       # start the jenkins slave
       - name: start Jenkins Slave
@@ -206,6 +280,9 @@
           chdir: /home/jenkins
         become: yes
         become_user: jenkins
+        tags:
+          - jenkins_slave
+          - jenkins_slave.start
 
       # start the cAdvisor Docker container
       # see: https://github.com/google/cadvisor
@@ -224,6 +301,8 @@
             - 8080:8080
           detach: yes
         become: yes
+        tags:
+          docker.start_cAdvisor
 
       # display the jenkins SapMachine password
       - name: show Jenkins SapMachine password
