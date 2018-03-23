@@ -8,6 +8,11 @@ export GITHUB_TOKEN=$SAPMACHINE_PUBLISH_GITHUB_TOKEN
 export GITHUB_USER=$SAPMACHINE_PUBLISH_GITHUB_USER
 export GITHUB_REPO=$SAPMACHINE_PUBLISH_GITHUB_REPO_NAME
 
+PRE_RELEASE_OPT="--pre-release"
+if [ "$RELEASE" == true ]; then
+  PRE_RELEASE_OPT=""
+fi
+
 if [ -z $GIT_TAG_NAME ]; then
     if [ ! -d SapMachine ]; then
         git clone -b $SAPMACHINE_GIT_BRANCH "http://$GIT_USER:$GIT_PASSWORD@$SAPMACHINE_GIT_REPO" SapMachine
@@ -26,11 +31,11 @@ if [ -z $GIT_TAG_NAME ]; then
     git push --tags
     popd
     GIT_TAG_DESCRIPTION="${SAPMACHINE_ARCHIVE_NAME_PREFIX} Snapshot ${TIMESTAMP_LONG}"
-    github-release release -t $GIT_TAG_NAME --pre-release -d "$GIT_TAG_DESCRIPTION"
+    github-release release -t $GIT_TAG_NAME $PRE_RELEASE_OPT -d "$GIT_TAG_DESCRIPTION"
 
 else
     GIT_TAG_NAME=$(echo $GIT_TAG_NAME | sed 's/-alpine//')
-    github-release release -t $GIT_TAG_NAME --pre-release || true
+    github-release release -t $GIT_TAG_NAME $PRE_RELEASE_OPT || true
 fi
 
 # replace the '+' by '.' - github replaces it anyway, but we want to have it consistent for sha256sum
