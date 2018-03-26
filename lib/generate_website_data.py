@@ -89,11 +89,17 @@ def main(argv=None):
             if match is not None:
                 asset_image_type = match.group(1)
                 asset_os = match.group(3)
-                image_type = major + '-' + asset_image_type
                 tag = release['name']
+                image_type = major + '-' + asset_image_type
+
+                if release['prerelease'] is True:
+                    image_type += '-ea'
 
                 if image_type not in image_type_dict:
-                    image_type_dict[image_type] = str.format('SapMachine {0} {1}', major, asset_image_type)
+                    image_type_dict[image_type] = str.format('SapMachine {0} {1}{2}',
+                        major,
+                        asset_image_type,
+                        " (pre-release)" if release['prerelease'] else "")
 
                 if image_type in releases_dict:
                     releases = releases_dict[image_type]
@@ -119,6 +125,8 @@ def main(argv=None):
         json_root['assets'].update(releases_dict[release].transform())
 
     push_to_git(json.dumps(json_root, indent=4))
+    #with open('test.json', 'w') as test_out:
+    #    test_out.write(json.dumps(json_root, indent=4))
 
 if __name__ == "__main__":
     sys.exit(main())
