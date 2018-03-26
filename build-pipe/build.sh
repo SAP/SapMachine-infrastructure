@@ -14,7 +14,7 @@ cd SapMachine
 ALPINE_OPTS=""
 GTEST_RESULT_PATH="gtest_all_server"
 
-if [[ $SAPMACHINE_GIT_BRANCH == *-alpine ]] || [[ $GIT_TAG_NAME == *-alpine ]]; then 
+if [[ $SAPMACHINE_GIT_BRANCH == *-alpine ]] || [[ $GIT_TAG_NAME == *-alpine ]]; then
   ALPINE_OPTS="--disable-warnings-as-errors"
   GTEST_RESULT_PATH="gtest]all]server"
 fi
@@ -44,7 +44,7 @@ VENDOR_INFO="--with-vendor-name=\'SAP SE\' --with-vendor-url=http://sapmachine.o
 if [[ $GIT_TAG_NAME == sapmachine-* ]]; then
   read VERSION_MAJOR VERSION_MINOR SAPMACHINE_VERSION<<< $(echo $GIT_TAG_NAME \
   | sed -rn 's/sapmachine\-([0-9]+)\+([0-9]+)\-?([0-9]*)(\-alpine)?/ \1 \2 \3 /p')
-  
+
   if [ -z $SAPMACHINE_VERSION ]; then
     bash ./configure --with-boot-jdk=$BOOT_JDK --with-version-feature=$VERSION_MAJOR \
     --with-version-opt=sapmachine \
@@ -69,7 +69,7 @@ else
   --with-vendor-vm-bug-url='https://github.com/SAP/SapMachine/issues/new'
 fi
 
-make JOBS=12 product-bundles test-image
+make JOBS=12 product-bundles test-image docs-zip
 
 make run-test-gtest
 
@@ -80,10 +80,12 @@ cd "$(ls)"/bundles
 
 rm ../../../../sapmachine-jdk-* || true
 rm ../../../../sapmachine-jre-* || true
+rm ../../../../sapmachine-docs.zip || true
 
 ls
 
 cp sapmachine-jdk-*_bin.tar.gz ../../../..
 cp sapmachine-jre-*_bin.tar.gz ../../../..
+cp *-docs.zip ../../../../sapmachine-docs.zip
 
 cp ../test-results/$GTEST_RESULT_PATH/gtest.xml ../../../..

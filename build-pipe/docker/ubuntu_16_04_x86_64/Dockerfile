@@ -25,7 +25,9 @@ realpath \
 libfontconfig1-dev \
 bsdtar \
 ca-certificates \
-curl
+curl \
+pandoc \
+graphviz
 
 RUN mkdir -p /opt/openjdk-9-jdk
 ENV BOOT_JDK=/opt/openjdk-9-jdk

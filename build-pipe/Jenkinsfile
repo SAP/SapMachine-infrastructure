@@ -30,6 +30,7 @@ pipeline {
                 archive 'build.tar.gz'
                 sh "tar czf test.tar.gz SapMachine/test SapMachine/build/linux-x86_64-normal-server-release/bundles SapMachine/build/linux-x86_64-normal-server-release/images/test"
                 archive 'test.tar.gz'
+                archive 'sapmachine-docs.zip'
             }
         }
         stage('Run Required Tests') {
