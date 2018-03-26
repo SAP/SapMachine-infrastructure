@@ -131,7 +131,7 @@ def main(argv=None):
     for release in releases_dict:
         json_root['assets'].update(releases_dict[release].transform())
 
-    #push_to_git(json.dumps(json_root, indent=4))
+    push_to_git(json.dumps(json_root, indent=4))
     #with open('test.json', 'w') as test_out:
     #    test_out.write(json.dumps(json_root, indent=4))
 
