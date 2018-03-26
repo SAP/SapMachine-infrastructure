@@ -10,6 +10,12 @@ else
     JRE_EXT=''
 fi
 
+VERSION_PRE_OPT="-ea"
+
+if [ "$RELEASE" == true ]; then
+  VERSION_PRE_OPT=""
+fi
+
 # delete local sapmachine images
 set +e
 docker ps -a | grep sapmachine | awk '{print $1}' | xargs docker rm
@@ -17,7 +23,7 @@ docker images | grep sapmachine | awk '{print $3}' | xargs docker rmi -f
 set -e
 
 read VERSION_MAJOR VERSION_MINOR SAPMACHINE_VERSION VERSION_EXTENSION<<< $(echo $GIT_TAG_NAME | sed -rn 's/sapmachine\-([0-9]+)\+([0-9]+)\-?([0-9]*)(\-alpine)?/ \1 \2 \3 \4 /p')
-COMPARE_VERSION="OpenJDK Runtime Environment (build $VERSION_MAJOR-ea+$VERSION_MINOR-sapmachine-$SAPMACHINE_VERSION)"
+COMPARE_VERSION="OpenJDK Runtime Environment (build ${VERSION_MAJOR}${VERSION_PRE_OPT}${VERSION_MINOR}-sapmachine-${SAPMACHINE_VERSION})"
 
 TEST_VERSION=$(docker run "sapmachine/jdk${VERSION_MAJOR}:${VERSION_MAJOR}.${VERSION_MINOR}.${SAPMACHINE_VERSION}${JRE_EXT}" \
     java -version 2>&1 | grep 'OpenJDK Runtime Environment')
