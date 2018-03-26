@@ -64,6 +64,7 @@ def main(argv=None):
     repository = 'SapMachine'
     github_api = str.format('https://api.github.com/repos/{0}/{1}/releases', org, repository)
     asset_pattern = re.compile(utils.sapmachine_asset_pattern())
+    major_dict = {}
     releases_dict = {}
     image_type_dict = {}
     request = Request(github_api)
@@ -78,6 +79,12 @@ def main(argv=None):
         #    continue
 
         version, version_part, major, build_number, sap_build_number = utils.sapmachine_tag_components(release['name'])
+
+        if major in major_dict:
+            continue
+
+        major_dict[major] = True
+
         assets = release['assets']
 
         if version is None:
@@ -124,7 +131,7 @@ def main(argv=None):
     for release in releases_dict:
         json_root['assets'].update(releases_dict[release].transform())
 
-    push_to_git(json.dumps(json_root, indent=4))
+    #push_to_git(json.dumps(json_root, indent=4))
     #with open('test.json', 'w') as test_out:
     #    test_out.write(json.dumps(json_root, indent=4))
 
