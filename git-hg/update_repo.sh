@@ -17,7 +17,7 @@ echo $WORKSPACE
 cd $WORKSPACE
 
 if [ ! -d $REPO_PATH ]; then
-  git hg clone "http://$HG_HOST/$HG_PATH"
+  git hg clone "http://$HG_HOST/$HG_PATH" $REPO_PATH
   cd $REPO_PATH
   git remote add origin $GIT_REPO
   git checkout -b "$HG_PATH"
