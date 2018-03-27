@@ -10,9 +10,15 @@ fakeroot \
 make \
 gcc \
 g++ \
+autoconf \
 build-essential \
 openjdk-8-jdk \
-curl
+curl \
+zip \
+unzip \
+wget \
+realpath \
+file
 
 ARG uid=1000
 ARG gid=1000
