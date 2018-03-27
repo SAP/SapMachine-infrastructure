@@ -12,6 +12,7 @@ volumes:
   jenkins_log:
   pkg:
   slaves:
+  docs:
   ci_slave_ubuntu-jenkins:
   ci_slave_ubuntu-gpg:
   ci_slave_ubuntu-agent:
@@ -104,6 +105,25 @@ services:
       - HTTPS_METHOD=noredirect
       - LETSENCRYPT_HOST=dist.${URL_ROOT}
       - LETSENCRYPT_EMAIL=${SAPMACHINE_EMAIL}
+  docs_server:
+    build:
+      context: ./docs
+      dockerfile: Dockerfile
+    container_name: docs
+    restart:
+      unless-stopped
+    depens_on:
+      - nginxproxy
+      - nginxproxy_comp
+    networks:
+      - ext
+    volumes:
+      - docs:/var/docs
+    environment:
+      - VIRTUAL_PORT=80
+      - VIRTUAL_HOST=docs.${URL_ROOT}
+      - LETSENCRYPT_HOST=dist.${URL_ROOT}
+      - LETSENCRYPT_EMAIL=${SAPMACHINE_EMAIL}
   # redirects to the sapmachine github page
   redirect_server:
     build:
@@ -158,6 +178,7 @@ services:
         - ci_slave_ubuntu-agent:/home/jenkins/agent
         - pkg:/var/pkg
         - slaves:/var/slaves
+        - docs:/var/docs
       environment:
         - MASTER_URL=https://ci.${URL_ROOT}/computer/${UBUNTU_SLAVE_NAME}/slave-agent.jnlp
         - SLAVE_NAME=${UBUNTU_SLAVE_NAME}
