@@ -14,7 +14,17 @@ pipeline {
                     filter: "apidocs.zip",
                     target: env.WORKSPACE]);
                 }
-                sh 'unzip apidocs.zip'
+            }
+        }
+        stage('Extract Archive') {
+            steps {
+                script {
+                    def match = JOB_NAME =~ /\S*-([0-9]+)-\S*/
+                    env.MAJOR_VERSION = match[0][1]
+                }
+
+                sh "cd /var/docs/api/${env.MAJOR_VERSION} && rm -rf *"
+                sh "cd /var/docs/api/${env.MAJOR_VERSION} && unzip ${env.WORKSPACE}/apidocs.zip"
             }
         }
     }
