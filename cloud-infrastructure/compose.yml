@@ -75,6 +75,7 @@ services:
       - jenkins_log:/var/log/jenkins
       - pkg:/var/pkg
       - slaves:/var/slaves
+      - docs:/var/docs
     ports:
       # exposed port for jenkins slaves
       - 50000:50000

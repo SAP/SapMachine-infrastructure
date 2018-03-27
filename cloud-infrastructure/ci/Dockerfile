@@ -26,6 +26,9 @@ RUN mkdir -p /var/pkg/deb/amd64
 RUN mkdir -p /var/pkg/deb/keys
 RUN mkdir -p /var/pkg/apk/3.5/x86_64
 RUN mkdir -p /var/pkg/apk/keys
+RUN mkdir -p /var/docs/api/10
+RUN mkdir -p /var/docs/api/11
+RUN mkdir -p /var/docs/api/12
 
 COPY keys/debian/* /var/pkg/deb/keys/
 COPY keys/alpine/* /var/pkg/apk/keys/
@@ -35,6 +38,7 @@ COPY log.properties /var/jenkins_home/log.properties
 RUN chown -R jenkins:jenkins /var/log/jenkins
 RUN chown -R jenkins:jenkins /var/pkg
 RUN chown -R jenkins:jenkins /var/slaves
+RUN chown -R jenkins:jenkins /var/docs
 RUN chown jenkins:jenkins /usr/share/jenkins/ref/init.groovy.d/*.groovy
 RUN chown jenkins:jenkins /var/slaves/credentials.yml
 RUN chown jenkins:jenkins /usr/share/jenkins/read-sapmachine-pw.sh
@@ -50,4 +54,5 @@ ENV JAVA_ARGS="-Xms10g"
 VOLUME /var/pkg
 VOLUME /var/slaves
 VOLUME /var/log/jenkins
+VOLUME /var/docs
 WORKDIR /var/jenkins_home
