@@ -1,0 +1,21 @@
+pipeline {
+    agent {
+        node {
+            label 'agent-ubuntu-local'
+        }
+    }
+    stages {
+        stage('Copy Artifacts') {
+            steps {
+                script {
+                    step ([$class: 'CopyArtifact',
+                    selector: buildParameter("${BUILD_SELECTOR}"),
+                    projectName: JDK_BUILD_JOB,
+                    filter: "apidocs.zip",
+                    target: env.WORKSPACE]);
+                }
+                sh 'unzip apidocs.zip'
+            }
+        }
+    }
+}

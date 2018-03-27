@@ -80,12 +80,12 @@ cd "$(ls)"/bundles
 
 rm ../../../../sapmachine-jdk-* || true
 rm ../../../../sapmachine-jre-* || true
-rm ../../../../sapmachine-docs.zip || true
+rm ../../../../apidocs.zip || true
 
 ls
 
 cp sapmachine-jdk-*_bin.tar.gz ../../../..
 cp sapmachine-jre-*_bin.tar.gz ../../../..
-cp *-docs.zip ../../../../sapmachine-docs.zip
+cp *-docs.zip ../../../../apidocs.zip
 
 cp ../test-results/$GTEST_RESULT_PATH/gtest.xml ../../../..
