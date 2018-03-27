@@ -113,7 +113,7 @@ services:
     container_name: docs
     restart:
       unless-stopped
-    depens_on:
+    depends_on:
       - nginxproxy
       - nginxproxy_comp
     networks:
@@ -123,7 +123,7 @@ services:
     environment:
       - VIRTUAL_PORT=80
       - VIRTUAL_HOST=docs.${URL_ROOT}
-      - LETSENCRYPT_HOST=dist.${URL_ROOT}
+      - LETSENCRYPT_HOST=docs.${URL_ROOT}
       - LETSENCRYPT_EMAIL=${SAPMACHINE_EMAIL}
   # redirects to the sapmachine github page
   redirect_server:
