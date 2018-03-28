@@ -10,7 +10,7 @@ WORKDIR /
 
 RUN echo "http://dist.sapmachine.io/alpine/3.5" >> /etc/apk/repositories
 
-RUN apk update;     apk add sapmachine-11-jdk=11.5.0-r0;
+RUN apk update;     apk add sapmachine-11-jdk=11.6.0-r0;
 
 
 
