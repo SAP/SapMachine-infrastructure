@@ -65,8 +65,8 @@ def push_to_git(files):
         if not os.path.exists(os.path.dirname(location)):
             os.makedirs(os.path.dirname(location))
         with open(location, 'w+') as out:
-            utils.git_commit(local_repo, _file['commit_message'], [location])
             out.write(_file['data'])
+        utils.git_commit(local_repo, _file['commit_message'], [location])
 
     utils.git_push(local_repo)
     utils.remove_if_exists(local_repo)
