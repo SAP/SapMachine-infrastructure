@@ -11,11 +11,20 @@ import utils
 
 from urllib2 import urlopen, Request, quote
 from os.path import join
+from string import Template
 
 os_description = {
     'linux-x64': 'Linux x64 glibc',
     'linux-x64-musl': 'Linux x64 musl'
 }
+
+latest_template = '''---
+layout: default
+title: Latest SapMachine ${major} Release
+redirect_to:
+  - ${url}
+---
+'''
 
 class Releases:
     def __init__(self, image_type):
@@ -47,14 +56,19 @@ class Releases:
 
         return json_root
 
-def push_to_git(data):
+def push_to_git(files):
     local_repo = join(os.getcwd(), 'gh-pages')
     utils.git_clone('github.com/SAP/SapMachine.git', 'gh-pages', local_repo)
 
-    with open(join(local_repo, 'assets', 'data', 'sapmachine_releases.json'), 'w+') as sapmachine_releases:
-        sapmachine_releases.write(data)
+    for _file in files:
+        print _file
+        location = join(local_repo, _file['location'])
+        if not os.path.exists(os.path.dirname(location)):
+            os.makedirs(os.path.dirname(location))
+        with open(location, 'w+') as out:
+            utils.git_commit(local_repo, _file['commit_message'], [location])
+            out.write(_file['data'])
 
-    utils.git_commit(local_repo, 'Updated release data.', ['assets'])
     utils.git_push(local_repo)
     utils.remove_if_exists(local_repo)
 
@@ -67,28 +81,31 @@ def main(argv=None):
     major_dict = {}
     releases_dict = {}
     image_type_dict = {}
+    latest_link_dict = {}
     request = Request(github_api)
 
     if token is not None:
         request.add_header('Authorization', str.format('token {0}', token))
 
     response = json.loads(urlopen(request).read())
-    for release in response:
-        # switch back on when when 10 is released
-        # if release['prerelease'] is True:
-        #    continue
 
+    for release in response:
         version, version_part, major, build_number, sap_build_number = utils.sapmachine_tag_components(release['name'])
+
+        if version is None:
+            continue
 
         if major in major_dict:
             continue
 
         major_dict[major] = True
-
         assets = release['assets']
 
-        if version is None:
-            continue
+        if release['prerelease'] is not True and major not in latest_link_dict:
+            latest_link_dict[major] = Template(latest_template).substitute(
+                major=major,
+                url = release['html_url']
+            )
 
         for asset in assets:
             match = asset_pattern.match(asset['name'])
@@ -131,9 +148,22 @@ def main(argv=None):
     for release in releases_dict:
         json_root['assets'].update(releases_dict[release].transform())
 
-    push_to_git(json.dumps(json_root, indent=4))
-    #with open('test.json', 'w') as test_out:
-    #    test_out.write(json.dumps(json_root, indent=4))
+    files = [
+        {
+            'location': join('assets', 'data', 'sapmachine_releases.json'),
+            'data': json.dumps(json_root, indent=4),
+            'commit_message': 'Updated release data.'
+        }
+    ]
+
+    for major in latest_link_dict:
+        files.append({
+            'location': join('latest', major, 'index.md'),
+            'data': latest_link_dict[major],
+            'commit_message': str.format('Updated latest link for SapMachine {0}', major)
+        })
+
+    push_to_git(files)
 
 if __name__ == "__main__":
     sys.exit(main())
