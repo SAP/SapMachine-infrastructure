@@ -30,6 +30,7 @@ echo "LAST_JDK_TAG=$LAST_BUILD_JDK_TAG"
 BRANCHES=( "$BASE_BRANCH" "$BASE_BRANCH-alpine" )
 for base in "${BRANCHES[@]}"
 do
+  git checkout $base
   GREP_PATTERN="($base$)"
   set +e
   JDK_TAG_CONTAINING_BRANCH=$(git branch -a --contains tags/jdk-$MAJOR_VERSION+$LAST_BUILD_JDK_TAG 2> /dev/null | \
