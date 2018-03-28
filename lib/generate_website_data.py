@@ -61,7 +61,6 @@ def push_to_git(files):
     utils.git_clone('github.com/SAP/SapMachine.git', 'gh-pages', local_repo)
 
     for _file in files:
-        print _file
         location = join(local_repo, _file['location'])
         if not os.path.exists(os.path.dirname(location)):
             os.makedirs(os.path.dirname(location))
