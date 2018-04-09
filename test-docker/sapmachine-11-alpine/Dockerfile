@@ -10,7 +10,7 @@ WORKDIR /
 
 RUN echo "http://dist.sapmachine.io/alpine/3.5" >> /etc/apk/repositories
 
-RUN apk update;     apk add sapmachine-11-jdk=11.6.0-r0;
+RUN apk update;     apk add sapmachine-11-jdk=11.7.0-r0;
 
 RUN groupadd -g 1002 jenkins; useradd -ms /bin/bash jenkins -u 1002 -g 1002
 
