@@ -135,3 +135,5 @@ cd ansible
 ansible-playbook -i hosts setup-sapmachine.yml
 ```
 
+The ``` setup-sapmachine.yml``` playbook can also be used to update the SapMachine master instance. All Docker images will be updated to the latest version.
+
