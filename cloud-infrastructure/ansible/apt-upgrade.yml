@@ -1,0 +1,32 @@
+# Copyright (c) 2001-2018 by SAP SE, Walldorf, Germany.
+# All rights reserved. Confidential and proprietary.
+
+# ansible 2.4
+---
+  - name: Update Packages
+    hosts: SapMachineMaster
+    gather_facts: false
+    vars:
+      ansible_user: ubuntu
+      ansible_ssh_private_key_file: SapMachine.pem
+
+    tasks:
+
+      - name: Run "apt-get update"
+        apt:
+          update_cache: yes
+        become: yes
+
+      - name: install aptitude
+        apt:
+          name: aptitude
+          state: latest
+          install_recommends: no
+        become: yes
+
+      - name: Upgrade all packages to the latest version
+        apt:
+          name: "*"
+          state: latest
+          install_recommends: no
+        become: yes
