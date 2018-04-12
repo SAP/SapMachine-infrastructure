@@ -137,3 +137,9 @@ ansible-playbook -i hosts setup-sapmachine.yml
 
 The ``` setup-sapmachine.yml``` playbook can also be used to update the SapMachine master instance. All Docker images will be updated to the latest version.
 
+There may be situations, where the Jenkins slave fails to start or needs to be restarter. Use the following command to restart the slave:
+
+```
+ansible-playbook -i hosts setup-sapmachine.yml --tags "jenkins_slave"
+```
+
