@@ -2,7 +2,7 @@
 <flow-definition plugin="workflow-job@2.18">
   <actions>
     <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.2.8"/>
-    <io.jenkins.blueocean.service.embedded.BlueOceanUrlAction plugin="blueocean-rest-impl@1.4.2">
+    <io.jenkins.blueocean.service.embedded.BlueOceanUrlAction plugin="blueocean-rest-impl@1.5.0">
       <blueOceanUrlObject class="io.jenkins.blueocean.service.embedded.BlueOceanUrlObjectImpl">
         <mappedUrl>blue/organizations/jenkins/build-10-snapshot</mappedUrl>
       </blueOceanUrlObject>
