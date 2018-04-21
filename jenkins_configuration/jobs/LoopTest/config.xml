@@ -1,0 +1,48 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@2.19">
+  <actions>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.2.9"/>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.2.9">
+      <jobProperties/>
+      <triggers/>
+      <parameters/>
+    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
+  </actions>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties/>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.48">
+    <script>pipeline {
+    agent any
+    
+    stages {
+        stage(&apos;Test&apos;) {
+            environment {
+              GITHUB_API_ACCESS_TOKEN = credentials(&apos;SapMachine-Github-Token&apos;)
+            }
+            steps {
+                sh &apos;rm -rf infrastructure&apos;
+                sh &apos;git clone https://github.com/SAP/SapMachine-infrastructure.git infrastructure&apos;
+                sh &apos;export SAPMACHINE_TAGS=$(python infrastructure/lib/list_tags.py -m 10)&apos;
+                script {
+                    def input = System.getenv(&quot;SAPMACHINE_TAGS&quot;)
+                    def list = input.tokenize()
+
+                    list.each { item -&gt;
+                        echo &quot;Hello ${item}&quot;
+                    }
+                }
+            }
+        }
+    }
+     post {
+        always {
+            cleanWs()
+        }
+    }
+}</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
+</flow-definition>
