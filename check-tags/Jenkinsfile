@@ -17,9 +17,9 @@ pipeline {
                     [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
                     ]) {
                     sh '''
-                    check-tags/check_tag_and_create_pr.sh 10
+                    check-tags/check_tag_and_create_pr.sh 10.0.1
                     check-tags/check_tag_and_create_pr.sh 11
-                    check-tags/check_tag_and_build_release.sh 10
+                    check-tags/check_tag_and_build_release.sh 10.0.1
                     check-tags/check_tag_and_build_release.sh 11
                     '''
                 }
