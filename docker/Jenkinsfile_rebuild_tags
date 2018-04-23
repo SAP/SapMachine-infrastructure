@@ -11,7 +11,7 @@ pipeline {
                     def tag_list = sh(
                       script: 'python lib/list_tags.py -m ${MAJOR}',
                       returnStdout: true
-                    ).trim().tokenize()
+                    ).trim().tokenize(' ')
 
                     def jobNameDockerUbuntu = 'build-' + MAJOR + '-docker'
                     def jobNameDockerAlpine = 'build-' + MAJOR + '-docker-alpine'
@@ -23,8 +23,9 @@ pipeline {
                             wait: false,
                             parameters: [
                                 string(name: 'GIT_TAG_NAME', value: tag),
-                                [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: false]
-                                [$class: 'BooleanParameterValue', name: 'PUBLISH', value: true]
+                                [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: false],
+                                [$class: 'BooleanParameterValue', name: 'PUBLISH', value: true],
+                                [$class: 'BooleanParameterValue', name: 'RELEASE', value: true]
                             ]
                         )
 
@@ -34,8 +35,9 @@ pipeline {
                             wait: false,
                             parameters: [
                                 string(name: 'GIT_TAG_NAME', value: tag),
-                                [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: false]
-                                [$class: 'BooleanParameterValue', name: 'PUBLISH', value: true]
+                                [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: false],
+                                [$class: 'BooleanParameterValue', name: 'PUBLISH', value: true],
+                                [$class: 'BooleanParameterValue', name: 'RELEASE', value: true]
                             ]
                         )
                     }
