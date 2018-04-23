@@ -4,7 +4,7 @@ set -ex
 MAJOR_VERSION=$1
 
 PR_BASE="sapmachine"
-if [ $MAJOR_VERSION == 10 ]; then
+if [[ $MAJOR_VERSION == 10* ]] ; then
   PR_BASE="sapmachine10"
 fi
 
