@@ -1,0 +1,51 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Test') {
+            environment {
+              GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
+            }
+            steps {
+                script {
+                    def tag_list = sh(
+                      script: 'python lib/list_tags.py -m ${MAJOR}',
+                      returnStdout: true
+                    ).trim().tokenize()
+
+                    def jobNameDockerUbuntu = 'build-' + MAJOR + '-docker'
+                    def jobNameDockerAlpine = 'build-' + MAJOR + '-docker-alpine'
+
+                    tag_list.each { tag ->
+                        build(
+                            job: jobNameDockerUbuntu,
+                            propagate: false,
+                            wait: false,
+                            parameters: [
+                                string(name: 'GIT_TAG_NAME', value: tag),
+                                [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: false]
+                                [$class: 'BooleanParameterValue', name: 'PUBLISH', value: true]
+                            ]
+                        )
+
+                        build(
+                            job: jobNameDockerAlpine,
+                            propagate: false,
+                            wait: false,
+                            parameters: [
+                                string(name: 'GIT_TAG_NAME', value: tag),
+                                [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: false]
+                                [$class: 'BooleanParameterValue', name: 'PUBLISH', value: true]
+                            ]
+                        )
+                    }
+                }
+            }
+        }
+    }
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}
