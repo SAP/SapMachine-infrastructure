@@ -31,10 +31,10 @@ if [[ ! -z $GIT_TAG_NAME ]]; then
   git checkout $GIT_TAG_NAME
 fi
 
-VERSION_PRE_OPT="--with-version-pre=ea"
+VERSION_PRE_OPT="ea"
 
 if [ "$RELEASE" == true ]; then
-  VERSION_PRE_OPT=""
+  VERSION_PRE_OPT=''
 fi
 
 VENDOR_INFO="--with-vendor-name=\'SAP SE\' --with-vendor-url=https://sapmachine.io \
@@ -43,19 +43,19 @@ VENDOR_INFO="--with-vendor-name=\'SAP SE\' --with-vendor-url=https://sapmachine.
 
 if [[ $GIT_TAG_NAME == sapmachine-* ]]; then
   read VERSION_MAJOR VERSION_MINOR SAPMACHINE_VERSION<<< $(echo $GIT_TAG_NAME \
-  | sed -rn 's/sapmachine\-([0-9]+)\+([0-9]+)\-?([0-9]*)(\-alpine)?/ \1 \2 \3 /p')
+  | sed -rn 's/sapmachine\-([0-9]+)(\.[0-9]\.[0-9])?\+([0-9]+)\-?([0-9]*)(\-alpine)?/ \1 \3 \4 /p')
 
   if [ -z $SAPMACHINE_VERSION ]; then
     bash ./configure --with-boot-jdk=$BOOT_JDK --with-version-feature=$VERSION_MAJOR \
     --with-version-opt=sapmachine \
-    $VERSION_PRE_OPT --with-version-build=$VERSION_MINOR $ALPINE_OPTS \
+    --with-version-pre=$VERSION_PRE_OPT --with-version-build=$VERSION_MINOR $ALPINE_OPTS \
     --with-vendor-name='SAP SE' --with-vendor-url='https://sapmachine.io' \
     --with-vendor-bug-url='https://github.com/SAP/SapMachine/issues/new' \
     --with-vendor-vm-bug-url='https://github.com/SAP/SapMachine/issues/new'
   else
     bash ./configure --with-boot-jdk=$BOOT_JDK --with-vendor-name='SAP SE' --with-version-feature=$VERSION_MAJOR \
     --with-version-opt=sapmachine-$SAPMACHINE_VERSION \
-    $VERSION_PRE_OPT --with-version-build=$VERSION_MINOR $ALPINE_OPTS \
+    --with-version-pre=$VERSION_PRE_OPT --with-version-build=$VERSION_MINOR $ALPINE_OPTS \
     --with-vendor-name='SAP SE' --with-vendor-url='https://sapmachine.io' \
     --with-vendor-bug-url='https://github.com/SAP/SapMachine/issues/new' \
     --with-vendor-vm-bug-url='https://github.com/SAP/SapMachine/issues/new'
