@@ -24,7 +24,7 @@ pipeline {
                             tag += '-' + OS_EXT
                         }
 
-                        println 'building tag ${tag}'
+                        println 'building tag ' + tag
 
                         build(
                             job: job_name,
