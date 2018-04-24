@@ -13,9 +13,19 @@ pipeline {
                       returnStdout: true
                     ).trim().tokenize(' ')
 
-                    def job_name = 'build-' + MAJOR + '-docker' + OS_EXT
+                    def job_name = 'build-' + MAJOR + '-docker'
+
+                    if (OS_EXT?.trim()) {
+                        job_name += '-' + OS_EXT
+                    }
 
                     tag_list.each { tag ->
+                        if (OS_EXT?.trim()) {
+                            tag += '-' + OS_EXT
+                        }
+
+                        println 'building tag ${tag}'
+
                         build(
                             job: job_name,
                             propagate: false,
