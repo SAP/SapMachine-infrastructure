@@ -13,7 +13,7 @@ pipeline {
                       returnStdout: true
                     ).trim().tokenize(' ')
 
-                    def job_name = 'build-' + MAJOR + '-docker' + ${OS_EXT}
+                    def job_name = 'build-' + MAJOR + '-docker' + OS_EXT
 
                     tag_list.each { tag ->
                         build(
