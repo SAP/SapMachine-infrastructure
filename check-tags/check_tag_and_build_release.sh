@@ -5,7 +5,7 @@ MAJOR_VERSION=$1
 
 BASE_BRANCH="sapmachine"
 GREP_PATTERN="(sapmachine$)" 
-if [ $MAJOR_VERSION == 10* ]; then
+if [[ $MAJOR_VERSION == 10* ]]; then
   BASE_BRANCH="sapmachine10"
   GREP_PATTERN="(sapmachine10)"
 fi
