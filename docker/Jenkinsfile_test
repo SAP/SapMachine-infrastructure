@@ -1,0 +1,74 @@
+pipeline {
+    agent none
+    stages {
+        stage('Run Tests') {
+            agent any
+            environment {
+                SAPMACHINE_GIT_REPO = 'github.com/SAP/SapMachine.git'
+            }
+            steps {
+                sh 'bash test-pipe/test_jtreg_prepare.sh'
+                sh 'mkdir docker_to_test'
+
+                script {
+                    step ([$class: 'CopyArtifact',
+                    selector: buildParameter("${BUILD_SELECTOR}"),
+                    projectName: DOCKER_BUILD_JOB,
+                    filter: "build.tar.gz",
+                    target: 'sapmachine']);
+                }
+
+                script {
+                    step ([$class: 'CopyArtifact',
+                    selector: buildParameter("${BUILD_SELECTOR}"),
+                    projectName: DOCKER_BUILD_JOB,
+                    filter: "Dockerfile",
+                    target: 'docker_to_test']);
+                }
+
+                script {
+                    step ([$class: 'CopyArtifact',
+                    projectName: 'jtreg',
+                    filter: "jtreg.zip",
+                    target: 'sapmachine']);
+                }
+
+                script {
+                    def image_name = 'sapmachine:' + JOB_NAME + '_' + GIT_TAG_NAME
+                    def image = docker.build("sapmachine:docker_test", 'docker_to_test')
+                    image.inside('--ulimit nofile=90000:90000 --sysctl net.ipv4.ip_local_port_range="1024 65535" -h sapmachine.local --tmpfs /tmp:exec,mode=1777') {
+                        sh 'cd sapmachine && tar xzf build.tar.gz'
+                        sh 'cd sapmachine && unzip jtreg.zip'
+                        sh "cd sapmachine && bash ../test-pipe/run_jtreg.sh -l ${env.WORKSPACE}/sapmachine -h ${env.WORKSPACE}/sapmachine/jtreg -j ${params.test_jdk} -s ${params.test_suite} ${params.test_groups} || true"
+                        sh '''
+                            cd sapmachine
+                            mkdir test_report
+                            mv JTreport test_report
+                            mv JTwork test_report
+                        '''
+
+                        sh "python lib/jtreg_to_junit.py sapmachine/test_report/JTreport/text/summary.txt junit_report.xml \"${params.test_suite}/${params.test_groups}\""
+                    }
+                }
+
+                publishHTML target: [
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: false,
+                    keepAll: true,
+                    reportDir: 'sapmachine/test_report',
+                    reportFiles: 'JTreport/index.html',
+                    reportName: 'JT Report'
+                ]
+
+                junit 'junit_report.xml'
+
+                archive 'JTwork/**/hs_err_pid*.log'
+            }
+            post {
+                always {
+                    cleanWs()
+                }
+            }
+        }
+    }
+}

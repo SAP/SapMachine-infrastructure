@@ -51,12 +51,14 @@ def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('-t', '--tag', help='the GIT tag to build the image from', metavar='GIT_TAG', required=True)
     parser.add_argument('-i', '--imagetype', help='sets the image type', choices=['jdk', 'jre', 'test'], required=True)
+    parser.add_argument('-p', '--publish', help='publish the image', action='store_true', default=False)
     parser.add_argument('--alpine', help='build Alpine Linux image', action='store_true', default=False)
     parser.add_argument('--latest', help='tag image as latest', action='store_true', default=False)
     args = parser.parse_args()
 
     tag = args.tag
     image_type = args.imagetype
+    publish = args.publish
     build_alpine = args.alpine
     latest = args.latest
 
@@ -92,9 +94,9 @@ def main(argv=None):
             build_number,
             sap_build_number)
 
-    docker_work = join(os.getcwd(), 'docker_work')
+    docker_work = join(os.getcwd(), 'docker_work', image_type)
 
-    utils.remove_if_exists(docker_work)
+    utils.remove_if_exists(join(os.getcwd(), 'docker_work'))
     os.makedirs(docker_work)
 
     if build_alpine:
@@ -127,7 +129,7 @@ def main(argv=None):
         else:
             utils.run_cmd(['docker', 'build', '-t', docker_tag, docker_work])
 
-        if 'DOCKER_PASSWORD' in os.environ:
+        if publish and 'DOCKER_PASSWORD' in os.environ:
             docker_password = os.environ['DOCKER_PASSWORD']
             utils.run_cmd(['docker', 'login', '-u', docker_user, '-p', docker_password])
             utils.run_cmd(['docker', 'push', str.format('{0}/jdk{1}', docker_user, major)])
