@@ -89,9 +89,9 @@ def main(argv=None):
     response = json.loads(urlopen(request).read())
 
     for release in response:
-        version, version_part, major, build_number, sap_build_number = utils.sapmachine_tag_components(release['name'])
+        version, version_part, major, build_number, sap_build_number, os_ext = utils.sapmachine_tag_components(release['name'])
 
-        if version is None:
+        if version is None or os_ext:
             continue
 
         if major in major_dict:

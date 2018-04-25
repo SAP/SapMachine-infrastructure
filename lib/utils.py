@@ -168,26 +168,31 @@ def fetch_tag(tag, platform, token=None):
     return jdk_url, jre_url
 
 def sapmachine_tag_pattern():
-    return '(sapmachine)-(((([0-9]+)((\.([0-9]+))*)?)\+([0-9]+))(-([0-9]+))?)'
+    return '(sapmachine)-(((([0-9]+)((\.([0-9]+))*)?)\+([0-9]+))(-([0-9]+))?)(\-((\S)+))?'
 
 def sapmachine_tag_components(tag):
     pattern = re.compile(sapmachine_tag_pattern())
     match = pattern.match(tag)
 
     if match is None:
-        return None, None, None, None, None
+        return None, None, None, None, None, None
 
     version = match.group(2)
     version_part = match.group(4)
     major = match.group(5)
     build_number = match.group(9)
 
-    if len(match.groups()) == 11:
+    if len(match.groups()) >= 11:
         sap_build_number = match.group(11)
     else:
         sap_build_number = ''
 
-    return version, version_part, major, build_number, sap_build_number
+    if len(match.groups()) >= 13:
+        os_ext = match.group(13)
+    else:
+        os_ext = ''
+
+    return version, version_part, major, build_number, sap_build_number, os_ext
 
 def get_github_api_accesstoken():
     key = 'GITHUB_API_ACCESS_TOKEN'

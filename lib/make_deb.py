@@ -64,7 +64,7 @@ def gather_licenses(src_dir):
 
     return '\n'.join([license for license in licenses])
 
-def generate_configuration(templates_dir, major, target_dir, bin_dir, src_dir, download_url):
+def generate_configuration(templates_dir, major, version, target_dir, bin_dir, src_dir, download_url):
     tools = [f for f in listdir(bin_dir) if isfile(join(bin_dir, f))]
     now = datetime.datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S +0000')
 
@@ -74,7 +74,7 @@ def generate_configuration(templates_dir, major, target_dir, bin_dir, src_dir, d
 
     with open(join(templates_dir, 'install'), 'r') as install_template:
         with open(join(target_dir, 'install'), 'w+') as install_out:
-            install_out.write(Template(install_template.read()).substitute(major=major))
+            install_out.write(Template(install_template.read()).substitute(major=major, version=version))
 
     with open(join(templates_dir, 'postinst'), 'r') as postinst_template:
         with open(join(target_dir, 'postinst'), 'w+') as postinst_out:
@@ -104,7 +104,7 @@ def main(argv=None):
 
     cwd = os.getcwd()
     work_dir = join(cwd, 'deb_work')
-    version, version_part, major, build_number, sap_build_number = utils.sapmachine_tag_components(tag)
+    version, version_part, major, build_number, sap_build_number, os_ext = utils.sapmachine_tag_components(tag)
     version = version.replace('-', '.')
     jdk_name = str.format('sapmachine-{0}-jdk-{1}', major, version)
     jre_name = str.format('sapmachine-{0}-jre-{1}', major, version)
@@ -141,16 +141,18 @@ def main(argv=None):
     generate_configuration(
         templates_dir=join(templates_dir, 'jre'),
         major=major,
+        version=version_part,
         target_dir=join(jre_dir, 'debian'),
-        bin_dir=join(jre_dir, 'sapmachine-jre-' + major, 'bin'),
+        bin_dir=join(jre_dir, 'sapmachine-jre-' + version_part, 'bin'),
         src_dir=src_dir,
         download_url=jre_url)
 
     generate_configuration(
         templates_dir=join(templates_dir, 'jdk'),
         major=major,
+        version=version_part,
         target_dir=join(jdk_dir, 'debian'),
-        bin_dir=join(jdk_dir, 'sapmachine-jdk-' + major, 'bin'),
+        bin_dir=join(jdk_dir, 'sapmachine-jdk-' + version_part, 'bin'),
         src_dir=src_dir,
         download_url=jdk_url)
 

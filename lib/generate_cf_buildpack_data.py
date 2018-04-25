@@ -39,10 +39,10 @@ def main(argv=None):
         if release['prerelease'] is True:
             continue
 
-        version, version_part, major, build_number, sap_build_number = utils.sapmachine_tag_components(release['name'])
+        version, version_part, major, build_number, sap_build_number, os_ext = utils.sapmachine_tag_components(release['name'])
         assets = release['assets']
 
-        if version is None:
+        if version is None or os_ext:
             continue
 
         if args.major == major:
