@@ -1,8 +1,8 @@
 <?xml version='1.1' encoding='UTF-8'?>
-<flow-definition plugin="workflow-job@2.17">
+<flow-definition plugin="workflow-job@2.19">
   <actions>
-    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.2.7"/>
-    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.2.7">
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.2.9"/>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.2.9">
       <jobProperties/>
       <triggers/>
       <parameters/>
@@ -16,7 +16,7 @@
         <hudson.model.StringParameterDefinition>
           <name>GIT_TAG_NAME</name>
           <description></description>
-          <defaultValue>sapmachine-10+43-0-alpine</defaultValue>
+          <defaultValue>sapmachine-10.0.1+10-0-alpine</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
@@ -76,6 +76,11 @@
           <description></description>
           <defaultValue>true</defaultValue>
         </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>RELEASE</name>
+          <description></description>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
     <jenkins.model.BuildDiscarderProperty>
@@ -86,13 +91,13 @@
         <artifactNumToKeep>1</artifactNumToKeep>
       </strategy>
     </jenkins.model.BuildDiscarderProperty>
-    <hudson.plugins.copyartifact.CopyArtifactPermissionProperty plugin="copyartifact@1.39">
+    <hudson.plugins.copyartifact.CopyArtifactPermissionProperty plugin="copyartifact@1.39.1">
       <projectNameList>
         <string>*</string>
       </projectNameList>
     </hudson.plugins.copyartifact.CopyArtifactPermissionProperty>
   </properties>
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@2.45">
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@2.48">
     <scm class="hudson.plugins.git.GitSCM" plugin="git@3.8.0">
       <configVersion>2</configVersion>
       <userRemoteConfigs>

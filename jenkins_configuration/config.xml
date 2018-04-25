@@ -4,7 +4,7 @@
     <string>GitHubHookRegisterProblemMonitor</string>
     <string>hudsonHomeIsFull</string>
   </disabledAdministrativeMonitors>
-  <version>2.107.1</version>
+  <version>2.107.2</version>
   <installState class="jenkins.install.InstallState$5">
     <isSetupComplete>true</isSetupComplete>
     <name>RESTART</name>
@@ -590,6 +590,7 @@
           <jobNames>
             <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
             <string>build-10-docker</string>
+            <string>rebuild-docker-10</string>
             <string>test-jtreg-hotspot-10-docker</string>
             <string>test-jtreg-jdk-10-docker</string>
             <string>test-jtreg-langtools-10-docker</string>
@@ -608,6 +609,7 @@
           <jobNames>
             <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
             <string>build-10-docker-alpine</string>
+            <string>rebuild-docker-10-alpine</string>
             <string>test-jtreg-hotspot-10-docker-alpine</string>
             <string>test-jtreg-jdk-10-docker-alpine</string>
             <string>test-jtreg-langtools-10-docker-alpine</string>
