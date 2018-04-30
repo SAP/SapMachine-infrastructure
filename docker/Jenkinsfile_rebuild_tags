@@ -19,7 +19,13 @@ pipeline {
                         job_name += '-' + OS_EXT
                     }
 
+                    def i = 0
+                    def publish_latest = false
+
                     tag_list.each { tag ->
+                        publish_latest = (i == 0)
+                        i += 1
+
                         if (OS_EXT?.trim()) {
                             tag += '-' + OS_EXT
                         }
@@ -34,7 +40,7 @@ pipeline {
                                 string(name: 'GIT_TAG_NAME', value: tag),
                                 [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: false],
                                 [$class: 'BooleanParameterValue', name: 'PUBLISH', value: true],
-                                [$class: 'BooleanParameterValue', name: 'RELEASE', value: true]
+                                [$class: 'BooleanParameterValue', name: 'PUBLISH_LATEST', value: publish_latest]
                             ]
                         )
                     }
