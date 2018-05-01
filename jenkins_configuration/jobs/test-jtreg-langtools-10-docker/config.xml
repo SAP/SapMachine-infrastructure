@@ -54,6 +54,15 @@
           <defaultValue>/opt/sapmachine-10-jdk/</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
+        <hudson.plugins.copyartifact.BuildSelectorParameter plugin="copyartifact@1.39.1">
+          <name>BUILD_SELECTOR</name>
+          <description></description>
+          <defaultSelector class="hudson.plugins.copyartifact.TriggeredBuildSelector">
+            <fallbackToLastSuccessful>true</fallbackToLastSuccessful>
+            <upstreamFilterStrategy>UseGlobalSetting</upstreamFilterStrategy>
+            <allowUpstreamDependencies>false</allowUpstreamDependencies>
+          </defaultSelector>
+        </hudson.plugins.copyartifact.BuildSelectorParameter>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>
