@@ -170,9 +170,13 @@ def fetch_tag(tag, platform, token=None):
 def sapmachine_tag_pattern():
     return '(sapmachine)-(((([0-9]+)((\.([0-9]+))*)?)\+([0-9]+))(-([0-9]+))?)(\-((\S)+))?'
 
-def sapmachine_tag_components(tag):
+def sapmachine_tag_components(tag, multiline=False):
     pattern = re.compile(sapmachine_tag_pattern())
-    match = pattern.match(tag)
+
+    if multiline:
+        match = re.search(pattern, tag)
+    else:
+        match = pattern.match(tag)
 
     if match is None:
         return None, None, None, None, None, None
@@ -193,6 +197,33 @@ def sapmachine_tag_components(tag):
         os_ext = ''
 
     return version, version_part, major, build_number, sap_build_number, os_ext
+
+def sapmachine_version_pattern():
+    return '(((([0-9]+)((\.([0-9]+))*)?)(-ea)?\+([0-9]+))-sapmachine(-([0-9]+))?)'
+
+def sapmachine_version_components(version_in, multiline=False):
+    pattern = re.compile(sapmachine_version_pattern())
+
+    if multiline:
+        match = re.search(pattern, version_in)
+    else:
+        match = pattern.match(version_in)
+
+    if match is None:
+        return None, None, None, None, None
+
+    version = match.group(2)
+    version_part = match.group(3)
+    major = match.group(4)
+    build_number = match.group(9)
+
+    if len(match.groups()) >= 11:
+        sap_build_number = match.group(11)
+        version += '-' + sap_build_number
+    else:
+        sap_build_number = ''
+
+    return version, version_part, major, build_number, sap_build_number
 
 def get_github_api_accesstoken():
     key = 'GITHUB_API_ACCESS_TOKEN'

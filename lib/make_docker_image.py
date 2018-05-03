@@ -129,6 +129,17 @@ def main(argv=None):
         else:
             utils.run_cmd(['docker', 'build', '-t', docker_tag, docker_work])
 
+
+        retcode, out, err = utils.run_cmd(['docker', 'run', docker_tag, 'java', '-version'], std=True)
+
+        if retcode != 0:
+            raise Exception(str.format('Failed to run Docker image: {0}', err))
+
+        version_2, version_part_2, major_2, build_number_2, sap_build_number_2 = utils.sapmachine_version_components(err, multiline=True)
+
+        if version_part != version_part_2 or build_number != build_number_2 or sap_build_number != sap_build_number_2:
+           raise Exception(str.format('Invalid version found in Docker image:\n{0}', err))
+
         if publish and 'DOCKER_PASSWORD' in os.environ:
             docker_password = os.environ['DOCKER_PASSWORD']
             utils.run_cmd(['docker', 'login', '-u', docker_user, '-p', docker_password])
