@@ -130,7 +130,7 @@ def main(argv=None):
             utils.run_cmd(['docker', 'build', '-t', docker_tag, docker_work])
 
 
-        retcode, out, err = utils.run_cmd(['docker', 'run', docker_tag, 'java', '-version'], std=True)
+        retcode, out, err = utils.run_cmd(['docker', 'run', docker_tag, 'java', '-version'], throw=False, std=True)
 
         if retcode != 0:
             raise Exception(str.format('Failed to run Docker image: {0}', err))
@@ -139,6 +139,16 @@ def main(argv=None):
 
         if version_part != version_part_2 or build_number != build_number_2 or sap_build_number != sap_build_number_2:
            raise Exception(str.format('Invalid version found in Docker image:\n{0}', err))
+
+
+        retcode, out, err = utils.run_cmd(['docker', 'run', docker_tag, 'which', 'javac'], throw=False, std=True)
+
+        if image_type == 'jdk':
+            if retcode != 0 or not out:
+                raise Exception('Image type is not JDK')
+        else:
+            if retcode == 0:
+                raise Exception('Image type is not JRE')
 
         if publish and 'DOCKER_PASSWORD' in os.environ:
             docker_password = os.environ['DOCKER_PASSWORD']
