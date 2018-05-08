@@ -109,10 +109,18 @@ def main(argv=None):
 
     if 'DOCKER_USER' in os.environ and image_type != 'test':
         docker_user = os.environ['DOCKER_USER']
+        match = re.match(r'([0-9]+)(\.[0-9]+)?(\.[0-9]+)?', version_part)
+        version_part_expanded = version_part
+
+        i = 0
+        while i < (3 - match.lastindex):
+            version_part_expanded += '.0'
+            i += 1
+
         docker_tag = str.format('{0}/jdk{1}:{2}.{3}.{4}{5}{6}',
             docker_user,
             major,
-            version_part,
+            version_part_expanded,
             build_number,
             sap_build_number,
             '-jre' if image_type == 'jre' else '',
