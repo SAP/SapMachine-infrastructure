@@ -11,7 +11,7 @@ pipeline {
                     def tag_list = sh(
                       script: 'python lib/list_tags.py -m ${MAJOR}',
                       returnStdout: true
-                    ).trim().tokenize(' ')
+                    ).trim().tokenize(' ').reverse()
 
                     def job_name = 'build-' + MAJOR + '-docker'
 
@@ -23,7 +23,7 @@ pipeline {
                     def publish_latest = false
 
                     tag_list.each { tag ->
-                        publish_latest = (i == 0)
+                        publish_latest = (i == (tag_list.size() - 1))
                         i += 1
 
                         if (OS_EXT?.trim()) {
