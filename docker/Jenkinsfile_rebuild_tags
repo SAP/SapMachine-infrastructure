@@ -30,7 +30,13 @@ pipeline {
                             tag += '-' + OS_EXT
                         }
 
-                        println 'building tag ' + tag + (publish_latest) ? ' (as latest)' : ''
+                        def message = 'building tag ' + tag
+
+                        if (publish_latest) {
+                            message += ' (as latest)'
+                        }
+
+                        println message
 
                         build(
                             job: job_name,
