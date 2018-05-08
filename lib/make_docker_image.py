@@ -164,7 +164,7 @@ def main(argv=None):
             utils.run_cmd(['docker', 'push', docker_tag)
 
             if latest:
-                utils.run_cmd(['docker', 'push', docker_tag_latest
+                utils.run_cmd(['docker', 'push', docker_tag_latest])
 
 if __name__ == "__main__":
     sys.exit(main())
