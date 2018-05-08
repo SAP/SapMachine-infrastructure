@@ -30,7 +30,7 @@ pipeline {
                             tag += '-' + OS_EXT
                         }
 
-                        println 'building tag ' + tag
+                        println 'building tag ' + tag + (publish_latest) ? ' (as latest)' : ''
 
                         build(
                             job: job_name,
