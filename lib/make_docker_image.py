@@ -161,7 +161,10 @@ def main(argv=None):
         if publish and 'DOCKER_PASSWORD' in os.environ:
             docker_password = os.environ['DOCKER_PASSWORD']
             utils.run_cmd(['docker', 'login', '-u', docker_user, '-p', docker_password])
-            utils.run_cmd(['docker', 'push', str.format('{0}/jdk{1}', docker_user, major)])
+            utils.run_cmd(['docker', 'push', docker_tag)
+
+            if latest:
+                utils.run_cmd(['docker', 'push', docker_tag_latest
 
 if __name__ == "__main__":
     sys.exit(main())
