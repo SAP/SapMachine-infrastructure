@@ -1,10 +1,10 @@
 #!/bin/bash
 set -ex
 
-MAJOR_VERSION=$1
+JDK_VERSION=$1
 
 PR_BASE="sapmachine"
-if [[ $MAJOR_VERSION == 10* ]] ; then
+if [[ $JDK_VERSION == 10* ]] ; then
   PR_BASE="sapmachine10"
 fi
 
@@ -19,14 +19,14 @@ pushd SapMachine
 git config user.email $GIT_COMMITTER_EMAIL
 git config user.name $GIT_USER
 
-REGEXP="s/jdk\-$MAJOR_VERSION\+([0-9]*)/\1/p"
+REGEXP="s/jdk\-$JDK_VERSION\+([0-9]*)/\1/p"
 LAST_BUILD_JDK_TAG=$(git tag | sed -rn $REGEXP | sort -nr | head -n1)
 
-GIT_TAG="jdk-$MAJOR_VERSION+$LAST_BUILD_JDK_TAG"
+GIT_TAG="jdk-$JDK_VERSION+$LAST_BUILD_JDK_TAG"
 echo "LAST_JDK_TAG=$GIT_TAG"
 set +e
-CONTAINING_BRANCHES=$(git branch -a --contains tags/jdk-$MAJOR_VERSION+$LAST_BUILD_JDK_TAG | \
- grep -E "(sapmachine|pr-jdk-$MAJOR_VERSION\+$LAST_BUILD_JDK_TAG)")
+CONTAINING_BRANCHES=$(git branch -a --contains tags/jdk-$JDK_VERSION+$LAST_BUILD_JDK_TAG | \
+ grep -E "(sapmachine|pr-jdk-$JDK_VERSION\+$LAST_BUILD_JDK_TAG)")
 set -e
 if [ ! -z "$CONTAINING_BRANCHES" ]; then
   echo "Already merged, nothing to do."
