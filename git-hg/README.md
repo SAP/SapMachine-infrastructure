@@ -9,13 +9,9 @@ To transform and update the mercurial repository `hg.openjdk.java.net:/jdk/jdk` 
 update_repo.sh jdk/jdk
 ```
 
-The script depends onn the mercurial extension `hg-git` and the git extension `git-hg-again`. Both extensions are installed in the Dockerfile in this directory.
+The script depends on the mercurial extension `hg-git` and the git extension `git-hg-again`. Both extensions are installed in the Dockerfile in this directory.
 
 As working directory the current directory is used. The mercurial repository is cloned using `git hg clone` into a directory corresponding to the name of the repo. This command transforms the mrecurial repository into a git repository. This operation might take several hours.
 The transformed repository is pushed as a new branch to github. 
 
 In case the script finds a directory with a corresponding name, it is assumed, that this repo is already transformed and it is just updated using `git hg pull`. This operation will usually take a few seconds.
-
-
-
-
