@@ -3,7 +3,7 @@
 This jenkins pipeline is used to setup an update the github brachnes, that mirror OpenJDK mercurial repositories.
 
 The bash script `update_repos.sh` accepts an OpenJDK repo name as argument.
-To transform and update the mercurial repository `hg.openjdk.java.net:/jdk/jdk` the script is started as follows:
+To transform and update the mercurial repository `hg.openjdk.java.net/jdk/jdk` the script is started as follows:
 
 ```
 update_repo.sh jdk/jdk
