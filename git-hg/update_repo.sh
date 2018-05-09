@@ -25,8 +25,8 @@ else
   cd $REPO_PATH
   git remote remove origin
   git remote add origin $GIT_REPO
-  git hg pull
   git checkout "$HG_PATH"
+  git hg pull
 fi
 
 # we need the force push here, as jdk/jdk may contain jdk-10+xx tags,
