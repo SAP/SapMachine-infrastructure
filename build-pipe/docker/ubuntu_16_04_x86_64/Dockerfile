@@ -32,8 +32,8 @@ graphviz
 RUN mkdir -p /opt/openjdk-9-jdk
 ENV BOOT_JDK=/opt/openjdk-9-jdk
 WORKDIR $BOOT_JDK
-RUN wget -q http://download.java.net/openjdk/jdk9/ri/openjdk-9+181_linux-x64_ri.zip
-RUN bsdtar xf openjdk-9+181_linux-x64_ri.zip --strip-components=2
+RUN wget -q https://github.com/SAP/SapMachine/releases/download/sapmachine-10.0.1%2B10-0/sapmachine-jdk-10.0.1.10_linux-x64_bin.tar.gz
+RUN bsdtar xf sapmachine-jdk-10.0.1.10_linux-x64_bin.tar.gz --strip-components=1
 
 RUN mkdir -p /opt/github-release
 WORKDIR /opt/github-release
