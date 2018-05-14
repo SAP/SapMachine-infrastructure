@@ -33,7 +33,7 @@ RUN mkdir -p /opt/sapmachine-10-jdk
 ENV BOOT_JDK=/opt/sapmachine-10-jdk
 WORKDIR $BOOT_JDK
 RUN wget -q https://github.com/SAP/SapMachine/releases/download/sapmachine-10.0.1%2B10-0/sapmachine-jdk-10.0.1.10_linux-x64_bin.tar.gz
-RUN bsdtar xf sapmachine-jdk-10.0.1.10_linux-x64_bin.tar.gz --strip-components=2
+RUN bsdtar xf sapmachine-jdk-10.0.1.10_linux-x64_bin.tar.gz --strip-components=1
 
 RUN mkdir -p /opt/github-release
 WORKDIR /opt/github-release
