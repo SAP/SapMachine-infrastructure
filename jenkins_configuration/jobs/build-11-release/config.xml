@@ -67,7 +67,7 @@
         <hudson.model.StringParameterDefinition>
           <name>DOCKER_DIR</name>
           <description></description>
-          <defaultValue>build-pipe/docker/ubuntu_16_04_x86_64</defaultValue>
+          <defaultValue>build-pipe/docker/ubuntu_14_04_x86_64</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
@@ -97,8 +97,8 @@
       </projectNameList>
     </hudson.plugins.copyartifact.CopyArtifactPermissionProperty>
   </properties>
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@2.52">
-    <scm class="hudson.plugins.git.GitSCM" plugin="git@3.8.0">
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@2.53">
+    <scm class="hudson.plugins.git.GitSCM" plugin="git@3.9.0">
       <configVersion>2</configVersion>
       <userRemoteConfigs>
         <hudson.plugins.git.UserRemoteConfig>
