@@ -5,7 +5,9 @@ RUN apt-get update && apt-get install -qq -y --no-install-recommends \
 git \
 python \
 ca-certificates \
-wget
+wget \
+vim \
+less
 
 
 USER jenkins
