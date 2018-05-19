@@ -315,7 +315,7 @@
     </listView>
     <hudson.plugins.sectioned__view.SectionedView plugin="sectioned-view@1.24">
       <owner class="hudson" reference="../../.."/>
-      <name>Default</name>
+      <name>SapMachine</name>
       <filterExecutors>false</filterExecutors>
       <filterQueue>false</filterQueue>
       <properties class="hudson.model.View$PropertyList"/>
@@ -870,7 +870,7 @@
       </columns>
       <recurse>false</recurse>
     </listView>
-    <com.smartcodeltd.jenkinsci.plugins.buildmonitor.BuildMonitorView plugin="build-monitor-plugin@1.12+build.201708172343">
+    <com.smartcodeltd.jenkinsci.plugins.buildmonitor.BuildMonitorView plugin="build-monitor-plugin@1.12+build.201805070054">
       <owner class="hudson" reference="../../.."/>
       <name>Monitor</name>
       <filterExecutors>false</filterExecutors>
@@ -891,7 +891,7 @@
       </config>
     </com.smartcodeltd.jenkinsci.plugins.buildmonitor.BuildMonitorView>
   </views>
-  <primaryView>Default</primaryView>
+  <primaryView>SapMachine</primaryView>
   <slaveAgentPort>50000</slaveAgentPort>
   <disabledAgentProtocols>
     <string>JNLP-connect</string>
