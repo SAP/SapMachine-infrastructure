@@ -28,6 +28,7 @@ RUN apk update; \
     apk add ttf-dejavu; \
     apk add sed; \
     apk add --update openssl; \
+    apk add patch; \
     mkdir /opt; \
     cd /opt; \
     wget 'https://github.com/SAP/SapMachine/releases/download/sapmachine-10+39/sapmachine-jdk-10-ea.39_linux-x64-musl_bin.tar.gz'; \

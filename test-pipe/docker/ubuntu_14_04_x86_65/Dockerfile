@@ -15,7 +15,7 @@ python \
 mercurial \
 openjdk-7-jdk \
 ant \
-make
+patch
 
 RUN useradd -ms /bin/bash jenkins -u 1002
 

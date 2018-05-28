@@ -53,6 +53,8 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 chmod +x ${JT_HOME}/bin/jtreg
 
 if [ "${TEST_SUITE}" == "hotspot" ]; then
+    patch ${JDK_LOCATION}/test/hotspot/jtreg/applications/scimark/Scimark.java < ${SCRIPT_DIR}/Scimark.java.patch
+
     ${JT_HOME}/bin/jtreg -dir:${JDK_LOCATION}/test/${TEST_SUITE}/jtreg -verbose:summary -nativepath:${TEST_NATIVE_LIB} \
      -exclude:${JDK_LOCATION}/test/${TEST_SUITE}/jtreg/ProblemList.txt -exclude:${JDK_LOCATION}/test/${TEST_SUITE}/jtreg/ProblemList-SapMachine.txt \
      -conc:${CONCURRENCY} -vmoption:-XX:MaxRAMPercentage=${MAX_RAM_PERCENTAGE} \
