@@ -18,3 +18,6 @@ ant \
 make
 
 RUN useradd -ms /bin/bash jenkins -u 1002
+
+RUN mkdir -p /opt/scimark2
+RUN wget https://math.nist.gov/scimark2/scimark2lib.jar -O /opt/scimark2/scimark2lib.jar

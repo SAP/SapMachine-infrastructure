@@ -38,3 +38,6 @@ ENV PATH=/opt/sapmachine-jdk-10/bin:$PATH
 
 RUN addgroup -g 1002 jenkins && \
     adduser -D -u 1002 -G jenkins jenkins
+
+RUN mkdir -p /opt/scimark2
+RUN wget https://math.nist.gov/scimark2/scimark2lib.jar -O /opt/scimark2/scimark2lib.jar
