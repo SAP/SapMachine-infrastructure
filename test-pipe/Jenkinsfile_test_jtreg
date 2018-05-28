@@ -34,6 +34,9 @@ pipeline {
             }
         }
         stage('Run jtreg') {
+            environment {
+              SCIMARK_2_CP = '/opt/scimark2/scimark2lib.jar'
+            }
             steps {
                 sh "cd sapmachine && bash ../test-pipe/run_jtreg.sh -l ${env.WORKSPACE}/sapmachine -h ${env.WORKSPACE}/sapmachine/jtreg -s ${params.test_suite} ${params.test_groups}  || true"
             }
