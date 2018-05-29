@@ -4,5 +4,28 @@
   <githubUrl>https://github.com/SAP/SapMachine/</githubUrl>
   <gitUrl>git://github.com/SAP/SapMachine.git</gitUrl>
   <sshUrl>git@github.com:SAP/SapMachine.git</sshUrl>
-  <pulls/>
+  <pulls>
+    <entry>
+      <int>114</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>114</number>
+        <issueUpdatedAt>2018-05-28 14:54:12.0 UTC</issueUpdatedAt>
+        <title>Improve resolving of SciMark classpath.</title>
+        <body>First check wether the environment variable for the Scimark classpat is set.&#xd;
+If not, use the artifact resolver.</body>
+        <prUpdatedAt>2018-05-28 14:54:12.0 UTC</prUpdatedAt>
+        <headSha>64375616661ec5a0ec9f806034d6ac1aec411e14</headSha>
+        <headRef>sapmachine10-fixscimark</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine10</baseRef>
+        <userEmail>rene.schuenemann@gmail.com</userEmail>
+        <userLogin>reshnm</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/114</htmlUrl>
+        <labels/>
+        <sourceRepoOwner>SAP</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+  </pulls>
 </org.jenkinsci.plugins.github.pullrequest.GitHubPRRepository>
