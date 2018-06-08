@@ -22,7 +22,7 @@
         <hudson.model.TextParameterDefinition>
           <name>test_groups</name>
           <description></description>
-          <defaultValue>:hotspot_all_no_apps</defaultValue>
+          <defaultValue>:hotspot_all</defaultValue>
           <trim>false</trim>
         </hudson.model.TextParameterDefinition>
         <hudson.model.TextParameterDefinition>
@@ -62,7 +62,7 @@
     </hudson.model.ParametersDefinitionProperty>
   </properties>
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@2.53">
-    <scm class="hudson.plugins.git.GitSCM" plugin="git@3.9.0">
+    <scm class="hudson.plugins.git.GitSCM" plugin="git@3.9.1">
       <configVersion>2</configVersion>
       <userRemoteConfigs>
         <hudson.plugins.git.UserRemoteConfig>
