@@ -21,8 +21,9 @@
         </hudson.model.TextParameterDefinition>
         <hudson.model.TextParameterDefinition>
           <name>test_groups</name>
-          <description></description>
-          <defaultValue>:hotspot_all</defaultValue>
+          <description>We want to run hotspot all with scimark and ctw and not (!) jcstress. 
+Because the exclude list does not support groups we cannot exclude jcstress tests and have to call scimark and ctw explicit.  </description>
+          <defaultValue>applications/scimark applications/ctw :hotspot_all_no_apps</defaultValue>
           <trim>false</trim>
         </hudson.model.TextParameterDefinition>
         <hudson.model.TextParameterDefinition>
