@@ -55,7 +55,7 @@ Because the exclude list does not support groups we cannot exclude jcstress test
           <defaultValue>test-pipe/docker/ubuntu_16_04_x86_64</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
-        <hudson.plugins.copyartifact.BuildSelectorParameter plugin="copyartifact@1.39.1">
+        <hudson.plugins.copyartifact.BuildSelectorParameter plugin="copyartifact@1.40">
           <name>BUILD_SELECTOR</name>
           <description></description>
           <defaultSelector class="hudson.plugins.copyartifact.TriggeredBuildSelector">
