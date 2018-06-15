@@ -1,6 +1,9 @@
 <?xml version='1.1' encoding='UTF-8'?>
-<hudson.plugins.emailext.ExtendedEmailPublisherDescriptor plugin="email-ext@2.61">
-  <useSsl>false</useSsl>
+<hudson.plugins.emailext.ExtendedEmailPublisherDescriptor plugin="email-ext@2.62">
+  <mailAccount>
+    <useSsl>false</useSsl>
+  </mailAccount>
+  <addAccounts/>
   <charset>UTF-8</charset>
   <defaultContentType>text/plain</defaultContentType>
   <defaultSubject>$PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS!</defaultSubject>
