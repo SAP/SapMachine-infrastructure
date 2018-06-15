@@ -22,7 +22,7 @@ file
 
 ARG uid=1000
 ARG gid=1000
-ARG VERSION=3.16
+ARG VERSION=3.21
 ARG AGENT_WORKDIR=/home/jenkins/agent
 
 ENV HOME /home/jenkins
