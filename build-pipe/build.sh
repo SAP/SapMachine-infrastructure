@@ -51,14 +51,16 @@ if [[ $GIT_TAG_NAME == sapmachine-* ]]; then
     --with-version-pre=$VERSION_PRE_OPT --with-version-build=$VERSION_MINOR $ALPINE_OPTS \
     --with-vendor-name='SAP SE' --with-vendor-url='https://sapmachine.io' \
     --with-vendor-bug-url='https://github.com/SAP/SapMachine/issues/new' \
-    --with-vendor-vm-bug-url='https://github.com/SAP/SapMachine/issues/new'
+    --with-vendor-vm-bug-url='https://github.com/SAP/SapMachine/issues/new' \
+    --disable-warnings-as-errors
   else
     bash ./configure --with-boot-jdk=$BOOT_JDK --with-vendor-name='SAP SE' --with-version-feature=$VERSION_MAJOR \
     --with-version-opt=sapmachine-$SAPMACHINE_VERSION \
     --with-version-pre=$VERSION_PRE_OPT --with-version-build=$VERSION_MINOR $ALPINE_OPTS \
     --with-vendor-name='SAP SE' --with-vendor-url='https://sapmachine.io' \
     --with-vendor-bug-url='https://github.com/SAP/SapMachine/issues/new' \
-    --with-vendor-vm-bug-url='https://github.com/SAP/SapMachine/issues/new'
+    --with-vendor-vm-bug-url='https://github.com/SAP/SapMachine/issues/new' \
+    --disable-warnings-as-errors
 
   fi
 else
@@ -66,10 +68,12 @@ else
   --with-version-pre=snapshot --with-version-build=$BUILD_NUMBER $ALPINE_OPTS \
   --with-vendor-name='SAP SE' --with-vendor-url='https://sapmachine.io' \
   --with-vendor-bug-url='https://github.com/SAP/SapMachine/issues/new' \
-  --with-vendor-vm-bug-url='https://github.com/SAP/SapMachine/issues/new'
+  --with-vendor-vm-bug-url='https://github.com/SAP/SapMachine/issues/new' \
+  --disable-warnings-as-errors
 fi
 
 make JOBS=12 product-bundles test-image docs-zip
+make JOBS=12 legacy-jre-image || true
 
 make run-test-gtest
 
@@ -77,6 +81,21 @@ tar czf ../build.tar.gz build
 
 cd build
 cd "$(ls)"/bundles
+
+HAS_JRE=$(ls sapmachine-jre* | wc -l)
+
+if [ "$HAS_JRE" -gt "0" ]; then
+  JDK_NAME=$(ls sapmachine-jdk-*_bin.tar.gz)
+  read JDK_MAJOR JDK_SUFFIX<<< $(echo $JDK_NAME | sed -rn 's/sapmachine-jdk-([0-9]+)(.*)/ \1 \2 /p')
+  JRE_BUNDLE_NAME="sapmachine-jre-${JDK_MAJOR}${JDK_SUFFIX}"
+  JRE_BUNDLE_TOP_DIR="sapmachine-jre-$JDK_MAJOR"
+
+  rm -rf $JRE_BUNDLE_NAME
+  mkdir $JRE_BUNDLE_TOP_DIR
+  cp -r ../images/jre/* $JRE_BUNDLE_TOP_DIR
+  tar -czf  $JRE_BUNDLE_NAME $JRE_BUNDLE_TOP_DIR
+  rm -rf $JRE_BUNDLE_TOP_DIR
+fi
 
 rm ../../../../sapmachine-jdk-* || true
 rm ../../../../sapmachine-jre-* || true
