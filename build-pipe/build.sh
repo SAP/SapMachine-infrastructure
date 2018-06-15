@@ -84,7 +84,7 @@ cd "$(ls)"/bundles
 
 HAS_JRE=$(ls sapmachine-jre* | wc -l)
 
-if [ "$HAS_JRE" -gt "0" ]; then
+if [ "$HAS_JRE" -lt "1" ]; then
   JDK_NAME=$(ls sapmachine-jdk-*_bin.tar.gz)
   read JDK_MAJOR JDK_SUFFIX<<< $(echo $JDK_NAME | sed -rn 's/sapmachine-jdk-([0-9]+)(.*)/ \1 \2 /p')
   JRE_BUNDLE_NAME="sapmachine-jre-${JDK_MAJOR}${JDK_SUFFIX}"
