@@ -1,8 +1,8 @@
 <?xml version='1.1' encoding='UTF-8'?>
 <flow-definition plugin="workflow-job@2.21">
   <actions>
-    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.2.9"/>
-    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.2.9">
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.3"/>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.3">
       <jobProperties/>
       <triggers/>
       <parameters/>
@@ -49,7 +49,7 @@
           <defaultValue>test-pipe/docker/alpine_3_5_x86_64</defaultValue>
           <trim>false</trim>
         </hudson.model.TextParameterDefinition>
-        <hudson.plugins.copyartifact.BuildSelectorParameter plugin="copyartifact@1.39.1">
+        <hudson.plugins.copyartifact.BuildSelectorParameter plugin="copyartifact@1.40">
           <name>BUILD_SELECTOR</name>
           <description></description>
           <defaultSelector class="hudson.plugins.copyartifact.TriggeredBuildSelector">
@@ -62,7 +62,7 @@
     </hudson.model.ParametersDefinitionProperty>
   </properties>
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@2.53">
-    <scm class="hudson.plugins.git.GitSCM" plugin="git@3.9.0">
+    <scm class="hudson.plugins.git.GitSCM" plugin="git@3.9.1">
       <configVersion>2</configVersion>
       <userRemoteConfigs>
         <hudson.plugins.git.UserRemoteConfig>
