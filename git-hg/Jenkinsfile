@@ -1,7 +1,10 @@
 
 pipeline {
      agent {
-        dockerfile { dir 'git-hg' }
+        dockerfile {
+          dir 'git-hg'
+          additionalBuildArgs '--no-cache'
+        }
       }
       stages {
         stage('Build') {
