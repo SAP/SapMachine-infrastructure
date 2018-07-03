@@ -7,6 +7,9 @@ PR_BASE="sapmachine"
 if [[ $JDK_VERSION == 10* ]] ; then
   PR_BASE="sapmachine10"
 fi
+if [[ $JDK_VERSION == 11* ]] ; then
+  PR_BASE="sapmachine11"
+fi
 
 if [ -d SapMachine ]; then
     rm -rf SapMachine;
