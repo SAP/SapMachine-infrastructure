@@ -4,10 +4,14 @@ set -ex
 MAJOR_VERSION=$1
 
 BASE_BRANCH="sapmachine"
-GREP_PATTERN="(sapmachine$)" 
+GREP_PATTERN="(sapmachine$)"
 if [[ $MAJOR_VERSION == 10* ]]; then
   BASE_BRANCH="sapmachine10"
   GREP_PATTERN="(sapmachine10)"
+fi
+if [[ $MAJOR_VERSION == 11* ]]; then
+  BASE_BRANCH="sapmachine11"
+  GREP_PATTERN="(sapmachine11)"
 fi
 
 if [ -d SapMachine ]; then
@@ -27,7 +31,7 @@ LAST_BUILD_JDK_TAG=$(git tag | sed -rn $REGEXP | sort -nr | head -n1)
 JDK_TAG="jdk-$MAJOR_VERSION+$LAST_BUILD_JDK_TAG"
 echo "LAST_JDK_TAG=$LAST_BUILD_JDK_TAG"
 
-BRANCHES=( "$BASE_BRANCH" "$BASE_BRANCH-alpine" )
+BRANCHES=( "$BASE_BRANCH" )
 for base in "${BRANCHES[@]}"
 do
   git checkout $base
@@ -47,7 +51,7 @@ do
 
   if [ "$JDK_TAG_CONTAINING_BRANCH" ] && [ -z "$SAPMACHINE_TAG_CONTAINING_BRANCH" ] ; then
 
-    echo "Create tag $SAPMACHINE_TAG" 
+    echo "Create tag $SAPMACHINE_TAG"
     git checkout $base
     git tag $SAPMACHINE_TAG
     git push --tags
