@@ -112,11 +112,6 @@
       <properties class="hudson.model.View$PropertyList"/>
       <jobNames>
         <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
-        <string>build-10-pr-validation-alpine</string>
-        <string>test-jtreg-hotspot-10-pr-validation-alpine</string>
-        <string>test-jtreg-jdk-10-pr-validation-alpine</string>
-        <string>test-jtreg-langtools-10-pr-validation-alpine</string>
-        <string>validate-10-pr-pipe-alpine</string>
         <string>validate-pr-pipe-10</string>
       </jobNames>
       <jobFilters/>
@@ -337,9 +332,27 @@
             <string>test-jtreg-langtools-snapshot</string>
           </jobNames>
           <jobFilters/>
-          <name>snapshot</name>
+          <name>Snapshot</name>
           <width>THIRD</width>
           <alignment>LEFT</alignment>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+          </columns>
+        </hudson.plugins.sectioned__view.ListViewSection>
+        <hudson.plugins.sectioned__view.ListViewSection>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
+            <string>build-11-snapshot</string>
+            <string>test-jtreg-hotspot-11-snapshot</string>
+            <string>test-jtreg-jdk-11-snapshot</string>
+            <string>test-jtreg-langtools-11-snapshot</string>
+          </jobNames>
+          <jobFilters/>
+          <name>Snapshot 11</name>
+          <width>THIRD</width>
+          <alignment>CENTER</alignment>
           <columns>
             <hudson.views.StatusColumn/>
             <hudson.views.WeatherColumn/>
@@ -355,43 +368,7 @@
             <string>test-jtreg-langtools-10-snapshot</string>
           </jobNames>
           <jobFilters/>
-          <name>snapshot 10</name>
-          <width>THIRD</width>
-          <alignment>CENTER</alignment>
-          <columns>
-            <hudson.views.StatusColumn/>
-            <hudson.views.WeatherColumn/>
-            <hudson.views.JobColumn/>
-          </columns>
-        </hudson.plugins.sectioned__view.ListViewSection>
-        <hudson.plugins.sectioned__view.ListViewSection>
-          <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
-            <string>build-snapshot-alpine</string>
-            <string>test-jtreg-hotspot-snapshot-alpine</string>
-            <string>test-jtreg-jdk-snapshot-alpine</string>
-            <string>test-jtreg-langtools-snapshot-alpine</string>
-          </jobNames>
-          <jobFilters/>
-          <name>alpine snapshot</name>
-          <width>THIRD</width>
-          <alignment>LEFT</alignment>
-          <columns>
-            <hudson.views.StatusColumn/>
-            <hudson.views.WeatherColumn/>
-            <hudson.views.JobColumn/>
-          </columns>
-        </hudson.plugins.sectioned__view.ListViewSection>
-        <hudson.plugins.sectioned__view.ListViewSection>
-          <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
-            <string>build-10-snapshot-alpine</string>
-            <string>test-jtreg-hotspot-10-snapshot-alpine</string>
-            <string>test-jtreg-jdk-10-snapshot-alpine</string>
-            <string>test-jtreg-langtools-10-snapshot-alpine</string>
-          </jobNames>
-          <jobFilters/>
-          <name>alpine snapshot 10</name>
+          <name>Snapshot 10</name>
           <width>THIRD</width>
           <alignment>CENTER</alignment>
           <columns>
@@ -414,6 +391,24 @@
         <hudson.plugins.sectioned__view.ListViewSection>
           <jobNames>
             <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
+            <string>build-12-release</string>
+            <string>test-jtreg-hotspot-12-release</string>
+            <string>test-jtreg-jdk-12-release</string>
+            <string>test-jtreg-langtools-12-release</string>
+          </jobNames>
+          <jobFilters/>
+          <name>Release 12</name>
+          <width>THIRD</width>
+          <alignment>CENTER</alignment>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+          </columns>
+        </hudson.plugins.sectioned__view.ListViewSection>
+        <hudson.plugins.sectioned__view.ListViewSection>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
             <string>apidocs-11-release</string>
             <string>build-11-release</string>
             <string>test-jtreg-hotspot-11-release</string>
@@ -421,7 +416,7 @@
             <string>test-jtreg-langtools-11-release</string>
           </jobNames>
           <jobFilters/>
-          <name>release 11</name>
+          <name>Release 11</name>
           <width>THIRD</width>
           <alignment>LEFT</alignment>
           <columns>
@@ -440,43 +435,7 @@
             <string>test-jtreg-langtools-10-release</string>
           </jobNames>
           <jobFilters/>
-          <name>release 10</name>
-          <width>THIRD</width>
-          <alignment>CENTER</alignment>
-          <columns>
-            <hudson.views.StatusColumn/>
-            <hudson.views.WeatherColumn/>
-            <hudson.views.JobColumn/>
-          </columns>
-        </hudson.plugins.sectioned__view.ListViewSection>
-        <hudson.plugins.sectioned__view.ListViewSection>
-          <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
-            <string>build-11-release-alpine</string>
-            <string>test-jtreg-hotspot-11-release-alpine</string>
-            <string>test-jtreg-jdk-11-release-alpine</string>
-            <string>test-jtreg-langtools-11-release-alpine</string>
-          </jobNames>
-          <jobFilters/>
-          <name>alpine release 11</name>
-          <width>THIRD</width>
-          <alignment>LEFT</alignment>
-          <columns>
-            <hudson.views.StatusColumn/>
-            <hudson.views.WeatherColumn/>
-            <hudson.views.JobColumn/>
-          </columns>
-        </hudson.plugins.sectioned__view.ListViewSection>
-        <hudson.plugins.sectioned__view.ListViewSection>
-          <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
-            <string>build-10-release-alpine</string>
-            <string>test-jtreg-hotspot-10-release-alpine</string>
-            <string>test-jtreg-jdk-10-release-alpine</string>
-            <string>test-jtreg-langtools-10-release-alpine</string>
-          </jobNames>
-          <jobFilters/>
-          <name>alpine release 10</name>
+          <name>Release 10</name>
           <width>THIRD</width>
           <alignment>CENTER</alignment>
           <columns>
@@ -506,9 +465,28 @@
             <string>validate-pr-pipe</string>
           </jobNames>
           <jobFilters/>
-          <name>sapmachine</name>
+          <name>Pull Request 12</name>
           <width>THIRD</width>
           <alignment>LEFT</alignment>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+          </columns>
+        </hudson.plugins.sectioned__view.ListViewSection>
+        <hudson.plugins.sectioned__view.ListViewSection>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
+            <string>build-11-pr-validation</string>
+            <string>test-jtreg-hotspot-11-pr-validation</string>
+            <string>test-jtreg-jdk-11-pr-validation</string>
+            <string>test-jtreg-langtools-11-pr-validation</string>
+            <string>validate-pr-pipe-11</string>
+          </jobNames>
+          <jobFilters/>
+          <name>Pull Request 11</name>
+          <width>THIRD</width>
+          <alignment>CENTER</alignment>
           <columns>
             <hudson.views.StatusColumn/>
             <hudson.views.WeatherColumn/>
@@ -525,45 +503,7 @@
             <string>validate-pr-pipe-10</string>
           </jobNames>
           <jobFilters/>
-          <name>sapmachine10</name>
-          <width>THIRD</width>
-          <alignment>CENTER</alignment>
-          <columns>
-            <hudson.views.StatusColumn/>
-            <hudson.views.WeatherColumn/>
-            <hudson.views.JobColumn/>
-          </columns>
-        </hudson.plugins.sectioned__view.ListViewSection>
-        <hudson.plugins.sectioned__view.ListViewSection>
-          <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
-            <string>build-pr-validation-alpine</string>
-            <string>test-jtreg-hotspot-pr-validation-alpine</string>
-            <string>test-jtreg-jdk-pr-validation-alpine</string>
-            <string>test-jtreg-langtools-pr-validation-alpine</string>
-            <string>validate-pr-pipe-alpine</string>
-          </jobNames>
-          <jobFilters/>
-          <name>sapmachine-alpine</name>
-          <width>THIRD</width>
-          <alignment>LEFT</alignment>
-          <columns>
-            <hudson.views.StatusColumn/>
-            <hudson.views.WeatherColumn/>
-            <hudson.views.JobColumn/>
-          </columns>
-        </hudson.plugins.sectioned__view.ListViewSection>
-        <hudson.plugins.sectioned__view.ListViewSection>
-          <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
-            <string>build-10-pr-validation-alpine</string>
-            <string>test-jtreg-hotspot-10-pr-validation-alpine</string>
-            <string>test-jtreg-jdk-10-pr-validation-alpine</string>
-            <string>test-jtreg-langtools-10-pr-validation-alpine</string>
-            <string>validate-10-pr-pipe-alpine</string>
-          </jobNames>
-          <jobFilters/>
-          <name>sapmachine10-alpine</name>
+          <name>Pull Request 10</name>
           <width>THIRD</width>
           <alignment>CENTER</alignment>
           <columns>
@@ -586,33 +526,14 @@
         <hudson.plugins.sectioned__view.ListViewSection>
           <jobNames>
             <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
-            <string>build-10-docker</string>
-            <string>rebuild-10-docker</string>
-            <string>test-jtreg-hotspot-10-docker</string>
-            <string>test-jtreg-jdk-10-docker</string>
-            <string>test-jtreg-langtools-10-docker</string>
+            <string>build-12-docker</string>
+            <string>rebuild-12-docker</string>
+            <string>test-jtreg-hotspot-12-docker</string>
+            <string>test-jtreg-jdk-12-docker</string>
+            <string>test-jtreg-langtools-12-docker</string>
           </jobNames>
           <jobFilters/>
-          <name>docker-10</name>
-          <width>THIRD</width>
-          <alignment>CENTER</alignment>
-          <columns>
-            <hudson.views.StatusColumn/>
-            <hudson.views.WeatherColumn/>
-            <hudson.views.JobColumn/>
-          </columns>
-        </hudson.plugins.sectioned__view.ListViewSection>
-        <hudson.plugins.sectioned__view.ListViewSection>
-          <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
-            <string>build-10-docker-alpine</string>
-            <string>rebuild-10-docker-alpine</string>
-            <string>test-jtreg-hotspot-10-docker-alpine</string>
-            <string>test-jtreg-jdk-10-docker-alpine</string>
-            <string>test-jtreg-langtools-10-docker-alpine</string>
-          </jobNames>
-          <jobFilters/>
-          <name>docker-10-alpine</name>
+          <name>Docker 12</name>
           <width>THIRD</width>
           <alignment>CENTER</alignment>
           <columns>
@@ -625,12 +546,13 @@
           <jobNames>
             <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
             <string>build-11-docker</string>
+            <string>rebuild-11-docker</string>
             <string>test-jtreg-hotspot-11-docker</string>
             <string>test-jtreg-jdk-11-docker</string>
             <string>test-jtreg-langtools-11-docker</string>
           </jobNames>
           <jobFilters/>
-          <name>docker-11</name>
+          <name>Docker 11</name>
           <width>THIRD</width>
           <alignment>CENTER</alignment>
           <columns>
@@ -642,13 +564,14 @@
         <hudson.plugins.sectioned__view.ListViewSection>
           <jobNames>
             <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
-            <string>build-11-docker-alpine</string>
-            <string>test-jtreg-hotspot-11-docker-alpine</string>
-            <string>test-jtreg-jdk-11-docker-alpine</string>
-            <string>test-jtreg-langtools-11-docker-alpine</string>
+            <string>build-10-docker</string>
+            <string>rebuild-10-docker</string>
+            <string>test-jtreg-hotspot-10-docker</string>
+            <string>test-jtreg-jdk-10-docker</string>
+            <string>test-jtreg-langtools-10-docker</string>
           </jobNames>
           <jobFilters/>
-          <name>docker-11-alpine</name>
+          <name>Docker 10</name>
           <width>THIRD</width>
           <alignment>CENTER</alignment>
           <columns>
@@ -675,7 +598,7 @@
             <string>debian-pipeline</string>
           </jobNames>
           <jobFilters/>
-          <name>packages</name>
+          <name>Packages</name>
           <width>THIRD</width>
           <alignment>CENTER</alignment>
           <columns>
@@ -708,7 +631,7 @@
             <string>jenkins-restore</string>
           </jobNames>
           <jobFilters/>
-          <name>jenkins backup</name>
+          <name>Jenkins Backup</name>
           <width>THIRD</width>
           <alignment>LEFT</alignment>
           <columns>
@@ -724,7 +647,7 @@
             <string>update-pipeline</string>
           </jobNames>
           <jobFilters/>
-          <name>repository update</name>
+          <name>Repository Update</name>
           <width>THIRD</width>
           <alignment>CENTER</alignment>
           <columns>
@@ -818,15 +741,10 @@
       <jobNames>
         <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView[11]/jobNames/comparator"/>
         <string>build-pr-validation</string>
-        <string>build-pr-validation-alpine</string>
         <string>test-jtreg-hotspot-pr-validation</string>
-        <string>test-jtreg-hotspot-pr-validation-alpine</string>
         <string>test-jtreg-jdk-pr-validation</string>
-        <string>test-jtreg-jdk-pr-validation-alpine</string>
         <string>test-jtreg-langtools-pr-validation</string>
-        <string>test-jtreg-langtools-pr-validation-alpine</string>
         <string>validate-pr-pipe</string>
-        <string>validate-pr-pipe-alpine</string>
       </jobNames>
       <jobFilters/>
       <columns>
