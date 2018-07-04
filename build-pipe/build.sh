@@ -11,6 +11,9 @@ git clone -b $SAPMACHINE_GIT_BRANCH "http://$GIT_USER:$GIT_PASSWORD@$SAPMACHINE_
 
 cd SapMachine
 
+GIT_REVISION=$(git rev-parse HEAD)
+echo "Git Revision=${GIT_REVISION}"
+
 ALPINE_OPTS=""
 GTEST_RESULT_PATH="gtest_all_server"
 
