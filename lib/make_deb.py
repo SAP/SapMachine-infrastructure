@@ -152,7 +152,7 @@ def main(argv=None):
         major=major,
         version=version_part,
         target_dir=join(jdk_dir, 'debian'),
-        bin_dir=join(jdk_dir, 'sapmachine-jdk-' + version_part, 'bin'),
+        bin_dir=join(jdk_dir, 'sapmachine-' + version_part, 'bin'),
         src_dir=src_dir,
         download_url=jdk_url)
 
