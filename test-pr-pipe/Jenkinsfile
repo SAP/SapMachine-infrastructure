@@ -1,13 +1,11 @@
 pipeline {
-    agent {
-        dockerfile { dir 'test-nightly-pipe/docker/ubuntu_16_04_x86_64' }
-    }
+    agent any
     stages {
         stage('Build') {
             steps {
-                
+
                 setGitHubPullRequestStatus context: PR_CONTEXT, state: 'PENDING'
-                
+
                 build job: PR_BUILD_JOB, propagate: true, wait: true, parameters:
                     [
                         string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER),

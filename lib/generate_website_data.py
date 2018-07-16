@@ -13,9 +13,10 @@ from urllib2 import urlopen, Request, quote
 from os.path import join
 from string import Template
 
+#'linux-x64-musl': 'Linux x64 musl',
 os_description = {
-    'linux-x64': 'Linux x64 glibc',
-    'linux-x64-musl': 'Linux x64 musl'
+    'linux-x64':     { 'ordinal': 1, 'name': 'Linux x64' },
+    'linux-ppc64le': { 'ordinal': 2, 'name': 'Linux ppc64le' }
 }
 
 latest_template = '''---
@@ -141,8 +142,12 @@ def main(argv=None):
     for image_type in sorted(image_type_dict):
         json_root['imageTypes'].append({'key': image_type, 'value': image_type_dict[image_type]})
 
-    for os in sorted(os_description):
-        json_root['os'].append({'key': os, 'value': os_description[os]})
+    def get_os_key(os):
+        print(os)
+        return os_description[os]['ordinal']
+
+    for os in sorted(os_description, key=get_os_key):
+        json_root['os'].append({'key': os, 'value': os_description[os]['name'], 'ordinal': os_description[os]['ordinal']})
 
     for release in releases_dict:
         json_root['assets'].update(releases_dict[release].transform())

@@ -2,6 +2,7 @@
 pipeline {
      agent {
         dockerfile {
+          label 'repository'
           dir 'git-hg'
           additionalBuildArgs '--no-cache'
         }
