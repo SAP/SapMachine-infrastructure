@@ -147,7 +147,7 @@ def main(argv=None):
         src_dir=src_dir,
         download_url=jre_url)
 
-    if exists(join(jdk_dir, 'sapmachine-' + version_part):
+    if exists(join(jdk_dir, 'sapmachine-' + version_part)):
         jdk_bin_dir = join(jdk_dir, 'sapmachine-' + version_part, 'bin')
     else:
         jdk_bin_dir = join(jdk_dir, 'sapmachine-jdk-' + version_part, 'bin')
