@@ -147,12 +147,17 @@ def main(argv=None):
         src_dir=src_dir,
         download_url=jre_url)
 
+    if exists(join(jdk_dir, 'sapmachine-' + version_part):
+        jdk_bin_dir = join(jdk_dir, 'sapmachine-' + version_part, 'bin')
+    else:
+        jdk_bin_dir = join(jdk_dir, 'sapmachine-jdk-' + version_part, 'bin')
+
     generate_configuration(
         templates_dir=join(templates_dir, 'jdk'),
         major=major,
         version=version_part,
         target_dir=join(jdk_dir, 'debian'),
-        bin_dir=join(jdk_dir, 'sapmachine-' + version_part, 'bin'),
+        bin_dir=jdk_bin_dir,
         src_dir=src_dir,
         download_url=jdk_url)
 
