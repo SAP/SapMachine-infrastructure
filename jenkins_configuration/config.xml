@@ -4,7 +4,7 @@
     <string>GitHubHookRegisterProblemMonitor</string>
     <string>hudsonHomeIsFull</string>
   </disabledAdministrativeMonitors>
-  <version>2.121.1</version>
+  <version>2.121.2</version>
   <installStateName>RESTART</installStateName>
   <numExecutors>1</numExecutors>
   <mode>EXCLUSIVE</mode>
@@ -369,6 +369,24 @@
           </jobNames>
           <jobFilters/>
           <name>Snapshot 10</name>
+          <width>THIRD</width>
+          <alignment>CENTER</alignment>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+          </columns>
+        </hudson.plugins.sectioned__view.ListViewSection>
+        <hudson.plugins.sectioned__view.ListViewSection>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
+            <string>build-snapshot-linux_ppc64le</string>
+            <string>test-jtreg-hotspot-snapshot-linux_ppc64le</string>
+            <string>test-jtreg-jdk-snapshot-linux_ppc64le</string>
+            <string>test-jtreg-langtools-snapshot-linux_ppc64le</string>
+          </jobNames>
+          <jobFilters/>
+          <name>Snapshot Linux PPC64LE</name>
           <width>THIRD</width>
           <alignment>CENTER</alignment>
           <columns>
