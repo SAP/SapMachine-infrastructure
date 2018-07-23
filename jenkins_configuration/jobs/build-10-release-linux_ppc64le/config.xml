@@ -15,15 +15,15 @@
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
         <hudson.model.StringParameterDefinition>
-          <name>SAPMACHINE_GIT_BRANCH</name>
+          <name>GIT_TAG_NAME</name>
           <description></description>
-          <defaultValue>sapmachine10</defaultValue>
+          <defaultValue>sapmachine-10.0.1+10-0</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>PUBLISH</name>
           <description></description>
-          <defaultValue>false</defaultValue>
+          <defaultValue>true</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>RUN_TESTS</name>
@@ -31,39 +31,62 @@
           <defaultValue>true</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>GITHUB_PR_NUMBER</name>
-          <description></description>
-          <defaultValue></defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
           <name>HOTSPOT_TEST_JOB</name>
           <description></description>
-          <defaultValue>test-jtreg-hotspot-10-pr-validation</defaultValue>
+          <defaultValue>test-jtreg-hotspot-10-release</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>JDK_TEST_JOB</name>
           <description></description>
-          <defaultValue>test-jtreg-jdk-10-pr-validation</defaultValue>
+          <defaultValue>test-jtreg-jdk-10-release</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>LANGTOOLS_TEST_JOB</name>
           <description></description>
-          <defaultValue>test-jtreg-langtools-10-pr-validation</defaultValue>
+          <defaultValue>test-jtreg-langtools-10-release</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>SAPMACHINE_GIT_BRANCH</name>
+          <description></description>
+          <defaultValue>sapmachine10</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>SAPMACHINE_ARCHIVE_NAME_PREFIX</name>
+          <description></description>
+          <defaultValue>sapmachine10_linux-x64</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>DOCKER_DIR</name>
           <description></description>
-          <defaultValue>build-pipe/docker/ubuntu_16_04_x86_64</defaultValue>
+          <defaultValue>dockerfiles/ubuntu_14_04_ppc64le</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>AGENT_LABEL</name>
+          <description></description>
+          <defaultValue> linux_ppc64le</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>DOCKER_BUILD_JOB</name>
+          <description></description>
+          <defaultValue>build-10-docker</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>PROPAGATE_RESULT</name>
           <description></description>
           <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>RELEASE</name>
+          <description></description>
+          <defaultValue>false</defaultValue>
         </hudson.model.BooleanParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
@@ -75,6 +98,11 @@
         <artifactNumToKeep>1</artifactNumToKeep>
       </strategy>
     </jenkins.model.BuildDiscarderProperty>
+    <hudson.plugins.copyartifact.CopyArtifactPermissionProperty plugin="copyartifact@1.41">
+      <projectNameList>
+        <string>*</string>
+      </projectNameList>
+    </hudson.plugins.copyartifact.CopyArtifactPermissionProperty>
   </properties>
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@2.54">
     <scm class="hudson.plugins.git.GitSCM" plugin="git@3.9.1">
@@ -87,7 +115,7 @@
       </userRemoteConfigs>
       <branches>
         <hudson.plugins.git.BranchSpec>
-          <name>*/master</name>
+          <name>*/multiplatform</name>
         </hudson.plugins.git.BranchSpec>
       </branches>
       <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
@@ -98,5 +126,6 @@
     <lightweight>true</lightweight>
   </definition>
   <triggers/>
+  <authToken>test-token</authToken>
   <disabled>false</disabled>
 </flow-definition>

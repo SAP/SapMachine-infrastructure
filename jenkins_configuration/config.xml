@@ -436,7 +436,7 @@
           <jobFilters/>
           <name>Release 11</name>
           <width>THIRD</width>
-          <alignment>LEFT</alignment>
+          <alignment>CENTER</alignment>
           <columns>
             <hudson.views.StatusColumn/>
             <hudson.views.WeatherColumn/>
@@ -454,6 +454,21 @@
           </jobNames>
           <jobFilters/>
           <name>Release 10</name>
+          <width>THIRD</width>
+          <alignment>CENTER</alignment>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+          </columns>
+        </hudson.plugins.sectioned__view.ListViewSection>
+        <hudson.plugins.sectioned__view.ListViewSection>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
+            <string>build-10-release-linux_ppc64le</string>
+          </jobNames>
+          <jobFilters/>
+          <name>Release 10 Linux PPC64LE</name>
           <width>THIRD</width>
           <alignment>CENTER</alignment>
           <columns>
