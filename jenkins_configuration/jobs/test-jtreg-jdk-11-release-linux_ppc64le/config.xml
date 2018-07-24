@@ -12,60 +12,30 @@
   <description></description>
   <keepDependencies>false</keepDependencies>
   <properties>
-    <jenkins.model.BuildDiscarderProperty>
-      <strategy class="hudson.tasks.LogRotator">
-        <daysToKeep>-1</daysToKeep>
-        <numToKeep>-1</numToKeep>
-        <artifactDaysToKeep>-1</artifactDaysToKeep>
-        <artifactNumToKeep>1</artifactNumToKeep>
-      </strategy>
-    </jenkins.model.BuildDiscarderProperty>
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
-        <hudson.model.StringParameterDefinition>
-          <name>GIT_TAG_NAME</name>
+        <hudson.model.TextParameterDefinition>
+          <name>test_suite</name>
           <description></description>
-          <defaultValue>sapmachine-10.0.1+10-0</defaultValue>
+          <defaultValue>jdk</defaultValue>
           <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.BooleanParameterDefinition>
-          <name>PUBLISH</name>
+        </hudson.model.TextParameterDefinition>
+        <hudson.model.TextParameterDefinition>
+          <name>test_groups</name>
           <description></description>
-          <defaultValue>true</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
-        <hudson.model.BooleanParameterDefinition>
-          <name>RUN_TESTS</name>
-          <description></description>
-          <defaultValue>true</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>HOTSPOT_TEST_JOB</name>
-          <description></description>
-          <defaultValue>test-jtreg-hotspot-10-release-linux_ppc64le</defaultValue>
+          <defaultValue>:tier1</defaultValue>
           <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
+        </hudson.model.TextParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>JDK_TEST_JOB</name>
+          <name>JDK_BUILD_JOB</name>
           <description></description>
-          <defaultValue>test-jtreg-jdk-10-release-linux_ppc64le</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>LANGTOOLS_TEST_JOB</name>
-          <description></description>
-          <defaultValue>test-jtreg-langtools-10-release-linux_ppc64le</defaultValue>
+          <defaultValue>build-11-release-linux_ppc64le</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>SAPMACHINE_GIT_BRANCH</name>
           <description></description>
-          <defaultValue>sapmachine10</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>SAPMACHINE_ARCHIVE_NAME_PREFIX</name>
-          <description></description>
-          <defaultValue>sapmachine10_linux-ppc64le</defaultValue>
+          <defaultValue>sapmachine11</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
@@ -77,26 +47,20 @@
         <hudson.model.StringParameterDefinition>
           <name>AGENT_LABEL</name>
           <description></description>
-          <defaultValue> linux_ppc64le</defaultValue>
+          <defaultValue>linux_ppc64le</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
-        <hudson.model.BooleanParameterDefinition>
-          <name>PROPAGATE_RESULT</name>
+        <hudson.plugins.copyartifact.BuildSelectorParameter plugin="copyartifact@1.41">
+          <name>BUILD_SELECTOR</name>
           <description></description>
-          <defaultValue>true</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
-        <hudson.model.BooleanParameterDefinition>
-          <name>RELEASE</name>
-          <description></description>
-          <defaultValue>false</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
+          <defaultSelector class="hudson.plugins.copyartifact.TriggeredBuildSelector">
+            <fallbackToLastSuccessful>true</fallbackToLastSuccessful>
+            <upstreamFilterStrategy>UseGlobalSetting</upstreamFilterStrategy>
+            <allowUpstreamDependencies>false</allowUpstreamDependencies>
+          </defaultSelector>
+        </hudson.plugins.copyartifact.BuildSelectorParameter>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
-    <hudson.plugins.copyartifact.CopyArtifactPermissionProperty plugin="copyartifact@1.41">
-      <projectNameList>
-        <string>*</string>
-      </projectNameList>
-    </hudson.plugins.copyartifact.CopyArtifactPermissionProperty>
   </properties>
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@2.54">
     <scm class="hudson.plugins.git.GitSCM" plugin="git@3.9.1">
@@ -116,10 +80,9 @@
       <submoduleCfg class="list"/>
       <extensions/>
     </scm>
-    <scriptPath>build-pipe/Jenkinsfile</scriptPath>
+    <scriptPath>test-pipe/Jenkinsfile_test_jtreg</scriptPath>
     <lightweight>true</lightweight>
   </definition>
   <triggers/>
-  <authToken>test-token</authToken>
   <disabled>false</disabled>
 </flow-definition>
