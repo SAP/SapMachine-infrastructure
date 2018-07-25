@@ -83,8 +83,10 @@ make run-test-gtest
 tar czf ../build.tar.gz build
 
 cd build
-cd "$(ls)"/bundles
+cd "$(ls)"
+tar czf ../../test.tar.gz bundles images/test
 
+cd bundles
 HAS_JRE=$(ls sapmachine-jre* | wc -l)
 
 if [ "$HAS_JRE" -lt "1" ]; then

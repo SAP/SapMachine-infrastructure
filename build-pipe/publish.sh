@@ -4,11 +4,9 @@ set -ex
 TIMESTAMP=`date +'%Y%m%d_%H_%M_%S'`
 TIMESTAMP_LONG=`date +'%Y/%m/%d %H:%M:%S'`
 
-export GITHUB_TOKEN=$SAPMACHINE_PUBLISH_GITHUB_TOKEN
-export GITHUB_USER=$SAPMACHINE_PUBLISH_GITHUB_USER
-export GITHUB_REPO=$SAPMACHINE_PUBLISH_GITHUB_REPO_NAME
+export GITHUB_API_ACCESS_TOKEN=$SAPMACHINE_PUBLISH_GITHUB_TOKEN
 
-PRE_RELEASE_OPT="--pre-release"
+PRE_RELEASE_OPT="-p"
 if [ "$RELEASE" == true ]; then
   PRE_RELEASE_OPT=""
 fi
@@ -31,11 +29,11 @@ if [ -z $GIT_TAG_NAME ]; then
     git push --tags
     popd
     GIT_TAG_DESCRIPTION="${SAPMACHINE_ARCHIVE_NAME_PREFIX} Snapshot ${TIMESTAMP_LONG}"
-    github-release release -t $GIT_TAG_NAME $PRE_RELEASE_OPT -d "$GIT_TAG_DESCRIPTION"
+    python lib/github_publish.py -t $GIT_TAG_NAME -d "$GIT_TAG_DESCRIPTION" $PRE_RELEASE_OPT || true
 
 else
     GIT_TAG_NAME=$(echo $GIT_TAG_NAME | sed 's/-alpine//')
-    github-release release -t $GIT_TAG_NAME $PRE_RELEASE_OPT || true
+    python lib/github_publish.py -t $GIT_TAG_NAME $PRE_RELEASE_OPT || true
 fi
 
 # replace the '+' by '.' - github replaces it anyway, but we want to have it consistent for sha256sum
@@ -56,26 +54,7 @@ ARCHIVE_SUM_JRE="$(echo $ARCHIVE_NAME_JRE | sed 's/tar\.gz/sha256\.txt/')"
 sha256sum $ARCHIVE_NAME_JRE > $ARCHIVE_SUM_JRE
 sha256sum $ARCHIVE_NAME_JDK > $ARCHIVE_SUM_JDK
 
-github-release -v \
-    upload \
-    -t "${GIT_TAG_NAME}" \
-    -n "${ARCHIVE_NAME_JDK}" \
-    -f "${ARCHIVE_NAME_JDK}"
-
-github-release -v \
-    upload \
-    -t "${GIT_TAG_NAME}" \
-    -n "${ARCHIVE_NAME_JRE}" \
-    -f "${ARCHIVE_NAME_JRE}"
-
-github-release -v \
-    upload \
-    -t "${GIT_TAG_NAME}" \
-    -n "${ARCHIVE_SUM_JRE}" \
-    -f "${ARCHIVE_SUM_JRE}"
-
-github-release -v \
-    upload \
-    -t "${GIT_TAG_NAME}" \
-    -n "${ARCHIVE_SUM_JDK}" \
-    -f "${ARCHIVE_SUM_JDK}"
+python lib/github_publish.py -t $GIT_TAG_NAME -a "${ARCHIVE_NAME_JDK}"
+python lib/github_publish.py -t $GIT_TAG_NAME -a "${ARCHIVE_NAME_JRE}"
+python lib/github_publish.py -t $GIT_TAG_NAME -a "${ARCHIVE_SUM_JDK}"
+python lib/github_publish.py -t $GIT_TAG_NAME -a "${ARCHIVE_SUM_JRE}"

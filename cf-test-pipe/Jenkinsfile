@@ -1,6 +1,9 @@
 pipeline {
     agent {
-        dockerfile { dir 'cf-test-pipe/docker' }
+        dockerfile {
+            label 'cloud_foundry'
+            dir 'cf-test-pipe/docker'
+        }
     }
     stages {
         stage('Test') {

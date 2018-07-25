@@ -1,6 +1,9 @@
 pipeline {
     agent {
-        dockerfile { dir 'debian-pipe/docker/ubuntu_16_04_x86_64' }
+        dockerfile {
+            label 'cloud_foundry'
+            dir 'dockerfiles/ubuntu_14_04_x86_64'
+        }
     }
     stages {
         stage('Generate') {

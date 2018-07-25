@@ -32,6 +32,9 @@ def main(argv=None):
     asset_pattern = re.compile(utils.sapmachine_asset_pattern())
     request = Request(github_api)
 
+    if token is not None:
+        request.add_header('Authorization', str.format('token {0}', token))
+
     response = json.loads(urlopen(request).read())
     for release in response:
         if release['prerelease'] is True and not include_prereleases:
