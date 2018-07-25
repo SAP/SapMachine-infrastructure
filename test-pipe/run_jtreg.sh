@@ -50,6 +50,10 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 chmod +x ${JT_HOME}/bin/jtreg
 
+export PATH=${TEST_JDK}:$PATH
+export JT_JAVA=${TEST_JDK}
+export JAVA_HOME=${TEST_JDK}
+
 if [ "${TEST_SUITE}" == "hotspot" ]; then
     ${JT_HOME}/bin/jtreg -dir:${JDK_LOCATION}/test/${TEST_SUITE}/jtreg -verbose:summary -nativepath:${TEST_NATIVE_LIB} \
      -exclude:${JDK_LOCATION}/test/${TEST_SUITE}/jtreg/ProblemList.txt -exclude:${JDK_LOCATION}/test/${TEST_SUITE}/jtreg/ProblemList-SapMachine.txt \
