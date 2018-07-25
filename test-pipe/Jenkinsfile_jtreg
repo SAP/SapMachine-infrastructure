@@ -11,9 +11,9 @@ pipeline {
                 }
             }
             steps {
-                sh "hg clone http://hg.openjdk.java.net/code-tools/jtreg
+                sh "hg clone http://hg.openjdk.java.net/code-tools/jtreg"
                 sh "cd jtreg && bash make/build-all.sh /usr/lib/jvm/java-8-openjdk-*"
-                sh "cp jtreg/build/images/jtreg.zip ./jreg.zip
+                sh "cp jtreg/build/images/jtreg.zip ./jreg.zip"
             }
             post {
                 success {
