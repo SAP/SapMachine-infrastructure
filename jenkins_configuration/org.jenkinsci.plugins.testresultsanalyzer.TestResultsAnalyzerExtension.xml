@@ -1,15 +1,15 @@
 <?xml version='1.1' encoding='UTF-8'?>
-<org.jenkinsci.plugins.testresultsanalyzer.TestResultsAnalyzerExtension_-DescriptorImpl plugin="test-results-analyzer@0.3.4">
+<org.jenkinsci.plugins.testresultsanalyzer.TestResultsAnalyzerExtension_-DescriptorImpl plugin="test-results-analyzer@0.3.5">
   <noOfBuilds>10</noOfBuilds>
+  <noOfRunsToFetch>-1</noOfRunsToFetch>
   <showAllBuilds>false</showAllBuilds>
   <showBuildTime>false</showBuildTime>
   <showLineGraph>true</showLineGraph>
   <showBarGraph>true</showBarGraph>
   <showPieGraph>true</showPieGraph>
+  <hideConfigurationMethods>false</hideConfigurationMethods>
   <runTimeLowThreshold>0.5</runTimeLowThreshold>
   <runTimeHighThreshold>1.0</runTimeHighThreshold>
-  <passFailString>passfail</passFailString>
-  <runtimeString>runtime</runtimeString>
   <useCustomStatusNames>false</useCustomStatusNames>
   <passedRepresentation>PASSED</passedRepresentation>
   <failedRepresentation>FAILED</failedRepresentation>

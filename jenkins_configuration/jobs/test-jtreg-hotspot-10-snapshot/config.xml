@@ -73,12 +73,6 @@ Because the exclude list does not support groups we cannot exclude jcstress test
             <stable>true</stable>
           </defaultSelector>
         </hudson.plugins.copyartifact.BuildSelectorParameter>
-        <hudson.model.StringParameterDefinition>
-          <name>JTREG_BUILD_JOB</name>
-          <description></description>
-          <defaultValue>jtreg</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>
