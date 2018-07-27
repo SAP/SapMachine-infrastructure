@@ -1,0 +1,129 @@
+pipeline {
+    agent {
+        label params.AGENT_LABEL
+    }
+    stages {
+        stage('Build') {
+            environment {
+              SAPMACHINE_GIT_REPO = 'github.com/SAP/SapMachine.git'
+              SAPMACHINE_PUBLISH_GITHUB_TOKEN = credentials('SapMachine-Github-Token')
+              SAPMACHINE_PUBLISH_GITHUB_REPO_NAME = 'SapMachine'
+              SAPMACHINE_PUBLISH_GITHUB_USER = 'SAP'
+            }
+            steps {
+              withCredentials([
+                  [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
+                  ]) {
+                sh '''
+                  build-pipe/build.sh
+                  '''
+                }
+            }
+            post {
+                success {
+                    junit 'gtest.xml'
+                }
+            }
+        }
+        stage('Archive') {
+            steps {
+                archive 'build.tar.gz'
+                archive 'test.tar.gz'
+                archive 'apidocs.zip'
+            }
+        }
+        stage('Run Required Tests') {
+            when {
+                expression { params.RUN_TESTS == true && params.PROPAGATE_RESULT == true}
+            }
+            steps {
+            build job: HOTSPOT_TEST_JOB, propagate: true, wait: true, parameters:
+                    [
+                        string(name: 'GITHUB_PR_NUMBER', value: params.GITHUB_PR_NUMBER),
+                        string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME)
+                    ]
+
+            build job: JDK_TEST_JOB, propagate: true, wait: true, parameters:
+                    [
+                        string(name: 'GITHUB_PR_NUMBER', value: params.GITHUB_PR_NUMBER),
+                        string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME)
+                    ]
+
+            build job: LANGTOOLS_TEST_JOB, propagate: true, wait: true, parameters:
+                    [
+                        string(name: 'GITHUB_PR_NUMBER', value: params.GITHUB_PR_NUMBER),
+                        string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME)
+                    ]
+
+            }
+        }
+        stage('Trigger Tests') {
+            when {
+                expression { params.RUN_TESTS == true && params.PROPAGATE_RESULT != true}
+            }
+            steps {
+            build job: HOTSPOT_TEST_JOB, propagate: false, wait: false, parameters:
+                    [
+                        string(name: 'GITHUB_PR_NUMBER', value: params.GITHUB_PR_NUMBER),
+                        string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME)
+                    ]
+
+            build job: JDK_TEST_JOB, propagate: false, wait: false, parameters:
+                    [
+                        string(name: 'GITHUB_PR_NUMBER', value: params.GITHUB_PR_NUMBER),
+                        string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME)
+                    ]
+
+            build job: LANGTOOLS_TEST_JOB, propagate: false, wait: false, parameters:
+                    [
+                        string(name: 'GITHUB_PR_NUMBER', value: params.GITHUB_PR_NUMBER),
+                        string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME)
+                    ]
+            }
+        }
+        stage('Publish GitHub') {
+            when {
+                expression { params.PUBLISH == true }
+            }
+            environment {
+              SAPMACHINE_GIT_REPO = 'github.com/SAP/SapMachine.git'
+              SAPMACHINE_PUBLISH_GITHUB_TOKEN = credentials('SapMachine-Github-Token')
+              SAPMACHINE_PUBLISH_GITHUB_REPO_NAME = 'SapMachine'
+              SAPMACHINE_PUBLISH_GITHUB_USER = 'SAP'
+            }
+            steps {
+                sh '''
+                build-pipe/publish.sh
+                '''
+            }
+        }
+        stage('Publish Website Data') {
+            when {
+                expression { params.PUBLISH == true }
+            }
+            steps {
+                build job: 'generate-website-data', propagate: false, wait: false
+            }
+        }
+        stage('Publish CF Java Buildpack Data') {
+            when {
+                expression { params.PUBLISH == true && params.AGENT_LABEL == "linux_x86_64" }
+            }
+            steps {
+                script {
+                    def match = params.GIT_TAG_NAME =~ /[^-]*-([0-9]+)[\.0-9]*\+.*/
+                    env.MAJOR_VERSION = match[0][1]
+                }
+                build job: 'generate-cf-data', propagate: false, wait: false, parameters:
+                    [
+                        string(name: 'MAJOR', value: env.MAJOR_VERSION)
+                    ]
+            }
+        }
+    }
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}
