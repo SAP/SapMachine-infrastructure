@@ -84,13 +84,13 @@ tar czf ../build.tar.gz build
 
 cd build
 cd "$(ls)"
-tar czf ../../test.tar.gz bundles images/test
+tar czf ../../../test.tar.gz bundles images/test
 
 cd bundles
 HAS_JRE=$(ls sapmachine-jre* | wc -l)
 
 if [ "$HAS_JRE" -lt "1" ]; then
-  JDK_NAME=$(ls sapmachine-jdk-*_bin.tar.gz)
+  JDK_NAME=$(ls sapmachine-jdk-*_bin.*)
   read JDK_MAJOR JDK_SUFFIX<<< $(echo $JDK_NAME | sed -rn 's/sapmachine-jdk-([0-9]+)(.*)/ \1 \2 /p')
   JRE_BUNDLE_NAME="sapmachine-jre-${JDK_MAJOR}${JDK_SUFFIX}"
   JRE_BUNDLE_TOP_DIR="sapmachine-jre-$JDK_MAJOR"
@@ -109,8 +109,8 @@ rm ../../../../apidocs.zip || true
 
 ls
 
-cp sapmachine-jdk-*_bin.tar.gz ../../../..
-cp sapmachine-jre-*_bin.tar.gz ../../../..
+cp sapmachine-jdk-*_bin.* ../../../..
+cp sapmachine-jre-*_bin.* ../../../..
 cp *-docs.zip ../../../../apidocs.zip
 
 cp ../test-results/$GTEST_RESULT_PATH/gtest.xml ../../../..
