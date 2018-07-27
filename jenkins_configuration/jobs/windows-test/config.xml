@@ -14,7 +14,9 @@
   <concurrentBuild>false</concurrentBuild>
   <builders>
     <hudson.tasks.Shell>
-      <command>uname -a</command>
+      <command>uname -a
+
+java -version</command>
     </hudson.tasks.Shell>
   </builders>
   <publishers/>
