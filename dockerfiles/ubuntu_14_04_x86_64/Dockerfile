@@ -32,10 +32,9 @@ python \
 ant \
 patch \
 mercurial \
-openjdk-7-jdk \
-docker.io
+openjdk-7-jdk
 
-RUN useradd -ms /bin/bash jenkins -u 1002 -G docker
+RUN useradd -ms /bin/bash jenkins -u 1002
 
 RUN mkdir -p /opt/sapmachine-10-jdk
 ENV BOOT_JDK=/opt/sapmachine-10-jdk

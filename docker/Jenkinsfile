@@ -4,12 +4,7 @@ pipeline {
     }
     stages {
         stage('Generate Dockerfiles') {
-            agent {
-                dockerfile {
-                    label params.AGENT_LABEL
-                    dir params.BUILD_DOCKER_DIR
-                }
-            }
+
             steps {
               withCredentials([
                   [$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-sapmachine', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD'],
@@ -84,12 +79,6 @@ pipeline {
             }
         }
         stage('Publish Images') {
-            agent {
-                dockerfile {
-                    label params.AGENT_LABEL
-                    dir params.BUILD_DOCKER_DIR
-                }
-            }
             when {
                 expression { params.PUBLISH == true }
             }
