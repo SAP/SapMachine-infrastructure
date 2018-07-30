@@ -32,7 +32,8 @@ python \
 ant \
 patch \
 mercurial \
-openjdk-7-jdk
+openjdk-7-jdk \
+docker.io
 
 RUN useradd -ms /bin/bash jenkins -u 1002
 
