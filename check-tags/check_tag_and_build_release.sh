@@ -60,5 +60,12 @@ do
     CRUMB=$(curl --user $JENKINS_PASSWORD  $JENKINS_URL/crumbIssuer/api/xml?xpath=concat\(//crumbRequestField,%22:%22,//crumb\))
     curl -H $CRUMB -X POST --user $JENKINS_PASSWORD \
     "$JENKINS_URL/job/build-$MAJOR_VERSION-release$TAG_EXT/buildWithParameters?TOKEN=test-token&GIT_TAG_NAME=$URL_TAG&PUBLISH=true&RUN_TESTS=true"
+
+    if [ -z $TAG_EXT ]; then
+      curl -H $CRUMB -X POST --user $JENKINS_PASSWORD \
+      "$JENKINS_URL/job/build-$MAJOR_VERSION-release-linux_ppc64le/buildWithParameters?TOKEN=test-token&GIT_TAG_NAME=$URL_TAG&PUBLISH=true&RUN_TESTS=true" || true
+      curl -H $CRUMB -X POST --user $JENKINS_PASSWORD \
+      "$JENKINS_URL/job/build-$MAJOR_VERSION-release-windows_x86_64/buildWithParameters?TOKEN=test-token&GIT_TAG_NAME=$URL_TAG&PUBLISH=true&RUN_TESTS=true" || true
+    fi
   fi
 done
