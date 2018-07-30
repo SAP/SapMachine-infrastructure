@@ -35,7 +35,7 @@ mercurial \
 openjdk-7-jdk \
 docker.io
 
-RUN useradd -ms /bin/bash jenkins -u 1002
+RUN useradd -ms /bin/bash jenkins -u 1002 -G docker
 
 RUN mkdir -p /opt/sapmachine-10-jdk
 ENV BOOT_JDK=/opt/sapmachine-10-jdk
