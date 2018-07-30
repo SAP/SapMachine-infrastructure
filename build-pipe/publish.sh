@@ -49,7 +49,9 @@ mv $FILE_NAME_JDK $ARCHIVE_NAME_JDK
 mv $FILE_NAME_JRE $ARCHIVE_NAME_JRE
 
 ARCHIVE_SUM_JDK="$(echo $ARCHIVE_NAME_JDK | sed 's/tar\.gz/sha256\.txt/')"
+ARCHIVE_SUM_JDK="$(echo $ARCHIVE_NAME_JDK | sed 's/zip/sha256\.txt/')"
 ARCHIVE_SUM_JRE="$(echo $ARCHIVE_NAME_JRE | sed 's/tar\.gz/sha256\.txt/')"
+ARCHIVE_SUM_JRE="$(echo $ARCHIVE_NAME_JRE | sed 's/zip/sha256\.txt/')"
 
 sha256sum $ARCHIVE_NAME_JRE > $ARCHIVE_SUM_JRE
 sha256sum $ARCHIVE_NAME_JDK > $ARCHIVE_SUM_JDK
