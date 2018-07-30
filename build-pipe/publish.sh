@@ -39,8 +39,8 @@ fi
 # replace the '+' by '.' - github replaces it anyway, but we want to have it consistent for sha256sum
 #FILE_TAG_NAME=$(echo $GIT_TAG_NAME | sed 's/\+/\./')
 
-FILE_NAME_JDK="$(ls sapmachine-jdk-*_bin.tar.gz)"
-FILE_NAME_JRE="$(ls sapmachine-jre-*_bin.tar.gz)"
+FILE_NAME_JDK="$(ls sapmachine-jdk-*_bin.*)"
+FILE_NAME_JRE="$(ls sapmachine-jre-*_bin.*)"
 
 ARCHIVE_NAME_JDK="$(echo $FILE_NAME_JDK | sed 's/\+/\./')"
 ARCHIVE_NAME_JRE="$(echo $FILE_NAME_JRE | sed 's/\+/\./')"
