@@ -80,6 +80,7 @@ def main(argv=None):
 
         with open(asset, 'rb') as asset_file:
             asset_data = asset_file.read()
+            asset_length = len(asset_data)
 
         retry = 2
 
@@ -89,8 +90,8 @@ def main(argv=None):
 
                 request.add_header('Authorization', str.format('token {0}', token))
                 request.add_header('Content-Type', asset_mime_type)
-                request.add_header('Content-Length', str(len(asset_data)))
-                print(str.format('uploading asset "{0}" ...', asset_name))
+                request.add_header('Content-Length', str(asset_length))
+                print(str.format('uploading asset "{0}" with a length of {1} bytes ...', asset_name, str(asset_length)))
                 response = json.loads(urlopen(request).read())
                 break
             except IOError:
