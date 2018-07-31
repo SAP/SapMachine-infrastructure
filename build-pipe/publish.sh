@@ -50,7 +50,7 @@ mv $FILE_NAME_JRE $ARCHIVE_NAME_JRE
 
 HAS_ZIP=$(ls sapmachine-jdk-*_bin.zip | wc -l)
 
-if [ "$HAS_JRE" -lt "1" ]; then
+if [ "$HAS_ZIP" -lt "1" ]; then
     ARCHIVE_SUM_JDK="$(echo $ARCHIVE_NAME_JDK | sed 's/tar\.gz/sha256\.txt/')"
     ARCHIVE_SUM_JRE="$(echo $ARCHIVE_NAME_JRE | sed 's/tar\.gz/sha256\.txt/')"
 else
