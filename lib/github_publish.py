@@ -79,12 +79,24 @@ def main(argv=None):
         upload_url = str(upload_url.split('{', 1)[0] + '?name=' + quote(asset_name))
 
         with open(asset, 'rb') as asset_file:
-            request = Request(upload_url, data=asset_file.read())
+            asset_data = asset_file.read()
 
-        request.add_header('Authorization', str.format('token {0}', token))
-        request.add_header('Content-Type', asset_mime_type)
-        print(str.format('uploading asset "{0}" ...', asset_name))
-        response = json.loads(urlopen(request).read())
+        retry = 2
+
+        while retry > 0:
+            try:
+                request = Request(upload_url, data=asset_data)
+
+                request.add_header('Authorization', str.format('token {0}', token))
+                request.add_header('Content-Type', asset_mime_type)
+                request.add_header('Content-Length', str(len(asset_data)))
+                print(str.format('uploading asset "{0}" ...', asset_name))
+                response = json.loads(urlopen(request).read())
+                break
+            except IOError:
+                _type, value, _traceback = sys.exc_info()
+                print('Error uploading asset "%s": %s' % (value.filename, value.strerror))
+                retry -= 1
 
 if __name__ == "__main__":
     sys.exit(main())
