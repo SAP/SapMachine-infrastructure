@@ -35,7 +35,7 @@ pipeline {
               SCIMARK_2_CP = '/opt/scimark2/scimark2lib.jar'
             }
             steps {
-                sh "bash test-pipe/run_jtreg.sh -l `pwd`/sapmachine -h `pwd`sapmachine/jtreg -s ${params.test_suite} ${params.test_groups}  || true"
+                sh "bash test-pipe/run_jtreg.sh -l `pwd`/sapmachine -h `pwd`/sapmachine/jtreg -s ${params.test_suite} ${params.test_groups}  || true"
             }
         }
         stage('Publish jtreg report') {
