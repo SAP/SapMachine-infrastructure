@@ -95,7 +95,7 @@ def main(argv=None):
                 break
             except IOError:
                 _type, value, _traceback = sys.exc_info()
-                print('Error uploading asset "%s": %s' % (value.filename, value.strerror))
+                print(str.format('Error uploading asset "{0}": {1}', asset_name, value.strerror))
                 retry -= 1
 
 if __name__ == "__main__":
