@@ -16,7 +16,8 @@ from string import Template
 #'linux-x64-musl': 'Linux x64 musl',
 os_description = {
     'linux-x64':     { 'ordinal': 1, 'name': 'Linux x64' },
-    'linux-ppc64le': { 'ordinal': 2, 'name': 'Linux ppc64le' }
+    'linux-ppc64le': { 'ordinal': 2, 'name': 'Linux ppc64le' },
+    'windows-x64':   { 'ordinal': 3, 'name': 'Windows x64'}
 }
 
 latest_template = '''---
