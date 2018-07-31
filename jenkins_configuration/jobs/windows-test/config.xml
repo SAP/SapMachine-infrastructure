@@ -16,7 +16,9 @@
     <hudson.tasks.Shell>
       <command>uname -a
 
-java -version</command>
+java -version
+
+echo &quot;${WORKSPACE}&quot;</command>
     </hudson.tasks.Shell>
   </builders>
   <publishers/>
