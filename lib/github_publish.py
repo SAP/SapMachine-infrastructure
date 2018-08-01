@@ -16,8 +16,8 @@ from urllib2 import urlopen, Request, quote
 from os.path import join
 
 def create_request(path, data=None, method='GET'):
-    org = 'reshnm'
-    repository = 'jenkins-test'
+    org = 'SAP'
+    repository = 'SapMachine'
     github_api = str.format('https://api.github.com/repos/{0}/{1}', org, repository)
     request_url = str.format('{0}/{1}', github_api, path)
     token = utils.get_github_api_accesstoken()
