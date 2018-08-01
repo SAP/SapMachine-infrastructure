@@ -37,5 +37,5 @@ openjdk-8-jdk
 RUN mkdir -p /opt/openjdk-10-jdk
 ENV BOOT_JDK=/opt/openjdk-10-jdk
 WORKDIR $BOOT_JDK
-RUN wget -q https://github.com/AdoptOpenJDK/openjdk10-releases/releases/download/201807101745/OpenJDK10_ppc64le_Linux_201807101745.tar.gz
-RUN bsdtar xf OpenJDK10_ppc64le_Linux_201807101745.tar.gz --strip-components=2
+RUN wget -q https://github.com/SAP/SapMachine/releases/download/sapmachine-10.0.2%2B13-0/sapmachine-jre-10.0.2.13_linux-ppc64le_bin.tar.gz
+RUN bsdtar xf sapmachine-jre-10.0.2.13_linux-ppc64le_bin.tar.gz --strip-components=1
