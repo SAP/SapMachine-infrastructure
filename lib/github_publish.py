@@ -69,8 +69,11 @@ def main(argv=None):
             break
 
     if release_id is None:
+        '''
+        release does not exist yet -> create it
+        '''
         data = json.dumps({ "tag_name": tag, "name": tag, "body": description, "draft": False, "prerelease": prerelease })
-        request = create_request('', data=data, method='POST')
+        request = create_request('releases', data=data, method='POST')
         request.add_header('Content-Type', 'application/json')
         response = json.loads(urlopen(request).read())
         release_id = response['id']
@@ -78,11 +81,18 @@ def main(argv=None):
         print(str.format('created release "{0}"', tag))
 
     if asset_file is not None:
+        '''
+        asset file is specified (-a)
+        first check wether the asset already exists
+        '''
         request = create_request(str.format('releases/{0}/assets', release_id))
         response = json.loads(urlopen(request).read())
 
         for asset in response:
             if asset['name'] == asset_name:
+                '''
+                asset already exists -> delete it
+                '''
                 print(str.format('deleting already existing asset "{0}" ...', asset_name))
                 asset_id = asset['id']
                 request = create_request(str.format('releases/assets/{0}', asset_id), method='DELETE')
@@ -91,6 +101,9 @@ def main(argv=None):
 
         upload_url = str(upload_url.split('{', 1)[0] + '?name=' + quote(asset_name))
 
+        '''
+        read the contents of the asset file
+        '''
         with open(asset_file, 'rb') as asset_file:
             asset_data = asset_file.read()
             asset_length = len(asset_data)
@@ -99,6 +112,9 @@ def main(argv=None):
 
         while retry > 0:
             try:
+                '''
+                upload the asset file
+                '''
                 request = Request(upload_url, data=asset_data)
                 request.add_header('Authorization', str.format('token {0}', utils.get_github_api_accesstoken()))
                 request.add_header('Content-Type', asset_mime_type)
