@@ -15,6 +15,22 @@ from urllib import quote
 from urllib2 import urlopen, Request, quote
 from os.path import join
 
+def create_request(path, data=None, method='GET'):
+    org = 'reshnm'
+    repository = 'jenkins-test'
+    github_api = str.format('https://api.github.com/repos/{0}/{1}', org, repository)
+    request_url = str.format('{0}/{1}', github_api, path)
+    token = utils.get_github_api_accesstoken()
+
+    if token is None:
+        raise Exception('no GitHub API access token specified')
+
+    request = Request(request_url, data=data)
+    request.get_method = lambda: method
+    request.add_header('Authorization', str.format('token {0}', token))
+    return request
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('-t', '--tag', help='the SapMachine tag', metavar='MAJOR', required=True)
@@ -25,13 +41,13 @@ def main(argv=None):
 
     tag = args.tag
     prerelease = args.prerelease
-    asset = args.asset
+    asset_file = args.asset
     description = '' if args.description is None else args.description
 
-    if asset is not None:
-        asset = os.path.realpath(asset)
-        asset_name = os.path.basename(asset)
-        asset_mime_type = mimetypes.guess_type(asset)
+    if asset_file is not None:
+        asset_file = os.path.realpath(asset_file)
+        asset_name = os.path.basename(asset_file)
+        asset_mime_type = mimetypes.guess_type(asset_file)
 
         if asset_mime_type is None:
             asset_mime_type = 'application/octet-stream'
@@ -40,45 +56,42 @@ def main(argv=None):
             asset_mime_type = asset_mime_type[0]
             print(str.format('detected mime-type "{0}"', asset_mime_type))
 
-    token = utils.get_github_api_accesstoken()
-
-    if token is None:
-        raise Exception('no GitHub API access token specified')
-
-    org = 'SAP'
-    repository = 'SapMachine'
-    github_api = str.format('https://api.github.com/repos/{0}/{1}/releases', org, repository)
-    asset_pattern = re.compile(utils.sapmachine_asset_pattern())
-    request = Request(github_api)
-    request.add_header('Authorization', str.format('token {0}', token))
+    request = create_request('releases')
+    response = json.loads(urlopen(request).read())
 
     release_id = None
-    assets_url = None
     upload_url = None
 
-    response = json.loads(urlopen(request).read())
     for release in response:
         if release['tag_name'] == tag:
             release_id = release['id']
-            assets_url = release['assets_url']
             upload_url = release['upload_url']
             break
 
     if release_id is None:
         data = json.dumps({ "tag_name": tag, "name": tag, "body": description, "draft": False, "prerelease": prerelease })
-        request = Request(github_api, data=data)
-        request.add_header('Authorization', str.format('token {0}', token))
+        request = create_request('', data=data, method='POST')
         request.add_header('Content-Type', 'application/json')
         response = json.loads(urlopen(request).read())
         release_id = response['id']
-        assets_url = response['assets_url']
         upload_url = response['upload_url']
         print(str.format('created release "{0}"', tag))
 
-    if asset is not None:
+    if asset_file is not None:
+        request = create_request(str.format('releases/{0}/assets', release_id))
+        response = json.loads(urlopen(request).read())
+
+        for asset in response:
+            if asset['name'] == asset_name:
+                print(str.format('deleting already existing asset "{0}" ...', asset_name))
+                asset_id = asset['id']
+                request = create_request(str.format('releases/assets/{0}', asset_id), method='DELETE')
+                urlopen(request).read()
+                break
+
         upload_url = str(upload_url.split('{', 1)[0] + '?name=' + quote(asset_name))
 
-        with open(asset, 'rb') as asset_file:
+        with open(asset_file, 'rb') as asset_file:
             asset_data = asset_file.read()
             asset_length = len(asset_data)
 
@@ -87,8 +100,7 @@ def main(argv=None):
         while retry > 0:
             try:
                 request = Request(upload_url, data=asset_data)
-
-                request.add_header('Authorization', str.format('token {0}', token))
+                request.add_header('Authorization', str.format('token {0}', utils.get_github_api_accesstoken()))
                 request.add_header('Content-Type', asset_mime_type)
                 request.add_header('Content-Length', str(asset_length))
                 print(str.format('uploading asset "{0}" with a length of {1} bytes ...', asset_name, str(asset_length)))
