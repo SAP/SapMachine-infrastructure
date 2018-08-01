@@ -121,7 +121,7 @@ def copytree(source, dest):
             shutil.copyfile(full_path, dest_path)
 
 def sapmachine_asset_pattern():
-    return '[^-]+-([^-]+)-([^_]+)_([^_]+)_bin\.tar\.gz'
+    return '[^-]+-([^-]+)-([^_]+)_([^_]+)_bin(\.tar\.gz|\.zip)'
 
 def fetch_tag(tag, platform, token=None):
     github_api = str.format('https://api.github.com/repos/SAP/SapMachine/releases/tags/{0}', quote(tag))
