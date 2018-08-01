@@ -58,8 +58,8 @@ else
     ARCHIVE_SUM_JRE="$(echo $ARCHIVE_NAME_JRE | sed 's/zip/sha256\.txt/')"
 fi
 
-sha256sum $ARCHIVE_NAME_JRE > $ARCHIVE_SUM_JRE
 sha256sum $ARCHIVE_NAME_JDK > $ARCHIVE_SUM_JDK
+sha256sum $ARCHIVE_NAME_JRE > $ARCHIVE_SUM_JRE
 
 python lib/github_publish.py -t $GIT_TAG_NAME -a "${ARCHIVE_NAME_JDK}"
 python lib/github_publish.py -t $GIT_TAG_NAME -a "${ARCHIVE_NAME_JRE}"
