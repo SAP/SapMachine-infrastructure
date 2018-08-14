@@ -40,6 +40,12 @@ if [ "$RELEASE" == true ]; then
   VERSION_PRE_OPT=''
 fi
 
+if [ -z $BOOT_JDK ]; then
+  if [ -e "/opt/openjdk-10/jdk" ]; then
+    BOOT_JDK="/opt/openjdk-10/jdk"
+  fi
+fi
+
 VENDOR_INFO="--with-vendor-name=\'SAP SE\' --with-vendor-url=https://sapmachine.io \
 --with-vendor-bug-url=https://github.com/SAP/SapMachine/issues/new \
 --with-vendor-vm-bug-url=https://github.com/SAP/SapMachine/issues/new"
