@@ -1,0 +1,157 @@
+# Copyright (c) 2001-2018 by SAP SE, Walldorf, Germany.
+# All rights reserved. Confidential and proprietary.
+
+# ansible 2.4
+---
+  - name: Setup SapMachine Linux ppc64 Slave
+    hosts: SapMachineSlave-Linux-ppc64
+    gather_facts: False
+    pre_tasks:
+      - name: 'install python2'
+        raw: sudo dnf -y install python libselinux-python
+    vars:
+      slave_jar_version: 3.21
+      jenkins_master_url: https://ci.sapmachine.io/computer/agent-linux-ppc64-1/slave-agent.jnlp
+      jenkins_slave_name: agent-linux-ppc64-1
+
+    tasks:
+
+      - name: install perl
+        dnf:
+          name: perl
+          state: latest
+        become: yes
+
+      - name: install OpenJDK 8 JDK
+        dnf:
+          name: java-1.8.0-openjdk-devel
+          state: latest
+        become: yes
+
+      - name: install gcc
+        dnf:
+          name: gcc
+          state: latest
+        become: yes
+
+      - name: install g++
+        dnf:
+          name: gcc-c++
+          state: latest
+        become: yes
+
+      - name: install make
+        dnf:
+          name: make
+          state: latest
+        become: yes
+
+      - name: install autoconf
+        dnf:
+          name: autoconf
+          state: latest
+        become: yes
+
+      - name: install automake
+        dnf:
+          name: automake
+          state: latest
+        become: yes
+
+      - name: install zip
+        dnf:
+          name: zip
+          state: latest
+        become: yes
+
+      - name: install unzip
+        dnf:
+          name: unzip
+          state: latest
+        become: yes
+
+      - name: install git
+        dnf:
+          name: git
+          state: latest
+        become: yes
+
+      - name: install mercurial
+        dnf:
+          name: mercurial
+          state: latest
+        become: yes
+
+      - name: install fontconfig-devel
+        dnf:
+          name: fontconfig-devel
+          state: latest
+        become: yes
+
+      # create jenkins group and user
+      # used for running the jenkins slave
+      - name: create jenkins group
+        group:
+          name: jenkins
+          state: present
+        become: yes
+        tags:
+          - groups.create_jenkins
+
+      - name: create jenkins user
+        user:
+          name: jenkins
+          comment: "Jenkins user"
+          groups: jenkins
+        become: yes
+        tags:
+          - users.create_jenkins
+
+      # create the jenkins slave home directory
+      - name: create Jenkins Slave home directory
+        file:
+          path: /home/jenkins/slave-home
+          state: directory
+        become: yes
+        become_user: jenkins
+        tags:
+          - jenkins_slave.create_home
+
+      # download the jenkins slave jar file
+      - name: download Jenkins Slave jar
+        get_url:
+          url: "https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/{{ slave_jar_version }}/remoting-{{ slave_jar_version }}.jar"
+          dest: /home/jenkins/slave.jar
+          force: yes
+        become: yes
+        become_user: jenkins
+        tags:
+          - jenkins_slave.download_slave_jar
+
+      # copy the script file to start the jenkins slave
+      - name: copy Jenkins Slave files
+        synchronize:
+          src: ../ci-slave-local/start-slave.sh
+          dest: /home/jenkins/start-slave.sh
+        become: yes
+        become_user: jenkins
+        tags:
+          - jenkins_slave.copy_files
+
+      # stop all running java processes (jenkins slave)
+      - name: stop all Java processes
+        command: killall -9 java
+        become: yes
+        failed_when: false
+        tags:
+          - java.kill_all
+
+      # start the jenkins slave
+      - name: start Jenkins Slave
+        command: "/home/jenkins/start-slave.sh {{ jenkins_master_url }} {{ jenkins_slave_secret }}"
+        args:
+          chdir: /home/jenkins
+        become: yes
+        become_user: jenkins
+        tags:
+          - jenkins_slave.start
