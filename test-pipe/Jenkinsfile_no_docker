@@ -41,7 +41,6 @@ pipeline {
         stage('Publish jtreg report') {
             steps {
                 sh '''
-                    cd sapmachine
                     mkdir test_report
                     mv JTreport test_report
                     mv JTwork test_report
@@ -52,7 +51,7 @@ pipeline {
                     allowMissing: false,
                     alwaysLinkToLastBuild: false,
                     keepAll: true,
-                    reportDir: 'sapmachine/test_report',
+                    reportDir: 'test_report',
                     reportFiles: 'JTreport/index.html',
                     reportName: 'JT Report'
                 ]
