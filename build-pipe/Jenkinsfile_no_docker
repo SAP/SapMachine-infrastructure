@@ -33,12 +33,6 @@ pipeline {
             }
         }
         stage('Run Tests') {
-            agent {
-                dockerfile {
-                    label params.AGENT_LABEL
-                    dir params.DOCKER_DIR
-                }
-            }
             when {
                 expression { params.RUN_TESTS == true}
             }
