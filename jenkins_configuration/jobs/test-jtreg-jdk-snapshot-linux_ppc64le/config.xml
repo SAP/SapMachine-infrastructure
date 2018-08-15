@@ -1,8 +1,8 @@
 <?xml version='1.1' encoding='UTF-8'?>
-<flow-definition plugin="workflow-job@2.23">
+<flow-definition plugin="workflow-job@2.24">
   <actions>
     <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.3.1"/>
-    <io.jenkins.blueocean.service.embedded.BlueOceanUrlAction_-DoNotShowPersistedBlueOceanUrlActions plugin="blueocean-rest-impl@1.7.1"/>
+    <io.jenkins.blueocean.service.embedded.BlueOceanUrlAction_-DoNotShowPersistedBlueOceanUrlActions plugin="blueocean-rest-impl@1.7.2"/>
     <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.3.1">
       <jobProperties/>
       <triggers/>
@@ -37,7 +37,7 @@
         <hudson.model.StringParameterDefinition>
           <name>JDK_BUILD_JOB</name>
           <description></description>
-          <defaultValue>build-snapshot</defaultValue>
+          <defaultValue>build-snapshot-linux_ppc64le</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
