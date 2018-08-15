@@ -44,7 +44,7 @@ pipeline {
                 archive 'apidocs.zip'
             }
         }
-        stage('Run Required Tests') {
+        stage('Run Tests') {
             agent {
                 dockerfile {
                     label params.AGENT_LABEL
@@ -52,57 +52,27 @@ pipeline {
                 }
             }
             when {
-                expression { params.RUN_TESTS == true && params.PROPAGATE_RESULT == true}
+                expression { params.RUN_TESTS == true}
             }
             steps {
-            build job: HOTSPOT_TEST_JOB, propagate: true, wait: true, parameters:
+            build job: HOTSPOT_TEST_JOB, propagate: params.PROPAGATE_RESULT, wait: true, parameters:
                     [
                         string(name: 'GITHUB_PR_NUMBER', value: params.GITHUB_PR_NUMBER),
                         string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME)
                     ]
 
-            build job: JDK_TEST_JOB, propagate: true, wait: true, parameters:
+            build job: JDK_TEST_JOB, propagate: params.PROPAGATE_RESULT, wait: true, parameters:
                     [
                         string(name: 'GITHUB_PR_NUMBER', value: params.GITHUB_PR_NUMBER),
                         string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME)
                     ]
 
-            build job: LANGTOOLS_TEST_JOB, propagate: true, wait: true, parameters:
+            build job: LANGTOOLS_TEST_JOB, propagate: params.PROPAGATE_RESULT, wait: true, parameters:
                     [
                         string(name: 'GITHUB_PR_NUMBER', value: params.GITHUB_PR_NUMBER),
                         string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME)
                     ]
 
-            }
-        }
-        stage('Trigger Tests') {
-            agent {
-                dockerfile {
-                    label params.AGENT_LABEL
-                    dir params.DOCKER_DIR
-                }
-            }
-            when {
-                expression { params.RUN_TESTS == true && params.PROPAGATE_RESULT != true}
-            }
-            steps {
-            build job: HOTSPOT_TEST_JOB, propagate: false, wait: false, parameters:
-                    [
-                        string(name: 'GITHUB_PR_NUMBER', value: params.GITHUB_PR_NUMBER),
-                        string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME)
-                    ]
-
-            build job: JDK_TEST_JOB, propagate: false, wait: false, parameters:
-                    [
-                        string(name: 'GITHUB_PR_NUMBER', value: params.GITHUB_PR_NUMBER),
-                        string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME)
-                    ]
-
-            build job: LANGTOOLS_TEST_JOB, propagate: false, wait: false, parameters:
-                    [
-                        string(name: 'GITHUB_PR_NUMBER', value: params.GITHUB_PR_NUMBER),
-                        string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME)
-                    ]
             }
         }
         stage('Publish GitHub') {
