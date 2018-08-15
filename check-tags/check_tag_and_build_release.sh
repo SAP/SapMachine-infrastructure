@@ -63,9 +63,11 @@ do
 
     if [ -z $TAG_EXT ]; then
       curl -H $CRUMB -X POST --user $JENKINS_PASSWORD \
-      "$JENKINS_URL/job/build-$MAJOR_VERSION-release-linux_ppc64le/buildWithParameters?TOKEN=test-token&GIT_TAG_NAME=$URL_TAG&PUBLISH=true&RUN_TESTS=true" || true
+      "$JENKINS_URL/job/build-$MAJOR_VERSION-release-linux_ppc64le/buildWithParameters?TOKEN=test-token&GIT_TAG_NAME=$URL_TAG&PUBLISH=true&RUN_TESTS=true&PROPAGATE_RESULT=false" || true
       curl -H $CRUMB -X POST --user $JENKINS_PASSWORD \
-      "$JENKINS_URL/job/build-$MAJOR_VERSION-release-windows_x86_64/buildWithParameters?TOKEN=test-token&GIT_TAG_NAME=$URL_TAG&PUBLISH=true&RUN_TESTS=true" || true
+      "$JENKINS_URL/job/build-$MAJOR_VERSION-release-linux_ppc64/buildWithParameters?TOKEN=test-token&GIT_TAG_NAME=$URL_TAG&PUBLISH=true&RUN_TESTS=true&PROPAGATE_RESULT=false" || true
+      curl -H $CRUMB -X POST --user $JENKINS_PASSWORD \
+      "$JENKINS_URL/job/build-$MAJOR_VERSION-release-windows_x86_64/buildWithParameters?TOKEN=test-token&GIT_TAG_NAME=$URL_TAG&PUBLISH=true&RUN_TESTS=true&PROPAGATE_RESULT=false" || true
     fi
   fi
 done
