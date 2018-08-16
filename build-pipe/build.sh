@@ -106,7 +106,9 @@ if [ "$HAS_JRE" -lt "1" ]; then
   cp -r ../images/jre/* $JRE_BUNDLE_TOP_DIR
   find $JRE_BUNDLE_TOP_DIR -name "*.debuginfo" -type f -delete
 
-  if [ "$JDK_SUFFIX"  = "zip"]; then
+
+
+  if [ ${JDK_SUFFIX: -4} == ".zip" ]; then
     zip -r $JRE_BUNDLE_NAME $JRE_BUNDLE_TOP_DIR
   else
     tar -czf  $JRE_BUNDLE_NAME $JRE_BUNDLE_TOP_DIR
