@@ -41,8 +41,8 @@ if [ "$RELEASE" == true ]; then
 fi
 
 if [ -z $BOOT_JDK ]; then
-  if [ -e "/opt/openjdk-10/jdk" ]; then
-    BOOT_JDK="/opt/openjdk-10/jdk"
+  if [ -e "/opt/boot_jdk" ]; then
+    BOOT_JDK="/opt/boot_jdk"
   fi
 fi
 

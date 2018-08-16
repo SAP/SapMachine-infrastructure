@@ -13,6 +13,7 @@
       slave_jar_version: 3.21
       jenkins_master_url: https://ci.sapmachine.io/computer/agent-linux-ppc64-1/slave-agent.jnlp
       jenkins_slave_name: agent-linux-ppc64-1
+      boot_jdk_url: https://github.com/SAP/SapMachine/releases/download/sapmachine-10.0.2%2B13-1/sapmachine-jdk-10.0.2.13_linux-ppc64_bin.tar.gz
 
     tasks:
 
@@ -87,6 +88,51 @@
           name: fontconfig-devel
           state: latest
         become: yes
+
+      - name: download Boot JDK
+        get_url:
+          url: "{{ boot_jdk_url }}"
+          dest: /opt
+          force: yes
+        become: yes
+        register: boot_jdk_result
+        tags:
+          - boot_jdk
+
+      - name: remove Boot JDK directory
+        file:
+          path: "/opt/boot_jdk"
+          state: absent
+        become: yes
+        tags:
+          - boot_jdk
+
+      - name: create Boot JDK directory
+        file:
+          path: "/opt/boot_jdk"
+          state: directory
+          mode: 0755
+        become: yes
+        tags:
+          - boot_jdk
+
+      - name: extract Boot JDK
+        unarchive:
+          src: "{{ boot_jdk_result.dest }}"
+          dest: "/opt/boot_jdk"
+          remote_src: yes
+          extra_opts: [--strip-components=1]
+        become: yes
+        tags:
+          - boot_jdk
+
+      - name: remove Boot JDK archvive
+        file:
+          path: "{{ boot_jdk_result.dest }}"
+          state: absent
+        become: yes
+        tags:
+          - boot_jdk
 
       # create jenkins group and user
       # used for running the jenkins slave
