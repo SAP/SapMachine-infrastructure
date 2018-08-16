@@ -25,7 +25,7 @@
         <hudson.model.StringParameterDefinition>
           <name>SAPMACHINE_GIT_BRANCH</name>
           <description></description>
-          <defaultValue>sapmachine10</defaultValue>
+          <defaultValue>sapmachine11</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
@@ -47,31 +47,31 @@
         <hudson.model.StringParameterDefinition>
           <name>HOTSPOT_TEST_JOB</name>
           <description></description>
-          <defaultValue>test-jtreg-hotspot-10-snapshot-linux_ppc64</defaultValue>
+          <defaultValue>test-jtreg-hotspot-11-snapshot-windows_x86_64</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>JDK_TEST_JOB</name>
           <description></description>
-          <defaultValue>test-jtreg-jdk-10-snapshot-linux_ppc64</defaultValue>
+          <defaultValue>test-jtreg-jdk-11-snapshot-windows_x86_64</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>LANGTOOLS_TEST_JOB</name>
           <description></description>
-          <defaultValue>test-jtreg-langtools-10-snapshot-linux_ppc64</defaultValue>
+          <defaultValue>test-jtreg-langtools-11-snapshot-windows_x86_64</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>SAPMACHINE_ARCHIVE_NAME_PREFIX</name>
           <description></description>
-          <defaultValue>sapmachine_linux-ppc64</defaultValue>
+          <defaultValue>sapmachine_windows-x64</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>AGENT_LABEL</name>
           <description></description>
-          <defaultValue>linux_ppc64</defaultValue>
+          <defaultValue>windows_x86_64</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
@@ -84,7 +84,7 @@
     <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
       <triggers>
         <hudson.triggers.TimerTrigger>
-          <spec>30 23 * * *</spec>
+          <spec>30 1 * * *</spec>
         </hudson.triggers.TimerTrigger>
       </triggers>
     </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>

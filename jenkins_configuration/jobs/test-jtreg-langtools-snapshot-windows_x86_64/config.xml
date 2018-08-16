@@ -17,77 +17,50 @@
         <daysToKeep>-1</daysToKeep>
         <numToKeep>50</numToKeep>
         <artifactDaysToKeep>-1</artifactDaysToKeep>
-        <artifactNumToKeep>1</artifactNumToKeep>
+        <artifactNumToKeep>-1</artifactNumToKeep>
       </strategy>
     </jenkins.model.BuildDiscarderProperty>
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
+        <hudson.model.TextParameterDefinition>
+          <name>test_suite</name>
+          <description></description>
+          <defaultValue>langtools</defaultValue>
+          <trim>false</trim>
+        </hudson.model.TextParameterDefinition>
+        <hudson.model.TextParameterDefinition>
+          <name>test_groups</name>
+          <description></description>
+          <defaultValue>&quot;jdk tools lib&quot;</defaultValue>
+          <trim>false</trim>
+        </hudson.model.TextParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>JDK_BUILD_JOB</name>
+          <description></description>
+          <defaultValue>build-snapshot-windows_x86_64</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>SAPMACHINE_GIT_BRANCH</name>
           <description></description>
-          <defaultValue>sapmachine10</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.BooleanParameterDefinition>
-          <name>PUBLISH</name>
-          <description></description>
-          <defaultValue>false</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
-        <hudson.model.BooleanParameterDefinition>
-          <name>RUN_TESTS</name>
-          <description></description>
-          <defaultValue>true</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>GIT_TAG_NAME</name>
-          <description></description>
-          <defaultValue></defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>HOTSPOT_TEST_JOB</name>
-          <description></description>
-          <defaultValue>test-jtreg-hotspot-10-snapshot-linux_ppc64</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>JDK_TEST_JOB</name>
-          <description></description>
-          <defaultValue>test-jtreg-jdk-10-snapshot-linux_ppc64</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>LANGTOOLS_TEST_JOB</name>
-          <description></description>
-          <defaultValue>test-jtreg-langtools-10-snapshot-linux_ppc64</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>SAPMACHINE_ARCHIVE_NAME_PREFIX</name>
-          <description></description>
-          <defaultValue>sapmachine_linux-ppc64</defaultValue>
+          <defaultValue>sapmachine</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>AGENT_LABEL</name>
           <description></description>
-          <defaultValue>linux_ppc64</defaultValue>
+          <defaultValue>windows_x86_64</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
-        <hudson.model.BooleanParameterDefinition>
-          <name>PROPAGATE_RESULT</name>
+        <hudson.plugins.copyartifact.BuildSelectorParameter plugin="copyartifact@1.41">
+          <name>BUILD_SELECTOR</name>
           <description></description>
-          <defaultValue>false</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
+          <defaultSelector class="hudson.plugins.copyartifact.StatusBuildSelector">
+            <stable>true</stable>
+          </defaultSelector>
+        </hudson.plugins.copyartifact.BuildSelectorParameter>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
-    <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
-      <triggers>
-        <hudson.triggers.TimerTrigger>
-          <spec>30 23 * * *</spec>
-        </hudson.triggers.TimerTrigger>
-      </triggers>
-    </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
   </properties>
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@2.54">
     <scm class="hudson.plugins.git.GitSCM" plugin="git@3.9.1">
@@ -107,10 +80,9 @@
       <submoduleCfg class="list"/>
       <extensions/>
     </scm>
-    <scriptPath>build-pipe/Jenkinsfile_no_docker</scriptPath>
+    <scriptPath>test-pipe/Jenkinsfile_no_docker</scriptPath>
     <lightweight>true</lightweight>
   </definition>
   <triggers/>
-  <authToken>test-token</authToken>
   <disabled>false</disabled>
 </flow-definition>
