@@ -1,23 +1,39 @@
 <?xml version='1.1' encoding='UTF-8'?>
 <list>
   <flow-owner plugin="workflow-job@2.24">
+    <job>build-snapshot-windows_x86_64</job>
+    <id>7</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@2.24">
+    <job>build-11-snapshot-windows_x86_64</job>
+    <id>2</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@2.24">
+    <job>test-jtreg-hotspot-snapshot-windows_x86_64</job>
+    <id>1</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@2.24">
+    <job>test-jtreg-hotspot-11-snapshot-windows_x86_64</job>
+    <id>2</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@2.24">
     <job>build-snapshot-linux_ppc64</job>
-    <id>5</id>
-  </flow-owner>
-  <flow-owner plugin="workflow-job@2.24">
-    <job>update-pipeline</job>
-    <id>271</id>
-  </flow-owner>
-  <flow-owner plugin="workflow-job@2.24">
-    <job>jenkins-backup</job>
-    <id>161</id>
-  </flow-owner>
-  <flow-owner plugin="workflow-job@2.24">
-    <job>jtreg</job>
-    <id>32</id>
+    <id>6</id>
   </flow-owner>
   <flow-owner plugin="workflow-job@2.24">
     <job>test-cf-java-buildpack</job>
-    <id>214</id>
+    <id>215</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@2.24">
+    <job>jenkins-backup</job>
+    <id>162</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@2.24">
+    <job>jtreg</job>
+    <id>33</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@2.24">
+    <job>update-pipeline</job>
+    <id>272</id>
   </flow-owner>
 </list>
