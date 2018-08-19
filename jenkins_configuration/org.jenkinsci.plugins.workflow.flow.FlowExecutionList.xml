@@ -17,23 +17,31 @@
     <id>2</id>
   </flow-owner>
   <flow-owner plugin="workflow-job@2.24">
-    <job>build-snapshot-linux_ppc64</job>
-    <id>6</id>
+    <job>build-snapshot-windows_x86_64</job>
+    <id>8</id>
   </flow-owner>
   <flow-owner plugin="workflow-job@2.24">
-    <job>test-cf-java-buildpack</job>
-    <id>215</id>
+    <job>build-11-snapshot-windows_x86_64</job>
+    <id>3</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@2.24">
+    <job>build-snapshot-linux_ppc64</job>
+    <id>7</id>
   </flow-owner>
   <flow-owner plugin="workflow-job@2.24">
     <job>jenkins-backup</job>
-    <id>162</id>
+    <id>163</id>
   </flow-owner>
   <flow-owner plugin="workflow-job@2.24">
     <job>jtreg</job>
-    <id>33</id>
+    <id>34</id>
   </flow-owner>
   <flow-owner plugin="workflow-job@2.24">
     <job>update-pipeline</job>
-    <id>272</id>
+    <id>273</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@2.24">
+    <job>test-cf-java-buildpack</job>
+    <id>216</id>
   </flow-owner>
 </list>
