@@ -1,14 +1,38 @@
 <?xml version='1.1' encoding='UTF-8'?>
 <hudson.model.Queue_-State>
-  <counter>8093</counter>
+  <counter>8300</counter>
   <items>
     <hudson.model.Queue_-BuildableItem>
       <actions/>
-      <id>8008</id>
+      <id>8298</id>
       <task class="org.jenkinsci.plugins.workflow.support.steps.ExecutorStepExecution$PlaceholderTask" plugin="workflow-durable-task-step@2.20">
         <context class="org.jenkinsci.plugins.workflow.cps.CpsStepContext" plugin="workflow-cps@2.54">
           <executionRef class="org.jenkinsci.plugins.workflow.job.WorkflowRun$Owner" plugin="workflow-job@2.24">
-            <job>build-11-snapshot-windows_x86_64</job>
+            <job>test-jtreg-hotspot-11-snapshot-windows_x86_64</job>
+            <id>4</id>
+          </executionRef>
+          <id>3</id>
+          <bodyHeads/>
+          <body class="org.jenkinsci.plugins.workflow.cps.StaticBodyReference" resolves-to="org.jenkinsci.plugins.workflow.cps.HandleBodyReference">
+            <id>1</id>
+          </body>
+          <threadId>0</threadId>
+          <stepDescriptorId>org.jenkinsci.plugins.workflow.support.steps.ExecutorStep</stepDescriptorId>
+        </context>
+        <label>windows_x86_64</label>
+        <runId>test-jtreg-hotspot-11-snapshot-windows_x86_64#4</runId>
+      </task>
+      <inQueueSince>1534783153134</inQueueSince>
+      <buildableStartMilliseconds>1534783153134</buildableStartMilliseconds>
+      <isPending>false</isPending>
+    </hudson.model.Queue_-BuildableItem>
+    <hudson.model.Queue_-BuildableItem>
+      <actions/>
+      <id>8296</id>
+      <task class="org.jenkinsci.plugins.workflow.support.steps.ExecutorStepExecution$PlaceholderTask" plugin="workflow-durable-task-step@2.20">
+        <context class="org.jenkinsci.plugins.workflow.cps.CpsStepContext" plugin="workflow-cps@2.54">
+          <executionRef class="org.jenkinsci.plugins.workflow.job.WorkflowRun$Owner" plugin="workflow-job@2.24">
+            <job>test-jtreg-hotspot-11-snapshot-windows_x86_64</job>
             <id>3</id>
           </executionRef>
           <id>3</id>
@@ -20,20 +44,20 @@
           <stepDescriptorId>org.jenkinsci.plugins.workflow.support.steps.ExecutorStep</stepDescriptorId>
         </context>
         <label>windows_x86_64</label>
-        <runId>build-11-snapshot-windows_x86_64#3</runId>
+        <runId>test-jtreg-hotspot-11-snapshot-windows_x86_64#3</runId>
       </task>
-      <inQueueSince>1534642202049</inQueueSince>
-      <buildableStartMilliseconds>1534642202049</buildableStartMilliseconds>
+      <inQueueSince>1534782797769</inQueueSince>
+      <buildableStartMilliseconds>1534782797769</buildableStartMilliseconds>
       <isPending>false</isPending>
     </hudson.model.Queue_-BuildableItem>
     <hudson.model.Queue_-BuildableItem>
       <actions/>
-      <id>8006</id>
+      <id>8294</id>
       <task class="org.jenkinsci.plugins.workflow.support.steps.ExecutorStepExecution$PlaceholderTask" plugin="workflow-durable-task-step@2.20">
         <context class="org.jenkinsci.plugins.workflow.cps.CpsStepContext" plugin="workflow-cps@2.54">
           <executionRef class="org.jenkinsci.plugins.workflow.job.WorkflowRun$Owner" plugin="workflow-job@2.24">
-            <job>build-snapshot-windows_x86_64</job>
-            <id>8</id>
+            <job>test-jtreg-hotspot-snapshot-windows_x86_64</job>
+            <id>3</id>
           </executionRef>
           <id>3</id>
           <bodyHeads/>
@@ -44,19 +68,19 @@
           <stepDescriptorId>org.jenkinsci.plugins.workflow.support.steps.ExecutorStep</stepDescriptorId>
         </context>
         <label>windows_x86_64</label>
-        <runId>build-snapshot-windows_x86_64#8</runId>
+        <runId>test-jtreg-hotspot-snapshot-windows_x86_64#3</runId>
       </task>
-      <inQueueSince>1534640402282</inQueueSince>
-      <buildableStartMilliseconds>1534640402285</buildableStartMilliseconds>
+      <inQueueSince>1534782742778</inQueueSince>
+      <buildableStartMilliseconds>1534782742778</buildableStartMilliseconds>
       <isPending>false</isPending>
     </hudson.model.Queue_-BuildableItem>
     <hudson.model.Queue_-BuildableItem>
       <actions/>
-      <id>7908</id>
+      <id>8292</id>
       <task class="org.jenkinsci.plugins.workflow.support.steps.ExecutorStepExecution$PlaceholderTask" plugin="workflow-durable-task-step@2.20">
         <context class="org.jenkinsci.plugins.workflow.cps.CpsStepContext" plugin="workflow-cps@2.54">
           <executionRef class="org.jenkinsci.plugins.workflow.job.WorkflowRun$Owner" plugin="workflow-job@2.24">
-            <job>test-jtreg-hotspot-11-snapshot-windows_x86_64</job>
+            <job>test-jtreg-hotspot-snapshot-windows_x86_64</job>
             <id>2</id>
           </executionRef>
           <id>3</id>
@@ -68,34 +92,10 @@
           <stepDescriptorId>org.jenkinsci.plugins.workflow.support.steps.ExecutorStep</stepDescriptorId>
         </context>
         <label>windows_x86_64</label>
-        <runId>test-jtreg-hotspot-11-snapshot-windows_x86_64#2</runId>
+        <runId>test-jtreg-hotspot-snapshot-windows_x86_64#2</runId>
       </task>
-      <inQueueSince>1534565670547</inQueueSince>
-      <buildableStartMilliseconds>1534565670555</buildableStartMilliseconds>
-      <isPending>false</isPending>
-    </hudson.model.Queue_-BuildableItem>
-    <hudson.model.Queue_-BuildableItem>
-      <actions/>
-      <id>7906</id>
-      <task class="org.jenkinsci.plugins.workflow.support.steps.ExecutorStepExecution$PlaceholderTask" plugin="workflow-durable-task-step@2.20">
-        <context class="org.jenkinsci.plugins.workflow.cps.CpsStepContext" plugin="workflow-cps@2.54">
-          <executionRef class="org.jenkinsci.plugins.workflow.job.WorkflowRun$Owner" plugin="workflow-job@2.24">
-            <job>test-jtreg-hotspot-snapshot-windows_x86_64</job>
-            <id>1</id>
-          </executionRef>
-          <id>3</id>
-          <bodyHeads/>
-          <body class="org.jenkinsci.plugins.workflow.cps.StaticBodyReference" resolves-to="org.jenkinsci.plugins.workflow.cps.HandleBodyReference">
-            <id>1</id>
-          </body>
-          <threadId>0</threadId>
-          <stepDescriptorId>org.jenkinsci.plugins.workflow.support.steps.ExecutorStep</stepDescriptorId>
-        </context>
-        <label>windows_x86_64</label>
-        <runId>test-jtreg-hotspot-snapshot-windows_x86_64#1</runId>
-      </task>
-      <inQueueSince>1534565370304</inQueueSince>
-      <buildableStartMilliseconds>1534565370307</buildableStartMilliseconds>
+      <inQueueSince>1534782168087</inQueueSince>
+      <buildableStartMilliseconds>1534782168087</buildableStartMilliseconds>
       <isPending>false</isPending>
     </hudson.model.Queue_-BuildableItem>
   </items>
