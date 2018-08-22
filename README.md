@@ -4,10 +4,10 @@
 
 This repository contains tools, scripts and infrastructure required to build, test and maintain the [SapMachine project](https://github.com/SAP/SapMachine). 
 
-The jobs run on our Jenkins installation https://sapmachine-ci.sapcloud.io/.
+The jobs run on our [Jenkins](https://ci.sapmachine.io/) installation.
 
 Mercurial repos are imported to branches **jdk/jdk** and **jdk/jdk10**.
-Every few hours, we poll the upstream mercurial repositories and add new changes and tags ([*update-pipeline* on jenkins](https://sapmachine-ci.sapcloud.io/view/repository-update/job/update-pipeline/)).
+Every few hours, we poll the upstream mercurial repositories and add new changes and tags ([*update-pipeline* on jenkins]( https://ci.sapmachine.io/view/repository-update/job/update-pipeline/)).
 
 The SapMachine Github Repository https://github.com/SAP/SapMachine is oranized into the following branches:
 
