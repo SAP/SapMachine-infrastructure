@@ -93,7 +93,7 @@ cd build
 cd "$(ls)"
 tar uzf ../../../test.tar.gz bundles/sapmachine-jdk-*_bin.tar.gz
 cd images
-tar uzf ../../../test.tar.gz test
+tar uzf ../../../../test.tar.gz test
 
 cd ../bundles
 HAS_JRE=$(ls sapmachine-jre* | wc -l)
