@@ -87,13 +87,13 @@ make JOBS=12 legacy-jre-image || true
 make run-test-gtest
 
 tar czf ../build.tar.gz build
-tar czf ../test.tar.gz test
+zip -r ../test.zip test
 
 cd build
 cd "$(ls)"
-tar uzf ../../../test.tar.gz bundles/sapmachine-jdk-*_bin.tar.gz
+zip -r ../../../test.zip bundles/sapmachine-jdk-*_bin.tar.gz
 cd images
-tar uzf ../../../../test.tar.gz test
+zip -r ../../../../test.zip test
 
 cd ../bundles
 HAS_JRE=$(ls sapmachine-jre* | wc -l)
