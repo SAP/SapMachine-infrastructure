@@ -40,7 +40,7 @@ pipeline {
             }
             steps {
                 archive 'build.tar.gz'
-                archive 'test.tar.gz'
+                archive 'test.zip'
                 archive 'apidocs.zip'
             }
         }
