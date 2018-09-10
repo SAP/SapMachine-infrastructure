@@ -87,6 +87,7 @@ make JOBS=12 legacy-jre-image || true
 make run-test-gtest
 
 tar czf ../build.tar.gz build
+rm ../test.zip || true
 zip -r ../test.zip test
 
 cd build
