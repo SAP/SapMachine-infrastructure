@@ -88,13 +88,13 @@ make run-test-gtest
 
 tar czf ../build.tar.gz build
 rm ../test.zip || true
-zip -r ../test.zip test
+zip -rq ../test.zip test
 
 cd build
 cd "$(ls)"
-zip -r ../../../test.zip bundles/sapmachine-jdk-*_bin.tar.gz
+zip -rq ../../../test.zip bundles/sapmachine-jdk-*_bin.tar.gz
 cd images
-zip -r ../../../../test.zip test
+zip -rq ../../../../test.zip test
 
 cd ../bundles
 HAS_JRE=$(ls sapmachine-jre* | wc -l)
