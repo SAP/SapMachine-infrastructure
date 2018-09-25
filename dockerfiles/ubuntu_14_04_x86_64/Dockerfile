@@ -44,3 +44,6 @@ RUN bsdtar xf sapmachine-jdk-10.0.2.13_linux-x64_bin.tar.gz --strip-components=1
 
 RUN mkdir -p /opt/scimark2
 RUN wget https://math.nist.gov/scimark2/scimark2lib.jar -O /opt/scimark2/scimark2lib.jar
+
+ADD sysroot-sles11-x86_64.tgz /opt
+ENV BUILD_SYSROOT="--with-sysroot=/opt/sysroot-sles11-x86_64 --with-freetype-lib=/opt/sysroot-sles11-x86_64/usr/lib64 --with-freetype-include=/opt/sysroot-sles11-x86_64/usr/include"

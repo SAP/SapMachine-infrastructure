@@ -61,7 +61,8 @@ if [[ $GIT_TAG_NAME == sapmachine-* ]]; then
     --with-vendor-name='SAP SE' --with-vendor-url='https://sapmachine.io' \
     --with-vendor-bug-url='https://github.com/SAP/SapMachine/issues/new' \
     --with-vendor-vm-bug-url='https://github.com/SAP/SapMachine/issues/new' \
-    --disable-warnings-as-errors
+    --disable-warnings-as-errors \
+    $BUILD_SYSROOT
   else
     bash ./configure --with-boot-jdk=$BOOT_JDK --with-vendor-name='SAP SE' --with-version-feature=$VERSION_MAJOR \
     --with-version-opt=sapmachine-$SAPMACHINE_VERSION \
@@ -69,8 +70,8 @@ if [[ $GIT_TAG_NAME == sapmachine-* ]]; then
     --with-vendor-name='SAP SE' --with-vendor-url='https://sapmachine.io' \
     --with-vendor-bug-url='https://github.com/SAP/SapMachine/issues/new' \
     --with-vendor-vm-bug-url='https://github.com/SAP/SapMachine/issues/new' \
-    --disable-warnings-as-errors
-
+    --disable-warnings-as-errors \
+    $BUILD_SYSROOT
   fi
 else
   bash ./configure --with-boot-jdk=$BOOT_JDK --with-vendor-name='SAP SE' --with-version-opt=sapmachine \
@@ -78,7 +79,8 @@ else
   --with-vendor-name='SAP SE' --with-vendor-url='https://sapmachine.io' \
   --with-vendor-bug-url='https://github.com/SAP/SapMachine/issues/new' \
   --with-vendor-vm-bug-url='https://github.com/SAP/SapMachine/issues/new' \
-  --disable-warnings-as-errors
+  --disable-warnings-as-errors \
+  $BUILD_SYSROOT
 fi
 
 make JOBS=12 product-bundles test-image docs-zip
