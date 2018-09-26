@@ -48,8 +48,8 @@ RUN bsdtar xf sapmachine-jdk-10.0.2.13_linux-ppc64le_bin.tar.gz --strip-componen
 RUN mkdir -p /opt/scimark2
 RUN wget https://math.nist.gov/scimark2/scimark2lib.jar -O /opt/scimark2/scimark2lib.jar
 
-ADD sysroot-sles11-ppc64le.tgz /opt
-ENV _CONFIGURE_SYSROOT="--with-sysroot=/opt/sysroot-sles11-ppc64le --with-freetype-lib=/opt/sysroot-sles11-ppc64le/usr/lib64 --with-freetype-include=/opt/sysroot-sles11-ppc64le/usr/include --with-stdc++lib=static"
+ADD sysroot-sles12-ppc64le.tgz /opt
+ENV _CONFIGURE_SYSROOT="--with-sysroot=/opt/sysroot-sles12-ppc64le --with-freetype-lib=/opt/sysroot-sles12-ppc64le/usr/lib64 --with-freetype-include=/opt/sysroot-sles12-ppc64le/usr/include --with-stdc++lib=static"
 
 WORKDIR /opt
 RUN wget https://mirrors.kernel.org/gnu/gcc/gcc-7.3.0/gcc-7.3.0.tar.gz && \
