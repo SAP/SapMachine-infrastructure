@@ -58,7 +58,7 @@ RUN wget https://mirrors.kernel.org/gnu/gcc/gcc-7.3.0/gcc-7.3.0.tar.gz && \
     mkdir /opt/gcc-7.3.0-bin
 
 WORKDIR /opt/gcc-build
-RUN /opt/gcc-7.3.0/configure --enable-languages=c,c++ --prefix=/opt/gcc-7.3.0-bin --disable-multilib --with-build-sysroot=/opt/sysroot-sles11-ppc64le && \
+RUN /opt/gcc-7.3.0/configure --enable-languages=c,c++ --prefix=/opt/gcc-7.3.0-bin --disable-multilib --with-build-sysroot=/opt/sysroot-sles12-ppc64le && \
     make -j$(grep -c ^processor /proc/cpuinfo) && \
     make install && \
     rm -rf /opt/gcc-7.3.0 && \
