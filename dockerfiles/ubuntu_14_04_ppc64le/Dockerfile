@@ -32,10 +32,37 @@ python \
 ant \
 patch \
 mercurial \
-openjdk-7-jdk
+openjdk-7-jdk \
+libgmp-dev \
+libmpfr-dev \
+libmpc-dev
 
-RUN mkdir -p /opt/openjdk-10-jdk
-ENV BOOT_JDK=/opt/openjdk-10-jdk
+RUN useradd -ms /bin/bash jenkins -u 1002
+
+RUN mkdir -p /opt/sapmachine-10-jdk
+ENV BOOT_JDK=/opt/sapmachine-10-jdk
 WORKDIR $BOOT_JDK
 RUN wget -q https://github.com/SAP/SapMachine/releases/download/sapmachine-10.0.2%2B13-0/sapmachine-jdk-10.0.2.13_linux-ppc64le_bin.tar.gz
 RUN bsdtar xf sapmachine-jdk-10.0.2.13_linux-ppc64le_bin.tar.gz --strip-components=1
+
+RUN mkdir -p /opt/scimark2
+RUN wget https://math.nist.gov/scimark2/scimark2lib.jar -O /opt/scimark2/scimark2lib.jar
+
+ADD sysroot-sles11-ppc64le.tgz /opt
+ENV _CONFIGURE_SYSROOT="--with-sysroot=/opt/sysroot-sles11-ppc64le --with-freetype-lib=/opt/sysroot-sles11-ppc64le/usr/lib64 --with-freetype-include=/opt/sysroot-sles11-ppc64le/usr/include --with-stdc++lib=static"
+
+WORKDIR /opt
+RUN wget https://mirrors.kernel.org/gnu/gcc/gcc-7.3.0/gcc-7.3.0.tar.gz && \
+    tar xzf gcc-7.3.0.tar.gz && \
+    mkdir /opt/gcc-build && \
+    mkdir /opt/gcc-7.3.0-bin
+
+WORKDIR /opt/gcc-build
+RUN /opt/gcc-7.3.0/configure --enable-languages=c,c++ --prefix=/opt/gcc-7.3.0-bin --disable-multilib --with-build-sysroot=/opt/sysroot-sles11-ppc64le && \
+    make -j$(grep -c ^processor /proc/cpuinfo) && \
+    make install && \
+    rm -rf /opt/gcc-7.3.0 && \
+    rm -rf /opt/gcc-build
+
+ENV PATH="/opt/gcc-7.3.0-bin/bin:${PATH}"
+WORKDIR /
