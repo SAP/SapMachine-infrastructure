@@ -16,7 +16,7 @@ pipeline {
                       sh '''
                         $PWD/git-hg/update_repo.sh jdk/jdk
                         $PWD/git-hg/update_repo.sh jdk-updates/jdk10u
-                        $PWD/git-hg/update_repo.sh jdk/jdk11
+                        $PWD/git-hg/update_repo.sh jdk-updates/jdk11u
                         '''
                 }
             }
