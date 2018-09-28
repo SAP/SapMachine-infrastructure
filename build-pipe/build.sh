@@ -7,6 +7,13 @@ fi
 export GIT_COMMITTER_NAME=$GIT_USER
 export GIT_COMMITTER_EMAIL="sapmachine@sap.com"
 
+UNAME=`uname`
+if [[ $UNAME == Darwin ]]; then
+    SEDFLAGS='-En'
+else
+    SEDFLAGS='-rn'
+fi
+    
 git clone -b $SAPMACHINE_GIT_BRANCH "http://$GIT_USER:$GIT_PASSWORD@$SAPMACHINE_GIT_REPO" SapMachine
 
 cd SapMachine
@@ -52,7 +59,7 @@ VENDOR_INFO="--with-vendor-name=\'SAP SE\' --with-vendor-url=https://sapmachine.
 
 if [[ $GIT_TAG_NAME == sapmachine-* ]]; then
   read VERSION_MAJOR VERSION_MINOR SAPMACHINE_VERSION<<< $(echo $GIT_TAG_NAME \
-  | sed -rn 's/sapmachine\-([0-9]+)(\.[0-9]\.[0-9])?\+([0-9]+)\-?([0-9]*)(\-alpine)?/ \1 \3 \4 /p')
+       | sed $SEDFLAGS 's/sapmachine\-([0-9]+)(\.[0-9]\.[0-9])?\+([0-9]+)\-?([0-9]*)(\-alpine)?/ \1 \3 \4 /p')
 
   if [ -z $SAPMACHINE_VERSION ]; then
     bash ./configure --with-boot-jdk=$BOOT_JDK --with-version-feature=$VERSION_MAJOR \
@@ -84,8 +91,12 @@ else
 fi
 
 make JOBS=12 product-bundles test-image docs-zip
-make JOBS=12 legacy-jre-image || true
-
+if [[ $UNAME == Darwin ]]; then
+    make JOBS=12 mac-legacy-jre-bundle || true
+else
+    make JOBS=12 legacy-jre-image || true
+fi
+    
 make run-test-gtest
 
 tar czf ../build.tar.gz build
@@ -100,19 +111,22 @@ zip -rq ../../../../test.zip test
 
 cd ../bundles
 HAS_JRE=$(ls sapmachine-jre* | wc -l)
-
+    
 if [ "$HAS_JRE" -lt "1" ]; then
-  JDK_NAME=$(ls sapmachine-jdk-*_bin.*)
-  read JDK_MAJOR JDK_SUFFIX<<< $(echo $JDK_NAME | sed -rn 's/sapmachine-jdk-([0-9]+)(.*)/ \1 \2 /p')
+  JDK_NAME=$(ls sapmachine-jdk-*_bin.*)  
+  read JDK_MAJOR JDK_SUFFIX<<< $(echo $JDK_NAME | sed $SEDFLAGS 's/sapmachine-jdk-([0-9]+)(.*)/ \1 \2 /p')
   JRE_BUNDLE_NAME="sapmachine-jre-${JDK_MAJOR}${JDK_SUFFIX}"
-  JRE_BUNDLE_TOP_DIR="sapmachine-jre-$JDK_MAJOR"
+  JRE_BUNDLE_TOP_DIR="sapmachine-jre-$JDK_MAJOR.jre"
 
   rm -rf $JRE_BUNDLE_NAME
   mkdir $JRE_BUNDLE_TOP_DIR
-  cp -r ../images/jre/* $JRE_BUNDLE_TOP_DIR
+  if [[ $UNAME == Darwin ]]; then
+      cp -a ../images/sapmachine-jre-bundle/$JRE_BUNDLE_TOP_DIR* .
+      SetFile -a b sapmachine-jre*
+  else
+      cp -r ../images/jre/* $JRE_BUNDLE_TOP_DIR
+  fi
   find $JRE_BUNDLE_TOP_DIR -name "*.debuginfo" -type f -delete
-
-
 
   if [ ${JDK_SUFFIX: -4} == ".zip" ]; then
     zip -r $JRE_BUNDLE_NAME $JRE_BUNDLE_TOP_DIR
