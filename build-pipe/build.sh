@@ -99,6 +99,7 @@ zip -rq ../test.zip test
 
 cd build
 cd "$(ls)"
+zip -rq ../../../test.zip spec.gmk
 zip -rq ../../../test.zip bundles/sapmachine-jdk-*_bin.*
 cd images
 zip -rq ../../../../test.zip test
