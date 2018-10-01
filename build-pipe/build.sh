@@ -108,6 +108,8 @@ fi
 
 make run-test-gtest
 
+rm "${WORKSPACE}/test.zip" || true
+zip -rq "${WORKSPACE}/test.zip" test
 
 cd "${WORKSPACE}/SapMachine/build"
 cd "$(ls)"
@@ -156,5 +158,3 @@ cp ../test-results/$GTEST_RESULT_PATH/gtest.xml "${WORKSPACE}"
 
 cd "${WORKSPACE}/SapMachine"
 tar czf "${WORKSPACE}/build.tar.gz" build
-rm "${WORKSPACE}/test.zip" || true
-zip -rq "${WORKSPACE}/test.zip" test
