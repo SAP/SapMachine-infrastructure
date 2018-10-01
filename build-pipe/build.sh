@@ -11,7 +11,7 @@ if [[ $UNAME == Darwin ]]; then
 else
     SEDFLAGS='-rn'
 fi
-    
+
 git clone -b $SAPMACHINE_GIT_BRANCH "http://github.com/SAP/SapMachine.git" SapMachine
 
 cd SapMachine
@@ -101,12 +101,8 @@ if [[ $UNAME == Darwin ]]; then
 else
     make JOBS=12 legacy-jre-image || true
 fi
-    
-make run-test-gtest
 
-tar czf ../build.tar.gz build
-rm ../test.zip || true
-zip -rq ../test.zip test
+make run-test-gtest
 
 cd build
 cd "$(ls)"
@@ -117,9 +113,9 @@ zip -rq ../../../../test.zip test
 
 cd ../bundles
 HAS_JRE=$(ls sapmachine-jre* | wc -l)
-    
+
 if [ "$HAS_JRE" -lt "1" ]; then
-  JDK_NAME=$(ls sapmachine-jdk-*_bin.*)  
+  JDK_NAME=$(ls sapmachine-jdk-*_bin.*)
   read JDK_MAJOR JDK_SUFFIX<<< $(echo $JDK_NAME | sed $SEDFLAGS 's/sapmachine-jdk-([0-9]+)(.*)/ \1 \2 /p')
   JRE_BUNDLE_NAME="sapmachine-jre-${JDK_MAJOR}${JDK_SUFFIX}"
   JRE_BUNDLE_TOP_DIR="sapmachine-jre-$JDK_MAJOR.jre"
@@ -142,6 +138,10 @@ if [ "$HAS_JRE" -lt "1" ]; then
 
   rm -rf $JRE_BUNDLE_TOP_DIR
 fi
+
+tar czf ../build.tar.gz build
+rm ../test.zip || true
+zip -rq ../test.zip test
 
 rm ../../../../sapmachine-jdk-* || true
 rm ../../../../sapmachine-jre-* || true
