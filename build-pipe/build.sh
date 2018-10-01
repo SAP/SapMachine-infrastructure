@@ -1,6 +1,10 @@
 #!/bin/bash
 set -ex
 
+if [[ -z $WORKSPACE ]]; then
+  WORKSPACE=$PWD
+fi
+
 if [ -d SapMachine ]; then
     rm -rf SapMachine;
 fi
@@ -12,9 +16,9 @@ else
     SEDFLAGS='-rn'
 fi
 
-git clone -b $SAPMACHINE_GIT_BRANCH "http://github.com/SAP/SapMachine.git" SapMachine
+git clone -b $SAPMACHINE_GIT_BRANCH "http://github.com/SAP/SapMachine.git" "${WORKSPACE}/SapMachine"
 
-cd SapMachine
+cd "${WORKSPACE}/SapMachine"
 
 GIT_REVISION=$(git rev-parse HEAD)
 echo "Git Revision=${GIT_REVISION}"
@@ -104,12 +108,13 @@ fi
 
 make run-test-gtest
 
-cd build
+
+cd "${WORKSPACE}/SapMachine/build"
 cd "$(ls)"
-zip -rq ../../../test.zip spec.gmk
-zip -rq ../../../test.zip bundles/sapmachine-jdk-*_bin.*
+zip -rq ${WORKSPACE}/test.zip spec.gmk
+zip -rq ${WORKSPACE}/test.zip bundles/sapmachine-jdk-*_bin.*
 cd images
-zip -rq ../../../../test.zip test
+zip -rq ${WORKSPACE}/test.zip test
 
 cd ../bundles
 HAS_JRE=$(ls sapmachine-jre* | wc -l)
@@ -139,18 +144,17 @@ if [ "$HAS_JRE" -lt "1" ]; then
   rm -rf $JRE_BUNDLE_TOP_DIR
 fi
 
-tar czf ../build.tar.gz build
-rm ../test.zip || true
-zip -rq ../test.zip test
+rm "${WORKSPACE}/sapmachine-jdk-*" || true
+rm "${WORKSPACE}/sapmachine-jre-*" || true
+rm "${WORKSPACE}/apidocs.zip" || true
 
-rm ../../../../sapmachine-jdk-* || true
-rm ../../../../sapmachine-jre-* || true
-rm ../../../../apidocs.zip || true
+cp sapmachine-jdk-*_bin.* "${WORKSPACE}"
+cp sapmachine-jre-*_bin.* "${WORKSPACE}"
+cp *-docs.zip "${WORKSPACE}/apidocs.zip"
 
-ls
+cp ../test-results/$GTEST_RESULT_PATH/gtest.xml "${WORKSPACE}"
 
-cp sapmachine-jdk-*_bin.* ../../../..
-cp sapmachine-jre-*_bin.* ../../../..
-cp *-docs.zip ../../../../apidocs.zip
-
-cp ../test-results/$GTEST_RESULT_PATH/gtest.xml ../../../..
+cd "${WORKSPACE}/SapMachine"
+tar czf "${WORKSPACE}/build.tar.gz" build
+rm "${WORKSPACE}/test.zip" || true
+zip -rq "${WORKSPACE}/test.zip" test
