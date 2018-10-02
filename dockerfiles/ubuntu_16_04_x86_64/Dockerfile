@@ -39,8 +39,7 @@ RUN useradd -ms /bin/bash jenkins -u 1002
 RUN mkdir -p /opt/sapmachine-10-jdk
 ENV BOOT_JDK=/opt/sapmachine-10-jdk
 WORKDIR $BOOT_JDK
-RUN wget -q
-https://github.com/SAP/SapMachine/releases/download/sapmachine-10.0.2%2B13-0/sapmachine-jdk-10.0.2.13_linux-x64_bin.tar.gz
+RUN wget -q https://github.com/SAP/SapMachine/releases/download/sapmachine-10.0.2%2B13-0/sapmachine-jdk-10.0.2.13_linux-x64_bin.tar.gz
 RUN bsdtar xf sapmachine-jdk-10.0.2.13_linux-x64_bin.tar.gz --strip-components=1
 
 RUN mkdir -p /opt/scimark2
