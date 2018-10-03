@@ -1,19 +1,23 @@
 <?xml version='1.1' encoding='UTF-8'?>
 <list>
   <flow-owner plugin="workflow-job@2.25">
+    <job>build-11-snapshot-macos_x86_64</job>
+    <id>10</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@2.25">
     <job>jenkins-backup</job>
-    <id>208</id>
+    <id>209</id>
   </flow-owner>
   <flow-owner plugin="workflow-job@2.25">
     <job>test-cf-java-buildpack</job>
-    <id>272</id>
-  </flow-owner>
-  <flow-owner plugin="workflow-job@2.25">
-    <job>jtreg</job>
-    <id>80</id>
+    <id>273</id>
   </flow-owner>
   <flow-owner plugin="workflow-job@2.25">
     <job>update-pipeline</job>
-    <id>318</id>
+    <id>319</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@2.25">
+    <job>jtreg</job>
+    <id>81</id>
   </flow-owner>
 </list>
