@@ -110,6 +110,7 @@ make run-test-gtest
 
 rm "${WORKSPACE}/test.zip" || true
 zip -rq "${WORKSPACE}/test.zip" test
+zip -rq "${WORKSPACE}/test.zip" make/data/lsrdata
 
 cd "${WORKSPACE}/SapMachine/build"
 cd "$(ls)"
