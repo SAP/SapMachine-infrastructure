@@ -2,6 +2,8 @@
 
 set -x
 
+UNAME=`uname`
+
 while getopts l:h:s:j: opt
 do
    case $opt in
@@ -43,7 +45,13 @@ cd $CURRENT_DIR
 
 TEST_JDK=${JDK_LOCATION}/build/${BUILD_TYPE}/images/jdk
 TEST_NATIVE_LIB=${JDK_LOCATION}/build/${BUILD_TYPE}/images/test/${TEST_SUITE}/jtreg/native
-NUM_CPUS=`grep -c ^processor /proc/cpuinfo`
+
+if [[ $UNAME == Darwin ]]; then
+    NUM_CPUS=`sysctl -n hw.ncpu`
+else
+    NUM_CPUS=`grep -c ^processor /proc/cpuinfo`
+fi
+
 CONCURRENCY=`expr $NUM_CPUS / 2`
 MAX_RAM_PERCENTAGE=`expr 25 / $CONCURRENCY`
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
