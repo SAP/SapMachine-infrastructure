@@ -4,5 +4,66 @@
   <githubUrl>https://github.com/SAP/SapMachine</githubUrl>
   <gitUrl>git://github.com/SAP/SapMachine.git</gitUrl>
   <sshUrl>git@github.com:SAP/SapMachine.git</sshUrl>
-  <pulls class="concurrent-hash-map"/>
+  <pulls class="concurrent-hash-map">
+    <entry>
+      <int>171</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>171</number>
+        <issueUpdatedAt>2018-10-04 20:05:14.0 UTC</issueUpdatedAt>
+        <title>Merge to tag jdk-12+14</title>
+        <body>please pull</body>
+        <prUpdatedAt>2018-10-04 20:05:14.0 UTC</prUpdatedAt>
+        <headSha>c34f379eb665d9f0d9834b8796dfdc204b17e04b</headSha>
+        <headRef>pr-jdk-12+14</headRef>
+        <mergeable>false</mergeable>
+        <baseRef>sapmachine</baseRef>
+        <userLogin>SapMachine</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/171</htmlUrl>
+        <labels/>
+        <sourceRepoOwner>SAP</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>173</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>173</number>
+        <issueUpdatedAt>2018-10-05 13:42:30.0 UTC</issueUpdatedAt>
+        <title>add JDK-8210964 - add more ld preloading info to hs_error file on Linux</title>
+        <body>(hand integrated)</body>
+        <prUpdatedAt>2018-10-05 13:42:30.0 UTC</prUpdatedAt>
+        <headSha>7a4ff9a68470949c6568ecd2c27d6708bef02f2c</headSha>
+        <headRef>ld_preload_branch</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine11</baseRef>
+        <userLogin>MBaesken</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/173</htmlUrl>
+        <labels/>
+        <sourceRepoOwner>SAP</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>174</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>174</number>
+        <issueUpdatedAt>2018-10-05 13:43:40.0 UTC</issueUpdatedAt>
+        <title>Update jtreg 11 ProblemLists by adding those tests that also fail in …</title>
+        <body>…our internal OpenJDK build and tests.</body>
+        <prUpdatedAt>2018-10-05 13:43:40.0 UTC</prUpdatedAt>
+        <headSha>dfe1856475314706b5c31665dcda376d35e1a91c</headSha>
+        <headRef>update-jtreg-ProblemLists-11</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine11</baseRef>
+        <userLogin>GoeLin</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/174</htmlUrl>
+        <labels/>
+        <sourceRepoOwner>SAP</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+  </pulls>
 </org.jenkinsci.plugins.github.pullrequest.GitHubPRRepository>
