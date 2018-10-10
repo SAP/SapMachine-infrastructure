@@ -111,7 +111,14 @@
       </branches>
       <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
       <submoduleCfg class="list"/>
-      <extensions/>
+      <extensions>
+        <hudson.plugins.git.extensions.impl.ChangelogToBranch>
+          <options>
+            <compareRemote>https://github.com/SAP/SapMachine.git</compareRemote>
+            <compareTarget>sapmachine11</compareTarget>
+          </options>
+        </hudson.plugins.git.extensions.impl.ChangelogToBranch>
+      </extensions>
     </scm>
     <scriptPath>build-pipe/Jenkinsfile</scriptPath>
     <lightweight>true</lightweight>
