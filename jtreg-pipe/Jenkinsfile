@@ -13,6 +13,7 @@ pipeline {
             steps {
                 sh "rm -rf ${env.WORKSPACE}/jtreg"
                 sh "hg clone http://hg.openjdk.java.net/code-tools/jtreg ${env.WORKSPACE}/jtreg"
+                sh "hg up ${params.TAG}"
                 sh "cd ${env.WORKSPACE}/jtreg && bash make/build-all.sh /usr/lib/jvm/java-8-openjdk-*"
                 sh "cp ${env.WORKSPACE}/jtreg/build/images/jtreg.zip ${env.WORKSPACE}/jtreg.zip"
             }
