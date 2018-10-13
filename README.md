@@ -9,7 +9,7 @@ The jobs run on our [Jenkins](https://ci.sapmachine.io/) installation.
 Mercurial repos are imported to branches **jdk/jdk** and **jdk/jdk10**.
 Every few hours, we poll the upstream mercurial repositories and add new changes and tags ([*update-pipeline* on jenkins]( https://ci.sapmachine.io/view/repository-update/job/update-pipeline/)).
 
-The SapMachine Github Repository https://github.com/SAP/SapMachine is oranized into the following branches:
+The SapMachine Github Repository https://github.com/SAP/SapMachine is organized into the following branches:
 
 *  **jdk/jdk** and **jdk/jdk10** are mirrors of the corresponding mercurial repos.
 * **sapmachine10**: **jdk/jdk10** + our changes.
