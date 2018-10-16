@@ -2,8 +2,10 @@ pipeline {
     agent any
     stages {
         stage('Build') {
+            environment {
+              GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
+            }
             steps {
-
                 setGitHubPullRequestStatus context: PR_CONTEXT, state: 'PENDING'
 
                 sh "python lib/verify_pr.py -p ${env.GITHUB_PR_NUMBER}"
