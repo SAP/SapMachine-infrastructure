@@ -6,6 +6,8 @@ pipeline {
 
                 setGitHubPullRequestStatus context: PR_CONTEXT, state: 'PENDING'
 
+                sh "python lib/verify_pr.py -p ${env.GITHUB_PR_NUMBER}"
+
                 build job: PR_BUILD_JOB, propagate: true, wait: true, parameters:
                     [
                         string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER),
