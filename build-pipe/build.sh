@@ -5,15 +5,19 @@ if [[ -z $WORKSPACE ]]; then
   WORKSPACE=$PWD
 fi
 
-if [ -d SapMachine ]; then
-    rm -rf SapMachine;
-fi
-
 UNAME=`uname`
 if [[ $UNAME == Darwin ]]; then
     SEDFLAGS='-En'
 else
     SEDFLAGS='-rn'
+fi
+
+if [[ $UNAME == CYGWIN* ]]; then
+  WORKSPACE=$(cygpath -u "${WORKSPACE}")
+fi
+
+if [ -d SapMachine ]; then
+    rm -rf SapMachine;
 fi
 
 git clone -b $SAPMACHINE_GIT_BRANCH "http://github.com/SAP/SapMachine.git" "${WORKSPACE}/SapMachine"
