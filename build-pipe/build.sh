@@ -162,8 +162,8 @@ cp ${JDK_BUNDLE_NAME} "${WORKSPACE}"
 cp ${JRE_BUNDLE_NAME} "${WORKSPACE}"
 cp *-docs.zip "${WORKSPACE}/apidocs.zip"
 
-echo "${WORKSPACE}/${JDK_BUNDLE_NAME}" > jdk_bundle_name.txt
-echo "${WORKSPACE}/${JRE_BUNDLE_NAME}" > jre_bundle_name.txt
+echo "${JDK_BUNDLE_NAME}" > "${WORKSPACE}/jdk_bundle_name.txt"
+echo "${JRE_BUNDLE_NAME}" > "${WORKSPACE}/jre_bundle_name.txt"
 
 cp ../test-results/$GTEST_RESULT_PATH/gtest.xml "${WORKSPACE}"
 
