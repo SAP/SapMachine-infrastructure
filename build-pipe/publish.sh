@@ -36,8 +36,10 @@ else
     python lib/github_publish.py -t $GIT_TAG_NAME $PRE_RELEASE_OPT || true
 fi
 
+ls -la
+
 FILE_NAME_JDK="$(cat jdk_bundle_name.txt)"
-FILE_NAME_JRE="$(cat jdk_bundle_name.txt)"
+FILE_NAME_JRE="$(cat jre_bundle_name.txt)"
 
 ARCHIVE_NAME_JDK="$(echo $FILE_NAME_JDK | sed 's/\+/\./')"
 ARCHIVE_NAME_JRE="$(echo $FILE_NAME_JRE | sed 's/\+/\./')"
