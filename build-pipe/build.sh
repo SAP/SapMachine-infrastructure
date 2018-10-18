@@ -120,12 +120,15 @@ cd images
 zip -rq ${WORKSPACE}/test.zip test
 
 cd ../bundles
+
+JDK_NAME=$(ls sapmachine-jdk-*_bin.*)
+read JDK_MAJOR JDK_SUFFIX<<< $(echo $JDK_NAME | sed $SEDFLAGS 's/sapmachine-jdk-([0-9]+((\.[0-9]+))*)(.*)/ \1 \4 /p')
+JDK_BUNDLE_NAME="sapmachine-jdk-${JDK_MAJOR}${JDK_SUFFIX}"
+JRE_BUNDLE_NAME="sapmachine-jre-${JDK_MAJOR}${JDK_SUFFIX}"
+
 HAS_JRE=$(ls sapmachine-jre* | wc -l)
 
 if [ "$HAS_JRE" -lt "1" ]; then
-  JDK_NAME=$(ls sapmachine-jdk-*_bin.*)
-  read JDK_MAJOR JDK_SUFFIX<<< $(echo $JDK_NAME | sed $SEDFLAGS 's/sapmachine-jdk-([0-9]+)(.*)/ \1 \2 /p')
-  JRE_BUNDLE_NAME="sapmachine-jre-${JDK_MAJOR}${JDK_SUFFIX}"
   JRE_BUNDLE_TOP_DIR="sapmachine-jre-$JDK_MAJOR.jre"
 
   rm -rf $JRE_BUNDLE_NAME
@@ -151,8 +154,8 @@ rm "${WORKSPACE}/sapmachine-jdk-*" || true
 rm "${WORKSPACE}/sapmachine-jre-*" || true
 rm "${WORKSPACE}/apidocs.zip" || true
 
-cp sapmachine-jdk-*_bin.* "${WORKSPACE}"
-cp sapmachine-jre-*_bin.* "${WORKSPACE}"
+cp ${JDK_BUNDLE_NAME} "${WORKSPACE}"
+cp ${JRE_BUNDLE_NAME} "${WORKSPACE}"
 cp *-docs.zip "${WORKSPACE}/apidocs.zip"
 
 cp ../test-results/$GTEST_RESULT_PATH/gtest.xml "${WORKSPACE}"
