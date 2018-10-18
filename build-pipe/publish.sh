@@ -36,11 +36,8 @@ else
     python lib/github_publish.py -t $GIT_TAG_NAME $PRE_RELEASE_OPT || true
 fi
 
-# replace the '+' by '.' - github replaces it anyway, but we want to have it consistent for sha256sum
-#FILE_TAG_NAME=$(echo $GIT_TAG_NAME | sed 's/\+/\./')
-
-FILE_NAME_JDK="$(ls sapmachine-jdk-*_bin.*)"
-FILE_NAME_JRE="$(ls sapmachine-jre-*_bin.*)"
+FILE_NAME_JDK="$(cat jdk_bundle_name.txt)"
+FILE_NAME_JRE="$(cat jdk_bundle_name.txt)"
 
 ARCHIVE_NAME_JDK="$(echo $FILE_NAME_JDK | sed 's/\+/\./')"
 ARCHIVE_NAME_JRE="$(echo $FILE_NAME_JRE | sed 's/\+/\./')"
@@ -58,8 +55,8 @@ else
     ARCHIVE_SUM_JRE="$(echo $ARCHIVE_NAME_JRE | sed 's/zip/sha256\.txt/')"
 fi
 
-sha256sum $ARCHIVE_NAME_JDK > $ARCHIVE_SUM_JDK
-sha256sum $ARCHIVE_NAME_JRE > $ARCHIVE_SUM_JRE
+shasum -a 256 $ARCHIVE_NAME_JDK > $ARCHIVE_SUM_JDK
+shasum -a 256 $ARCHIVE_NAME_JRE > $ARCHIVE_SUM_JRE
 
 python lib/github_publish.py -t $GIT_TAG_NAME -a "${ARCHIVE_NAME_JDK}"
 python lib/github_publish.py -t $GIT_TAG_NAME -a "${ARCHIVE_NAME_JRE}"
