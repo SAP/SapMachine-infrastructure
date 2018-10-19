@@ -217,8 +217,8 @@ def sapmachine_version_components(version_in, multiline=False):
     major = match.group(4)
     build_number = match.group(9)
 
-    if len(match.groups()) >= 11:
-        sap_build_number = match.group(11)
+    if len(match.groups()) >= 12:
+        sap_build_number = match.group(12)
         version += '-' + sap_build_number
     else:
         sap_build_number = ''
