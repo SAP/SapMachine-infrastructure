@@ -199,7 +199,7 @@ def sapmachine_tag_components(tag, multiline=False):
     return version, version_part, major, build_number, sap_build_number, os_ext
 
 def sapmachine_version_pattern():
-    return '(((([0-9]+)((\.([0-9]+))*)?)(-ea)?\+([0-9]+))-sapmachine(-([0-9]+))?)'
+    return '(((([0-9]+)((\.([0-9]+))*)?)(-ea)?\+([0-9]+))(-LTS)?-sapmachine(-([0-9]+))?)'
 
 def sapmachine_version_components(version_in, multiline=False):
     pattern = re.compile(sapmachine_version_pattern())
