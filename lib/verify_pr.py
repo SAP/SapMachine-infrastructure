@@ -53,22 +53,19 @@ def validate_issue(issue_id):
     return issue
 
 # validate the pull request body
-def validate_pull_request(body, is_openjdk_commit):
+def validate_pull_request(body):
     if not body:
         raise Exception('The pull request description is empty.')
 
-    # the reference to an issue is only needed for non (downported)
-    # OpenJDK commits
-    if not is_openjdk_commit:
-        pattern = re.compile(pull_request_description_pattern)
-        match = pattern.match(body)
+    pattern = re.compile(pull_request_description_pattern)
+    match = pattern.match(body)
 
-        if match is None:
-            raise Exception('The pull request description has an invalid format.')
+    if match is None:
+        raise Exception('The pull request description has an invalid format.')
 
-        issue_id = match.group(3)
-        # check whether the given issue exists 
-        validate_issue(issue_id)
+    issue_id = match.group(3)
+    # check whether the given issue exists 
+    validate_issue(issue_id)
 
 # validate a commit message
 def validate_commit_message(message):
@@ -133,28 +130,9 @@ def main(argv=None):
     if pr_author in pr_author_exception_list:
         return 0
 
-    # request the associated commits of the pull request
-    commits = api_request(pull_request['commits_url'])
-
-    # only one commit per pull request is allowed
-    if len(commits) > 1:
-        message = create_failure_comment(pr_author, str.format('there are {0} commits associated with this pull request, but only one is allowed.', len(commits)))
-        api_request(comments_url, data=message, method='POST')
-        return 1
-
-    # validate the commit
-    commit = commits[0]
-    is_openjdk_commit = False
-    try:
-        is_openjdk_commit = validate_commit_message(commit['commit']['message'])
-    except Exception as error:
-        message = create_failure_comment(pr_author, str.format('the commit {0} doesn\'t meet the expectations. {1}', entry['sha'], error))
-        api_request(comments_url, data=message, method='POST')
-        return 1
-
     # validate the pull request body (description)
     try:
-        validate_pull_request(pull_request['body'], is_openjdk_commit)
+        validate_pull_request(pull_request['body'])
     except Exception as error:
         message = create_failure_comment(pr_author, str.format('this pull request doesn\'t meet the expectations. {0}', error))
         api_request(comments_url, data=message, method='POST')
