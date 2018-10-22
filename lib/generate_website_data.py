@@ -98,10 +98,10 @@ def main(argv=None):
         if version is None or os_ext:
             continue
 
-        if major in major_dict:
+        if major in major_dict and major_dict[major] != release['prerelease']:
             continue
 
-        major_dict[major] = True
+        major_dict[major] = release['prerelease']
         assets = release['assets']
 
         if release['prerelease'] is not True and major not in latest_link_dict:
@@ -170,7 +170,11 @@ def main(argv=None):
             'commit_message': str.format('Updated latest link for SapMachine {0}', major)
         })
 
-    push_to_git(files)
+    # push_to_git(files)
+    with open('website_data_debug.json', 'w') as debug_file:
+        debug_file.write(files[0]['data'])
+
+    return 0
 
 if __name__ == "__main__":
     sys.exit(main())
