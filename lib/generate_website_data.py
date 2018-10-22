@@ -170,10 +170,8 @@ def main(argv=None):
             'commit_message': str.format('Updated latest link for SapMachine {0}', major)
         })
 
-    # push_to_git(files)
-    with open('website_data_debug.json', 'w') as debug_file:
-        debug_file.write(files[0]['data'])
-
+    push_to_git(files)
+    
     return 0
 
 if __name__ == "__main__":
