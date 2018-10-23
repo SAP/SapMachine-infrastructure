@@ -99,7 +99,7 @@ def validate_commit_message(message):
     return is_openjdk_commit
 
 def create_failure_comment(pr_author, message):
-    message = str.format('Hello @{0}, I\'m sorry, {1}', pr_author, message)
+    message = str.format('Hello @{0}, I\'m sorry, {1} Please have a look at {2} .', pr_author, message, 'https://github.com/SAP/SapMachine/wiki/Formal-Requirements-of-Pull-Requests')
     message = str.format('{{ "body": "{0}" }}', message.replace('"', '\\"'))
     return message
 
