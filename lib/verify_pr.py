@@ -27,7 +27,7 @@ def api_request(url, data=None, method='GET'):
     token = utils.get_github_api_accesstoken()
     request = Request(url, data=data)
     request.get_method = lambda: method
-    
+
     if token is not None:
         request.add_header('Authorization', str.format('token {0}', token))
 
@@ -46,10 +46,6 @@ def validate_issue(issue_id):
     if issue is None:
         raise Exception(str.format('No issue with id #{0} found.'), issue_id)
 
-    # check whether the issue is in state "open"
-    if issue['state'] != 'open':
-        raise Exception(str.format('The issue #{0} is in state "{1}", but the expected state is "open".', issue_id, issue['state']))
-
     return issue
 
 # validate the pull request body
@@ -64,16 +60,16 @@ def validate_pull_request(body):
         raise Exception('The pull request description has an invalid format.')
 
     issue_id = match.group(3)
-    # check whether the given issue exists 
+    # check whether the given issue exists
     validate_issue(issue_id)
 
 # validate a commit message
 def validate_commit_message(message):
     is_openjdk_commit = False
-    
+
     if not message:
         raise Exception('The commit message is empty.')
-    
+
     # first check whether the commit message matches
     # the OpenJDK rules
     pattern = re.compile(commit_message_pattern_openjdk)
@@ -122,7 +118,7 @@ def main(argv=None):
     # request the pull request information
     pull_request_api = str.format('https://api.github.com/repos/{0}/{1}/pulls/{2}', org, repository, pull_request_id)
     pull_request = api_request(pull_request_api)
-    
+
     comments_url = pull_request['comments_url']
     pr_author = pull_request['user']['login']
 
