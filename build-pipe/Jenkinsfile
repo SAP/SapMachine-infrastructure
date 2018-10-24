@@ -42,6 +42,12 @@ pipeline {
                 archive 'build.tar.gz'
                 archive 'test.zip'
                 archive 'apidocs.zip'
+
+                def jdk_bundle_name = readFile "${env.WORKSPACE}/jdk_bundle_name.txt"
+                def jre_bundle_name = readFile "${env.WORKSPACE}/jre_bundle_name.txt"
+
+                archive jdk_bundle_name
+                archive jre_bundle_name
             }
         }
         stage('Run Tests') {
