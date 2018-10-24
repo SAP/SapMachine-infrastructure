@@ -47,12 +47,9 @@ pipeline {
                     def jdk_bundle_name = readFile "${env.WORKSPACE}/jdk_bundle_name.txt"
                     def jre_bundle_name = readFile "${env.WORKSPACE}/jre_bundle_name.txt"
 
-                    step ([$class: 'archive', includes: jdk_bundle_name]);
-                    step ([$class: 'archive', includes: jre_bundle_name]);
+                    step ([$class: 'ArtifactArchiver', artifacts: jdk_bundle_name]);
+                    step ([$class: 'ArtifactArchiver', artifacts: jre_bundle_name]);
                 }
-
-                archive jdk_bundle_name
-                archive jre_bundle_name
             }
         }
         stage('Run Tests') {
