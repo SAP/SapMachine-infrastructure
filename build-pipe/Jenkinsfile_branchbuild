@@ -15,6 +15,28 @@ pipeline {
                         [$class: 'BooleanParameterValue', name: 'PROPAGATE_RESULT', value: true],
                         [$class: 'BooleanParameterValue', name: 'RELEASE', value: false]
                     ]
+
+                build job: LINUX_PPC64LE_JOB, propagate: false, wait: false, parameters:
+                    [
+                        string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
+                        string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
+                        string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
+                        [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: false],
+                        [$class: 'BooleanParameterValue', name: 'PUBLISH', value: false],
+                        [$class: 'BooleanParameterValue', name: 'PROPAGATE_RESULT', value: true],
+                        [$class: 'BooleanParameterValue', name: 'RELEASE', value: false]
+                    ]
+
+                build job: LINUX_PPC64_JOB, propagate: false, wait: false, parameters:
+                    [
+                        string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
+                        string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
+                        string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
+                        [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: false],
+                        [$class: 'BooleanParameterValue', name: 'PUBLISH', value: false],
+                        [$class: 'BooleanParameterValue', name: 'PROPAGATE_RESULT', value: true],
+                        [$class: 'BooleanParameterValue', name: 'RELEASE', value: false]
+                    ]
             }
         }
     }
