@@ -20,7 +20,11 @@ if [ -d SapMachine ]; then
     rm -rf SapMachine;
 fi
 
-git clone -b $SAPMACHINE_GIT_BRANCH "http://github.com/SAP/SapMachine.git" "${WORKSPACE}/SapMachine"
+if [[ -z $SAPMACHINE_GIT_REPOSITORY ]]; then
+  SAPMACHINE_GIT_REPOSITORY="http://github.com/SAP/SapMachine.git"
+fi
+
+git clone -b $SAPMACHINE_GIT_BRANCH $SAPMACHINE_GIT_REPOSITORY "${WORKSPACE}/SapMachine"
 
 cd "${WORKSPACE}/SapMachine"
 
