@@ -4,9 +4,9 @@ pipeline {
     }
     stages {
         stage('Trigger Builds') {
-            steps {
-                parallel {
-                    stage('Linux x86 64') {
+            parallel {
+                stage('Linux x86 64') {
+                    steps {
                         build job: LINUX_X86_64_JOB, propagate: true, wait: true, parameters:
                         [
                             string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
@@ -18,7 +18,9 @@ pipeline {
                             [$class: 'BooleanParameterValue', name: 'RELEASE', value: false]
                         ]
                     }
-                    stage('Linux ppc64le') {
+                }
+                stage('Linux ppc64le') {
+                    steps {
                         build job: LINUX_PPC64LE_JOB, propagate: true, wait: true, parameters:
                         [
                             string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
@@ -30,7 +32,9 @@ pipeline {
                             [$class: 'BooleanParameterValue', name: 'RELEASE', value: false]
                         ]
                     }
-                    stage('Linux ppc64') {
+                }
+                stage('Linux ppc64') {
+                    steps {
                         build job: LINUX_PPC64_JOB, propagate: true, wait: true, parameters:
                         [
                             string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
@@ -43,12 +47,13 @@ pipeline {
                         ]
                     }
                 }
-                post {
-                    success {
-                        copyArtifacts filter: '	sapmachine-*.tar.gz	', projectName: LINUX_X86_64_JOB, selector: downstream(upstreamBuildNumber: env.BUILD_ID, upstreamProjectName: env.JOB_NAME)
-                        copyArtifacts filter: '	sapmachine-*.tar.gz	', projectName: LINUX_PPC64LE_JOB, selector: downstream(upstreamBuildNumber: env.BUILD_ID, upstreamProjectName: env.JOB_NAME)
-                        copyArtifacts filter: '	sapmachine-*.tar.gz	', projectName: LINUX_PPC64_JOB, selector: downstream(upstreamBuildNumber: env.BUILD_ID, upstreamProjectName: env.JOB_NAME)
-                    }
+            }
+            post {
+                success {
+                    copyArtifacts filter: '	sapmachine-*.tar.gz	', projectName: LINUX_X86_64_JOB, selector: downstream(upstreamBuildNumber: env.BUILD_ID, upstreamProjectName: env.JOB_NAME)
+                    copyArtifacts filter: '	sapmachine-*.tar.gz	', projectName: LINUX_PPC64LE_JOB, selector: downstream(upstreamBuildNumber: env.BUILD_ID, upstreamProjectName: env.JOB_NAME)
+                    copyArtifacts filter: '	sapmachine-*.tar.gz	', projectName: LINUX_PPC64_JOB, selector: downstream(upstreamBuildNumber: env.BUILD_ID, upstreamProjectName: env.JOB_NAME)
+                }
             }
         }
     }
