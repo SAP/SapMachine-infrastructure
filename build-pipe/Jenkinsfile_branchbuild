@@ -6,7 +6,7 @@ pipeline {
         stage('Trigger Builds') {
             steps {
                 parallel {
-                    'Linux x86 64': {
+                    stage('Linux x86 64') {
                         build job: LINUX_X86_64_JOB, propagate: true, wait: true, parameters:
                         [
                             string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
@@ -17,8 +17,8 @@ pipeline {
                             [$class: 'BooleanParameterValue', name: 'PROPAGATE_RESULT', value: true],
                             [$class: 'BooleanParameterValue', name: 'RELEASE', value: false]
                         ]
-                    },
-                    'Linux ppc64le': {
+                    }
+                    stage('Linux ppc64le') {
                         build job: LINUX_PPC64LE_JOB, propagate: true, wait: true, parameters:
                         [
                             string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
@@ -29,8 +29,8 @@ pipeline {
                             [$class: 'BooleanParameterValue', name: 'PROPAGATE_RESULT', value: true],
                             [$class: 'BooleanParameterValue', name: 'RELEASE', value: false]
                         ]
-                    },
-                    'Linux ppc64': {
+                    }
+                    stage('Linux ppc64') {
                         build job: LINUX_PPC64_JOB, propagate: true, wait: true, parameters:
                         [
                             string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
