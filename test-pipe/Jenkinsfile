@@ -8,6 +8,7 @@ pipeline {
                 dockerfile {
                     label params.AGENT_LABEL
                     dir params.DOCKER_DIR
+                    reuseNode true
                 }
             }
             environment {
@@ -22,6 +23,7 @@ pipeline {
                 dockerfile {
                     label params.AGENT_LABEL
                     dir params.DOCKER_DIR
+                    reuseNode true
                 }
             }
             steps {
@@ -47,6 +49,7 @@ pipeline {
                 dockerfile {
                     label params.AGENT_LABEL
                     dir params.DOCKER_DIR
+                    reuseNode true
                     args '--ulimit nofile=90000:90000 --sysctl net.ipv4.ip_local_port_range="1024 65535" -h sapmachine.local --tmpfs /tmp:exec,mode=1777'
                 }
             }
@@ -62,6 +65,7 @@ pipeline {
                 dockerfile {
                     label params.AGENT_LABEL
                     dir params.DOCKER_DIR
+                    reuseNode true
                 }
             }
             steps {

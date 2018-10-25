@@ -33,6 +33,7 @@ pipeline {
                 dockerfile {
                     label params.AGENT_LABEL
                     dir params.BUILD_DOCKER_DIR
+                    reuseNode true
                 }
             }
             when {
@@ -56,6 +57,7 @@ pipeline {
                 dockerfile {
                     label params.AGENT_LABEL
                     dir params.BUILD_DOCKER_DIR
+                    reuseNode true
                 }
             }
             when {
