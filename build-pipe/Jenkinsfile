@@ -207,8 +207,7 @@ pipeline {
     }
     post {
         always {
-            cleanWs disableDeferredWipeout: true
-            sh "rm -rf ${WORKSPACE}/*"
+            cleanWs deleteDirs: true, disableDeferredWipeout: true
         }
     }
 }
