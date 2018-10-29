@@ -164,3 +164,22 @@ There may be situations, where the Jenkins slave fails to start or needs to be r
 ansible-playbook -i hosts setup-sapmachine.yml --tags "jenkins_slave"
 ```
 
+### Setup the Linux PPC64LE Jenkins Slave
+
+Run the following command:
+
+```
+cd ansible
+ansible-playbook -i hosts -u <your user name> jenkins-slave-linux-ppc64le.yml --extra-vars jenkins_master_url=https://ci.sapmachine.io/computer/agent-linux-ppc64le-1/slave-agent.jnlp jenkins_slave_secret=123456789"
+```
+
+
+### Setup the Linux PPC64 Jenkins Slave
+
+Run the following command:
+
+```
+cd ansible
+ansible-playbook -i hosts -u <your user name> jenkins-slave-linux-ppc64.yml --extra-vars jenkins_master_url=https://ci.sapmachine.io/computer/agent-linux-ppc64-1/slave-agent.jnlp jenkins_slave_secret=123456789"
+```
+
