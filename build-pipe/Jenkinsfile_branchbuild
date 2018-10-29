@@ -34,7 +34,10 @@ pipeline {
                                 buildNumber: env.LINUX_X86_64_JOB_ID
                             ]
 
-                            archiveArtifacts '${env.LINUX_X86_64_ARTIFACT_DIR}/*.tar.gz'
+                            script {
+                                def artifacts_selector = env.LINUX_X86_64_ARTIFACT_DIR + "/*.tar.gz"
+                                step ([$class: 'ArtifactArchiver', artifacts: artifacts_selector]);
+                            }
 
                             sh "rm -rf ${WORKSPACE}/${LINUX_X86_64_ARTIFACT_DIR}"
                         }
@@ -69,7 +72,10 @@ pipeline {
                                 buildNumber: env.LINUX_PPC64LE_JOB_ID
                             ]
 
-                            archiveArtifacts '${env.LINUX_PPC64LE_ARTIFACT_DIR}/*.tar.gz'
+                            script {
+                                def artifacts_selector = env.LINUX_PPC64LE_ARTIFACT_DIR + "/*.tar.gz"
+                                step ([$class: 'ArtifactArchiver', artifacts: artifacts_selector]);
+                            }
 
                             sh "rm -rf ${WORKSPACE}/${LINUX_PPC64LE_ARTIFACT_DIR}"
                         }
@@ -104,7 +110,10 @@ pipeline {
                                 buildNumber: env.LINUX_PPC64_JOB_ID
                             ]
 
-                            archiveArtifacts '${env.LINUX_PPC64_ARTIFACT_DIR}/*.tar.gz'
+                            script {
+                                def artifacts_selector = env.LINUX_PPC64_ARTIFACT_DIR + "/*.tar.gz"
+                                step ([$class: 'ArtifactArchiver', artifacts: artifacts_selector]);
+                            }
 
                             sh "rm -rf ${WORKSPACE}/${LINUX_PPC64_ARTIFACT_DIR}"
                         }
