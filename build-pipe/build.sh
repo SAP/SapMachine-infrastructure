@@ -92,7 +92,8 @@ if [[ $GIT_TAG_NAME == sapmachine-* ]]; then
   --with-vendor-url="$VENDOR_URL" \
   --with-vendor-bug-url="$VENDOR_BUG_URL" \
   --with-vendor-vm-bug-url="$VENDOR_VM_BUG_URL" \
-    $_CONFIGURE_SYSROOT
+    $_CONFIGURE_SYSROOT \
+    $EXTRA_CONFIGURE_OPTIONS
 else
   bash ./configure \
   --with-boot-jdk=$BOOT_JDK \
@@ -104,7 +105,8 @@ else
   --with-vendor-url="$VENDOR_URL" \
   --with-vendor-bug-url="$VENDOR_BUG_URL" \
   --with-vendor-vm-bug-url="$VENDOR_VM_BUG_URL" \
-    $_CONFIGURE_SYSROOT
+    $_CONFIGURE_SYSROOT \
+    $EXTRA_CONFIGURE_OPTIONS
 fi
 
 make JOBS=12 product-bundles test-image docs-zip
