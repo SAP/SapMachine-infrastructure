@@ -6,7 +6,7 @@ SLAVE_NO_CERTIFICATE_CHECK=$3
 
 JAVA_ARGS="-Xms10g"
 
-if [-f nohup.out ]; then
+if [ -f nohup.out ]; then
     cp nohup.out >> "slave-$(date +"%d_%m_%y-%H_%M_%S_%N").out"
 fi
 
