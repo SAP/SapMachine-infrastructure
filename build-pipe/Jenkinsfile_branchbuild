@@ -35,11 +35,8 @@ pipeline {
                             ]
 
                             archiveArtifacts '${env.LINUX_X86_64_ARTIFACT_DIR}/*.tar.gz'
-                        }
-                        always {
-                            dir(env.LINUX_X86_64_ARTIFACT_DIR) {
-                                deleteDir()
-                            }
+
+                            sh "rm -rf ${WORKSPACE}/${LINUX_X86_64_ARTIFACT_DIR}"
                         }
                     }
                 }
@@ -69,15 +66,12 @@ pipeline {
                             copyArtifacts filter: 'sapmachine-*.tar.gz', projectName: LINUX_PPC64LE_JOB, target: env.LINUX_PPC64LE_ARTIFACT_DIR, selector:
                             [
                                 $class: 'SpecificBuildSelector',
-                                buildNumber: env.LINUX_PPC64LE_JOB
+                                buildNumber: env.LINUX_PPC64LE_JOB_ID
                             ]
 
                             archiveArtifacts '${env.LINUX_PPC64LE_ARTIFACT_DIR}/*.tar.gz'
-                        }
-                        always {
-                            dir(env.LINUX_PPC64LE_ARTIFACT_DIR) {
-                                deleteDir()
-                            }
+
+                            sh "rm -rf ${WORKSPACE}/${LINUX_PPC64LE_ARTIFACT_DIR}"
                         }
                     }
                 }
@@ -107,15 +101,12 @@ pipeline {
                             copyArtifacts filter: 'sapmachine-*.tar.gz', projectName: LINUX_PPC64_JOB, target: env.LINUX_PPC64_ARTIFACT_DIR, selector:
                             [
                                 $class: 'SpecificBuildSelector',
-                                buildNumber: env.LINUX_PPC64_JOB
+                                buildNumber: env.LINUX_PPC64_JOB_ID
                             ]
 
                             archiveArtifacts '${env.LINUX_PPC64_ARTIFACT_DIR}/*.tar.gz'
-                        }
-                        always {
-                            dir(env.LINUX_PPC64_ARTIFACT_DIR) {
-                                deleteDir()
-                            }
+
+                            sh "rm -rf ${WORKSPACE}/${LINUX_PPC64_ARTIFACT_DIR}"
                         }
                     }
                 }
