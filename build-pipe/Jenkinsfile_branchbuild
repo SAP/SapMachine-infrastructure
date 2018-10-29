@@ -8,7 +8,7 @@ pipeline {
                 stage('Linux x86 64') {
                     steps {
                         script {
-                            def job_linux_x86_64 = build job: LINUX_X86_64_JOB, propagate: true, wait: true, parameters:
+                            def job_linux_x86_64 = build job: LINUX_X86_64_JOB, propagate: false, wait: true, parameters:
                             [
                                 string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
                                 string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
@@ -43,7 +43,7 @@ pipeline {
                 stage('Linux ppc64le') {
                     steps {
                         script {
-                            def job_linux_ppc64le = build job: LINUX_PPC64LE_JOB, propagate: true, wait: true, parameters:
+                            def job_linux_ppc64le = build job: LINUX_PPC64LE_JOB, propagate: false, wait: true, parameters:
                             [
                                 string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
                                 string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
@@ -78,7 +78,7 @@ pipeline {
                 stage('Linux ppc64') {
                     steps {
                         script {
-                            def job_linux_ppc64 = build job: LINUX_PPC64_JOB, propagate: true, wait: true, parameters:
+                            def job_linux_ppc64 = build job: LINUX_PPC64_JOB, propagate: false, wait: true, parameters:
                             [
                                 string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
                                 string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
