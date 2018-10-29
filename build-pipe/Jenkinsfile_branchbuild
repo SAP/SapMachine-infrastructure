@@ -7,52 +7,117 @@ pipeline {
             parallel {
                 stage('Linux x86 64') {
                     steps {
-                        build job: LINUX_X86_64_JOB, propagate: true, wait: true, parameters:
-                        [
-                            string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
-                            string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
-                            string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
-                            [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: false],
-                            [$class: 'BooleanParameterValue', name: 'PUBLISH', value: false],
-                            [$class: 'BooleanParameterValue', name: 'PROPAGATE_RESULT', value: true],
-                            [$class: 'BooleanParameterValue', name: 'RELEASE', value: false]
-                        ]
+                        script {
+                            def job_linux_x86_64 = build job: LINUX_X86_64_JOB, propagate: true, wait: true, parameters:
+                            [
+                                string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
+                                string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
+                                string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
+                                string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
+                                [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: false],
+                                [$class: 'BooleanParameterValue', name: 'PUBLISH', value: false],
+                                [$class: 'BooleanParameterValue', name: 'PROPAGATE_RESULT', value: true],
+                                [$class: 'BooleanParameterValue', name: 'RELEASE', value: false]
+                            ]
+
+                            env.LINUX_X86_64_JOB_ID = Integer.toString(job_linux_x86_64.getNumber())
+                            env.LINUX_X86_64_ARTIFACT_DIR = 'linux_x86_64_' + env.BUILD_NUMBER
+
+                            sh "mkdir -p ${WORKSPACE}/${LINUX_X86_64_ARTIFACT_DIR}"
+                        }
+                    }
+                    post {
+                        success {
+                            copyArtifacts filter: 'sapmachine-*.tar.gz', projectName: LINUX_X86_64_JOB, target: env.LINUX_X86_64_ARTIFACT_DIR, selector:
+                            [
+                                $class: 'SpecificBuildSelector',
+                                buildNumber: env.LINUX_X86_64_JOB_ID
+                            ]
+
+                            archiveArtifacts '${env.LINUX_X86_64_ARTIFACT_DIR}/*.tar.gz'
+                        }
+                        always {
+                            dir(env.LINUX_X86_64_ARTIFACT_DIR) {
+                                deleteDir()
+                            }
+                        }
                     }
                 }
                 stage('Linux ppc64le') {
                     steps {
-                        build job: LINUX_PPC64LE_JOB, propagate: true, wait: true, parameters:
-                        [
-                            string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
-                            string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
-                            string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
-                            [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: false],
-                            [$class: 'BooleanParameterValue', name: 'PUBLISH', value: false],
-                            [$class: 'BooleanParameterValue', name: 'PROPAGATE_RESULT', value: true],
-                            [$class: 'BooleanParameterValue', name: 'RELEASE', value: false]
-                        ]
+                        script {
+                            def job_linux_ppc64le = build job: LINUX_PPC64LE_JOB, propagate: true, wait: true, parameters:
+                            [
+                                string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
+                                string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
+                                string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
+                                string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
+                                [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: false],
+                                [$class: 'BooleanParameterValue', name: 'PUBLISH', value: false],
+                                [$class: 'BooleanParameterValue', name: 'PROPAGATE_RESULT', value: true],
+                                [$class: 'BooleanParameterValue', name: 'RELEASE', value: false]
+                            ]
+
+                            env.LINUX_PPC64LE_JOB_ID = Integer.toString(job_linux_ppc64le.getNumber())
+                            env.LINUX_PPC64LE_ARTIFACT_DIR = 'linux_ppc64le_' + env.BUILD_NUMBER
+
+                            sh "mkdir -p ${WORKSPACE}/${LINUX_PPC64LE_ARTIFACT_DIR}"
+                        }
+                    }
+                    post {
+                        success {
+                            copyArtifacts filter: 'sapmachine-*.tar.gz', projectName: LINUX_PPC64LE_JOB, target: env.LINUX_PPC64LE_ARTIFACT_DIR, selector:
+                            [
+                                $class: 'SpecificBuildSelector',
+                                buildNumber: env.LINUX_PPC64LE_JOB
+                            ]
+
+                            archiveArtifacts '${env.LINUX_PPC64LE_ARTIFACT_DIR}/*.tar.gz'
+                        }
+                        always {
+                            dir(env.LINUX_PPC64LE_ARTIFACT_DIR) {
+                                deleteDir()
+                            }
+                        }
                     }
                 }
                 stage('Linux ppc64') {
                     steps {
-                        build job: LINUX_PPC64_JOB, propagate: true, wait: true, parameters:
-                        [
-                            string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
-                            string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
-                            string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
-                            [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: false],
-                            [$class: 'BooleanParameterValue', name: 'PUBLISH', value: false],
-                            [$class: 'BooleanParameterValue', name: 'PROPAGATE_RESULT', value: true],
-                            [$class: 'BooleanParameterValue', name: 'RELEASE', value: false]
-                        ]
+                        script {
+                            def job_linux_ppc64 = build job: LINUX_PPC64_JOB, propagate: true, wait: true, parameters:
+                            [
+                                string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
+                                string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
+                                string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
+                                string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
+                                [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: false],
+                                [$class: 'BooleanParameterValue', name: 'PUBLISH', value: false],
+                                [$class: 'BooleanParameterValue', name: 'PROPAGATE_RESULT', value: true],
+                                [$class: 'BooleanParameterValue', name: 'RELEASE', value: false]
+                            ]
+
+                            env.LINUX_PPC64_JOB_ID = Integer.toString(job_linux_ppc64.getNumber())
+                            env.LINUX_PPC64_ARTIFACT_DIR = 'linux_ppc64_' + env.BUILD_NUMBER
+
+                            sh "mkdir -p ${WORKSPACE}/${LINUX_PPC64_ARTIFACT_DIR}"
+                        }
                     }
-                }
-            }
-            post {
-                success {
-                    copyArtifacts filter: '	sapmachine-*.tar.gz	', projectName: LINUX_X86_64_JOB, selector: downstream(upstreamBuildNumber: env.BUILD_NUMBER, upstreamProjectName: env.JOB_NAME)
-                    copyArtifacts filter: '	sapmachine-*.tar.gz	', projectName: LINUX_PPC64LE_JOB, selector: downstream(upstreamBuildNumber: env.BUILD_NUMBER, upstreamProjectName: env.JOB_NAME)
-                    copyArtifacts filter: '	sapmachine-*.tar.gz	', projectName: LINUX_PPC64_JOB, selector: downstream(upstreamBuildNumber: env.BUILD_NUMBER, upstreamProjectName: env.JOB_NAME)
+                    post {
+                        success {
+                            copyArtifacts filter: 'sapmachine-*.tar.gz', projectName: LINUX_PPC64_JOB, target: env.LINUX_PPC64_ARTIFACT_DIR, selector:
+                            [
+                                $class: 'SpecificBuildSelector',
+                                buildNumber: env.LINUX_PPC64_JOB
+                            ]
+
+                            archiveArtifacts '${env.LINUX_PPC64_ARTIFACT_DIR}/*.tar.gz'
+                        }
+                        always {
+                            dir(env.LINUX_PPC64_ARTIFACT_DIR) {
+                                deleteDir()
+                            }
+                        }
+                    }
                 }
             }
         }
