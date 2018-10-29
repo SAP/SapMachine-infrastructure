@@ -170,7 +170,7 @@ Run the following command:
 
 ```
 cd ansible
-ansible-playbook -i hosts -u <your user name> jenkins-slave-linux-ppc64le.yml --extra-vars jenkins_master_url=https://ci.sapmachine.io/computer/agent-linux-ppc64le-1/slave-agent.jnlp jenkins_slave_secret=123456789"
+ansible-playbook -i hosts -u <your user name> jenkins-slave-linux-ppc64le.yml --extra-vars jenkins_master_url=https://ci.sapmachine.io/computer/agent-linux-ppc64le-1/slave-agent.jnlp jenkins_slave_secret=<place the secret here>"
 ```
 
 
@@ -180,6 +180,6 @@ Run the following command:
 
 ```
 cd ansible
-ansible-playbook -i hosts -u <your user name> jenkins-slave-linux-ppc64.yml --extra-vars jenkins_master_url=https://ci.sapmachine.io/computer/agent-linux-ppc64-1/slave-agent.jnlp jenkins_slave_secret=123456789"
+ansible-playbook -i hosts -u <your user name> jenkins-slave-linux-ppc64.yml --extra-vars jenkins_master_url=https://ci.sapmachine.io/computer/agent-linux-ppc64-1/slave-agent.jnlp jenkins_slave_secret=<place the secret here>"
 ```
 
