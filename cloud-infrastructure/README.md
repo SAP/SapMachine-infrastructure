@@ -105,7 +105,28 @@ user_password:
     password: "foobar"
 ```
 
-#### AWS Private Key
+### Ansible hosts file
+
+The ansible directory contains a hosts file.
+This hosts file must contain the IP addresses of the managed machines.
+
+#### Example
+
+```
+[local]
+localhost
+
+[SapMachineMaster]
+123.100.10.1
+
+[SapMachineSlave-Linux-ppc64le]
+123.100.10.2
+
+[SapMachineSlave-Linux-ppc64]
+123.100.10.3
+```
+
+### AWS Private Key
 
 Place the *SapMachine.pem* private key file inside the [ansible](ansible) directory.
 
