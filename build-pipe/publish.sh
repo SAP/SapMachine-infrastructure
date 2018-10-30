@@ -11,9 +11,13 @@ if [ "$RELEASE" == true ]; then
   PRE_RELEASE_OPT=""
 fi
 
+if [[ -z $SAPMACHINE_GIT_REPOSITORY ]]; then
+  SAPMACHINE_GIT_REPOSITORY="http://github.com/SAP/SapMachine.git"
+fi
+
 if [ -z $GIT_TAG_NAME ]; then
     if [ ! -d SapMachine ]; then
-        git clone -b $SAPMACHINE_GIT_BRANCH "http://$GIT_USER:$GIT_PASSWORD@$SAPMACHINE_GIT_REPO" SapMachine
+        git clone -b $SAPMACHINE_GIT_BRANCH $SAPMACHINE_GIT_REPOSITORY SapMachine
     fi
 
     pushd SapMachine
