@@ -17,9 +17,9 @@ pipeline {
                                 string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
                                 string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
                                 string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
-                                [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: false],
+                                [$class: 'BooleanParameterValue', name: 'RUN_TESTS', params.RUN_TESTS],
                                 [$class: 'BooleanParameterValue', name: 'PUBLISH', value: false],
-                                [$class: 'BooleanParameterValue', name: 'PROPAGATE_RESULT', value: true],
+                                [$class: 'BooleanParameterValue', name: 'PROPAGATE_RESULT', value: false],
                                 [$class: 'BooleanParameterValue', name: 'RELEASE', value: false]
                             ]
 
@@ -58,9 +58,9 @@ pipeline {
                                 string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
                                 string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
                                 string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
-                                [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: false],
+                                [$class: 'BooleanParameterValue', name: 'RUN_TESTS', params.RUN_TESTS],
                                 [$class: 'BooleanParameterValue', name: 'PUBLISH', value: false],
-                                [$class: 'BooleanParameterValue', name: 'PROPAGATE_RESULT', value: true],
+                                [$class: 'BooleanParameterValue', name: 'PROPAGATE_RESULT', value: false],
                                 [$class: 'BooleanParameterValue', name: 'RELEASE', value: false]
                             ]
 
@@ -99,9 +99,9 @@ pipeline {
                                 string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
                                 string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
                                 string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
-                                [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: false],
+                                [$class: 'BooleanParameterValue', name: 'RUN_TESTS', params.RUN_TESTS],
                                 [$class: 'BooleanParameterValue', name: 'PUBLISH', value: false],
-                                [$class: 'BooleanParameterValue', name: 'PROPAGATE_RESULT', value: true],
+                                [$class: 'BooleanParameterValue', name: 'PROPAGATE_RESULT', value: false],
                                 [$class: 'BooleanParameterValue', name: 'RELEASE', value: false]
                             ]
 
@@ -140,9 +140,9 @@ pipeline {
                                 string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
                                 string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
                                 string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
-                                [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: false],
+                                [$class: 'BooleanParameterValue', name: 'RUN_TESTS', params.RUN_TESTS],
                                 [$class: 'BooleanParameterValue', name: 'PUBLISH', value: false],
-                                [$class: 'BooleanParameterValue', name: 'PROPAGATE_RESULT', value: true],
+                                [$class: 'BooleanParameterValue', name: 'PROPAGATE_RESULT', value: false],
                                 [$class: 'BooleanParameterValue', name: 'RELEASE', value: false]
                             ]
 
@@ -181,9 +181,9 @@ pipeline {
                                 string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
                                 string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
                                 string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
-                                [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: false],
+                                [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
                                 [$class: 'BooleanParameterValue', name: 'PUBLISH', value: false],
-                                [$class: 'BooleanParameterValue', name: 'PROPAGATE_RESULT', value: true],
+                                [$class: 'BooleanParameterValue', name: 'PROPAGATE_RESULT', value: false],
                                 [$class: 'BooleanParameterValue', name: 'RELEASE', value: false]
                             ]
 
