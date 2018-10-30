@@ -10,7 +10,6 @@
       - name: 'install python2'
         raw: sudo dnf -y install python libselinux-python
     vars:
-      slave_jar_version: 3.21
       jenkins_master_url: https://ci.sapmachine.io/computer/agent-linux-ppc64-1/slave-agent.jnlp
       jenkins_slave_name: agent-linux-ppc64-1
       boot_jdk_url: https://github.com/SAP/SapMachine/releases/download/sapmachine-10.0.2%2B13-1/sapmachine-jdk-10.0.2.13_linux-ppc64_bin.tar.gz
@@ -74,6 +73,12 @@
       - name: install git
         dnf:
           name: git
+          state: latest
+        become: yes
+
+      - name: install psmisc
+        dnf:
+          name: psmisc
           state: latest
         become: yes
 
@@ -166,7 +171,7 @@
       # download the jenkins slave jar file
       - name: download Jenkins Slave jar
         get_url:
-          url: "https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/{{ slave_jar_version }}/remoting-{{ slave_jar_version }}.jar"
+          url: "https://ci.sapmachine.io/jnlpJars/agent.jar"
           dest: /home/jenkins/slave.jar
           force: yes
         become: yes
@@ -188,6 +193,7 @@
       - name: stop all Java processes
         command: killall -9 java
         become: yes
+        become_user: jenkins
         failed_when: false
         tags:
           - java.kill_all
@@ -201,3 +207,4 @@
         become_user: jenkins
         tags:
           - jenkins_slave.start
+
