@@ -18,53 +18,56 @@
         <hudson.model.TextParameterDefinition>
           <name>test_suite</name>
           <description></description>
-          <defaultValue>hotspot</defaultValue>
+          <defaultValue>langtools</defaultValue>
           <trim>false</trim>
         </hudson.model.TextParameterDefinition>
         <hudson.model.TextParameterDefinition>
           <name>test_groups</name>
-          <description>We want to run hotspot all with scimark and ctw and not (!) jcstress. 
-Because the exclude list does not support groups we cannot exclude jcstress tests and have to call scimark and ctw explicit.</description>
-          <defaultValue>applications/scimark applications/ctw :hotspot_all_no_apps</defaultValue>
-          <trim>false</trim>
-        </hudson.model.TextParameterDefinition>
-        <hudson.model.TextParameterDefinition>
-          <name>GIT_TAG_NAME</name>
           <description></description>
-          <defaultValue></defaultValue>
+          <defaultValue>&quot;jdk tools lib&quot;</defaultValue>
           <trim>false</trim>
         </hudson.model.TextParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>JDK_BUILD_JOB</name>
           <description></description>
-          <defaultValue>build-10-snapshot-linux_ppc64le</defaultValue>
+          <defaultValue>branch-build_linux_x86_64</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>SAPMACHINE_GIT_REPOSITORY</name>
+          <description></description>
+          <defaultValue>https://github.com/SAP/SapMachine.git</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>SAPMACHINE_GIT_BRANCH</name>
           <description></description>
-          <defaultValue>sapmachine10</defaultValue>
+          <defaultValue>sapmachine</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>AGENT_LABEL</name>
+          <name>GIT_TAG_NAME</name>
           <description></description>
-          <defaultValue>linux_ppc64le</defaultValue>
+          <defaultValue></defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>DOCKER_DIR</name>
           <description></description>
-          <defaultValue>dockerfiles/ubuntu_14_04_ppc64le</defaultValue>
+          <defaultValue>dockerfiles/ubuntu_14_04_x86_64</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>AGENT_LABEL</name>
+          <description></description>
+          <defaultValue>linux_x86_64</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.plugins.copyartifact.BuildSelectorParameter plugin="copyartifact@1.41">
           <name>BUILD_SELECTOR</name>
           <description></description>
-          <defaultSelector class="hudson.plugins.copyartifact.TriggeredBuildSelector">
-            <fallbackToLastSuccessful>true</fallbackToLastSuccessful>
-            <upstreamFilterStrategy>UseGlobalSetting</upstreamFilterStrategy>
-            <allowUpstreamDependencies>false</allowUpstreamDependencies>
+          <defaultSelector class="hudson.plugins.copyartifact.StatusBuildSelector">
+            <stable>true</stable>
           </defaultSelector>
         </hudson.plugins.copyartifact.BuildSelectorParameter>
       </parameterDefinitions>

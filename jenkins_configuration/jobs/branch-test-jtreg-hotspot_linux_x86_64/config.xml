@@ -23,11 +23,22 @@
         </hudson.model.TextParameterDefinition>
         <hudson.model.TextParameterDefinition>
           <name>test_groups</name>
-          <description>We want to run hotspot all with scimark and ctw and not (!) jcstress. 
-Because the exclude list does not support groups we cannot exclude jcstress tests and have to call scimark and ctw explicit.</description>
-          <defaultValue>applications/scimark applications/ctw :hotspot_all_no_apps</defaultValue>
+          <description></description>
+          <defaultValue>:tier1 </defaultValue>
           <trim>false</trim>
         </hudson.model.TextParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>SAPMACHINE_GIT_REPOSITORY</name>
+          <description></description>
+          <defaultValue>https://github.com/SAP/SapMachine.git</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>SAPMACHINE_GIT_BRANCH</name>
+          <description></description>
+          <defaultValue>sapmachine</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
         <hudson.model.TextParameterDefinition>
           <name>GIT_TAG_NAME</name>
           <description></description>
@@ -37,25 +48,19 @@ Because the exclude list does not support groups we cannot exclude jcstress test
         <hudson.model.StringParameterDefinition>
           <name>JDK_BUILD_JOB</name>
           <description></description>
-          <defaultValue>build-10-snapshot-linux_ppc64le</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>SAPMACHINE_GIT_BRANCH</name>
-          <description></description>
-          <defaultValue>sapmachine10</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>AGENT_LABEL</name>
-          <description></description>
-          <defaultValue>linux_ppc64le</defaultValue>
+          <defaultValue>branch-build_linux_x86_64</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>DOCKER_DIR</name>
           <description></description>
-          <defaultValue>dockerfiles/ubuntu_14_04_ppc64le</defaultValue>
+          <defaultValue>dockerfiles/ubuntu_14_04_x86_64</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>AGENT_LABEL</name>
+          <description></description>
+          <defaultValue>linux_x86_64</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.plugins.copyartifact.BuildSelectorParameter plugin="copyartifact@1.41">

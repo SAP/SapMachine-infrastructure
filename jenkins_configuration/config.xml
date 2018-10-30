@@ -944,7 +944,6 @@
           <jobNames>
             <comparator class="hudson.util.CaseInsensitiveComparator"/>
             <string>branch-build-service</string>
-            <string>branch-build-service-test</string>
           </jobNames>
           <jobFilters/>
           <name>Trigger Branch Build</name>
@@ -960,15 +959,74 @@
         <hudson.plugins.sectioned__view.ListViewSection>
           <jobNames>
             <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.ListViewSection/jobNames/comparator"/>
-            <string>branch-build_linux_ppc64</string>
-            <string>branch-build_linux_ppc64le</string>
             <string>branch-build_linux_x86_64</string>
-            <string>branch-build_macos_x86_64</string>
+            <string>branch-test-jtreg-hotspot_linux_x86_64</string>
+            <string>branch-test-jtreg-jdk_linux_x86_64</string>
+            <string>branch-test-jtreg-langtools_linux_x86_64</string>
+          </jobNames>
+          <jobFilters/>
+          <name>Linux x86 64</name>
+          <width>HALF</width>
+          <alignment>CENTER</alignment>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+          </columns>
+        </hudson.plugins.sectioned__view.ListViewSection>
+        <hudson.plugins.sectioned__view.ListViewSection>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.ListViewSection/jobNames/comparator"/>
+            <string>branch-build_linux_ppc64le</string>
+          </jobNames>
+          <jobFilters/>
+          <name>Linux ppc64le</name>
+          <width>HALF</width>
+          <alignment>CENTER</alignment>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+          </columns>
+        </hudson.plugins.sectioned__view.ListViewSection>
+        <hudson.plugins.sectioned__view.ListViewSection>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.ListViewSection/jobNames/comparator"/>
+            <string>branch-build_linux_ppc64</string>
+          </jobNames>
+          <jobFilters/>
+          <name>Linux ppc64</name>
+          <width>HALF</width>
+          <alignment>CENTER</alignment>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+          </columns>
+        </hudson.plugins.sectioned__view.ListViewSection>
+        <hudson.plugins.sectioned__view.ListViewSection>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.ListViewSection/jobNames/comparator"/>
             <string>branch-build_windows_x86_64</string>
           </jobNames>
           <jobFilters/>
-          <name>Builds</name>
-          <width>FULL</width>
+          <name>Windows x86 64</name>
+          <width>HALF</width>
+          <alignment>CENTER</alignment>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+          </columns>
+        </hudson.plugins.sectioned__view.ListViewSection>
+        <hudson.plugins.sectioned__view.ListViewSection>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.ListViewSection/jobNames/comparator"/>
+            <string>branch-build_macos_x86_64</string>
+          </jobNames>
+          <jobFilters/>
+          <name>macOS x86 64</name>
+          <width>HALF</width>
           <alignment>CENTER</alignment>
           <columns>
             <hudson.views.StatusColumn/>
