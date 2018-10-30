@@ -12,7 +12,6 @@ pipeline {
                 }
             }
             environment {
-              SAPMACHINE_GIT_REPO = 'github.com/SAP/SapMachine.git'
               SAPMACHINE_PUBLISH_GITHUB_TOKEN = credentials('SapMachine-Github-Token')
               SAPMACHINE_PUBLISH_GITHUB_REPO_NAME = 'SapMachine'
               SAPMACHINE_PUBLISH_GITHUB_USER = 'SAP'
@@ -66,24 +65,43 @@ pipeline {
                 expression { params.RUN_TESTS == true}
             }
             steps {
-            build job: HOTSPOT_TEST_JOB, propagate: params.PROPAGATE_RESULT, wait: true, parameters:
-                    [
-                        string(name: 'GITHUB_PR_NUMBER', value: params.GITHUB_PR_NUMBER),
-                        string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME)
-                    ]
+                script {
+                    def sapmachine_git_repository = 'https://github.com/SAP/SapMachine.git'
+                    def sapmachine_git_branch = 'sapmachine'
 
-            build job: JDK_TEST_JOB, propagate: params.PROPAGATE_RESULT, wait: true, parameters:
-                    [
-                        string(name: 'GITHUB_PR_NUMBER', value: params.GITHUB_PR_NUMBER),
-                        string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME)
-                    ]
+                    if (params.SAPMACHINE_GIT_REPOSITORY) {
+                        sapmachine_git_repository = params.SAPMACHINE_GIT_REPOSITORY
+                    }
 
-            build job: LANGTOOLS_TEST_JOB, propagate: params.PROPAGATE_RESULT, wait: true, parameters:
-                    [
-                        string(name: 'GITHUB_PR_NUMBER', value: params.GITHUB_PR_NUMBER),
-                        string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME)
-                    ]
+                    if (params.SAPMACHINE_GIT_BRANCH) {
+                        sapmachine_git_branch = params.SAPMACHINE_GIT_BRANCH
+                    }
 
+                    build job: HOTSPOT_TEST_JOB, propagate: params.PROPAGATE_RESULT, wait: true, parameters:
+                            [
+                                string(name: 'SAPMACHINE_GIT_REPOSITORY', value: sapmachine_git_repository),
+                                string(name: 'SAPMACHINE_GIT_BRANCH', value: sapmachine_git_branch),
+                                string(name: 'GITHUB_PR_NUMBER', value: params.GITHUB_PR_NUMBER),
+                                string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME)
+                            ]
+
+                    build job: JDK_TEST_JOB, propagate: params.PROPAGATE_RESULT, wait: true, parameters:
+                            [
+                                string(name: 'SAPMACHINE_GIT_REPOSITORY', value: sapmachine_git_repository),
+                                string(name: 'SAPMACHINE_GIT_BRANCH', value: sapmachine_git_branch),
+                                string(name: 'GITHUB_PR_NUMBER', value: params.GITHUB_PR_NUMBER),
+                                string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME)
+                            ]
+
+                    build job: LANGTOOLS_TEST_JOB, propagate: params.PROPAGATE_RESULT, wait: true, parameters:
+                            [
+                                string(name: 'SAPMACHINE_GIT_REPOSITORY', value: sapmachine_git_repository),
+                                string(name: 'SAPMACHINE_GIT_BRANCH', value: sapmachine_git_branch),
+                                string(name: 'GITHUB_PR_NUMBER', value: params.GITHUB_PR_NUMBER),
+                                string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME)
+                            ]
+
+                }
             }
         }
         stage('Publish GitHub') {

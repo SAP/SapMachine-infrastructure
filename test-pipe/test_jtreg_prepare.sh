@@ -8,7 +8,7 @@ fi
 export GIT_COMMITTER_NAME=sapmachine
 export GIT_COMMITTER_EMAIL="sapmachine@sap.com"
 
-git clone -b $SAPMACHINE_GIT_BRANCH "https://$SAPMACHINE_GIT_REPO" sapmachine
+git clone -b $SAPMACHINE_GIT_BRANCH $SAPMACHINE_GIT_REPOSITORY sapmachine
 
 cd sapmachine
 
