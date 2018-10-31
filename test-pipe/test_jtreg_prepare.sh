@@ -5,6 +5,10 @@ if [ -d sapmachine ]; then
     rm -rf sapmachine;
 fi
 
+if [[ -z $SAPMACHINE_GIT_REPOSITORY ]]; then
+  SAPMACHINE_GIT_REPOSITORY="https://github.com/SAP/SapMachine.git"
+fi
+
 export GIT_COMMITTER_NAME=sapmachine
 export GIT_COMMITTER_EMAIL="sapmachine@sap.com"
 
