@@ -12,7 +12,7 @@
     vars:
       jenkins_master_url: https://ci.sapmachine.io/computer/agent-linux-ppc64-1/slave-agent.jnlp
       jenkins_slave_name: agent-linux-ppc64-1
-      boot_jdk_url: https://github.com/SAP/SapMachine/releases/download/sapmachine-10.0.2%2B13-1/sapmachine-jdk-10.0.2.13_linux-ppc64_bin.tar.gz
+      boot_jdk_url: https://github.com/SAP/SapMachine/releases/download/sapmachine-11.0.1%2B13-0/sapmachine-jdk-11.0.1.13_linux-ppc64_bin.tar.gz
 
     tasks:
 
@@ -91,6 +91,12 @@
       - name: install fontconfig-devel
         dnf:
           name: fontconfig-devel
+          state: latest
+        become: yes
+
+      - name: install shasum
+        dnf:
+          name: perl-Digest-SHA
           state: latest
         become: yes
 
