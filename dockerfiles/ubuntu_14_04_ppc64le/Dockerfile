@@ -39,12 +39,6 @@ libmpc-dev
 
 RUN useradd -ms /bin/bash jenkins -u 1002
 
-RUN mkdir -p /opt/sapmachine-11-jdk
-ENV BOOT_JDK=/opt/sapmachine-11-jdk
-WORKDIR $BOOT_JDK
-RUN wget -q https://github.com/SAP/SapMachine/releases/download/sapmachine-11.0.1%2B13-0/sapmachine-jdk-11.0.1.13_linux-ppc64le_bin.tar.gz
-RUN bsdtar xf sapmachine-jdk-11.0.1.13_linux-ppc64le_bin.tar.gz --strip-components=1
-
 RUN mkdir -p /opt/scimark2
 RUN wget https://math.nist.gov/scimark2/scimark2lib.jar -O /opt/scimark2/scimark2lib.jar
 
@@ -65,4 +59,11 @@ RUN /opt/gcc-7.3.0/configure --enable-languages=c,c++ --prefix=/opt/gcc-7.3.0-bi
     rm -rf /opt/gcc-build
 
 ENV PATH="/opt/gcc-7.3.0-bin/bin:${PATH}"
+
+RUN mkdir -p /opt/sapmachine-11-jdk
+ENV BOOT_JDK=/opt/sapmachine-11-jdk
+WORKDIR $BOOT_JDK
+RUN wget -q https://github.com/SAP/SapMachine/releases/download/sapmachine-11.0.1%2B13-0/sapmachine-jdk-11.0.1.13_linux-ppc64le_bin.tar.gz
+RUN bsdtar xf sapmachine-jdk-11.0.1.13_linux-ppc64le_bin.tar.gz --strip-components=1
+
 WORKDIR /
