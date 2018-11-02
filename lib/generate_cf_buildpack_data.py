@@ -68,7 +68,7 @@ def main(argv=None):
 
     local_repo = join(os.getcwd(), 'gh-pages')
     utils.git_clone('github.com/SAP/SapMachine.git', 'gh-pages', local_repo)
-    write_index_yaml(asset_map, join(local_repo, 'assets', 'cf', 'jre' 'linux', 'x86_64'))
+    write_index_yaml(asset_map, join(local_repo, 'assets', 'cf', 'jre', 'linux', 'x86_64'))
     utils.git_commit(local_repo, 'Updated index.yml', ['assets'])
     utils.git_push(local_repo)
     utils.remove_if_exists(local_repo)
