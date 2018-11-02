@@ -20,10 +20,6 @@ def write_index_yaml(assets, target):
             index_yaml.write(str.format('{0}: {1}\n', version, assets[version]))
 
 def main(argv=None):
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-m', '--major', help='the SapMachine major version', metavar='MAJOR', required=True)
-    args = parser.parse_args()
-
     token = utils.get_github_api_accesstoken()
     github_api = 'https://api.github.com/repos/SAP/SapMachine/releases'
     asset_pattern = re.compile(utils.sapmachine_asset_pattern())
@@ -45,35 +41,34 @@ def main(argv=None):
         if version is None or os_ext:
             continue
 
-        if args.major == major:
-            for asset in assets:
-                match = asset_pattern.match(asset['name'])
+        for asset in assets:
+            match = asset_pattern.match(asset['name'])
 
-                if match is not None:
-                    asset_image_type = match.group(1)
-                    asset_os = match.group(3)
+            if match is not None:
+                asset_image_type = match.group(1)
+                asset_os = match.group(3)
 
-                    if asset_os == 'linux-x64' and asset_image_type == 'jre':
-                        buildpack_version = ''
-                        parts = version_part.split('.')
-                        num_parts = len(parts)
-                        if num_parts == 3:
-                            buildpack_version = str.format('{0}_', version_part)
-                        elif num_parts < 3:
-                            buildpack_version = str.format('{0}{1}_', version_part, '.0' * (3 - num_parts))
-                        elif num_parts > 3:
-                            buildpack_version = str.format('{0}.{1}.{2}_{3}', parts[0], parts[1], parts[2], parts[3])
+                if asset_os == 'linux-x64' and asset_image_type == 'jre':
+                    buildpack_version = ''
+                    parts = version_part.split('.')
+                    num_parts = len(parts)
+                    if num_parts == 3:
+                        buildpack_version = str.format('{0}_', version_part)
+                    elif num_parts < 3:
+                        buildpack_version = str.format('{0}{1}_', version_part, '.0' * (3 - num_parts))
+                    elif num_parts > 3:
+                        buildpack_version = str.format('{0}.{1}.{2}_{3}', parts[0], parts[1], parts[2], parts[3])
 
-                        buildpack_version += str.format('b{0}', build_number)
+                    buildpack_version += str.format('b{0}', build_number)
 
-                        if sap_build_number:
-                            buildpack_version += str.format('s{0}', sap_build_number)
+                    if sap_build_number:
+                        buildpack_version += str.format('s{0}', sap_build_number)
 
-                        asset_map[buildpack_version] = asset['browser_download_url']
+                    asset_map[buildpack_version] = asset['browser_download_url']
 
     local_repo = join(os.getcwd(), 'gh-pages')
     utils.git_clone('github.com/SAP/SapMachine.git', 'gh-pages', local_repo)
-    write_index_yaml(asset_map, join(local_repo, 'assets', 'cf', 'jre', args.major, 'linux', 'x86_64'))
+    write_index_yaml(asset_map, join(local_repo, 'assets', 'cf', 'jre' 'linux', 'x86_64'))
     utils.git_commit(local_repo, 'Updated index.yml', ['assets'])
     utils.git_push(local_repo)
     utils.remove_if_exists(local_repo)
