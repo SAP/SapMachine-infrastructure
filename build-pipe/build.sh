@@ -28,6 +28,9 @@ git clone -b $SAPMACHINE_GIT_BRANCH $SAPMACHINE_GIT_REPOSITORY "${WORKSPACE}/Sap
 
 cd "${WORKSPACE}/SapMachine"
 
+git config user.name SAPMACHINE_GIT_USER
+git config user.email SAPMACHINE_GIT_EMAIL
+
 GIT_REVISION=$(git rev-parse HEAD)
 echo "Git Revision=${GIT_REVISION}"
 
