@@ -1,15 +1,27 @@
 <?xml version='1.1' encoding='UTF-8'?>
 <list>
   <flow-owner plugin="workflow-job@2.26">
-    <job>test-cf-java-buildpack</job>
-    <id>312</id>
+    <job>build-11-snapshot-windows_x86_64</job>
+    <id>10</id>
   </flow-owner>
   <flow-owner plugin="workflow-job@2.26">
-    <job>jenkins-backup</job>
-    <id>241</id>
+    <job>test-jtreg-jdk-11-release-macos_x86_64</job>
+    <id>2</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@2.26">
+    <job>test-jtreg-jdk-11-snapshot-windows_x86_64</job>
+    <id>4</id>
   </flow-owner>
   <flow-owner plugin="workflow-job@2.26">
     <job>update-pipeline</job>
-    <id>352</id>
+    <id>353</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@2.26">
+    <job>jenkins-backup</job>
+    <id>242</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@2.26">
+    <job>test-cf-java-buildpack</job>
+    <id>313</id>
   </flow-owner>
 </list>

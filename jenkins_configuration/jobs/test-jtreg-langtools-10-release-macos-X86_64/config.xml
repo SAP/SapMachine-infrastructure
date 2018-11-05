@@ -18,37 +18,31 @@
         <hudson.model.TextParameterDefinition>
           <name>test_suite</name>
           <description></description>
-          <defaultValue>hotspot</defaultValue>
+          <defaultValue>langtools</defaultValue>
           <trim>false</trim>
         </hudson.model.TextParameterDefinition>
         <hudson.model.TextParameterDefinition>
           <name>test_groups</name>
           <description></description>
-          <defaultValue>:hotspot_tier1</defaultValue>
+          <defaultValue>:tier1</defaultValue>
           <trim>false</trim>
         </hudson.model.TextParameterDefinition>
         <hudson.model.TextParameterDefinition>
-          <name>GIT_TAG_NAME</name>
+          <name>JDK_BUILD_JOB</name>
           <description></description>
-          <defaultValue></defaultValue>
+          <defaultValue>build-10-release-macos-X86_64</defaultValue>
           <trim>false</trim>
         </hudson.model.TextParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>JDK_BUILD_JOB</name>
-          <description></description>
-          <defaultValue>build-11-release-osx_x86_64</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
           <name>SAPMACHINE_GIT_BRANCH</name>
           <description></description>
-          <defaultValue>sapmachine11</defaultValue>
+          <defaultValue>sapmachine10</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>AGENT_LABEL</name>
           <description></description>
-          <defaultValue>osx_x86_64</defaultValue>
+          <defaultValue>macos-X86_64</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.plugins.copyartifact.BuildSelectorParameter plugin="copyartifact@1.41">
