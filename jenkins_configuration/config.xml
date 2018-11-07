@@ -883,18 +883,18 @@
           <jobNames>
             <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
             <string>build-snapshot-macos_x86_64</string>
+            <string>test-jtreg-hotspot-snapshot-macos_x86_64</string>
+            <string>test-jtreg-jdk-snapshot-macos_x86_64</string>
+            <string>test-jtreg-langtools-snapshot-macos_x86_64</string>
           </jobNames>
           <jobFilters/>
           <name>Snapshot</name>
-          <width>FULL</width>
+          <width>THIRD</width>
           <alignment>CENTER</alignment>
           <columns>
             <hudson.views.StatusColumn/>
             <hudson.views.WeatherColumn/>
             <hudson.views.JobColumn/>
-            <hudson.views.LastSuccessColumn/>
-            <hudson.views.LastFailureColumn/>
-            <hudson.views.LastDurationColumn/>
             <hudson.views.BuildButtonColumn/>
           </columns>
         </hudson.plugins.sectioned__view.ListViewSection>
@@ -908,15 +908,12 @@
           </jobNames>
           <jobFilters/>
           <name>Snapshot 11</name>
-          <width>FULL</width>
+          <width>THIRD</width>
           <alignment>CENTER</alignment>
           <columns>
             <hudson.views.StatusColumn/>
             <hudson.views.WeatherColumn/>
             <hudson.views.JobColumn/>
-            <hudson.views.LastSuccessColumn/>
-            <hudson.views.LastFailureColumn/>
-            <hudson.views.LastDurationColumn/>
             <hudson.views.BuildButtonColumn/>
           </columns>
         </hudson.plugins.sectioned__view.ListViewSection>
@@ -964,7 +961,7 @@
       <sections>
         <hudson.plugins.sectioned__view.ListViewSection>
           <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator"/>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView[6]/sections/hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
             <string>branch-build-service</string>
           </jobNames>
           <jobFilters/>
@@ -980,7 +977,7 @@
         </hudson.plugins.sectioned__view.ListViewSection>
         <hudson.plugins.sectioned__view.ListViewSection>
           <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.ListViewSection/jobNames/comparator"/>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView[6]/sections/hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
             <string>branch-build_linux_x86_64</string>
             <string>branch-test-jtreg-hotspot_linux_x86_64</string>
             <string>branch-test-jtreg-jdk_linux_x86_64</string>
@@ -998,8 +995,11 @@
         </hudson.plugins.sectioned__view.ListViewSection>
         <hudson.plugins.sectioned__view.ListViewSection>
           <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.ListViewSection/jobNames/comparator"/>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView[6]/sections/hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
             <string>branch-build_linux_ppc64le</string>
+            <string>branch-test-jtreg-hotspot_linux_ppc64le</string>
+            <string>branch-test-jtreg-jdk_linux_ppc64le</string>
+            <string>branch-test-jtreg-langtools_linux_ppc64le</string>
           </jobNames>
           <jobFilters/>
           <name>Linux ppc64le</name>
@@ -1013,8 +1013,11 @@
         </hudson.plugins.sectioned__view.ListViewSection>
         <hudson.plugins.sectioned__view.ListViewSection>
           <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.ListViewSection/jobNames/comparator"/>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView[6]/sections/hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
             <string>branch-build_linux_ppc64</string>
+            <string>branch-test-jtreg-hotspot_linux_ppc64</string>
+            <string>branch-test-jtreg-jdk_linux_ppc64</string>
+            <string>branch-test-jtreg-langtools_linux_ppc64</string>
           </jobNames>
           <jobFilters/>
           <name>Linux ppc64</name>
@@ -1028,8 +1031,11 @@
         </hudson.plugins.sectioned__view.ListViewSection>
         <hudson.plugins.sectioned__view.ListViewSection>
           <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.ListViewSection/jobNames/comparator"/>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView[6]/sections/hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
             <string>branch-build_windows_x86_64</string>
+            <string>branch-test-jtreg-hotspot_windows_x86_64</string>
+            <string>branch-test-jtreg-jdk_windows_x86_64</string>
+            <string>branch-test-jtreg-langtools_windows_x86_64</string>
           </jobNames>
           <jobFilters/>
           <name>Windows x86 64</name>
@@ -1043,8 +1049,11 @@
         </hudson.plugins.sectioned__view.ListViewSection>
         <hudson.plugins.sectioned__view.ListViewSection>
           <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.ListViewSection/jobNames/comparator"/>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView[6]/sections/hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
             <string>branch-build_macos_x86_64</string>
+            <string>branch-test-jtreg-hotspot_macos_x86_64</string>
+            <string>branch-test-jtreg-jdk_macos_x86_64</string>
+            <string>branch-test-jtreg-langtools_macos_x86_64</string>
           </jobNames>
           <jobFilters/>
           <name>macOS x86 64</name>

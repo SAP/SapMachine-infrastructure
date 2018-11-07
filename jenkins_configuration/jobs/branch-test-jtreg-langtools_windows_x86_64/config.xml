@@ -13,37 +13,50 @@
   <description></description>
   <keepDependencies>false</keepDependencies>
   <properties>
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>-1</daysToKeep>
+        <numToKeep>50</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>-1</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
         <hudson.model.TextParameterDefinition>
           <name>test_suite</name>
           <description></description>
-          <defaultValue>hotspot</defaultValue>
+          <defaultValue>langtools</defaultValue>
           <trim>false</trim>
         </hudson.model.TextParameterDefinition>
         <hudson.model.TextParameterDefinition>
           <name>test_groups</name>
-          <description>We want to run hotspot all with scimark and ctw and not (!) jcstress. 
-Because the exclude list does not support groups we cannot exclude jcstress tests and have to call scimark and ctw explicit.</description>
-          <defaultValue>applications/scimark applications/ctw :hotspot_all_no_apps</defaultValue>
-          <trim>false</trim>
-        </hudson.model.TextParameterDefinition>
-        <hudson.model.TextParameterDefinition>
-          <name>GIT_TAG_NAME</name>
           <description></description>
-          <defaultValue></defaultValue>
+          <defaultValue>&quot;jdk tools lib&quot;</defaultValue>
           <trim>false</trim>
         </hudson.model.TextParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>JDK_BUILD_JOB</name>
           <description></description>
-          <defaultValue>build-snapshot-windows_x86_64</defaultValue>
+          <defaultValue>branch-build_windows_x86_64</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>SAPMACHINE_GIT_REPOSITORY</name>
+          <description></description>
+          <defaultValue>https://github.com/SAP/SapMachine.git</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>SAPMACHINE_GIT_BRANCH</name>
           <description></description>
           <defaultValue>sapmachine</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>GIT_TAG_NAME</name>
+          <description></description>
+          <defaultValue></defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
@@ -55,22 +68,12 @@ Because the exclude list does not support groups we cannot exclude jcstress test
         <hudson.plugins.copyartifact.BuildSelectorParameter plugin="copyartifact@1.41">
           <name>BUILD_SELECTOR</name>
           <description></description>
-          <defaultSelector class="hudson.plugins.copyartifact.TriggeredBuildSelector">
-            <fallbackToLastSuccessful>true</fallbackToLastSuccessful>
-            <upstreamFilterStrategy>UseGlobalSetting</upstreamFilterStrategy>
-            <allowUpstreamDependencies>false</allowUpstreamDependencies>
+          <defaultSelector class="hudson.plugins.copyartifact.StatusBuildSelector">
+            <stable>true</stable>
           </defaultSelector>
         </hudson.plugins.copyartifact.BuildSelectorParameter>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
-    <jenkins.model.BuildDiscarderProperty>
-      <strategy class="hudson.tasks.LogRotator">
-        <daysToKeep>-1</daysToKeep>
-        <numToKeep>50</numToKeep>
-        <artifactDaysToKeep>-1</artifactDaysToKeep>
-        <artifactNumToKeep>-1</artifactNumToKeep>
-      </strategy>
-    </jenkins.model.BuildDiscarderProperty>
   </properties>
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@2.60">
     <scm class="hudson.plugins.git.GitSCM" plugin="git@3.9.1">

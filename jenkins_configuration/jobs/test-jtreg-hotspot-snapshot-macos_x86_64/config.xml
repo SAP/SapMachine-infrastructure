@@ -37,7 +37,7 @@ Because the exclude list does not support groups we cannot exclude jcstress test
         <hudson.model.StringParameterDefinition>
           <name>JDK_BUILD_JOB</name>
           <description></description>
-          <defaultValue>build-snapshot-windows_x86_64</defaultValue>
+          <defaultValue>build-snapshot-macos_x86_64</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
@@ -49,7 +49,7 @@ Because the exclude list does not support groups we cannot exclude jcstress test
         <hudson.model.StringParameterDefinition>
           <name>AGENT_LABEL</name>
           <description></description>
-          <defaultValue>windows_x86_64</defaultValue>
+          <defaultValue>macos_x86_64</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.plugins.copyartifact.BuildSelectorParameter plugin="copyartifact@1.41">
