@@ -53,7 +53,7 @@ else
 fi
 
 CONCURRENCY=`expr $NUM_CPUS / 2`
-MAX_RAM_PERCENTAGE=`expr 25 / $CONCURRENCY`
+MAX_RAM_PERCENTAGE=`expr 25 / $NUM_CPUS`
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 chmod +x ${JT_HOME}/bin/jtreg
