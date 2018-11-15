@@ -66,7 +66,7 @@ if [ "${TEST_SUITE}" == "hotspot" ]; then
     ${JT_HOME}/bin/jtreg -dir:${JDK_LOCATION}/test/${TEST_SUITE}/jtreg -xml -verbose:summary -nativepath:${TEST_NATIVE_LIB} \
      -exclude:${JDK_LOCATION}/test/${TEST_SUITE}/jtreg/ProblemList.txt -exclude:${JDK_LOCATION}/test/${TEST_SUITE}/jtreg/ProblemList-SapMachine.txt \
      -conc:${CONCURRENCY} -vmoption:-XX:MaxRAMPercentage=${MAX_RAM_PERCENTAGE} \
-     -a -ignore:quiet -timeoutFactor:5 -agentvm -javaoption:-Djava.awt.headless=true -javaoption:-DSCIMARK_2_CP=${SCIMARK_2_CP} "-k:(!ignore)&(!stress)" -testjdk:${TEST_JDK} ${TEST_GROUPS}
+     -a -ignore:quiet -timeoutFactor:5 -agentvm -javaoption:-Djava.awt.headless=true -javaoption:-DSCIMARK_2_CP=${SCIMARK_2_CP} "-k:(!ignore)&(!stress)&(!headful)" -testjdk:${TEST_JDK} ${TEST_GROUPS}
 fi
 
 if [ "${TEST_SUITE}" == "jdk" ]; then
