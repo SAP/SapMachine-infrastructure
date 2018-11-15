@@ -102,7 +102,6 @@ else
   --with-boot-jdk=$BOOT_JDK \
   --with-version-opt=sapmachine \
   --with-version-pre=snapshot \
-  --with-version-build=$BUILD_NUMBER \
   --disable-warnings-as-errors \
   --with-vendor-name="$VENDOR_NAME" \
   --with-vendor-url="$VENDOR_URL" \
