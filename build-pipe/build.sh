@@ -127,6 +127,8 @@ zip -rq "${WORKSPACE}/test.zip" make/data/lsrdata
 cd "${WORKSPACE}/SapMachine/build"
 cd "$(ls)"
 zip -rq ${WORKSPACE}/test.zip spec.gmk
+ls -l
+ls -l bundles/*
 zip -rq ${WORKSPACE}/test.zip bundles/sapmachine-jdk-*_bin.*
 cd images
 zip -rq ${WORKSPACE}/test.zip test
