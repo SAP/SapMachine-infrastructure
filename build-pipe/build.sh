@@ -134,21 +134,25 @@ zip -rq ${WORKSPACE}/test.zip test
 
 cd ../bundles
 
-JDK_NAME=$(ls sapmachine-jdk-*_bin.*)
-read JDK_MAJOR JDK_SUFFIX<<< $(echo $JDK_NAME | sed $SEDFLAGS 's/sapmachine-jdk-([0-9]+((\.[0-9]+))*)(.*)/ \1 \4 /p')
-JDK_BUNDLE_NAME="sapmachine-jdk-${JDK_MAJOR}${JDK_SUFFIX}"
-JRE_BUNDLE_NAME="sapmachine-jre-${JDK_MAJOR}${JDK_SUFFIX}"
+if [ "$(ls sapmachine-jdk-*_bin.* | wc -l)" -gt "0" ]; then
+  SAPMACHINE_BUNDLE_PREFIX="sapmachine-"
+fi
 
-HAS_JRE=$(ls sapmachine-jre* | wc -l)
+JDK_NAME=$(ls ${SAPMACHINE_BUNDLE_PREFIX}jdk-*_bin.*)
+read JDK_MAJOR JDK_SUFFIX<<< $(echo $JDK_NAME | sed $SEDFLAGS 's/'"${SAPMACHINE_BUNDLE_PREFIX}"'jdk-([0-9]+((\.[0-9]+))*)(.*)/ \1 \4 /p')
+JDK_BUNDLE_NAME="${SAPMACHINE_BUNDLE_PREFIX}jdk-${JDK_MAJOR}${JDK_SUFFIX}"
+JRE_BUNDLE_NAME="${SAPMACHINE_BUNDLE_PREFIX}jre-${JDK_MAJOR}${JDK_SUFFIX}"
+
+HAS_JRE=$(ls ${SAPMACHINE_BUNDLE_PREFIX}jre* | wc -l)
 
 if [ "$HAS_JRE" -lt "1" ]; then
-  JRE_BUNDLE_TOP_DIR="sapmachine-jre-$JDK_MAJOR.jre"
+  JRE_BUNDLE_TOP_DIR="${SAPMACHINE_BUNDLE_PREFIX}jre-$JDK_MAJOR.jre"
 
   rm -rf $JRE_BUNDLE_NAME
   mkdir $JRE_BUNDLE_TOP_DIR
   if [[ $UNAME == Darwin ]]; then
-      cp -a ../images/sapmachine-jre-bundle/$JRE_BUNDLE_TOP_DIR* .
-      SetFile -a b sapmachine-jre*
+      cp -a ../images/${SAPMACHINE_BUNDLE_PREFIX}jre-bundle/$JRE_BUNDLE_TOP_DIR* .
+      SetFile -a b ${SAPMACHINE_BUNDLE_PREFIX}jre*
   else
       cp -r ../images/jre/* $JRE_BUNDLE_TOP_DIR
   fi
@@ -163,8 +167,8 @@ if [ "$HAS_JRE" -lt "1" ]; then
   rm -rf $JRE_BUNDLE_TOP_DIR
 fi
 
-rm "${WORKSPACE}/sapmachine-jdk-*" || true
-rm "${WORKSPACE}/sapmachine-jre-*" || true
+rm "${WORKSPACE}/${SAPMACHINE_BUNDLE_PREFIX}jdk-*" || true
+rm "${WORKSPACE}/${SAPMACHINE_BUNDLE_PREFIX}jre-*" || true
 rm "${WORKSPACE}/apidocs.zip" || true
 
 cp ${JDK_BUNDLE_NAME} "${WORKSPACE}"
