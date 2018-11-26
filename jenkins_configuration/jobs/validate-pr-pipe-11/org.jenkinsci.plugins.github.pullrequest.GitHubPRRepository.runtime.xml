@@ -6,41 +6,16 @@
   <sshUrl>git@github.com:SAP/SapMachine.git</sshUrl>
   <pulls class="concurrent-hash-map">
     <entry>
-      <int>200</int>
-      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>200</number>
-        <issueUpdatedAt>2018-11-22 20:05:33.0 UTC</issueUpdatedAt>
-        <title>Merge to tag jdk-12+21</title>
-        <body>please pull</body>
-        <prUpdatedAt>2018-11-22 20:05:33.0 UTC</prUpdatedAt>
-        <headSha>383dee120a0a6d6f064aaf662dbaa028bf8c5ea7</headSha>
-        <headRef>pr-jdk-12+21</headRef>
-        <mergeable>true</mergeable>
-        <baseRef>sapmachine</baseRef>
-        <userLogin>SapMachine</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/200</htmlUrl>
-        <labels/>
-        <sourceRepoOwner>SAP</sourceRepoOwner>
-        <state>OPEN</state>
-        <inBadState>false</inBadState>
-      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-    </entry>
-    <entry>
       <int>201</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>201</number>
-        <issueUpdatedAt>2018-11-23 16:36:09.0 UTC</issueUpdatedAt>
-        <title>Fix Test ExceptionText.java which faild because property jdk.includeI…</title>
-        <body>…nExceptions is&#xd;
+        <issueUpdatedAt>2018-11-26 10:11:20.0 UTC</issueUpdatedAt>
+        <title>Fix Test test/jdk/java/net/Socket/ExceptionText.java</title>
+        <body>Fix Test test/jdk/java/net/Socket/ExceptionText.java which failed because property jdk.includeInExceptions is set to hostInfo,jar in SapMachine, while it&apos;s not set in OpenJDK.&#xd;
 &#xd;
-set to hostInfo,jar in SapMachine, while it&apos;s not set in OpenJDK.&#xd;
-&#xd;
-The description of this pull request goes here.&#xd;
-&#xd;
-fixes #Issue&#xd;
-&#xd;
+fixes #202&#xd;
 </body>
-        <prUpdatedAt>2018-11-23 16:36:09.0 UTC</prUpdatedAt>
+        <prUpdatedAt>2018-11-26 10:11:20.0 UTC</prUpdatedAt>
         <headSha>78afc39ec7f614df16b921a8d4ca684722c42dda</headSha>
         <headRef>Fix-ExceptionText-Test</headRef>
         <mergeable>true</mergeable>
@@ -48,7 +23,7 @@ fixes #Issue&#xd;
         <userLogin>ghaug</userLogin>
         <htmlUrl>https://github.com/SAP/SapMachine/pull/201</htmlUrl>
         <labels/>
-        <lastCommentCreatedAt>2018-11-23 16:36:09.0 UTC</lastCommentCreatedAt>
+        <lastCommentCreatedAt>2018-11-26 10:11:19.0 UTC</lastCommentCreatedAt>
         <sourceRepoOwner>SAP</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
