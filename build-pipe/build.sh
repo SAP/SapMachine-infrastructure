@@ -111,6 +111,10 @@ else
     $EXTRA_CONFIGURE_OPTIONS
 fi
 
+if [[ `uname -p` == ppc64 ]]; then
+  export PATH=/opt/binutils-2.31-bin/bin:$PATH
+fi
+
 make JOBS=12 product-bundles test-image docs-zip
 if [[ $UNAME == Darwin ]]; then
     make JOBS=12 mac-legacy-jre-bundle || true
