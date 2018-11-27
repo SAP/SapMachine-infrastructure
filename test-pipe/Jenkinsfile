@@ -71,8 +71,11 @@ pipeline {
             steps {
                 sh '''
                     cd sapmachine
+                    ls -l
                     mkdir test_report
+                    ls -l
                     mv JTreport test_report
+                    ls -l test_report/*
                     mv JTwork test_report
                 '''
                 sh "python lib/jtreg_to_junit.py sapmachine/test_report/JTreport/text/summary.txt junit_report.xml \"${params.test_suite}/${params.test_groups}\""
