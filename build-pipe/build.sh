@@ -51,6 +51,10 @@ if [ -z $BOOT_JDK ]; then
   fi
 fi
 
+if [[ `uname -p` == ppc64 ]]; then
+  export PATH=/opt/binutils-2.31-bin/bin:$PATH
+fi
+
 VENDOR_NAME="SAP SE"
 VENDOR_URL="https://sapmachine.io"
 VENDOR_BUG_URL="https://github.com/SAP/SapMachine/issues/new"
@@ -109,10 +113,6 @@ else
   --with-vendor-vm-bug-url="$VENDOR_VM_BUG_URL" \
     $_CONFIGURE_SYSROOT \
     $EXTRA_CONFIGURE_OPTIONS
-fi
-
-if [[ `uname -p` == ppc64 ]]; then
-  export PATH=/opt/binutils-2.31-bin/bin:$PATH
 fi
 
 make JOBS=12 product-bundles test-image docs-zip
