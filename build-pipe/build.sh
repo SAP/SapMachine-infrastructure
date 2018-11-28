@@ -51,10 +51,6 @@ if [ -z $BOOT_JDK ]; then
   fi
 fi
 
-if [[ `uname -p` == ppc64 ]]; then
-  export PATH=/opt/binutils-2.31-bin/bin:$PATH
-fi
-
 VENDOR_NAME="SAP SE"
 VENDOR_URL="https://sapmachine.io"
 VENDOR_BUG_URL="https://github.com/SAP/SapMachine/issues/new"
