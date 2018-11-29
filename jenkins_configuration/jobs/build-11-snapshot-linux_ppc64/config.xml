@@ -75,19 +75,19 @@
         <hudson.model.StringParameterDefinition>
           <name>_CONFIGURE_SYSROOT</name>
           <description></description>
-          <defaultValue>--with-sysroot=/opt/sysroot-sles11-ppc64 --with-freetype-lib=/opt/sysroot-sles11-ppc64/usr/lib64 --with-freetype-include=/opt/sysroot-sles11-ppc64/usr/include --with-stdc++lib=static</defaultValue>
+          <defaultValue>--with-devkit=/opt/devkits/ppc64-linux-gnu-to-ppc64-linux-gnu</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>CC</name>
           <description></description>
-          <defaultValue>/opt/gcc-7.3.0-bin/bin/gcc</defaultValue>
+          <defaultValue></defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>CXX</name>
           <description></description>
-          <defaultValue>/opt/gcc-7.3.0-bin/bin/g++</defaultValue>
+          <defaultValue></defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
