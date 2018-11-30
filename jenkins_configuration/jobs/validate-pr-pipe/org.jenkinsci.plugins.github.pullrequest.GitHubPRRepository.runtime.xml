@@ -6,40 +6,17 @@
   <sshUrl>git@github.com:SAP/SapMachine.git</sshUrl>
   <pulls>
     <entry>
-      <int>204</int>
-      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>204</number>
-        <issueUpdatedAt>2018-11-29 15:26:10.0 UTC</issueUpdatedAt>
-        <title>Downport to SapMachine 11: Fix Test test/jdk/java/net/Socket/ExceptionText.java</title>
-        <body>Fix Test test/jdk/java/net/Socket/ExceptionText.java which failed because property jdk.includeInExceptions is set to hostInfo,jar in SapMachine, while it&apos;s not set in OpenJDK.&#xd;
-&#xd;
-fixes #202</body>
-        <prUpdatedAt>2018-11-29 15:26:10.0 UTC</prUpdatedAt>
-        <headSha>df87419be2927ba3f9842930dbf325ec23861c6e</headSha>
-        <headRef>sapmachine11</headRef>
-        <mergeable>true</mergeable>
-        <baseRef>sapmachine11</baseRef>
-        <userLogin>RealCLanger</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/204</htmlUrl>
-        <labels/>
-        <lastCommentCreatedAt>2018-11-29 15:26:10.0 UTC</lastCommentCreatedAt>
-        <sourceRepoOwner>SAP</sourceRepoOwner>
-        <state>OPEN</state>
-        <inBadState>false</inBadState>
-      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-    </entry>
-    <entry>
       <int>205</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>205</number>
-        <issueUpdatedAt>2018-11-29 15:41:10.0 UTC</issueUpdatedAt>
+        <issueUpdatedAt>2018-11-30 18:42:06.0 UTC</issueUpdatedAt>
         <title>Processgroup support</title>
         <body>A new switch is added, -Dsap.jdk.lang.Process.createNewProcessGroupsOnSpawn. If this switch is set to true, new processes started with ProcessBuilder.start or with Runtime.exec() will be leader of an own process group instead of belonging to the process group of the parent VM.&#xd;
 &#xd;
 fixes #203 &#xd;
 &#xd;
 </body>
-        <prUpdatedAt>2018-11-29 15:41:10.0 UTC</prUpdatedAt>
+        <prUpdatedAt>2018-11-30 18:42:06.0 UTC</prUpdatedAt>
         <headSha>f2d2c6c64329e5e6e0f47ca289eb298823ccf95f</headSha>
         <headRef>processgroup-support</headRef>
         <mergeable>true</mergeable>
@@ -47,7 +24,7 @@ fixes #203 &#xd;
         <userLogin>tstuefe</userLogin>
         <htmlUrl>https://github.com/SAP/SapMachine/pull/205</htmlUrl>
         <labels/>
-        <lastCommentCreatedAt>2018-11-29 15:41:10.0 UTC</lastCommentCreatedAt>
+        <lastCommentCreatedAt>2018-11-30 18:42:06.0 UTC</lastCommentCreatedAt>
         <sourceRepoOwner>SAP</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
