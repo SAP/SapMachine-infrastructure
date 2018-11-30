@@ -79,6 +79,6 @@ fi
 if [ "${TEST_SUITE}" == "langtools" ]; then
     ${JT_HOME}/bin/jtreg -dir:${JDK_LOCATION}/test/${TEST_SUITE} -xml -verbose:summary \
     -exclude:${JDK_LOCATION}/test/${TEST_SUITE}/ProblemList.txt -exclude:${JDK_LOCATION}/test/${TEST_SUITE}/ProblemList-SapMachine.txt \
-    -conc:${CONCURRENCY} -vmoption:-XX:MaxRAMPercentage=${MAX_RAM_PERCENTAGE} \
+    -conc:${CONCURRENCY} -vmoption:-Xmx512m \
     -a -ignore:quiet -timeoutFactor:5 -agentvm -testjdk:${TEST_JDK} ${TEST_GROUPS}
 fi
