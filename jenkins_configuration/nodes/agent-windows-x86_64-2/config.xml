@@ -1,5 +1,12 @@
 <?xml version='1.1' encoding='UTF-8'?>
 <slave>
+  <temporaryOfflineCause class="hudson.node_monitors.DiskSpaceMonitorDescriptor$DiskSpace">
+    <timestamp>1543864783467</timestamp>
+    <path>C:\jenkins</path>
+    <size>573857792</size>
+    <triggered>true</triggered>
+    <trigger>hudson.node_monitors.DiskSpaceMonitor</trigger>
+  </temporaryOfflineCause>
   <name>agent-windows-x86_64-2</name>
   <description></description>
   <remoteFS>c:\jenkins</remoteFS>

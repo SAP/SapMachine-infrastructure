@@ -498,7 +498,7 @@
       <sections>
         <hudson.plugins.sectioned__view.TextSection>
           <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator"/>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView/sections/hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
           </jobNames>
           <jobFilters/>
           <name>Snapshot Builds</name>
@@ -509,7 +509,7 @@
         </hudson.plugins.sectioned__view.TextSection>
         <hudson.plugins.sectioned__view.ListViewSection>
           <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView/sections/hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
             <string>build-snapshot-windows_x86_64</string>
             <string>test-jtreg-hotspot-snapshot-windows_x86_64</string>
             <string>test-jtreg-jdk-snapshot-windows_x86_64</string>
@@ -523,11 +523,12 @@
             <hudson.views.StatusColumn/>
             <hudson.views.WeatherColumn/>
             <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
           </columns>
         </hudson.plugins.sectioned__view.ListViewSection>
         <hudson.plugins.sectioned__view.ListViewSection>
           <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView/sections/hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
             <string>build-11-snapshot-windows_x86_64</string>
             <string>test-jtreg-hotspot-11-snapshot-windows_x86_64</string>
             <string>test-jtreg-jdk-11-snapshot-windows_x86_64</string>
@@ -545,7 +546,7 @@
         </hudson.plugins.sectioned__view.ListViewSection>
         <hudson.plugins.sectioned__view.TextSection>
           <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView/sections/hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
           </jobNames>
           <jobFilters/>
           <name>Release Builds</name>
@@ -556,7 +557,7 @@
         </hudson.plugins.sectioned__view.TextSection>
         <hudson.plugins.sectioned__view.ListViewSection>
           <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView/sections/hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
             <string>build-12-release-windows_x86_64</string>
             <string>test-jtreg-hotspot-12-release-windows_x86_64</string>
             <string>test-jtreg-jdk-12-release-windows_x86_64</string>
@@ -574,7 +575,7 @@
         </hudson.plugins.sectioned__view.ListViewSection>
         <hudson.plugins.sectioned__view.ListViewSection>
           <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView/sections/hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
             <string>build-11-release-windows_x86_64</string>
             <string>test-jtreg-hotspot-11-release-windows_x86_64</string>
             <string>test-jtreg-jdk-11-release-windows_x86_64</string>

@@ -6,25 +6,51 @@
   <sshUrl>git@github.com:SAP/SapMachine.git</sshUrl>
   <pulls>
     <entry>
-      <int>205</int>
+      <int>208</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>205</number>
-        <issueUpdatedAt>2018-11-30 18:42:06.0 UTC</issueUpdatedAt>
-        <title>Processgroup support</title>
-        <body>A new switch is added, -Dsap.jdk.lang.Process.createNewProcessGroupsOnSpawn. If this switch is set to true, new processes started with ProcessBuilder.start or with Runtime.exec() will be leader of an own process group instead of belonging to the process group of the parent VM.&#xd;
+        <number>208</number>
+        <issueUpdatedAt>2018-12-03 16:26:13.0 UTC</issueUpdatedAt>
+        <title>SapMachine #203: A minimal solution to start child processes in an ow…</title>
+        <body>Implementation for: A minimal solution to start child processes in an own process group (*nix only)&#xd;
 &#xd;
 fixes #203 &#xd;
 &#xd;
 </body>
-        <prUpdatedAt>2018-11-30 18:42:06.0 UTC</prUpdatedAt>
-        <headSha>f2d2c6c64329e5e6e0f47ca289eb298823ccf95f</headSha>
-        <headRef>processgroup-support</headRef>
+        <prUpdatedAt>2018-12-03 16:26:13.0 UTC</prUpdatedAt>
+        <headSha>bcde6b18a9830ddc53b5392c778d07e4d94e6db0</headSha>
+        <headRef>processgroups-minimal</headRef>
         <mergeable>true</mergeable>
         <baseRef>sapmachine11</baseRef>
         <userLogin>tstuefe</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/205</htmlUrl>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/208</htmlUrl>
         <labels/>
-        <lastCommentCreatedAt>2018-11-30 18:42:06.0 UTC</lastCommentCreatedAt>
+        <lastCommentCreatedAt>2018-12-03 16:26:13.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>SAP</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>209</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>209</number>
+        <issueUpdatedAt>2018-12-03 19:27:37.0 UTC</issueUpdatedAt>
+        <title>First implementation of dt_filesocket transport.</title>
+        <body>This is the first implementation of the dt_filesocket transport. It still resides in the jdk.jdwp.agent module and has not yet the best possible behaviour in case of errors (when the pipe/domain socket cannot be created).&#xd;
+&#xd;
+fixes #207&#xd;
+&#xd;
+</body>
+        <prUpdatedAt>2018-12-03 19:27:37.0 UTC</prUpdatedAt>
+        <headSha>b16ae5fc56da3e9d8cde57b4616ecfe45ea2ad3c</headSha>
+        <headRef>dt_filesocket</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine11</baseRef>
+        <userEmail>ralf.schmelter@sap.com</userEmail>
+        <userLogin>schmelter-sap</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/209</htmlUrl>
+        <labels/>
+        <lastCommentCreatedAt>2018-12-03 19:27:37.0 UTC</lastCommentCreatedAt>
         <sourceRepoOwner>SAP</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
