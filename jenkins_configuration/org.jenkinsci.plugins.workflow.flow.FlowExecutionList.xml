@@ -2,46 +2,30 @@
 <list>
   <flow-owner plugin="workflow-job@2.26">
     <job>build-11-snapshot-windows_x86_64</job>
-    <id>13</id>
-  </flow-owner>
-  <flow-owner plugin="workflow-job@2.26">
-    <job>build-11-snapshot-linux_ppc64le</job>
-    <id>8</id>
-  </flow-owner>
-  <flow-owner plugin="workflow-job@2.26">
-    <job>validate-pr-pipe-11</job>
-    <id>37</id>
-  </flow-owner>
-  <flow-owner plugin="workflow-job@2.26">
-    <job>build-11-pr-validation</job>
-    <id>32</id>
-  </flow-owner>
-  <flow-owner plugin="workflow-job@2.26">
-    <job>validate-pr-pipe-11</job>
-    <id>38</id>
+    <id>15</id>
   </flow-owner>
   <flow-owner plugin="workflow-job@2.26">
     <job>test-jtreg-jdk-11-snapshot-windows_x86_64</job>
-    <id>7</id>
+    <id>9</id>
   </flow-owner>
   <flow-owner plugin="workflow-job@2.26">
-    <job>test-jtreg-jdk-11-snapshot-linux_ppc64le</job>
-    <id>4</id>
+    <job>validate-pr-pipe-11</job>
+    <id>40</id>
   </flow-owner>
   <flow-owner plugin="workflow-job@2.26">
-    <job>test-jtreg-langtools-11-pr-validation</job>
-    <id>26</id>
-  </flow-owner>
-  <flow-owner plugin="workflow-job@2.26">
-    <job>update-pipeline</job>
-    <id>381</id>
-  </flow-owner>
-  <flow-owner plugin="workflow-job@2.26">
-    <job>jenkins-backup</job>
-    <id>270</id>
+    <job>build-11-pr-validation</job>
+    <id>35</id>
   </flow-owner>
   <flow-owner plugin="workflow-job@2.26">
     <job>test-cf-java-buildpack</job>
-    <id>344</id>
+    <id>345</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@2.26">
+    <job>update-pipeline</job>
+    <id>382</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@2.26">
+    <job>jenkins-backup</job>
+    <id>271</id>
   </flow-owner>
 </list>

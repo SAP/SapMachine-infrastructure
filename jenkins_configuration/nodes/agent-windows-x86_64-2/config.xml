@@ -1,11 +1,18 @@
 <?xml version='1.1' encoding='UTF-8'?>
 <slave>
-  <temporaryOfflineCause class="hudson.node_monitors.DiskSpaceMonitorDescriptor$DiskSpace">
-    <timestamp>1543864783467</timestamp>
-    <path>C:\jenkins</path>
-    <size>573857792</size>
-    <triggered>true</triggered>
-    <trigger>hudson.node_monitors.DiskSpaceMonitor</trigger>
+  <temporaryOfflineCause class="hudson.slaves.OfflineCause$UserCause">
+    <timestamp>1543937227162</timestamp>
+    <description>
+      <holder>
+        <owner>hudson.slaves.Messages</owner>
+      </holder>
+      <key>SlaveComputer.DisconnectedBy</key>
+      <args>
+        <string>arno</string>
+        <string> : Problematic</string>
+      </args>
+    </description>
+    <userId>arno</userId>
   </temporaryOfflineCause>
   <name>agent-windows-x86_64-2</name>
   <description></description>
