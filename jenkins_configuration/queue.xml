@@ -1,5 +1,206 @@
 <?xml version='1.1' encoding='UTF-8'?>
 <hudson.model.Queue_-State>
-  <counter>21024</counter>
-  <items/>
+  <counter>21190</counter>
+  <items>
+    <hudson.model.Queue_-BlockedItem>
+      <actions>
+        <hudson.model.CauseAction>
+          <causeBag class="linked-hash-map">
+            <entry>
+              <hudson.model.Cause_-UpstreamCause>
+                <upstreamProject>validate-pr-pipe-11</upstreamProject>
+                <upstreamUrl>job/validate-pr-pipe-11/</upstreamUrl>
+                <upstreamBuild>50</upstreamBuild>
+                <upstreamCauses>
+                  <org.jenkinsci.plugins.github.pullrequest.GitHubPRCause plugin="github-pullrequest@0.2.4">
+                    <skip>false</skip>
+                    <reason>Commit changed</reason>
+                    <htmlUrl>https://github.com/SAP/SapMachine/pull/209</htmlUrl>
+                    <title>First implementation of dt_filesocket transport.</title>
+                    <gitUrl>git://github.com/SAP/SapMachine.git</gitUrl>
+                    <sshUrl>git@github.com:SAP/SapMachine.git</sshUrl>
+                    <headSha>ca4c0bfd81439caa8b9b68edeb960d630797c6e4</headSha>
+                    <number>209</number>
+                    <mergeable>false</mergeable>
+                    <targetBranch>sapmachine11</targetBranch>
+                    <sourceBranch>dt_filesocket</sourceBranch>
+                    <prAuthorEmail>ralf.schmelter@sap.com</prAuthorEmail>
+                    <body>This is the first implementation of the dt_filesocket transport. It still resides in the jdk.jdwp.agent module and has not yet the best possible behaviour in case of errors (when the pipe/domain socket cannot be created).&#xd;
+&#xd;
+fixes #207&#xd;
+&#xd;
+</body>
+                    <sourceRepoOwner>SAP</sourceRepoOwner>
+                    <triggerSenderName>Ralf Schmelter</triggerSenderName>
+                    <triggerSenderEmail>ralf.schmelter@sap.com</triggerSenderEmail>
+                    <labels/>
+                    <commitAuthorName></commitAuthorName>
+                    <commitAuthorEmail></commitAuthorEmail>
+                    <condRef>head</condRef>
+                    <state>OPEN</state>
+                  </org.jenkinsci.plugins.github.pullrequest.GitHubPRCause>
+                </upstreamCauses>
+              </hudson.model.Cause_-UpstreamCause>
+              <int>1</int>
+            </entry>
+            <entry>
+              <hudson.model.Cause_-UpstreamCause>
+                <upstreamProject>validate-pr-pipe-11</upstreamProject>
+                <upstreamUrl>job/validate-pr-pipe-11/</upstreamUrl>
+                <upstreamBuild>51</upstreamBuild>
+                <upstreamCauses>
+                  <org.jenkinsci.plugins.github.pullrequest.GitHubPRCause plugin="github-pullrequest@0.2.4">
+                    <skip>false</skip>
+                    <reason>Commit changed</reason>
+                    <htmlUrl>https://github.com/SAP/SapMachine/pull/209</htmlUrl>
+                    <title>First implementation of dt_filesocket transport.</title>
+                    <gitUrl>git://github.com/SAP/SapMachine.git</gitUrl>
+                    <sshUrl>git@github.com:SAP/SapMachine.git</sshUrl>
+                    <headSha>b1cad866f1b089eff96bbdaa3a3f0a8e28715768</headSha>
+                    <number>209</number>
+                    <mergeable>false</mergeable>
+                    <targetBranch>sapmachine11</targetBranch>
+                    <sourceBranch>dt_filesocket</sourceBranch>
+                    <prAuthorEmail>ralf.schmelter@sap.com</prAuthorEmail>
+                    <body>This is the first implementation of the dt_filesocket transport. It still resides in the jdk.jdwp.agent module and has not yet the best possible behaviour in case of errors (when the pipe/domain socket cannot be created).&#xd;
+&#xd;
+fixes #207&#xd;
+&#xd;
+</body>
+                    <sourceRepoOwner>SAP</sourceRepoOwner>
+                    <triggerSenderName>Ralf Schmelter</triggerSenderName>
+                    <triggerSenderEmail>ralf.schmelter@sap.com</triggerSenderEmail>
+                    <labels/>
+                    <commitAuthorName></commitAuthorName>
+                    <commitAuthorEmail></commitAuthorEmail>
+                    <condRef>head</condRef>
+                    <state>OPEN</state>
+                  </org.jenkinsci.plugins.github.pullrequest.GitHubPRCause>
+                </upstreamCauses>
+              </hudson.model.Cause_-UpstreamCause>
+              <int>1</int>
+            </entry>
+          </causeBag>
+        </hudson.model.CauseAction>
+        <org.jenkinsci.plugins.workflow.support.steps.build.BuildUpstreamNodeAction plugin="pipeline-build-step@2.7">
+          <upstreamNodeId>18</upstreamNodeId>
+          <upstreamRunId>validate-pr-pipe-11#50</upstreamRunId>
+        </org.jenkinsci.plugins.workflow.support.steps.build.BuildUpstreamNodeAction>
+        <org.jenkinsci.plugins.workflow.support.steps.build.BuildTriggerAction plugin="pipeline-build-step@2.7">
+          <triggers>
+            <org.jenkinsci.plugins.workflow.support.steps.build.BuildTriggerAction_-Trigger>
+              <context class="org.jenkinsci.plugins.workflow.cps.CpsStepContext" plugin="workflow-cps@2.60">
+                <executionRef class="org.jenkinsci.plugins.workflow.job.WorkflowRun$Owner" plugin="workflow-job@2.26">
+                  <job>validate-pr-pipe-11</job>
+                  <id>50</id>
+                </executionRef>
+                <id>18</id>
+                <bodyHeads/>
+                <threadId>10</threadId>
+                <stepDescriptorId>org.jenkinsci.plugins.workflow.support.steps.build.BuildTriggerStep</stepDescriptorId>
+              </context>
+              <propagate>true</propagate>
+            </org.jenkinsci.plugins.workflow.support.steps.build.BuildTriggerAction_-Trigger>
+            <org.jenkinsci.plugins.workflow.support.steps.build.BuildTriggerAction_-Trigger>
+              <context class="org.jenkinsci.plugins.workflow.cps.CpsStepContext" plugin="workflow-cps@2.60">
+                <executionRef class="org.jenkinsci.plugins.workflow.job.WorkflowRun$Owner" plugin="workflow-job@2.26">
+                  <job>validate-pr-pipe-11</job>
+                  <id>51</id>
+                </executionRef>
+                <id>18</id>
+                <bodyHeads/>
+                <threadId>10</threadId>
+                <stepDescriptorId>org.jenkinsci.plugins.workflow.support.steps.build.BuildTriggerStep</stepDescriptorId>
+              </context>
+              <propagate>true</propagate>
+            </org.jenkinsci.plugins.workflow.support.steps.build.BuildTriggerAction_-Trigger>
+          </triggers>
+        </org.jenkinsci.plugins.workflow.support.steps.build.BuildTriggerAction>
+        <hudson.model.ParametersAction>
+          <safeParameters class="sorted-set"/>
+          <parameters>
+            <hudson.model.StringParameterValue>
+              <name>HOTSPOT_TEST_JOB</name>
+              <description></description>
+              <value>test-jtreg-hotspot-11-pr-validation</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.BooleanParameterValue>
+              <name>PROPAGATE_RESULT</name>
+              <description></description>
+              <value>true</value>
+            </hudson.model.BooleanParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>AGENT_LABEL</name>
+              <description></description>
+              <value>linux_x86_64</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.BooleanParameterValue>
+              <name>PUBLISH</name>
+              <description></description>
+              <value>false</value>
+            </hudson.model.BooleanParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>GITHUB_PR_NUMBER</name>
+              <description></description>
+              <value>209</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>SAPMACHINE_GIT_BRANCH</name>
+              <description></description>
+              <value>sapmachine11</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>LANGTOOLS_TEST_JOB</name>
+              <description></description>
+              <value>test-jtreg-langtools-11-pr-validation</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>DOCKER_DIR</name>
+              <description></description>
+              <value>dockerfiles/ubuntu_14_04_x86_64</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.BooleanParameterValue>
+              <name>RUN_TESTS</name>
+              <description></description>
+              <value>true</value>
+            </hudson.model.BooleanParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>JDK_TEST_JOB</name>
+              <description></description>
+              <value>test-jtreg-jdk-11-pr-validation</value>
+            </hudson.model.StringParameterValue>
+          </parameters>
+        </hudson.model.ParametersAction>
+      </actions>
+      <id>21168</id>
+      <task class="org.jenkinsci.plugins.workflow.job.WorkflowJob">build-11-pr-validation</task>
+      <inQueueSince>1544197276564</inQueueSince>
+      <buildableStartMilliseconds>1544197284981</buildableStartMilliseconds>
+      <outer-class>queue</outer-class>
+    </hudson.model.Queue_-BlockedItem>
+    <hudson.model.Queue_-BuildableItem>
+      <actions/>
+      <id>21174</id>
+      <task class="org.jenkinsci.plugins.workflow.support.steps.ExecutorStepExecution$PlaceholderTask" plugin="workflow-durable-task-step@2.25">
+        <context class="org.jenkinsci.plugins.workflow.cps.CpsStepContext" plugin="workflow-cps@2.60">
+          <executionRef class="org.jenkinsci.plugins.workflow.job.WorkflowRun$Owner" plugin="workflow-job@2.26">
+            <job>test-jtreg-langtools-11-pr-validation</job>
+            <id>38</id>
+          </executionRef>
+          <id>3</id>
+          <bodyHeads/>
+          <body class="org.jenkinsci.plugins.workflow.cps.StaticBodyReference" resolves-to="org.jenkinsci.plugins.workflow.cps.HandleBodyReference">
+            <id>1</id>
+          </body>
+          <threadId>0</threadId>
+          <stepDescriptorId>org.jenkinsci.plugins.workflow.support.steps.ExecutorStep</stepDescriptorId>
+        </context>
+        <label>linux_x86_64</label>
+        <runId>test-jtreg-langtools-11-pr-validation#38</runId>
+      </task>
+      <inQueueSince>1544198585939</inQueueSince>
+      <buildableStartMilliseconds>1544198585939</buildableStartMilliseconds>
+      <isPending>false</isPending>
+    </hudson.model.Queue_-BuildableItem>
+  </items>
 </hudson.model.Queue_-State>
