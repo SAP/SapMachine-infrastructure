@@ -4,32 +4,5 @@
   <githubUrl>https://github.com/SAP/SapMachine</githubUrl>
   <gitUrl>git://github.com/SAP/SapMachine.git</gitUrl>
   <sshUrl>git@github.com:SAP/SapMachine.git</sshUrl>
-  <pulls class="concurrent-hash-map">
-    <entry>
-      <int>209</int>
-      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>209</number>
-        <issueUpdatedAt>2018-12-10 17:13:12.0 UTC</issueUpdatedAt>
-        <title>First implementation of dt_filesocket transport.</title>
-        <body>This is the first implementation of the dt_filesocket transport. It still resides in the jdk.jdwp.agent module and has not yet the best possible behaviour in case of errors (when the pipe/domain socket cannot be created).&#xd;
-&#xd;
-fixes #207&#xd;
-&#xd;
-</body>
-        <prUpdatedAt>2018-12-10 17:13:12.0 UTC</prUpdatedAt>
-        <headSha>4453d19478f64f08852198ccb696817c4a12dbd3</headSha>
-        <headRef>dt_filesocket</headRef>
-        <mergeable>true</mergeable>
-        <baseRef>sapmachine11</baseRef>
-        <userEmail>ralf.schmelter@sap.com</userEmail>
-        <userLogin>schmelter-sap</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/209</htmlUrl>
-        <labels/>
-        <lastCommentCreatedAt>2018-12-10 12:41:13.0 UTC</lastCommentCreatedAt>
-        <sourceRepoOwner>SAP</sourceRepoOwner>
-        <state>OPEN</state>
-        <inBadState>false</inBadState>
-      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-    </entry>
-  </pulls>
+  <pulls class="concurrent-hash-map"/>
 </org.jenkinsci.plugins.github.pullrequest.GitHubPRRepository>
