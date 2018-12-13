@@ -13,20 +13,12 @@
   <description></description>
   <keepDependencies>false</keepDependencies>
   <properties>
-    <jenkins.model.BuildDiscarderProperty>
-      <strategy class="hudson.tasks.LogRotator">
-        <daysToKeep>-1</daysToKeep>
-        <numToKeep>50</numToKeep>
-        <artifactDaysToKeep>-1</artifactDaysToKeep>
-        <artifactNumToKeep>1</artifactNumToKeep>
-      </strategy>
-    </jenkins.model.BuildDiscarderProperty>
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
         <hudson.model.StringParameterDefinition>
           <name>SAPMACHINE_GIT_BRANCH</name>
           <description></description>
-          <defaultValue>sapmachine</defaultValue>
+          <defaultValue>sapmachine11</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
@@ -46,39 +38,34 @@
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>HOTSPOT_TEST_JOB</name>
-          <description></description>
-          <defaultValue>test-jtreg-hotspot-snapshot</defaultValue>
+          <name>hotspot_test_groups</name>
+          <description>We want to run hotspot all with scimark and ctw and not (!) jcstress. 
+Because the exclude list does not support groups we cannot exclude jcstress tests and have to call scimark and ctw explicit.</description>
+          <defaultValue>applications/scimark applications/ctw :hotspot_all_no_apps</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>JDK_TEST_JOB</name>
+          <name>jdk_test_groups</name>
           <description></description>
-          <defaultValue>test-jtreg-jdk-snapshot</defaultValue>
+          <defaultValue>:jdk_stable</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>LANGTOOLS_TEST_JOB</name>
+          <name>langtools_test_groups</name>
           <description></description>
-          <defaultValue>test-jtreg-langtools-snapshot</defaultValue>
+          <defaultValue>&quot;jdk tools lib&quot;</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>SAPMACHINE_ARCHIVE_NAME_PREFIX</name>
           <description></description>
-          <defaultValue>sapmachine_linux-x64</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>DOCKER_DIR</name>
-          <description></description>
-          <defaultValue>dockerfiles/ubuntu_14_04_x86_64</defaultValue>
+          <defaultValue>sapmachine_windows-x64</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>AGENT_LABEL</name>
           <description></description>
-          <defaultValue>linux_x86_64 </defaultValue>
+          <defaultValue>windows_x86_64</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
@@ -88,20 +75,22 @@
         </hudson.model.BooleanParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
-    <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
-      <triggers>
-        <hudson.triggers.TimerTrigger>
-          <spec>0 0 * * *</spec>
-        </hudson.triggers.TimerTrigger>
-      </triggers>
-    </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>-1</daysToKeep>
+        <numToKeep>50</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>1</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
+    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty/>
   </properties>
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@2.60">
     <scm class="hudson.plugins.git.GitSCM" plugin="git@3.9.1">
       <configVersion>2</configVersion>
       <userRemoteConfigs>
         <hudson.plugins.git.UserRemoteConfig>
-          <url>https://github.com/SAP/SapMachine-infrastructure.git</url>
+          <url>https://github.com/ArnoZeller/SapMachine-infrastructure.git</url>
           <credentialsId>SapMachine-github</credentialsId>
         </hudson.plugins.git.UserRemoteConfig>
       </userRemoteConfigs>
@@ -114,7 +103,7 @@
       <submoduleCfg class="list"/>
       <extensions/>
     </scm>
-    <scriptPath>build-pipe/Jenkinsfile</scriptPath>
+    <scriptPath>build-pipe/Jenkinsfile_no_docker_all_together</scriptPath>
     <lightweight>true</lightweight>
   </definition>
   <triggers/>
