@@ -59,13 +59,13 @@ Because the exclude list does not support groups we cannot exclude jcstress test
         <hudson.model.StringParameterDefinition>
           <name>SAPMACHINE_ARCHIVE_NAME_PREFIX</name>
           <description></description>
-          <defaultValue>sapmachine_linux_x86_64</defaultValue>
+          <defaultValue>sapmachine_linux-ppc64</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>AGENT_LABEL</name>
           <description></description>
-          <defaultValue>linux_x86_64</defaultValue>
+          <defaultValue>linux_ppc64</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
@@ -73,12 +73,6 @@ Because the exclude list does not support groups we cannot exclude jcstress test
           <description></description>
           <defaultValue>false</defaultValue>
         </hudson.model.BooleanParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>DOCKER_DIR</name>
-          <description></description>
-          <defaultValue>dockerfiles/ubuntu_14_04_x86_64</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
     <jenkins.model.BuildDiscarderProperty>
@@ -108,7 +102,7 @@ Because the exclude list does not support groups we cannot exclude jcstress test
       <submoduleCfg class="list"/>
       <extensions/>
     </scm>
-    <scriptPath>build-pipe/Jenkinsfile_all_together</scriptPath>
+    <scriptPath>build-pipe/Jenkinsfile_no_docker_all_together</scriptPath>
     <lightweight>true</lightweight>
   </definition>
   <triggers/>

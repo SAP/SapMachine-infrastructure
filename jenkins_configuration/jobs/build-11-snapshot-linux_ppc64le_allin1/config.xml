@@ -39,33 +39,34 @@
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>hotspot_test_groups</name>
-          <description>We want to run hotspot all with scimark and ctw and not (!) jcstress. 
+          <description>&quot;applications/scimark applications/ctw :hotspot_all_no_apps&quot;
+We want to run hotspot all with scimark and ctw and not (!) jcstress. 
 Because the exclude list does not support groups we cannot exclude jcstress tests and have to call scimark and ctw explicit.</description>
-          <defaultValue>applications/scimark applications/ctw :hotspot_all_no_apps</defaultValue>
+          <defaultValue>:tier1</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>jdk_test_groups</name>
-          <description></description>
-          <defaultValue>:jdk_stable</defaultValue>
+          <description>:jdk_stable</description>
+          <defaultValue>:tier1</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>langtools_test_groups</name>
-          <description></description>
-          <defaultValue>&quot;jdk tools lib&quot;</defaultValue>
+          <description>&quot;jdk tools lib&quot;</description>
+          <defaultValue>jdk</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>SAPMACHINE_ARCHIVE_NAME_PREFIX</name>
           <description></description>
-          <defaultValue>sapmachine_linux_x86_64</defaultValue>
+          <defaultValue>sapmachine_linux_ppc64le</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>AGENT_LABEL</name>
           <description></description>
-          <defaultValue>linux_x86_64</defaultValue>
+          <defaultValue>linux_ppc64le</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
@@ -76,7 +77,7 @@ Because the exclude list does not support groups we cannot exclude jcstress test
         <hudson.model.StringParameterDefinition>
           <name>DOCKER_DIR</name>
           <description></description>
-          <defaultValue>dockerfiles/ubuntu_14_04_x86_64</defaultValue>
+          <defaultValue>dockerfiles/ubuntu_14_04_ppc64le</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
