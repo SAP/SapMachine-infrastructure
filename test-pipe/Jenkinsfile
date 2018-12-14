@@ -57,7 +57,7 @@ pipeline {
               SCIMARK_2_CP = '/opt/scimark2/scimark2lib.jar'
             }
             steps {
-                sh "cd sapmachine && bash ../test-pipe/run_jtreg.sh -l ${env.WORKSPACE}/sapmachine -h ${env.WORKSPACE}/sapmachine/jtreg -s ${params.test_suite} ${params.test_groups}  || true"
+                sh "bash test-pipe/run_jtreg.sh -l `pwd`/sapmachine -h `pwd`/sapmachine/jtreg -s ${params.test_suite} ${params.test_groups}  || true"
             }
         }
         stage('Publish jtreg report') {
@@ -69,29 +69,20 @@ pipeline {
                 }
             }
             steps {
-                sh '''
-                    cd sapmachine
-                    ls -l
-                    mkdir test_report
-                    ls -l
-                    mv JTreport test_report
-                    ls -l test_report/*
-                    mv JTwork test_report
-                '''
-                sh "python lib/jtreg_to_junit.py sapmachine/test_report/JTreport/text/summary.txt junit_report.xml \"${params.test_suite}/${params.test_groups}\""
+                sh "python lib/jtreg_to_junit.py test_report_${params.test_suite}/JTreport/text/summary.txt junit_report.xml \"${params.test_suite}/${params.test_groups}\""
 
                 publishHTML target: [
                     allowMissing: false,
                     alwaysLinkToLastBuild: false,
                     keepAll: true,
-                    reportDir: 'sapmachine/test_report',
+                    reportDir: "test_report_${params.test_suite}",
                     reportFiles: 'JTreport/index.html',
                     reportName: 'JT Report'
                 ]
 
                 junit 'junit_report.xml'
 
-                archive 'JTwork/**/hs_err_pid*.log'
+                archive "test_report_${params.test_suite}/JTwork/**/hs_err_pid*.log"
             }
         }
     }
