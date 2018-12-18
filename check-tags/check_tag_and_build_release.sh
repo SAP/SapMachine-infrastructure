@@ -13,6 +13,10 @@ if [[ $MAJOR_VERSION == 11* ]]; then
   BASE_BRANCH="sapmachine11"
   GREP_PATTERN="(sapmachine11)"
 fi
+if [[ $MAJOR_VERSION == 12* ]]; then
+  BASE_BRANCH="sapmachine12"
+  GREP_PATTERN="(sapmachine12)"
+fi
 
 if [ -d SapMachine ]; then
     rm -rf SapMachine;
