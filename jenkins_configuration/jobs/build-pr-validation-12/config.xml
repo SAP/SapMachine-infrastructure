@@ -15,99 +15,78 @@
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
         <hudson.model.StringParameterDefinition>
-          <name>SAPMACHINE_GIT_REPOSITORY</name>
-          <description></description>
-          <defaultValue>https://github.com/SAP/SapMachine.git</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
           <name>SAPMACHINE_GIT_BRANCH</name>
           <description></description>
-          <defaultValue>sapmachine</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>GIT_TAG_NAME</name>
-          <description></description>
-          <defaultValue></defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>EXTRA_CONFIGURE_OPTIONS</name>
-          <description></description>
-          <defaultValue></defaultValue>
+          <defaultValue>sapmachine12</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
-          <name>BUILD_LINUX_X86_64</name>
+          <name>PUBLISH</name>
           <description></description>
-          <defaultValue>true</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
-        <hudson.model.BooleanParameterDefinition>
-          <name>BUILD_LINUX_PPC64LE</name>
-          <description></description>
-          <defaultValue>true</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
-        <hudson.model.BooleanParameterDefinition>
-          <name>BUILD_LINUX_PPC64</name>
-          <description></description>
-          <defaultValue>true</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
-        <hudson.model.BooleanParameterDefinition>
-          <name>BUILD_WINDOWS_X86_64</name>
-          <description></description>
-          <defaultValue>true</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
-        <hudson.model.BooleanParameterDefinition>
-          <name>BUILD_MACOS_X86_64</name>
-          <description></description>
-          <defaultValue>true</defaultValue>
+          <defaultValue>false</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>RUN_TESTS</name>
           <description></description>
-          <defaultValue>false</defaultValue>
+          <defaultValue>true</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>LINUX_X86_64_JOB</name>
+          <name>GITHUB_PR_NUMBER</name>
           <description></description>
-          <defaultValue>branch-build-linux_x86_64_allin1</defaultValue>
+          <defaultValue></defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>LINUX_PPC64LE_JOB</name>
+          <name>HOTSPOT_TEST_JOB</name>
           <description></description>
-          <defaultValue>branch-build-linux_ppc64le_allin1</defaultValue>
+          <defaultValue>test-jtreg-hotspot-pr-validation-12</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>LINUX_PPC64_JOB</name>
+          <name>JDK_TEST_JOB</name>
           <description></description>
-          <defaultValue>branch-build-linux_ppc64_allin1</defaultValue>
+          <defaultValue>test-jtreg-jdk-pr-validation-12</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>WINDOWS_X86_64_JOB</name>
+          <name>LANGTOOLS_TEST_JOB</name>
           <description></description>
-          <defaultValue>branch-build-windows_x86_64_allin1</defaultValue>
+          <defaultValue>test-jtreg-langtools-pr-validation-12</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>MACOS_X86_64_JOB</name>
+          <name>DOCKER_DIR</name>
           <description></description>
-          <defaultValue>branch-build-macos_x86_64_allin1</defaultValue>
+          <defaultValue>dockerfiles/ubuntu_14_04_x86_64</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>AGENT_LABEL</name>
+          <description></description>
+          <defaultValue>linux_x86_64</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>PROPAGATE_RESULT</name>
+          <description></description>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
     <jenkins.model.BuildDiscarderProperty>
       <strategy class="hudson.tasks.LogRotator">
         <daysToKeep>-1</daysToKeep>
-        <numToKeep>50</numToKeep>
-        <artifactDaysToKeep>7</artifactDaysToKeep>
-        <artifactNumToKeep>-1</artifactNumToKeep>
+        <numToKeep>-1</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>1</artifactNumToKeep>
       </strategy>
     </jenkins.model.BuildDiscarderProperty>
+    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty/>
+    <hudson.plugins.copyartifact.CopyArtifactPermissionProperty plugin="copyartifact@1.41">
+      <projectNameList>
+        <string>*</string>
+      </projectNameList>
+    </hudson.plugins.copyartifact.CopyArtifactPermissionProperty>
   </properties>
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@2.60">
     <scm class="hudson.plugins.git.GitSCM" plugin="git@3.9.1">
@@ -115,6 +94,7 @@
       <userRemoteConfigs>
         <hudson.plugins.git.UserRemoteConfig>
           <url>https://github.com/SAP/SapMachine-infrastructure.git</url>
+          <credentialsId>SapMachine-github</credentialsId>
         </hudson.plugins.git.UserRemoteConfig>
       </userRemoteConfigs>
       <branches>
@@ -126,7 +106,7 @@
       <submoduleCfg class="list"/>
       <extensions/>
     </scm>
-    <scriptPath>build-pipe/Jenkinsfile_branchbuild</scriptPath>
+    <scriptPath>build-pipe/Jenkinsfile</scriptPath>
     <lightweight>true</lightweight>
   </definition>
   <triggers/>

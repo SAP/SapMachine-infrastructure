@@ -159,6 +159,25 @@
             <string>validate-pr-pipe</string>
           </jobNames>
           <jobFilters/>
+          <name>Pull Request 13</name>
+          <width>THIRD</width>
+          <alignment>CENTER</alignment>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+          </columns>
+        </hudson.plugins.sectioned__view.ListViewSection>
+        <hudson.plugins.sectioned__view.ListViewSection>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
+            <string>build-pr-validation-12</string>
+            <string>test-jtreg-hotspot-pr-validation-12</string>
+            <string>test-jtreg-jdk-pr-validation-12</string>
+            <string>test-jtreg-langtools-pr-validation-12</string>
+            <string>validate-pr-pipe-12</string>
+          </jobNames>
+          <jobFilters/>
           <name>Pull Request 12</name>
           <width>THIRD</width>
           <alignment>LEFT</alignment>
@@ -814,93 +833,37 @@
         <hudson.plugins.sectioned__view.ListViewSection>
           <jobNames>
             <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView/sections/hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
-            <string>branch-build_linux_x86_64</string>
-            <string>branch-test-jtreg-hotspot_linux_x86_64</string>
-            <string>branch-test-jtreg-jdk_linux_x86_64</string>
-            <string>branch-test-jtreg-langtools_linux_x86_64</string>
+            <string>branch-build-linux_ppc64_allin1</string>
+            <string>branch-build-linux_ppc64le_allin1</string>
+            <string>branch-build-linux_x86_64_allin1</string>
+            <string>branch-build-macos_x86_64_allin1</string>
+            <string>branch-build-windows_x86_64_allin1</string>
           </jobNames>
           <jobFilters/>
-          <name>Linux x86 64</name>
-          <width>HALF</width>
+          <name>Platforms</name>
+          <width>FULL</width>
           <alignment>CENTER</alignment>
           <columns>
             <hudson.views.StatusColumn/>
             <hudson.views.WeatherColumn/>
             <hudson.views.JobColumn/>
+            <hudson.views.LastDurationColumn/>
           </columns>
         </hudson.plugins.sectioned__view.ListViewSection>
-        <hudson.plugins.sectioned__view.ListViewSection>
+        <hudson.plugins.sectioned__view.JobGraphsSection>
           <jobNames>
             <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView/sections/hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
-            <string>branch-build_linux_ppc64le</string>
-            <string>branch-test-jtreg-hotspot_linux_ppc64le</string>
-            <string>branch-test-jtreg-jdk_linux_ppc64le</string>
-            <string>branch-test-jtreg-langtools_linux_ppc64le</string>
+            <string>branch-build-linux_ppc64_allin1</string>
+            <string>branch-build-linux_ppc64le_allin1</string>
+            <string>branch-build-linux_x86_64_allin1</string>
+            <string>branch-build-macos_x86_64_allin1</string>
+            <string>branch-build-windows_x86_64_allin1</string>
           </jobNames>
           <jobFilters/>
-          <name>Linux ppc64le</name>
-          <width>HALF</width>
+          <name></name>
+          <width>FULL</width>
           <alignment>CENTER</alignment>
-          <columns>
-            <hudson.views.StatusColumn/>
-            <hudson.views.WeatherColumn/>
-            <hudson.views.JobColumn/>
-          </columns>
-        </hudson.plugins.sectioned__view.ListViewSection>
-        <hudson.plugins.sectioned__view.ListViewSection>
-          <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView/sections/hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
-            <string>branch-build_linux_ppc64</string>
-            <string>branch-test-jtreg-hotspot_linux_ppc64</string>
-            <string>branch-test-jtreg-jdk_linux_ppc64</string>
-            <string>branch-test-jtreg-langtools_linux_ppc64</string>
-          </jobNames>
-          <jobFilters/>
-          <name>Linux ppc64</name>
-          <width>HALF</width>
-          <alignment>CENTER</alignment>
-          <columns>
-            <hudson.views.StatusColumn/>
-            <hudson.views.WeatherColumn/>
-            <hudson.views.JobColumn/>
-          </columns>
-        </hudson.plugins.sectioned__view.ListViewSection>
-        <hudson.plugins.sectioned__view.ListViewSection>
-          <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView/sections/hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
-            <string>branch-build_windows_x86_64</string>
-            <string>branch-test-jtreg-hotspot_windows_x86_64</string>
-            <string>branch-test-jtreg-jdk_windows_x86_64</string>
-            <string>branch-test-jtreg-langtools_windows_x86_64</string>
-          </jobNames>
-          <jobFilters/>
-          <name>Windows x86 64</name>
-          <width>HALF</width>
-          <alignment>CENTER</alignment>
-          <columns>
-            <hudson.views.StatusColumn/>
-            <hudson.views.WeatherColumn/>
-            <hudson.views.JobColumn/>
-          </columns>
-        </hudson.plugins.sectioned__view.ListViewSection>
-        <hudson.plugins.sectioned__view.ListViewSection>
-          <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView/sections/hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
-            <string>branch-build_macos_x86_64</string>
-            <string>branch-test-jtreg-hotspot_macos_x86_64</string>
-            <string>branch-test-jtreg-jdk_macos_x86_64</string>
-            <string>branch-test-jtreg-langtools_macos_x86_64</string>
-          </jobNames>
-          <jobFilters/>
-          <name>macOS x86 64</name>
-          <width>HALF</width>
-          <alignment>CENTER</alignment>
-          <columns>
-            <hudson.views.StatusColumn/>
-            <hudson.views.WeatherColumn/>
-            <hudson.views.JobColumn/>
-          </columns>
-        </hudson.plugins.sectioned__view.ListViewSection>
+        </hudson.plugins.sectioned__view.JobGraphsSection>
       </sections>
     </hudson.plugins.sectioned__view.SectionedView>
     <hudson.plugins.sectioned__view.SectionedView plugin="sectioned-view@1.25">
