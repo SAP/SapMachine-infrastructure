@@ -8,6 +8,7 @@ pipeline {
               SAPMACHINE_PUBLISH_GITHUB_TOKEN = credentials('SapMachine-Github-Token')
               SAPMACHINE_GIT_USER = 'SapMachine'
               SAPMACHINE_GIT_EMAIL = 'sapmachine@sap.com'
+              CREATE_NO_BUILD_TAR_GZ = 'true'
             }
             steps {
               withCredentials([
