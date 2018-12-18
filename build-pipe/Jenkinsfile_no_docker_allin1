@@ -39,31 +39,27 @@ pipeline {
             environment {
               SCIMARK_2_CP = '/opt/scimark2/scimark2lib.jar'
               TESTSUITE = 'hotspot'
-              GROUPS = "${params.hotspot_test_groups}"
             }
             steps {
-                sh "bash test-pipe/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${env.TESTSUITE} ${env.GROUPS}  || true"
-                sh "python lib/jtreg_to_junit.py test_report_${env.TESTSUITE}/JTreport/text/summary.txt junit_report_${env.TESTSUITE}.xml \"${env.TESTSUITE}/${env.GROUPS}\""
+                sh "bash test-pipe/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${env.TESTSUITE} ${params.jdk_test_groups} || true"
                 publishHTML target: [
                     allowMissing: false,
                     alwaysLinkToLastBuild: false,
                     keepAll: true,
                     reportDir: "test_report_${env.TESTSUITE}",
                     reportFiles: 'JTreport/index.html',
-                    reportName: 'JT Report'
+                    reportName: "JT Report ${env.TESTSUITE}"
                 ]
-                junit "junit_report_${env.TESTSUITE}.xml"
-                archive "test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log"
+                junit "test_report_${env.TESTSUITE}/JTwork/**/*.jtr.xml"
+                archiveArtifacts allowEmptyArchive: true, artifacts: "test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log"
             }
         }
         stage('Run jtreg jdk') {
             environment {
               TESTSUITE = 'jdk'
-              GROUPS = "${params.jdk_test_groups}"
             }
             steps {
-                sh "bash test-pipe/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${env.TESTSUITE} ${env.GROUPS}  || true"
-                sh "python lib/jtreg_to_junit.py test_report_${env.TESTSUITE}/JTreport/text/summary.txt junit_report_${env.TESTSUITE}.xml \"${env.TESTSUITE}/${env.GROUPS}\""
+                sh "bash test-pipe/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${env.TESTSUITE} ${params.jdk_test_groups} || true"
             
                 publishHTML target: [
                     allowMissing: false,
@@ -71,20 +67,18 @@ pipeline {
                     keepAll: true,
                     reportDir: "test_report_${env.TESTSUITE}",
                     reportFiles: 'JTreport/index.html',
-                    reportName: 'JT Report'
+                    reportName: "JT Report ${env.TESTSUITE}"
                 ]
-                junit "junit_report_${env.TESTSUITE}.xml"
-                archive "test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log"
+                junit "test_report_${env.TESTSUITE}/JTwork/**/*.jtr.xml"
+                archiveArtifacts allowEmptyArchive: true, artifacts: "test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log"
             }
         }
         stage('Run jtreg langtools') {
             environment {
               TESTSUITE = 'langtools'
-              GROUPS = "${params.langtools_test_groups}"
             }
             steps {
-                sh "bash test-pipe/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${env.TESTSUITE} ${env.GROUPS}  || true"
-                sh "python lib/jtreg_to_junit.py test_report_${env.TESTSUITE}/JTreport/text/summary.txt junit_report_${env.TESTSUITE}.xml \"${env.TESTSUITE}/${env.GROUPS}\""
+                sh "bash test-pipe/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${env.TESTSUITE} ${params.jdk_test_groups}  || true"
             
                 publishHTML target: [
                     allowMissing: false,
@@ -92,10 +86,10 @@ pipeline {
                     keepAll: true,
                     reportDir: "test_report_${env.TESTSUITE}",
                     reportFiles: 'JTreport/index.html',
-                    reportName: 'JT Report'
+                    reportName: "JT Report ${env.TESTSUITE}"
                 ]
-                junit "junit_report_${env.TESTSUITE}.xml"
-                archive "test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log"
+                junit "test_report_${env.TESTSUITE}/JTwork/**/*.jtr.xml"
+                archiveArtifacts allowEmptyArchive: true, artifacts: "test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log"
             }
         }
         stage('Archive') {
