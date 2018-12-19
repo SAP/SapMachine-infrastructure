@@ -723,76 +723,15 @@
       <filterQueue>false</filterQueue>
       <properties class="hudson.model.View$PropertyList"/>
       <sections>
-        <hudson.plugins.sectioned__view.TextSection>
-          <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView/sections/hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
-          </jobNames>
-          <jobFilters/>
-          <name>Snapshot Builds</name>
-          <width>FULL</width>
-          <alignment>CENTER</alignment>
-          <text></text>
-          <style>NONE</style>
-        </hudson.plugins.sectioned__view.TextSection>
-        <hudson.plugins.sectioned__view.ListViewSection>
-          <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView/sections/hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
-            <string>build-snapshot-macos_x86_64</string>
-            <string>test-jtreg-hotspot-snapshot-macos_x86_64</string>
-            <string>test-jtreg-jdk-snapshot-macos_x86_64</string>
-            <string>test-jtreg-langtools-snapshot-macos_x86_64</string>
-          </jobNames>
-          <jobFilters/>
-          <name>Snapshot</name>
-          <width>THIRD</width>
-          <alignment>CENTER</alignment>
-          <columns>
-            <hudson.views.StatusColumn/>
-            <hudson.views.WeatherColumn/>
-            <hudson.views.JobColumn/>
-            <hudson.views.BuildButtonColumn/>
-          </columns>
-        </hudson.plugins.sectioned__view.ListViewSection>
         <hudson.plugins.sectioned__view.ListViewSection>
           <jobNames>
             <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView/sections/hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
             <string>build-11-snapshot-macos_x86_64</string>
-            <string>test-jtreg-hotspot-11-snapshot-macos_x86_64</string>
-            <string>test-jtreg-jdk-11-snapshot-macos_x86_64</string>
-            <string>test-jtreg-langtools-11-snapshot-macos_x86_64</string>
+            <string>build-12-snapshot-macos_x86_64</string>
+            <string>build-snapshot-macos_x86_64</string>
           </jobNames>
           <jobFilters/>
-          <name>Snapshot 11</name>
-          <width>THIRD</width>
-          <alignment>CENTER</alignment>
-          <columns>
-            <hudson.views.StatusColumn/>
-            <hudson.views.WeatherColumn/>
-            <hudson.views.JobColumn/>
-            <hudson.views.BuildButtonColumn/>
-          </columns>
-        </hudson.plugins.sectioned__view.ListViewSection>
-        <hudson.plugins.sectioned__view.TextSection>
-          <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView/sections/hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
-          </jobNames>
-          <jobFilters/>
-          <name>Release Builds</name>
-          <width>FULL</width>
-          <alignment>CENTER</alignment>
-          <text></text>
-          <style>NONE</style>
-        </hudson.plugins.sectioned__view.TextSection>
-        <hudson.plugins.sectioned__view.ListViewSection>
-          <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView/sections/hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
-            <string>build-11-release-macos_x86_64</string>
-            <string>test-jtreg-hotspot-11-release-macos_x86_64</string>
-            <string>test-jtreg-jdk-11-release-macos_x86_64</string>
-            <string>test-jtreg-langtools-11-release-macos_x86_64</string>
-          </jobNames>
-          <jobFilters/>
-          <name>Release 11</name>
+          <name>Snapshot Builds</name>
           <width>FULL</width>
           <alignment>CENTER</alignment>
           <columns>
@@ -800,7 +739,26 @@
             <hudson.views.WeatherColumn/>
             <hudson.views.JobColumn/>
             <hudson.views.LastSuccessColumn/>
-            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+        </hudson.plugins.sectioned__view.ListViewSection>
+        <hudson.plugins.sectioned__view.ListViewSection>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView/sections/hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
+            <string>build-11-release-macos_x86_64</string>
+            <string>build-12-release-macos_x86_64</string>
+            <string>build-release-macos_x86_64</string>
+          </jobNames>
+          <jobFilters/>
+          <name>Release Builds</name>
+          <width>FULL</width>
+          <alignment>CENTER</alignment>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
             <hudson.views.LastDurationColumn/>
             <hudson.views.BuildButtonColumn/>
           </columns>
@@ -850,20 +808,6 @@
             <hudson.views.LastDurationColumn/>
           </columns>
         </hudson.plugins.sectioned__view.ListViewSection>
-        <hudson.plugins.sectioned__view.JobGraphsSection>
-          <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView/sections/hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
-            <string>branch-build-linux_ppc64_allin1</string>
-            <string>branch-build-linux_ppc64le_allin1</string>
-            <string>branch-build-linux_x86_64_allin1</string>
-            <string>branch-build-macos_x86_64_allin1</string>
-            <string>branch-build-windows_x86_64_allin1</string>
-          </jobNames>
-          <jobFilters/>
-          <name></name>
-          <width>FULL</width>
-          <alignment>CENTER</alignment>
-        </hudson.plugins.sectioned__view.JobGraphsSection>
       </sections>
     </hudson.plugins.sectioned__view.SectionedView>
     <hudson.plugins.sectioned__view.SectionedView plugin="sectioned-view@1.25">
