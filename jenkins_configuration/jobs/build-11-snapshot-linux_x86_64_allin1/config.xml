@@ -4,10 +4,14 @@
     <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.3.2"/>
     <io.jenkins.blueocean.service.embedded.BlueOceanUrlAction_-DoNotShowPersistedBlueOceanUrlActions plugin="blueocean-rest-impl@1.9.0"/>
     <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.3.2">
-      <jobProperties/>
+      <jobProperties>
+        <string>org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty</string>
+      </jobProperties>
       <triggers/>
       <parameters/>
-      <options/>
+      <options>
+        <string>checkoutToSubdirectory</string>
+      </options>
     </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
   </actions>
   <description></description>
@@ -41,19 +45,19 @@
           <name>hotspot_test_groups</name>
           <description>We want to run hotspot all with scimark and ctw and not (!) jcstress. 
 Because the exclude list does not support groups we cannot exclude jcstress tests and have to call scimark and ctw explicit.</description>
-          <defaultValue>applications/scimark applications/ctw :hotspot_all_no_apps</defaultValue>
+          <defaultValue>:tier1</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>jdk_test_groups</name>
           <description></description>
-          <defaultValue>:jdk_stable</defaultValue>
+          <defaultValue>:tier1</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>langtools_test_groups</name>
           <description></description>
-          <defaultValue>&quot;jdk tools lib&quot;</defaultValue>
+          <defaultValue>jdk</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
@@ -76,11 +80,18 @@ Because the exclude list does not support groups we cannot exclude jcstress test
         <hudson.model.StringParameterDefinition>
           <name>DOCKER_DIR</name>
           <description></description>
-          <defaultValue>dockerfiles/ubuntu_14_04_x86_64</defaultValue>
+          <defaultValue>SapMachine-infrastructure/dockerfiles/ubuntu_14_04_x86_64</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>CREATE_NO_BUILD_TAR_GZ</name>
+          <description></description>
+          <defaultValue>true</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
+    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty/>
     <jenkins.model.BuildDiscarderProperty>
       <strategy class="hudson.tasks.LogRotator">
         <daysToKeep>-1</daysToKeep>
@@ -95,20 +106,20 @@ Because the exclude list does not support groups we cannot exclude jcstress test
       <configVersion>2</configVersion>
       <userRemoteConfigs>
         <hudson.plugins.git.UserRemoteConfig>
-          <url>https://github.com/ArnoZeller/SapMachine-infrastructure.git</url>
+          <url>https://github.com/SAP/SapMachine-infrastructure.git</url>
           <credentialsId>SapMachine-github</credentialsId>
         </hudson.plugins.git.UserRemoteConfig>
       </userRemoteConfigs>
       <branches>
         <hudson.plugins.git.BranchSpec>
-          <name>*/master</name>
+          <name>*/ArnoZeller-checkout</name>
         </hudson.plugins.git.BranchSpec>
       </branches>
       <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
       <submoduleCfg class="list"/>
       <extensions/>
     </scm>
-    <scriptPath>build-pipe/Jenkinsfile_all_together</scriptPath>
+    <scriptPath>build-pipe/Jenkinsfile_allin1</scriptPath>
     <lightweight>true</lightweight>
   </definition>
   <triggers/>
