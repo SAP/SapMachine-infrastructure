@@ -2,7 +2,7 @@ pipeline {
     agent none
     stages {
         stage('Run Tests') {
-            agent any
+            agent { label params.AGENT_LABEL }
             environment {
                 SAPMACHINE_GIT_REPO = 'github.com/SAP/SapMachine.git'
             }
