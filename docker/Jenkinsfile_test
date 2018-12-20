@@ -48,7 +48,7 @@ pipeline {
                             mv JTwork test_report
                         '''
 
-                        sh "python lib/jtreg_to_junit.py sapmachine/test_report/JTreport/text/summary.txt junit_report.xml \"${params.test_suite}/${params.test_groups}\""
+                        sh "python lib/jtreg_to_junit.py test_report_${params.test_suite}/JTreport/text/summary.txt junit_report.xml \"${params.test_suite}/${params.test_groups}\""
                     }
                 }
 
@@ -56,14 +56,14 @@ pipeline {
                     allowMissing: false,
                     alwaysLinkToLastBuild: false,
                     keepAll: true,
-                    reportDir: 'sapmachine/test_report',
+                    reportDir: "test_report_${params.test_suite}",,
                     reportFiles: 'JTreport/index.html',
                     reportName: 'JT Report'
                 ]
 
                 junit 'junit_report.xml'
 
-                archive 'JTwork/**/hs_err_pid*.log'
+                archive "test_report_${params.test_suite}/JTwork/**/hs_err_pid*.log"
             }
             post {
                 always {
