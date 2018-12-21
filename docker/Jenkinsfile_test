@@ -41,13 +41,6 @@ pipeline {
                         sh 'cd sapmachine && tar xzf build.tar.gz'
                         sh 'cd sapmachine && unzip jtreg.zip'
                         sh "cd sapmachine && bash ../test-pipe/run_jtreg.sh -l ${env.WORKSPACE}/sapmachine -h ${env.WORKSPACE}/sapmachine/jtreg -j ${params.test_jdk} -s ${params.test_suite} ${params.test_groups} || true"
-                        sh '''
-                            cd sapmachine
-                            mkdir test_report
-                            mv JTreport test_report
-                            mv JTwork test_report
-                        '''
-
                         sh "python lib/jtreg_to_junit.py test_report_${params.test_suite}/JTreport/text/summary.txt junit_report.xml \"${params.test_suite}/${params.test_groups}\""
                     }
                 }
@@ -57,7 +50,7 @@ pipeline {
                     alwaysLinkToLastBuild: false,
                     keepAll: true,
                     reportDir: "test_report_${params.test_suite}",,
-                    reportFiles: 'JTreport/index.html',
+                    reportFiles: 'test_report_${params.test_suite}/JTreport/index.html',
                     reportName: 'JT Report'
                 ]
 
