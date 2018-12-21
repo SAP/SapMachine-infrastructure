@@ -516,99 +516,44 @@
       <filterQueue>false</filterQueue>
       <properties class="hudson.model.View$PropertyList"/>
       <sections>
-        <hudson.plugins.sectioned__view.TextSection>
-          <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView/sections/hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
-          </jobNames>
-          <jobFilters/>
-          <name>Snapshot Builds</name>
-          <width>FULL</width>
-          <alignment>CENTER</alignment>
-          <text></text>
-          <style>NONE</style>
-        </hudson.plugins.sectioned__view.TextSection>
         <hudson.plugins.sectioned__view.ListViewSection>
           <jobNames>
             <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView/sections/hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
+            <string>build-12-snapshot-windows_x86_64</string>
             <string>build-snapshot-windows_x86_64</string>
-            <string>test-jtreg-hotspot-snapshot-windows_x86_64</string>
-            <string>test-jtreg-jdk-snapshot-windows_x86_64</string>
-            <string>test-jtreg-langtools-snapshot-windows_x86_64</string>
           </jobNames>
           <jobFilters/>
-          <name>Snapshot</name>
-          <width>THIRD</width>
+          <name>Snapshot Builds</name>
+          <includeRegex>build-.*-snapshot-windows_x86_64</includeRegex>
+          <width>FULL</width>
           <alignment>CENTER</alignment>
           <columns>
             <hudson.views.StatusColumn/>
             <hudson.views.WeatherColumn/>
             <hudson.views.JobColumn/>
             <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
           </columns>
         </hudson.plugins.sectioned__view.ListViewSection>
         <hudson.plugins.sectioned__view.ListViewSection>
-          <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView/sections/hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
-            <string>build-11-snapshot-windows_x86_64</string>
-            <string>test-jtreg-hotspot-11-snapshot-windows_x86_64</string>
-            <string>test-jtreg-jdk-11-snapshot-windows_x86_64</string>
-            <string>test-jtreg-langtools-11-snapshot-windows_x86_64</string>
-          </jobNames>
-          <jobFilters/>
-          <name>Snapshot 11</name>
-          <width>THIRD</width>
-          <alignment>CENTER</alignment>
-          <columns>
-            <hudson.views.StatusColumn/>
-            <hudson.views.WeatherColumn/>
-            <hudson.views.JobColumn/>
-          </columns>
-        </hudson.plugins.sectioned__view.ListViewSection>
-        <hudson.plugins.sectioned__view.TextSection>
           <jobNames>
             <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView/sections/hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
           </jobNames>
           <jobFilters/>
           <name>Release Builds</name>
+          <includeRegex>build-.*release-windows_x86_64</includeRegex>
           <width>FULL</width>
           <alignment>CENTER</alignment>
-          <text></text>
-          <style>NONE</style>
-        </hudson.plugins.sectioned__view.TextSection>
-        <hudson.plugins.sectioned__view.ListViewSection>
-          <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView/sections/hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
-            <string>build-12-release-windows_x86_64</string>
-            <string>test-jtreg-hotspot-12-release-windows_x86_64</string>
-            <string>test-jtreg-jdk-12-release-windows_x86_64</string>
-            <string>test-jtreg-langtools-12-release-windows_x86_64</string>
-          </jobNames>
-          <jobFilters/>
-          <name>Release 12</name>
-          <width>THIRD</width>
-          <alignment>CENTER</alignment>
           <columns>
             <hudson.views.StatusColumn/>
             <hudson.views.WeatherColumn/>
             <hudson.views.JobColumn/>
-          </columns>
-        </hudson.plugins.sectioned__view.ListViewSection>
-        <hudson.plugins.sectioned__view.ListViewSection>
-          <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView/sections/hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
-            <string>build-11-release-windows_x86_64</string>
-            <string>test-jtreg-hotspot-11-release-windows_x86_64</string>
-            <string>test-jtreg-jdk-11-release-windows_x86_64</string>
-            <string>test-jtreg-langtools-11-release-windows_x86_64</string>
-          </jobNames>
-          <jobFilters/>
-          <name>Release 11</name>
-          <width>THIRD</width>
-          <alignment>CENTER</alignment>
-          <columns>
-            <hudson.views.StatusColumn/>
-            <hudson.views.WeatherColumn/>
-            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
           </columns>
         </hudson.plugins.sectioned__view.ListViewSection>
       </sections>
@@ -825,6 +770,8 @@
             <string>build-11-snapshot-linux_x86_64_allin1</string>
             <string>build-11-snapshot-macos_x86_64_allin1</string>
             <string>build-11-snapshot-windows_x86_64_allin1</string>
+            <string>build-12-snapshot-linux_x86_64_allin1</string>
+            <string>build-snapshot-linux_x86_64_allin1</string>
           </jobNames>
           <jobFilters/>
           <name>All in one builds</name>
