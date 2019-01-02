@@ -16,6 +16,8 @@ from string import Template
 template_alpine ='''
 FROM alpine:3.5
 
+MAINTAINER Rene Schuenemann <sapmachine@sap.com>
+
 RUN apk update; \
     apk add ${dependencies};
 
@@ -34,6 +36,8 @@ ${add_user}
 
 template_ubuntu = '''
 FROM ubuntu:16.04
+
+MAINTAINER Rene Schuenemann <sapmachine@sap.com>
 
 RUN rm -rf /var/lib/apt/lists/* && apt-get clean && apt-get update \\
     && apt-get install -y --no-install-recommends ${dependencies} \\
@@ -54,6 +58,7 @@ def main(argv=None):
     parser.add_argument('-p', '--publish', help='publish the image', action='store_true', default=False)
     parser.add_argument('--alpine', help='build Alpine Linux image', action='store_true', default=False)
     parser.add_argument('--latest', help='tag image as latest', action='store_true', default=False)
+    parser.add_argument('--workdir', help='specify the working directory', metavar='DIR', required=False)
     args = parser.parse_args()
 
     tag = args.tag
@@ -61,6 +66,7 @@ def main(argv=None):
     publish = args.publish
     build_alpine = args.alpine
     latest = args.latest
+    workdir = args.workdir
 
     version, version_part, major, build_number, sap_build_number, os_ext = utils.sapmachine_tag_components(tag)
 
@@ -94,17 +100,18 @@ def main(argv=None):
             build_number,
             sap_build_number)
 
-    docker_work = join(os.getcwd(), 'docker_work', image_type)
+    if workdir is None:
+        workdir = join(os.getcwd(), 'docker_work')
 
-    utils.remove_if_exists(join(os.getcwd(), 'docker_work'))
-    os.makedirs(docker_work)
+    utils.remove_if_exists(workdir)
+    os.makedirs(workdir)
 
     if build_alpine:
         template = template_alpine
     else:
         template = template_ubuntu
 
-    with open(join(docker_work, 'Dockerfile'), 'w+') as dockerfile:
+    with open(join(workdir, 'Dockerfile'), 'w+') as dockerfile:
         dockerfile.write(Template(template).substitute(dependencies=dependencies, package=package, add_user=add_user))
 
     if 'DOCKER_USER' in os.environ and image_type != 'test':
@@ -133,9 +140,9 @@ def main(argv=None):
             '-alpine' if build_alpine else '')
 
         if latest:
-            utils.run_cmd(['docker', 'build', '-t', docker_tag, '-t', docker_tag_latest, docker_work])
+            utils.run_cmd(['docker', 'build', '-t', docker_tag, '-t', docker_tag_latest, workdir])
         else:
-            utils.run_cmd(['docker', 'build', '-t', docker_tag, docker_work])
+            utils.run_cmd(['docker', 'build', '-t', docker_tag, workdir])
 
 
         retcode, out, err = utils.run_cmd(['docker', 'run', docker_tag, 'java', '-version'], throw=False, std=True)
