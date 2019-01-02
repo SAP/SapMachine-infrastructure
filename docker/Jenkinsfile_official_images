@@ -4,34 +4,36 @@ pipeline {
     }
     stages {
         stage('Generate Dockerfile') {
-            script {
-                def match = params.GIT_TAG_NAME =~ /[^-]*-([0-9]+)[\.0-9]*\+.*/
-                def major_version = match[0][1]
+            steps {
+                script {
+                    def match = params.GIT_TAG_NAME =~ /[^-]*-([0-9]+)[\.0-9]*\+.*/
+                    def major_version = match[0][1]
 
-                def workdir = 'SapMachine-infrastructure/dockerfiles/official/' + major_version
+                    def workdir = 'SapMachine-infrastructure/dockerfiles/official/' + major_version
 
-                git([url: 'https://github.com/SAP/SapMachine-infrastructure.git', branch: 'master', credentialsId: 'SapMachine-github', changelog: false, poll: false])
+                    git([url: 'https://github.com/SAP/SapMachine-infrastructure.git', branch: 'master', credentialsId: 'SapMachine-github', changelog: false, poll: false])
 
 
-                sh(
-                    script: "python lib/make_docker_image.py -t ${GIT_TAG_NAME} -i jdk --workdir ${workdir}",
-                    returnStdout: false
-                )
+                    sh(
+                        script: "python lib/make_docker_image.py -t ${GIT_TAG_NAME} -i jdk --workdir ${workdir}",
+                        returnStdout: false
+                    )
 
-                sh(
-                    script: "cd SapMachine-infrastructure && git add dockerfiles",
-                    returnStdout: false
-                )
+                    sh(
+                        script: "cd SapMachine-infrastructure && git add dockerfiles",
+                        returnStdout: false
+                    )
 
-                sh(
-                    script: "cd SapMachine-infrastructure && git commit -m 'Updated official Docker files.'",
-                    returnStdout: false
-                )
+                    sh(
+                        script: "cd SapMachine-infrastructure && git commit -m 'Updated official Docker files.'",
+                        returnStdout: false
+                    )
 
-                sh(
-                    script: "cd SapMachine-infrastructure && git push",
-                    returnStdout: false
-                )
+                    sh(
+                        script: "cd SapMachine-infrastructure && git push",
+                        returnStdout: false
+                    )
+                }
             }
         }
     }
