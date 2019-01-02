@@ -7,9 +7,9 @@ pipeline {
             steps {
                 script {
                     def match = params.GIT_TAG_NAME =~ /[^-]*-([0-9]+)[\.0-9]*\+.*/
-                    def major_version = match[0][1]
+                    env.major_version = match[0][1]
 
-                    def workdir = 'SapMachine-infrastructure/dockerfiles/official/' + major_version
+                    def workdir = 'SapMachine-infrastructure/dockerfiles/official/' + env.major_version
 
                     git([url: 'https://github.com/SAP/SapMachine-infrastructure.git', branch: 'master', credentialsId: 'SapMachine-github', changelog: false, poll: false])
 
