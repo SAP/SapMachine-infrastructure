@@ -7,9 +7,9 @@ pipeline {
             steps {
                 script {
                     def major_version = (params.GIT_TAG_NAME =~ /[^-]*-([0-9]+)[\.0-9]*\+.*/)[0][1]
-                    def workdir = 'SapMachine-infrastructure/dockerfiles/official/' + major_version
+                    def workdir = 'dockerfiles/official/' + major_version
 
-                    git([url: 'https://github.com/SAP/SapMachine-infrastructure.git', branch: 'master', credentialsId: 'SapMachine-github', changelog: false, poll: false])
+                     //git([url: 'https://github.com/SAP/SapMachine-infrastructure.git', branch: 'master', credentialsId: 'SapMachine-github', changelog: false, poll: false])
 
                     sh(
                         script: "python lib/make_docker_image.py -t ${GIT_TAG_NAME} -i jdk --workdir ${workdir}",
@@ -17,22 +17,17 @@ pipeline {
                     )
 
                     sh(
-                        script: "cd SapMachine-infrastructure && git add dockerfiles",
+                        script: "git add dockerfiles",
                         returnStdout: false
                     )
 
                     sh(
-                        script: "cd SapMachine-infrastructure && git commit -m 'Updated official Docker files.'",
+                        script: "git commit -m 'Updated official Docker files.'",
                         returnStdout: false
                     )
 
                     sh(
-                        script: "cd SapMachine-infrastructure && git push --set-upstream origin master",
-                        returnStdout: false
-                    )
-
-                    sh(
-                        script: "cd SapMachine-infrastructure && git push",
+                        script: "git push",
                         returnStdout: false
                     )
                 }
