@@ -7,48 +7,80 @@ pipeline {
               GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
             }
             steps {
-                script {
-                    def tag_list = sh(
-                      script: 'python lib/list_tags.py -m ${MAJOR}',
-                      returnStdout: true
-                    ).trim().tokenize(' ').reverse()
+                withCredentials([
+                  [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
+                  ]) {
+                    script {
+                        def tag_list = sh(
+                        script: 'python lib/list_tags.py -m ${MAJOR}',
+                        returnStdout: true
+                        ).trim().tokenize(' ').reverse()
 
-                    def job_name = 'build-' + MAJOR + '-docker'
-
-                    if (OS_EXT?.trim()) {
-                        job_name += '-' + OS_EXT
-                    }
-
-                    def i = 0
-                    def publish_latest = false
-
-                    tag_list.each { tag ->
-                        publish_latest = (i == (tag_list.size() - 1))
-                        i += 1
+                        def job_name = 'build-' + MAJOR + '-docker'
 
                         if (OS_EXT?.trim()) {
-                            tag += '-' + OS_EXT
+                            job_name += '-' + OS_EXT
                         }
 
-                        def message = 'building tag ' + tag
+                        def i = 0
+                        def publish_latest = false
 
-                        if (publish_latest) {
-                            message += ' (as latest)'
+                        tag_list.each { tag ->
+                            def major_version = (tag =~ /[^-]*-([0-9]+)[\.0-9]*\+.*/)[0][1]
+                            def workdir = 'sapmachine_infrastructure/dockerfiles/official/' + major_version
+
+                            sh(
+                                script: "git clone https://${env.GIT_USER}:${env.GIT_PASSWORD}@github.com/SAP/SapMachine-infrastructure.git -b master sapmachine_infrastructure",
+                                returnStdout: false
+                            )
+
+                            sh(
+                                script: "python lib/make_docker_image.py -t ${GIT_TAG_NAME} -i jdk --workdir ${workdir}",
+                                returnStdout: false
+                            )
+
+                            sh(
+                                script: "cd sapmachine_infrastructure &&  git add dockerfiles",
+                                returnStdout: false
+                            )
+
+                            sh(
+                                script: "cd sapmachine_infrastructure && git commit -m 'Updated official Docker files.'",
+                                returnStdout: false
+                            )
+
+                            sh(
+                                script: "cd sapmachine_infrastructure && git push",
+                                returnStdout: false
+                            )
+
+                            publish_latest = (i == (tag_list.size() - 1))
+                            i += 1
+
+                            if (OS_EXT?.trim()) {
+                                tag += '-' + OS_EXT
+                            }
+
+                            def message = 'building tag ' + tag
+
+                            if (publish_latest) {
+                                message += ' (as latest)'
+                            }
+
+                            println message
+
+                            build(
+                                job: job_name,
+                                propagate: false,
+                                wait: true,
+                                parameters: [
+                                    string(name: 'GIT_TAG_NAME', value: tag),
+                                    [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: false],
+                                    [$class: 'BooleanParameterValue', name: 'PUBLISH', value: true],
+                                    [$class: 'BooleanParameterValue', name: 'PUBLISH_LATEST', value: publish_latest]
+                                ]
+                            )
                         }
-
-                        println message
-
-                        build(
-                            job: job_name,
-                            propagate: false,
-                            wait: true,
-                            parameters: [
-                                string(name: 'GIT_TAG_NAME', value: tag),
-                                [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: false],
-                                [$class: 'BooleanParameterValue', name: 'PUBLISH', value: true],
-                                [$class: 'BooleanParameterValue', name: 'PUBLISH_LATEST', value: publish_latest]
-                            ]
-                        )
                     }
                 }
             }
