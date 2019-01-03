@@ -29,31 +29,6 @@ pipeline {
                             def major_version = (tag =~ /[^-]*-([0-9]+)[\.0-9]*\+.*/)[0][1]
                             def workdir = 'sapmachine_infrastructure/dockerfiles/official/' + major_version
 
-                            sh(
-                                script: "git clone https://${env.GIT_USER}:${env.GIT_PASSWORD}@github.com/SAP/SapMachine-infrastructure.git -b master sapmachine_infrastructure",
-                                returnStdout: false
-                            )
-
-                            sh(
-                                script: "python lib/make_docker_image.py -t ${tag} -i jdk --workdir ${workdir}",
-                                returnStdout: false
-                            )
-
-                            sh(
-                                script: "cd sapmachine_infrastructure &&  git add dockerfiles",
-                                returnStdout: false
-                            )
-
-                            sh(
-                                script: "cd sapmachine_infrastructure && git commit -m 'Updated official Docker files.'",
-                                returnStdout: false
-                            )
-
-                            sh(
-                                script: "cd sapmachine_infrastructure && git push",
-                                returnStdout: false
-                            )
-
                             publish_latest = (i == (tag_list.size() - 1))
                             i += 1
 
@@ -65,6 +40,31 @@ pipeline {
 
                             if (publish_latest) {
                                 message += ' (as latest)'
+
+                                sh(
+                                    script: "rm -rf sapmachine_infrastructure && git clone https://${env.GIT_USER}:${env.GIT_PASSWORD}@github.com/SAP/SapMachine-infrastructure.git -b master sapmachine_infrastructure",
+                                    returnStdout: false
+                                )
+
+                                sh(
+                                    script: "python lib/make_docker_image.py -t ${tag} -i jdk --workdir ${workdir}",
+                                    returnStdout: false
+                                )
+
+                                sh(
+                                    script: "cd sapmachine_infrastructure &&  git add dockerfiles",
+                                    returnStdout: false
+                                )
+
+                                sh(
+                                    script: "cd sapmachine_infrastructure && git commit -m 'Updated official Docker files.'",
+                                    returnStdout: false
+                                )
+
+                                sh(
+                                    script: "cd sapmachine_infrastructure && git push",
+                                    returnStdout: false
+                                )
                             }
 
                             println message
