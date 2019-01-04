@@ -4,5 +4,30 @@
   <githubUrl>https://github.com/SAP/SapMachine</githubUrl>
   <gitUrl>git://github.com/SAP/SapMachine.git</gitUrl>
   <sshUrl>git@github.com:SAP/SapMachine.git</sshUrl>
-  <pulls/>
+  <pulls>
+    <entry>
+      <int>231</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>231</number>
+        <issueUpdatedAt>2019-01-04 15:21:26.0 UTC</issueUpdatedAt>
+        <title>11u2 backports</title>
+        <body>I&apos;d like to backport 8213086 from 11u3 to have a better limit for compiler threads.&#xd;
+The backport of 8214352 from 13 is for better behavior with debugging on demand (JVMTI &quot;can_access_local_variables&quot; enabled). Both changes apply cleanly.&#xd;
+&#xd;
+fixes #232</body>
+        <prUpdatedAt>2019-01-04 15:21:26.0 UTC</prUpdatedAt>
+        <headSha>417d69764dc811bea904a50d43fd9756c4ae7000</headSha>
+        <headRef>11u2_backports</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine11</baseRef>
+        <userLogin>TheRealMDoerr</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/231</htmlUrl>
+        <labels/>
+        <lastCommentCreatedAt>2019-01-04 14:56:14.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>SAP</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+  </pulls>
 </org.jenkinsci.plugins.github.pullrequest.GitHubPRRepository>
