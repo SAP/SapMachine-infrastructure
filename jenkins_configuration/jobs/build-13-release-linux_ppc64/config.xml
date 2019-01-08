@@ -10,17 +10,11 @@
       <options/>
     </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
   </actions>
-  <description>Builds a release version of SapMachine12 on macOS </description>
+  <description>Builds a SapMachine12  Snapshot on Linux ppc64</description>
   <keepDependencies>false</keepDependencies>
   <properties>
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
-        <hudson.model.StringParameterDefinition>
-          <name>GIT_TAG_NAME</name>
-          <description></description>
-          <defaultValue></defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>RUN_TESTS</name>
           <description></description>
@@ -29,8 +23,14 @@
         <hudson.model.BooleanParameterDefinition>
           <name>PUBLISH</name>
           <description></description>
-          <defaultValue>false</defaultValue>
+          <defaultValue>true</defaultValue>
         </hudson.model.BooleanParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>GIT_TAG_NAME</name>
+          <description></description>
+          <defaultValue>sapmachine-13+1-0</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>RELEASE</name>
           <description></description>
@@ -45,7 +45,7 @@
         <hudson.model.StringParameterDefinition>
           <name>SAPMACHINE_GIT_BRANCH</name>
           <description></description>
-          <defaultValue>sapmachine12</defaultValue>
+          <defaultValue>sapmachine</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
@@ -69,13 +69,19 @@
         <hudson.model.StringParameterDefinition>
           <name>AGENT_LABEL</name>
           <description></description>
-          <defaultValue>macos_x86_64</defaultValue>
+          <defaultValue>linux_ppc64</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>SAPMACHINE_ARCHIVE_NAME_PREFIX</name>
           <description></description>
-          <defaultValue>sapmachine-12_macos-x64</defaultValue>
+          <defaultValue>sapmachine13_linux-ppc64</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>_CONFIGURE_SYSROOT</name>
+          <description></description>
+          <defaultValue>--with-devkit=/opt/devkits/ppc64-linux-gnu-to-ppc64-linux-gnu</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
       </parameterDefinitions>

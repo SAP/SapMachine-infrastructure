@@ -10,88 +10,9 @@
       <options/>
     </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
   </actions>
-  <description></description>
+  <description>Builds a SapMachine11  Snapshot on Linux ppc64</description>
   <keepDependencies>false</keepDependencies>
   <properties>
-    <hudson.model.ParametersDefinitionProperty>
-      <parameterDefinitions>
-        <hudson.model.StringParameterDefinition>
-          <name>SAPMACHINE_GIT_BRANCH</name>
-          <description></description>
-          <defaultValue>sapmachine11</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.BooleanParameterDefinition>
-          <name>PUBLISH</name>
-          <description></description>
-          <defaultValue>false</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
-        <hudson.model.BooleanParameterDefinition>
-          <name>RUN_TESTS</name>
-          <description></description>
-          <defaultValue>true</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>GIT_TAG_NAME</name>
-          <description></description>
-          <defaultValue></defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>HOTSPOT_TEST_JOB</name>
-          <description></description>
-          <defaultValue>test-jtreg-hotspot-11-snapshot-linux_ppc64</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>JDK_TEST_JOB</name>
-          <description></description>
-          <defaultValue>test-jtreg-jdk-11-snapshot-linux_ppc64</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>LANGTOOLS_TEST_JOB</name>
-          <description></description>
-          <defaultValue>test-jtreg-langtools-11-snapshot-linux_ppc64</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>SAPMACHINE_ARCHIVE_NAME_PREFIX</name>
-          <description></description>
-          <defaultValue>sapmachine_linux-ppc64</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>AGENT_LABEL</name>
-          <description></description>
-          <defaultValue>linux_ppc64</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.BooleanParameterDefinition>
-          <name>PROPAGATE_RESULT</name>
-          <description></description>
-          <defaultValue>false</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>_CONFIGURE_SYSROOT</name>
-          <description></description>
-          <defaultValue>--with-devkit=/opt/devkits/ppc64-linux-gnu-to-ppc64-linux-gnu --with-freetype-lib=/opt/devkits/ppc64-linux-gnu-to-ppc64-linux-gnu/ppc64-linux-gnu/sysroot/usr/lib64 --with-freetype-include=/opt/devkits/ppc64-linux-gnu-to-ppc64-linux-gnu/ppc64-linux-gnu/sysroot/usr/include</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>CC</name>
-          <description></description>
-          <defaultValue></defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>CXX</name>
-          <description></description>
-          <defaultValue></defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-      </parameterDefinitions>
-    </hudson.model.ParametersDefinitionProperty>
     <jenkins.model.BuildDiscarderProperty>
       <strategy class="hudson.tasks.LogRotator">
         <daysToKeep>-1</daysToKeep>
@@ -100,6 +21,69 @@
         <artifactNumToKeep>1</artifactNumToKeep>
       </strategy>
     </jenkins.model.BuildDiscarderProperty>
+    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty/>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.BooleanParameterDefinition>
+          <name>RUN_TESTS</name>
+          <description></description>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>PUBLISH</name>
+          <description></description>
+          <defaultValue>false</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>SAPMACHINE_GIT_REPOSITORY</name>
+          <description></description>
+          <defaultValue>https://github.com/SAP/SapMachine.git</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>SAPMACHINE_GIT_BRANCH</name>
+          <description></description>
+          <defaultValue>sapmachine11</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>hotspot_test_groups</name>
+          <description></description>
+          <defaultValue>:tier1</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>jdk_test_groups</name>
+          <description></description>
+          <defaultValue>:tier1</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>langtools_test_groups</name>
+          <description></description>
+          <defaultValue>&quot;jdk tools lib&quot;</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>AGENT_LABEL</name>
+          <description></description>
+          <defaultValue>linux_ppc64</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>SAPMACHINE_ARCHIVE_NAME_PREFIX</name>
+          <description></description>
+          <defaultValue>sapmachine11_linux-ppc64</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>_CONFIGURE_SYSROOT</name>
+          <description></description>
+          <defaultValue>--with-devkit=/opt/devkits/ppc64-linux-gnu-to-ppc64-linux-gnu --with-freetype-lib=/opt/devkits/ppc64-linux-gnu-to-ppc64-linux-gnu/ppc64-linux-gnu/sysroot/usr/lib64 --with-freetype-include=/opt/devkits/ppc64-linux-gnu-to-ppc64-linux-gnu/ppc64-linux-gnu/sysroot/usr/include</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
   </properties>
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@2.60">
     <scm class="hudson.plugins.git.GitSCM" plugin="git@3.9.1">
@@ -119,7 +103,7 @@
       <submoduleCfg class="list"/>
       <extensions/>
     </scm>
-    <scriptPath>build-pipe/Jenkinsfile_no_docker</scriptPath>
+    <scriptPath>build-pipe/Jenkinsfile_no_docker_allin1</scriptPath>
     <lightweight>true</lightweight>
   </definition>
   <triggers/>

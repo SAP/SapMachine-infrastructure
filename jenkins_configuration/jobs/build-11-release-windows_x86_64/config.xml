@@ -24,6 +24,12 @@
     <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty/>
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>GIT_TAG_NAME</name>
+          <description></description>
+          <defaultValue>sapmachine-12+1-0</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>RUN_TESTS</name>
           <description></description>
@@ -78,7 +84,7 @@
         <hudson.model.StringParameterDefinition>
           <name>SAPMACHINE_ARCHIVE_NAME_PREFIX</name>
           <description></description>
-          <defaultValue>sapmachine_windows-x64</defaultValue>
+          <defaultValue>sapmachine11_windows-x64</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
       </parameterDefinitions>

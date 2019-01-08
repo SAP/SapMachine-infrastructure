@@ -15,6 +15,12 @@
   <properties>
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>GIT_TAG_NAME</name>
+          <description></description>
+          <defaultValue>sapmachine-12+1-0</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>RUN_TESTS</name>
           <description></description>
@@ -23,12 +29,12 @@
         <hudson.model.BooleanParameterDefinition>
           <name>PUBLISH</name>
           <description></description>
-          <defaultValue>false</defaultValue>
+          <defaultValue>true</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>RELEASE</name>
           <description></description>
-          <defaultValue>true</defaultValue>
+          <defaultValue>false</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>SAPMACHINE_GIT_REPOSITORY</name>
@@ -69,7 +75,7 @@
         <hudson.model.StringParameterDefinition>
           <name>SAPMACHINE_ARCHIVE_NAME_PREFIX</name>
           <description></description>
-          <defaultValue>sapmachine_windows-x64</defaultValue>
+          <defaultValue>sapmachine13_windows-x64</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
       </parameterDefinitions>

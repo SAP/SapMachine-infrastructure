@@ -10,7 +10,7 @@
       <options/>
     </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
   </actions>
-  <description>Builds a release version of SapMachine12 on macOS </description>
+  <description>Builds a release version of SapMachine head on macOS </description>
   <keepDependencies>false</keepDependencies>
   <properties>
     <hudson.model.ParametersDefinitionProperty>
@@ -45,7 +45,7 @@
         <hudson.model.StringParameterDefinition>
           <name>SAPMACHINE_GIT_BRANCH</name>
           <description></description>
-          <defaultValue>sapmachine12</defaultValue>
+          <defaultValue>sapmachine</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
@@ -75,7 +75,7 @@
         <hudson.model.StringParameterDefinition>
           <name>SAPMACHINE_ARCHIVE_NAME_PREFIX</name>
           <description></description>
-          <defaultValue>sapmachine-12_macos-x64</defaultValue>
+          <defaultValue>sapmachine-13_macos-x64</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
       </parameterDefinitions>

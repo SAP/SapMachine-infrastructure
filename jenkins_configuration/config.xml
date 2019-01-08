@@ -566,9 +566,51 @@
       <filterQueue>false</filterQueue>
       <properties class="hudson.model.View$PropertyList"/>
       <sections>
+        <hudson.plugins.sectioned__view.ListViewSection>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView[3]/sections/hudson.plugins.sectioned__view.ListViewSection/jobNames/comparator"/>
+            <string>build-11-snapshot-linux_ppc64</string>
+            <string>build-12-snapshot-linux_ppc64</string>
+            <string>build-snapshot-linux_ppc64</string>
+          </jobNames>
+          <jobFilters/>
+          <name>Snapshot Builds</name>
+          <width>FULL</width>
+          <alignment>CENTER</alignment>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+        </hudson.plugins.sectioned__view.ListViewSection>
+        <hudson.plugins.sectioned__view.ListViewSection>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView[3]/sections/hudson.plugins.sectioned__view.ListViewSection/jobNames/comparator"/>
+            <string>build-11-release-linux_ppc64</string>
+            <string>build-12-release-linux_ppc64</string>
+            <string>build-13-release-linux_ppc64</string>
+          </jobNames>
+          <jobFilters/>
+          <name>Release Builds</name>
+          <width>FULL</width>
+          <alignment>CENTER</alignment>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+        </hudson.plugins.sectioned__view.ListViewSection>
         <hudson.plugins.sectioned__view.TextSection>
           <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView/sections/hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView[3]/sections/hudson.plugins.sectioned__view.ListViewSection/jobNames/comparator"/>
           </jobNames>
           <jobFilters/>
           <name>Snapshot Builds</name>
@@ -579,8 +621,8 @@
         </hudson.plugins.sectioned__view.TextSection>
         <hudson.plugins.sectioned__view.ListViewSection>
           <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView/sections/hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
-            <string>build-snapshot-linux_ppc64</string>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView[3]/sections/hudson.plugins.sectioned__view.ListViewSection/jobNames/comparator"/>
+            <string>build-snapshot-linux_ppc64_old</string>
             <string>test-jtreg-hotspot-snapshot-linux_ppc64</string>
             <string>test-jtreg-jdk-snapshot-linux_ppc64</string>
             <string>test-jtreg-langtools-snapshot-linux_ppc64</string>
@@ -597,8 +639,8 @@
         </hudson.plugins.sectioned__view.ListViewSection>
         <hudson.plugins.sectioned__view.ListViewSection>
           <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView/sections/hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
-            <string>build-11-snapshot-linux_ppc64</string>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView[3]/sections/hudson.plugins.sectioned__view.ListViewSection/jobNames/comparator"/>
+            <string>build-11-snapshot-linux_ppc64_old</string>
             <string>test-jtreg-hotspot-11-snapshot-linux_ppc64</string>
             <string>test-jtreg-jdk-11-snapshot-linux_ppc64</string>
             <string>test-jtreg-langtools-11-snapshot-linux_ppc64</string>
@@ -615,7 +657,7 @@
         </hudson.plugins.sectioned__view.ListViewSection>
         <hudson.plugins.sectioned__view.TextSection>
           <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView/sections/hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView[3]/sections/hudson.plugins.sectioned__view.ListViewSection/jobNames/comparator"/>
           </jobNames>
           <jobFilters/>
           <name>Release Builds</name>
@@ -626,8 +668,8 @@
         </hudson.plugins.sectioned__view.TextSection>
         <hudson.plugins.sectioned__view.ListViewSection>
           <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView/sections/hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
-            <string>build-12-release-linux_ppc64</string>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView[3]/sections/hudson.plugins.sectioned__view.ListViewSection/jobNames/comparator"/>
+            <string>build-12-release-linux_ppc64_old</string>
             <string>test-jtreg-hotspot-12-release-linux_ppc64</string>
             <string>test-jtreg-jdk-12-release-linux_ppc64</string>
             <string>test-jtreg-langtools-12-release-linux_ppc64</string>
@@ -644,8 +686,8 @@
         </hudson.plugins.sectioned__view.ListViewSection>
         <hudson.plugins.sectioned__view.ListViewSection>
           <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView/sections/hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
-            <string>build-11-release-linux_ppc64</string>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView[3]/sections/hudson.plugins.sectioned__view.ListViewSection/jobNames/comparator"/>
+            <string>build-11-release-linux_ppc64_old</string>
             <string>test-jtreg-hotspot-11-release-linux_ppc64</string>
             <string>test-jtreg-jdk-11-release-linux_ppc64</string>
             <string>test-jtreg-langtools-11-release-linux_ppc64</string>
@@ -671,7 +713,7 @@
       <sections>
         <hudson.plugins.sectioned__view.ListViewSection>
           <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView/sections/hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView[3]/sections/hudson.plugins.sectioned__view.ListViewSection/jobNames/comparator"/>
             <string>build-11-snapshot-macos_x86_64</string>
             <string>build-12-snapshot-macos_x86_64</string>
             <string>build-snapshot-macos_x86_64</string>
@@ -691,10 +733,10 @@
         </hudson.plugins.sectioned__view.ListViewSection>
         <hudson.plugins.sectioned__view.ListViewSection>
           <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView/sections/hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView[3]/sections/hudson.plugins.sectioned__view.ListViewSection/jobNames/comparator"/>
             <string>build-11-release-macos_x86_64</string>
             <string>build-12-release-macos_x86_64</string>
-            <string>build-release-macos_x86_64</string>
+            <string>build-13-release-macos_x86_64</string>
           </jobNames>
           <jobFilters/>
           <name>Release Builds</name>

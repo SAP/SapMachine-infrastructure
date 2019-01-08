@@ -10,56 +10,45 @@
       <options/>
     </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
   </actions>
-  <description></description>
+  <description>Builds a SapMachine11  Snapshot on Linux ppc64</description>
   <keepDependencies>false</keepDependencies>
   <properties>
     <jenkins.model.BuildDiscarderProperty>
       <strategy class="hudson.tasks.LogRotator">
         <daysToKeep>-1</daysToKeep>
-        <numToKeep>-1</numToKeep>
+        <numToKeep>50</numToKeep>
         <artifactDaysToKeep>-1</artifactDaysToKeep>
         <artifactNumToKeep>1</artifactNumToKeep>
       </strategy>
     </jenkins.model.BuildDiscarderProperty>
-    <hudson.plugins.copyartifact.CopyArtifactPermissionProperty plugin="copyartifact@1.41">
-      <projectNameList>
-        <string>*</string>
-      </projectNameList>
-    </hudson.plugins.copyartifact.CopyArtifactPermissionProperty>
+    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty/>
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
-        <hudson.model.StringParameterDefinition>
-          <name>GIT_TAG_NAME</name>
-          <description></description>
-          <defaultValue>sapmachine-11+25-0</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.BooleanParameterDefinition>
-          <name>PUBLISH</name>
-          <description></description>
-          <defaultValue>true</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>RUN_TESTS</name>
           <description></description>
           <defaultValue>true</defaultValue>
         </hudson.model.BooleanParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>HOTSPOT_TEST_JOB</name>
+        <hudson.model.BooleanParameterDefinition>
+          <name>PUBLISH</name>
           <description></description>
-          <defaultValue>test-jtreg-hotspot-11-release-linux_ppc64</defaultValue>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>GIT_TAG_NAME</name>
+          <description></description>
+          <defaultValue>sapmachine-11+0-0</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>JDK_TEST_JOB</name>
+        <hudson.model.BooleanParameterDefinition>
+          <name>RELEASE</name>
           <description></description>
-          <defaultValue>test-jtreg-jdk-11-release-linux_ppc64</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
+          <defaultValue>false</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>LANGTOOLS_TEST_JOB</name>
+          <name>SAPMACHINE_GIT_REPOSITORY</name>
           <description></description>
-          <defaultValue>test-jtreg-langtools-11-release-linux_ppc64</defaultValue>
+          <defaultValue>https://github.com/SAP/SapMachine.git</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
@@ -69,43 +58,39 @@
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
+          <name>hotspot_test_groups</name>
+          <description></description>
+          <defaultValue>:tier1</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>jdk_test_groups</name>
+          <description></description>
+          <defaultValue>:tier1</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>langtools_test_groups</name>
+          <description></description>
+          <defaultValue>&quot;jdk tools lib&quot;</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>AGENT_LABEL</name>
+          <description></description>
+          <defaultValue>linux_ppc64</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
           <name>SAPMACHINE_ARCHIVE_NAME_PREFIX</name>
           <description></description>
           <defaultValue>sapmachine11_linux-ppc64</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>AGENT_LABEL</name>
-          <description></description>
-          <defaultValue> linux_ppc64</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.BooleanParameterDefinition>
-          <name>PROPAGATE_RESULT</name>
-          <description></description>
-          <defaultValue>false</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
-        <hudson.model.BooleanParameterDefinition>
-          <name>RELEASE</name>
-          <description></description>
-          <defaultValue>true</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
-        <hudson.model.StringParameterDefinition>
           <name>_CONFIGURE_SYSROOT</name>
           <description></description>
-          <defaultValue>--with-sysroot=/opt/sysroot-sles11-ppc64 --with-freetype-lib=/opt/sysroot-sles11-ppc64/usr/lib64 --with-freetype-include=/opt/sysroot-sles11-ppc64/usr/include --with-stdc++lib=static</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>CC</name>
-          <description></description>
-          <defaultValue>/opt/gcc-7.3.0-bin/bin/gcc</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>CXX</name>
-          <description></description>
-          <defaultValue>/opt/gcc-7.3.0-bin/bin/g++</defaultValue>
+          <defaultValue>--with-devkit=/opt/devkits/ppc64-linux-gnu-to-ppc64-linux-gnu --with-freetype-lib=/opt/devkits/ppc64-linux-gnu-to-ppc64-linux-gnu/ppc64-linux-gnu/sysroot/usr/lib64 --with-freetype-include=/opt/devkits/ppc64-linux-gnu-to-ppc64-linux-gnu/ppc64-linux-gnu/sysroot/usr/include</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
@@ -129,7 +114,7 @@
       <submoduleCfg class="list"/>
       <extensions/>
     </scm>
-    <scriptPath>build-pipe/Jenkinsfile_no_docker</scriptPath>
+    <scriptPath>build-pipe/Jenkinsfile_no_docker_allin1</scriptPath>
     <lightweight>true</lightweight>
   </definition>
   <triggers/>
