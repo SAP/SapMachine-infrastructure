@@ -31,8 +31,8 @@ redirect_to:
 '''
 
 class Releases:
-    def __init__(self, image_type):
-        self.image_type = image_type
+    def __init__(self, major):
+        self.major = major
         self.releases = {}
 
     def add_asset(self, asset_url, os, tag):
@@ -43,7 +43,7 @@ class Releases:
 
     def transform(self):
         json_root = {
-            self.image_type: {
+            self.major: {
                 'releases': []
             }
         }
@@ -56,7 +56,7 @@ class Releases:
             for os in self.releases[tag]:
                 release[os] = self.releases[tag][os]
 
-            json_root[self.image_type]['releases'].append(release)
+            json_root[self.major]['releases'].append(release)
 
         return json_root
 
@@ -75,6 +75,9 @@ def push_to_git(files):
     utils.git_push(local_repo)
     utils.remove_if_exists(local_repo)
 
+def is_lts(major):
+    return int(major) % 2 != 0
+
 def main(argv=None):
     token = utils.get_github_api_accesstoken()
     org = 'SAP'
@@ -82,8 +85,8 @@ def main(argv=None):
     github_api = str.format('https://api.github.com/repos/{0}/{1}/releases', org, repository)
     asset_pattern = re.compile(utils.sapmachine_asset_pattern())
     major_dict = {}
-    releases_dict = {}
-    image_type_dict = {}
+    release_dict = {}
+    image_dict = {}
     latest_link_dict = {}
     request = Request(github_api)
 
@@ -115,26 +118,36 @@ def main(argv=None):
 
             if match is not None:
                 asset_image_type = match.group(1)
-                asset_os = match.group(3)
-                tag = release['name']
-                image_type = major + '-' + asset_image_type
 
-                if release['prerelease'] is True:
-                    image_type += '-ea'
+                if asset_image_type == 'jdk':
+                    asset_os = match.group(3)
+                    tag = release['name']
+                    image_is_lts = is_lts(major) and not release['prerelease']
 
-                if image_type not in image_type_dict:
-                    image_type_dict[image_type] = str.format('SapMachine {0} {1}{2}',
-                        major,
-                        asset_image_type,
-                        " (pre-release)" if release['prerelease'] else "")
+                    if major not in image_dict:
+                        image_dict[major] = {
+                            'value':
+                                str.format('SapMachine {0}{1}{2}',
+                                    major,
+                                    " (pre-release)" if release['prerelease'] else "",
+                                    " (Long Term Support)" if image_is_lts else ""),
+                            'lts': image_is_lts,
+                            'ea': release['prerelease']
+                        }
 
-                if image_type in releases_dict:
-                    releases = releases_dict[image_type]
-                else:
-                    releases = Releases(image_type)
-                    releases_dict[image_type] = releases
+                    if major in release_dict:
+                        releases = release_dict[major]
+                    else:
+                        releases = Releases(major)
+                        release_dict[major] = releases
 
-                releases_dict[image_type].add_asset(asset['browser_download_url'], asset_os, tag)
+                    release_dict[major].add_asset(asset['browser_download_url'], asset_os, tag)
+
+    latest_lts_version = 0
+
+    for major in image_dict:
+        if image_dict[major]['lts'] and int(major) > latest_lts_version:
+            latest_lts_version = int(major)
 
     json_root = {
         'imageTypes':[],
@@ -142,19 +155,28 @@ def main(argv=None):
         'assets':{}
     }
 
-    for image_type in sorted(image_type_dict):
-        json_root['imageTypes'].append({'key': image_type, 'value': image_type_dict[image_type]})
+    for major in sorted(image_dict):
+        if int(major) > latest_lts_version or image_dict[major]['lts']:
+            json_root['imageTypes'].append({'key': major, 'value': image_dict[major]['value'], 'lts': image_dict[major]['lts'], 'ea': image_dict[major]['ea']})
+        else:
+            del image_dict[major]
 
     def get_os_key(os):
-        print(os)
         return os_description[os]['ordinal']
 
     for os in sorted(os_description, key=get_os_key):
         json_root['os'].append({'key': os, 'value': os_description[os]['name'], 'ordinal': os_description[os]['ordinal']})
 
-    for release in releases_dict:
-        json_root['assets'].update(releases_dict[release].transform())
+    for major in release_dict:
+        if major in image_dict:
+            json_root['assets'].update(release_dict[major].transform())
 
+    with open('website_data_dump.json', 'w') as json_dump:
+        json_dump.write(json.dumps(json_root, indent=4))
+
+    return 0
+
+'''
     files = [
         {
             'location': join('assets', 'data', 'sapmachine_releases.json'),
@@ -171,8 +193,9 @@ def main(argv=None):
         })
 
     push_to_git(files)
-    
-    return 0
+'''
+
+
 
 if __name__ == "__main__":
     sys.exit(main())
