@@ -49,14 +49,14 @@ pipeline {
                     allowMissing: false,
                     alwaysLinkToLastBuild: false,
                     keepAll: true,
-                    reportDir: "test_report_${params.test_suite}",,
-                    reportFiles: 'test_report_${params.test_suite}/JTreport/index.html',
+                    reportDir: "sapmachine/test_report_${params.test_suite}",,
+                    reportFiles: 'sapmachine/test_report_${params.test_suite}/JTreport/index.html',
                     reportName: 'JT Report'
                 ]
 
                 junit 'junit_report.xml'
 
-                archive "test_report_${params.test_suite}/JTwork/**/hs_err_pid*.log"
+                archive "sapmachine/test_report_${params.test_suite}/JTwork/**/hs_err_pid*.log"
             }
             post {
                 always {
