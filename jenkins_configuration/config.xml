@@ -325,7 +325,6 @@
         <hudson.plugins.sectioned__view.ListViewSection>
           <jobNames>
             <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView/sections/hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
-            <string>build-12-release-linux_ppc64le</string>
             <string>test-jtreg-hotspot-12-release-linux_ppc64le</string>
             <string>test-jtreg-jdk-12-release-linux_ppc64le</string>
             <string>test-jtreg-langtools-12-release-linux_ppc64le</string>
@@ -343,7 +342,6 @@
         <hudson.plugins.sectioned__view.ListViewSection>
           <jobNames>
             <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView/sections/hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
-            <string>build-11-release-linux_ppc64le</string>
             <string>test-jtreg-hotspot-11-release-linux_ppc64le</string>
             <string>test-jtreg-jdk-11-release-linux_ppc64le</string>
             <string>test-jtreg-langtools-11-release-linux_ppc64le</string>
@@ -819,6 +817,77 @@
           <jobFilters/>
           <name>All in one builds</name>
           <includeRegex>.*all_in</includeRegex>
+          <width>FULL</width>
+          <alignment>CENTER</alignment>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+        </hudson.plugins.sectioned__view.ListViewSection>
+      </sections>
+    </hudson.plugins.sectioned__view.SectionedView>
+    <hudson.plugins.sectioned__view.SectionedView plugin="sectioned-view@1.25">
+      <owner class="hudson" reference="../../.."/>
+      <name>Release Builds</name>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <properties class="hudson.model.View$PropertyList"/>
+      <sections>
+        <hudson.plugins.sectioned__view.ListViewSection>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator"/>
+          </jobNames>
+          <jobFilters/>
+          <name>SapMachine11 LTS Release Builds</name>
+          <includeRegex>build-11-release.*(?&lt;!old)$</includeRegex>
+          <width>FULL</width>
+          <alignment>CENTER</alignment>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+        </hudson.plugins.sectioned__view.ListViewSection>
+        <hudson.plugins.sectioned__view.ListViewSection>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.ListViewSection/jobNames/comparator"/>
+            <string>build-12-release</string>
+            <string>build-12-release-linux_ppc64</string>
+            <string>build-12-release-linux_ppc64le_old</string>
+            <string>build-12-release-macos_x86_64</string>
+            <string>build-12-release-windows_x86_64</string>
+          </jobNames>
+          <jobFilters/>
+          <name>SapMaschine12 Release Builds</name>
+          <includeRegex>build-12-release.*(?&lt;!old)$</includeRegex>
+          <width>FULL</width>
+          <alignment>CENTER</alignment>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+        </hudson.plugins.sectioned__view.ListViewSection>
+        <hudson.plugins.sectioned__view.ListViewSection>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.ListViewSection/jobNames/comparator"/>
+          </jobNames>
+          <jobFilters/>
+          <name>SapMaschine13 Release Builds</name>
+          <includeRegex>build-13-release.*</includeRegex>
           <width>FULL</width>
           <alignment>CENTER</alignment>
           <columns>
