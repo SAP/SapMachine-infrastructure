@@ -101,7 +101,7 @@ def main(argv=None):
             sap_build_number)
 
     if workdir is None:
-        workdir = join(os.getcwd(), 'docker_work')
+        workdir = join(os.getcwd(), 'docker_work', image_type)
 
     utils.remove_if_exists(workdir)
     os.makedirs(workdir)
