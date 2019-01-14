@@ -171,12 +171,6 @@ def main(argv=None):
         if major in image_dict:
             json_root['assets'].update(release_dict[major].transform())
 
-    with open('website_data_dump.json', 'w') as json_dump:
-        json_dump.write(json.dumps(json_root, indent=4))
-
-    return 0
-
-'''
     files = [
         {
             'location': join('assets', 'data', 'sapmachine_releases.json'),
@@ -193,8 +187,8 @@ def main(argv=None):
         })
 
     push_to_git(files)
-'''
 
+    return 0
 
 
 if __name__ == "__main__":
