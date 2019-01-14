@@ -3,6 +3,7 @@ pipeline {
         dockerfile {
             label 'cloud_foundry'
             dir 'cf-test-pipe/docker'
+            additionalBuildArgs '--no-cache'
         }
     }
     stages {
