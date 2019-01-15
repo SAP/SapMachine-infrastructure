@@ -65,11 +65,11 @@ if [[ $GIT_TAG_NAME == sapmachine-* ]]; then
     exit 1
   fi
 
-  if [[ ! -z VERSION_BUILD_NUMBER ]]; then
+  if [[ "$VERSION_BUILD_NUMBER" != "N/A" ]]; then
     _CONFIGURE_OPTION_VERSION_BUILD="--with-version-build=$VERSION_BUILD_NUMBER"
   fi
 
-  if [[ ! -z SAPMACHINE_VERSION ]]; then
+  if [[ "$SAPMACHINE_VERSION" != "N/A" ]]; then
     _CONFIGURE_OPTION_VERSION_EXTRA="--with-version-extra1=$SAPMACHINE_VERSION"
   fi
 
