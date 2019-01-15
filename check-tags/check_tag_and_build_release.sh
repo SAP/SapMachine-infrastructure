@@ -46,8 +46,7 @@ do
 
   echo "$JDK_TAG_CONTAINING_BRANCH"
 
-  TAG_EXT=$(echo $base |  sed -rn "s/sapmachine[0-9]*(\-alpine)?/\1/p")
-  SAPMACHINE_TAG="sapmachine-$MAJOR_VERSION+$LAST_BUILD_JDK_TAG-0$TAG_EXT"
+  SAPMACHINE_TAG="sapmachine-$MAJOR_VERSION+$LAST_BUILD_JDK_TAG-0"
   SAPMACHINE_TAG_CONTAINING_BRANCH=$(git branch -a --contains tags/$SAPMACHINE_TAG 2> /dev/null | \
   grep -E $GREP_PATTERN )
   echo "$SAPMACHINE_TAG_CONTAINING_BRANCH"
@@ -62,16 +61,16 @@ do
 
     URL_TAG=$(echo $SAPMACHINE_TAG | sed 's/\+/\%2B/g')
     CRUMB=$(curl --user $JENKINS_PASSWORD  $JENKINS_URL/crumbIssuer/api/xml?xpath=concat\(//crumbRequestField,%22:%22,//crumb\))
-    curl -H $CRUMB -X POST --user $JENKINS_PASSWORD \
-    "$JENKINS_URL/job/build-$MAJOR_VERSION-release$TAG_EXT/buildWithParameters?TOKEN=test-token&GIT_TAG_NAME=$URL_TAG&PUBLISH=true&RUN_TESTS=true"
 
-    if [ -z $TAG_EXT ]; then
-      curl -H $CRUMB -X POST --user $JENKINS_PASSWORD \
-      "$JENKINS_URL/job/build-$MAJOR_VERSION-release-linux_ppc64le/buildWithParameters?TOKEN=test-token&GIT_TAG_NAME=$URL_TAG&PUBLISH=true&RUN_TESTS=true&PROPAGATE_RESULT=false" || true
-      curl -H $CRUMB -X POST --user $JENKINS_PASSWORD \
-      "$JENKINS_URL/job/build-$MAJOR_VERSION-release-linux_ppc64/buildWithParameters?TOKEN=test-token&GIT_TAG_NAME=$URL_TAG&PUBLISH=true&RUN_TESTS=true&PROPAGATE_RESULT=false" || true
-      curl -H $CRUMB -X POST --user $JENKINS_PASSWORD \
-      "$JENKINS_URL/job/build-$MAJOR_VERSION-release-windows_x86_64/buildWithParameters?TOKEN=test-token&GIT_TAG_NAME=$URL_TAG&PUBLISH=true&RUN_TESTS=true&PROPAGATE_RESULT=false" || true
-    fi
+    curl -H $CRUMB -X POST --user $JENKINS_PASSWORD \
+    "$JENKINS_URL/job/build-$MAJOR_VERSION-release-linux_x86_64/buildWithParameters?TOKEN=test-token&GIT_TAG_NAME=$URL_TAG&PUBLISH=true&RUN_TESTS=true"
+    curl -H $CRUMB -X POST --user $JENKINS_PASSWORD \
+    "$JENKINS_URL/job/build-$MAJOR_VERSION-release-linux_ppc64le/buildWithParameters?TOKEN=test-token&GIT_TAG_NAME=$URL_TAG&PUBLISH=true&RUN_TESTS=true&PROPAGATE_RESULT=false" || true
+    curl -H $CRUMB -X POST --user $JENKINS_PASSWORD \
+    "$JENKINS_URL/job/build-$MAJOR_VERSION-release-linux_ppc64/buildWithParameters?TOKEN=test-token&GIT_TAG_NAME=$URL_TAG&PUBLISH=true&RUN_TESTS=true&PROPAGATE_RESULT=false" || true
+    curl -H $CRUMB -X POST --user $JENKINS_PASSWORD \
+    "$JENKINS_URL/job/build-$MAJOR_VERSION-release-windows_x86_64/buildWithParameters?TOKEN=test-token&GIT_TAG_NAME=$URL_TAG&PUBLISH=true&RUN_TESTS=true&PROPAGATE_RESULT=false" || true
+    curl -H $CRUMB -X POST --user $JENKINS_PASSWORD \
+    "$JENKINS_URL/job/build-$MAJOR_VERSION-release-macos_x86_64/buildWithParameters?TOKEN=test-token&GIT_TAG_NAME=$URL_TAG&PUBLISH=true&RUN_TESTS=true&PROPAGATE_RESULT=false" || true
   fi
 done
