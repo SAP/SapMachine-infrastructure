@@ -10,7 +10,7 @@
       <options/>
     </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
   </actions>
-  <description>Builds a SapMachine13   Release Linux x86_64</description>
+  <description>Builds a SapMachine13 Snapshot for Linux x86_64</description>
   <keepDependencies>false</keepDependencies>
   <properties>
     <jenkins.model.BuildDiscarderProperty>
@@ -32,19 +32,14 @@
         <hudson.model.BooleanParameterDefinition>
           <name>PUBLISH</name>
           <description></description>
-          <defaultValue>true</defaultValue>
+          <defaultValue>false</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>GIT_TAG_NAME</name>
           <description></description>
-          <defaultValue>sapmachine-13+1-0</defaultValue>
+          <defaultValue></defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
-        <hudson.model.BooleanParameterDefinition>
-          <name>RELEASE</name>
-          <description></description>
-          <defaultValue>false</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>SAPMACHINE_GIT_REPOSITORY</name>
           <description></description>
@@ -91,12 +86,6 @@
           <name>DOCKER_DIR</name>
           <description></description>
           <defaultValue>dockerfiles/ubuntu_14_04_x86_64</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>DOCKER_BUILD_JOB</name>
-          <description></description>
-          <defaultValue>build-13-docker-linux_x86_64</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
