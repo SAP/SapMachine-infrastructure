@@ -71,7 +71,7 @@ pipeline {
             }
             steps {
                 sh "bash test-pipe/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${env.TESTSUITE} ${params.jdk_test_groups} || true"
-            
+
                 publishHTML target: [
                     allowMissing: false,
                     alwaysLinkToLastBuild: false,
@@ -93,7 +93,7 @@ pipeline {
             }
             steps {
                 sh "bash test-pipe/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${env.TESTSUITE} ${params.jdk_test_groups}  || true"
-            
+
                 publishHTML target: [
                     allowMissing: false,
                     alwaysLinkToLastBuild: false,
@@ -150,7 +150,7 @@ pipeline {
             }
             steps {
                 script {
-                    def match = params.GIT_TAG_NAME =~ /[^-]*-([0-9]+)[\.0-9]*\+.*/
+                    def match = params.GIT_TAG_NAME =~ /[^-]*-([0-9]+)[\.0-9]*.*/
                     env.MAJOR_VERSION = match[0][1]
                 }
                 build job: 'generate-cf-data', propagate: false, wait: false, parameters:

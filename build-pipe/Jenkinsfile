@@ -155,7 +155,7 @@ pipeline {
             }
             steps {
                 script {
-                    def match = params.GIT_TAG_NAME =~ /[^-]*-([0-9]+)[\.0-9]*\+.*/
+                    def match = params.GIT_TAG_NAME =~ /[^-]*-([0-9]+)[\.0-9]*.*/
                     env.MAJOR_VERSION = match[0][1]
                 }
                 build job: 'generate-cf-data', propagate: false, wait: false, parameters:
