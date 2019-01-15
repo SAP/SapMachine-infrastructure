@@ -126,11 +126,7 @@ def main(argv=None):
 
                     if major not in image_dict:
                         image_dict[major] = {
-                            'value':
-                                str.format('SapMachine {0}{1}{2}',
-                                    major,
-                                    " (pre-release)" if release['prerelease'] else "",
-                                    " (Long Term Support)" if image_is_lts else ""),
+                            'label': str.format('SapMachine {0}', major),
                             'lts': image_is_lts,
                             'ea': release['prerelease']
                         }
@@ -157,7 +153,7 @@ def main(argv=None):
 
     for major in sorted(image_dict):
         if int(major) > latest_lts_version or image_dict[major]['lts']:
-            json_root['imageTypes'].append({'key': major, 'value': image_dict[major]['value'], 'lts': image_dict[major]['lts'], 'ea': image_dict[major]['ea']})
+            json_root['imageTypes'].append({'id': major, 'label': image_dict[major]['label'], 'lts': image_dict[major]['lts'], 'ea': image_dict[major]['ea']})
         else:
             del image_dict[major]
 
@@ -189,7 +185,6 @@ def main(argv=None):
     push_to_git(files)
 
     return 0
-
 
 if __name__ == "__main__":
     sys.exit(main())
