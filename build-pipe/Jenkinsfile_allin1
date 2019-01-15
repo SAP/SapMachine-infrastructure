@@ -41,6 +41,9 @@ pipeline {
             }
         }
         stage('Run jtreg hotspot') {
+            when {
+                expression { params.RUN_TESTS == true }
+            }
             environment {
               SCIMARK_2_CP = '/opt/scimark2/scimark2lib.jar'
               TESTSUITE = 'hotspot'
@@ -60,6 +63,9 @@ pipeline {
             }
         }
         stage('Run jtreg jdk') {
+            when {
+                expression { params.RUN_TESTS == true }
+            }
             environment {
               TESTSUITE = 'jdk'
             }
@@ -79,6 +85,9 @@ pipeline {
             }
         }
         stage('Run jtreg langtools') {
+            when {
+                expression { params.RUN_TESTS == true }
+            }
             environment {
               TESTSUITE = 'langtools'
             }
