@@ -30,6 +30,9 @@ pipeline {
             }
         }
         stage('Copy JTREG Artifacts') {
+            when {
+                expression { params.RUN_TESTS == true }
+            }
             steps {
                 script {
                     step ([$class: 'CopyArtifact',
