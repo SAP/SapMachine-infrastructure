@@ -168,7 +168,7 @@ def fetch_tag(tag, platform, token=None):
     return jdk_url, jre_url
 
 def sapmachine_tag_pattern():
-    return '(sapmachine)-(((([0-9]+)((\.([0-9]+))*)?)\+([0-9]+))(-([0-9]+))?)(\-((\S)+))?'
+    return '(sapmachine)-((((\d+)((\.(\d+))*)?)(\+(\d+))?)(-(\d+))?)(\-((\S)+))?'
 
 def sapmachine_tag_components(tag, multiline=False):
     pattern = re.compile(sapmachine_tag_pattern())
@@ -184,10 +184,14 @@ def sapmachine_tag_components(tag, multiline=False):
     version = match.group(2)
     version_part = match.group(4)
     major = match.group(5)
-    build_number = match.group(9)
 
-    if len(match.groups()) >= 11:
-        sap_build_number = match.group(11)
+    if len(match.groups()) >= 10:
+        build_number = match.group(10)
+    else:
+        build_number = ''
+
+    if len(match.groups()) >= 12:
+        sap_build_number = match.group(12)
     else:
         sap_build_number = ''
 
@@ -195,6 +199,11 @@ def sapmachine_tag_components(tag, multiline=False):
         os_ext = match.group(13)
     else:
         os_ext = ''
+
+    if not sap_build_number:
+        version_parts = version_part.split('.')
+        if len(version_parts) >= 5:
+            sap_build_number = version_parts[4]
 
     return version, version_part, major, build_number, sap_build_number, os_ext
 

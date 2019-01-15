@@ -21,7 +21,7 @@ if [ -d SapMachine ]; then
 fi
 
 if [[ -z $SAPMACHINE_GIT_REPOSITORY ]]; then
-  SAPMACHINE_GIT_REPOSITORY="http://github.com/SAP/SapMachine.git"
+  SAPMACHINE_GIT_REPOSITORY="https://github.com/SAP/SapMachine.git"
 fi
 
 git clone -b $SAPMACHINE_GIT_BRANCH $SAPMACHINE_GIT_REPOSITORY "${WORKSPACE}/SapMachine"
@@ -57,13 +57,20 @@ VENDOR_BUG_URL="https://github.com/SAP/SapMachine/issues/new"
 VENDOR_VM_BUG_URL="https://github.com/SAP/SapMachine/issues/new"
 
 if [[ $GIT_TAG_NAME == sapmachine-* ]]; then
-  read VERSION_MAJOR VERSION_MINOR SAPMACHINE_VERSION<<< $(echo $GIT_TAG_NAME \
-       | sed $SEDFLAGS 's/sapmachine\-([0-9]+)(\.[0-9]\.[0-9])?\+([0-9]+)\-?([0-9]*)(\-alpine)?/ \1 \3 \4 /p')
+  read VERSION VERSION_PART VERSION_MAJOR VERSION_BUILD_NUMBER SAPMACHINE_VERSION VERSION_OS_EXT<<< $(python ${WORKSPACE}/lib/get_tag_version_components.py -t $GIT_TAG_NAME)
 
-  if [[ -z $SAPMACHINE_VERSION || -z $VERSION_MAJOR || -z $VERSION_MINOR ]]; then
+  if [[ -z $VERSION || -z $VERSION_MAJOR ]]; then
     # error
     echo "Invalid tag!"
     exit 1
+  fi
+
+  if [[ ! -z VERSION_BUILD_NUMBER ]]; then
+    _CONFIGURE_OPTION_VERSION_BUILD="--with-version-build=$VERSION_BUILD_NUMBER"
+  fi
+
+  if [[ ! -z SAPMACHINE_VERSION ]]; then
+    _CONFIGURE_OPTION_VERSION_EXTRA="--with-version-extra1=$SAPMACHINE_VERSION"
   fi
 
   VERSION_PRE_OPT="ea"
@@ -87,14 +94,16 @@ if [[ $GIT_TAG_NAME == sapmachine-* ]]; then
   bash ./configure \
   --with-boot-jdk=$BOOT_JDK \
   --with-version-feature=$VERSION_MAJOR \
-  --with-version-opt=${LTS}sapmachine-$SAPMACHINE_VERSION \
-  --with-version-pre=$VERSION_PRE_OPT --with-version-build=$VERSION_MINOR \
+  --with-version-opt=${LTS}sapmachine \
+  --with-version-pre=$VERSION_PRE_OPT \
   --with-version-date=$VERSION_DATE \
   --disable-warnings-as-errors \
   --with-vendor-name="$VENDOR_NAME" \
   --with-vendor-url="$VENDOR_URL" \
   --with-vendor-bug-url="$VENDOR_BUG_URL" \
   --with-vendor-vm-bug-url="$VENDOR_VM_BUG_URL" \
+    $_CONFIGURE_OPTION_VERSION_BUILD \
+    $_CONFIGURE_OPTION_VERSION_EXTRA \
     $_CONFIGURE_SYSROOT \
     $EXTRA_CONFIGURE_OPTIONS
 else
