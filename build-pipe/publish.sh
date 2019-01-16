@@ -45,9 +45,16 @@ ls -la
 FILE_NAME_JDK="$(cat jdk_bundle_name.txt)"
 FILE_NAME_JRE="$(cat jre_bundle_name.txt)"
 
-ARCHIVE_NAME_JDK="$(echo $FILE_NAME_JDK | sed 's/\+/\./')"
-ARCHIVE_NAME_JRE="$(echo $FILE_NAME_JRE | sed 's/\+/\./')"
 
+if [ "$RELEASE" == true ]; then
+  # remove build number +xx from release build filenames
+  ARCHIVE_NAME_JDK="$(echo $FILE_NAME_JDK | sed 's/\+[0-9]*//')"
+  ARCHIVE_NAME_JRE="$(echo $FILE_NAME_JRE | sed 's/\+[0-9]*//')"
+else
+  # substitute build number +xx to .xx to avoid problmes with uploads. + is no good character :-)
+  ARCHIVE_NAME_JDK="$(echo $FILE_NAME_JDK | sed 's/\+/\./')"
+  ARCHIVE_NAME_JRE="$(echo $FILE_NAME_JRE | sed 's/\+/\./')"
+fi
 mv $FILE_NAME_JDK $ARCHIVE_NAME_JDK
 mv $FILE_NAME_JRE $ARCHIVE_NAME_JRE
 
