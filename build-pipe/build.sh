@@ -88,7 +88,7 @@ if [[ $GIT_TAG_NAME == sapmachine-* ]]; then
   VERSION_DATE=$(python ../lib/get_tag_timestamp.py -t $GIT_TAG_NAME)
 
   if [[ -z $VERSION_DATE ]]; then
-    VERSION_DATE=$(date -I -u)
+    VERSION_DATE=$(date -u "+%Y-%m-%d")
   fi
 
   bash ./configure \
