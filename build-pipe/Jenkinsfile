@@ -173,29 +173,10 @@ pipeline {
                 }
             }
             when {
-                expression { JOB_NAME ==~ /((\S*)(release)$)/  && params.PUBLISH == true }
+                expression { JOB_NAME ==~ /((\S*)(release)(\S*))/  && params.PUBLISH == true }
             }
             steps {
             build job: 'debian-pipeline', propagate: false, wait: true, parameters:
-                [
-                    string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
-                    [$class: 'BooleanParameterValue', name: 'DEPLOY', value: true]
-                ]
-            }
-        }
-        stage('Publish Alpine Linux Packages') {
-            agent {
-                dockerfile {
-                    label params.AGENT_LABEL
-                    dir params.DOCKER_DIR
-                    reuseNode true
-                }
-            }
-            when {
-                expression { JOB_NAME ==~ /((\S*)(release-alpine)$)/  && params.PUBLISH == true && params.AGENT_LABEL == "linux_x86_64"}
-            }
-            steps {
-            build job: 'apk-pipeline', propagate: false, wait: true, parameters:
                 [
                     string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
                     [$class: 'BooleanParameterValue', name: 'DEPLOY', value: true]
