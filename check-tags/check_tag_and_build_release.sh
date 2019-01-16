@@ -46,7 +46,12 @@ do
 
   echo "$JDK_TAG_CONTAINING_BRANCH"
 
-  SAPMACHINE_TAG="sapmachine-$MAJOR_VERSION+$LAST_BUILD_JDK_TAG-0"
+  if [[ $MAJOR_VERSION == *.* ]] ; then
+    SAPMACHINE_TAG="sapmachine-$MAJOR_VERSION"
+  else
+    SAPMACHINE_TAG="sapmachine-$MAJOR_VERSION+$LAST_BUILD_JDK_TAG"
+  fi
+
   SAPMACHINE_TAG_CONTAINING_BRANCH=$(git branch -a --contains tags/$SAPMACHINE_TAG 2> /dev/null | \
   grep -E $GREP_PATTERN )
   echo "$SAPMACHINE_TAG_CONTAINING_BRANCH"
