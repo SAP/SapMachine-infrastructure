@@ -1,22 +1,24 @@
 #!/bin/bash
 set -ex
 
-MAJOR_VERSION=$1
+VERSION=$1
 
 BASE_BRANCH="sapmachine"
 GREP_PATTERN="(sapmachine$)"
-if [[ $MAJOR_VERSION == 10* ]]; then
+if [[ $VERSION == 10* ]]; then
   BASE_BRANCH="sapmachine10"
   GREP_PATTERN="(sapmachine10)"
 fi
-if [[ $MAJOR_VERSION == 11* ]]; then
+if [[ $VERSION == 11* ]]; then
   BASE_BRANCH="sapmachine11"
   GREP_PATTERN="(sapmachine11)"
 fi
-if [[ $MAJOR_VERSION == 12* ]]; then
+if [[ $VERSION == 12* ]]; then
   BASE_BRANCH="sapmachine12"
   GREP_PATTERN="(sapmachine12)"
 fi
+
+MAJOR_VERSION=$(echo $VERSION | sed -rn "s/([0-9]+)(\.[0-9]+)*/\1/p")
 
 if [ -d SapMachine ]; then
     rm -rf SapMachine;
@@ -29,10 +31,10 @@ pushd SapMachine
 git config user.email $GIT_COMMITTER_EMAIL
 git config user.name $GIT_COMMITTER_NAME
 
-REGEXP="s/jdk\-$MAJOR_VERSION\+([0-9]*)/\1/p"
+REGEXP="s/jdk\-$VERSION\+([0-9]*)/\1/p"
 LAST_BUILD_JDK_TAG=$(git tag | sed -rn $REGEXP | sort -nr | head -n1)
 
-JDK_TAG="jdk-$MAJOR_VERSION+$LAST_BUILD_JDK_TAG"
+JDK_TAG="jdk-$VERSION+$LAST_BUILD_JDK_TAG"
 echo "LAST_JDK_TAG=$LAST_BUILD_JDK_TAG"
 
 BRANCHES=( "$BASE_BRANCH" )
@@ -41,15 +43,15 @@ do
   git checkout $base
   GREP_PATTERN="($base$)"
   set +e
-  JDK_TAG_CONTAINING_BRANCH=$(git branch -a --contains tags/jdk-$MAJOR_VERSION+$LAST_BUILD_JDK_TAG 2> /dev/null | \
+  JDK_TAG_CONTAINING_BRANCH=$(git branch -a --contains tags/jdk-$ƒ+$LAST_BUILD_JDK_TAG 2> /dev/null | \
   grep -E $GREP_PATTERN )
 
   echo "$JDK_TAG_CONTAINING_BRANCH"
 
-  if [[ $MAJOR_VERSION == *.* ]] ; then
-    SAPMACHINE_TAG="sapmachine-$MAJOR_VERSION"
+  if [[ $VERSION == *.* ]] ; then
+    SAPMACHINE_TAG="sapmachine-$VERSION"
   else
-    SAPMACHINE_TAG="sapmachine-$MAJOR_VERSION+$LAST_BUILD_JDK_TAG"
+    SAPMACHINE_TAG="sapmachine-$VERSION+$LAST_BUILD_JDK_TAG"
   fi
 
   SAPMACHINE_TAG_CONTAINING_BRANCH=$(git branch -a --contains tags/$SAPMACHINE_TAG 2> /dev/null | \
