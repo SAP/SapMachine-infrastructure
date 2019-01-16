@@ -25,7 +25,7 @@ pushd SapMachine
 git config user.email $GIT_COMMITTER_EMAIL
 git config user.name $GIT_USER
 
-REGEXP="s/jdk\-$JDK_VERSION\+([0-9]*)/\1/p"
+REGEXP="s/jdk\-$JDK_VERSION(\+([0-9]*)|-ga)/\1/p"
 LAST_BUILD_JDK_TAG=$(git tag | sed -rn $REGEXP | sort -nr | head -n1)
 
 GIT_TAG="jdk-$JDK_VERSION+$LAST_BUILD_JDK_TAG"
