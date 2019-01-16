@@ -20,11 +20,11 @@ pipeline {
                     ]) {
                     sh '''
                     check-tags/check_tag_and_create_pr.sh 10.0.2
-                    check-tags/check_tag_and_create_pr.sh 11.0.1
+                    check-tags/check_tag_and_create_pr.sh 11.0.2
                     check-tags/check_tag_and_create_pr.sh 12
                     check-tags/check_tag_and_create_pr.sh 13
                     check-tags/check_tag_and_build_release.sh 10.0.2
-                    check-tags/check_tag_and_build_release.sh 11.0.1
+                    check-tags/check_tag_and_build_release.sh 11.0.2
                     check-tags/check_tag_and_build_release.sh 12
                     check-tags/check_tag_and_build_release.sh 13
                     '''
