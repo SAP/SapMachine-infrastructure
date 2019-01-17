@@ -49,21 +49,14 @@ def main(argv=None):
                 asset_os = match.group(3)
 
                 if asset_os == 'linux-x64' and asset_image_type == 'jre':
-                    buildpack_version = ''
-                    parts = version_part.split('.')
-                    num_parts = len(parts)
-                    if num_parts == 3:
-                        buildpack_version = str.format('{0}_', version_part)
-                    elif num_parts < 3:
-                        buildpack_version = str.format('{0}{1}_', version_part, '.0' * (3 - num_parts))
-                    elif num_parts > 3:
-                        buildpack_version = str.format('{0}.{1}.{2}_{3}', parts[0], parts[1], parts[2], parts[3])
-
-                    buildpack_version += str.format('b{0}', build_number)
+                    sapmachine_version = [int(e) for e in version_part.split('.')]
+                    sapmachine_version += [0 for sapmachine_version in range(0, 5 - len(sapmachine_version))]
 
                     if sap_build_number:
-                        buildpack_version += str.format('s{0}', sap_build_number)
+                        sapmachine_version[4] += int(sap_build_number)
 
+                    buildpack_version = '.'.join([str(e) for e in sapmachine_version])
+                    buildpack_version += str.format('_b{0}', build_number if build_number else '0')
                     asset_map[buildpack_version] = asset['browser_download_url']
 
     local_repo = join(os.getcwd(), 'gh-pages')
