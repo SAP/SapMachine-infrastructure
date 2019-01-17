@@ -48,7 +48,7 @@ def main(argv=None):
                 asset_image_type = match.group(1)
                 asset_os = match.group(3)
 
-                if asset_os == 'linux-x64' and asset_image_type == 'jre':
+                if asset_os == 'linux-x64' and asset_image_type == 'jdk':
                     sapmachine_version = [int(e) for e in version_part.split('.')]
                     sapmachine_version += [0 for sapmachine_version in range(0, 5 - len(sapmachine_version))]
 
