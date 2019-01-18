@@ -99,16 +99,11 @@ def main(argv=None):
     templates_dir = realpath(args.templates_directory)
     tag = args.tag
 
-    if tag.endswith('-alpine'):
-        # the "-alpine" tags do not contain any assets
-        tag = tag[:-len('-alpine')]
-
     cwd = os.getcwd()
     work_dir = join(cwd, 'deb_work')
     version, version_part, major, build_number, sap_build_number, os_ext = utils.sapmachine_tag_components(tag)
     version = version.replace('-', '.')
     jdk_name = str.format('sapmachine-{0}-jdk-{1}', major, version)
-    jre_name = str.format('sapmachine-{0}-jre-{1}', major, version)
 
     jdk_url, jre_url = utils.fetch_tag(tag, 'linux-x64', utils.get_github_api_accesstoken())
 
@@ -116,38 +111,20 @@ def main(argv=None):
     mkdir(work_dir)
 
     jdk_archive = join(work_dir, jdk_url.rsplit('/', 1)[-1])
-    jre_archive = join(work_dir, jre_url.rsplit('/', 1)[-1])
 
     utils.download_artifact(jdk_url, jdk_archive)
-    utils.download_artifact(jre_url, jre_archive)
 
     clone_sapmachine(join(work_dir, 'sapmachine_master'))
     src_dir = join(work_dir, 'sapmachine_master')
 
     jdk_dir = join(work_dir, jdk_name)
-    jre_dir = join(work_dir, jre_name)
-
     mkdir(jdk_dir)
-    mkdir(jre_dir)
-
     utils.extract_archive(jdk_archive, jdk_dir)
-    utils.extract_archive(jre_archive, jre_dir)
 
     env = os.environ.copy()
     env['DEBFULLNAME'] = 'SapMachine'
     env['DEBEMAIL'] = 'sapmachine@sap.com'
     utils.run_cmd(['dh_make', '-n', '-s', '-y'], cwd=jdk_dir, env=env)
-    utils.run_cmd(['dh_make', '-n', '-s', '-y'], cwd=jre_dir, env=env)
-
-    jre_exploded_image = glob.glob(join(jre_dir, 'sapmachine-*'))[0]
-
-    generate_configuration(
-        templates_dir=join(templates_dir, 'jre'),
-        major=major,
-        target_dir=join(jre_dir, 'debian'),
-        exploded_image=jre_exploded_image,
-        src_dir=src_dir,
-        download_url=jre_url)
 
     jdk_exploded_image = glob.glob(join(jdk_dir, 'sapmachine-*'))[0]
 
@@ -159,7 +136,6 @@ def main(argv=None):
         src_dir=src_dir,
         download_url=jdk_url)
 
-    utils.run_cmd(['debuild', '-b', '-uc', '-us'], cwd=jre_dir, env=env)
     utils.run_cmd(['debuild', '-b', '-uc', '-us'], cwd=jdk_dir, env=env)
 
     deb_files = glob.glob(join(work_dir, '*.deb'))
