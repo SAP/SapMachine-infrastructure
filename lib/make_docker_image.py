@@ -85,7 +85,12 @@ def main(argv=None):
     if 'DOCKER_USER' in os.environ and image_type != 'test':
         docker_user = os.environ['DOCKER_USER']
         sapmachine_version = [int(e) for e in version_part.split('.')]
-        sapmachine_version += [0 for sapmachine_version in range(0, 3 - len(sapmachine_version))]
+        expand = 5  if sap_build_number else 3
+        sapmachine_version += [0 for sapmachine_version in range(0, expand - len(sapmachine_version))]
+
+        if sap_build_number:
+            sapmachine_version[4] = int(sap_build_number)
+
         sapmachine_version_string = '.'.join([str(e) for e in sapmachine_version])
 
         docker_tag = str.format('{0}/jdk{1}:{2}{3}',
