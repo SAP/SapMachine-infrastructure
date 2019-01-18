@@ -295,7 +295,6 @@
         <hudson.plugins.sectioned__view.ListViewSection>
           <jobNames>
             <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView/sections/hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
-            <string>build-11-snapshot-linux_ppc64le</string>
             <string>test-jtreg-hotspot-11-snapshot-linux_ppc64le</string>
             <string>test-jtreg-jdk-11-snapshot-linux_ppc64le</string>
             <string>test-jtreg-langtools-11-snapshot-linux_ppc64le</string>
@@ -803,10 +802,6 @@
         <hudson.plugins.sectioned__view.ListViewSection>
           <jobNames>
             <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView/sections/hudson.plugins.sectioned__view.TextSection/jobNames/comparator"/>
-            <string>build-11-snapshot-linux_x86_64_allin1</string>
-            <string>build-11-snapshot-windows_x86_64_allin1</string>
-            <string>build-12-snapshot-linux_x86_64_allin1</string>
-            <string>build-snapshot-linux_x86_64_allin1</string>
           </jobNames>
           <jobFilters/>
           <name>All in one builds</name>
@@ -901,6 +896,7 @@
         <hudson.plugins.sectioned__view.ListViewSection>
           <jobNames>
             <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView[6]/sections/hudson.plugins.sectioned__view.ListViewSection/jobNames/comparator"/>
+            <string>snapshot-11-build-service</string>
           </jobNames>
           <jobFilters/>
           <name>Sapmachine11 Snapshots</name>
@@ -943,6 +939,24 @@
           <jobFilters/>
           <name>Sapmachine13 Snapshots</name>
           <includeRegex>build-13-snapshot.*(?&lt;!old)$</includeRegex>
+          <width>FULL</width>
+          <alignment>CENTER</alignment>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+        </hudson.plugins.sectioned__view.ListViewSection>
+        <hudson.plugins.sectioned__view.ListViewSection>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView[6]/sections/hudson.plugins.sectioned__view.ListViewSection/jobNames/comparator"/>
+          </jobNames>
+          <jobFilters/>
+          <name></name>
           <width>FULL</width>
           <alignment>CENTER</alignment>
           <columns>
