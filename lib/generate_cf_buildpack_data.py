@@ -53,7 +53,7 @@ def main(argv=None):
                     sapmachine_version += [0 for sapmachine_version in range(0, 5 - len(sapmachine_version))]
 
                     if sap_build_number:
-                        sapmachine_version[4] += int(sap_build_number)
+                        sapmachine_version[4] = int(sap_build_number)
 
                     buildpack_version = '.'.join([str(e) for e in sapmachine_version])
                     buildpack_version += str.format('_b{0}', build_number if build_number else '0')
