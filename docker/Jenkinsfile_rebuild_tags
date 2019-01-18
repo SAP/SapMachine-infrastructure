@@ -17,24 +17,14 @@ pipeline {
                         ).trim().tokenize(' ').reverse()
 
                         def job_name = 'build-' + MAJOR + '-docker'
-
-                        if (OS_EXT?.trim()) {
-                            job_name += '-' + OS_EXT
-                        }
-
                         def i = 0
                         def publish_latest = false
 
                         tag_list.each { tag ->
-                            def major_version = (tag =~ /[^-]*-([0-9]+)[\.0-9]*\+.*/)[0][1]
-                            def workdir = 'sapmachine_infrastructure/dockerfiles/official/' + major_version
+                            def workdir = 'sapmachine_infrastructure/dockerfiles/official/' + MAJOR
 
                             publish_latest = (i == (tag_list.size() - 1))
                             i += 1
-
-                            if (OS_EXT?.trim()) {
-                                tag += '-' + OS_EXT
-                            }
 
                             def message = 'building tag ' + tag
 
