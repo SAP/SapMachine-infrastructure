@@ -42,17 +42,17 @@ pipeline {
                                 )
 
                                 sh(
-                                    script: "cd sapmachine_infrastructure &&  git add dockerfiles",
+                                    script: "cd sapmachine_infrastructure && git add dockerfiles || true",
                                     returnStdout: false
                                 )
 
                                 sh(
-                                    script: "cd sapmachine_infrastructure && git commit -m 'Updated official Docker files.'",
+                                    script: "cd sapmachine_infrastructure && git commit -m 'Updated official Docker files.' || true",
                                     returnStdout: false
                                 )
 
                                 sh(
-                                    script: "cd sapmachine_infrastructure && git push",
+                                    script: "cd sapmachine_infrastructure && git push || true",
                                     returnStdout: false
                                 )
                             }
