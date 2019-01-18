@@ -60,11 +60,12 @@ def main(argv=None):
         add_user = ''
 
 
-    if build_number and not tag_is_release:
-        package = str.format('sapmachine-{0}-jdk={1}+{2}',
+    if build_number:
+        package = str.format('sapmachine-{0}-jdk={1}+{2}.{3}',
             major,
             version_part,
-            build_number)
+            build_number,
+            sap_build_number if sap_build_number else '0')
     else:
         package = str.format('sapmachine-{0}-jdk={1}',
             major,
@@ -84,13 +85,14 @@ def main(argv=None):
     if 'DOCKER_USER' in os.environ and image_type != 'test':
         docker_user = os.environ['DOCKER_USER']
         sapmachine_version = [int(e) for e in version_part.split('.')]
+        sapmachine_version += [0 for sapmachine_version in range(0, 3 - len(sapmachine_version))]
         sapmachine_version_string = '.'.join([str(e) for e in sapmachine_version])
 
         docker_tag = str.format('{0}/jdk{1}:{2}{3}',
             docker_user,
             major,
             sapmachine_version_string,
-            'b' + build_number if build_number and not tag_is_release else '')
+            '.b' + build_number if build_number else '')
 
         docker_tag_latest = str.format('{0}/jdk{1}:latest',
             docker_user,
