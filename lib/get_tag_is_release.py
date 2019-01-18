@@ -18,21 +18,7 @@ def main(argv=None):
     parser.add_argument('-t', '--tag', help='the SapMachine Git tag', metavar='TAG', required=True)
     args = parser.parse_args()
 
-    token = utils.get_github_api_accesstoken()
-    org = 'SAP'
-    repository = 'SapMachine'
-    github_api = str.format('https://api.github.com/repos/{0}/{1}/releases', org, repository)
-
-    request = Request(github_api)
-
-    if token is not None:
-        request.add_header('Authorization', str.format('token {0}', token))
-
-    response = json.loads(urlopen(request).read())
-
-    for release in response:
-        if release['tag_name'] == args.tag:
-            print(str(not release['prerelease']).lower())
+    print(str(utils.sapmachine_tag_is_release(args.tag)))
 
 if __name__ == "__main__":
     sys.exit(main())

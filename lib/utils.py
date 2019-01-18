@@ -208,7 +208,7 @@ def sapmachine_tag_components(tag, multiline=False):
     return version, version_part, major, build_number, sap_build_number, os_ext
 
 def sapmachine_version_pattern():
-    return '(((([0-9]+)((\.([0-9]+))*)?)(-ea)?\+([0-9]+))(-LTS)?-sapmachine(-([0-9]+))?)'
+    return '((((\d+)((\.(\d+))*)?)(-ea)?\+(\d+))(-LTS)?-sapmachine(-(\d+))?)'
 
 def sapmachine_version_components(version_in, multiline=False):
     pattern = re.compile(sapmachine_version_pattern())
@@ -228,9 +228,11 @@ def sapmachine_version_components(version_in, multiline=False):
 
     if len(match.groups()) >= 12:
         sap_build_number = match.group(12)
-        version += '-' + sap_build_number
+        #version += '-' + sap_build_number
     else:
-        sap_build_number = ''
+        version_parts = version_part.split('.')
+        if len(version_parts) >= 5:
+            sap_build_number = version_parts[4]
 
     return version, version_part, major, build_number, sap_build_number
 
@@ -268,3 +270,22 @@ def git_push(dir):
         run_cmd(['git', 'push'], cwd=dir)
     except Exception:
         print('git push failed')
+
+def sapmachine_tag_is_release(tag):
+    token = get_github_api_accesstoken()
+    org = 'SAP'
+    repository = 'SapMachine'
+    github_api = str.format('https://api.github.com/repos/{0}/{1}/releases', org, repository)
+
+    request = Request(github_api)
+
+    if token is not None:
+        request.add_header('Authorization', str.format('token {0}', token))
+
+    response = json.loads(urlopen(request).read())
+
+    for release in response:
+        if release['tag_name'] == tag:
+            return not release['prerelease']
+
+    return False

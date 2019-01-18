@@ -4,25 +4,15 @@ pipeline {
     }
     stages {
         stage('Generate Dockerfiles') {
-
+            environment {
+              GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
+            }
             steps {
               withCredentials([
                   [$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-sapmachine', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD'],
                   ]
                   ) {
-                      script {
-                        def build_alpine_arg = ''
-
-                        if (JOB_NAME =~ /\S*alpine\S*/) {
-                            build_alpine_arg = '--alpine'
-                        }
-
-                        sh(
-                            script: "python lib/make_docker_image.py -t ${GIT_TAG_NAME} -i test ${build_alpine_arg}",
-                            returnStdout: false
-                        )
-                    }
-
+                    sh "python lib/make_docker_image.py -t ${GIT_TAG_NAME} -i test ${build_alpine_arg}"
                     sh 'cp docker_work/test/Dockerfile Dockerfile'
                     archiveArtifacts 'Dockerfile'
                 }
@@ -84,6 +74,9 @@ pipeline {
             when {
                 expression { params.PUBLISH == true }
             }
+            environment {
+              GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
+            }
             steps {
               withCredentials([
                   [$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-sapmachine', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD'],
@@ -97,17 +90,8 @@ pipeline {
                             publish_latest_arg = '--latest'
                         }
 
-                        if (JOB_NAME =~ /\S*alpine\S*/) {
-                            build_alpine_arg = '--alpine'
-                        }
-
                         sh(
-                            script: "python lib/make_docker_image.py -t ${GIT_TAG_NAME} -i jre -p ${publish_latest_arg} ${build_alpine_arg}",
-                            returnStdout: false
-                        )
-
-                        sh(
-                            script: "python lib/make_docker_image.py -t ${GIT_TAG_NAME} -i jdk -p ${publish_latest_arg} ${build_alpine_arg}",
+                            script: "python lib/make_docker_image.py -t ${GIT_TAG_NAME} -i jdk -p ${publish_latest_arg}",
                             returnStdout: false
                         )
                     }
