@@ -43,7 +43,7 @@ do
   git checkout $base
   GREP_PATTERN="($base$)"
   set +e
-  JDK_TAG_CONTAINING_BRANCH=$(git branch -a --contains tags/jdk-$ƒ+$LAST_BUILD_JDK_TAG 2> /dev/null | \
+  JDK_TAG_CONTAINING_BRANCH=$(git branch -a --contains tags/$JDK_TAG 2> /dev/null | \
   grep -E $GREP_PATTERN )
 
   echo "$JDK_TAG_CONTAINING_BRANCH"
