@@ -1,10 +1,12 @@
 <?xml version='1.1' encoding='UTF-8'?>
-<scriptApproval plugin="script-security@1.47">
+<scriptApproval plugin="script-security@1.50">
   <approvedScriptHashes>
     <string>017d0db438428731cd600b6ebda805065433520f</string>
   </approvedScriptHashes>
   <approvedSignatures>
+    <string>method hudson.model.ItemGroup getItem java.lang.String</string>
     <string>staticMethod java.lang.Integer toString int</string>
+    <string>staticMethod jenkins.model.Jenkins getInstance</string>
     <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods reverse java.util.List</string>
   </approvedSignatures>
   <aclApprovedSignatures/>

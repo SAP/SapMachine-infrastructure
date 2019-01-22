@@ -20,7 +20,6 @@
         <artifactNumToKeep>-1</artifactNumToKeep>
       </strategy>
     </jenkins.model.BuildDiscarderProperty>
-    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty/>
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
         <hudson.model.StringParameterDefinition>
@@ -32,7 +31,7 @@
         <hudson.model.StringParameterDefinition>
           <name>SAPMACHINE_GIT_BRANCH</name>
           <description></description>
-          <defaultValue>sapmachine11</defaultValue>
+          <defaultValue>sapmachine12</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
@@ -80,37 +79,38 @@
         <hudson.model.StringParameterDefinition>
           <name>LINUX_X86_64_JOB</name>
           <description></description>
-          <defaultValue>build-11-snapshot-linux_x86_64</defaultValue>
+          <defaultValue>build-12-snapshot-linux_x86_64</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>LINUX_PPC64LE_JOB</name>
           <description></description>
-          <defaultValue>build-11-snapshot-linux_ppc64le</defaultValue>
+          <defaultValue>build-12-snapshot-linux_ppc64le</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>LINUX_PPC64_JOB</name>
           <description></description>
-          <defaultValue>build-11-snapshot-linux_ppc64</defaultValue>
+          <defaultValue>build-12-snapshot-linux_ppc64</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>WINDOWS_X86_64_JOB</name>
           <description></description>
-          <defaultValue>build-11-snapshot-windows_x86_64</defaultValue>
+          <defaultValue>build-12-snapshot-windows_x86_64</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>MACOS_X86_64_JOB</name>
           <description></description>
-          <defaultValue>build-11-snapshot-macos_x86_64</defaultValue>
+          <defaultValue>build-12-snapshot-macos_x86_64</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
+    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty/>
   </properties>
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@2.61.1">
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@2.62">
     <scm class="hudson.plugins.git.GitSCM" plugin="git@3.9.1">
       <configVersion>2</configVersion>
       <userRemoteConfigs>
