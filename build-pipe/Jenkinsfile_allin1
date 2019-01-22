@@ -179,12 +179,20 @@ pipeline {
                 expression { JOB_NAME ==~ /((\S*)(release)(\S*))/ && params.PUBLISH == true && params.AGENT_LABEL == "linux_x86_64" }
             }
             steps {
-            build job: DOCKER_BUILD_JOB, propagate: false, wait: true, parameters:
-                [
-                    string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
-                    [$class: 'BooleanParameterValue', name: 'PUBLISH', value: true],
-                    [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: true]
-                ]
+                script {
+                    if (jenkins.model.Jenkins.instance.getItem(DOCKER_BUILD_JOB) != null) {
+                        build(
+                            job: DOCKER_BUILD_JOB,
+                            propagate: false,
+                            wait: true,
+                            parameters: [
+                                string(name: 'GIT_TAG_NAME', value: GIT_TAG_NAME),
+                                [$class: 'BooleanParameterValue', name: 'PUBLISH', value: true],
+                                [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: true]
+                            ]
+                        )
+                    }
+                }
             }
         }
     }
