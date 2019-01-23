@@ -107,10 +107,11 @@ if [[ $GIT_TAG_NAME == sapmachine-* ]]; then
     $_CONFIGURE_SYSROOT \
     $EXTRA_CONFIGURE_OPTIONS
 else
+  BUILD_DATE=$(date -u "+%Y-%m-%d")
   bash ./configure \
   --with-boot-jdk=$BOOT_JDK \
   --with-version-opt=sapmachine \
-  --with-version-pre=snapshot \
+  --with-version-pre="snapshot-$BUILD_DATE" \
   --disable-warnings-as-errors \
   --with-vendor-name="$VENDOR_NAME" \
   --with-vendor-url="$VENDOR_URL" \
