@@ -22,23 +22,7 @@
   <workspaceDir>${JENKINS_HOME}/workspace/${ITEM_FULLNAME}</workspaceDir>
   <buildsDir>${ITEM_ROOTDIR}/builds</buildsDir>
   <markupFormatter class="hudson.markup.EscapedMarkupFormatter"/>
-  <jdks>
-    <jdk>
-      <name>openjdk8</name>
-      <home></home>
-      <properties>
-        <hudson.tools.InstallSourceProperty>
-          <installers>
-            <hudson.tools.ZipExtractionInstaller>
-              <label>linux&amp;&amp;x64</label>
-              <url>https://github.com/AdoptOpenJDK/openjdk8-binaries/releases/download/jdk8u202-b08/OpenJDK8U-jdk_x64_linux_hotspot_8u202b08.tar.gz</url>
-              <subdir>/usr/lib/jvm/java-1.8.0-openjdk-amd64</subdir>
-            </hudson.tools.ZipExtractionInstaller>
-          </installers>
-        </hudson.tools.InstallSourceProperty>
-      </properties>
-    </jdk>
-  </jdks>
+  <jdks/>
   <viewsTabBar class="hudson.views.DefaultViewsTabBar"/>
   <myViewsTabBar class="hudson.views.DefaultMyViewsTabBar"/>
   <clouds/>
