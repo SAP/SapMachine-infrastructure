@@ -25,10 +25,8 @@
             steps {
                 sh &quot;java -version&quot;
                 sh &quot;python --version&quot;
-                sh &quot;ls -l&quot;
-                sh &quot;ls -l /opt&quot;
                 git &apos;https://github.com/SAP/SapMachine-infrastructure.git&apos;
-                sh &quot;python run_dacapo.py /opt/sapmachine-11-jdk/bin/java&quot;
+                sh &quot;python lib/run_dacapo.py /opt/sapmachine-11-jdk/bin/java&quot;
             }
         }
     }
