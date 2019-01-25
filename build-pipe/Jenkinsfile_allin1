@@ -43,6 +43,17 @@ pipeline {
                 sh 'cd jtreg && unzip jtreg.zip'
             }
         }
+        stage('Run Dacapo') {
+            when {
+                expression { params.RUN_TESTS == true }
+            }
+            environment {
+                DACAPO_CP = '/opt/dacapo/dacapo.jar'
+            }
+            steps {
+                sh "echo 'run dacapo'"
+            }
+        }
         stage('Run jtreg hotspot') {
             when {
                 expression { params.RUN_TESTS == true }
