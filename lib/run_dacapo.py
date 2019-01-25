@@ -10,7 +10,7 @@ import subprocess
 JAR        = "/opt/dacapo/dacapo.jar"
 HEADL      = "-Djava.awt.headless=true"
 PARA       = "--max-iterations=35 --variance=5 --verbose"
-timeout    = 450
+timeout    = 600
 
 #
 # check the argument (java path)
@@ -54,20 +54,13 @@ def timerfunc(func):
 @timerfunc
 def call_dacapo():
 
-   # provoke ERROR (with SapMachine 11):
-   #result = subprocess.call([ JAV ,HEADL,'-jar',JAR,'--max-iterations=35','--variance=5','--verbose','--converge','fop','jython','avrora','eclipse','h2','luindex','lusearch','pmd','sunflow','xalan'])
-
-   # run very short run:
-   #result = subprocess.call([ JAV ,HEADL,'-jar',JAR,'--max-iterations=1','--variance=1','--verbose','--converge','fop'])
-
-   # default run:
    result =  subprocess.call([ JAV ,HEADL,'-jar',JAR,'--max-iterations=35','--variance=5','--verbose','--converge','fop','avrora','h2','luindex','lusearch','pmd','xalan'])
 
    if result != 0:
      print('ERROR: Test did run in error: ', result)
      return sys.exit(-3)
 
-	 
+
 if __name__ == '__main__':
     call_dacapo()
      
