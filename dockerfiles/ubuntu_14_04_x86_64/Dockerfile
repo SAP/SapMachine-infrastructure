@@ -66,4 +66,7 @@ WORKDIR $BOOT_JDK
 RUN wget -q https://github.com/SAP/SapMachine/releases/download/sapmachine-11.0.1%2B13-0/sapmachine-jdk-11.0.1.13_linux-x64_bin.tar.gz
 RUN bsdtar xf sapmachine-jdk-11.0.1.13_linux-x64_bin.tar.gz --strip-components=1
 
+RUN mkdir -p /opt/dacapo
+RUN wget https://sourceforge.net/projects/dacapobench/files/9.12-bach-MR1/dacapo-9.12-MR1-bach.jar/download -O /opt/dacapo/dacapo.jar
+
 WORKDIR /
