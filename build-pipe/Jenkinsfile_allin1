@@ -53,7 +53,7 @@ pipeline {
             steps {            
                 sh "echo 'run dacapo'"
                 sh "python --version"
-                sh "python lib/run_dacapo.py                
+                sh "python lib/run_dacapo.py"
             }                
         }
         stage('Run jtreg hotspot') {
