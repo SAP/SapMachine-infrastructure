@@ -48,7 +48,7 @@ pipeline {
               TESTSUITE = 'hotspot'
             }
             steps {
-                sh "bash test-pipe/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${env.TESTSUITE} ${params.jdk_test_groups} || true"
+                sh "bash test-pipe/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${env.TESTSUITE} ${params.hotspot_test_groups} || true"
                 publishHTML target: [
                     allowMissing: false,
                     alwaysLinkToLastBuild: false,
@@ -91,7 +91,7 @@ pipeline {
               TESTSUITE = 'langtools'
             }
             steps {
-                sh "bash test-pipe/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${env.TESTSUITE} ${params.jdk_test_groups}  || true"
+                sh "bash test-pipe/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${env.TESTSUITE} ${params.langtools_test_groups}  || true"
 
                 publishHTML target: [
                     allowMissing: false,
