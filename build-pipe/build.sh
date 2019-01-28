@@ -135,6 +135,8 @@ zip -rq "${WORKSPACE}/test.zip" test
 zip -rq "${WORKSPACE}/test.zip" make/data/lsrdata
 
 cd "${WORKSPACE}/SapMachine/build"
+zip -rq ${WORKSPACE}/support_gensrc.zip support/gensrc
+
 cd "$(ls)"
 zip -rq ${WORKSPACE}/test.zip spec.gmk
 ls -l bundles/*

@@ -109,6 +109,7 @@ pipeline {
             steps {
                 archive 'test.zip'
                 archive 'apidocs.zip'
+                archive 'support_gensrc.zip'
 
                 script {
                     def jdk_bundle_name = readFile "${env.WORKSPACE}/jdk_bundle_name.txt"
