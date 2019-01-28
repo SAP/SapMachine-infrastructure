@@ -51,7 +51,14 @@ pipeline {
                 DACAPO_CP = '/opt/dacapo/dacapo.jar'
             }
             steps {
-                sh "echo 'run dacapo'"
+                sh """
+                    CURRENT_DIR=$PWD
+                    cd SapMachine/build
+                    BUILD_TYPE=`ls`
+                    cd $CURRENT_DIR
+                    SapMachine/build/${BUILD_TYPE}/images/jdk/bin/java -version
+                    python lib/run_dacapo.py SapMachine/build/${BUILD_TYPE}/images/jdk/bin/java             
+                """
             }
         }
         stage('Run jtreg hotspot') {
