@@ -7,7 +7,6 @@ import os
 import sys
 import time
 import subprocess
-from pathlib import Path 
 
 JAR         = "dacapo-9.12-MR1-bach.jar"
 HEADL       = "-Djava.awt.headless=true"
