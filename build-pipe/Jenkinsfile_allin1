@@ -45,7 +45,7 @@ pipeline {
         }
         stage('Run Dacapo') {
             when {
-                expression { params.RUN_TESTS == true }
+                expression { params.RUN_DACAPO == true }
             }
             environment {
                 DACAPO_CP = '/opt/dacapo/dacapo.jar'
