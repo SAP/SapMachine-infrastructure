@@ -11,7 +11,7 @@ import time
 JAR         = "/opt/dacapo/dacapo.jar"
 HEADL       = "-Djava.awt.headless=true"
 PARA        = "--max-iterations=35 --variance=5 --verbose"
-timeout     = 450
+timeout     = 600
 
 
 # get path to the SapMachine
@@ -52,11 +52,8 @@ def call_dacapo():
         return result
 
     end = time.time()
-    runtime = end - start
-    msg = "The runtime for {func} took {time} seconds to complete"
-    print(msg.format(time=runtime))
-
-    diff    = runtime - timeout
+    runtime = end - start    
+    diff    = timeout - runtime
     if diff < 0:
         print('ERROR: Test did run in timeout')
         return diff
