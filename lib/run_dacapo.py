@@ -8,7 +8,7 @@ import os
 import sys
 import time
 
-JAR         = "dacapo-9.12-MR1-bach.jar"
+JAR         = "/opt/dacapo/dacapo.jar"
 HEADL       = "-Djava.awt.headless=true"
 PARA        = "--max-iterations=35 --variance=5 --verbose"
 timeout     = 450
