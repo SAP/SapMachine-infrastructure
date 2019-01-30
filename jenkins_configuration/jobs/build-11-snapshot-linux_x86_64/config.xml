@@ -13,14 +13,13 @@
   <description>Builds a SapMachine11 Snapshot for Linux x86_64</description>
   <keepDependencies>false</keepDependencies>
   <properties>
-    <jenkins.model.BuildDiscarderProperty>
-      <strategy class="hudson.tasks.LogRotator">
-        <daysToKeep>-1</daysToKeep>
-        <numToKeep>50</numToKeep>
-        <artifactDaysToKeep>-1</artifactDaysToKeep>
-        <artifactNumToKeep>1</artifactNumToKeep>
-      </strategy>
-    </jenkins.model.BuildDiscarderProperty>
+    <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+      <triggers>
+        <hudson.triggers.TimerTrigger>
+          <spec>0 4 * * *</spec>
+        </hudson.triggers.TimerTrigger>
+      </triggers>
+    </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
         <hudson.model.BooleanParameterDefinition>
@@ -94,14 +93,15 @@
         </hudson.model.BooleanParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>-1</daysToKeep>
+        <numToKeep>50</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>1</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
     <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty/>
-    <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
-      <triggers>
-        <hudson.triggers.TimerTrigger>
-          <spec>0 4 * * *</spec>
-        </hudson.triggers.TimerTrigger>
-      </triggers>
-    </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
   </properties>
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@2.62">
     <scm class="hudson.plugins.git.GitSCM" plugin="git@3.9.1">

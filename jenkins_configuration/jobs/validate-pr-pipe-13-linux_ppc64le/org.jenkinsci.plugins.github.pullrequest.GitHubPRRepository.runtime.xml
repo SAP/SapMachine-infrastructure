@@ -6,69 +6,117 @@
   <sshUrl>git@github.com:SAP/SapMachine.git</sshUrl>
   <pulls class="concurrent-hash-map">
     <entry>
-      <int>264</int>
+      <int>274</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>264</number>
-        <issueUpdatedAt>2019-01-29 19:30:28.0 UTC</issueUpdatedAt>
-        <title>SapMachine (master): Fix failing jtreg tests that have SapMachine specific issues</title>
-        <body>fixes #263 &#xd;
-&#xd;
+        <number>274</number>
+        <issueUpdatedAt>2019-01-30 15:49:01.0 UTC</issueUpdatedAt>
+        <title>SapMachine #273: Update jtreg exclude list for SapMachine</title>
+        <body>fixes #273&#xd;
 </body>
-        <prUpdatedAt>2019-01-29 19:30:28.0 UTC</prUpdatedAt>
-        <headSha>996073182020b14cb21b7222aca720eeaa575dcb</headSha>
-        <headRef>testupdates</headRef>
+        <prUpdatedAt>2019-01-30 15:49:01.0 UTC</prUpdatedAt>
+        <headSha>bb787d1399f13fbadb49a3ca649e39e0383516bf</headSha>
+        <headRef>problemlistupdate</headRef>
         <mergeable>true</mergeable>
         <baseRef>sapmachine</baseRef>
         <userLogin>RealCLanger</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/264</htmlUrl>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/274</htmlUrl>
         <labels/>
-        <lastCommentCreatedAt>2019-01-29 19:30:28.0 UTC</lastCommentCreatedAt>
+        <lastCommentCreatedAt>2019-01-30 14:11:20.0 UTC</lastCommentCreatedAt>
         <sourceRepoOwner>SAP</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
       </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
     </entry>
     <entry>
-      <int>265</int>
+      <int>276</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>265</number>
-        <issueUpdatedAt>2019-01-29 16:07:38.0 UTC</issueUpdatedAt>
-        <title>SapMachine 11: Fix failing jtreg tests that have SapMachine specific issues</title>
-        <body>fixes #263 &#xd;
+        <number>276</number>
+        <issueUpdatedAt>2019-01-30 15:26:14.0 UTC</issueUpdatedAt>
+        <title>SapMachine #275: Fix jdk/nio/zipfs/TestPosixPerms.java on Linux/Unix</title>
+        <body>SapMachine 11 only.&#xd;
+&#xd;
+fixes #275 &#xd;
 &#xd;
 </body>
-        <prUpdatedAt>2019-01-29 16:07:38.0 UTC</prUpdatedAt>
-        <headSha>e37e6e2b89469a8fd3c27a95eca0d85e30ce766e</headSha>
-        <headRef>testupdates11</headRef>
+        <prUpdatedAt>2019-01-30 15:26:14.0 UTC</prUpdatedAt>
+        <headSha>855849a58446405c55f336cc6b611a2a36c84450</headSha>
+        <headRef>fixposixpermslinux</headRef>
         <mergeable>true</mergeable>
         <baseRef>sapmachine11</baseRef>
         <userLogin>RealCLanger</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/265</htmlUrl>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/276</htmlUrl>
         <labels/>
-        <lastCommentCreatedAt>2019-01-29 16:07:38.0 UTC</lastCommentCreatedAt>
+        <lastCommentCreatedAt>2019-01-30 15:26:14.0 UTC</lastCommentCreatedAt>
         <sourceRepoOwner>SAP</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
       </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
     </entry>
     <entry>
-      <int>266</int>
+      <int>268</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>266</number>
-        <issueUpdatedAt>2019-01-29 17:52:11.0 UTC</issueUpdatedAt>
-        <title>SapMachine 12: Fix failing jtreg tests that have SapMachine specific issues</title>
-        <body>fixes #263 &#xd;
+        <number>268</number>
+        <issueUpdatedAt>2019-01-30 14:42:21.0 UTC</issueUpdatedAt>
+        <title>Include tests for areas where SapMachine differs from OpenJDK in tier1</title>
+        <body>fixes #267 &#xd;
 &#xd;
 </body>
-        <prUpdatedAt>2019-01-29 17:52:11.0 UTC</prUpdatedAt>
-        <headSha>769d5346cf6c2d39c35a0fe55be2c1f9f8aadda7</headSha>
-        <headRef>testupdates12</headRef>
+        <prUpdatedAt>2019-01-30 14:42:21.0 UTC</prUpdatedAt>
+        <headSha>880f09fbdfd94268574867ba22c5a95551f69098</headSha>
+        <headRef>tier1tests</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine</baseRef>
+        <userLogin>RealCLanger</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/268</htmlUrl>
+        <labels/>
+        <lastCommentCreatedAt>2019-01-30 09:04:10.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>SAP</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>269</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>269</number>
+        <issueUpdatedAt>2019-01-30 09:16:16.0 UTC</issueUpdatedAt>
+        <title>(SapMachine12) Include tests for areas where SapMachine differs from OpenJDK in tier1</title>
+        <body>&#xd;
+fixes #267 &#xd;
+&#xd;
+</body>
+        <prUpdatedAt>2019-01-30 09:16:16.0 UTC</prUpdatedAt>
+        <headSha>f80f686e7cec8bf506b5251e08ec3dd877c62692</headSha>
+        <headRef>tier1tests12</headRef>
         <mergeable>true</mergeable>
         <baseRef>sapmachine12</baseRef>
         <userLogin>RealCLanger</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/266</htmlUrl>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/269</htmlUrl>
         <labels/>
-        <lastCommentCreatedAt>2019-01-29 17:52:11.0 UTC</lastCommentCreatedAt>
+        <lastCommentCreatedAt>2019-01-30 09:16:16.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>SAP</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>270</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>270</number>
+        <issueUpdatedAt>2019-01-30 13:36:56.0 UTC</issueUpdatedAt>
+        <title>(SapMachine11) Include tests for areas where SapMachine differs from OpenJDK in tier1</title>
+        <body>fixes #267 &#xd;
+&#xd;
+</body>
+        <prUpdatedAt>2019-01-30 13:36:56.0 UTC</prUpdatedAt>
+        <headSha>34ff94c190ad12120f6eb5d81f29fbd17720e4ca</headSha>
+        <headRef>tier1tests11</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine11</baseRef>
+        <userLogin>RealCLanger</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/270</htmlUrl>
+        <labels/>
+        <lastCommentCreatedAt>2019-01-30 13:36:56.0 UTC</lastCommentCreatedAt>
         <sourceRepoOwner>SAP</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>

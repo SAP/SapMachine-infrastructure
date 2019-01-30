@@ -484,7 +484,7 @@
       <sections>
         <hudson.plugins.sectioned__view.ListViewSection>
           <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView[4]/sections/hudson.plugins.sectioned__view.ListViewSection/jobNames/comparator"/>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView/sections/hudson.plugins.sectioned__view.ListViewSection/jobNames/comparator"/>
             <string>branch-build-service</string>
           </jobNames>
           <jobFilters/>
@@ -500,12 +500,12 @@
         </hudson.plugins.sectioned__view.ListViewSection>
         <hudson.plugins.sectioned__view.ListViewSection>
           <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView[4]/sections/hudson.plugins.sectioned__view.ListViewSection/jobNames/comparator"/>
-            <string>branch-build-linux_ppc64_allin1</string>
-            <string>branch-build-linux_ppc64le_allin1</string>
-            <string>branch-build-linux_x86_64_allin1</string>
-            <string>branch-build-macos_x86_64_allin1</string>
-            <string>branch-build-windows_x86_64_allin1</string>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView/sections/hudson.plugins.sectioned__view.ListViewSection/jobNames/comparator"/>
+            <string>branch-build-linux_ppc64</string>
+            <string>branch-build-linux_ppc64le</string>
+            <string>branch-build-linux_x86_64</string>
+            <string>branch-build-macos_x86_64</string>
+            <string>branch-build-windows_x86_64</string>
           </jobNames>
           <jobFilters/>
           <name>Platforms</name>
@@ -698,6 +698,29 @@
         </hudson.plugins.sectioned__view.ListViewSection>
       </sections>
     </hudson.plugins.sectioned__view.SectionedView>
+    <listView>
+      <owner class="hudson" reference="../../.."/>
+      <name>Pull Requests</name>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <properties class="hudson.model.View$PropertyList"/>
+      <jobNames>
+        <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.SectionedView/sections/hudson.plugins.sectioned__view.ListViewSection/jobNames/comparator"/>
+      </jobNames>
+      <jobFilters/>
+      <columns>
+        <hudson.views.StatusColumn/>
+        <hudson.views.WeatherColumn/>
+        <hudson.views.JobColumn/>
+        <hudson.views.LastSuccessColumn/>
+        <hudson.views.LastFailureColumn/>
+        <hudson.views.LastDurationColumn/>
+        <hudson.views.BuildButtonColumn/>
+        <hudson.plugins.favorite.column.FavoriteColumn plugin="favorite@2.3.2"/>
+      </columns>
+      <includeRegex>.*valida.*</includeRegex>
+      <recurse>false</recurse>
+    </listView>
   </views>
   <primaryView>Linux x86 64</primaryView>
   <slaveAgentPort>50000</slaveAgentPort>
