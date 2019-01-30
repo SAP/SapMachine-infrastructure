@@ -1,28 +1,67 @@
 pipeline {
     agent any
     stages {
-        stage('Build') {
+        stage('Verify PR') {
             environment {
               GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
             }
             steps {
-                setGitHubPullRequestStatus context: PR_CONTEXT, state: 'PENDING'
-
                 sh "python lib/verify_pr.py -p ${env.GITHUB_PR_NUMBER}"
-
-                build job: PR_BUILD_JOB, propagate: true, wait: true, parameters:
-                    [
-                        string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER),
-                        booleanParam(name: 'PUBLISH', value: false),
-                        booleanParam(name: 'RUN_TESTS', value: true),
-                    ]
             }
-            post {
-                success {
-                    setGitHubPullRequestStatus context: PR_CONTEXT, state: 'SUCCESS'
+        }
+        stage('Trigger Builds') {
+            parallel {
+                stage('Build linux_x86_64') {
+                    when {
+                        expression { params.PR_BUILD_JOB_LINUX_X86_64 }
+                    }
+                    environment {
+                        GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
+                        CONTEXT = "${params.PR_CONTEXT}-linux_x86_64"
+                    }
+                    steps {
+                        setGitHubPullRequestStatus context: CONTEXT, state: 'PENDING'
+                        build job: PR_BUILD_JOB_LINUX_X86_64, propagate: true, wait: true, parameters:
+                            [
+                                string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER),
+                                booleanParam(name: 'PUBLISH', value: false),
+                                booleanParam(name: 'RUN_TESTS', value: true),
+                            ]
+                    }
+                    post {
+                        success {
+                            setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS'
+                        }
+                        failure {
+                            setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE'
+                        }
+                    }
                 }
-                failure {
-                    setGitHubPullRequestStatus context: PR_CONTEXT, state: 'FAILURE'
+                stage('Build linux_ppc64le') {
+                    when {
+                        expression { params.PR_BUILD_JOB_LINUX_PPC64LE }
+                    }
+                    environment {
+                        GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
+                        CONTEXT = "${params.PR_CONTEXT}-linux_ppc64le"
+                    }
+                    steps {
+                        setGitHubPullRequestStatus context: CONTEXT, state: 'PENDING'
+                        build job: PR_BUILD_JOB_LINUX_PPC64LE, propagate: true, wait: true, parameters:
+                            [
+                                string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER),
+                                booleanParam(name: 'PUBLISH', value: false),
+                                booleanParam(name: 'RUN_TESTS', value: true),
+                            ]
+                    }
+                    post {
+                        success {
+                            setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS'
+                        }
+                        failure {
+                            setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE'
+                        }
+                    }
                 }
             }
         }
