@@ -8,7 +8,7 @@
   <version>2.150.2</version>
   <installStateName>RESTART</installStateName>
   <numExecutors>2</numExecutors>
-  <mode>EXCLUSIVE</mode>
+  <mode>NORMAL</mode>
   <useSecurity>true</useSecurity>
   <authorizationStrategy class="hudson.security.FullControlOnceLoggedInAuthorizationStrategy">
     <denyAnonymousReadAccess>false</denyAnonymousReadAccess>
@@ -522,34 +522,6 @@
     </hudson.plugins.sectioned__view.SectionedView>
     <hudson.plugins.sectioned__view.SectionedView plugin="sectioned-view@1.25">
       <owner class="hudson" reference="../../.."/>
-      <name>all_in</name>
-      <filterExecutors>false</filterExecutors>
-      <filterQueue>false</filterQueue>
-      <properties class="hudson.model.View$PropertyList"/>
-      <sections>
-        <hudson.plugins.sectioned__view.ListViewSection>
-          <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView[4]/sections/hudson.plugins.sectioned__view.ListViewSection/jobNames/comparator"/>
-          </jobNames>
-          <jobFilters/>
-          <name>All in one builds</name>
-          <includeRegex>.*all_in</includeRegex>
-          <width>FULL</width>
-          <alignment>CENTER</alignment>
-          <columns>
-            <hudson.views.StatusColumn/>
-            <hudson.views.WeatherColumn/>
-            <hudson.views.JobColumn/>
-            <hudson.views.LastSuccessColumn/>
-            <hudson.views.LastFailureColumn/>
-            <hudson.views.LastDurationColumn/>
-            <hudson.views.BuildButtonColumn/>
-          </columns>
-        </hudson.plugins.sectioned__view.ListViewSection>
-      </sections>
-    </hudson.plugins.sectioned__view.SectionedView>
-    <hudson.plugins.sectioned__view.SectionedView plugin="sectioned-view@1.25">
-      <owner class="hudson" reference="../../.."/>
       <name>Release Builds</name>
       <filterExecutors>false</filterExecutors>
       <filterQueue>false</filterQueue>
@@ -623,7 +595,7 @@
       <sections>
         <hudson.plugins.sectioned__view.ListViewSection>
           <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView[9]/sections/hudson.plugins.sectioned__view.ListViewSection/jobNames/comparator"/>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView[8]/sections/hudson.plugins.sectioned__view.ListViewSection/jobNames/comparator"/>
           </jobNames>
           <jobFilters/>
           <name>Sapmachine11 Snapshots</name>
@@ -642,7 +614,7 @@
         </hudson.plugins.sectioned__view.ListViewSection>
         <hudson.plugins.sectioned__view.ListViewSection>
           <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView[9]/sections/hudson.plugins.sectioned__view.ListViewSection/jobNames/comparator"/>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView[8]/sections/hudson.plugins.sectioned__view.ListViewSection/jobNames/comparator"/>
           </jobNames>
           <jobFilters/>
           <name>Sapmachine12 Snapshots</name>
@@ -661,7 +633,7 @@
         </hudson.plugins.sectioned__view.ListViewSection>
         <hudson.plugins.sectioned__view.ListViewSection>
           <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView[9]/sections/hudson.plugins.sectioned__view.ListViewSection/jobNames/comparator"/>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView[8]/sections/hudson.plugins.sectioned__view.ListViewSection/jobNames/comparator"/>
           </jobNames>
           <jobFilters/>
           <name>Sapmachine13 Snapshots</name>
@@ -680,7 +652,7 @@
         </hudson.plugins.sectioned__view.ListViewSection>
         <hudson.plugins.sectioned__view.ListViewSection>
           <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView[9]/sections/hudson.plugins.sectioned__view.ListViewSection/jobNames/comparator"/>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.sectioned__view.SectionedView[8]/sections/hudson.plugins.sectioned__view.ListViewSection/jobNames/comparator"/>
           </jobNames>
           <jobFilters/>
           <name></name>
