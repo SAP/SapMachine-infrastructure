@@ -1,7 +1,7 @@
 pipeline {
     agent {
         dockerfile {
-            label linux_x86_64
+            label 'linux_x86_64'
             dir 'dockerfiles/ubuntu_14_04_x86_64'
         }
     }
