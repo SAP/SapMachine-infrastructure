@@ -7,7 +7,7 @@ pipeline {
             }
             steps {
                 script {
-                    def env.VERIFICATION_RESULT = sh(
+                    env.VERIFICATION_RESULT = sh(
                         script: "python lib/verify_pr.py -p ${env.GITHUB_PR_NUMBER}",
                         returnStatus: true
                     )
