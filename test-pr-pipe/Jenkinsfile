@@ -63,6 +63,32 @@ pipeline {
                         }
                     }
                 }
+                stage('Build linux_ppc64') {
+                    when {
+                        expression { params.PR_BUILD_JOB_LINUX_PPC64 }
+                    }
+                    environment {
+                        GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
+                        CONTEXT = "${params.PR_CONTEXT}-linux_ppc64"
+                    }
+                    steps {
+                        setGitHubPullRequestStatus context: CONTEXT, state: 'PENDING'
+                        build job: PR_BUILD_JOB_LINUX_PPC64, propagate: true, wait: true, parameters:
+                            [
+                                string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER),
+                                booleanParam(name: 'PUBLISH', value: false),
+                                booleanParam(name: 'RUN_TESTS', value: true),
+                            ]
+                    }
+                    post {
+                        success {
+                            setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS'
+                        }
+                        failure {
+                            setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE'
+                        }
+                    }
+                }
             }
         }
     }
