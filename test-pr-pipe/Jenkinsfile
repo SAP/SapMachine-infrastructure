@@ -6,14 +6,25 @@ pipeline {
               GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
             }
             steps {
-                sh "python lib/verify_pr.py -p ${env.GITHUB_PR_NUMBER}"
+                script {
+                    def env.VERIFICATION_RESULT = sh(
+                        script: "python lib/verify_pr.py -p ${env.GITHUB_PR_NUMBER}",
+                        returnStatus: true
+                    )
+
+                    if (env.VERIFICATION_RESULT == 0) {
+                        error("Pull Request Validation failed")
+                    }
+                }
             }
         }
         stage('Trigger Builds') {
             parallel {
                 stage('Build linux_x86_64') {
                     when {
-                        expression { params.PR_BUILD_JOB_LINUX_X86_64 }
+                        expression {
+                            params.PR_BUILD_JOB_LINUX_X86_64 && env.VERIFICATION_RESULT == 1
+                        }
                     }
                     environment {
                         GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
@@ -39,7 +50,9 @@ pipeline {
                 }
                 stage('Build linux_ppc64le') {
                     when {
-                        expression { params.PR_BUILD_JOB_LINUX_PPC64LE }
+                        expression {
+                            params.PR_BUILD_JOB_LINUX_PPC64LE && env.VERIFICATION_RESULT == 1
+                        }
                     }
                     environment {
                         GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
@@ -65,7 +78,9 @@ pipeline {
                 }
                 stage('Build linux_ppc64') {
                     when {
-                        expression { params.PR_BUILD_JOB_LINUX_PPC64 }
+                        expression {
+                            params.PR_BUILD_JOB_LINUX_PPC64 && env.VERIFICATION_RESULT == 1
+                        }
                     }
                     environment {
                         GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')

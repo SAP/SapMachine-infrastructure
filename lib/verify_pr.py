@@ -132,12 +132,28 @@ def main(argv=None):
     except Exception as error:
         message = create_failure_comment(pr_author, str.format('this pull request doesn\'t meet the expectations. {0}', error))
         api_request(comments_url, data=message, method='POST')
-        return 1
+        return 0
 
     # all formal requirements are met
     api_request(comments_url, data=create_success_comment(pr_author), method='POST')
 
-    return 0
+    # check wether the complete validation has to run
+    pull_request_files_api = str.format('https://api.github.com/repos/{0}/{1}/pulls/{2}/files', org, repository, pull_request_id)
+    pull_request_files = api_request(pull_request_files_api)
+
+    roots_requiring_verification = ['make', 'src', 'test', 'Makefile', 'configure']
+    requires_verification = False
+
+    for pr_file in pull_request_files:
+        root = next(part for part in pr_file['filename'].split(os.path.sep) if part)
+        if root in roots_requiring_verification:
+            requires_verification = True
+            break
+
+    if requires_verification:
+        return 1
+    else:
+        return 2
 
 if __name__ == "__main__":
     sys.exit(main())
