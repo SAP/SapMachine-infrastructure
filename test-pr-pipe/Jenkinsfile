@@ -4,6 +4,7 @@ pipeline {
         stage('Verify PR') {
             environment {
               GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
+              CONTEXT = "${params.PR_CONTEXT}-linux_x86_64"
             }
             steps {
                 script {
@@ -13,7 +14,12 @@ pipeline {
                     )
 
                     if (env.VERIFICATION_RESULT == 0) {
+                        setGitHubPullRequestStatus(context: CONTEXT, state: 'FAILURE')
                         error("Pull Request Validation failed")
+                    }
+
+                    if (env.VERIFICATION_RESULT == 2) {
+                        setGitHubPullRequestStatus(context: CONTEXT, state: 'SUCCESS')
                     }
                 }
             }
