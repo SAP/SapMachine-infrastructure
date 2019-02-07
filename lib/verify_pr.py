@@ -34,7 +34,8 @@ def api_request(url, data=None, method='GET'):
     try:
         response = json.loads(urlopen(request).read())
         return response
-    except:
+    except Exception as e:
+        print(e)
         return None
 
 # validate an issue by issue id
