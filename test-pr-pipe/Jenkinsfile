@@ -13,12 +13,12 @@ pipeline {
                         returnStatus: true
                     )
 
-                    if (env.VERIFICATION_RESULT == 0) {
+                    if (env.VERIFICATION_RESULT == "0") {
                         setGitHubPullRequestStatus(context: CONTEXT, state: 'FAILURE')
                         error("Pull Request Validation failed")
                     }
 
-                    if (env.VERIFICATION_RESULT == 2) {
+                    if (env.VERIFICATION_RESULT == "2") {
                         setGitHubPullRequestStatus(context: CONTEXT, state: 'SUCCESS')
                     }
                 }
@@ -29,7 +29,7 @@ pipeline {
                 stage('Build linux_x86_64') {
                     when {
                         expression {
-                            params.PR_BUILD_JOB_LINUX_X86_64 && env.VERIFICATION_RESULT == 1
+                            params.PR_BUILD_JOB_LINUX_X86_64 && env.VERIFICATION_RESULT == "1"
                         }
                     }
                     environment {
@@ -57,7 +57,7 @@ pipeline {
                 stage('Build linux_ppc64le') {
                     when {
                         expression {
-                            params.PR_BUILD_JOB_LINUX_PPC64LE && env.VERIFICATION_RESULT == 1
+                            params.PR_BUILD_JOB_LINUX_PPC64LE && env.VERIFICATION_RESULT == "1"
                         }
                     }
                     environment {
@@ -85,7 +85,7 @@ pipeline {
                 stage('Build linux_ppc64') {
                     when {
                         expression {
-                            params.PR_BUILD_JOB_LINUX_PPC64 && env.VERIFICATION_RESULT == 1
+                            params.PR_BUILD_JOB_LINUX_PPC64 && env.VERIFICATION_RESULT == "1"
                         }
                     }
                     environment {
