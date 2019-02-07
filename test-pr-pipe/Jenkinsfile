@@ -1,5 +1,7 @@
 pipeline {
-    agent any
+    agent {
+        label 'linux_x86_64'
+    }
     stages {
         stage('Verify PR') {
             environment {
