@@ -147,7 +147,7 @@ def main(argv=None):
     requires_verification = False
 
     for pr_file in pull_request_files:
-        print(str.format('Pull Request changes file: "{0}', pr_file))
+        print(str.format('Pull Request changes file: "{0}', pr_file['filename']))
         root = next(part for part in pr_file['filename'].split(os.path.sep) if part)
         if root in roots_requiring_verification:
             requires_verification = True
