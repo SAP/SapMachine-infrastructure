@@ -133,6 +133,7 @@ def main(argv=None):
     except Exception as error:
         message = create_failure_comment(pr_author, str.format('this pull request doesn\'t meet the expectations. {0}', error))
         api_request(comments_url, data=message, method='POST')
+        print(str.format('Pull Request validation failed: "{0}"', message))
         return 0
 
     # all formal requirements are met
@@ -146,14 +147,17 @@ def main(argv=None):
     requires_verification = False
 
     for pr_file in pull_request_files:
+        print(str.format('Pull Request changes file: "{0}', pr_file))
         root = next(part for part in pr_file['filename'].split(os.path.sep) if part)
         if root in roots_requiring_verification:
             requires_verification = True
             break
 
     if requires_verification:
+        print("Pull Request requires further verification.")
         return 1
     else:
+        print("Pull Request requires no further verification.")
         return 2
 
 if __name__ == "__main__":
