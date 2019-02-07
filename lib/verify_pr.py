@@ -124,20 +124,18 @@ def main(argv=None):
     pr_author = pull_request['user']['login']
 
     # if the author is in the exception list, the validation is skipped
-    if pr_author in pr_author_exception_list:
-        return 0
+    if pr_author not in pr_author_exception_list:
+        # validate the pull request body (description)
+        try:
+            validate_pull_request(pull_request['body'])
+        except Exception as error:
+            message = create_failure_comment(pr_author, str.format('this pull request doesn\'t meet the expectations. {0}', error))
+            api_request(comments_url, data=message, method='POST')
+            print(str.format('Pull Request validation failed: "{0}"', message))
+            return 0
 
-    # validate the pull request body (description)
-    try:
-        validate_pull_request(pull_request['body'])
-    except Exception as error:
-        message = create_failure_comment(pr_author, str.format('this pull request doesn\'t meet the expectations. {0}', error))
-        api_request(comments_url, data=message, method='POST')
-        print(str.format('Pull Request validation failed: "{0}"', message))
-        return 0
-
-    # all formal requirements are met
-    api_request(comments_url, data=create_success_comment(pr_author), method='POST')
+        # all formal requirements are met
+        api_request(comments_url, data=create_success_comment(pr_author), method='POST')
 
     # check wether the complete validation has to run
     pull_request_files_api = str.format('https://api.github.com/repos/{0}/{1}/pulls/{2}/files', org, repository, pull_request_id)
