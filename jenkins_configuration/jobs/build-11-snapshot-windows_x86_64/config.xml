@@ -72,6 +72,12 @@
           <description>enable/disable dacapo run</description>
           <defaultValue>false</defaultValue>
         </hudson.model.BooleanParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>DACAPO_CLASSPATH</name>
+          <description></description>
+          <defaultValue>C:\jenkins\lib\dacapo.jar</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
     <jenkins.model.BuildDiscarderProperty>

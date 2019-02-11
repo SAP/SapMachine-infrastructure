@@ -1,31 +1,65 @@
-<?xml version="1.0" encoding="UTF-8"?><flow-definition plugin="workflow-job">
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps">
+<?xml version='1.1' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@2.31">
+  <actions>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.3.4.1"/>
+  </actions>
+  <description>This project is generated. Do not modify manually.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>SAPMACHINE_GIT_BRANCH</name>
+          <description></description>
+          <defaultValue>sapmachine11</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty/>
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.63">
     <script>pipeline {
     agent {
         
-        label "macos_x86_64"
+        label &quot;macos_x86_64&quot;
         
     }
     stages {
-        stage("Build") {
-            steps {
-                sh "echo building 11 on macos_x86_64"
+        stage(&quot;Build&quot;) {
+            environment {
+                SAPMACHINE_PUBLISH_GITHUB_TOKEN = credentials(&apos;SapMachine-Github-Token&apos;)
+                SAPMACHINE_GIT_USER = &apos;SapMachine&apos;
+                SAPMACHINE_GIT_EMAIL = &apos;sapmachine@sap.com&apos;
+                CREATE_NO_BUILD_TAR_GZ = &apos;true&apos;
             }
+            steps {
+                sh &quot;ls -la&quot;
+                checkout changelog: false, poll: false, scm: [$class: &apos;GitSCM&apos;, branches: [[name: &apos;*/master&apos;]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: &apos;RelativeTargetDirectory&apos;, relativeTargetDir: &apos;SapMachine-Infrastructure&apos;]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: &apos;SapMachine-github&apos;, url: &apos;https://github.com/SAP/SapMachine-infrastructure.git&apos;]]]
+                checkout([$class: &apos;GitSCM&apos;, branches: [[name: &apos;refs/heads/sapmachine11&apos;]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: &apos;RelativeTargetDirectory&apos;, relativeTargetDir: &apos;SapMachine&apos;]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: &apos;SapMachine-github&apos;, url: &apos;https://github.com/SAP/SapMachine.git&apos;]]])
+                withCredentials([
+                        [$class: &apos;UsernamePasswordMultiBinding&apos;, credentialsId: &apos;SapMachine-github&apos;, usernameVariable: &apos;GIT_USER&apos;, passwordVariable: &apos;GIT_PASSWORD&apos;]
+                        ]) {
+                    sh &apos;&apos;&apos;
+                        SapMachine-Infrastructure/build-pipe/build.sh
+                        &apos;&apos;&apos;
+                    }
+            }
+            post {
+                success {
+                    junit &apos;gtest.xml&apos;
+                }
+            }
+        }
+    }
+    post {
+        always {
+            cleanWs deleteDirs: true, disableDeferredWipeout: true
         }
     }
 }
 </script>
     <sandbox>false</sandbox>
   </definition>
-  <actions/>
-  <description>This project is generated. Do not modify manually.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
-  <keepDependencies>false</keepDependencies>
-  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
-  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
-  <concurrentBuild>false</concurrentBuild>
-  <canRoam>true</canRoam>
-  <properties/>
-  <scm class="hudson.scm.NullSCM"/>
-  <publishers/>
-  <buildWrappers/>
+  <disabled>false</disabled>
 </flow-definition>
