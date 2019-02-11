@@ -44,7 +44,7 @@ pipeline {
                 expression { params.RUN_DACAPO == true }
             }
             environment {
-                DACAPO_CP = params.DACAPO_CLASSPATH
+                DACAPO_CP = 'params.DACAPO_CLASSPATH'
             }
             steps {            
                 sh "echo 'run dacapo'"
