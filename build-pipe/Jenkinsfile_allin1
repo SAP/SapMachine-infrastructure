@@ -53,7 +53,8 @@ pipeline {
             steps {            
                 sh "echo 'run dacapo'"
                 sh "python --version"
-                sh "python lib/run_dacapo.py"
+                sh "echo JAR-Path: ${env.DACAPO_CP}"
+                sh "python lib/run_dacapo.py ${env.DACAPO_CP}"
             }                
         }
         stage('Run jtreg hotspot') {
