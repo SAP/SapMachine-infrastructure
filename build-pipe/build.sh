@@ -16,15 +16,17 @@ if [[ $UNAME == CYGWIN* ]]; then
   WORKSPACE=$(cygpath -u "${WORKSPACE}")
 fi
 
-if [ -d SapMachine ]; then
-    rm -rf SapMachine;
-fi
+if [[ -z $NO_CHECKOUT ]]; then
+  if [ -d SapMachine ]; then
+      rm -rf SapMachine;
+  fi
 
-if [[ -z $SAPMACHINE_GIT_REPOSITORY ]]; then
-  SAPMACHINE_GIT_REPOSITORY="https://github.com/SAP/SapMachine.git"
-fi
+  if [[ -z $SAPMACHINE_GIT_REPOSITORY ]]; then
+    SAPMACHINE_GIT_REPOSITORY="https://github.com/SAP/SapMachine.git"
+  fi
 
-git clone -b $SAPMACHINE_GIT_BRANCH $SAPMACHINE_GIT_REPOSITORY "${WORKSPACE}/SapMachine"
+  git clone -b $SAPMACHINE_GIT_BRANCH $SAPMACHINE_GIT_REPOSITORY "${WORKSPACE}/SapMachine"
+fi
 
 cd "${WORKSPACE}/SapMachine"
 
@@ -36,13 +38,15 @@ echo "Git Revision=${GIT_REVISION}"
 
 GTEST_RESULT_PATH="gtest_all_server"
 
-if [ "$GITHUB_PR_NUMBER" ]; then
-  git fetch origin "pull/$GITHUB_PR_NUMBER/head"
-  git merge FETCH_HEAD
-fi
+if [[ -z $NO_CHECKOUT ]]; then
+  if [ "$GITHUB_PR_NUMBER" ]; then
+    git fetch origin "pull/$GITHUB_PR_NUMBER/head"
+    git merge FETCH_HEAD
+  fi
 
-if [[ ! -z $GIT_TAG_NAME ]]; then
-  git checkout $GIT_TAG_NAME
+  if [[ ! -z $GIT_TAG_NAME ]]; then
+    git checkout $GIT_TAG_NAME
+  fi
 fi
 
 if [ -z $BOOT_JDK ]; then
