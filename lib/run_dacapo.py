@@ -8,11 +8,16 @@ import os
 import sys
 import time
 
-JAR         = os.environ['DACAPO_CP']
 HEADL       = "-Djava.awt.headless=true"
 PARA        = "--max-iterations=35 --variance=5 --verbose"
 timeout     = 600
 
+# check the argument (jar path)
+if len(sys.argv) != 2:
+  print('missing path to the dacapo jar. Syntax: python ' + str(sys.argv[0]) + ' <c:\\bin\dacapo.jar>')
+  sys.exit(-2)
+JAR = sys.argv[1]
+print('JAR: ', JAR)
 
 # get path to the SapMachine
 CURRENT_DIR = os.getcwd()
