@@ -14,6 +14,39 @@
           <defaultValue>sapmachine11</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>hotspot_test_groups</name>
+          <description>Select the test group for jtreg hotspot tests</description>
+          <defaultValue>:tier1</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>jdk_test_groups</name>
+          <description>Select the test group for jtreg jdk tests</description>
+          <defaultValue>:tier1</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>langtools_test_groups</name>
+          <description>Select the test group for jtreg langtools tests</description>
+          <defaultValue>:tier1</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>RUN_TESTS</name>
+          <description>enable/disable jtreg runs</description>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>RUN_DACAPO</name>
+          <description>enable/disable dacapo run</description>
+          <defaultValue>false</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>PUBLISH</name>
+          <description></description>
+          <defaultValue>false</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
     <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty/>
@@ -21,34 +54,180 @@
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.63">
     <script>pipeline {
     agent {
-        
         label &quot;macos_x86_64&quot;
-        
     }
     stages {
+        stage(&quot;Checkout Infrastructure&quot;) {
+            steps {
+                checkout changelog: false, poll: false, scm: [$class: &apos;GitSCM&apos;, branches: [[name: &apos;*/master&apos;]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: &apos;RelativeTargetDirectory&apos;, relativeTargetDir: &apos;SapMachine-Infrastructure&apos;]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: &apos;SapMachine-github&apos;, url: &apos;https://github.com/SAP/SapMachine-infrastructure.git&apos;]]]
+            }
+        }
         stage(&quot;Build&quot;) {
+            
             environment {
-                SAPMACHINE_PUBLISH_GITHUB_TOKEN = credentials(&apos;SapMachine-Github-Token&apos;)
-                SAPMACHINE_GIT_USER = &apos;SapMachine&apos;
-                SAPMACHINE_GIT_EMAIL = &apos;sapmachine@sap.com&apos;
                 CREATE_NO_BUILD_TAR_GZ = &apos;true&apos;
+                NO_CHECKOUT = &apos;true&apos;
             }
             steps {
-                sh &quot;ls -la&quot;
-                checkout changelog: false, poll: false, scm: [$class: &apos;GitSCM&apos;, branches: [[name: &apos;*/master&apos;]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: &apos;RelativeTargetDirectory&apos;, relativeTargetDir: &apos;SapMachine-Infrastructure&apos;]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: &apos;SapMachine-github&apos;, url: &apos;https://github.com/SAP/SapMachine-infrastructure.git&apos;]]]
                 checkout([$class: &apos;GitSCM&apos;, branches: [[name: &apos;refs/heads/sapmachine11&apos;]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: &apos;RelativeTargetDirectory&apos;, relativeTargetDir: &apos;SapMachine&apos;]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: &apos;SapMachine-github&apos;, url: &apos;https://github.com/SAP/SapMachine.git&apos;]]])
-                withCredentials([
-                        [$class: &apos;UsernamePasswordMultiBinding&apos;, credentialsId: &apos;SapMachine-github&apos;, usernameVariable: &apos;GIT_USER&apos;, passwordVariable: &apos;GIT_PASSWORD&apos;]
-                        ]) {
-                    sh &apos;&apos;&apos;
-                        SapMachine-Infrastructure/build-pipe/build.sh
-                        &apos;&apos;&apos;
-                    }
+                sh &apos;SapMachine-Infrastructure/build-pipe/build.sh&apos;
             }
             post {
                 success {
                     junit &apos;gtest.xml&apos;
                 }
+            }
+        }
+        stage(&apos;Copy JTREG Artifacts&apos;) {
+            
+            when {
+                expression { params.RUN_TESTS == true }
+            }
+            steps {
+                script {
+                    step ([$class: &apos;CopyArtifact&apos;,
+                    projectName: &apos;jtreg&apos;,
+                    filter: &quot;jtreg.zip&quot;,
+                    target: &apos;jtreg&apos;]);
+                }
+                sh &apos;cd jtreg &amp;&amp; unzip jtreg.zip&apos;
+            }
+        }
+        stage(&apos;Run Dacapo&apos;) {
+            
+            when {
+                expression { params.RUN_DACAPO == true }
+            }
+            environment {
+                DACAPO_CP=&apos;${DACAPO_CLASSPATH}&apos;
+            }
+            steps {            
+                sh &quot;echo &apos;run dacapo&apos;&quot;
+                sh &quot;python --version&quot;
+                sh &quot;python SapMachine-Infrastructure/lib/run_dacapo.py ${env.DACAPO_CP}&quot;
+            }                
+        }
+        stage(&apos;Run jtreg hotspot&apos;) {
+            
+            when {
+                expression { params.RUN_TESTS == true }
+            }
+            environment {
+              SCIMARK_2_CP = &apos;/opt/scimark2/scimark2lib.jar&apos;
+              TESTSUITE = &apos;hotspot&apos;
+            }
+            steps {
+                sh &quot;bash SapMachine-Infrastructure/test-pipe/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${env.TESTSUITE} ${params.hotspot_test_groups} || true&quot;
+                publishHTML target: [
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: false,
+                    keepAll: true,
+                    reportDir: &quot;test_report_${env.TESTSUITE}&quot;,
+                    reportFiles: &apos;JTreport/index.html&apos;,
+                    reportName: &quot;JT Report ${env.TESTSUITE}&quot;
+                ]
+                junit &quot;test_report_${env.TESTSUITE}/JTwork/**/*.jtr.xml&quot;
+                archiveArtifacts allowEmptyArchive: true, artifacts: &quot;test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log&quot;
+            }
+        }
+        stage(&apos;Run jtreg jdk&apos;) {
+            
+            when {
+                expression { params.RUN_TESTS == true }
+            }
+            environment {
+              TESTSUITE = &apos;jdk&apos;
+            }
+            steps {
+                sh &quot;bash SapMachine-Infrastructure/test-pipe/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${env.TESTSUITE} ${params.jdk_test_groups} || true&quot;
+
+                publishHTML target: [
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: false,
+                    keepAll: true,
+                    reportDir: &quot;test_report_${env.TESTSUITE}&quot;,
+                    reportFiles: &apos;JTreport/index.html&apos;,
+                    reportName: &quot;JT Report ${env.TESTSUITE}&quot;
+                ]
+                junit &quot;test_report_${env.TESTSUITE}/JTwork/**/*.jtr.xml&quot;
+                archiveArtifacts allowEmptyArchive: true, artifacts: &quot;test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log&quot;
+            }
+        }
+        stage(&apos;Run jtreg langtools&apos;) {
+            
+            when {
+                expression { params.RUN_TESTS == true }
+            }
+            environment {
+              TESTSUITE = &apos;langtools&apos;
+            }
+            steps {
+                sh &quot;bash SapMachine-Infrastructure/test-pipe/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${env.TESTSUITE} ${params.langtools_test_groups}  || true&quot;
+
+                publishHTML target: [
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: false,
+                    keepAll: true,
+                    reportDir: &quot;test_report_${env.TESTSUITE}&quot;,
+                    reportFiles: &apos;JTreport/index.html&apos;,
+                    reportName: &quot;JT Report ${env.TESTSUITE}&quot;
+                ]
+                junit &quot;test_report_${env.TESTSUITE}/JTwork/**/*.jtr.xml&quot;
+                archiveArtifacts allowEmptyArchive: true, artifacts: &quot;test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log&quot;
+            }
+        }
+        stage(&apos;Archive&apos;) {
+            steps {
+                archive &apos;test.zip&apos;
+                archive &apos;apidocs.zip&apos;
+                archive &apos;support_gensrc.zip&apos;
+
+                script {
+                    def jdk_bundle_name = readFile &quot;${env.WORKSPACE}/jdk_bundle_name.txt&quot;
+                    def jre_bundle_name = readFile &quot;${env.WORKSPACE}/jre_bundle_name.txt&quot;
+
+                    step ([$class: &apos;ArtifactArchiver&apos;, artifacts: jdk_bundle_name]);
+                    step ([$class: &apos;ArtifactArchiver&apos;, artifacts: jre_bundle_name]);
+                }
+            }
+        }
+        stage(&apos;Publish GitHub&apos;) {
+            when {
+                expression { params.PUBLISH == true }
+            }
+            environment {
+              SAPMACHINE_GIT_REPO = &apos;github.com/SAP/SapMachine.git&apos;
+              SAPMACHINE_PUBLISH_GITHUB_TOKEN = credentials(&apos;SapMachine-Github-Token&apos;)
+              SAPMACHINE_PUBLISH_GITHUB_REPO_NAME = &apos;SapMachine&apos;
+              SAPMACHINE_PUBLISH_GITHUB_USER = &apos;SAP&apos;
+            }
+            steps {
+                sh &apos;&apos;&apos;
+                SapMachine-Infrastructure/build-pipe/publish.sh
+                &apos;&apos;&apos;
+            }
+        }
+        stage(&apos;Publish Website Data&apos;) {
+            when {
+                expression { params.PUBLISH == true }
+            }
+            steps {
+                build job: &apos;generate-website-data&apos;, propagate: false, wait: false
+            }
+        }
+        stage(&apos;Publish CF Java Buildpack Data&apos;) {
+            when {
+                expression { params.PUBLISH == true &amp;&amp; params.AGENT_LABEL == &quot;linux_x86_64&quot; }
+            }
+            steps {
+                script {
+                    def match = params.GIT_TAG_NAME =~ /[^-]*-([0-9]+)[\.0-9]*.*/
+                    env.MAJOR_VERSION = match[0][1]
+                }
+                build job: &apos;generate-cf-data&apos;, propagate: false, wait: false, parameters:
+                    [
+                        string(name: &apos;MAJOR&apos;, value: env.MAJOR_VERSION)
+                    ]
             }
         }
     }
