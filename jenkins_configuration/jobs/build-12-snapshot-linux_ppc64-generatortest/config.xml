@@ -2,7 +2,7 @@
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps">
     <script>pipeline {
     agent {
-        label "linux_x86_64"
+        label "linux_ppc64"
     }
     stages {
         stage("Checkout Infrastructure") {
@@ -11,20 +11,13 @@
             }
         }
         stage("Build") {
-            agent {
-    dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_14_04_x86_64"
-        reuseNode true
-        label "linux_x86_64"
-    }
-}
-
+            
             environment {
                 CREATE_NO_BUILD_TAR_GZ = 'true'
                 NO_CHECKOUT = 'true'
             }
             steps {
-                checkout([$class: 'GitSCM', branches: [[name: 'refs/heads/sapmachine11']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine.git']]])
+                checkout([$class: 'GitSCM', branches: [[name: 'refs/heads/sapmachine12']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine.git']]])
                 sh 'SapMachine-Infrastructure/build-pipe/build.sh'
             }
             post {
@@ -34,14 +27,7 @@
             }
         }
         stage('Copy JTREG Artifacts') {
-            agent {
-    dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_14_04_x86_64"
-        reuseNode true
-        label "linux_x86_64"
-    }
-}
-
+            
             when {
                 expression { params.RUN_TESTS == true }
             }
@@ -56,14 +42,7 @@
             }
         }
         stage('Run Dacapo') {
-            agent {
-    dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_14_04_x86_64"
-        reuseNode true
-        label "linux_x86_64"
-    }
-}
-
+            
             when {
                 expression { params.RUN_DACAPO == true }
             }
@@ -77,14 +56,7 @@
             }                
         }
         stage('Run jtreg hotspot') {
-            agent {
-    dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_14_04_x86_64"
-        reuseNode true
-        label "linux_x86_64"
-    }
-}
-
+            
             when {
                 expression { params.RUN_TESTS == true }
             }
@@ -107,14 +79,7 @@
             }
         }
         stage('Run jtreg jdk') {
-            agent {
-    dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_14_04_x86_64"
-        reuseNode true
-        label "linux_x86_64"
-    }
-}
-
+            
             when {
                 expression { params.RUN_TESTS == true }
             }
@@ -137,14 +102,7 @@
             }
         }
         stage('Run jtreg langtools') {
-            agent {
-    dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_14_04_x86_64"
-        reuseNode true
-        label "linux_x86_64"
-    }
-}
-
+            
             when {
                 expression { params.RUN_TESTS == true }
             }
@@ -243,7 +201,7 @@
         <hudson.model.StringParameterDefinition>
           <name>SAPMACHINE_GIT_BRANCH</name>
           <description/>
-          <defaultValue>sapmachine11</defaultValue>
+          <defaultValue>sapmachine12</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>hotspot_test_groups</name>
