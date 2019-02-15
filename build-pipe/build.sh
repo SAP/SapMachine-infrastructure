@@ -137,6 +137,7 @@ make run-test-gtest
 rm "${WORKSPACE}/test.zip" || true
 zip -rq "${WORKSPACE}/test.zip" test
 zip -rq "${WORKSPACE}/test.zip" make/data/lsrdata
+zip -rq "${WORKSPACE}/test.zip" make/data/blacklistedcertsconverter/blacklisted.certs.pem || true
 
 cd "${WORKSPACE}/SapMachine/build"
 cd "$(ls)"
