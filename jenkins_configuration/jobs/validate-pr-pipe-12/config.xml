@@ -13,44 +13,6 @@
   <description></description>
   <keepDependencies>false</keepDependencies>
   <properties>
-    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.29.3">
-      <projectUrl>https://github.com/SAP/SapMachine/</projectUrl>
-      <displayName></displayName>
-    </com.coravy.hudson.plugins.github.GithubProjectProperty>
-    <hudson.model.ParametersDefinitionProperty>
-      <parameterDefinitions>
-        <hudson.model.StringParameterDefinition>
-          <name>PR_BUILD_JOB</name>
-          <description></description>
-          <defaultValue>build-12-pr-validation-linux_x86_64</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>PR_CONTEXT</name>
-          <description></description>
-          <defaultValue>validate-pr-12</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>PR_BUILD_JOB_LINUX_X86_64</name>
-          <description></description>
-          <defaultValue>build-12-pr-validation-linux_x86_64</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>PR_BUILD_JOB_LINUX_PPC64LE</name>
-          <description></description>
-          <defaultValue>build-12-pr-validation-linux_ppc64le</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>PR_BUILD_JOB_LINUX_PPC64</name>
-          <description></description>
-          <defaultValue>build-12-pr-validation-linux_ppc64</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-      </parameterDefinitions>
-    </hudson.model.ParametersDefinitionProperty>
     <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
       <triggers>
         <org.jenkinsci.plugins.github.pullrequest.GitHubPRTrigger plugin="github-pullrequest@0.2.4">
@@ -93,6 +55,44 @@
         </org.jenkinsci.plugins.github.pullrequest.GitHubPRTrigger>
       </triggers>
     </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>PR_BUILD_JOB</name>
+          <description></description>
+          <defaultValue>build-12-pr-validation-linux_x86_64</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>PR_CONTEXT</name>
+          <description></description>
+          <defaultValue>validate-pr-12</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>PR_BUILD_JOB_LINUX_X86_64</name>
+          <description></description>
+          <defaultValue>build-12-pr-validation-linux_x86_64</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>PR_BUILD_JOB_LINUX_PPC64LE</name>
+          <description></description>
+          <defaultValue>build-12-pr-validation-linux_ppc64le</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>PR_BUILD_JOB_LINUX_PPC64</name>
+          <description></description>
+          <defaultValue>build-12-pr-validation-linux_ppc64</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.29.3">
+      <projectUrl>https://github.com/SAP/SapMachine/</projectUrl>
+      <displayName></displayName>
+    </com.coravy.hudson.plugins.github.GithubProjectProperty>
   </properties>
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@2.63">
     <scm class="hudson.plugins.git.GitSCM" plugin="git@4.0.0-rc">
