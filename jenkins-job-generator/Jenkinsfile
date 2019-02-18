@@ -1,0 +1,20 @@
+pipeline {
+    agent {
+        dockerfile {
+            label params.AGENT_LABEL
+            dir params.DOCKER_DIR
+            reuseNode true
+        }
+    }
+    stages {
+        stage('Generate') {
+            withCredentials([
+                    [$class: 'UsernamePasswordMultiBinding', credentialsId: 'sapmachine-jenkins', usernameVariable: 'JENKINS_USER', passwordVariable: 'JENKINS_PASSWORD']
+                    ]) {
+                steps {
+                    sh "cd jenkins-job-generator && jenkins-jobs --conf jenkions_jobs.ini --user ${JENKINS_USER} --password ${JENKINS_PASSWORD} generator-test-job"
+                }
+            }
+        }
+    }
+}
