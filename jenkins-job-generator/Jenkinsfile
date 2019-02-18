@@ -8,10 +8,10 @@ pipeline {
     }
     stages {
         stage('Generate') {
-            withCredentials([
-                    [$class: 'UsernamePasswordMultiBinding', credentialsId: 'sapmachine-jenkins', usernameVariable: 'JENKINS_USER', passwordVariable: 'JENKINS_PASSWORD']
-                    ]) {
-                steps {
+            steps {
+                withCredentials([
+                        [$class: 'UsernamePasswordMultiBinding', credentialsId: 'sapmachine-jenkins', usernameVariable: 'JENKINS_USER', passwordVariable: 'JENKINS_PASSWORD']
+                        ]) {
                     sh "cd jenkins-job-generator && jenkins-jobs --conf jenkions_jobs.ini --user ${JENKINS_USER} --password ${JENKINS_PASSWORD} generator-test-job"
                 }
             }
