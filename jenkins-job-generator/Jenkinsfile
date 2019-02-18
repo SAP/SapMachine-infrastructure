@@ -12,7 +12,7 @@ pipeline {
                 withCredentials([
                         [$class: 'UsernamePasswordMultiBinding', credentialsId: 'sapmachine-jenkins', usernameVariable: 'JENKINS_USER', passwordVariable: 'JENKINS_PASSWORD']
                         ]) {
-                    sh "cd jenkins-job-generator && jenkins-jobs --conf jenkins_jobs.ini --user ${JENKINS_USER} --password ${JENKINS_PASSWORD} ${params.ACTION} generator-test-job"
+                    sh "cd jenkins-job-generator && jenkins-jobs --conf jenkins_jobs.ini --user ${JENKINS_USER} --password ${JENKINS_PASSWORD} ${params.ACTION} generator-test-job.yml"
                 }
             }
         }
