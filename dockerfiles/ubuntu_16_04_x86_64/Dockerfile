@@ -32,18 +32,22 @@ python \
 ant \
 patch \
 mercurial \
-openjdk-8-jdk
+openjdk-8-jdk \
+python-pip \
+python-setuptools
 
 RUN useradd -ms /bin/bash jenkins -u 1002
 
 RUN mkdir -p /opt/sapmachine-11-jdk
 ENV BOOT_JDK=/opt/sapmachine-11-jdk
 WORKDIR $BOOT_JDK
-RUN wget -q https://github.com/SAP/SapMachine/releases/download/sapmachine-11.0.1%2B13-0/sapmachine-jdk-11.0.1.13_linux-x64_bin.tar.gz
-RUN bsdtar xf sapmachine-jdk-11.0.1.13_linux-x64_bin.tar.gz --strip-components=1
+RUN wget -q https://github.com/SAP/SapMachine/releases/download/sapmachine-11.0.2/sapmachine-jdk-11.0.2_linux-x64_bin.tar.gz
+RUN bsdtar xf sapmachine-jdk-11.0.2_linux-x64_bin.tar.gz --strip-components=1
 
 RUN mkdir -p /opt/scimark2
 RUN wget https://math.nist.gov/scimark2/scimark2lib.jar -O /opt/scimark2/scimark2lib.jar
 
 RUN mkdir -p /opt/dacapo
 RUN wget https://sourceforge.net/projects/dacapobench/files/9.12-bach-MR1/dacapo-9.12-MR1-bach.jar/download -O /opt/dacapo/dacapo.jar
+
+RUN pip install jenkins-job-builder
