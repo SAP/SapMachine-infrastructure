@@ -33,9 +33,17 @@
             <a class="string-array">
               <string>update</string>
               <string>delete</string>
+              <string>list</string>
+              <string>test</string>
             </a>
           </choices>
         </hudson.model.ChoiceParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>TEMPLATE_OR_JOB</name>
+          <description></description>
+          <defaultValue></defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>

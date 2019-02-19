@@ -12,7 +12,7 @@
   <description></description>
   <keepDependencies>false</keepDependencies>
   <properties/>
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.62">
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.63">
     <script>pipeline {
     agent {
         label &apos;linux_x86_64&apos;
@@ -25,8 +25,7 @@
             steps {
                 sh &quot;java -version&quot;
                 sh &quot;python --version&quot;
-                git &apos;https://github.com/SAP/SapMachine-infrastructure.git&apos;
-                sh &quot;python lib/run_dacapo.py /opt/sapmachine-11-jdk/bin/java&quot;
+                sh &quot;python lib/run_dacapo.py &apos;/opt/dacapo/dacapo.jar&apos;&quot;
             }
         }
     }
