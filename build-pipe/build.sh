@@ -114,8 +114,8 @@ else
   BUILD_DATE=$(date -u "+%Y-%m-%d")
   bash ./configure \
   --with-boot-jdk=$BOOT_JDK \
-  --with-version-opt=sapmachine \
-  --with-version-pre="snapshot-$BUILD_DATE" \
+  --with-version-opt="sapmachine-$BUILD_DATE" \
+  --with-version-pre=snapshot \
   --disable-warnings-as-errors \
   --with-vendor-name="$VENDOR_NAME" \
   --with-vendor-url="$VENDOR_URL" \
