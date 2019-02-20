@@ -12,6 +12,7 @@ pipeline {
                 expression { params.RUN_DACAPO == true }
             }
             environment {
+                SAPMACHINE_GIT_REPO = 'github.com/SAP/SapMachine.git'
                 DACAPO_CP = '/opt/dacapo/dacapo.jar'
             }
             steps {            
