@@ -1,0 +1,30 @@
+pipeline {
+    agent {
+        dockerfile {
+            label params.AGENT_LABEL
+            dir params.DOCKER_DIR
+            reuseNode true
+        }
+    }
+    stages {
+        stage('Run Dacapo') {
+            when {
+                expression { params.RUN_DACAPO == true }
+            }
+            environment {
+                DACAPO_CP = '/opt/dacapo/dacapo.jar'
+            }
+            steps {            
+                sh "echo 'run dacapo'"
+                sh "python --version"
+                sh "echo JAR-Path: ${env.DACAPO_CP}"
+                sh "python lib/run_dacapo.py ${env.DACAPO_CP}"
+            }                
+        }
+    }
+    post {
+        always {
+            cleanWs deleteDirs: true, disableDeferredWipeout: true
+        }
+    }
+}
