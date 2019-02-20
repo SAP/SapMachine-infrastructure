@@ -3,10 +3,33 @@
     major:
         - 11:
            branch_name: sapmachine11
+           release_default: false
         - 12:
            branch_name: sapmachine12
+           release_default: false
         - 13:
            branch_name: sapmachine
+           release_default: false
+    build_type: snapshot
+    publish_default: false
+    jobs:
+        - docker-builds
+        - non-docker-builds
+
+- project:
+    name: release-builds
+    major:
+        - 11:
+           branch_name: sapmachine11
+           release_default: true
+        - 12:
+           branch_name: sapmachine12
+           release_default: false
+        - 13:
+           branch_name: sapmachine
+           release_default: false
+    build_type: release
+    publish_default: true
     jobs:
         - docker-builds
         - non-docker-builds
@@ -27,7 +50,7 @@
         - linux_ppc64le:
            docker_dir: SapMachine-Infrastructure/dockerfiles/ubuntu_14_04_ppc64le
     jobs:
-        - build-{major}-snapshot-{platform}-generatortest
+        - build-{major}-{build_type}-{platform}-generatortest
 
 - job-group:
     name: non-docker-builds
@@ -37,10 +60,10 @@
         - linux_ppc64
         - windows_x86_64
     jobs:
-        - build-{major}-snapshot-{platform}-generatortest
+        - build-{major}-{build_type}-{platform}-generatortest
 
 - job-template:
-    name: build-{major}-snapshot-{platform}-generatortest
+    name: build-{major}-{build_type}-{platform}-generatortest
     description: 'This project is generated. Do not modify manually.'
     parameters:
       - string:
@@ -68,9 +91,12 @@
           description: "enable/disable dacapo run"
       - bool:
           name: PUBLISH
-          default: false
+          default: '{publish_default}'
+      - bool:
+          name: RELEASE
+          default: '{release_default}'
     project-type: pipeline
-         
+
     dsl: |
         pipeline {{
             agent {{
@@ -121,11 +147,11 @@
                     environment {{
                         DACAPO_CP='${{DACAPO_CLASSPATH}}'
                     }}
-                    steps {{            
+                    steps {{
                         sh "echo 'run dacapo'"
                         sh "python --version"
                         sh "python SapMachine-Infrastructure/lib/run_dacapo.py ${{env.DACAPO_CP}}"
-                    }}                
+                    }}
                 }}
                 stage('Run jtreg hotspot') {{
                     {docker_agent}
@@ -160,7 +186,7 @@
                     }}
                     steps {{
                         sh "bash SapMachine-Infrastructure/test-pipe/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${{env.TESTSUITE}} ${{params.jdk_test_groups}} || true"
-        
+
                         publishHTML target: [
                             allowMissing: false,
                             alwaysLinkToLastBuild: false,
@@ -183,7 +209,7 @@
                     }}
                     steps {{
                         sh "bash SapMachine-Infrastructure/test-pipe/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${{env.TESTSUITE}} ${{params.langtools_test_groups}}  || true"
-        
+
                         publishHTML target: [
                             allowMissing: false,
                             alwaysLinkToLastBuild: false,
@@ -201,11 +227,11 @@
                         archive 'test.zip'
                         archive 'apidocs.zip'
                         archive 'support_gensrc.zip'
-        
+
                         script {{
                             def jdk_bundle_name = readFile "${{env.WORKSPACE}}/jdk_bundle_name.txt"
                             def jre_bundle_name = readFile "${{env.WORKSPACE}}/jre_bundle_name.txt"
-        
+
                             step ([$class: 'ArtifactArchiver', artifacts: jdk_bundle_name]);
                             step ([$class: 'ArtifactArchiver', artifacts: jre_bundle_name]);
                         }}
@@ -257,3 +283,45 @@
                 }}
             }}
         }}
+
+- view:
+    name: 'Snapshot Builds'
+    description: 'Snapshot Builds'
+    view-type: list
+    regex: 'build-[\d]+-snapshot-.*'
+
+- view:
+    name: 'Release Builds'
+    description: 'Release Builds'
+    view-type: list
+    regex: 'build-[\d]+-release-.*'
+
+- view:
+    name: 'Linux x86 64 Builds'
+    description: 'Linux x86 64 Builds'
+    view-type: list
+    regex: 'build-[\d]+-.*-linux_x86_64.*'
+
+- view:
+    name: 'Linux ppc64 Builds'
+    description: 'Linux ppc64 Builds'
+    view-type: list
+    regex: 'build-[\d]+-.*-linux_ppc64-.*'
+
+- view:
+    name: 'Linux ppc64le Builds'
+    description: 'Linux ppc64le Builds'
+    view-type: list
+    regex: 'build-[\d]+-.*-linux_ppc64le.*'
+
+- view:
+    name: 'macOS x86 64 Builds'
+    description: 'macOS x86 64 Builds'
+    view-type: list
+    regex: 'build-[\d]+-.*-macos_x86_64.*'
+
+- view:
+    name: 'Windows x86 64 Builds'
+    description: 'Windows x86 64 Builds'
+    view-type: list
+    regex: 'build-[\d]+-.*-windows_x86_64.*'
