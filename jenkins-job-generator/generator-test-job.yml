@@ -34,6 +34,37 @@
         - docker-builds
         - non-docker-builds
 
+- project:
+    name: pr-validation-builds
+    major:
+        - 11:
+           branch_name: sapmachine11
+           release_default: false
+        - 12:
+           branch_name: sapmachine12
+           release_default: false
+        - 13:
+           branch_name: sapmachine
+           release_default: false
+    build_type: pr-validation
+    publish_default: false
+    jobs:
+        - docker-builds
+        - non-docker-builds
+        - validate-pr-{major}
+
+- project:
+    name: branch-builds
+    major:
+        - '':
+           branch_name: sapmachine
+           release_default: false
+    build_type: branch
+    publish_default: false
+    jobs:
+        - docker-builds
+        - non-docker-builds
+
 - job-group:
     name: docker-builds
     docker_agent: |
@@ -46,9 +77,11 @@
             }}
     platform:
         - linux_x86_64:
-           docker_dir: SapMachine-Infrastructure/dockerfiles/ubuntu_14_04_x86_64
+            docker_dir: SapMachine-Infrastructure/dockerfiles/ubuntu_14_04_x86_64
+            configure_sysroot_default: ''
         - linux_ppc64le:
-           docker_dir: SapMachine-Infrastructure/dockerfiles/ubuntu_14_04_ppc64le
+            docker_dir: SapMachine-Infrastructure/dockerfiles/ubuntu_14_04_ppc64le
+            configure_sysroot_default: ''
     jobs:
         - build-{major}-{build_type}-{platform}-generatortest
 
@@ -56,9 +89,12 @@
     name: non-docker-builds
     docker_agent: ''
     platform:
-        - macos_x86_64
-        - linux_ppc64
-        - windows_x86_64
+        - macos_x86_64:
+           configure_sysroot_default: ''
+        - linux_ppc64:
+           configure_sysroot_default: '--with-devkit=/opt/devkits/ppc64-linux-gnu-to-ppc64-linux-gnu --with-freetype-lib=/opt/devkits/ppc64-linux-gnu-to-ppc64-linux-gnu/ppc64-linux-gnu/sysroot/usr/lib64 --with-freetype-include=/opt/devkits/ppc64-linux-gnu-to-ppc64-linux-gnu/ppc64-linux-gnu/sysroot/usr/include'
+        - windows_x86_64:
+           configure_sysroot_default: ''
     jobs:
         - build-{major}-{build_type}-{platform}-generatortest
 
@@ -67,34 +103,61 @@
     description: 'This project is generated. Do not modify manually.'
     parameters:
       - string:
+          name: SAPMACHINE_GIT_REPOSITORY
+          default: 'https://github.com/SAP/SapMachine.git'
+          description: 'The Git repository to use.'
+      - string:
           name: SAPMACHINE_GIT_BRANCH
           default: '{branch_name}'
+          description: 'The Git branch to build.'
+      - string:
+          name: GIT_TAG_NAME
+          default: ''
+          description: 'The Git tag to build.'
+      - string:
+          name: GITHUB_PR_NUMBER
+          default: ''
+          description: 'The GitHub Pull Request number. Only used in Pull Request validation builds.'
+      - string:
+          name: SAPMACHINE_ARCHIVE_NAME_PREFIX
+          default: 'sapmachine{major}-{platform}'
+          description: 'The prefix of the bundle archive.'
+      - string:
+           name: _CONFIGURE_SYSROOT
+           default: '{configure_sysroot_default}'
+           description: 'Sysroot configuration passed to configure script.'
+      - string:
+           name: EXTRA_CONFIGURE_OPTIONS
+           default: ''
+           description: 'Configure options passed directly to configure script.'
       - string:
           name: hotspot_test_groups
           default: ':tier1'
-          description: "Select the test group for jtreg hotspot tests"
+          description: 'Select the test group for jtreg hotspot tests. Empty means disabled.'
       - string:
           name: jdk_test_groups
           default: ':tier1'
-          description: "Select the test group for jtreg jdk tests"
+          description: 'Select the test group for jtreg jdk tests. Empty means disabled.'
       - string:
           name: langtools_test_groups
-          default: ':tier1'
-          description: "Select the test group for jtreg langtools tests"
+          default: '"jdk tools lib"'
+          description: 'Select the test group for jtreg langtools tests. Empty means disabled.'
       - bool:
           name: RUN_TESTS
           default: true
-          description: "enable/disable jtreg runs"
+          description: 'enable/disable jtreg runs'
       - bool:
           name: RUN_DACAPO
           default: false
-          description: "enable/disable dacapo run"
+          description: 'enable/disable dacapo run'
       - bool:
           name: PUBLISH
           default: '{publish_default}'
+          description: 'When set to true, the resulting bundles will be published to GitHub.'
       - bool:
           name: RELEASE
           default: '{release_default}'
+          description: 'When set to true, marks this build as a release build, otherwise as pre-release.'
     project-type: pipeline
 
     dsl: |
@@ -284,6 +347,36 @@
             }}
         }}
 
+- job-template:
+    name: validate-pr-{major}
+    description: 'This project is generated. Do not modify manually.'
+    project-type: pipeline
+    parameters:
+        - string:
+            name: PR_CONTEXT
+            default: 'validate-pr-{major}'
+    triggers:
+        - github-pull-request:
+            cron: 'H/5 * * * *'
+            trigger-phrase: 'retest this please'
+            white-list-target-branches:
+                - {branch_name}
+
+    dsl: |
+        pipeline {{
+            agent {{
+                label 'linux_x86_64'
+            }}
+            stages {{
+                stage('Echo') {{
+                    steps {{
+                        sh "echo Hello World!"
+                    }}
+                }}
+            }}
+        }}
+
+
 - view:
     name: 'Snapshot Builds'
     description: 'Snapshot Builds'
@@ -297,31 +390,43 @@
     regex: 'build-[\d]+-release-.*'
 
 - view:
+    name: 'Pull Request Validation Builds'
+    description: 'Pull Request Validation Builds'
+    view-type: list
+    regex: 'build-[\d]+-pr-validation-.*'
+
+- view:
+    name: 'Branch Builds'
+    description: 'Brancg Builds'
+    view-type: list
+    regex: 'build--branch-.*'
+
+- view:
     name: 'Linux x86 64 Builds'
     description: 'Linux x86 64 Builds'
     view-type: list
-    regex: 'build-[\d]+-.*-linux_x86_64.*'
+    regex: 'build-.*-linux_x86_64.*'
 
 - view:
     name: 'Linux ppc64 Builds'
     description: 'Linux ppc64 Builds'
     view-type: list
-    regex: 'build-[\d]+-.*-linux_ppc64-.*'
+    regex: 'build-.*-linux_ppc64-.*'
 
 - view:
     name: 'Linux ppc64le Builds'
     description: 'Linux ppc64le Builds'
     view-type: list
-    regex: 'build-[\d]+-.*-linux_ppc64le.*'
+    regex: 'build-.*-linux_ppc64le.*'
 
 - view:
     name: 'macOS x86 64 Builds'
     description: 'macOS x86 64 Builds'
     view-type: list
-    regex: 'build-[\d]+-.*-macos_x86_64.*'
+    regex: 'build-.*-macos_x86_64.*'
 
 - view:
     name: 'Windows x86 64 Builds'
     description: 'Windows x86 64 Builds'
     view-type: list
-    regex: 'build-[\d]+-.*-windows_x86_64.*'
+    regex: 'build-.*-windows_x86_64.*'
