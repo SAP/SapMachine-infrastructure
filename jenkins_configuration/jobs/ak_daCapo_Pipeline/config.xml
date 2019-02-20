@@ -9,22 +9,42 @@
       <options/>
     </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
   </actions>
-  <description></description>
+  <description>AKN Dacapo Pipeline Playground</description>
   <keepDependencies>false</keepDependencies>
-  <properties/>
+  <properties>
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>-1</daysToKeep>
+        <numToKeep>3</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>-1</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
+  </properties>
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.63">
     <script>pipeline {
     agent {
-        label &apos;linux_x86_64&apos;
+        docker { 
+            image &apos;reshnm/dacapo&apos; 
+            label &apos;linux_x86_64&apos;
+            reuseNode true
+        }
     }
     stages {
-        stage(&apos;Build&apos;) {
-            agent {
-                docker { image &apos;reshnm/dacapo&apos; }
+        stage(&apos;Clone SapMachine Infrastructure&apos;) {
+            steps {
+                git &apos;https://github.com/SAP/SapMachine-infrastructure.git&apos;
+                sh &quot;ls -l&quot;
             }
+        }
+        stage(&apos;Run Dacapo&apos;) {
             steps {
                 sh &quot;java -version&quot;
+                sh &quot;which java&quot;
                 sh &quot;python --version&quot;
+                sh &quot;ls -l&quot;
+                sh &quot;ls -l /opt&quot;
+                sh &quot;ls -l /opt/sapmachine-11-jdk&quot;
                 sh &quot;python lib/run_dacapo.py &apos;/opt/dacapo/dacapo.jar&apos;&quot;
             }
         }
