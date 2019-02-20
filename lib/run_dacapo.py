@@ -19,27 +19,33 @@ if len(sys.argv) != 2:
 JAR = sys.argv[1]
 print('JAR: ', JAR)
 
-# get path to the SapMachine
-CURRENT_DIR = os.getcwd()
-os.chdir('SapMachine')
-os.chdir('build')
-
-PYTHON_VER = sys.version_info[0]
-if PYTHON_VER < 3:
-    p1 = subprocess.Popen(['ls'], stdout=subprocess.PIPE)
-    BUILD_TYPE = p1.communicate()[0]
-    BUILD_TYPE = BUILD_TYPE.strip('\n')
+if SKIP_BUILD:
+  SAPMACHINE_GIT_REPO = 'github.com/SAP/SapMachine.git'  
+  JAV = "/opt/sapmachine-11-jdk/bin/java"
 else:
-   ARR = os.listdir()
-   BUILD_TYPE  = ARR[0]
+  # get path to the SapMachine
+  CURRENT_DIR = os.getcwd()
+  os.chdir('SapMachine')
+  os.chdir('build')
 
-JAV = CURRENT_DIR + "/SapMachine/build/" + BUILD_TYPE + "/images/jdk/bin/java"
+  PYTHON_VER = sys.version_info[0]
+  if PYTHON_VER < 3:
+      p1 = subprocess.Popen(['ls'], stdout=subprocess.PIPE)
+      BUILD_TYPE = p1.communicate()[0]
+      BUILD_TYPE = BUILD_TYPE.strip('\n')
+  else:
+      ARR = os.listdir()
+      BUILD_TYPE  = ARR[0]
 
+  JAV = CURRENT_DIR + "/SapMachine/build/" + BUILD_TYPE + "/images/jdk/bin/java"
+  
+  #clean up
+  os.chdir(CURRENT_DIR)
+  
+  
 # print Java Version
 subprocess.call([JAV , '-version'])
 
-#clean up
-os.chdir(CURRENT_DIR)
 
 #
 # call the dacapo testsuite
