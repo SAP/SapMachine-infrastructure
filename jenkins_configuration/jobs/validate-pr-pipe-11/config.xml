@@ -16,7 +16,7 @@
       <triggers>
         <org.jenkinsci.plugins.github.pullrequest.GitHubPRTrigger plugin="github-pullrequest@0.2.4">
           <spec>H/15 * * * *</spec>
-          <triggerMode>CRON</triggerMode>
+          <triggerMode>HEAVY_HOOKS</triggerMode>
           <cancelQueued>false</cancelQueued>
           <abortRunning>false</abortRunning>
           <skipFirstRun>false</skipFirstRun>
