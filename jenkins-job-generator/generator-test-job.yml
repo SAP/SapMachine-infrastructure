@@ -843,52 +843,52 @@
     name: 'Snapshot Builds (Generatortest)'
     description: 'Snapshot Builds'
     view-type: list
-    regex: 'build-[\d]+-snapshot-.*'
+    regex: 'build-[\d]+-snapshot-.*-generatortest$'
 
 - view:
     name: 'Release Builds  (Generatortest)'
     description: 'Release Builds'
     view-type: list
-    regex: 'build-[\d]+-release-.*'
+    regex: 'build-[\d]+-release-.*-generatortest$'
 
 - view:
     name: 'Pull Request Validation Builds  (Generatortest)'
     description: 'Pull Request Validation Builds'
     view-type: list
-    regex: 'build-[\d]+-pr-validation-.*|validate-pr-[\d]+'
+    regex: 'build-[\d]+-pr-validation-.*-generatortest$|validate-pr-[\d]+-generatortest$'
 
 - view:
     name: 'Branch Builds  (Generatortest)'
     description: 'Branch Builds'
     view-type: list
-    regex: 'build--branch-.*|branch-build-service-generatortest'
+    regex: 'build--branch-.*-generatortest$|branch-build-service-generatortest$'
 
 - view:
     name: 'Linux x86 64 Builds  (Generatortest)'
     description: 'Linux x86 64 Builds'
     view-type: list
-    regex: 'build-.*-linux_x86_64.*'
+    regex: 'build-.*-linux_x86_64.*-generatortest$'
 
 - view:
     name: 'Linux ppc64 Builds  (Generatortest)'
     description: 'Linux ppc64 Builds'
     view-type: list
-    regex: 'build-.*-linux_ppc64$'
+    regex: 'build-.*-linux_ppc64-.*generatortest$'
 
 - view:
     name: 'Linux ppc64le Builds  (Generatortest)'
     description: 'Linux ppc64le Builds'
     view-type: list
-    regex: 'build-.*-linux_ppc64le.*'
+    regex: 'build-.*-linux_ppc64le.*-generatortest$'
 
 - view:
     name: 'macOS x86 64 Builds  (Generatortest)'
     description: 'macOS x86 64 Builds'
     view-type: list
-    regex: 'build-.*-macos_x86_64.*'
+    regex: 'build-.*-macos_x86_64.*-generatortest$'
 
 - view:
     name: 'Windows x86 64 Builds  (Generatortest)'
     description: 'Windows x86 64 Builds'
     view-type: list
-    regex: 'build-.*-windows_x86_64.*'
+    regex: 'build-.*-windows_x86_64.*-generatortest$'
