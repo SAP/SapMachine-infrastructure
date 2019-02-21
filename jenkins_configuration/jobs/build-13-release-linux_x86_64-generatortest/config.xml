@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8"?><flow-definition plugin="workflow-job">
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps">
+    <script>pipeline {
+    agent {
+        label "linux_x86_64"
+    }
+    stages {
+        stage("Checkout Infrastructure") {
+            steps {
+                checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+            }
+        }
+        stage("Build") {
+            agent {
+    dockerfile {
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_14_04_x86_64"
+        reuseNode true
+        label "linux_x86_64"
+    }
+}
+
+            environment {
+                CREATE_NO_BUILD_TAR_GZ = 'true'
+                NO_CHECKOUT = 'true'
+            }
+            steps {
+                checkout([$class: 'GitSCM', branches: [[name: "refs/tags/{params.GIT_TAG_NAME}"]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: "https://github.com/SAP/SapMachine.git"]]])
+                sh 'SapMachine-Infrastructure/build-pipe/build.sh'
+            }
+            post {
+                success {
+                    junit 'gtest.xml'
+                }
+            }
+        }
+        stage('Copy JTREG Artifacts') {
+            agent {
+    dockerfile {
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_14_04_x86_64"
+        reuseNode true
+        label "linux_x86_64"
+    }
+}
+
+            when {
+                expression { params.RUN_TESTS == true }
+            }
+            steps {
+                script {
+                    step ([$class: 'CopyArtifact',
+                    projectName: 'jtreg',
+                    filter: "jtreg.zip",
+                    target: 'jtreg']);
+                }
+                sh 'cd jtreg &amp;&amp; unzip jtreg.zip'
+            }
+        }
+        stage('Run Dacapo') {
+            agent {
+    dockerfile {
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_14_04_x86_64"
+        reuseNode true
+        label "linux_x86_64"
+    }
+}
+
+            when {
+                expression { params.RUN_DACAPO == true }
+            }
+            environment {
+                DACAPO_CP='${DACAPO_CLASSPATH}'
+            }
+            steps {
+                sh "echo 'run dacapo'"
+                sh "python --version"
+                sh "python SapMachine-Infrastructure/lib/run_dacapo.py ${env.DACAPO_CP}"
+            }
+        }
+        stage('Run jtreg hotspot') {
+            agent {
+    dockerfile {
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_14_04_x86_64"
+        reuseNode true
+        label "linux_x86_64"
+    }
+}
+
+            when {
+                expression { params.RUN_TESTS == true }
+            }
+            environment {
+              SCIMARK_2_CP = '/opt/scimark2/scimark2lib.jar'
+              TESTSUITE = 'hotspot'
+            }
+            steps {
+                sh "bash SapMachine-Infrastructure/test-pipe/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${env.TESTSUITE} ${params.hotspot_test_groups} || true"
+                publishHTML target: [
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: false,
+                    keepAll: true,
+                    reportDir: "test_report_${env.TESTSUITE}",
+                    reportFiles: 'JTreport/index.html',
+                    reportName: "JT Report ${env.TESTSUITE}"
+                ]
+                junit "test_report_${env.TESTSUITE}/JTwork/**/*.jtr.xml"
+                archiveArtifacts allowEmptyArchive: true, artifacts: "test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log"
+            }
+        }
+        stage('Run jtreg jdk') {
+            agent {
+    dockerfile {
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_14_04_x86_64"
+        reuseNode true
+        label "linux_x86_64"
+    }
+}
+
+            when {
+                expression { params.RUN_TESTS == true }
+            }
+            environment {
+              TESTSUITE = 'jdk'
+            }
+            steps {
+                sh "bash SapMachine-Infrastructure/test-pipe/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${env.TESTSUITE} ${params.jdk_test_groups} || true"
+
+                publishHTML target: [
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: false,
+                    keepAll: true,
+                    reportDir: "test_report_${env.TESTSUITE}",
+                    reportFiles: 'JTreport/index.html',
+                    reportName: "JT Report ${env.TESTSUITE}"
+                ]
+                junit "test_report_${env.TESTSUITE}/JTwork/**/*.jtr.xml"
+                archiveArtifacts allowEmptyArchive: true, artifacts: "test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log"
+            }
+        }
+        stage('Run jtreg langtools') {
+            agent {
+    dockerfile {
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_14_04_x86_64"
+        reuseNode true
+        label "linux_x86_64"
+    }
+}
+
+            when {
+                expression { params.RUN_TESTS == true }
+            }
+            environment {
+              TESTSUITE = 'langtools'
+            }
+            steps {
+                sh "bash SapMachine-Infrastructure/test-pipe/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${env.TESTSUITE} ${params.langtools_test_groups}  || true"
+
+                publishHTML target: [
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: false,
+                    keepAll: true,
+                    reportDir: "test_report_${env.TESTSUITE}",
+                    reportFiles: 'JTreport/index.html',
+                    reportName: "JT Report ${env.TESTSUITE}"
+                ]
+                junit "test_report_${env.TESTSUITE}/JTwork/**/*.jtr.xml"
+                archiveArtifacts allowEmptyArchive: true, artifacts: "test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log"
+            }
+        }
+        stage('Archive') {
+            steps {
+                archive 'test.zip'
+                archive 'apidocs.zip'
+                archive 'support_gensrc.zip'
+
+                script {
+                    def jdk_bundle_name = readFile "${env.WORKSPACE}/jdk_bundle_name.txt"
+                    def jre_bundle_name = readFile "${env.WORKSPACE}/jre_bundle_name.txt"
+
+                    step ([$class: 'ArtifactArchiver', artifacts: jdk_bundle_name]);
+                    step ([$class: 'ArtifactArchiver', artifacts: jre_bundle_name]);
+                }
+            }
+        }
+        stage('Publish GitHub') {
+            when {
+                expression { params.PUBLISH == true }
+            }
+            environment {
+              SAPMACHINE_GIT_REPO = 'github.com/SAP/SapMachine.git'
+              SAPMACHINE_PUBLISH_GITHUB_TOKEN = credentials('SapMachine-Github-Token')
+              SAPMACHINE_PUBLISH_GITHUB_REPO_NAME = 'SapMachine'
+              SAPMACHINE_PUBLISH_GITHUB_USER = 'SAP'
+            }
+            steps {
+                sh '''
+                SapMachine-Infrastructure/build-pipe/publish.sh
+                '''
+            }
+        }
+        stage('Publish Website Data') {
+            when {
+                expression { params.PUBLISH == true }
+            }
+            steps {
+                build job: 'generate-website-data', propagate: false, wait: false
+            }
+        }
+        stage('Publish CF Java Buildpack Data') {
+            when {
+                expression { params.PUBLISH == true &amp;&amp; params.AGENT_LABEL == "linux_x86_64" }
+            }
+            steps {
+                script {
+                    def match = params.GIT_TAG_NAME =~ /[^-]*-([0-9]+)[\.0-9]*.*/
+                    env.MAJOR_VERSION = match[0][1]
+                }
+                build job: 'generate-cf-data', propagate: false, wait: false, parameters:
+                    [
+                        string(name: 'MAJOR', value: env.MAJOR_VERSION)
+                    ]
+            }
+        }
+    }
+    post {
+        always {
+            cleanWs deleteDirs: true, disableDeferredWipeout: true
+        }
+    }
+}
+</script>
+    <sandbox>false</sandbox>
+  </definition>
+  <actions/>
+  <description>This project is generated. Do not modify manually.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+  <keepDependencies>false</keepDependencies>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <concurrentBuild>true</concurrentBuild>
+  <canRoam>true</canRoam>
+  <properties>
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>-1</daysToKeep>
+        <numToKeep>100</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>1</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>SAPMACHINE_GIT_REPOSITORY</name>
+          <description>The Git repository to use.</description>
+          <defaultValue>https://github.com/SAP/SapMachine.git</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>SAPMACHINE_GIT_BRANCH</name>
+          <description>The Git branch to build.</description>
+          <defaultValue>sapmachine</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>GIT_TAG_NAME</name>
+          <description>The Git tag to build.</description>
+          <defaultValue/>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>GITHUB_PR_NUMBER</name>
+          <description>The GitHub Pull Request number. Only used in Pull Request validation builds.</description>
+          <defaultValue/>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>SAPMACHINE_ARCHIVE_NAME_PREFIX</name>
+          <description>The prefix of the bundle archive.</description>
+          <defaultValue>sapmachine13-linux_x86_64</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>_CONFIGURE_SYSROOT</name>
+          <description>Sysroot configuration passed to configure script.</description>
+          <defaultValue/>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>EXTRA_CONFIGURE_OPTIONS</name>
+          <description>Configure options passed directly to configure script.</description>
+          <defaultValue/>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>hotspot_test_groups</name>
+          <description>Select the test group for jtreg hotspot tests. Empty means disabled.</description>
+          <defaultValue>:tier1</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>jdk_test_groups</name>
+          <description>Select the test group for jtreg jdk tests. Empty means disabled.</description>
+          <defaultValue>:tier1</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>langtools_test_groups</name>
+          <description>Select the test group for jtreg langtools tests. Empty means disabled.</description>
+          <defaultValue>"jdk tools lib"</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>RUN_TESTS</name>
+          <description>enable/disable jtreg runs</description>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>RUN_DACAPO</name>
+          <description>enable/disable dacapo run</description>
+          <defaultValue>false</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>PUBLISH</name>
+          <description>When set to true, the resulting bundles will be published to GitHub.</description>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>RELEASE</name>
+          <description>When set to true, marks this build as a release build, otherwise as pre-release.</description>
+          <defaultValue>false</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <publishers/>
+  <buildWrappers/>
+</flow-definition>
