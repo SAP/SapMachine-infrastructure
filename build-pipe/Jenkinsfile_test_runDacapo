@@ -23,22 +23,23 @@ pipeline {
                 sh "python lib/run_dacapo.py ${env.DACAPO_CP} ${env.SKIP_BUILD} > pythonrun.log"
             }                
         }
-        post {
-            success {
-              echo 'succeeeded!'
-            }
-            unstable {
-              echo 'unstable :/'
-            }
-            failure {
-              echo 'failed :('
-            }
-            changed {
-              echo 'Things were different before...'
-            }
-            unsuccessful {
-              echo 'unscuccessful :('
-            }
+    }
+        
+    post {
+        success {
+            echo 'succeeeded!'
+        }
+        unstable {
+          echo 'unstable :/'
+        }
+        failure {
+          echo 'failed :('
+        }
+        changed {
+          echo 'Things were different before...'
+        }
+        unsuccessful {
+          echo 'unscuccessful :('
         }
     }
 }
