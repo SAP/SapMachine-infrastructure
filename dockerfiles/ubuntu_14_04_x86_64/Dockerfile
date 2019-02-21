@@ -12,6 +12,7 @@ libxext-dev \
 libxrender-dev \
 libxtst-dev \
 libxt-dev \
+libxrandr-dev \
 libelf-dev \
 libcups2-dev \
 libfreetype6-dev \
