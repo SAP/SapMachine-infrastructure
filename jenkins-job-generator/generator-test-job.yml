@@ -62,7 +62,7 @@
            branch_name: sapmachine
     build_type: branch
     branch_specifier: 'refs/heads/sapmachine'
-    git_repo: 'SAPMACHINE_GIT_REPOSITORY'
+    git_repo: '{{params.SAPMACHINE_GIT_REPOSITORY}}'
     allow_concurrent_builds: false
     jobs:
         - docker-builds
@@ -188,7 +188,7 @@
                         NO_CHECKOUT = 'true'
                     }}
                     steps {{
-                        checkout([$class: 'GitSCM', branches: [[name: '{branch_specifier}']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: {git_repo}]]])
+                        checkout([$class: 'GitSCM', branches: [[name: "{branch_specifier}"]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: "{git_repo}"]]])
                         sh 'SapMachine-Infrastructure/build-pipe/build.sh'
                     }}
                     post {{
