@@ -51,7 +51,6 @@
     jobs:
         - docker-builds
         - non-docker-builds
-        - validate-pr-{major}
 
 - project:
     name: branch-builds
@@ -343,35 +342,6 @@
             post {{
                 always {{
                     cleanWs deleteDirs: true, disableDeferredWipeout: true
-                }}
-            }}
-        }}
-
-- job-template:
-    name: validate-pr-{major}
-    description: 'This project is generated. Do not modify manually.'
-    project-type: pipeline
-    parameters:
-        - string:
-            name: PR_CONTEXT
-            default: 'validate-pr-{major}'
-    triggers:
-        - github-pull-request:
-            cron: 'H/5 * * * *'
-            trigger-phrase: 'retest this please'
-            white-list-target-branches:
-                - {branch_name}
-
-    dsl: |
-        pipeline {{
-            agent {{
-                label 'linux_x86_64'
-            }}
-            stages {{
-                stage('Echo') {{
-                    steps {{
-                        sh "echo Hello World!"
-                    }}
                 }}
             }}
         }}
