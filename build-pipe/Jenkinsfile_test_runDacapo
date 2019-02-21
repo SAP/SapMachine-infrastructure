@@ -20,7 +20,7 @@ pipeline {
                 sh "echo 'run dacapo'"
                 sh "python --version"
                 sh "echo JAR-Path: ${env.DACAPO_CP}"
-                def ret = sh(script: 'python lib/run_dacapo.py ${env.DACAPO_CP} ${env.SKIP_BUILD}', returnStdout: true)
+                def ret = sh(script: "python lib/run_dacapo.py ${env.DACAPO_CP} ${env.SKIP_BUILD}", returnStdout: true)
                 println ret
             }                
         }
