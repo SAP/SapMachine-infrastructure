@@ -1,17 +1,22 @@
+- defaults:
+    name: 'global'
+    publish_default: false
+    release_default: false
+    git_repo: 'https://github.com/SAP/SapMachine.git'
+
 - project:
     name: snapshot-builds
     major:
         - 11:
            branch_name: sapmachine11
-           release_default: false
+           branch_specifier: refs/heads/sapmachine11
         - 12:
            branch_name: sapmachine12
-           release_default: false
+           branch_specifier: refs/heads/sapmachine12
         - 13:
            branch_name: sapmachine
-           release_default: false
+           branch_specifier: refs/heads/sapmachine
     build_type: snapshot
-    publish_default: false
     jobs:
         - docker-builds
         - non-docker-builds
@@ -24,12 +29,11 @@
            release_default: true
         - 12:
            branch_name: sapmachine12
-           release_default: false
         - 13:
            branch_name: sapmachine
-           release_default: false
     build_type: release
     publish_default: true
+    branch_specifier: 'refs/tags/{{params.GIT_TAG_NAME}}'
     jobs:
         - docker-builds
         - non-docker-builds
@@ -39,31 +43,29 @@
     major:
         - 11:
            branch_name: sapmachine11
-           release_default: false
         - 12:
            branch_name: sapmachine12
-           release_default: false
         - 13:
            branch_name: sapmachine
-           release_default: false
     build_type: pr-validation
-    publish_default: false
+    branch_specifier: 'refs/pull/{{params.GITHUB_PR_NUMBER}}/merge'
     jobs:
         - docker-builds
+        - validate-pr-{major}-generatortest
         - non-docker-builds
-        - validate-pr-{major}
 
 - project:
     name: branch-builds
     major:
         - '':
            branch_name: sapmachine
-           release_default: false
     build_type: branch
-    publish_default: false
+    branch_specifier: 'refs/heads/sapmachine'
+    git_repo: '{{params.SAPMACHINE_GIT_REPOSITORY}}'
     jobs:
         - docker-builds
         - non-docker-builds
+
 
 - job-group:
     name: docker-builds
@@ -178,7 +180,7 @@
                         NO_CHECKOUT = 'true'
                     }}
                     steps {{
-                        checkout([$class: 'GitSCM', branches: [[name: 'refs/heads/{branch_name}']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine.git']]])
+                        checkout([$class: 'GitSCM', branches: [[name: '{branch_specifier}']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: '{git_repo}']]])
                         sh 'SapMachine-Infrastructure/build-pipe/build.sh'
                     }}
                     post {{
@@ -349,7 +351,7 @@
 
 
 - job-template:
-    name: validate-pr-{major}
+    name: validate-pr-{major}-generatortest
     description: 'This project is generated. Do not modify manually.'
     project-type: pipeline
     properties:
@@ -553,7 +555,7 @@
 
 - view:
     name: 'Branch Builds'
-    description: 'Brancg Builds'
+    description: 'Branch Builds'
     view-type: list
     regex: 'build--branch-.*'
 
@@ -567,7 +569,7 @@
     name: 'Linux ppc64 Builds'
     description: 'Linux ppc64 Builds'
     view-type: list
-    regex: 'build-.*-linux_ppc64-.*'
+    regex: 'build-.*-linux_ppc64$'
 
 - view:
     name: 'Linux ppc64le Builds'
