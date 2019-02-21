@@ -12,17 +12,14 @@ HEADL       = "-Djava.awt.headless=true"
 PARA        = "--max-iterations=35 --variance=5 --verbose"
 timeout     = 600
 
-# check the argument (jar path)
-if len(sys.argv) != 2:
-  print('missing path to the dacapo jar. Syntax: python ' + str(sys.argv[0]) + ' <c:\\bin\dacapo.jar>')
+# check the argument (jar path and optional NOBUILD-Flag)
+if len(sys.argv) < 2:
+  print('missing path to the dacapo jar. Syntax: python ' + str(sys.argv[0]) + ' <c:\\bin\dacapo.jar>' + ' optional NOBUILD-Flag' )
   sys.exit(-2)
-JAR = sys.argv[1]
-print('JAR: ', JAR)
-
-if SKIP_BUILD:
-  SAPMACHINE_GIT_REPO = 'github.com/SAP/SapMachine.git'  
-  JAV = "/opt/sapmachine-11-jdk/bin/java"
-else:
+elif len(sys.argv) == 2:
+  JAR = sys.argv[1]
+  print('JAR: ', JAR)
+  
   # get path to the SapMachine
   CURRENT_DIR = os.getcwd()
   os.chdir('SapMachine')
@@ -36,16 +33,16 @@ else:
   else:
       ARR = os.listdir()
       BUILD_TYPE  = ARR[0]
-
   JAV = CURRENT_DIR + "/SapMachine/build/" + BUILD_TYPE + "/images/jdk/bin/java"
-  
   #clean up
   os.chdir(CURRENT_DIR)
-  
+else:
+  JAR = sys.argv[1]
+  print('JAR: ', JAR)
+  JAV = "/opt/sapmachine-11-jdk/bin/java"
   
 # print Java Version
 subprocess.call([JAV , '-version'])
-
 
 #
 # call the dacapo testsuite
