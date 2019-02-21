@@ -3,6 +3,7 @@
     publish_default: false
     release_default: false
     git_repo: 'https://github.com/SAP/SapMachine.git'
+    allow_concurrent_builds: true
 
 - project:
     name: snapshot-builds
@@ -17,8 +18,6 @@
            branch_name: sapmachine
            branch_specifier: refs/heads/sapmachine
     build_type: snapshot
-    publish_default: false
-    allow_concurrent_builds: true
     jobs:
         - docker-builds
         - non-docker-builds
@@ -36,7 +35,6 @@
     build_type: release
     publish_default: true
     branch_specifier: 'refs/tags/{{params.GIT_TAG_NAME}}'
-    allow_concurrent_builds: true
     jobs:
         - docker-builds
         - non-docker-builds
@@ -52,8 +50,6 @@
            branch_name: sapmachine
     build_type: pr-validation
     branch_specifier: 'refs/pull/{{params.GITHUB_PR_NUMBER}}/merge'
-    publish_default: false
-    allow_concurrent_builds: true
     jobs:
         - docker-builds
         - validate-pr-{major}-generatortest
@@ -67,7 +63,6 @@
     build_type: branch
     branch_specifier: 'refs/heads/sapmachine'
     git_repo: '{{params.SAPMACHINE_GIT_REPOSITORY}}'
-    publish_default: false
     allow_concurrent_builds: false
     jobs:
         - docker-builds
