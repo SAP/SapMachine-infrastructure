@@ -14,18 +14,14 @@ pipeline {
             environment {
                 SAPMACHINE_GIT_REPO = 'github.com/SAP/SapMachine.git'
                 DACAPO_CP = '/opt/dacapo/dacapo.jar'
+                SKIP_BUILD = 'SKIP_BUILD'
             }
             steps {            
                 sh "echo 'run dacapo'"
                 sh "python --version"
                 sh "echo JAR-Path: ${env.DACAPO_CP}"
-                sh "python lib/run_dacapo.py ${env.DACAPO_CP}"
+                sh "python lib/run_dacapo.py ${env.DACAPO_CP} ${env.SKIP_BUILD}"
             }                
-        }
-    }
-    post {
-        always {
-            cleanWs deleteDirs: true, disableDeferredWipeout: true
         }
     }
 }
