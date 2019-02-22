@@ -20,6 +20,8 @@ pipeline {
                 sh "echo 'run dacapo'"
                 sh "python --version"
                 sh "echo JAR-Path: ${env.DACAPO_CP}"
+                sh "echo SKIP_BUILD: ${env.SKIP_BUILD}"
+                sh "echo MODUS: ${env.MODUS}"
                 sh "python lib/run_dacapo.py ${env.DACAPO_CP} ${env.SKIP_BUILD} ${env.MODUS} > pythonrun.log"
                 junit "dacapo.xml"
             }            
