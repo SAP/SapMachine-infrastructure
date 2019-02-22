@@ -148,7 +148,7 @@ def main(argv=None):
     pr_author = pull_request['user']['login']
     user = api_request(pull_request['user']['url'])
 
-    if not is_pr_ok_to_test(pull_request, sapmachine_team_members):
+    if not is_pr_ok_to_test(pull_request):
         message = create_request_for_admin_comment(pr_author)
         api_request(comments_url, data=message, method='POST')
         print(str.format('Pull Request validation failed: "{0}"', message))
