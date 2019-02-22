@@ -30,16 +30,13 @@ pipeline {
         
     post {
         success {
-            echo 'succeeeded!'
+            echo 'succeeeded :)'
         }
         unstable {
           echo 'unstable :/'
         }
         failure {
           echo 'failed :('
-        }
-        changed {
-          echo 'Things were different before...'
         }
         unsuccessful {
           echo 'unscuccessful :('
