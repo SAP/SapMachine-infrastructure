@@ -42,6 +42,7 @@ else:
   print('JAR: ', JAR)
   JAV = "/opt/sapmachine-11-jdk/bin/java"
   MODUS = sys.argv[2]
+  print('MODUS: ', MODUS)
   
 # print Java Version
 subprocess.call([JAV , '-version'])
