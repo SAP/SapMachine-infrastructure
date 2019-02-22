@@ -14,10 +14,8 @@
             
             environment {
                 CREATE_NO_BUILD_TAR_GZ = 'true'
-                NO_CHECKOUT = 'true'
             }
             steps {
-                checkout([$class: 'GitSCM', branches: [[name: "refs/pull/{params.GITHUB_PR_NUMBER}/merge"]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: "https://github.com/SAP/SapMachine.git"]]])
                 sh 'SapMachine-Infrastructure/build-pipe/build.sh'
             }
             post {
@@ -193,7 +191,7 @@
   <keepDependencies>false</keepDependencies>
   <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
   <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
-  <concurrentBuild>true</concurrentBuild>
+  <concurrentBuild>false</concurrentBuild>
   <canRoam>true</canRoam>
   <properties>
     <jenkins.model.BuildDiscarderProperty>

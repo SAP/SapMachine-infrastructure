@@ -12,41 +12,6 @@
   <description></description>
   <keepDependencies>false</keepDependencies>
   <properties>
-    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.29.4">
-      <projectUrl>https://github.com/SAP/SapMachine/</projectUrl>
-      <displayName></displayName>
-    </com.coravy.hudson.plugins.github.GithubProjectProperty>
-    <hudson.model.ParametersDefinitionProperty>
-      <parameterDefinitions>
-        <hudson.model.StringParameterDefinition>
-          <name>PR_CONTEXT</name>
-          <description></description>
-          <defaultValue>validate-pr-11</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>PR_BUILD_JOB_LINUX_X86_64</name>
-          <description></description>
-          <defaultValue>build-11-pr-validation-linux_x86_64</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <com.wangyin.parameter.WHideParameterDefinition plugin="hidden-parameter@0.0.4">
-          <name>PR_BUILD_JOB_LINUX_PPC64LE</name>
-          <description></description>
-          <defaultValue>build-11-pr-validation-linux_ppc64le</defaultValue>
-        </com.wangyin.parameter.WHideParameterDefinition>
-        <com.wangyin.parameter.WHideParameterDefinition plugin="hidden-parameter@0.0.4">
-          <name>PR_BUILD_JOB_LINUX_PPC64</name>
-          <description></description>
-          <defaultValue>build-11-pr-validation-linux_ppc64</defaultValue>
-        </com.wangyin.parameter.WHideParameterDefinition>
-        <com.wangyin.parameter.WHideParameterDefinition plugin="hidden-parameter@0.0.4">
-          <name>PR_BUILD_JOB_WINDOWS_X86_64</name>
-          <description></description>
-          <defaultValue>build-11-pr-validation-windows_x86_64</defaultValue>
-        </com.wangyin.parameter.WHideParameterDefinition>
-      </parameterDefinitions>
-    </hudson.model.ParametersDefinitionProperty>
     <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
       <triggers>
         <org.jenkinsci.plugins.github.pullrequest.GitHubPRTrigger plugin="github-pullrequest@0.2.4">
@@ -81,16 +46,6 @@
             <org.jenkinsci.plugins.github.pullrequest.events.impl.GitHubPROpenEvent/>
           </events>
           <preStatus>false</preStatus>
-          <userRestriction>
-            <orgs>SAP</orgs>
-            <orgsSet>
-              <string>SAP</string>
-            </orgsSet>
-            <users>SapMachine</users>
-            <usersSet>
-              <string>SapMachine</string>
-            </usersSet>
-          </userRestriction>
           <branchRestriction>
             <targetBranchList>
               <string>sapmachine11</string>
@@ -99,6 +54,41 @@
         </org.jenkinsci.plugins.github.pullrequest.GitHubPRTrigger>
       </triggers>
     </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>PR_CONTEXT</name>
+          <description></description>
+          <defaultValue>validate-pr-11</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>PR_BUILD_JOB_LINUX_X86_64</name>
+          <description></description>
+          <defaultValue>build-11-pr-validation-linux_x86_64</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <com.wangyin.parameter.WHideParameterDefinition plugin="hidden-parameter@0.0.4">
+          <name>PR_BUILD_JOB_LINUX_PPC64LE</name>
+          <description></description>
+          <defaultValue>build-11-pr-validation-linux_ppc64le</defaultValue>
+        </com.wangyin.parameter.WHideParameterDefinition>
+        <com.wangyin.parameter.WHideParameterDefinition plugin="hidden-parameter@0.0.4">
+          <name>PR_BUILD_JOB_LINUX_PPC64</name>
+          <description></description>
+          <defaultValue>build-11-pr-validation-linux_ppc64</defaultValue>
+        </com.wangyin.parameter.WHideParameterDefinition>
+        <com.wangyin.parameter.WHideParameterDefinition plugin="hidden-parameter@0.0.4">
+          <name>PR_BUILD_JOB_WINDOWS_X86_64</name>
+          <description></description>
+          <defaultValue>build-11-pr-validation-windows_x86_64</defaultValue>
+        </com.wangyin.parameter.WHideParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.29.4">
+      <projectUrl>https://github.com/SAP/SapMachine/</projectUrl>
+      <displayName></displayName>
+    </com.coravy.hudson.plugins.github.GithubProjectProperty>
   </properties>
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@2.63">
     <scm class="hudson.plugins.git.GitSCM" plugin="git@4.0.0-rc">
