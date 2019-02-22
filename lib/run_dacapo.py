@@ -11,6 +11,7 @@ import time
 HEADL       = "-Djava.awt.headless=true"
 PARA        = "--max-iterations=35 --variance=5 --verbose"
 timeout     = 600
+MODUS       = ""
 
 # check the argument (jar path and optional NOBUILD-Flag)
 if len(sys.argv) < 2:
@@ -40,6 +41,7 @@ else:
   JAR = sys.argv[1]
   print('JAR: ', JAR)
   JAV = "/opt/sapmachine-11-jdk/bin/java"
+  MODUS = sys.argv[2]
   
 # print Java Version
 subprocess.call([JAV , '-version'])
@@ -52,8 +54,14 @@ def call_dacapo():
 
     start   = time.time()
 
-    # default run:
-    result =  subprocess.call([ JAV ,HEADL,'-jar',JAR,'--max-iterations=35' ,'--variance=5','--verbose','--converge','fop','avrora','h2','luindex','lusearch','pmd','xalan'])
+    if MODUS == "short":
+      result =  subprocess.call([ JAV ,HEADL,'-jar',JAR,'--max-iterations=1' ,'--variance=1','--verbose','--converge','fop']) 
+    elif MODUS == "error":
+      result =  subprocess.call([ JAV ,HEADL,'-jar',JAR,'--max-iterations=35' ,'--variance=5','--verbose','--converge','fop','jython','avrora','eclipse','h2','luindex','lusearch',
+'pmd','sunflow','xalan'])
+    else:
+      # default run:
+      result =  subprocess.call([ JAV ,HEADL,'-jar',JAR,'--max-iterations=35' ,'--variance=5','--verbose','--converge','fop','avrora','h2','luindex','lusearch','pmd','xalan']) 
 
     end = time.time()
     runtime = end - start    
@@ -73,12 +81,12 @@ def call_dacapo():
         print('FAILURE: Test did run in timeout')
         f = open("dacapo.xml", "w")
         f.write(FAL)
-        return result
+        return runtime
       
     print('Testrun OK')
     f = open("dacapo.xml", "w")
     f.write(SUCC)
-    return result
+    return 0
 
 if __name__ == '__main__':
     call_dacapo()
