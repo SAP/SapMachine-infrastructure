@@ -3,7 +3,7 @@
     publish_default: false
     release_default: false
     git_repo: 'https://github.com/SAP/SapMachine.git'
-    allow_concurrent_builds: true
+    allow_concurrent_builds: false
 
 - project:
     name: snapshot-builds
@@ -63,7 +63,6 @@
     build_type: branch
     branch_specifier: 'refs/heads/sapmachine'
     git_repo: '{{params.SAPMACHINE_GIT_REPOSITORY}}'
-    allow_concurrent_builds: false
     jobs:
         - docker-builds
         - non-docker-builds
