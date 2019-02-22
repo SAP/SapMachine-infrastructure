@@ -10,13 +10,10 @@
     major:
         - 11:
            branch_name: sapmachine11
-           branch_specifier: refs/heads/sapmachine11
         - 12:
            branch_name: sapmachine12
-           branch_specifier: refs/heads/sapmachine12
         - 13:
            branch_name: sapmachine
-           branch_specifier: refs/heads/sapmachine
     build_type: snapshot
     jobs:
         - docker-builds
@@ -34,7 +31,6 @@
            branch_name: sapmachine
     build_type: release
     publish_default: true
-    branch_specifier: 'refs/tags/{{params.GIT_TAG_NAME}}'
     jobs:
         - docker-builds
         - non-docker-builds
@@ -49,7 +45,6 @@
         - 13:
            branch_name: sapmachine
     build_type: pr-validation
-    branch_specifier: 'refs/pull/{{params.GITHUB_PR_NUMBER}}/merge'
     jobs:
         - docker-builds
         - validate-pr-{major}-generatortest
@@ -61,7 +56,6 @@
         - '':
            branch_name: sapmachine
     build_type: branch
-    branch_specifier: 'refs/heads/sapmachine'
     git_repo: '{{params.SAPMACHINE_GIT_REPOSITORY}}'
     jobs:
         - docker-builds
