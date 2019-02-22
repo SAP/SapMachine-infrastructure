@@ -50,14 +50,18 @@ subprocess.call([JAV , '-version'])
 
 def call_dacapo():
 
-    SUCC    = '<?xml version="1.0" encoding="UTF-8"?><testsuite>  <testcase name="Dacapo" classname="Dacapo" time="0">  </testcase></testsuite>'
-    ERR     = '<?xml version="1.0" encoding="UTF-8"?><testsuite>  <testcase name="Dacapo" classname="Dacapo" time="0">  <error message="ERROR in dacapo">see logfile</error>  </testcase></testsuite>'
-    FAL     = '<?xml version="1.0" encoding="UTF-8"?><testsuite>  <testcase name="Dacapo" classname="Dacapo" time="0">  <failure message="TIMEOUT in dacapo">see logfile</failure>  </testcase></testsuite>'
- 
     start   = time.time()
 
     # default run:
     result =  subprocess.call([ JAV ,HEADL,'-jar',JAR,'--max-iterations=35' ,'--variance=5','--verbose','--converge','fop','avrora','h2','luindex','lusearch','pmd','xalan'])
+
+    end = time.time()
+    runtime = end - start    
+    diff    = timeout - runtime
+    PRFX    = '<?xml version="1.0" encoding="UTF-8"?><testsuite>  <testcase name="Dacapo" classname="Dacapo" time=' + str(runtime) +'>' 
+    ERR     = PRFX + ' <error message="ERROR in dacapo">see logfile</error>  </testcase></testsuite>'
+    SUCC    = PRFX + ' </testcase>successful dacapo run</testsuite>'
+    FAL     = PRFX + ' <failure message="TIMEOUT in dacapo">see logfile</failure>  </testcase></testsuite>'
 
     if result != 0:
         print('ERROR: Test did run in error: ', result)
@@ -65,18 +69,16 @@ def call_dacapo():
         f.write(ERR)
         return result
 
-    end = time.time()
-    runtime = end - start    
-    diff    = timeout - runtime
     if diff < 0:
         print('FAILURE: Test did run in timeout')
         f = open("dacapo.xml", "w")
         f.write(FAL)
-        return diff
+        return result
+      
     print('Testrun OK')
     f = open("dacapo.xml", "w")
     f.write(SUCC)
-    return 0
+    return result
 
 if __name__ == '__main__':
     call_dacapo()
