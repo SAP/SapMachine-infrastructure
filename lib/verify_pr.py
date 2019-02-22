@@ -109,12 +109,60 @@ def create_success_comment(pr_author):
     message = str.format('{{ "body": "{0}" }}', message.replace('"', '\\"'))
     return message
 
+def create_request_for_admin_comment(pr_author):
+    message = str.format("""Hi @{0}. Thanks for your PR.
+I'm waiting for a [SapMachine Team member](https://github.com/orgs/SAP/teams/sapmachine-team) to verify that this pull request is ok to test.
+If it is, they should reply with `retest this please`.""", pr_author)
+    message = str.format('{{ "body": "{0}" }}', message.replace('"', '\\"'))
+    return message
+
+def get_sapmachine_team_members():
+    teams_api = str.format('https://api.github.com/repos/{0}/{1}/teams', org, repository)
+    teams = api_request(teams_api)
+    members = None
+
+    for team in teams:
+        if team['name'] == 'sapmachine-team':
+            members = api_request(str.format('https://api.github.com/teams/{0}/members', team['id']))
+            break
+
+    member_ids = []
+
+    for member in members:
+        member_ids.append(member['id'])
+
+    # workaround?
+    sapmachine_user_id = 33904789
+    member_ids.append(sapmachine_user_id)
+
+    return member_ids
+
+def is_pr_ok_to_test(pull_request, sapmachine_team_members):
+    pr_author_id = pull_request['user']['id']
+
+    if pr_author_id in sapmachine_team_members:
+        # is a sapmachine-team member
+        # it is OK to test
+        return True
+    else:
+        # not a sapmachine-team member
+        # check for a 'retest this please' comment
+        # by any sapmachine-team member
+        comments = api_request(pull_request['comments_url'])
+
+        for comment in comments:
+            if comment['body'] == 'retest this please' and comment['user']['id'] in sapmachine_team_members:
+                return True
+
+    return False
+
 def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('-p', '--pull-request', help='the Pull Request number', metavar='NUMBER', required=True)
     args = parser.parse_args()
 
     pull_request_id = args.pull_request
+    sapmachine_team_members = get_sapmachine_team_members()
 
     # request the pull request information
     pull_request_api = str.format('https://api.github.com/repos/{0}/{1}/pulls/{2}', org, repository, pull_request_id)
@@ -122,6 +170,13 @@ def main(argv=None):
 
     comments_url = pull_request['comments_url']
     pr_author = pull_request['user']['login']
+    user = api_request(pull_request['user']['url'])
+
+    if not is_pr_ok_to_test(pull_request, sapmachine_team_members):
+        message = create_request_for_admin_comment(pr_author)
+        api_request(comments_url, data=message, method='POST')
+        print(str.format('Pull Request validation failed: "{0}"', message))
+        return 0
 
     # if the author is in the exception list, the validation is skipped
     if pr_author not in pr_author_exception_list:
