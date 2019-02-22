@@ -184,10 +184,8 @@
                     {docker_agent}
                     environment {{
                         CREATE_NO_BUILD_TAR_GZ = 'true'
-                        NO_CHECKOUT = 'true'
                     }}
                     steps {{
-                        checkout([$class: 'GitSCM', branches: [[name: "{branch_specifier}"]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: "{git_repo}"]]])
                         sh 'SapMachine-Infrastructure/build-pipe/build.sh'
                     }}
                     post {{
