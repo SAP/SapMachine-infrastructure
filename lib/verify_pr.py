@@ -116,32 +116,9 @@ If it is, they should reply with `retest this please`.""", pr_author)
     message = str.format('{{ "body": "{0}" }}', message.replace('"', '\\"'))
     return message
 
-def get_sapmachine_team_members():
-    teams_api = str.format('https://api.github.com/repos/{0}/{1}/teams', org, repository)
-    teams = api_request(teams_api)
-    members = None
-
-    for team in teams:
-        if team['name'] == 'sapmachine-team':
-            members = api_request(str.format('https://api.github.com/teams/{0}/members', team['id']))
-            break
-
-    member_ids = []
-
-    for member in members:
-        member_ids.append(member['id'])
-
-    # workaround?
-    sapmachine_user_id = 33904789
-    member_ids.append(sapmachine_user_id)
-
-    return member_ids
-
-def is_pr_ok_to_test(pull_request, sapmachine_team_members):
-    pr_author_id = pull_request['user']['id']
-
-    if pr_author_id in sapmachine_team_members:
-        # is a sapmachine-team member
+def is_pr_ok_to_test(pull_request):
+    if pull_request['author_association'] == 'MEMBER' or pull_request['user']['login'] == 'SapMachine':
+        # is a sapmachine-team member or user 'SapMachine'
         # it is OK to test
         return True
     else:
@@ -151,7 +128,7 @@ def is_pr_ok_to_test(pull_request, sapmachine_team_members):
         comments = api_request(pull_request['comments_url'])
 
         for comment in comments:
-            if comment['body'] == 'retest this please' and comment['user']['id'] in sapmachine_team_members:
+            if comment['body'] == 'retest this please' and comment['author_association'] == 'MEMBER':
                 return True
 
     return False
@@ -162,7 +139,6 @@ def main(argv=None):
     args = parser.parse_args()
 
     pull_request_id = args.pull_request
-    sapmachine_team_members = get_sapmachine_team_members()
 
     # request the pull request information
     pull_request_api = str.format('https://api.github.com/repos/{0}/{1}/pulls/{2}', org, repository, pull_request_id)
