@@ -50,6 +50,10 @@ subprocess.call([JAV , '-version'])
 
 def call_dacapo():
 
+    SUCC    = '<?xml version="1.0" encoding="UTF-8"?><testsuite>  <testcase name="Dacapo" classname="Dacapo" time="0">  </testcase></testsuite>'
+    ERR     = '<?xml version="1.0" encoding="UTF-8"?><testsuite>  <testcase name="Dacapo" classname="Dacapo" time="0">  <error message="ERROR in dacapo">see logfile</error>  </testcase></testsuite>'
+    FAL     = '<?xml version="1.0" encoding="UTF-8"?><testsuite>  <testcase name="Dacapo" classname="Dacapo" time="0">  <failure message="TIMEOUT in dacapo">see logfile</failure>  </testcase></testsuite>'
+ 
     start   = time.time()
 
     # default run:
@@ -57,15 +61,21 @@ def call_dacapo():
 
     if result != 0:
         print('ERROR: Test did run in error: ', result)
+        f = open("dacapo.xml", "w")
+        f.write(ERR)
         return result
 
     end = time.time()
     runtime = end - start    
     diff    = timeout - runtime
     if diff < 0:
-        print('ERROR: Test did run in timeout')
+        print('FAILURE: Test did run in timeout')
+        f = open("dacapo.xml", "w")
+        f.write(FAL)
         return diff
     print('Testrun OK')
+    f = open("dacapo.xml", "w")
+    f.write(SUCC)
     return 0
 
 if __name__ == '__main__':
