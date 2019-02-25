@@ -13,7 +13,7 @@ else
 fi
 
 if [[ ! -z $CREATE_NO_BUILD_TAR_GZ ]]; then
-  INFRASTRUCTURE='/SapMachine-infrastructure'
+  INFRASTRUCTURE='/SapMachine-Infrastructure'
 fi
 
 if [[ $UNAME == CYGWIN* ]]; then
