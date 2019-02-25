@@ -17,11 +17,12 @@ MODUS       = ""
 if len(sys.argv) < 2:
   print('missing path to the dacapo jar. Syntax: python ' + str(sys.argv[0]) + ' <c:\\bin\dacapo.jar>' + ' optional NOBUILD-Flag' )
   sys.exit(-2)
+# get path to dacapo.jar  
 elif len(sys.argv) == 2:
   JAR = sys.argv[1]
   print('JAR: ', JAR)
   
-  # get path to the SapMachine
+  # evaluate path to the SapMachine
   CURRENT_DIR = os.getcwd()
   os.chdir('SapMachine')
   os.chdir('build')
@@ -38,9 +39,12 @@ elif len(sys.argv) == 2:
   #clean up
   os.chdir(CURRENT_DIR)
 else:
+  # get path to dacapo.jar
   JAR = sys.argv[1]
   print('JAR: ', JAR)
+  # get path to the SapMachine
   JAV = "/opt/sapmachine-11-jdk/bin/java"
+  # get the modus (short, error, normal run)
   MODUS = sys.argv[2]
   print('MODUS: ', MODUS)
   
@@ -67,10 +71,11 @@ def call_dacapo():
     end = time.time()
     runtime = end - start    
     diff    = timeout - runtime
-    PRFX    = '<?xml version="1.0" encoding="UTF-8"?><testsuite>  <testcase name="Dacapo" classname="Dacapo" time=' + str(runtime) +'>' 
-    ERR     = PRFX + ' <error message="ERROR in dacapo">see logfile</error>  </testcase></testsuite>'
-    SUCC    = PRFX + ' </testcase>successful dacapo run</testsuite>'
-    FAL     = PRFX + ' <failure message="TIMEOUT in dacapo">see logfile</failure>  </testcase></testsuite>'
+    PRFX    = '<?xml version="1.0" encoding="UTF-8"?><testsuites><testsuite><testcase name="Dacapo" classname="Dacapo" time="' + str(runtime) +' sec"' 
+    POFX    = '</testcase></testsuite></testsuites>'
+    ERR     = PRFX + ' failures=""  tests="1" errors="1"> <error message="ERROR in dacapo">see logfile</error>' + POFX
+    SUCC    = PRFX + ' failures=""  tests="1" errors="0"> successful dacapo run' + POFX
+    FAL     = PRFX + ' failures="1" tests="1" errors="0"> <failure message="TIMEOUT in dacapo">see logfile</failure>' + POFX
 
     if result != 0:
         print('ERROR: Test did run in error: ', result)
