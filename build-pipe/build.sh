@@ -12,7 +12,7 @@ else
     SEDFLAGS='-rn'
 fi
 
-if [[ -z $CREATE_NO_BUILD_TAR_GZ ]]; then
+if [[ ! -z $CREATE_NO_BUILD_TAR_GZ ]]; then
   INFRASTRUCTURE='/SapMachine-infrastructure'
 fi
 
