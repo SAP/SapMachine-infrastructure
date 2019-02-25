@@ -1,53 +1,53 @@
 - view:
-    name: 'Snapshot Builds (Generatortest)'
+    name: 'Snapshot Builds'
     description: 'Snapshot Builds'
     view-type: list
-    regex: 'build-[\d]+-snapshot-.*-generatortest$'
+    regex: 'build-[\d]+-snapshot-.*$'
 
 - view:
-    name: 'Release Builds  (Generatortest)'
+    name: 'Release Builds'
     description: 'Release Builds'
     view-type: list
-    regex: 'build-[\d]+-release-.*-generatortest$'
+    regex: 'build-[\d]+-release-.*$'
 
 - view:
-    name: 'Pull Request Validation Builds  (Generatortest)'
+    name: 'Pull Request Validation Builds '
     description: 'Pull Request Validation Builds'
     view-type: list
-    regex: 'build-[\d]+-pr-validation-.*-generatortest$|validate-pr-[\d]+-generatortest$'
+    regex: 'build-[\d]+-pr-validation-.*$|validate-pr-[\d]+$'
 
 - view:
-    name: 'Branch Builds  (Generatortest)'
+    name: 'Branch Builds'
     description: 'Branch Builds'
     view-type: list
-    regex: 'build--branch-.*-generatortest$|branch-build-service-generatortest$'
+    regex: 'build--branch-.*$|branch-build-service$'
 
 - view:
-    name: 'Linux x86 64 Builds  (Generatortest)'
+    name: 'Linux x86 64 Builds'
     description: 'Linux x86 64 Builds'
     view-type: list
-    regex: 'build-.*-linux_x86_64.*-generatortest$'
+    regex: 'build-.*-linux_x86_64.*$'
 
 - view:
-    name: 'Linux ppc64 Builds  (Generatortest)'
+    name: 'Linux ppc64 Builds'
     description: 'Linux ppc64 Builds'
     view-type: list
-    regex: 'build-.*-linux_ppc64-.*generatortest$'
+    regex: 'build-.*-linux_ppc64-.*$'
 
 - view:
-    name: 'Linux ppc64le Builds  (Generatortest)'
+    name: 'Linux ppc64le Builds'
     description: 'Linux ppc64le Builds'
     view-type: list
-    regex: 'build-.*-linux_ppc64le.*-generatortest$'
+    regex: 'build-.*-linux_ppc64le.*$'
 
 - view:
-    name: 'macOS x86 64 Builds  (Generatortest)'
+    name: 'macOS x86 64 Builds'
     description: 'macOS x86 64 Builds'
     view-type: list
-    regex: 'build-.*-macos_x86_64.*-generatortest$'
+    regex: 'build-.*-macos_x86_64.*$'
 
 - view:
-    name: 'Windows x86 64 Builds  (Generatortest)'
+    name: 'Windows x86 64 Builds'
     description: 'Windows x86 64 Builds'
     view-type: list
-    regex: 'build-.*-windows_x86_64.*-generatortest$'
+    regex: 'build-.*-windows_x86_64.*$'

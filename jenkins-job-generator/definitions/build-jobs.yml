@@ -47,7 +47,7 @@
     build_type: pr-validation
     jobs:
         - docker-builds
-        - validate-pr-{major}-generatortest
+        - validate-pr-{major}
         - non-docker-builds
 
 - project:
@@ -60,7 +60,7 @@
     jobs:
         - docker-builds
         - non-docker-builds
-        - branch-build-service-generatortest
+        - branch-build-service
 
 
 - job-group:
@@ -81,7 +81,7 @@
             docker_dir: SapMachine-Infrastructure/dockerfiles/ubuntu_14_04_ppc64le
             configure_sysroot_default: ''
     jobs:
-        - build-{major}-{build_type}-{platform}-generatortest
+        - build-{major}-{build_type}-{platform}
 
 - job-group:
     name: non-docker-builds
@@ -94,10 +94,10 @@
         - windows_x86_64:
            configure_sysroot_default: ''
     jobs:
-        - build-{major}-{build_type}-{platform}-generatortest
+        - build-{major}-{build_type}-{platform}
 
 - job-template:
-    name: build-{major}-{build_type}-{platform}-generatortest
+    name: build-{major}-{build_type}-{platform}
     description: 'This project is generated. Do not modify manually.'
     project-type: pipeline
     concurrent: '{allow_concurrent_builds}'
@@ -349,7 +349,7 @@
         }}
 
 - job:
-    name: branch-build-service-generatortest
+    name: branch-build-service
     description: 'This project is generated. Do not modify manually.'
     project-type: pipeline
     concurrent: true
@@ -420,7 +420,7 @@
                             }
                             steps {
                                 script {
-                                    def job_linux_x86_64 = build job: 'build--branch-linux_x86_64-generatortest', propagate: false, wait: true, parameters:
+                                    def job_linux_x86_64 = build job: 'build--branch-linux_x86_64', propagate: false, wait: true, parameters:
                                     [
                                         string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
                                         string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
@@ -442,7 +442,7 @@
                             }
                             post {
                                 success {
-                                    copyArtifacts filter: 'sapmachine-*.tar.gz', projectName: 'build--branch-linux_x86_64-generatortest', target: env.LINUX_X86_64_ARTIFACT_DIR, selector:
+                                    copyArtifacts filter: 'sapmachine-*.tar.gz', projectName: 'build--branch-linux_x86_64', target: env.LINUX_X86_64_ARTIFACT_DIR, selector:
                                     [
                                         $class: 'SpecificBuildSelector',
                                         buildNumber: env.LINUX_X86_64_JOB_ID
@@ -463,7 +463,7 @@
                             }
                             steps {
                                 script {
-                                    def job_linux_ppc64le = build job: 'build--branch-linux_ppc64le-generatortest', propagate: false, wait: true, parameters:
+                                    def job_linux_ppc64le = build job: 'build--branch-linux_ppc64le', propagate: false, wait: true, parameters:
                                     [
                                         string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
                                         string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
@@ -485,7 +485,7 @@
                             }
                             post {
                                 success {
-                                    copyArtifacts filter: 'sapmachine-*.tar.gz', projectName: 'build--branch-linux_ppc64le-generatortest', target: env.LINUX_PPC64LE_ARTIFACT_DIR, selector:
+                                    copyArtifacts filter: 'sapmachine-*.tar.gz', projectName: 'build--branch-linux_ppc64le', target: env.LINUX_PPC64LE_ARTIFACT_DIR, selector:
                                     [
                                         $class: 'SpecificBuildSelector',
                                         buildNumber: env.LINUX_PPC64LE_JOB_ID
@@ -506,7 +506,7 @@
                             }
                             steps {
                                 script {
-                                    def job_linux_ppc64 = build job: 'build--branch-linux_ppc64-generatortest', propagate: false, wait: true, parameters:
+                                    def job_linux_ppc64 = build job: 'build--branch-linux_ppc64', propagate: false, wait: true, parameters:
                                     [
                                         string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
                                         string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
@@ -528,7 +528,7 @@
                             }
                             post {
                                 success {
-                                    copyArtifacts filter: 'sapmachine-*.tar.gz', projectName: 'build--branch-linux_ppc64-generatortest', target: env.LINUX_PPC64_ARTIFACT_DIR, selector:
+                                    copyArtifacts filter: 'sapmachine-*.tar.gz', projectName: 'build--branch-linux_ppc64', target: env.LINUX_PPC64_ARTIFACT_DIR, selector:
                                     [
                                         $class: 'SpecificBuildSelector',
                                         buildNumber: env.LINUX_PPC64_JOB_ID
@@ -549,7 +549,7 @@
                             }
                             steps {
                                 script {
-                                    def job_windows_x86_64 = build job: 'build--branch-windows_x86_64-generatortest', propagate: false, wait: true, parameters:
+                                    def job_windows_x86_64 = build job: 'build--branch-windows_x86_64', propagate: false, wait: true, parameters:
                                     [
                                         string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
                                         string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
@@ -571,7 +571,7 @@
                             }
                             post {
                                 success {
-                                    copyArtifacts filter: 'sapmachine-*.zip', projectName: 'build--branch-windows_x86_64-generatortest', target: env.WINDOWS_X86_64_ARTIFACT_DIR, selector:
+                                    copyArtifacts filter: 'sapmachine-*.zip', projectName: 'build--branch-windows_x86_64', target: env.WINDOWS_X86_64_ARTIFACT_DIR, selector:
                                     [
                                         $class: 'SpecificBuildSelector',
                                         buildNumber: env.WINDOWS_X86_64_JOB_ID
@@ -592,7 +592,7 @@
                             }
                             steps {
                                 script {
-                                    def job_macos_x86_64 = build job: 'build--branch-macos_x86_64-generatortest', propagate: false, wait: true, parameters:
+                                    def job_macos_x86_64 = build job: 'build--branch-macos_x86_64', propagate: false, wait: true, parameters:
                                     [
                                         string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
                                         string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
@@ -614,7 +614,7 @@
                             }
                             post {
                                 success {
-                                    copyArtifacts filter: 'sapmachine-*.tar.gz', projectName: 'build--branch-macos_x86_64-generatortest', target: env.MACOS_X86_64_ARTIFACT_DIR, selector:
+                                    copyArtifacts filter: 'sapmachine-*.tar.gz', projectName: 'build--branch-macos_x86_64', target: env.MACOS_X86_64_ARTIFACT_DIR, selector:
                                     [
                                         $class: 'SpecificBuildSelector',
                                         buildNumber: env.MACOS_X86_64_JOB_ID
@@ -637,7 +637,7 @@
 
 
 - job-template:
-    name: validate-pr-{major}-generatortest
+    name: validate-pr-{major}
     description: 'This project is generated. Do not modify manually.'
     project-type: pipeline
     parallel: true
@@ -737,7 +737,7 @@
                             }}
                             steps {{
                                 setGitHubPullRequestStatus context: CONTEXT, state: 'PENDING'
-                                build job: 'build-{major}-pr-validation-linux_x86_64-generatortest', propagate: true, wait: true, parameters:
+                                build job: 'build-{major}-pr-validation-linux_x86_64', propagate: true, wait: true, parameters:
                                     [
                                         string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER),
                                         booleanParam(name: 'PUBLISH', value: false),
@@ -765,7 +765,7 @@
                             }}
                             steps {{
                                 setGitHubPullRequestStatus context: CONTEXT, state: 'PENDING'
-                                build job: 'build-{major}-pr-validation-linux_ppc64le-generatortest', propagate: true, wait: true, parameters:
+                                build job: 'build-{major}-pr-validation-linux_ppc64le', propagate: true, wait: true, parameters:
                                     [
                                         string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER),
                                         booleanParam(name: 'PUBLISH', value: false),
@@ -793,7 +793,7 @@
                             }}
                             steps {{
                                 setGitHubPullRequestStatus context: CONTEXT, state: 'PENDING'
-                                build job: 'build-{major}-pr-validation-linux_ppc64-generatortest', propagate: true, wait: true, parameters:
+                                build job: 'build-{major}-pr-validation-linux_ppc64', propagate: true, wait: true, parameters:
                                     [
                                         string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER),
                                         booleanParam(name: 'PUBLISH', value: false),
