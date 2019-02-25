@@ -737,7 +737,7 @@
                             }}
                             steps {{
                                 setGitHubPullRequestStatus context: CONTEXT, state: 'PENDING'
-                                build job: build-{major}-pr-validation-linux_x86_64, propagate: true, wait: true, parameters:
+                                build job: 'build-{major}-pr-validation-linux_x86_64-generatortest', propagate: true, wait: true, parameters:
                                     [
                                         string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER),
                                         booleanParam(name: 'PUBLISH', value: false),
@@ -765,7 +765,7 @@
                             }}
                             steps {{
                                 setGitHubPullRequestStatus context: CONTEXT, state: 'PENDING'
-                                build job: build-{major}-pr-validation-linux_ppc64le, propagate: true, wait: true, parameters:
+                                build job: 'build-{major}-pr-validation-linux_ppc64le-generatortest', propagate: true, wait: true, parameters:
                                     [
                                         string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER),
                                         booleanParam(name: 'PUBLISH', value: false),
@@ -793,7 +793,7 @@
                             }}
                             steps {{
                                 setGitHubPullRequestStatus context: CONTEXT, state: 'PENDING'
-                                build job: build-{major}-pr-validation-linux_ppc64, propagate: true, wait: true, parameters:
+                                build job: 'build-{major}-pr-validation-linux_ppc64-generatortest', propagate: true, wait: true, parameters:
                                     [
                                         string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER),
                                         booleanParam(name: 'PUBLISH', value: false),
