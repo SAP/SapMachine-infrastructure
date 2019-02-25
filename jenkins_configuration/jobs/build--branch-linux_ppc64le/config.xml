@@ -2,7 +2,7 @@
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps">
     <script>pipeline {
     agent {
-        label "macos_x86_64"
+        label "linux_ppc64le"
     }
     stages {
         stage("Checkout Infrastructure") {
@@ -11,7 +11,14 @@
             }
         }
         stage("Build") {
-            
+            agent {
+    dockerfile {
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_14_04_ppc64le"
+        reuseNode true
+        label "linux_ppc64le"
+    }
+}
+
             environment {
                 CREATE_NO_BUILD_TAR_GZ = 'true'
             }
@@ -25,7 +32,14 @@
             }
         }
         stage('Copy JTREG Artifacts') {
-            
+            agent {
+    dockerfile {
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_14_04_ppc64le"
+        reuseNode true
+        label "linux_ppc64le"
+    }
+}
+
             when {
                 expression { params.RUN_TESTS == true }
             }
@@ -40,7 +54,14 @@
             }
         }
         stage('Run Dacapo') {
-            
+            agent {
+    dockerfile {
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_14_04_ppc64le"
+        reuseNode true
+        label "linux_ppc64le"
+    }
+}
+
             when {
                 expression { params.RUN_DACAPO == true }
             }
@@ -54,7 +75,14 @@
             }
         }
         stage('Run jtreg hotspot') {
-            
+            agent {
+    dockerfile {
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_14_04_ppc64le"
+        reuseNode true
+        label "linux_ppc64le"
+    }
+}
+
             when {
                 expression { params.RUN_TESTS == true }
             }
@@ -77,7 +105,14 @@
             }
         }
         stage('Run jtreg jdk') {
-            
+            agent {
+    dockerfile {
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_14_04_ppc64le"
+        reuseNode true
+        label "linux_ppc64le"
+    }
+}
+
             when {
                 expression { params.RUN_TESTS == true }
             }
@@ -100,7 +135,14 @@
             }
         }
         stage('Run jtreg langtools') {
-            
+            agent {
+    dockerfile {
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_14_04_ppc64le"
+        reuseNode true
+        label "linux_ppc64le"
+    }
+}
+
             when {
                 expression { params.RUN_TESTS == true }
             }
@@ -227,7 +269,7 @@
         <hudson.model.StringParameterDefinition>
           <name>SAPMACHINE_ARCHIVE_NAME_PREFIX</name>
           <description>The prefix of the bundle archive.</description>
-          <defaultValue>sapmachine13-macos_x86_64</defaultValue>
+          <defaultValue>sapmachine-linux_ppc64le</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>_CONFIGURE_SYSROOT</name>
