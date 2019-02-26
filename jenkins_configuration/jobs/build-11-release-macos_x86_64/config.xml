@@ -178,7 +178,11 @@
         }
     }
     post {
-        always {
+        unsuccessful {
+           sh 'zip -rq workspace.zip .'
+           archiveArtifacts allowEmptyArchive: true, artifacts: 'workspace.zip'
+        }
+        cleanup {
             cleanWs deleteDirs: true, disableDeferredWipeout: true
         }
     }
@@ -272,7 +276,7 @@
         <hudson.model.BooleanParameterDefinition>
           <name>RELEASE</name>
           <description>When set to true, marks this build as a release build, otherwise as pre-release.</description>
-          <defaultValue>true</defaultValue>
+          <defaultValue>false</defaultValue>
         </hudson.model.BooleanParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
