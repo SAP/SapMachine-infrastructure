@@ -2,7 +2,6 @@
     name: 'global'
     publish_default: false
     release_default: false
-    git_repo: 'https://github.com/SAP/SapMachine.git'
     allow_concurrent_builds: false
 
 - project:
@@ -24,7 +23,6 @@
     major:
         - 11:
            branch_name: sapmachine11
-           release_default: true
         - 12:
            branch_name: sapmachine12
         - 13:
@@ -56,7 +54,6 @@
         - '':
            branch_name: sapmachine
     build_type: branch
-    git_repo: '{{params.SAPMACHINE_GIT_REPOSITORY}}'
     jobs:
         - docker-builds
         - non-docker-builds
