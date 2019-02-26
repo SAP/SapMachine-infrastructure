@@ -236,12 +236,6 @@ def sapmachine_version_components(version_in, multiline=False):
 
     return version, version_part, major, build_number, sap_build_number
 
-def get_github_api_accesstoken():
-    key = 'GITHUB_API_ACCESS_TOKEN'
-    if key in os.environ:
-        return os.environ[key]
-    return None
-
 def git_clone(repo, branch, target):
     git_user = os.environ['GIT_USER']
     git_password = os.environ['GIT_PASSWORD']
@@ -271,18 +265,58 @@ def git_push(dir):
     except Exception:
         print('git push failed')
 
-def sapmachine_tag_is_release(tag):
+def get_github_api_accesstoken():
+    key = 'GITHUB_API_ACCESS_TOKEN'
+    if key in os.environ:
+        return os.environ[key]
+    return None
+
+def github_api_request(api, url=None, owner='SAP', repository='SapMachine', data=None, method='GET', per_page=50):
+    load_next = True
+    result = None
     token = get_github_api_accesstoken()
-    org = 'SAP'
-    repository = 'SapMachine'
-    github_api = str.format('https://api.github.com/repos/{0}/{1}/releases', org, repository)
+    link_pattern = re.compile('(<([^>]*)>; rel=\"prev\",\s*)?(<([^>]*)>; rel=\"next\",\s)?(<([^>]*)>; rel=\"last\"\s*)?')
 
-    request = Request(github_api)
+    while load_next:
+        if url is None:
+            url = str.format('https://api.github.com/repos/{0}/{1}/{2}?per_page={3}', owner, repository, api, per_page)
 
-    if token is not None:
-        request.add_header('Authorization', str.format('token {0}', token))
+        request = Request(url, data=data)
+        request.get_method = lambda: method
 
-    response = json.loads(urlopen(request).read())
+        if token is not None:
+            request.add_header('Authorization', str.format('token {0}', token))
+
+        try:
+            response = urlopen(request)
+            link = response.info().getheader('Link')
+
+            if result is None:
+                result = json.loads(response.read())
+            else:
+                result.extend(json.loads(response.read()))
+
+            load_next = False
+
+            if link is not None:
+                match = re.search(link_pattern, link)
+
+                if match is not None:
+                    next_url = match.group(4)
+                    last_url = match.group(6)
+
+                    if next_url != last_url:
+                        url = next_url
+                        load_next = True
+
+        except Exception as e:
+            print(str.format('{0}: "{1}"', url, e))
+            return None
+
+    return result
+
+def sapmachine_tag_is_release(tag):
+    response = github_api_request('releases')
 
     for release in response:
         if release['tag_name'] == tag:
