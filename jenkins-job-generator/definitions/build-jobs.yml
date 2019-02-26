@@ -339,7 +339,11 @@
                 }}
             }}
             post {{
-                always {{
+                unsuccessful {{
+                   sh 'zip -rq workspace.zip .'
+                   archiveArtifacts allowEmptyArchive: true, artifacts: 'workspace.zip'
+                }}
+                cleanup {{
                     cleanWs deleteDirs: true, disableDeferredWipeout: true
                 }}
             }}
