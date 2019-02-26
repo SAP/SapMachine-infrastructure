@@ -33,11 +33,11 @@ if [ -z $GIT_TAG_NAME ]; then
     git push --tags
     popd
     GIT_TAG_DESCRIPTION="${SAPMACHINE_ARCHIVE_NAME_PREFIX} Snapshot ${TIMESTAMP_LONG}"
-    python SapMachine-infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -d "$GIT_TAG_DESCRIPTION" $PRE_RELEASE_OPT || true
+    python SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -d "$GIT_TAG_DESCRIPTION" $PRE_RELEASE_OPT || true
 
 else
     GIT_TAG_NAME=$(echo $GIT_TAG_NAME | sed 's/-alpine//')
-    python SapMachine-infrastructure/lib/github_publish.py -t $GIT_TAG_NAME $PRE_RELEASE_OPT || true
+    python SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME $PRE_RELEASE_OPT || true
 fi
 
 ls -la
@@ -71,7 +71,7 @@ fi
 shasum -a 256 $ARCHIVE_NAME_JDK > $ARCHIVE_SUM_JDK
 shasum -a 256 $ARCHIVE_NAME_JRE > $ARCHIVE_SUM_JRE
 
-python SapMachine-infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${ARCHIVE_NAME_JDK}"
-python SapMachine-infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${ARCHIVE_NAME_JRE}"
-python SapMachine-infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${ARCHIVE_SUM_JDK}"
-python SapMachine-infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${ARCHIVE_SUM_JRE}"
+python SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${ARCHIVE_NAME_JDK}"
+python SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${ARCHIVE_NAME_JRE}"
+python SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${ARCHIVE_SUM_JDK}"
+python SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${ARCHIVE_SUM_JRE}"
