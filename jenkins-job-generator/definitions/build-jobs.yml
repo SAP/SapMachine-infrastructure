@@ -810,6 +810,62 @@
                                 }}
                             }}
                         }}
+                        stage('Build macos_x86_64') {{
+                            when {{
+                                expression {{
+                                    env.VERIFICATION_RESULT == "1"
+                                }}
+                            }}
+                            environment {{
+                                GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
+                                CONTEXT = "validate-pr-{major}-macos_x86_64"
+                            }}
+                            steps {{
+                                setGitHubPullRequestStatus context: CONTEXT, state: 'PENDING'
+                                build job: 'build-{major}-pr-validation-macos_x86_64', propagate: true, wait: true, parameters:
+                                    [
+                                        string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER),
+                                        booleanParam(name: 'PUBLISH', value: false),
+                                        booleanParam(name: 'RUN_TESTS', value: true),
+                                    ]
+                            }}
+                            post {{
+                                success {{
+                                    setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS'
+                                }}
+                                failure {{
+                                    setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE'
+                                }}
+                            }}
+                        }}
+                        stage('Build windows_x86_64') {{
+                            when {{
+                                expression {{
+                                    env.VERIFICATION_RESULT == "1"
+                                }}
+                            }}
+                            environment {{
+                                GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
+                                CONTEXT = "validate-pr-{major}-windows_x86_64"
+                            }}
+                            steps {{
+                                setGitHubPullRequestStatus context: CONTEXT, state: 'PENDING'
+                                build job: 'build-{major}-pr-validation-windows_x86_64', propagate: true, wait: true, parameters:
+                                    [
+                                        string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER),
+                                        booleanParam(name: 'PUBLISH', value: false),
+                                        booleanParam(name: 'RUN_TESTS', value: true),
+                                    ]
+                            }}
+                            post {{
+                                success {{
+                                    setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS'
+                                }}
+                                failure {{
+                                    setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE'
+                                }}
+                            }}
+                        }}
                     }}
                 }}
             }}
