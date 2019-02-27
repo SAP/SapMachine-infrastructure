@@ -21,10 +21,6 @@ pipeline {
                     ]) {
                     sh '''
                     python lib/merge_jdk_tags.py
-                    check-tags/check_tag_and_build_release.sh 10.0.2
-                    check-tags/check_tag_and_build_release.sh 11.0.2
-                    check-tags/check_tag_and_build_release.sh 12
-                    check-tags/check_tag_and_build_release.sh 13
                     '''
                 }
             }
