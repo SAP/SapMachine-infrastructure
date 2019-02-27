@@ -182,6 +182,62 @@
                         }
                     }
                 }
+                stage(&apos;Build macos_x86_64&apos;) {
+                    when {
+                        expression {
+                            env.VERIFICATION_RESULT == &quot;1&quot;
+                        }
+                    }
+                    environment {
+                        GITHUB_API_ACCESS_TOKEN = credentials(&apos;SapMachine-Github-Token&apos;)
+                        CONTEXT = &quot;validate-pr-13-macos_x86_64&quot;
+                    }
+                    steps {
+                        setGitHubPullRequestStatus context: CONTEXT, state: &apos;PENDING&apos;
+                        build job: &apos;build-13-pr-validation-macos_x86_64&apos;, propagate: true, wait: true, parameters:
+                            [
+                                string(name: &apos;GITHUB_PR_NUMBER&apos;, value: env.GITHUB_PR_NUMBER),
+                                booleanParam(name: &apos;PUBLISH&apos;, value: false),
+                                booleanParam(name: &apos;RUN_TESTS&apos;, value: true),
+                            ]
+                    }
+                    post {
+                        success {
+                            setGitHubPullRequestStatus context: CONTEXT, state: &apos;SUCCESS&apos;
+                        }
+                        failure {
+                            setGitHubPullRequestStatus context: CONTEXT, state: &apos;FAILURE&apos;
+                        }
+                    }
+                }
+                stage(&apos;Build windows_x86_64&apos;) {
+                    when {
+                        expression {
+                            env.VERIFICATION_RESULT == &quot;1&quot;
+                        }
+                    }
+                    environment {
+                        GITHUB_API_ACCESS_TOKEN = credentials(&apos;SapMachine-Github-Token&apos;)
+                        CONTEXT = &quot;validate-pr-13-windows_x86_64&quot;
+                    }
+                    steps {
+                        setGitHubPullRequestStatus context: CONTEXT, state: &apos;PENDING&apos;
+                        build job: &apos;build-13-pr-validation-windows_x86_64&apos;, propagate: true, wait: true, parameters:
+                            [
+                                string(name: &apos;GITHUB_PR_NUMBER&apos;, value: env.GITHUB_PR_NUMBER),
+                                booleanParam(name: &apos;PUBLISH&apos;, value: false),
+                                booleanParam(name: &apos;RUN_TESTS&apos;, value: true),
+                            ]
+                    }
+                    post {
+                        success {
+                            setGitHubPullRequestStatus context: CONTEXT, state: &apos;SUCCESS&apos;
+                        }
+                        failure {
+                            setGitHubPullRequestStatus context: CONTEXT, state: &apos;FAILURE&apos;
+                        }
+                    }
+                }
             }
         }
     }
