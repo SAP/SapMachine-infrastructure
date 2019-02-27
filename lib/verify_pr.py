@@ -110,9 +110,7 @@ def create_success_comment(pr_author):
     return message
 
 def create_request_for_admin_comment(pr_author):
-    message = str.format("""Hi @{0}. Thanks for your PR.
-I'm waiting for a [SapMachine Team member](https://github.com/orgs/SAP/teams/sapmachine-team) to verify that this pull request is ok to test.
-If it is, they should reply with `retest this please`.""", pr_author)
+    message = str.format('Hi @{0}. Thanks for your Pull Request. I\'m waiting for a [SapMachine Team member](https://github.com/orgs/SAP/teams/sapmachine-team) to verify that this pull request is ok to test. If it is, they should reply with `retest this please`.', pr_author)
     message = str.format('{{ "body": "{0}" }}', message.replace('"', '\\"'))
     return message
 
