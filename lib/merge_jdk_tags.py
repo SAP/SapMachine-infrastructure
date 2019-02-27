@@ -10,49 +10,11 @@ import re
 import utils
 import argparse
 
+from utils import JDKTag
 from os.path import join
 
-jdk_tag_pattern = re.compile('jdk-((\d+)(\.\d+)*)(\+\d+|-ga)$')
 containing_branches_pattern = re.compile('sapmachine.*|pr-jdk.*')
 branch_pattern = re.compile('sapmachine([\d]+)?$')
-
-class JDKTag:
-    def __init__(self, match):
-        self.tag = match.group(0)
-        self.version = match.group(1).split('.')
-        self.build_number = match.group(4)[1:]
-        self.is_ga = self.build_number == 'ga'
-
-        if self.is_ga:
-            self.build_number = 999999
-        else:
-            self.build_number = int(self.build_number)
-
-        self.version = map(int, self.version)
-        self.version.extend([0 for i in range(5 - len(self.version))])
-
-    def as_string(self):
-        return self.tag
-
-    def get_version(self):
-        return self.version
-
-    def get_major(self):
-        return self.version[0]
-
-    def get_build_number(self):
-        return self.build_number
-
-    def is_ga(self):
-        return self.is_ga
-
-    def is_greater_than(self, other):
-        ts = tuple(self.version)
-        to = tuple(other.get_version())
-        ts += (self.build_number,)
-        to += (other.get_build_number(),)
-        return ts > to
-
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
@@ -99,11 +61,11 @@ def main(argv=None):
     # iterate all tags
     for tag in tags:
         # filter for jdk tags
-        match = jdk_tag_pattern.match(tag['name'])
+        match = JDKTag.jdk_tag_pattern.match(tag['name'])
 
         if match is not None:
             # found a jdk tag
-            jdk_tag= JDKTag(match)
+            jdk_tag = JDKTag(match)
             major = jdk_tag.get_major()
 
             # only store the latest jdk tag (version comparison)
@@ -123,7 +85,7 @@ def main(argv=None):
         print(str.format('latest tag for branch "{0}" is "{1}"', sapmachine_branch, latest_tag_for_branch.as_string()))
 
         # check whether the jdk tag is already contained in the sapmachine branch
-        _, out, _ = utils.run_cmd(str.format('git branch -a --contains tags/{0}', latest_tag_for_branch.as_string()).split(' '), cwd=git_target_dir, std=True)
+        _, out, _ = utils.run_cmd(str.format('git branch -a --contains tags/{0}', latest_tag_for_branch.as_string()).split(' '), cwd=git_target_dir, std=True, throw=False)
         match = re.search(containing_branches_pattern, out)
 
         if match is None:

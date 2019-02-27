@@ -326,3 +326,56 @@ def sapmachine_tag_is_release(tag):
             return not release['prerelease']
 
     return False
+
+class JDKTag:
+    jdk_tag_pattern = re.compile('jdk-((\d+)(\.\d+)*)(\+\d+|-ga)$')
+
+    def __init__(self, match):
+        self.tag = match.group(0)
+        self.version_string = match.group(1)
+        self.version = match.group(1).split('.')
+        self.build_number = match.group(4)[1:]
+        self.is_ga = self.build_number == 'ga'
+
+        if self.is_ga:
+            self.build_number = 999999
+        else:
+            self.build_number = int(self.build_number)
+
+        self.version = map(int, self.version)
+        self.version.extend([0 for i in range(5 - len(self.version))])
+
+        self.sapmachine_tag = None
+
+    def as_string(self):
+        return self.tag
+
+
+    def as_sapmachine_tag(self):
+        if self.sapmachine_tag == None:
+            self.sapmachine_tag = str.format('sapmachine-{0}{1}',
+                self.version_string,
+                '' if self.is_ga else '+' + str(self.build_number))
+        return self.sapmachine_tag
+
+    def get_version(self):
+        return self.version
+
+    def get_major(self):
+        return self.version[0]
+
+    def get_build_number(self):
+        return self.build_number
+
+    def is_ga(self):
+        return self.is_ga
+
+    def equals(self, other):
+        return self.tag == other.tag
+
+    def is_greater_than(self, other):
+        ts = tuple(self.version)
+        to = tuple(other.get_version())
+        ts += (self.build_number,)
+        to += (other.get_build_number(),)
+        return ts > to
