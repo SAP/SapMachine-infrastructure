@@ -20,12 +20,12 @@ branch_pattern = re.compile('sapmachine([\d]+)?$')
 merge_commit_pattern = re.compile('Merge pull request #\d+ from SAP/pr-jdk-')
 
 def run_jenkins_jobs(major, tag):
-    if 'JENKINS_USER' not in os.environ or 'JENKINS_PASSWORD' not in os.environ:
+    if 'JENKINS_CREDENTIALS' not in os.environ:
         return
 
     jenkins_url = 'https://ci.sapmachine.io'
-    jenkins_user = os.environ['JENKINS_USER']
-    jenkins_password = os.environ['JENKINS_PASSWORD']
+    jenkins_user = os.environ['JENKINS_CREDENTIALS_USR']
+    jenkins_password = os.environ['JENKINS_CREDENTIALS_PSW']
 
     server = Jenkins(jenkins_url, username=jenkins_user, password=jenkins_password,
         requester=CrumbRequester(
