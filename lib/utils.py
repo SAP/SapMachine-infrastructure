@@ -335,9 +335,9 @@ class JDKTag:
         self.version_string = match.group(1)
         self.version = match.group(1).split('.')
         self.build_number = match.group(4)[1:]
-        self.is_ga = self.build_number == 'ga'
+        self.tag_is_ga = self.build_number == 'ga'
 
-        if self.is_ga:
+        if self.tag_is_ga:
             self.build_number = 999999
         else:
             self.build_number = int(self.build_number)
@@ -355,7 +355,7 @@ class JDKTag:
         if self.sapmachine_tag == None:
             self.sapmachine_tag = str.format('sapmachine-{0}{1}',
                 self.version_string,
-                '' if self.is_ga else '+' + str(self.build_number))
+                '' if self.tag_is_ga else '+' + str(self.build_number))
         return self.sapmachine_tag
 
     def get_version(self):
@@ -368,7 +368,7 @@ class JDKTag:
         return self.build_number
 
     def is_ga(self):
-        return self.is_ga
+        return self.tag_is_ga
 
     def equals(self, other):
         return self.tag == other.tag
