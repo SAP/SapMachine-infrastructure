@@ -1,6 +1,10 @@
 pipeline {
     agent {
-        label 'repository'
+        dockerfile {
+            dir "dockerfiles/ubuntu_16_04_x86_64"
+            reuseNode true
+            label "linux_x86_64"
+        }
     }
     stages {
         stage('Merge') {
@@ -21,6 +25,7 @@ pipeline {
                     ]) {
                     sh '''
                     python lib/merge_jdk_tags.py
+                    python lib/create_sapmachine_tag.py
                     '''
                 }
             }
