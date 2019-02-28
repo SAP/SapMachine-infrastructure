@@ -13,8 +13,46 @@ import argparse
 from utils import JDKTag
 from os.path import join
 
+from jenkinsapi.jenkins import Jenkins
+from jenkinsapi.utils.crumb_requester import CrumbRequester
+
 branch_pattern = re.compile('sapmachine([\d]+)?$')
 merge_commit_pattern = re.compile('Merge pull request #\d+ from SAP/pr-jdk-')
+
+def run_jenkins_jobs(major, tag):
+    if 'JENKINS_USER' not in os.environ or 'JENKINS_PASSWORD' not in os.environ:
+        return
+
+    jenkins_url = 'https://ci.sapmachine.io'
+    jenkins_user = os.environ['JENKINS_USER']
+    jenkins_password = os.environ['JENKINS_PASSWORD']
+
+    server = Jenkins(jenkins_url, username=jenkins_user, password=jenkins_password,
+        requester=CrumbRequester(
+            baseurl=jenkins_url,
+            username=jenkins_user,
+            password=jenkins_password
+        )
+    )
+
+    build_jobs = [
+        str.format('build-{0}-release-linux_x86_64', major),
+        str.format('build-{0}-release-linux_ppc64le', major),
+        str.format('build-{0}-release-linux_ppc64', major),
+        str.format('build-{0}-release-macos_x86_64', major),
+        str.format('build-{0}-release-windows_x86_64', major)
+    ]
+
+    job_params = { 
+        'PUBLISH': 'true' ,
+        'RELEASE': 'false',
+        'RUN_TESTS': 'true',
+        'GIT_TAG_NAME': tag
+    }
+
+    for job in build_jobs:
+        print(str.format('starting jenkins job "{0}" ...', job))
+        server.build_job(job, job_params)
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
@@ -64,6 +102,7 @@ def main(argv=None):
                             utils.run_cmd(str.format('git checkout {0}', commit_id).split(' '), cwd=git_target_dir)
                             utils.run_cmd(str.format('git tag {0}', jdk_tag.as_sapmachine_tag()).split(' '), cwd=git_target_dir)
                             utils.run_cmd(str.format('git push origin {0}', jdk_tag.as_sapmachine_tag()).split(' '), cwd=git_target_dir)
+                            run_jenkins_jobs(major, jdk_tag.as_sapmachine_tag())
 
     utils.remove_if_exists(workdir)
     return 0
