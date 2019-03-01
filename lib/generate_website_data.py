@@ -41,6 +41,9 @@ class Releases:
 
         self.releases[tag][os] = asset_url
 
+    def clear_assets(self):
+        self.releases.clear()
+
     def transform(self):
         json_root = {
             self.major: {
@@ -76,7 +79,11 @@ def push_to_git(files):
     utils.remove_if_exists(local_repo)
 
 def is_lts(major):
-    return int(major) % 2 != 0
+    lts_releases = [
+        '11',
+        '18'
+    ]
+    return major in lts_releases
 
 def main(argv=None):
     token = utils.get_github_api_accesstoken()
@@ -98,16 +105,31 @@ def main(argv=None):
     for release in response:
         version, version_part, major, build_number, sap_build_number, os_ext = utils.sapmachine_tag_components(release['name'])
 
+        is_prerelease = release['prerelease']
+
         if version is None or os_ext:
             continue
 
-        if major in major_dict and major_dict[major] != release['prerelease']:
-            continue
+        if major in major_dict:
+            if not is_prerelease and major_dict[major]:
+                # this is not a pre-release but the release before this was a pre-release
+                # remove all assets
+                if major in release_dict:
+                    release_dict[major].clear_assets()
 
-        major_dict[major] = release['prerelease']
+                # remove entry in the image dictionary
+                if major in image_dict:
+                    del image_dict[major]
+            else:
+                if not major_dict[major]:
+                    # the release before this was a release
+                    # skip, we only keep the latest release version
+                    continue
+
+        major_dict[major] = is_prerelease
         assets = release['assets']
 
-        if release['prerelease'] is not True and major not in latest_link_dict:
+        if is_prerelease is not True and major not in latest_link_dict:
             latest_link_dict[major] = Template(latest_template).substitute(
                 major=major,
                 url = release['html_url']
