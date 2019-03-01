@@ -11,6 +11,11 @@ pipeline {
                 }
             }
             steps {
+                script {
+                    def match = params.TAG =~ /jtreg([0-9]+\.[0-9]+)-(b[0-9]*).*/
+                    env.BUILD_NUMBER = match[0][2]
+                    env.BUILD_VERSION = match[0][1]
+                }
                 sh "rm -rf ${env.WORKSPACE}/jtreg"
                 sh "hg clone http://hg.openjdk.java.net/code-tools/jtreg ${env.WORKSPACE}/jtreg"
                 sh "cd ${env.WORKSPACE}/jtreg && hg up ${params.TAG}"
