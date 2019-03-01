@@ -72,6 +72,24 @@
           - packages.openjdk
           - jenkins_slave
 
+      - name: install zip
+        apt:
+         name: zip
+         state: latest
+         install_recommends: no
+        become: yes
+        tags:
+          - packages.zip
+
+      - name: install unzip
+        apt:
+         name: unzip
+         state: latest
+         install_recommends: no
+        become: yes
+        tags:
+          - packages.zip
+
       # create sapmachine group and user
       # used for running the docker container
       - name: create sapmachine group
