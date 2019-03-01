@@ -163,16 +163,24 @@
         }
         stage('Publish CF Java Buildpack Data') {
             when {
-                expression { params.PUBLISH == true &amp;&amp; params.AGENT_LABEL == "linux_x86_64" }
+                expression { params.PUBLISH == true &amp;&amp; params.RELEASE == true &amp;&amp; JOB_NAME ==~ /((\S*)(linux_x86_64)(\S*))/ }
             }
             steps {
-                script {
-                    def match = params.GIT_TAG_NAME =~ /[^-]*-([0-9]+)[\.0-9]*.*/
-                    env.MAJOR_VERSION = match[0][1]
-                }
                 build job: 'generate-cf-data', propagate: false, wait: false, parameters:
                     [
-                        string(name: 'MAJOR', value: env.MAJOR_VERSION)
+                        string(name: 'MAJOR', value: '13')
+                    ]
+            }
+        }
+        stage('Publish Debian Linux Packages') {
+            when {
+                expression { params.PUBLISH == true &amp;&amp; params.RELEASE == true &amp;&amp; JOB_NAME ==~ /((\S*)(linux_x86_64)(\S*))/ }
+            }
+            steps {
+                build job: 'debian-pipeline', propagate: false, wait: true, parameters:
+                    [
+                        string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
+                        [$class: 'BooleanParameterValue', name: 'DEPLOY', value: true]
                     ]
             }
         }
