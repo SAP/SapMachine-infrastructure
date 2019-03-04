@@ -3,6 +3,8 @@
     description: 'This project is generated. Do not modify manually.'
     project-type: pipeline
     concurrent: false
+    triggers:
+        - timed: "@midnight"
     dsl: |
         pipeline {
             agent {
