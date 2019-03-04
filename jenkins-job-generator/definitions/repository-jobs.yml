@@ -43,13 +43,23 @@
     description: 'This project is generated. Do not modify manually.'
     project-type: pipeline
     concurrent: false
-    triggers:
-      - build-result:
-          groups:
-            - jobs:
-                - repository-update
-              results:
-                - success
+    properties:
+        - raw:
+            xml: |
+                <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+                    <triggers>
+                        <jenkins.triggers.ReverseBuildTrigger>
+                        <spec></spec>
+                        <upstreamProjects>repository-update</upstreamProjects>
+                        <threshold>
+                            <name>SUCCESS</name>
+                            <ordinal>0</ordinal>
+                            <color>BLUE</color>
+                            <completeBuild>true</completeBuild>
+                        </threshold>
+                        </jenkins.triggers.ReverseBuildTrigger>
+                    </triggers>
+                </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
     dsl: |
         pipeline {
             agent {
