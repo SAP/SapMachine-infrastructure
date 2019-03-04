@@ -15,7 +15,9 @@ python-pip \
 python-setuptools \
 libffi-dev \
 openssl \
-libssl-dev
+libssl-dev \
+gcc \
+g++
 
 RUN useradd -ms /bin/bash jenkins -u 1002
 
