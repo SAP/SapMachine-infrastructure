@@ -10,32 +10,30 @@
                 checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
             }
         }
-        stage('Generate') {
+        stage('Build') {
             agent {
-                  dockerfile {
-                      dir "SapMachine-Infrastructure/dockerfiles/infrastructure"
-                      reuseNode true
-                      label "repository"
-                  }
-              }
-              environment {
-                  GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
-              }
-              steps {
-                  withCredentials([
+                dockerfile {
+                    dir "SapMachine-Infrastructure/dockerfiles/infrastructure"
+                    reuseNode true
+                    label "repository"
+                }
+            }
+            steps {
+                withCredentials([
                     [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
                     ]) {
-                      sh "python SapMachine-Infrastructure/lib/generate_website_data.py"
-                    }
-              }
-          }
-    }
-    post {
-        always {
-            cleanWs deleteDirs: true, disableDeferredWipeout: true
+                        sh '''
+                        SapMachine-Infrastructure/lib/update_repo.sh jdk/jdk
+                        SapMachine-Infrastructure/lib/update_repo.sh jdk-updates/jdk10u
+                        SapMachine-Infrastructure/lib/update_repo.sh jdk-updates/jdk11u
+                        SapMachine-Infrastructure/lib/update_repo.sh jdk/jdk12
+                        '''
+                }
+            }
         }
     }
-}</script>
+}
+</script>
     <sandbox>false</sandbox>
   </definition>
   <actions/>
@@ -47,6 +45,11 @@
   <canRoam>true</canRoam>
   <properties/>
   <scm class="hudson.scm.NullSCM"/>
+  <triggers class="vector">
+    <hudson.triggers.TimerTrigger>
+      <spec>@midnight</spec>
+    </hudson.triggers.TimerTrigger>
+  </triggers>
   <publishers/>
   <buildWrappers/>
 </flow-definition>

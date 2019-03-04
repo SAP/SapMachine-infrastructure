@@ -5,37 +5,42 @@
         label "repository"
     }
     stages {
-        stage("Checkout Infrastructure") {
+      stage("Checkout Infrastructure") {
             steps {
                 checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
             }
         }
-        stage('Generate') {
+        stage('Merge') {
             agent {
-                  dockerfile {
-                      dir "SapMachine-Infrastructure/dockerfiles/infrastructure"
-                      reuseNode true
-                      label "repository"
-                  }
-              }
-              environment {
-                  GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
-              }
-              steps {
-                  withCredentials([
+                dockerfile {
+                    dir "SapMachine-Infrastructure/dockerfiles/infrastructure"
+                    reuseNode true
+                    label "repository"
+                }
+            }
+            environment {
+                JENKINS_CREDENTIALS = credentials('sapmachine-jenkins')
+                GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
+            }
+            steps {
+              withCredentials([
                     [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
                     ]) {
-                      sh "python SapMachine-Infrastructure/lib/generate_website_data.py"
-                    }
-              }
-          }
+                    sh '''
+                    python SapMachine-Infrastructure/lib/merge_jdk_tags.py
+                    python SapMachine-Infrastructure/lib/create_sapmachine_tags.py
+                    '''
+                }
+            }
+        }
     }
     post {
-        always {
+        cleanup {
             cleanWs deleteDirs: true, disableDeferredWipeout: true
         }
     }
-}</script>
+}
+</script>
     <sandbox>false</sandbox>
   </definition>
   <actions/>
@@ -45,7 +50,22 @@
   <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
   <concurrentBuild>false</concurrentBuild>
   <canRoam>true</canRoam>
-  <properties/>
+  <properties>
+    <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+      <triggers>
+        <jenkins.triggers.ReverseBuildTrigger>
+          <spec/>
+          <upstreamProjects>repository-update</upstreamProjects>
+          <threshold>
+            <name>SUCCESS</name>
+            <ordinal>0</ordinal>
+            <color>BLUE</color>
+            <completeBuild>true</completeBuild>
+          </threshold>
+        </jenkins.triggers.ReverseBuildTrigger>
+      </triggers>
+    </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+  </properties>
   <scm class="hudson.scm.NullSCM"/>
   <publishers/>
   <buildWrappers/>

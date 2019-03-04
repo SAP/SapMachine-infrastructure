@@ -2,7 +2,9 @@
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps">
     <script>pipeline {
     agent {
-        label "repository"
+        node {
+            label 'master'
+        }
     }
     stages {
         stage("Checkout Infrastructure") {
@@ -10,32 +12,25 @@
                 checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
             }
         }
-        stage('Generate') {
-            agent {
-                  dockerfile {
-                      dir "SapMachine-Infrastructure/dockerfiles/infrastructure"
-                      reuseNode true
-                      label "repository"
-                  }
-              }
-              environment {
-                  GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
-              }
-              steps {
-                  withCredentials([
+        stage('Backup') {
+            steps {
+                withCredentials([
                     [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
                     ]) {
-                      sh "python SapMachine-Infrastructure/lib/generate_website_data.py"
-                    }
-              }
-          }
+                sh '''
+                    python SapMachine-Infrastructure/lib/jenkins_restore.py -s . -t /var/lib/jenkins
+                    '''
+                }
+            }
+        }
     }
     post {
-        always {
+        cleanup {
             cleanWs deleteDirs: true, disableDeferredWipeout: true
         }
     }
-}</script>
+}
+</script>
     <sandbox>false</sandbox>
   </definition>
   <actions/>
