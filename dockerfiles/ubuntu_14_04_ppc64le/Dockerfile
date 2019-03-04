@@ -44,7 +44,6 @@ RUN mkdir -p /opt/scimark2
 RUN wget https://math.nist.gov/scimark2/scimark2lib.jar -O /opt/scimark2/scimark2lib.jar
 
 ADD sysroot-sles12-ppc64le.tgz /opt
-ENV _CONFIGURE_SYSROOT="--with-sysroot=/opt/sysroot-sles12-ppc64le --with-freetype-lib=/opt/sysroot-sles12-ppc64le/usr/lib64 --with-freetype-include=/opt/sysroot-sles12-ppc64le/usr/include --with-stdc++lib=static"
 
 WORKDIR /opt
 RUN wget https://mirrors.kernel.org/gnu/gcc/gcc-7.3.0/gcc-7.3.0.tar.gz && \
