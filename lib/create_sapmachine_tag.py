@@ -89,28 +89,34 @@ def main(argv=None):
     sapmachine_latest += 1
 
     for branch in sapmachine_branches:
+        if branch[1] == 0:
+            branch[1] = sapmachine_latest
+
         major = branch[1]
-
-        if major is 0:
-            major = sapmachine_latest
-
         utils.run_cmd(str.format('git checkout {0}', branch[0]).split(' '), cwd=git_target_dir)
 
         # find the last merge commit and check wether it is a merge from the jdk branch
-        _, commit_message, _ = utils.run_cmd('git log --merges -n 1 --format=%s'.split(' '), cwd=git_target_dir, std=True, throw=False)
-        match_merge_commit = re.search(merge_commit_pattern, commit_message)
-        match_jdk_tag = re.search(JDKTag.jdk_tag_pattern, commit_message)
+        _, commit_messages, _ = utils.run_cmd('git log --merges -n 50 --format=%s'.split(' '), cwd=git_target_dir, std=True, throw=False)
+        _, commit_ids, _ = utils.run_cmd('git log --merges -n 50 --format=%H'.split(' '), cwd=git_target_dir, std=True, throw=False)
 
-        if match_merge_commit is not None and match_jdk_tag is not None:
-            # get the commit id of the merge commit
-            _, commit_id, _ = utils.run_cmd('git log --merges -n 1 --format=%H'.split(' '), cwd=git_target_dir, std=True, throw=False)
-            commit_id = commit_id.rstrip()
+        if commit_messages and commit_ids:
+            commit_messages = [commit_message for commit_message in commit_messages.split(os.linesep) if commit_message]
+            commit_ids = [commit_id for commit_id in commit_ids.split(os.linesep) if commit_id]
 
-            if commit_id:
-                # get the tags pointing to the merge commit
+        merge_commits = map(lambda x,y:[x,y],commit_messages,commit_ids)
+
+        for merge_commit in merge_commits:
+            commit_message = merge_commit[0]
+            commit_id = merge_commit[1]
+            match_merge_commit = re.search(merge_commit_pattern, commit_message)
+            match_jdk_tag = re.search(JDKTag.jdk_tag_pattern, commit_message)
+
+            if match_merge_commit is not None and match_jdk_tag is not None:
+                print(str.format('found latest merge commit "{0}" for branch "{1}"', commit_message, branch))
                 _, tags, _ = utils.run_cmd(str.format('git tag --contains {0}', commit_id).split(' '), cwd=git_target_dir, std=True, throw=False)
 
                 if not tags:
+                    # not tagged yet
                     # create sapmachine tag
                     jdk_tag = JDKTag(match_jdk_tag)
                     print(str.format('creating tag "{0}"', jdk_tag.as_sapmachine_tag()))
@@ -118,6 +124,10 @@ def main(argv=None):
                     utils.run_cmd(str.format('git tag {0}', jdk_tag.as_sapmachine_tag()).split(' '), cwd=git_target_dir)
                     utils.run_cmd(str.format('git push origin {0}', jdk_tag.as_sapmachine_tag()).split(' '), cwd=git_target_dir)
                     run_jenkins_jobs(major, jdk_tag.as_sapmachine_tag())
+                else:
+                    print('already tagged ...')
+
+                break
 
     utils.remove_if_exists(workdir)
     return 0
