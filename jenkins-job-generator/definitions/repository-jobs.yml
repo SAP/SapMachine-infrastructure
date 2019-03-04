@@ -17,7 +17,7 @@
                 stage('Build') {
                     agent {
                         dockerfile {
-                            dir "dockerfiles/infrastructure"
+                            dir "SapMachine-Infrastructure/dockerfiles/infrastructure"
                             reuseNode true
                             label "repository"
                         }
@@ -64,7 +64,7 @@
                 stage('Merge') {
                     agent {
                         dockerfile {
-                            dir "dockerfiles/infrastructure"
+                            dir "SapMachine-Infrastructure/dockerfiles/infrastructure"
                             reuseNode true
                             label "repository"
                         }
