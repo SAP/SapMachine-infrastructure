@@ -1,0 +1,88 @@
+- job:
+    name: repository-update
+    description: 'This project is generated. Do not modify manually.'
+    project-type: pipeline
+    concurrent: false
+    dsl: |
+        pipeline {
+            agent {
+                label "repository"
+            }
+              stages {
+                stage("Checkout Infrastructure") {
+                    steps {
+                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+                    }
+                }
+                stage('Build') {
+                    agent {
+                        dockerfile {
+                            dir "dockerfiles/infrastructure"
+                            reuseNode true
+                            label "repository"
+                        }
+                    }
+                    steps {
+                      withCredentials([
+                            [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
+                            ]) {
+                              sh '''
+                                SapMachine-Infrastructure/lib/update_repo.sh jdk/jdk
+                                SapMachine-Infrastructure/lib/update_repo.sh jdk-updates/jdk10u
+                                SapMachine-Infrastructure/lib/update_repo.sh jdk-updates/jdk11u
+                                SapMachine-Infrastructure/lib/update_repo.sh jdk/jdk12
+                                '''
+                        }
+                    }
+                }
+            }
+        }
+
+- job:
+    name: repository-tags
+    description: 'This project is generated. Do not modify manually.'
+    project-type: pipeline
+    concurrent: false
+    triggers:
+      - build-result:
+          groups:
+            - jobs:
+                - repository-update
+              results:
+                - success
+    dsl: |
+        pipeline {
+            agent {
+                label "repository"
+            }
+            stages {
+              stage("Checkout Infrastructure") {
+                    steps {
+                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+                    }
+                }
+                stage('Merge') {
+                    agent {
+                        dockerfile {
+                            dir "dockerfiles/infrastructure"
+                            reuseNode true
+                            label "repository"
+                        }
+                    }
+                    environment {
+                        JENKINS_CREDENTIALS = credentials('sapmachine-jenkins')
+                        GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
+                    }
+                    steps {
+                      withCredentials([
+                            [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
+                            ]) {
+                            sh '''
+                            python SapMachine-Infrastructure/lib/merge_jdk_tags.py
+                            python SapMachine-Infrastructure/lib/create_sapmachine_tags.py
+                            '''
+                        }
+                    }
+                }
+            }
+        }

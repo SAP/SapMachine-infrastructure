@@ -33,9 +33,7 @@ python \
 ant \
 patch \
 mercurial \
-openjdk-8-jdk \
-python-pip \
-python-setuptools
+openjdk-8-jdk
 
 RUN useradd -ms /bin/bash jenkins -u 1002
 
@@ -50,6 +48,3 @@ RUN wget https://math.nist.gov/scimark2/scimark2lib.jar -O /opt/scimark2/scimark
 
 RUN mkdir -p /opt/dacapo
 RUN wget https://sourceforge.net/projects/dacapobench/files/9.12-bach-MR1/dacapo-9.12-MR1-bach.jar/download -O /opt/dacapo/dacapo.jar
-
-RUN pip install jenkins-job-builder
-RUN pip install jenkinsapi

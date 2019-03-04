@@ -51,3 +51,11 @@
     description: 'Windows x86 64 Builds'
     view-type: list
     regex: 'build-.*-windows_x86_64$'
+
+- view:
+    name: 'Infrastructure'
+    description: 'Infrastructure related jobs'
+    view-type: list
+    job-name:
+        - repository-update
+        - repository-tags
