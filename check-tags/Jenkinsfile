@@ -24,7 +24,7 @@ pipeline {
                     ]) {
                     sh '''
                     python lib/merge_jdk_tags.py
-                    python lib/create_sapmachine_tag.py
+                    python lib/create_sapmachine_tags.py
                     '''
                 }
             }
