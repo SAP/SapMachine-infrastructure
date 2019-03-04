@@ -1,8 +1,8 @@
 pipeline {
     agent {
         dockerfile {
-            label params.AGENT_LABEL
-            dir params.DOCKER_DIR
+            label 'repository'
+            dir 'dockerfiles/infrastructure'
             reuseNode true
         }
     }
