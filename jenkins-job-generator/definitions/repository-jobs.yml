@@ -8,7 +8,7 @@
             agent {
                 label "repository"
             }
-              stages {
+            stages {
                 stage("Checkout Infrastructure") {
                     steps {
                         checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
@@ -23,10 +23,10 @@
                         }
                     }
                     steps {
-                      withCredentials([
+                        withCredentials([
                             [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
                             ]) {
-                              sh '''
+                                sh '''
                                 SapMachine-Infrastructure/lib/update_repo.sh jdk/jdk
                                 SapMachine-Infrastructure/lib/update_repo.sh jdk-updates/jdk10u
                                 SapMachine-Infrastructure/lib/update_repo.sh jdk-updates/jdk11u
@@ -93,6 +93,11 @@
                             '''
                         }
                     }
+                }
+            }
+            post {
+                cleanup {
+                    cleanWs deleteDirs: true, disableDeferredWipeout: true
                 }
             }
         }
