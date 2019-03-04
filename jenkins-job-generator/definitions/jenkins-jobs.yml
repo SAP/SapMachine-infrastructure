@@ -3,16 +3,6 @@
   description: 'This project is generated. Do not modify manually.'
   project-type: pipeline
   concurrent: false
-  triggers:
-    - pollscm:
-      cron: "H/2 * * * *"
-  scm:
-    - git:
-        url: https://github.com/SAP/SapMachine-infrastructure.git
-        branches:
-          - master
-        included-regions:
-          - jenkins-job-generator/.*
   properties:
         - raw:
             xml: |
@@ -27,7 +17,15 @@
           agent {
               label "repository"
           }
+          triggers {
+              pollSCM 'H/2 * * * *'
+          }
           stages {
+              stage("Checkout Infrastructure") {
+                  steps {
+                      checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], includedRegions: 'jenkins-job-generator/.*', doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+                  }
+              }
               stage('Generate') {
                   agent {
                       dockerfile {
@@ -40,7 +38,7 @@
                       withCredentials([
                               [$class: 'UsernamePasswordMultiBinding', credentialsId: 'sapmachine-jenkins', usernameVariable: 'JENKINS_USER', passwordVariable: 'JENKINS_PASSWORD']
                               ]) {
-                          sh "cd jenkins-job-generator && jenkins-jobs --conf jenkins_jobs.ini --user ${JENKINS_USER} --password ${JENKINS_PASSWORD} update --delete-old ./definitions"
+                          sh "cd SapMachine-Infrastructure/jenkins-job-generator && jenkins-jobs --conf jenkins_jobs.ini --user ${JENKINS_USER} --password ${JENKINS_PASSWORD} update --delete-old ./definitions"
                       }
                   }
               }
