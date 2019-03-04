@@ -17,6 +17,8 @@ libffi-dev \
 openssl \
 libssl-dev
 
+RUN useradd -ms /bin/bash jenkins -u 1002
+
 RUN easy_install hg-git
 RUN echo "[extensions]\nhgext.bookmarks =\nhggit =" > /etc/mercurial/hgrc
 
