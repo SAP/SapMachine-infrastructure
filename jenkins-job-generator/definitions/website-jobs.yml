@@ -9,7 +9,7 @@
                 label "repository"
             }
             stages {
-                tage("Checkout Infrastructure") {
+                stage("Checkout Infrastructure") {
                     steps {
                         checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
                     }
