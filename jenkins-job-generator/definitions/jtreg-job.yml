@@ -1,0 +1,58 @@
+- job:
+    name: 'jtreg'
+    description: 'This project is generated. Do not modify manually.'
+    project-type: pipeline
+    concurrent: false
+    properties:
+        - build-discarder:
+            num-to-keep: 100
+            artifact-num-to-keep: 10
+    parameters:
+      - string:
+          name: TAG
+          default: ''
+          description: 'The Mercurial tag to build.'
+    dsl: |
+        pipeline {
+            agent {
+                label 'linux_x86_64'
+            }
+            stages {
+              stage("Checkout Infrastructure") {
+                      steps {
+                          checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], includedRegions: 'jenkins-job-generator/.*', doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+                      }
+                  }
+                stage('Build') {
+                    agent {
+                        dockerfile {
+                            label 'linux_x86_64'
+                            dir "SapMachine-Infrastructure/dockerfiles/ubuntu_16_04_x86_64"
+                            reuseNode true
+                        }
+                    }
+                    steps {
+                        script {
+                            def match = params.TAG =~ /jtreg([0-9]+\.[0-9]+)-(b[0-9]*).*/
+                            env.BUILD_NUMBER = match[0][2]
+                            env.BUILD_VERSION = match[0][1]
+                        }
+                        sh "rm -rf ${env.WORKSPACE}/jtreg"
+                        sh "hg clone http://hg.openjdk.java.net/code-tools/jtreg ${env.WORKSPACE}/jtreg"
+                        sh "cd ${env.WORKSPACE}/jtreg && hg up ${params.TAG}"
+                        sh "cd ${env.WORKSPACE}/jtreg && bash make/build-all.sh /usr/lib/jvm/java-8-openjdk-*"
+                        sh "cp ${env.WORKSPACE}/jtreg/build/images/jtreg.zip ${env.WORKSPACE}/jtreg.zip"
+                    }
+                    post {
+                        success {
+                            archive 'jtreg.zip'
+                        }
+                    }
+                }
+            }
+            post {
+                always {
+                    cleanWs deleteDirs: true, disableDeferredWipeout: true
+                }
+            }
+        }
