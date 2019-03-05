@@ -10,7 +10,7 @@
     parameters:
       - string:
           name: TAG
-          default: ''
+          default: 'tip'
           description: 'The Mercurial tag to build.'
     dsl: |
         pipeline {
