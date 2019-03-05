@@ -1,0 +1,92 @@
+- job:
+    name: generate-cf-java-buildpack-data
+    description: 'This project is generated. Do not modify manually.'
+    project-type: pipeline
+    concurrent: false
+    properties:
+        - build-discarder:
+            num-to-keep: 100
+    dsl: |
+          pipeline {
+              agent {
+                  label 'cloud_foundry'
+              }
+              stages {
+                  stage("Checkout Infrastructure") {
+                      steps {
+                          checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+                      }
+                  }
+                  stage('Generate') {
+                      agent {
+                          dockerfile {
+                              dir "SapMachine-Infrastructure/dockerfiles/ubuntu_14_04_x86_64"
+                              reuseNode true
+                              label "cloud_foundry"
+                          }
+                      }
+                      environment {
+                          GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
+                      }
+                      steps {
+                          withCredentials([
+                            [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
+                            ]) {
+                              sh "python SapMachine-Infrastructure/lib/generate_cf_buildpack_data.py"
+                            }
+                      }
+                  }
+              }
+              post {
+                  always {
+                      cleanWs deleteDirs: true, disableDeferredWipeout: true
+                  }
+              }
+          }
+
+- job:
+    name: test-cf-java-buildpack-data
+    description: 'This project is generated. Do not modify manually.'
+    project-type: pipeline
+    concurrent: false
+    properties:
+        - build-discarder:
+            num-to-keep: 100
+    triggers:
+        - timed: "@midnight"
+    dsl: |
+        pipeline {
+              agent {
+                  label 'cloud_foundry'
+              }
+              stages {
+                  stage("Checkout Infrastructure") {
+                      steps {
+                          checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+                      }
+                  }
+                  stage('Test') {
+                      agent {
+                          dockerfile {
+                              label 'cloud_foundry'
+                              dir 'SapMachine-Infrastructure/cf-java-buildpack'
+                              reuseNode true
+                              additionalBuildArgs '--no-cache'
+                          }
+                      }
+                      steps {
+                          sh '''
+                              git clone https://github.com/cloudfoundry/java-buildpack.git
+                              cd java-buildpack
+                              bundle install
+                              bundle exec rake
+                          '''
+                      }
+                  }
+              }
+              post {
+                  always {
+                      cleanWs deleteDirs: true, disableDeferredWipeout: true
+                  }
+              }
+          }
