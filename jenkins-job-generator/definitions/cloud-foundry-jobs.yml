@@ -69,7 +69,7 @@
                       agent {
                           dockerfile {
                               label 'cloud_foundry'
-                              dir 'SapMachine-Infrastructure/cf-java-buildpack'
+                              dir 'SapMachine-Infrastructure/dockerfiles/cf-java-buildpack'
                               reuseNode true
                               additionalBuildArgs '--no-cache'
                           }
