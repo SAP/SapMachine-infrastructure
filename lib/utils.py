@@ -271,11 +271,14 @@ def get_github_api_accesstoken():
         return os.environ[key]
     return None
 
-def github_api_request(api, url=None, owner='SAP', repository='SapMachine', data=None, method='GET', per_page=None):
+def github_api_request(api=None, url=None, owner='SAP', repository='SapMachine', data=None, method='GET', per_page=None):
     load_next = True
     result = None
     token = get_github_api_accesstoken()
     link_pattern = re.compile('(<([^>]*)>; rel=\"prev\",\s*)?(<([^>]*)>; rel=\"next\",\s)?(<([^>]*)>; rel=\"last\"\s*)?')
+
+    if api is None and url is None:
+        return None
 
     while load_next:
         if url is None:
