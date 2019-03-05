@@ -3,6 +3,9 @@
     description: 'This project is generated. Do not modify manually.'
     project-type: pipeline
     concurrent: false
+    properties:
+        - build-discarder:
+            num-to-keep: 100
     triggers:
         - timed: "@midnight"
     dsl: |
@@ -46,6 +49,8 @@
     project-type: pipeline
     concurrent: false
     properties:
+        - build-discarder:
+            num-to-keep: 100
         - raw:
             xml: |
                 <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
