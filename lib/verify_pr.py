@@ -12,6 +12,7 @@ import argparse
 
 from urllib2 import urlopen, Request, quote
 from os.path import join
+from utils import github_api_request
 
 org = 'SAP'
 repository = 'SapMachine'
@@ -22,26 +23,9 @@ pull_request_description_pattern = '^((.*[\n|\r\n])*)fixes #([0-9]+)\s*$'
 
 pr_author_exception_list = [ 'SapMachine' ]
 
-# request to github api
-def api_request(url, data=None, method='GET'):
-    token = utils.get_github_api_accesstoken()
-    request = Request(url, data=data)
-    request.get_method = lambda: method
-
-    if token is not None:
-        request.add_header('Authorization', str.format('token {0}', token))
-
-    try:
-        response = json.loads(urlopen(request).read())
-        return response
-    except Exception as e:
-        print(e)
-        return None
-
 # validate an issue by issue id
 def validate_issue(issue_id):
-    issues_api = str.format('https://api.github.com/repos/{0}/{1}/issues/{2}', org, repository, issue_id)
-    issue = api_request(issues_api)
+    issue = github_api_request(str.format('issues/{0}', issue_id))
 
     # check whether the issue exists
     if issue is None:
@@ -123,7 +107,7 @@ def is_pr_ok_to_test(pull_request):
         # not a sapmachine-team member
         # check for a 'retest this please' comment
         # by any sapmachine-team member
-        comments = api_request(pull_request['comments_url'])
+        comments = github_api_request(url=pull_request['comments_url'])
 
         for comment in comments:
             if comment['body'] == 'retest this please' and comment['author_association'] == 'MEMBER':
@@ -139,16 +123,15 @@ def main(argv=None):
     pull_request_id = args.pull_request
 
     # request the pull request information
-    pull_request_api = str.format('https://api.github.com/repos/{0}/{1}/pulls/{2}', org, repository, pull_request_id)
-    pull_request = api_request(pull_request_api)
+    pull_request = github_api_request(str.format('pulls/{0}', pull_request_id))
 
     comments_url = pull_request['comments_url']
     pr_author = pull_request['user']['login']
-    user = api_request(pull_request['user']['url'])
+    user = github_api_request(url=pull_request['user']['url'])
 
     if not is_pr_ok_to_test(pull_request):
         message = create_request_for_admin_comment(pr_author)
-        api_request(comments_url, data=message, method='POST')
+        github_api_request(url=comments_url, data=message, method='POST')
         print(str.format('Pull Request validation failed: "{0}"', message))
         return 0
 
@@ -159,16 +142,15 @@ def main(argv=None):
             validate_pull_request(pull_request['body'])
         except Exception as error:
             message = create_failure_comment(pr_author, str.format('this pull request doesn\'t meet the expectations. {0}', error))
-            api_request(comments_url, data=message, method='POST')
+            github_api_request(url=comments_url, data=message, method='POST')
             print(str.format('Pull Request validation failed: "{0}"', message))
             return 0
 
         # all formal requirements are met
-        api_request(comments_url, data=create_success_comment(pr_author), method='POST')
+        github_api_request(url=comments_url, data=create_success_comment(pr_author), method='POST')
 
     # check wether the complete validation has to run
-    pull_request_files_api = str.format('https://api.github.com/repos/{0}/{1}/pulls/{2}/files', org, repository, pull_request_id)
-    pull_request_files = api_request(pull_request_files_api)
+    pull_request_files = github_api_request(str.format('pulls/{0}/files', pull_request_id))
 
     roots_requiring_verification = ['make', 'src', 'test', 'Makefile', 'configure']
     requires_verification = False
