@@ -1,15 +1,23 @@
 <?xml version='1.1' encoding='UTF-8'?>
 <list>
   <flow-owner plugin="workflow-job@2.31">
-    <job>repository-update</job>
-    <id>1</id>
+    <job>build-11-snapshot-all</job>
+    <id>7</id>
   </flow-owner>
   <flow-owner plugin="workflow-job@2.31">
-    <job>build-11-release-linux_x86_64</job>
-    <id>8</id>
+    <job>build-11-snapshot-linux_ppc64</job>
+    <id>10</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@2.31">
+    <job>build-11-snapshot-windows_x86_64</job>
+    <id>25</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@2.31">
+    <job>build-11-snapshot-macos_x86_64</job>
+    <id>14</id>
   </flow-owner>
   <flow-owner plugin="workflow-job@2.31">
     <job>jenkins-configuration-backup</job>
-    <id>1</id>
+    <id>2</id>
   </flow-owner>
 </list>
