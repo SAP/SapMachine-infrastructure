@@ -23,7 +23,7 @@
                 pollSCM 'H/2 * * * *'
             }
             stages {
-                stage("Checkout Infrastructure") {
+                stage('Checkout') {
                     steps {
                         checkout changelog: true, poll: true, scm: [$class: 'GitSCM', branches: [[name: '*/master']], includedRegions: 'jenkins-job-generator/.*', doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
                     }
