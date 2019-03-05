@@ -32,10 +32,13 @@
                             [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
                             ]) {
                                 sh '''
-                                SapMachine-Infrastructure/lib/update_repo.sh jdk/jdk
-                                SapMachine-Infrastructure/lib/update_repo.sh jdk-updates/jdk10u
-                                SapMachine-Infrastructure/lib/update_repo.sh jdk-updates/jdk11u
-                                SapMachine-Infrastructure/lib/update_repo.sh jdk/jdk12
+                                openjdk_repositories=$(python SapMachine-Infrastructure/lib/list_openjdk_repositories.py)
+
+                                for i in "${openjdk_repositories[@]}"
+                                do
+                                    :
+                                    SapMachine-Infrastructure/lib/update_repo.sh $i
+                                done
                                 '''
                         }
                     }
