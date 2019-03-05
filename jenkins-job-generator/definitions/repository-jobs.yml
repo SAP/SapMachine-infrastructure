@@ -34,7 +34,7 @@
                                 sh '''
                                 openjdk_repositories=$(python SapMachine-Infrastructure/lib/list_openjdk_repositories.py)
 
-                                for i in "${openjdk_repositories[@]}"
+                                for i in ${openjdk_repositories}
                                 do
                                     :
                                     SapMachine-Infrastructure/lib/update_repo.sh $i
