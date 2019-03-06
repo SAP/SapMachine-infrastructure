@@ -31,7 +31,7 @@
                         }
                     }
                     steps {
-                        sh "python SapMachine-Infrastructure/lib/make_docker_manifest.py -d SapMachine-Infrastructure/dockerfiles/official -m sapmachine.manifest --latest ${LATEST_MAJOR}"
+                        sh "cd SapMachine-Infrastructure && python lib/make_docker_manifest.py -d dockerfiles/official -m ../sapmachine.manifest --latest ${LATEST_MAJOR}"
                         archiveArtifacts 'sapmachine.manifest'
                     }
                 }
