@@ -12,7 +12,7 @@
             branches:
                 - master
             included-regions:
-                - 'jenkins-job-generator/*'
+                - 'jenkins-job-generator/.*'
     triggers:
         - pollscm:
             cron: "H/2 * * * *"
