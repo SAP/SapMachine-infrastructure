@@ -10,7 +10,7 @@ import re
 import utils
 import argparse
 
-from urllib2 import urlopen, Request, quote
+from utils import github_api_request
 from os.path import join
 
 def main(argv=None):
@@ -25,18 +25,9 @@ def main(argv=None):
     include_prereleases = args.include_prereleases
     tag_list = []
 
-    token = utils.get_github_api_accesstoken()
-    org = 'SAP'
-    repository = 'SapMachine'
-    github_api = str.format('https://api.github.com/repos/{0}/{1}/releases', org, repository)
-    asset_pattern = re.compile(utils.sapmachine_asset_pattern())
-    request = Request(github_api)
+    releases = github_api_request('releases')
 
-    if token is not None:
-        request.add_header('Authorization', str.format('token {0}', token))
-
-    response = json.loads(urlopen(request).read())
-    for release in response:
+    for release in releases:
         if release['prerelease'] is True and not include_prereleases:
             continue
 
