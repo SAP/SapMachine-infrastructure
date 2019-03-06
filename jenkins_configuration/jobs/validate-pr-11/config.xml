@@ -47,7 +47,7 @@
                     }
                     steps {
                         setGitHubPullRequestStatus context: CONTEXT, state: 'PENDING'
-                        build job: 'build-11-pr-validation-linux_x86_64', propagate: true, wait: true, parameters:
+                        build job: 'build-11-pr-validation-linux_x86_64', propagate: false, wait: true, parameters:
                             [
                                 string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER),
                                 booleanParam(name: 'PUBLISH', value: false),
@@ -75,7 +75,7 @@
                     }
                     steps {
                         setGitHubPullRequestStatus context: CONTEXT, state: 'PENDING'
-                        build job: 'build-11-pr-validation-linux_ppc64le', propagate: true, wait: true, parameters:
+                        build job: 'build-11-pr-validation-linux_ppc64le', propagate: false, wait: true, parameters:
                             [
                                 string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER),
                                 booleanParam(name: 'PUBLISH', value: false),
@@ -103,7 +103,7 @@
                     }
                     steps {
                         setGitHubPullRequestStatus context: CONTEXT, state: 'PENDING'
-                        build job: 'build-11-pr-validation-linux_ppc64', propagate: true, wait: true, parameters:
+                        build job: 'build-11-pr-validation-linux_ppc64', propagate: false, wait: true, parameters:
                             [
                                 string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER),
                                 booleanParam(name: 'PUBLISH', value: false),
@@ -131,7 +131,7 @@
                     }
                     steps {
                         setGitHubPullRequestStatus context: CONTEXT, state: 'PENDING'
-                        build job: 'build-11-pr-validation-macos_x86_64', propagate: true, wait: true, parameters:
+                        build job: 'build-11-pr-validation-macos_x86_64', propagate: false, wait: true, parameters:
                             [
                                 string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER),
                                 booleanParam(name: 'PUBLISH', value: false),
@@ -159,7 +159,7 @@
                     }
                     steps {
                         setGitHubPullRequestStatus context: CONTEXT, state: 'PENDING'
-                        build job: 'build-11-pr-validation-windows_x86_64', propagate: true, wait: true, parameters:
+                        build job: 'build-11-pr-validation-windows_x86_64', propagate: false, wait: true, parameters:
                             [
                                 string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER),
                                 booleanParam(name: 'PUBLISH', value: false),

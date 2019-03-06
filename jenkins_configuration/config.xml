@@ -38,7 +38,7 @@
     </hudson.model.AllView>
     <hudson.plugins.sectioned__view.SectionedView plugin="sectioned-view@1.25">
       <owner class="hudson" reference="../../.."/>
-      <name>Shared</name>
+      <name>Legacy</name>
       <filterExecutors>false</filterExecutors>
       <filterQueue>false</filterQueue>
       <properties class="hudson.model.View$PropertyList"/>
@@ -62,86 +62,10 @@
         <hudson.plugins.sectioned__view.ListViewSection>
           <jobNames>
             <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.ListViewSection/jobNames/comparator"/>
-            <string>generate-cf-data</string>
             <string>generate-docker-manifest</string>
-            <string>generate-website-data</string>
-            <string>test-cf-java-buildpack</string>
           </jobNames>
           <jobFilters/>
           <name>Data Generators</name>
-          <width>THIRD</width>
-          <alignment>CENTER</alignment>
-          <columns>
-            <hudson.views.StatusColumn/>
-            <hudson.views.WeatherColumn/>
-            <hudson.views.JobColumn/>
-          </columns>
-        </hudson.plugins.sectioned__view.ListViewSection>
-        <hudson.plugins.sectioned__view.ListViewSection>
-          <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.ListViewSection/jobNames/comparator"/>
-            <string>jenkins-backup</string>
-            <string>jenkins-restore</string>
-          </jobNames>
-          <jobFilters/>
-          <name>Jenkins Backup</name>
-          <width>THIRD</width>
-          <alignment>CENTER</alignment>
-          <columns>
-            <hudson.views.StatusColumn/>
-            <hudson.views.WeatherColumn/>
-            <hudson.views.JobColumn/>
-          </columns>
-        </hudson.plugins.sectioned__view.ListViewSection>
-        <hudson.plugins.sectioned__view.ListViewSection>
-          <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.ListViewSection/jobNames/comparator"/>
-            <string>check-tag-pipeline</string>
-            <string>update-pipeline</string>
-          </jobNames>
-          <jobFilters/>
-          <name>Repository Update</name>
-          <width>THIRD</width>
-          <alignment>CENTER</alignment>
-          <columns>
-            <hudson.views.StatusColumn/>
-            <hudson.views.WeatherColumn/>
-            <hudson.views.JobColumn/>
-          </columns>
-        </hudson.plugins.sectioned__view.ListViewSection>
-        <hudson.plugins.sectioned__view.TextSection>
-          <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.ListViewSection/jobNames/comparator"/>
-          </jobNames>
-          <jobFilters/>
-          <name>Misc</name>
-          <width>FULL</width>
-          <alignment>CENTER</alignment>
-          <text></text>
-          <style>NONE</style>
-        </hudson.plugins.sectioned__view.TextSection>
-        <hudson.plugins.sectioned__view.ListViewSection>
-          <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.ListViewSection/jobNames/comparator"/>
-            <string>jtreg</string>
-          </jobNames>
-          <jobFilters/>
-          <name>jtreg</name>
-          <width>THIRD</width>
-          <alignment>LEFT</alignment>
-          <columns>
-            <hudson.views.StatusColumn/>
-            <hudson.views.WeatherColumn/>
-            <hudson.views.JobColumn/>
-          </columns>
-        </hudson.plugins.sectioned__view.ListViewSection>
-        <hudson.plugins.sectioned__view.ListViewSection>
-          <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.ListViewSection/jobNames/comparator"/>
-            <string>jenkins-job-generator-legacy</string>
-          </jobNames>
-          <jobFilters/>
-          <name>Job Generator</name>
           <width>THIRD</width>
           <alignment>CENTER</alignment>
           <columns>
@@ -412,6 +336,53 @@
         <string>jenkins-job-generator</string>
         <string>repository-tags</string>
         <string>repository-update</string>
+      </jobNames>
+      <jobFilters/>
+      <columns>
+        <hudson.views.StatusColumn/>
+        <hudson.views.WeatherColumn/>
+        <hudson.views.JobColumn/>
+        <hudson.views.LastSuccessColumn/>
+        <hudson.views.LastFailureColumn/>
+        <hudson.views.LastDurationColumn/>
+        <hudson.views.BuildButtonColumn/>
+      </columns>
+      <recurse>false</recurse>
+    </listView>
+    <listView>
+      <owner class="hudson" reference="../../.."/>
+      <name>JTREG</name>
+      <description>JTREG jobs&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <properties class="hudson.model.View$PropertyList"/>
+      <jobNames>
+        <comparator class="hudson.util.CaseInsensitiveComparator"/>
+        <string>jtreg</string>
+      </jobNames>
+      <jobFilters/>
+      <columns>
+        <hudson.views.StatusColumn/>
+        <hudson.views.WeatherColumn/>
+        <hudson.views.JobColumn/>
+        <hudson.views.LastSuccessColumn/>
+        <hudson.views.LastFailureColumn/>
+        <hudson.views.LastDurationColumn/>
+        <hudson.views.BuildButtonColumn/>
+      </columns>
+      <recurse>false</recurse>
+    </listView>
+    <listView>
+      <owner class="hudson" reference="../../.."/>
+      <name>Cloud Foundry Java Buildpack</name>
+      <description>Cloud Foundry Java Buildpack jobs&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <properties class="hudson.model.View$PropertyList"/>
+      <jobNames>
+        <comparator class="hudson.util.CaseInsensitiveComparator"/>
+        <string>generate-cf-java-buildpack-data</string>
+        <string>test-cf-java-buildpack-data</string>
       </jobNames>
       <jobFilters/>
       <columns>

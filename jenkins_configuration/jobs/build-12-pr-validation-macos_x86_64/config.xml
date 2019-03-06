@@ -166,10 +166,7 @@
                 expression { params.PUBLISH == true &amp;&amp; params.RELEASE == true &amp;&amp; JOB_NAME ==~ /((\S*)(linux_x86_64)(\S*))/ }
             }
             steps {
-                build job: 'generate-cf-data', propagate: false, wait: false, parameters:
-                    [
-                        string(name: 'MAJOR', value: '12')
-                    ]
+                build job: 'generate-cf-java-buildpack-data', propagate: false, wait: false
             }
         }
         stage('Publish Debian Linux Packages') {
