@@ -47,7 +47,7 @@ pipeline {
                                 )
 
                                 sh(
-                                    script: "cd sapmachine_infrastructure && git config user.email '${env.GIT_USER}@sap.com' && git config user.name '${env.GIT_USER}''",
+                                    script: "cd sapmachine_infrastructure && git config user.email '${env.GIT_USER}@sap.com' && git config user.name '${env.GIT_USER}'",
                                     returnStdout: false
                                 )
 
