@@ -51,7 +51,7 @@ def main(argv=None):
     if version is None:
         raise Exception(str.format('Invalid tag: {0}', tag))
 
-    dependencies = 'wget ca-certificates'
+    dependencies = 'wget ca-certificates gnupg2'
 
     if image_type == 'test':
         dependencies += ' zip git unzip realpath python binutils'
