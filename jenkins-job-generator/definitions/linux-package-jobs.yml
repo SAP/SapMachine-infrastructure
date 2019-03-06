@@ -1,0 +1,59 @@
+- job:
+    name: debian-package
+    description: 'This project is generated. Do not modify manually.'
+    project-type: pipeline
+    concurrent: false
+    properties:
+        - build-discarder:
+            num-to-keep: 100
+            artifact-num-to-keep: 1
+    parameters:
+        - string:
+            name: GIT_TAG_NAME
+            default: ''
+            description: 'The Git tag to create a debian package from.'
+        - bool:
+            name: DEPLOY
+            default: false
+            description: 'When set to true, the resulting debian package will be deployed to dist.sapmachine.io.'
+    dsl: |
+        pipeline {
+            agent {
+                label 'agent-ubuntu-local'
+            }
+            stages {
+                stage("Checkout Infrastructure") {
+                    steps {
+                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+                    }
+                }
+                stage('Build') {
+                    environment {
+                      GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
+                    }
+                    steps {
+                        sh 'rm -f *.deb'
+                        sh "python SapMachine-Infrastructure/lib/make_deb.py --tag=${params.GIT_TAG_NAME} --templates-directory=SapMachine-Infrastructure/debian-templates"
+                    }
+                    post {
+                        success {
+                            archive "*.deb"
+                        }
+                    }
+                }
+                stage('Deploy') {
+                    when {
+                        expression { params.DEPLOY == true }
+                    }
+                    steps {
+                            sh "cp *.deb /var/pkg/deb/amd64"
+                            sh "python SapMachine-Infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/amd64"
+                    }
+                }
+            }
+            post {
+                always {
+                    cleanWs deleteDirs: true, disableDeferredWipeout: true
+                }
+            }
+        }
