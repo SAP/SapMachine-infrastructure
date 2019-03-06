@@ -1,4 +1,23 @@
 - job:
+    name: jenkins-job-generator-trigger
+    description: 'This project is generated. Do not modify manually.'
+    project-type: freestyle
+    concurrent: false
+    properties:
+        - build-discarder:
+            num-to-keep: 1
+    scm:
+        - git:
+            url: https://github.com/SAP/SapMachine-Infrastructure.git
+            branches:
+                - master
+            included-regions:
+                - 'jenkins-job-generator/*'
+    triggers:
+        - pollscm:
+            cron: "H/2 * * * *"
+
+- job:
     name: jenkins-job-generator
     description: 'This project is generated. Do not modify manually.'
     project-type: pipeline
@@ -14,18 +33,32 @@
                     <scanQueueFor>DISABLED</scanQueueFor>
                     <blockingJobs>.*</blockingJobs>
                 </hudson.plugins.buildblocker.BuildBlockerProperty>
+        - raw:
+            xml: |
+                <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+                    <triggers>
+                        <jenkins.triggers.ReverseBuildTrigger>
+                        <spec></spec>
+                        <upstreamProjects>jenkins-job-generator-trigger</upstreamProjects>
+                        <threshold>
+                            <name>SUCCESS</name>
+                            <ordinal>0</ordinal>
+                            <color>BLUE</color>
+                            <completeBuild>true</completeBuild>
+                        </threshold>
+                        </jenkins.triggers.ReverseBuildTrigger>
+                    </triggers>
+                </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+
     dsl: |
         pipeline {
             agent {
                 label "repository"
             }
-            triggers {
-                pollSCM 'H/2 * * * *'
-            }
             stages {
                 stage('Checkout') {
                     steps {
-                        checkout changelog: true, poll: true, scm: [$class: 'GitSCM', branches: [[name: '*/master']], includedRegions: 'jenkins-job-generator/.*', doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+                        checkout changelog: false, false: true, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
                     }
                 }
                 stage('Generate') {
