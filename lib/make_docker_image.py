@@ -14,7 +14,7 @@ from os.path import join
 from string import Template
 
 template_ubuntu = '''
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 
 MAINTAINER Rene Schuenemann <sapmachine@sap.com>
 
