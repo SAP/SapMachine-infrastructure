@@ -9,8 +9,8 @@
     major:
         - 11:
            branch_name: sapmachine11
-        - 12:
-           branch_name: sapmachine12
+        - 14:
+           branch_name: sapmachine14
         - 13:
            branch_name: sapmachine
     build_type: snapshot
@@ -23,8 +23,8 @@
     major:
         - 11:
            branch_name: sapmachine11
-        - 12:
-           branch_name: sapmachine12
+        - 14:
+           branch_name: sapmachine14
         - 13:
            branch_name: sapmachine
     build_type: release
@@ -38,8 +38,8 @@
     major:
         - 11:
            branch_name: sapmachine11
-        - 12:
-           branch_name: sapmachine12
+        - 14:
+           branch_name: sapmachine14
         - 13:
            branch_name: sapmachine
     build_type: pr-validation
@@ -742,20 +742,21 @@
                                 CONTEXT = "validate-pr-{major}-linux_x86_64"
                             }}
                             steps {{
-                                setGitHubPullRequestStatus context: CONTEXT, state: 'PENDING'
-                                build job: 'build-{major}-pr-validation-linux_x86_64', propagate: false, wait: true, parameters:
-                                    [
-                                        string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER),
-                                        booleanParam(name: 'PUBLISH', value: false),
-                                        booleanParam(name: 'RUN_TESTS', value: true),
-                                    ]
-                            }}
-                            post {{
-                                success {{
-                                    setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS'
-                                }}
-                                failure {{
-                                    setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE'
+                                script {{
+                                    setGitHubPullRequestStatus context: CONTEXT, state: 'PENDING'
+
+                                    def job = build job: 'build-{major}-pr-validation-linux_x86_64', propagate: false, wait: true, parameters:
+                                        [
+                                            string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER),
+                                            booleanParam(name: 'PUBLISH', value: false),
+                                            booleanParam(name: 'RUN_TESTS', value: true),
+                                        ]
+
+                                    if (job.result == 'SUCCESS') {{
+                                        setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS'
+                                    }} else {{
+                                        setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE'
+                                    }}
                                 }}
                             }}
                         }}
@@ -770,20 +771,21 @@
                                 CONTEXT = "validate-pr-{major}-linux_ppc64le"
                             }}
                             steps {{
-                                setGitHubPullRequestStatus context: CONTEXT, state: 'PENDING'
-                                build job: 'build-{major}-pr-validation-linux_ppc64le', propagate: false, wait: true, parameters:
-                                    [
-                                        string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER),
-                                        booleanParam(name: 'PUBLISH', value: false),
-                                        booleanParam(name: 'RUN_TESTS', value: true),
-                                    ]
-                            }}
-                            post {{
-                                success {{
-                                    setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS'
-                                }}
-                                failure {{
-                                    setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE'
+                                script {{
+                                    setGitHubPullRequestStatus context: CONTEXT, state: 'PENDING'
+
+                                    def job = build job: 'build-{major}-pr-validation-linux_ppc64le', propagate: false, wait: true, parameters:
+                                        [
+                                            string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER),
+                                            booleanParam(name: 'PUBLISH', value: false),
+                                            booleanParam(name: 'RUN_TESTS', value: true),
+                                        ]
+
+                                    if (job.result == 'SUCCESS') {{
+                                        setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS'
+                                    }} else {{
+                                        setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE'
+                                    }}
                                 }}
                             }}
                         }}
@@ -798,20 +800,21 @@
                                 CONTEXT = "validate-pr-{major}-linux_ppc64"
                             }}
                             steps {{
-                                setGitHubPullRequestStatus context: CONTEXT, state: 'PENDING'
-                                build job: 'build-{major}-pr-validation-linux_ppc64', propagate: false, wait: true, parameters:
-                                    [
-                                        string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER),
-                                        booleanParam(name: 'PUBLISH', value: false),
-                                        booleanParam(name: 'RUN_TESTS', value: true),
-                                    ]
-                            }}
-                            post {{
-                                success {{
-                                    setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS'
-                                }}
-                                failure {{
-                                    setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE'
+                                script {{
+                                    setGitHubPullRequestStatus context: CONTEXT, state: 'PENDING'
+
+                                    def job = build job: 'build-{major}-pr-validation-linux_ppc64', propagate: false, wait: true, parameters:
+                                        [
+                                            string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER),
+                                            booleanParam(name: 'PUBLISH', value: false),
+                                            booleanParam(name: 'RUN_TESTS', value: true),
+                                        ]
+
+                                    if (job.result == 'SUCCESS') {{
+                                        setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS'
+                                    }} else {{
+                                        setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE'
+                                    }}
                                 }}
                             }}
                         }}
@@ -826,20 +829,21 @@
                                 CONTEXT = "validate-pr-{major}-macos_x86_64"
                             }}
                             steps {{
-                                setGitHubPullRequestStatus context: CONTEXT, state: 'PENDING'
-                                build job: 'build-{major}-pr-validation-macos_x86_64', propagate: false, wait: true, parameters:
-                                    [
-                                        string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER),
-                                        booleanParam(name: 'PUBLISH', value: false),
-                                        booleanParam(name: 'RUN_TESTS', value: true),
-                                    ]
-                            }}
-                            post {{
-                                success {{
-                                    setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS'
-                                }}
-                                failure {{
-                                    setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE'
+                                script {{
+                                    setGitHubPullRequestStatus context: CONTEXT, state: 'PENDING'
+
+                                    def job = build job: 'build-{major}-pr-validation-macos_x86_64', propagate: false, wait: true, parameters:
+                                        [
+                                            string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER),
+                                            booleanParam(name: 'PUBLISH', value: false),
+                                            booleanParam(name: 'RUN_TESTS', value: true),
+                                        ]
+
+                                    if (job.result == 'SUCCESS') {{
+                                        setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS'
+                                    }} else {{
+                                        setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE'
+                                    }}
                                 }}
                             }}
                         }}
@@ -854,20 +858,21 @@
                                 CONTEXT = "validate-pr-{major}-windows_x86_64"
                             }}
                             steps {{
-                                setGitHubPullRequestStatus context: CONTEXT, state: 'PENDING'
-                                build job: 'build-{major}-pr-validation-windows_x86_64', propagate: false, wait: true, parameters:
-                                    [
-                                        string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER),
-                                        booleanParam(name: 'PUBLISH', value: false),
-                                        booleanParam(name: 'RUN_TESTS', value: true),
-                                    ]
-                            }}
-                            post {{
-                                success {{
-                                    setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS'
-                                }}
-                                failure {{
-                                    setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE'
+                                script {{
+                                    setGitHubPullRequestStatus context: CONTEXT, state: 'PENDING'
+
+                                    def job = build job: 'build-{major}-pr-validation-windows_x86_64', propagate: false, wait: true, parameters:
+                                        [
+                                            string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER),
+                                            booleanParam(name: 'PUBLISH', value: false),
+                                            booleanParam(name: 'RUN_TESTS', value: true),
+                                        ]
+
+                                    if (job.result == 'SUCCESS') {{
+                                        setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS'
+                                    }} else {{
+                                        setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE'
+                                    }}
                                 }}
                             }}
                         }}
