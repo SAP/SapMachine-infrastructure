@@ -719,7 +719,7 @@
                             )
 
                             if (env.VERIFICATION_RESULT == "0") {{
-                                setGitHubPullRequestStatus(context: CONTEXT, state: 'FAILURE')
+                                setGitHubPullRequestStatus(context: CONTEXT, state: 'FAILURE', message: 'PR verification failed')
                                 error("Pull Request Validation failed")
                             }}
 
@@ -752,12 +752,12 @@
                                             booleanParam(name: 'RUN_TESTS', value: true),
                                         ]
 
-                                    def job_url = job.getAbsoluteUrl()
-
                                     if (job.result == 'SUCCESS') {{
-                                        setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS', message: job_url
+                                        setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS'
+                                    }} else  if (job.result == 'UNSTABLE') {{
+                                        setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'tests failed'
                                     }} else {{
-                                        setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: job_url
+                                        setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'build failed'
                                     }}
                                 }}
                             }}
@@ -783,12 +783,12 @@
                                             booleanParam(name: 'RUN_TESTS', value: true),
                                         ]
 
-                                    def job_url = job.getAbsoluteUrl()
-
                                     if (job.result == 'SUCCESS') {{
-                                        setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS', message: job_url
+                                        setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS'
+                                    }} else  if (job.result == 'UNSTABLE') {{
+                                        setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'tests failed'
                                     }} else {{
-                                        setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: job_url
+                                        setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'build failed'
                                     }}
                                 }}
                             }}
@@ -814,12 +814,12 @@
                                             booleanParam(name: 'RUN_TESTS', value: true),
                                         ]
 
-                                    def job_url = job.getAbsoluteUrl()
-
                                     if (job.result == 'SUCCESS') {{
-                                        setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS', message: job_url
+                                        setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS'
+                                    }} else  if (job.result == 'UNSTABLE') {{
+                                        setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'tests failed'
                                     }} else {{
-                                        setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: job_url
+                                        setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'build failed'
                                     }}
                                 }}
                             }}
@@ -845,12 +845,12 @@
                                             booleanParam(name: 'RUN_TESTS', value: true),
                                         ]
 
-                                    def job_url = job.getAbsoluteUrl()
-
                                     if (job.result == 'SUCCESS') {{
-                                        setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS', message: job_url
+                                        setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS'
+                                    }} else  if (job.result == 'UNSTABLE') {{
+                                        setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'tests failed'
                                     }} else {{
-                                        setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: job_url
+                                        setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'build failed'
                                     }}
                                 }}
                             }}
@@ -876,12 +876,12 @@
                                             booleanParam(name: 'RUN_TESTS', value: true),
                                         ]
 
-                                    def job_url = job.getAbsoluteUrl()
-
                                     if (job.result == 'SUCCESS') {{
-                                        setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS', message: job_url
+                                        setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS'
+                                    }} else  if (job.result == 'UNSTABLE') {{
+                                        setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'tests failed'
                                     }} else {{
-                                        setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: job_url
+                                        setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'build failed'
                                     }}
                                 }}
                             }}
