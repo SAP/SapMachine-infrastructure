@@ -46,37 +46,6 @@
         <hudson.plugins.sectioned__view.ListViewSection>
           <jobNames>
             <comparator class="hudson.util.CaseInsensitiveComparator"/>
-            <string>apk-pipeline</string>
-            <string>debian-pipeline</string>
-          </jobNames>
-          <jobFilters/>
-          <name>Packages</name>
-          <width>THIRD</width>
-          <alignment>CENTER</alignment>
-          <columns>
-            <hudson.views.StatusColumn/>
-            <hudson.views.WeatherColumn/>
-            <hudson.views.JobColumn/>
-          </columns>
-        </hudson.plugins.sectioned__view.ListViewSection>
-        <hudson.plugins.sectioned__view.ListViewSection>
-          <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.ListViewSection/jobNames/comparator"/>
-            <string>generate-docker-manifest</string>
-          </jobNames>
-          <jobFilters/>
-          <name>Data Generators</name>
-          <width>THIRD</width>
-          <alignment>CENTER</alignment>
-          <columns>
-            <hudson.views.StatusColumn/>
-            <hudson.views.WeatherColumn/>
-            <hudson.views.JobColumn/>
-          </columns>
-        </hudson.plugins.sectioned__view.ListViewSection>
-        <hudson.plugins.sectioned__view.ListViewSection>
-          <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.ListViewSection/jobNames/comparator"/>
           </jobNames>
           <jobFilters/>
           <name>Docker 12</name>
@@ -383,6 +352,52 @@
         <comparator class="hudson.util.CaseInsensitiveComparator"/>
         <string>generate-cf-java-buildpack-data</string>
         <string>test-cf-java-buildpack-data</string>
+      </jobNames>
+      <jobFilters/>
+      <columns>
+        <hudson.views.StatusColumn/>
+        <hudson.views.WeatherColumn/>
+        <hudson.views.JobColumn/>
+        <hudson.views.LastSuccessColumn/>
+        <hudson.views.LastFailureColumn/>
+        <hudson.views.LastDurationColumn/>
+        <hudson.views.BuildButtonColumn/>
+      </columns>
+      <recurse>false</recurse>
+    </listView>
+    <listView>
+      <owner class="hudson" reference="../../.."/>
+      <name>Docker</name>
+      <description>Docker jobs&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <properties class="hudson.model.View$PropertyList"/>
+      <jobNames>
+        <comparator class="hudson.util.CaseInsensitiveComparator"/>
+        <string>docker-manifest</string>
+      </jobNames>
+      <jobFilters/>
+      <columns>
+        <hudson.views.StatusColumn/>
+        <hudson.views.WeatherColumn/>
+        <hudson.views.JobColumn/>
+        <hudson.views.LastSuccessColumn/>
+        <hudson.views.LastFailureColumn/>
+        <hudson.views.LastDurationColumn/>
+        <hudson.views.BuildButtonColumn/>
+      </columns>
+      <recurse>false</recurse>
+    </listView>
+    <listView>
+      <owner class="hudson" reference="../../.."/>
+      <name>Linux Packages</name>
+      <description>Linux Package jobs&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <properties class="hudson.model.View$PropertyList"/>
+      <jobNames>
+        <comparator class="hudson.util.CaseInsensitiveComparator"/>
+        <string>debian-package</string>
       </jobNames>
       <jobFilters/>
       <columns>
