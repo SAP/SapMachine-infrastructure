@@ -752,10 +752,12 @@
                                             booleanParam(name: 'RUN_TESTS', value: true),
                                         ]
 
+                                    def job_url = job.getAbsoluteUrl()
+
                                     if (job.result == 'SUCCESS') {{
-                                        setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS'
+                                        setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS', message: job_url
                                     }} else {{
-                                        setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE'
+                                        setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: job_url
                                     }}
                                 }}
                             }}
@@ -781,10 +783,12 @@
                                             booleanParam(name: 'RUN_TESTS', value: true),
                                         ]
 
+                                    def job_url = job.getAbsoluteUrl()
+
                                     if (job.result == 'SUCCESS') {{
-                                        setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS'
+                                        setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS', message: job_url
                                     }} else {{
-                                        setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE'
+                                        setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: job_url
                                     }}
                                 }}
                             }}
@@ -810,10 +814,12 @@
                                             booleanParam(name: 'RUN_TESTS', value: true),
                                         ]
 
+                                    def job_url = job.getAbsoluteUrl()
+
                                     if (job.result == 'SUCCESS') {{
-                                        setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS'
+                                        setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS', message: job_url
                                     }} else {{
-                                        setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE'
+                                        setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: job_url
                                     }}
                                 }}
                             }}
@@ -839,10 +845,12 @@
                                             booleanParam(name: 'RUN_TESTS', value: true),
                                         ]
 
+                                    def job_url = job.getAbsoluteUrl()
+
                                     if (job.result == 'SUCCESS') {{
-                                        setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS'
+                                        setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS', message: job_url
                                     }} else {{
-                                        setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE'
+                                        setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: job_url
                                     }}
                                 }}
                             }}
@@ -868,10 +876,12 @@
                                             booleanParam(name: 'RUN_TESTS', value: true),
                                         ]
 
+                                    def job_url = job.getAbsoluteUrl()
+
                                     if (job.result == 'SUCCESS') {{
-                                        setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS'
+                                        setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS', message: job_url
                                     }} else {{
-                                        setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE'
+                                        setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: job_url
                                     }}
                                 }}
                             }}
