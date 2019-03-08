@@ -57,7 +57,7 @@
     dsl: |
         pipeline {
               agent {
-                  label 'cloud_foundry'
+                  label 'linux_x86_64'
               }
               stages {
                   stage("Checkout Infrastructure") {
@@ -68,18 +68,14 @@
                   stage('Test') {
                       agent {
                           dockerfile {
-                              label 'cloud_foundry'
-                              dir 'SapMachine-Infrastructure/dockerfiles/cf-java-buildpack'
+                              label 'linux_x86_64'
+                              dir 'SapMachine-Infrastructure/dockerfiles/ubuntu_16_04_x86_64'
                               reuseNode true
-                              additionalBuildArgs '--no-cache'
                           }
                       }
                       steps {
                           sh '''
-                              git clone https://github.com/cloudfoundry/java-buildpack.git
-                              cd java-buildpack
-                              bundle install
-                              bundle exec rake
+                              python SapMachine-Infrastructure/lib/test_cf_buildpack_data.py
                           '''
                       }
                   }
