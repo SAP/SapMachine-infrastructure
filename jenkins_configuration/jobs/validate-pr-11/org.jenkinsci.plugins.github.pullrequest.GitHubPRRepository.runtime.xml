@@ -6,67 +6,67 @@
   <sshUrl>git@github.com:SAP/SapMachine.git</sshUrl>
   <pulls class="concurrent-hash-map">
     <entry>
-      <int>322</int>
+      <int>327</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>322</number>
-        <issueUpdatedAt>2019-03-06 19:42:48.0 UTC</issueUpdatedAt>
-        <title>Minor fixes for statistical history</title>
-        <body>- possible misprint for CPU values in long term table&#xd;
-  due to overflow when time delta between samples &gt; ~1 hour&#xd;
-- possible issues when printing the statistics table&#xd;
-  with code printing in parallel due to temp. change&#xd;
-  of process wide locale&#xd;
-&#xd;
-fixes #321 &#xd;
+        <number>327</number>
+        <issueUpdatedAt>2019-03-07 22:55:29.0 UTC</issueUpdatedAt>
+        <title>SapMachine #320: Update SapMachine branding</title>
+        <body>fixes #320&#xd;
 &#xd;
 </body>
-        <prUpdatedAt>2019-03-06 19:42:48.0 UTC</prUpdatedAt>
-        <headSha>00e2f6d4fd1af0a404532011d54a60da393fcb8a</headSha>
-        <headRef>issue-321</headRef>
+        <prUpdatedAt>2019-03-07 22:55:29.0 UTC</prUpdatedAt>
+        <headSha>38f68037bf1a0463188b90a23e44975932f88558</headSha>
+        <headRef>vendorname11</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine11</baseRef>
+        <userLogin>RealCLanger</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/327</htmlUrl>
+        <labels/>
+        <lastCommentCreatedAt>2019-03-07 22:51:37.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>SAP</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>328</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>328</number>
+        <issueUpdatedAt>2019-03-07 22:55:49.0 UTC</issueUpdatedAt>
+        <title>SapMachine #320: Update SapMachine branding</title>
+        <body>fixes #320</body>
+        <prUpdatedAt>2019-03-07 22:55:49.0 UTC</prUpdatedAt>
+        <headSha>1fb24857db50a9b9ada8c4014c19993ac3dbd9e4</headSha>
+        <headRef>vendorname12</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine12</baseRef>
+        <userLogin>RealCLanger</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/328</htmlUrl>
+        <labels/>
+        <lastCommentCreatedAt>2019-03-07 22:53:28.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>SAP</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>329</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>329</number>
+        <issueUpdatedAt>2019-03-08 00:19:30.0 UTC</issueUpdatedAt>
+        <title>SapMachine #320: Update SapMachine branding</title>
+        <body>fixes #320&#xd;
+&#xd;
+</body>
+        <prUpdatedAt>2019-03-08 00:19:30.0 UTC</prUpdatedAt>
+        <headSha>c29667863bb887ffbfc2b82840e9f99322e3081d</headSha>
+        <headRef>vendorname13</headRef>
         <mergeable>true</mergeable>
         <baseRef>sapmachine</baseRef>
-        <userLogin>tstuefe</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/322</htmlUrl>
+        <userLogin>RealCLanger</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/329</htmlUrl>
         <labels/>
-        <lastCommentCreatedAt>2019-03-06 19:28:06.0 UTC</lastCommentCreatedAt>
-        <sourceRepoOwner>SAP</sourceRepoOwner>
-        <state>OPEN</state>
-        <inBadState>false</inBadState>
-      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-    </entry>
-    <entry>
-      <int>323</int>
-      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>323</number>
-        <issueUpdatedAt>2019-03-07 01:07:45.0 UTC</issueUpdatedAt>
-        <title>Merge to tag jdk-13+11</title>
-        <body>please pull</body>
-        <prUpdatedAt>2019-03-07 01:07:45.0 UTC</prUpdatedAt>
-        <headSha>9f7ce606538b83ae6f8f1b4f636424597bd6dc81</headSha>
-        <headRef>pr-jdk-13+11</headRef>
-        <baseRef>sapmachine</baseRef>
-        <userLogin>SapMachine</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/323</htmlUrl>
-        <labels/>
-        <sourceRepoOwner>SAP</sourceRepoOwner>
-        <state>OPEN</state>
-        <inBadState>false</inBadState>
-      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-    </entry>
-    <entry>
-      <int>324</int>
-      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>324</number>
-        <issueUpdatedAt>2019-03-07 01:07:53.0 UTC</issueUpdatedAt>
-        <title>Merge to tag jdk-11.0.3+2</title>
-        <body>please pull</body>
-        <prUpdatedAt>2019-03-07 01:07:53.0 UTC</prUpdatedAt>
-        <headSha>6d7b9cd9548652620f97b5d097992d785b97eb76</headSha>
-        <headRef>pr-jdk-11.0.3+2</headRef>
-        <baseRef>sapmachine11</baseRef>
-        <userLogin>SapMachine</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/324</htmlUrl>
-        <labels/>
+        <lastCommentCreatedAt>2019-03-08 00:19:29.0 UTC</lastCommentCreatedAt>
         <sourceRepoOwner>SAP</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>

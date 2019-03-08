@@ -1,8 +1,48 @@
-<?xml version='1.1' encoding='UTF-8'?>
-<flow-definition plugin="workflow-job@2.31">
+<?xml version="1.0" encoding="UTF-8"?><flow-definition plugin="workflow-job">
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps">
+    <script>pipeline {
+    agent {
+        label "repository"
+    }
+    stages {
+        stage("Checkout Infrastructure") {
+            steps {
+                checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+            }
+        }
+        stage('Generate') {
+            agent {
+                dockerfile {
+                    dir "SapMachine-Infrastructure/dockerfiles/infrastructure"
+                    reuseNode true
+                    label "repository"
+                }
+            }
+            steps {
+                withCredentials([
+                        [$class: 'UsernamePasswordMultiBinding', credentialsId: 'sapmachine-jenkins', usernameVariable: 'JENKINS_USER', passwordVariable: 'JENKINS_PASSWORD']
+                        ]) {
+                    sh "cd SapMachine-Infrastructure/jenkins-job-generator &amp;&amp; jenkins-jobs --conf jenkins_jobs.ini --user ${JENKINS_USER} --password ${JENKINS_PASSWORD} update --delete-old ./definitions"
+                }
+            }
+        }
+    }
+    post {
+        cleanup {
+            cleanWs deleteDirs: true, disableDeferredWipeout: true
+        }
+    }
+}
+</script>
+    <sandbox>false</sandbox>
+  </definition>
   <actions/>
   <description>This project is generated. Do not modify manually.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <concurrentBuild>false</concurrentBuild>
+  <canRoam>true</canRoam>
   <properties>
     <jenkins.model.BuildDiscarderProperty>
       <strategy class="hudson.tasks.LogRotator">
@@ -21,7 +61,7 @@
     <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
       <triggers>
         <jenkins.triggers.ReverseBuildTrigger>
-          <spec></spec>
+          <spec/>
           <upstreamProjects>jenkins-job-generator-trigger</upstreamProjects>
           <threshold>
             <name>SUCCESS</name>
@@ -32,44 +72,8 @@
         </jenkins.triggers.ReverseBuildTrigger>
       </triggers>
     </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
-    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty/>
   </properties>
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.63">
-    <script>pipeline {
-    agent {
-        label &quot;repository&quot;
-    }
-    stages {
-        stage(&quot;Checkout Infrastructure&quot;) {
-            steps {
-                checkout changelog: false, poll: false, scm: [$class: &apos;GitSCM&apos;, branches: [[name: &apos;*/master&apos;]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: &apos;RelativeTargetDirectory&apos;, relativeTargetDir: &apos;SapMachine-Infrastructure&apos;]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: &apos;SapMachine-github&apos;, url: &apos;https://github.com/SAP/SapMachine-infrastructure.git&apos;]]]
-            }
-        }
-        stage(&apos;Generate&apos;) {
-            agent {
-                dockerfile {
-                    dir &quot;SapMachine-Infrastructure/dockerfiles/infrastructure&quot;
-                    reuseNode true
-                    label &quot;repository&quot;
-                }
-            }
-            steps {
-                withCredentials([
-                        [$class: &apos;UsernamePasswordMultiBinding&apos;, credentialsId: &apos;sapmachine-jenkins&apos;, usernameVariable: &apos;JENKINS_USER&apos;, passwordVariable: &apos;JENKINS_PASSWORD&apos;]
-                        ]) {
-                    sh &quot;cd SapMachine-Infrastructure/jenkins-job-generator &amp;&amp; jenkins-jobs --conf jenkins_jobs.ini --user ${JENKINS_USER} --password ${JENKINS_PASSWORD} update --delete-old ./definitions&quot;
-                }
-            }
-        }
-    }
-    post {
-        cleanup {
-            cleanWs deleteDirs: true, disableDeferredWipeout: true
-        }
-    }
-}
-</script>
-    <sandbox>false</sandbox>
-  </definition>
-  <disabled>false</disabled>
+  <scm class="hudson.scm.NullSCM"/>
+  <publishers/>
+  <buildWrappers/>
 </flow-definition>

@@ -1,40 +1,25 @@
-<?xml version='1.1' encoding='UTF-8'?>
-<flow-definition plugin="workflow-job@2.31">
-  <actions/>
-  <description>This project is generated. Do not modify manually.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
-  <keepDependencies>false</keepDependencies>
-  <properties>
-    <jenkins.model.BuildDiscarderProperty>
-      <strategy class="hudson.tasks.LogRotator">
-        <daysToKeep>-1</daysToKeep>
-        <numToKeep>100</numToKeep>
-        <artifactDaysToKeep>-1</artifactDaysToKeep>
-        <artifactNumToKeep>-1</artifactNumToKeep>
-      </strategy>
-    </jenkins.model.BuildDiscarderProperty>
-    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty/>
-  </properties>
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.63">
+<?xml version="1.0" encoding="UTF-8"?><flow-definition plugin="workflow-job">
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps">
     <script>pipeline {
     agent {
         node {
-            label &apos;master&apos;
+            label 'master'
         }
     }
     stages {
-        stage(&quot;Checkout Infrastructure&quot;) {
+        stage("Checkout Infrastructure") {
             steps {
-                checkout changelog: false, poll: false, scm: [$class: &apos;GitSCM&apos;, branches: [[name: &apos;*/master&apos;]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: &apos;RelativeTargetDirectory&apos;, relativeTargetDir: &apos;SapMachine-Infrastructure&apos;]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: &apos;SapMachine-github&apos;, url: &apos;https://github.com/SAP/SapMachine-infrastructure.git&apos;]]]
+                checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
             }
         }
-        stage(&apos;Backup&apos;) {
+        stage('Backup') {
             steps {
                 withCredentials([
-                    [$class: &apos;UsernamePasswordMultiBinding&apos;, credentialsId: &apos;SapMachine-github&apos;, usernameVariable: &apos;GIT_USER&apos;, passwordVariable: &apos;GIT_PASSWORD&apos;]
+                    [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
                     ]) {
-                sh &apos;&apos;&apos;
+                sh '''
                     python SapMachine-Infrastructure/lib/jenkins_restore.py -s . -t /var/lib/jenkins
-                    &apos;&apos;&apos;
+                    '''
                 }
             }
         }
@@ -48,5 +33,24 @@
 </script>
     <sandbox>false</sandbox>
   </definition>
-  <disabled>false</disabled>
+  <actions/>
+  <description>This project is generated. Do not modify manually.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+  <keepDependencies>false</keepDependencies>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <concurrentBuild>false</concurrentBuild>
+  <canRoam>true</canRoam>
+  <properties>
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>-1</daysToKeep>
+        <numToKeep>100</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>-1</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <publishers/>
+  <buildWrappers/>
 </flow-definition>

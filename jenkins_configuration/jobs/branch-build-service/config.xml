@@ -1,8 +1,241 @@
-<?xml version='1.1' encoding='UTF-8'?>
-<flow-definition plugin="workflow-job@2.31">
+<?xml version="1.0" encoding="UTF-8"?><flow-definition plugin="workflow-job">
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps">
+    <script>pipeline {
+    agent {
+        label 'linux_x86_64'
+    }
+    stages {
+        stage('Trigger Builds') {
+            parallel {
+                stage('Linux x86 64') {
+                    when {
+                        expression { params.BUILD_LINUX_X86_64 == true }
+                    }
+                    steps {
+                        script {
+                            def job_linux_x86_64 = build job: 'build--branch-linux_x86_64', propagate: false, wait: true, parameters:
+                            [
+                                string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
+                                string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
+                                string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
+                                string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
+                                string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
+                                string(name: 'jdk_test_groups', value: params.jdk_test_groups),
+                                string(name: 'langtools_test_groups', value: params.langtools_test_groups),
+                                [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
+                                [$class: 'BooleanParameterValue', name: 'PUBLISH', value: false],
+                                [$class: 'BooleanParameterValue', name: 'RELEASE', value: false]
+                            ]
+
+                            env.LINUX_X86_64_JOB_ID = Integer.toString(job_linux_x86_64.getNumber())
+                            env.LINUX_X86_64_ARTIFACT_DIR = 'linux_x86_64_' + env.BUILD_NUMBER
+
+                            sh "mkdir -p ${WORKSPACE}/${LINUX_X86_64_ARTIFACT_DIR}"
+                        }
+                    }
+                    post {
+                        success {
+                            copyArtifacts filter: 'sapmachine-*.tar.gz', projectName: 'build--branch-linux_x86_64', target: env.LINUX_X86_64_ARTIFACT_DIR, selector:
+                            [
+                                $class: 'SpecificBuildSelector',
+                                buildNumber: env.LINUX_X86_64_JOB_ID
+                            ]
+
+                            script {
+                                def artifacts_selector = env.LINUX_X86_64_ARTIFACT_DIR + "/*.tar.gz"
+                                step ([$class: 'ArtifactArchiver', artifacts: artifacts_selector]);
+                            }
+
+                            sh "rm -rf ${WORKSPACE}/${LINUX_X86_64_ARTIFACT_DIR}"
+                        }
+                    }
+                }
+                stage('Linux ppc64le') {
+                    when {
+                        expression { params.BUILD_LINUX_PPC64LE == true }
+                    }
+                    steps {
+                        script {
+                            def job_linux_ppc64le = build job: 'build--branch-linux_ppc64le', propagate: false, wait: true, parameters:
+                            [
+                                string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
+                                string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
+                                string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
+                                string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
+                                string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
+                                string(name: 'jdk_test_groups', value: params.jdk_test_groups),
+                                string(name: 'langtools_test_groups', value: params.langtools_test_groups),
+                                [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
+                                [$class: 'BooleanParameterValue', name: 'PUBLISH', value: false],
+                                [$class: 'BooleanParameterValue', name: 'RELEASE', value: false]
+                            ]
+
+                            env.LINUX_PPC64LE_JOB_ID = Integer.toString(job_linux_ppc64le.getNumber())
+                            env.LINUX_PPC64LE_ARTIFACT_DIR = 'linux_ppc64le_' + env.BUILD_NUMBER
+
+                            sh "mkdir -p ${WORKSPACE}/${LINUX_PPC64LE_ARTIFACT_DIR}"
+                        }
+                    }
+                    post {
+                        success {
+                            copyArtifacts filter: 'sapmachine-*.tar.gz', projectName: 'build--branch-linux_ppc64le', target: env.LINUX_PPC64LE_ARTIFACT_DIR, selector:
+                            [
+                                $class: 'SpecificBuildSelector',
+                                buildNumber: env.LINUX_PPC64LE_JOB_ID
+                            ]
+
+                            script {
+                                def artifacts_selector = env.LINUX_PPC64LE_ARTIFACT_DIR + "/*.tar.gz"
+                                step ([$class: 'ArtifactArchiver', artifacts: artifacts_selector]);
+                            }
+
+                            sh "rm -rf ${WORKSPACE}/${LINUX_PPC64LE_ARTIFACT_DIR}"
+                        }
+                    }
+                }
+                stage('Linux ppc64') {
+                    when {
+                        expression { params.BUILD_LINUX_PPC64 == true }
+                    }
+                    steps {
+                        script {
+                            def job_linux_ppc64 = build job: 'build--branch-linux_ppc64', propagate: false, wait: true, parameters:
+                            [
+                                string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
+                                string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
+                                string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
+                                string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
+                                string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
+                                string(name: 'jdk_test_groups', value: params.jdk_test_groups),
+                                string(name: 'langtools_test_groups', value: params.langtools_test_groups),
+                                [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
+                                [$class: 'BooleanParameterValue', name: 'PUBLISH', value: false],
+                                [$class: 'BooleanParameterValue', name: 'RELEASE', value: false]
+                            ]
+
+                            env.LINUX_PPC64_JOB_ID = Integer.toString(job_linux_ppc64.getNumber())
+                            env.LINUX_PPC64_ARTIFACT_DIR = 'linux_ppc64_' + env.BUILD_NUMBER
+
+                            sh "mkdir -p ${WORKSPACE}/${LINUX_PPC64_ARTIFACT_DIR}"
+                        }
+                    }
+                    post {
+                        success {
+                            copyArtifacts filter: 'sapmachine-*.tar.gz', projectName: 'build--branch-linux_ppc64', target: env.LINUX_PPC64_ARTIFACT_DIR, selector:
+                            [
+                                $class: 'SpecificBuildSelector',
+                                buildNumber: env.LINUX_PPC64_JOB_ID
+                            ]
+
+                            script {
+                                def artifacts_selector = env.LINUX_PPC64_ARTIFACT_DIR + "/*.tar.gz"
+                                step ([$class: 'ArtifactArchiver', artifacts: artifacts_selector]);
+                            }
+
+                            sh "rm -rf ${WORKSPACE}/${LINUX_PPC64_ARTIFACT_DIR}"
+                        }
+                    }
+                }
+                stage('Windows x86 64') {
+                    when {
+                        expression { params.BUILD_WINDOWS_X86_64 == true }
+                    }
+                    steps {
+                        script {
+                            def job_windows_x86_64 = build job: 'build--branch-windows_x86_64', propagate: false, wait: true, parameters:
+                            [
+                                string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
+                                string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
+                                string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
+                                string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
+                                string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
+                                string(name: 'jdk_test_groups', value: params.jdk_test_groups),
+                                string(name: 'langtools_test_groups', value: params.langtools_test_groups),
+                                [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
+                                [$class: 'BooleanParameterValue', name: 'PUBLISH', value: false],
+                                [$class: 'BooleanParameterValue', name: 'RELEASE', value: false]
+                            ]
+
+                            env.WINDOWS_X86_64_JOB_ID = Integer.toString(job_windows_x86_64.getNumber())
+                            env.WINDOWS_X86_64_ARTIFACT_DIR = 'windows_x86_64_' + env.BUILD_NUMBER
+
+                            sh "mkdir -p ${WORKSPACE}/${WINDOWS_X86_64_ARTIFACT_DIR}"
+                        }
+                    }
+                    post {
+                        success {
+                            copyArtifacts filter: 'sapmachine-*.zip', projectName: 'build--branch-windows_x86_64', target: env.WINDOWS_X86_64_ARTIFACT_DIR, selector:
+                            [
+                                $class: 'SpecificBuildSelector',
+                                buildNumber: env.WINDOWS_X86_64_JOB_ID
+                            ]
+
+                            script {
+                                def artifacts_selector = env.WINDOWS_X86_64_ARTIFACT_DIR + "/*.zip"
+                                step ([$class: 'ArtifactArchiver', artifacts: artifacts_selector]);
+                            }
+
+                            sh "rm -rf ${WORKSPACE}/${WINDOWS_X86_64_ARTIFACT_DIR}"
+                        }
+                    }
+                }
+                stage('macOS x86 64') {
+                    when {
+                        expression { params.BUILD_MACOS_X86_64 == true }
+                    }
+                    steps {
+                        script {
+                            def job_macos_x86_64 = build job: 'build--branch-macos_x86_64', propagate: false, wait: true, parameters:
+                            [
+                                string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
+                                string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
+                                string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
+                                string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
+                                string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
+                                string(name: 'jdk_test_groups', value: params.jdk_test_groups),
+                                string(name: 'langtools_test_groups', value: params.langtools_test_groups),
+                                [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
+                                [$class: 'BooleanParameterValue', name: 'PUBLISH', value: false],
+                                [$class: 'BooleanParameterValue', name: 'RELEASE', value: false]
+                            ]
+
+                            env.MACOS_X86_64_JOB_ID = Integer.toString(job_macos_x86_64.getNumber())
+                            env.MACOS_X86_64_ARTIFACT_DIR = 'macos_x86_64_' + env.BUILD_NUMBER
+
+                            sh "mkdir -p ${WORKSPACE}/${MACOS_X86_64_ARTIFACT_DIR}"
+                        }
+                    }
+                    post {
+                        success {
+                            copyArtifacts filter: 'sapmachine-*.tar.gz', projectName: 'build--branch-macos_x86_64', target: env.MACOS_X86_64_ARTIFACT_DIR, selector:
+                            [
+                                $class: 'SpecificBuildSelector',
+                                buildNumber: env.MACOS_X86_64_JOB_ID
+                            ]
+
+                            script {
+                                def artifacts_selector = env.MACOS_X86_64_ARTIFACT_DIR + "/*.tar.gz"
+                                step ([$class: 'ArtifactArchiver', artifacts: artifacts_selector]);
+                            }
+
+                            sh "rm -rf ${WORKSPACE}/${MACOS_X86_64_ARTIFACT_DIR}"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+</script>
+    <sandbox>false</sandbox>
+  </definition>
   <actions/>
   <description>This project is generated. Do not modify manually.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <concurrentBuild>true</concurrentBuild>
+  <canRoam>true</canRoam>
   <properties>
     <jenkins.model.BuildDiscarderProperty>
       <strategy class="hudson.tasks.LogRotator">
@@ -18,49 +251,45 @@
           <name>SAPMACHINE_GIT_REPOSITORY</name>
           <description>The Git repository to use.</description>
           <defaultValue>https://github.com/SAP/SapMachine.git</defaultValue>
-          <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>SAPMACHINE_GIT_BRANCH</name>
           <description>The Git branch to build.</description>
           <defaultValue>sapmachine</defaultValue>
-          <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>GIT_TAG_NAME</name>
-          <description></description>
-          <defaultValue></defaultValue>
-          <trim>false</trim>
+          <description/>
+          <defaultValue/>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>EXTRA_CONFIGURE_OPTIONS</name>
           <description>Configure options passed directly to configure script.</description>
-          <defaultValue></defaultValue>
-          <trim>false</trim>
+          <defaultValue/>
         </hudson.model.StringParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>BUILD_LINUX_X86_64</name>
-          <description></description>
+          <description/>
           <defaultValue>true</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>BUILD_LINUX_PPC64LE</name>
-          <description></description>
+          <description/>
           <defaultValue>true</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>BUILD_LINUX_PPC64</name>
-          <description></description>
+          <description/>
           <defaultValue>true</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>BUILD_WINDOWS_X86_64</name>
-          <description></description>
+          <description/>
           <defaultValue>true</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>BUILD_MACOS_X86_64</name>
-          <description></description>
+          <description/>
           <defaultValue>true</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
@@ -72,252 +301,21 @@
           <name>hotspot_test_groups</name>
           <description>Select the test group for jtreg hotspot tests. Empty means disabled.</description>
           <defaultValue>:tier1</defaultValue>
-          <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>jdk_test_groups</name>
           <description>Select the test group for jtreg jdk tests. Empty means disabled.</description>
           <defaultValue>:tier1</defaultValue>
-          <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>langtools_test_groups</name>
           <description>Select the test group for jtreg langtools tests. Empty means disabled.</description>
-          <defaultValue>&quot;jdk tools lib&quot;</defaultValue>
-          <trim>false</trim>
+          <defaultValue>"jdk tools lib"</defaultValue>
         </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.63">
-    <script>pipeline {
-    agent {
-        label &apos;linux_x86_64&apos;
-    }
-    stages {
-        stage(&apos;Trigger Builds&apos;) {
-            parallel {
-                stage(&apos;Linux x86 64&apos;) {
-                    when {
-                        expression { params.BUILD_LINUX_X86_64 == true }
-                    }
-                    steps {
-                        script {
-                            def job_linux_x86_64 = build job: &apos;build--branch-linux_x86_64&apos;, propagate: false, wait: true, parameters:
-                            [
-                                string(name: &apos;SAPMACHINE_GIT_REPOSITORY&apos;, value: params.SAPMACHINE_GIT_REPOSITORY),
-                                string(name: &apos;SAPMACHINE_GIT_BRANCH&apos;, value: params.SAPMACHINE_GIT_BRANCH),
-                                string(name: &apos;GIT_TAG_NAME&apos;, value: params.GIT_TAG_NAME),
-                                string(name: &apos;EXTRA_CONFIGURE_OPTIONS&apos;, value: params.EXTRA_CONFIGURE_OPTIONS),
-                                string(name: &apos;hotspot_test_groups&apos;, value: params.hotspot_test_groups),
-                                string(name: &apos;jdk_test_groups&apos;, value: params.jdk_test_groups),
-                                string(name: &apos;langtools_test_groups&apos;, value: params.langtools_test_groups),
-                                [$class: &apos;BooleanParameterValue&apos;, name: &apos;RUN_TESTS&apos;, value: params.RUN_TESTS],
-                                [$class: &apos;BooleanParameterValue&apos;, name: &apos;PUBLISH&apos;, value: false],
-                                [$class: &apos;BooleanParameterValue&apos;, name: &apos;RELEASE&apos;, value: false]
-                            ]
-
-                            env.LINUX_X86_64_JOB_ID = Integer.toString(job_linux_x86_64.getNumber())
-                            env.LINUX_X86_64_ARTIFACT_DIR = &apos;linux_x86_64_&apos; + env.BUILD_NUMBER
-
-                            sh &quot;mkdir -p ${WORKSPACE}/${LINUX_X86_64_ARTIFACT_DIR}&quot;
-                        }
-                    }
-                    post {
-                        success {
-                            copyArtifacts filter: &apos;sapmachine-*.tar.gz&apos;, projectName: &apos;build--branch-linux_x86_64&apos;, target: env.LINUX_X86_64_ARTIFACT_DIR, selector:
-                            [
-                                $class: &apos;SpecificBuildSelector&apos;,
-                                buildNumber: env.LINUX_X86_64_JOB_ID
-                            ]
-
-                            script {
-                                def artifacts_selector = env.LINUX_X86_64_ARTIFACT_DIR + &quot;/*.tar.gz&quot;
-                                step ([$class: &apos;ArtifactArchiver&apos;, artifacts: artifacts_selector]);
-                            }
-
-                            sh &quot;rm -rf ${WORKSPACE}/${LINUX_X86_64_ARTIFACT_DIR}&quot;
-                        }
-                    }
-                }
-                stage(&apos;Linux ppc64le&apos;) {
-                    when {
-                        expression { params.BUILD_LINUX_PPC64LE == true }
-                    }
-                    steps {
-                        script {
-                            def job_linux_ppc64le = build job: &apos;build--branch-linux_ppc64le&apos;, propagate: false, wait: true, parameters:
-                            [
-                                string(name: &apos;SAPMACHINE_GIT_REPOSITORY&apos;, value: params.SAPMACHINE_GIT_REPOSITORY),
-                                string(name: &apos;SAPMACHINE_GIT_BRANCH&apos;, value: params.SAPMACHINE_GIT_BRANCH),
-                                string(name: &apos;GIT_TAG_NAME&apos;, value: params.GIT_TAG_NAME),
-                                string(name: &apos;EXTRA_CONFIGURE_OPTIONS&apos;, value: params.EXTRA_CONFIGURE_OPTIONS),
-                                string(name: &apos;hotspot_test_groups&apos;, value: params.hotspot_test_groups),
-                                string(name: &apos;jdk_test_groups&apos;, value: params.jdk_test_groups),
-                                string(name: &apos;langtools_test_groups&apos;, value: params.langtools_test_groups),
-                                [$class: &apos;BooleanParameterValue&apos;, name: &apos;RUN_TESTS&apos;, value: params.RUN_TESTS],
-                                [$class: &apos;BooleanParameterValue&apos;, name: &apos;PUBLISH&apos;, value: false],
-                                [$class: &apos;BooleanParameterValue&apos;, name: &apos;RELEASE&apos;, value: false]
-                            ]
-
-                            env.LINUX_PPC64LE_JOB_ID = Integer.toString(job_linux_ppc64le.getNumber())
-                            env.LINUX_PPC64LE_ARTIFACT_DIR = &apos;linux_ppc64le_&apos; + env.BUILD_NUMBER
-
-                            sh &quot;mkdir -p ${WORKSPACE}/${LINUX_PPC64LE_ARTIFACT_DIR}&quot;
-                        }
-                    }
-                    post {
-                        success {
-                            copyArtifacts filter: &apos;sapmachine-*.tar.gz&apos;, projectName: &apos;build--branch-linux_ppc64le&apos;, target: env.LINUX_PPC64LE_ARTIFACT_DIR, selector:
-                            [
-                                $class: &apos;SpecificBuildSelector&apos;,
-                                buildNumber: env.LINUX_PPC64LE_JOB_ID
-                            ]
-
-                            script {
-                                def artifacts_selector = env.LINUX_PPC64LE_ARTIFACT_DIR + &quot;/*.tar.gz&quot;
-                                step ([$class: &apos;ArtifactArchiver&apos;, artifacts: artifacts_selector]);
-                            }
-
-                            sh &quot;rm -rf ${WORKSPACE}/${LINUX_PPC64LE_ARTIFACT_DIR}&quot;
-                        }
-                    }
-                }
-                stage(&apos;Linux ppc64&apos;) {
-                    when {
-                        expression { params.BUILD_LINUX_PPC64 == true }
-                    }
-                    steps {
-                        script {
-                            def job_linux_ppc64 = build job: &apos;build--branch-linux_ppc64&apos;, propagate: false, wait: true, parameters:
-                            [
-                                string(name: &apos;SAPMACHINE_GIT_REPOSITORY&apos;, value: params.SAPMACHINE_GIT_REPOSITORY),
-                                string(name: &apos;SAPMACHINE_GIT_BRANCH&apos;, value: params.SAPMACHINE_GIT_BRANCH),
-                                string(name: &apos;GIT_TAG_NAME&apos;, value: params.GIT_TAG_NAME),
-                                string(name: &apos;EXTRA_CONFIGURE_OPTIONS&apos;, value: params.EXTRA_CONFIGURE_OPTIONS),
-                                string(name: &apos;hotspot_test_groups&apos;, value: params.hotspot_test_groups),
-                                string(name: &apos;jdk_test_groups&apos;, value: params.jdk_test_groups),
-                                string(name: &apos;langtools_test_groups&apos;, value: params.langtools_test_groups),
-                                [$class: &apos;BooleanParameterValue&apos;, name: &apos;RUN_TESTS&apos;, value: params.RUN_TESTS],
-                                [$class: &apos;BooleanParameterValue&apos;, name: &apos;PUBLISH&apos;, value: false],
-                                [$class: &apos;BooleanParameterValue&apos;, name: &apos;RELEASE&apos;, value: false]
-                            ]
-
-                            env.LINUX_PPC64_JOB_ID = Integer.toString(job_linux_ppc64.getNumber())
-                            env.LINUX_PPC64_ARTIFACT_DIR = &apos;linux_ppc64_&apos; + env.BUILD_NUMBER
-
-                            sh &quot;mkdir -p ${WORKSPACE}/${LINUX_PPC64_ARTIFACT_DIR}&quot;
-                        }
-                    }
-                    post {
-                        success {
-                            copyArtifacts filter: &apos;sapmachine-*.tar.gz&apos;, projectName: &apos;build--branch-linux_ppc64&apos;, target: env.LINUX_PPC64_ARTIFACT_DIR, selector:
-                            [
-                                $class: &apos;SpecificBuildSelector&apos;,
-                                buildNumber: env.LINUX_PPC64_JOB_ID
-                            ]
-
-                            script {
-                                def artifacts_selector = env.LINUX_PPC64_ARTIFACT_DIR + &quot;/*.tar.gz&quot;
-                                step ([$class: &apos;ArtifactArchiver&apos;, artifacts: artifacts_selector]);
-                            }
-
-                            sh &quot;rm -rf ${WORKSPACE}/${LINUX_PPC64_ARTIFACT_DIR}&quot;
-                        }
-                    }
-                }
-                stage(&apos;Windows x86 64&apos;) {
-                    when {
-                        expression { params.BUILD_WINDOWS_X86_64 == true }
-                    }
-                    steps {
-                        script {
-                            def job_windows_x86_64 = build job: &apos;build--branch-windows_x86_64&apos;, propagate: false, wait: true, parameters:
-                            [
-                                string(name: &apos;SAPMACHINE_GIT_REPOSITORY&apos;, value: params.SAPMACHINE_GIT_REPOSITORY),
-                                string(name: &apos;SAPMACHINE_GIT_BRANCH&apos;, value: params.SAPMACHINE_GIT_BRANCH),
-                                string(name: &apos;GIT_TAG_NAME&apos;, value: params.GIT_TAG_NAME),
-                                string(name: &apos;EXTRA_CONFIGURE_OPTIONS&apos;, value: params.EXTRA_CONFIGURE_OPTIONS),
-                                string(name: &apos;hotspot_test_groups&apos;, value: params.hotspot_test_groups),
-                                string(name: &apos;jdk_test_groups&apos;, value: params.jdk_test_groups),
-                                string(name: &apos;langtools_test_groups&apos;, value: params.langtools_test_groups),
-                                [$class: &apos;BooleanParameterValue&apos;, name: &apos;RUN_TESTS&apos;, value: params.RUN_TESTS],
-                                [$class: &apos;BooleanParameterValue&apos;, name: &apos;PUBLISH&apos;, value: false],
-                                [$class: &apos;BooleanParameterValue&apos;, name: &apos;RELEASE&apos;, value: false]
-                            ]
-
-                            env.WINDOWS_X86_64_JOB_ID = Integer.toString(job_windows_x86_64.getNumber())
-                            env.WINDOWS_X86_64_ARTIFACT_DIR = &apos;windows_x86_64_&apos; + env.BUILD_NUMBER
-
-                            sh &quot;mkdir -p ${WORKSPACE}/${WINDOWS_X86_64_ARTIFACT_DIR}&quot;
-                        }
-                    }
-                    post {
-                        success {
-                            copyArtifacts filter: &apos;sapmachine-*.zip&apos;, projectName: &apos;build--branch-windows_x86_64&apos;, target: env.WINDOWS_X86_64_ARTIFACT_DIR, selector:
-                            [
-                                $class: &apos;SpecificBuildSelector&apos;,
-                                buildNumber: env.WINDOWS_X86_64_JOB_ID
-                            ]
-
-                            script {
-                                def artifacts_selector = env.WINDOWS_X86_64_ARTIFACT_DIR + &quot;/*.zip&quot;
-                                step ([$class: &apos;ArtifactArchiver&apos;, artifacts: artifacts_selector]);
-                            }
-
-                            sh &quot;rm -rf ${WORKSPACE}/${WINDOWS_X86_64_ARTIFACT_DIR}&quot;
-                        }
-                    }
-                }
-                stage(&apos;macOS x86 64&apos;) {
-                    when {
-                        expression { params.BUILD_MACOS_X86_64 == true }
-                    }
-                    steps {
-                        script {
-                            def job_macos_x86_64 = build job: &apos;build--branch-macos_x86_64&apos;, propagate: false, wait: true, parameters:
-                            [
-                                string(name: &apos;SAPMACHINE_GIT_REPOSITORY&apos;, value: params.SAPMACHINE_GIT_REPOSITORY),
-                                string(name: &apos;SAPMACHINE_GIT_BRANCH&apos;, value: params.SAPMACHINE_GIT_BRANCH),
-                                string(name: &apos;GIT_TAG_NAME&apos;, value: params.GIT_TAG_NAME),
-                                string(name: &apos;EXTRA_CONFIGURE_OPTIONS&apos;, value: params.EXTRA_CONFIGURE_OPTIONS),
-                                string(name: &apos;hotspot_test_groups&apos;, value: params.hotspot_test_groups),
-                                string(name: &apos;jdk_test_groups&apos;, value: params.jdk_test_groups),
-                                string(name: &apos;langtools_test_groups&apos;, value: params.langtools_test_groups),
-                                [$class: &apos;BooleanParameterValue&apos;, name: &apos;RUN_TESTS&apos;, value: params.RUN_TESTS],
-                                [$class: &apos;BooleanParameterValue&apos;, name: &apos;PUBLISH&apos;, value: false],
-                                [$class: &apos;BooleanParameterValue&apos;, name: &apos;RELEASE&apos;, value: false]
-                            ]
-
-                            env.MACOS_X86_64_JOB_ID = Integer.toString(job_macos_x86_64.getNumber())
-                            env.MACOS_X86_64_ARTIFACT_DIR = &apos;macos_x86_64_&apos; + env.BUILD_NUMBER
-
-                            sh &quot;mkdir -p ${WORKSPACE}/${MACOS_X86_64_ARTIFACT_DIR}&quot;
-                        }
-                    }
-                    post {
-                        success {
-                            copyArtifacts filter: &apos;sapmachine-*.tar.gz&apos;, projectName: &apos;build--branch-macos_x86_64&apos;, target: env.MACOS_X86_64_ARTIFACT_DIR, selector:
-                            [
-                                $class: &apos;SpecificBuildSelector&apos;,
-                                buildNumber: env.MACOS_X86_64_JOB_ID
-                            ]
-
-                            script {
-                                def artifacts_selector = env.MACOS_X86_64_ARTIFACT_DIR + &quot;/*.tar.gz&quot;
-                                step ([$class: &apos;ArtifactArchiver&apos;, artifacts: artifacts_selector]);
-                            }
-
-                            sh &quot;rm -rf ${WORKSPACE}/${MACOS_X86_64_ARTIFACT_DIR}&quot;
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-</script>
-    <sandbox>false</sandbox>
-  </definition>
-  <disabled>false</disabled>
+  <scm class="hudson.scm.NullSCM"/>
+  <publishers/>
+  <buildWrappers/>
 </flow-definition>
