@@ -28,3 +28,4 @@ RUN cd ~ && git clone https://github.com/reshnm/git-hg-again.git && cp git-hg-ag
 
 RUN pip install jenkins-job-builder
 RUN pip install jenkinsapi
+RUN pip install pyyaml
