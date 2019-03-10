@@ -1,65 +1,26 @@
-<?xml version='1.1' encoding='UTF-8'?>
-<flow-definition plugin="workflow-job@2.31">
-  <actions>
-    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.3.6"/>
-  </actions>
-  <description>This project is generated. Do not modify manually.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
-  <keepDependencies>false</keepDependencies>
-  <properties>
-    <hudson.model.ParametersDefinitionProperty>
-      <parameterDefinitions>
-        <hudson.model.StringParameterDefinition>
-          <name>TAG</name>
-          <description>The Mercurial tag to build.</description>
-          <defaultValue>tip</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>BUILD_VERSION</name>
-          <description>Manually set the JTREG version. Only used when TAG parameter is &quot;tip&quot;</description>
-          <defaultValue>1.0</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>BUILD_NUMBER</name>
-          <description>Manually set the JTREG build number. Only used when TAG parameter is &quot;tip&quot;</description>
-          <defaultValue>0</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-      </parameterDefinitions>
-    </hudson.model.ParametersDefinitionProperty>
-    <jenkins.model.BuildDiscarderProperty>
-      <strategy class="hudson.tasks.LogRotator">
-        <daysToKeep>-1</daysToKeep>
-        <numToKeep>100</numToKeep>
-        <artifactDaysToKeep>-1</artifactDaysToKeep>
-        <artifactNumToKeep>10</artifactNumToKeep>
-      </strategy>
-    </jenkins.model.BuildDiscarderProperty>
-    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty/>
-  </properties>
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.64">
+<?xml version="1.0" encoding="UTF-8"?><flow-definition plugin="workflow-job">
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps">
     <script>pipeline {
     agent {
-        label &apos;linux_x86_64&apos;
+        label 'linux_x86_64'
     }
     stages {
-      stage(&quot;Checkout Infrastructure&quot;) {
+      stage("Checkout Infrastructure") {
               steps {
-                  checkout changelog: false, poll: false, scm: [$class: &apos;GitSCM&apos;, branches: [[name: &apos;*/master&apos;]], includedRegions: &apos;jenkins-job-generator/.*&apos;, doGenerateSubmoduleConfigurations: false, extensions: [[$class: &apos;RelativeTargetDirectory&apos;, relativeTargetDir: &apos;SapMachine-Infrastructure&apos;]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: &apos;SapMachine-github&apos;, url: &apos;https://github.com/SAP/SapMachine-infrastructure.git&apos;]]]
+                  checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], includedRegions: 'jenkins-job-generator/.*', doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
               }
           }
-        stage(&apos;Build&apos;) {
+        stage('Build') {
             agent {
                 dockerfile {
-                    label &apos;linux_x86_64&apos;
-                    dir &quot;SapMachine-Infrastructure/dockerfiles/ubuntu_16_04_x86_64&quot;
+                    label 'linux_x86_64'
+                    dir "SapMachine-Infrastructure/dockerfiles/ubuntu_16_04_x86_64"
                     reuseNode true
                 }
             }
             steps {
                 script {
-                    if (params.TAG == &quot;tip&quot;) {
+                    if (params.TAG == "tip") {
                         env.BUILD_NUMBER = params.BUILD_NUMBER
                         env.BUILD_VERSION = params.BUILD_VERSION
                     } else {
@@ -68,15 +29,15 @@
                         env.BUILD_VERSION = match[0][1]
                     }
                 }
-                sh &quot;rm -rf ${env.WORKSPACE}/jtreg&quot;
-                sh &quot;hg clone http://hg.openjdk.java.net/code-tools/jtreg ${env.WORKSPACE}/jtreg&quot;
-                sh &quot;cd ${env.WORKSPACE}/jtreg &amp;&amp; hg up ${params.TAG}&quot;
-                sh &quot;cd ${env.WORKSPACE}/jtreg &amp;&amp; bash make/build-all.sh /usr/lib/jvm/java-8-openjdk-*&quot;
-                sh &quot;cp ${env.WORKSPACE}/jtreg/build/images/jtreg.zip ${env.WORKSPACE}/jtreg.zip&quot;
+                sh "rm -rf ${env.WORKSPACE}/jtreg"
+                sh "hg clone http://hg.openjdk.java.net/code-tools/jtreg ${env.WORKSPACE}/jtreg"
+                sh "cd ${env.WORKSPACE}/jtreg &amp;&amp; hg up ${params.TAG}"
+                sh "cd ${env.WORKSPACE}/jtreg &amp;&amp; bash make/build-all.sh /usr/lib/jvm/java-8-openjdk-*"
+                sh "cp ${env.WORKSPACE}/jtreg/build/images/jtreg.zip ${env.WORKSPACE}/jtreg.zip"
             }
             post {
                 success {
-                    archive &apos;jtreg.zip&apos;
+                    archive 'jtreg.zip'
                 }
             }
         }
@@ -90,5 +51,43 @@
 </script>
     <sandbox>false</sandbox>
   </definition>
-  <disabled>false</disabled>
+  <actions/>
+  <description>This project is generated. Do not modify manually.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+  <keepDependencies>false</keepDependencies>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <concurrentBuild>false</concurrentBuild>
+  <canRoam>true</canRoam>
+  <properties>
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>-1</daysToKeep>
+        <numToKeep>100</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>10</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>TAG</name>
+          <description>The Mercurial tag to build.</description>
+          <defaultValue>tip</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>BUILD_VERSION</name>
+          <description>Manually set the JTREG version. Only used when TAG parameter is "tip"</description>
+          <defaultValue>1.0</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>BUILD_NUMBER</name>
+          <description>Manually set the JTREG build number. Only used when TAG parameter is "tip"</description>
+          <defaultValue>0</defaultValue>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <publishers/>
+  <buildWrappers/>
 </flow-definition>
