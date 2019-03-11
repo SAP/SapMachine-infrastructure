@@ -12,7 +12,7 @@ import yaml
 from urllib2 import urlopen, Request, quote, HTTPError
 
 cf_yml_url = 'https://sap.github.io/SapMachine/assets/cf/jre/linux/x86_64/index.yml'
-cf_version_pattern = re.compile('(((\d+)\.(\d+)\.(\d+))\.(\d+)\.(\d+))_b(\d+)')
+cf_version_pattern = re.compile('(((\d+)\.(\d+)\.(\d+))_(\d+)\.(\d+))\.b(\d+)')
 
 def main(argv=None):
     request = Request(cf_yml_url)

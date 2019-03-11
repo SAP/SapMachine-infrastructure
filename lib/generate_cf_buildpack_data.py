@@ -55,8 +55,13 @@ def main(argv=None):
                     if sap_build_number:
                         sapmachine_version[4] = int(sap_build_number)
 
-                    buildpack_version = '.'.join([str(e) for e in sapmachine_version])
-                    buildpack_version += str.format('_b{0}', build_number if build_number else '0')
+                    buildpack_version = str.format('{0}.{1}.{2}_{3}.{4}.b{5}',
+                        sapmachine_version[0],
+                        sapmachine_version[1],
+                        sapmachine_version[2],
+                        sapmachine_version[3],
+                        sapmachine_version[4],
+                        build_number if build_number else '0')
                     asset_map[buildpack_version] = asset['browser_download_url']
 
     local_repo = join(os.getcwd(), 'gh-pages')
