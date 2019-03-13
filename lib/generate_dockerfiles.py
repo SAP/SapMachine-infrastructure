@@ -47,7 +47,7 @@ def process_release(release, prefix, tags, git_dir):
         with open(dockerfile_path, 'w+') as dockerfile:
             dockerfile.write(Template(dockerfile_template).substitute(version=str.format('sapmachine-{0}-jdk={1}', major, version_part)))
 
-        utils.git_commit(git_dir, 'updated LTS Dockerfile', [dockerfile_path])
+        utils.git_commit(git_dir, 'updated Dockerfile', [dockerfile_path])
         utils.git_tag(git_dir, tag_name)
         utils.git_push(git_dir)
         utils.git_push_tag(git_dir, tag_name)
