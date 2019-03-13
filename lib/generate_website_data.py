@@ -78,13 +78,6 @@ def push_to_git(files):
     utils.git_push(local_repo)
     utils.remove_if_exists(local_repo)
 
-def is_lts(major):
-    lts_releases = [
-        '11',
-        '18'
-    ]
-    return major in lts_releases
-
 def main(argv=None):
     token = utils.get_github_api_accesstoken()
     org = 'SAP'
@@ -144,7 +137,7 @@ def main(argv=None):
                 if asset_image_type == 'jdk':
                     asset_os = match.group(3)
                     tag = release['name']
-                    image_is_lts = is_lts(major) and not release['prerelease']
+                    image_is_lts = utils.sapmachine_is_lts(major) and not release['prerelease']
 
                     if major not in image_dict:
                         image_dict[major] = {
