@@ -27,12 +27,51 @@
                         dockerfile {
                             dir "SapMachine-Infrastructure/dockerfiles/ubuntu_16_04_x86_64"
                             reuseNode true
-                            label "repository"
+                            label "linux_x86_64"
                         }
                     }
                     steps {
                         sh "cd SapMachine-Infrastructure && python lib/make_docker_manifest.py -d dockerfiles/official -m ../sapmachine.manifest --latest ${LATEST_MAJOR}"
                         archiveArtifacts 'sapmachine.manifest'
+                    }
+                }
+            }
+            post {
+                cleanup {
+                    cleanWs deleteDirs: true, disableDeferredWipeout: true
+                }
+            }
+        }
+
+- job:
+    name: generate-dockerfiles
+    description: 'This project is generated. Do not modify manually.'
+    project-type: pipeline
+    concurrent: false
+    properties:
+        - build-discarder:
+            num-to-keep: 100
+    dsl: |
+        pipeline {
+            agent {
+                label "linux_x86_64"
+            }
+            stages {
+                stage("Checkout Infrastructure") {
+                    steps {
+                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+                    }
+                }
+                stage('Generate Dockerfiles') {
+                    agent {
+                        dockerfile {
+                            dir "SapMachine-Infrastructure/dockerfiles/ubuntu_16_04_x86_64"
+                            reuseNode true
+                            label "linux_x86_64"
+                        }
+                    }
+                    steps {
+                        sh "cd SapMachine-Infrastructure && python lib/generate_dockerfiles.py"
                     }
                 }
             }
