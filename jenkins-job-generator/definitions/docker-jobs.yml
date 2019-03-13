@@ -70,10 +70,10 @@
                             label "linux_x86_64"
                         }
                     }
-                    withCredentials([
-                            [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
-                            ]) {
-                        steps {
+                    steps {
+                        withCredentials([
+                                [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
+                                ]) {
                             sh "cd SapMachine-Infrastructure && python lib/generate_dockerfiles.py"
                         }
                     }
