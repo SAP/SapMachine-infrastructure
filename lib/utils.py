@@ -120,6 +120,13 @@ def copytree(source, dest):
 
             shutil.copyfile(full_path, dest_path)
 
+def sapmachine_is_lts(major):
+    lts_releases = [
+        '11',
+        '18'
+    ]
+    return major in lts_releases
+
 def sapmachine_asset_pattern():
     return '[^-]+-([^-]+)-([^_]+)_([^_]+)_bin(\.tar\.gz|\.zip)'
 
@@ -257,6 +264,12 @@ def git_commit(dir, message, to_add):
     except Exception:
         print('git commit failed')
 
+def git_tag(dir, tag_name):
+    try:
+        run_cmd(['git', 'tag', tag_name], cwd=dir)
+    except Exception:
+        print('git tag failed')
+
 def git_push(dir):
     try:
         run_cmd(['git', 'fetch'], cwd=dir)
@@ -264,6 +277,12 @@ def git_push(dir):
         run_cmd(['git', 'push'], cwd=dir)
     except Exception:
         print('git push failed')
+
+def git_push_tag(dir, tag_name):
+    try:
+        run_cmd(['git', 'push', 'origin', tag_name], cwd=dir)
+    except Exception:
+        print('git push tag failed')
 
 def get_github_api_accesstoken():
     key = 'GITHUB_API_ACCESS_TOKEN'
