@@ -217,7 +217,7 @@
                 stage('Run jtreg hotspot') {{
                     {docker_agent}
                     when {{
-                        expression {{ params.RUN_TESTS == true }}
+                        expression {{ params.RUN_TESTS == true && params.hotspot_test_groups }}
                     }}
                     environment {{
                       SCIMARK_2_CP = '/opt/scimark2/scimark2lib.jar'
@@ -240,7 +240,7 @@
                 stage('Run jtreg jdk') {{
                     {docker_agent}
                     when {{
-                        expression {{ params.RUN_TESTS == true }}
+                        expression {{ params.RUN_TESTS == true && params.jdk_test_groups }}
                     }}
                     environment {{
                       TESTSUITE = 'jdk'
@@ -263,7 +263,7 @@
                 stage('Run jtreg langtools') {{
                     {docker_agent}
                     when {{
-                        expression {{ params.RUN_TESTS == true }}
+                        expression {{ params.RUN_TESTS == true && params.langtools_test_groups }}
                     }}
                     environment {{
                       TESTSUITE = 'langtools'
