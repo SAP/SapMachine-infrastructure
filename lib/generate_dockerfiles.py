@@ -89,6 +89,9 @@ def main(argv=None):
     if lts_release or stable_release:
         utils.git_clone('github.com/SAP/SapMachine-infrastructure', 'master', git_dir)
 
+    if lts_release and not stable_release:
+        stable_release = lts_release
+
     if lts_release:
         print(str.format('found latest LTS release "{0}"', lts_release['name']))
         process_release(lts_release, 'lts', infrastructure_tags, git_dir)
