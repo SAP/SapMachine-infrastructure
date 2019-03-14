@@ -3,16 +3,17 @@
     publish_default: false
     release_default: false
     allow_concurrent_builds: false
+    majors: &majors
+        - '11':
+           branch_name: sapmachine11
+        - '12':
+           branch_name: sapmachine12
+        - '13':
+           branch_name: sapmachine
 
 - project:
     name: snapshot-builds
-    major:
-        - 11:
-           branch_name: sapmachine11
-        - 12:
-           branch_name: sapmachine12
-        - 13:
-           branch_name: sapmachine
+    major: *majors
     build_type: snapshot
     jobs:
         - docker-builds
@@ -20,13 +21,7 @@
 
 - project:
     name: release-builds
-    major:
-        - 11:
-           branch_name: sapmachine11
-        - 12:
-           branch_name: sapmachine12
-        - 13:
-           branch_name: sapmachine
+    major: *majors
     build_type: release
     publish_default: true
     jobs:
@@ -35,13 +30,7 @@
 
 - project:
     name: pr-validation-builds
-    major:
-        - 11:
-           branch_name: sapmachine11
-        - 12:
-           branch_name: sapmachine12
-        - 13:
-           branch_name: sapmachine
+    major: *majors
     build_type: pr-validation
     jobs:
         - docker-builds
@@ -177,7 +166,7 @@
                         CREATE_NO_BUILD_TAR_GZ = 'true'
                     }}
                     steps {{
-                        sh 'SapMachine-Infrastructure/build-pipe/build.sh'
+                        sh 'SapMachine-Infrastructure/lib/build.sh'
                     }}
                     post {{
                         success {{
@@ -224,7 +213,7 @@
                       TESTSUITE = 'hotspot'
                     }}
                     steps {{
-                        sh "bash SapMachine-Infrastructure/test-pipe/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${{env.TESTSUITE}} ${{params.hotspot_test_groups}} || true"
+                        sh "bash SapMachine-Infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${{env.TESTSUITE}} ${{params.hotspot_test_groups}} || true"
                         publishHTML target: [
                             allowMissing: false,
                             alwaysLinkToLastBuild: false,
@@ -246,7 +235,7 @@
                       TESTSUITE = 'jdk'
                     }}
                     steps {{
-                        sh "bash SapMachine-Infrastructure/test-pipe/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${{env.TESTSUITE}} ${{params.jdk_test_groups}} || true"
+                        sh "bash SapMachine-Infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${{env.TESTSUITE}} ${{params.jdk_test_groups}} || true"
 
                         publishHTML target: [
                             allowMissing: false,
@@ -269,7 +258,7 @@
                       TESTSUITE = 'langtools'
                     }}
                     steps {{
-                        sh "bash SapMachine-Infrastructure/test-pipe/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${{env.TESTSUITE}} ${{params.langtools_test_groups}}  || true"
+                        sh "bash SapMachine-Infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${{env.TESTSUITE}} ${{params.langtools_test_groups}}  || true"
 
                         publishHTML target: [
                             allowMissing: false,
