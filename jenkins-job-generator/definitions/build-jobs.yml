@@ -10,32 +10,62 @@
            branch_name: sapmachine12
         - '13':
            branch_name: sapmachine
+    platforms: &platforms
+        - linux_x86_64:
+            configure_sysroot_default: '--with-sysroot=/opt/sysroot-sles11-x86_64 --with-freetype-lib=/opt/sysroot-sles11-x86_64/usr/lib64 --with-freetype-include=/opt/sysroot-sles11-x86_64/usr/include --with-stdc++lib=static'
+            docker_agent: |
+                agent {{
+                    dockerfile {{
+                        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_14_04_x86_64"
+                        reuseNode true
+                        label "{platform}"
+                    }}
+                }}
+        - linux_ppc64le:
+            configure_sysroot_default: '--with-sysroot=/opt/sysroot-sles12-ppc64le --with-freetype-lib=/opt/sysroot-sles12-ppc64le/usr/lib64 --with-freetype-include=/opt/sysroot-sles12-ppc64le/usr/include --with-stdc++lib=static'
+            docker_agent: |
+                agent {{
+                    dockerfile {{
+                        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_14_04_ppc64le"
+                        reuseNode true
+                        label "{platform}"
+                    }}
+                }}
+        - macos_x86_64:
+            configure_sysroot_default: ''
+            docker_agent: ''
+        - linux_ppc64:
+            configure_sysroot_default: '--with-devkit=/opt/devkits/ppc64-linux-gnu-to-ppc64-linux-gnu --with-freetype-lib=/opt/devkits/ppc64-linux-gnu-to-ppc64-linux-gnu/ppc64-linux-gnu/sysroot/usr/lib64 --with-freetype-include=/opt/devkits/ppc64-linux-gnu-to-ppc64-linux-gnu/ppc64-linux-gnu/sysroot/usr/include'
+            docker_agent: ''
+        - windows_x86_64:
+            configure_sysroot_default: ''
+            docker_agent: ''
 
 - project:
     name: snapshot-builds
     major: *majors
     build_type: snapshot
+    platform: *platforms
     jobs:
-        - docker-builds
-        - non-docker-builds
+        - build-{major}-{build_type}-{platform}
 
 - project:
     name: release-builds
     major: *majors
     build_type: release
     publish_default: true
+    platform: *platforms
     jobs:
-        - docker-builds
-        - non-docker-builds
+        - build-{major}-{build_type}-{platform}
 
 - project:
     name: pr-validation-builds
     major: *majors
     build_type: pr-validation
+    platform: *platforms
     jobs:
-        - docker-builds
+        - build-{major}-{build_type}-{platform}
         - validate-pr-{major}
-        - non-docker-builds
 
 - project:
     name: branch-builds
@@ -43,44 +73,10 @@
         - '':
            branch_name: sapmachine
     build_type: branch
+    platform: *platforms
     jobs:
-        - docker-builds
-        - non-docker-builds
+        - build-{major}-{build_type}-{platform}
         - branch-build-service
-
-
-- job-group:
-    name: docker-builds
-    docker_agent: |
-            agent {{
-                dockerfile {{
-                    dir "{docker_dir}"
-                    reuseNode true
-                    label "{platform}"
-                }}
-            }}
-    platform:
-        - linux_x86_64:
-            docker_dir: SapMachine-Infrastructure/dockerfiles/ubuntu_14_04_x86_64
-            configure_sysroot_default: '--with-sysroot=/opt/sysroot-sles11-x86_64 --with-freetype-lib=/opt/sysroot-sles11-x86_64/usr/lib64 --with-freetype-include=/opt/sysroot-sles11-x86_64/usr/include --with-stdc++lib=static'
-        - linux_ppc64le:
-            docker_dir: SapMachine-Infrastructure/dockerfiles/ubuntu_14_04_ppc64le
-            configure_sysroot_default: '--with-sysroot=/opt/sysroot-sles12-ppc64le --with-freetype-lib=/opt/sysroot-sles12-ppc64le/usr/lib64 --with-freetype-include=/opt/sysroot-sles12-ppc64le/usr/include --with-stdc++lib=static'
-    jobs:
-        - build-{major}-{build_type}-{platform}
-
-- job-group:
-    name: non-docker-builds
-    docker_agent: ''
-    platform:
-        - macos_x86_64:
-           configure_sysroot_default: ''
-        - linux_ppc64:
-           configure_sysroot_default: '--with-devkit=/opt/devkits/ppc64-linux-gnu-to-ppc64-linux-gnu --with-freetype-lib=/opt/devkits/ppc64-linux-gnu-to-ppc64-linux-gnu/ppc64-linux-gnu/sysroot/usr/lib64 --with-freetype-include=/opt/devkits/ppc64-linux-gnu-to-ppc64-linux-gnu/ppc64-linux-gnu/sysroot/usr/include'
-        - windows_x86_64:
-           configure_sysroot_default: ''
-    jobs:
-        - build-{major}-{build_type}-{platform}
 
 - job-template:
     name: build-{major}-{build_type}-{platform}
