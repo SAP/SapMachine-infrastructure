@@ -48,6 +48,7 @@
     platform: *platforms
     jobs:
         - build-{major}-{build_type}-{platform}
+        - build-service-{build_type}-{major}
 
 - project:
     name: release-builds
@@ -76,7 +77,7 @@
     platform: *platforms
     jobs:
         - build-{major}-{build_type}-{platform}
-        - branch-build-service
+        - build-service-{build_type}-{major}
 
 - job-template:
     name: build-{major}-{build_type}-{platform}
@@ -347,8 +348,8 @@
             }}
         }}
 
-- job:
-    name: branch-build-service
+- job-template:
+    name: build-service-{build_type}-{major}
     description: 'This project is generated. Do not modify manually.'
     project-type: pipeline
     concurrent: true
@@ -363,7 +364,7 @@
             description: 'The Git repository to use.'
         - string:
             name: SAPMACHINE_GIT_BRANCH
-            default: 'sapmachine'
+            default: '{branch_name}'
             description: 'The Git branch to build.'
         - string:
             name: GIT_TAG_NAME
@@ -406,20 +407,20 @@
             description: 'Select the test group for jtreg langtools tests. Empty means disabled.'
 
     dsl: |
-        pipeline {
-            agent {
+        pipeline {{
+            agent {{
                 label 'linux_x86_64'
-            }
-            stages {
-                stage('Trigger Builds') {
-                    parallel {
-                        stage('Linux x86 64') {
-                            when {
-                                expression { params.BUILD_LINUX_X86_64 == true }
-                            }
-                            steps {
-                                script {
-                                    def job_linux_x86_64 = build job: 'build--branch-linux_x86_64', propagate: false, wait: true, parameters:
+            }}
+            stages {{
+                stage('Trigger Builds') {{
+                    parallel {{
+                        stage('Linux x86 64') {{
+                            when {{
+                                expression {{ params.BUILD_LINUX_X86_64 == true }}
+                            }}
+                            steps {{
+                                script {{
+                                    def job_linux_x86_64 = build job: 'build-{major}-{build_type}-linux_x86_64', propagate: false, wait: true, parameters:
                                     [
                                         string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
                                         string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
@@ -436,33 +437,33 @@
                                     env.LINUX_X86_64_JOB_ID = Integer.toString(job_linux_x86_64.getNumber())
                                     env.LINUX_X86_64_ARTIFACT_DIR = 'linux_x86_64_' + env.BUILD_NUMBER
 
-                                    sh "mkdir -p ${WORKSPACE}/${LINUX_X86_64_ARTIFACT_DIR}"
-                                }
-                            }
-                            post {
-                                success {
+                                    sh "mkdir -p ${{WORKSPACE}}/${{LINUX_X86_64_ARTIFACT_DIR}}"
+                                }}
+                            }}
+                            post {{
+                                success {{
                                     copyArtifacts filter: 'sapmachine-*.tar.gz', projectName: 'build--branch-linux_x86_64', target: env.LINUX_X86_64_ARTIFACT_DIR, selector:
                                     [
                                         $class: 'SpecificBuildSelector',
                                         buildNumber: env.LINUX_X86_64_JOB_ID
                                     ]
 
-                                    script {
+                                    script {{
                                         def artifacts_selector = env.LINUX_X86_64_ARTIFACT_DIR + "/*.tar.gz"
                                         step ([$class: 'ArtifactArchiver', artifacts: artifacts_selector]);
-                                    }
+                                    }}
 
-                                    sh "rm -rf ${WORKSPACE}/${LINUX_X86_64_ARTIFACT_DIR}"
-                                }
-                            }
-                        }
-                        stage('Linux ppc64le') {
-                            when {
-                                expression { params.BUILD_LINUX_PPC64LE == true }
-                            }
-                            steps {
-                                script {
-                                    def job_linux_ppc64le = build job: 'build--branch-linux_ppc64le', propagate: false, wait: true, parameters:
+                                    sh "rm -rf ${{WORKSPACE}}/${{LINUX_X86_64_ARTIFACT_DIR}}"
+                                }}
+                            }}
+                        }}
+                        stage('Linux ppc64le') {{
+                            when {{
+                                expression {{ params.BUILD_LINUX_PPC64LE == true }}
+                            }}
+                            steps {{
+                                script {{
+                                    def job_linux_ppc64le = build job: 'build-{major}-{build_type}-linux_ppc64le', propagate: false, wait: true, parameters:
                                     [
                                         string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
                                         string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
@@ -479,33 +480,33 @@
                                     env.LINUX_PPC64LE_JOB_ID = Integer.toString(job_linux_ppc64le.getNumber())
                                     env.LINUX_PPC64LE_ARTIFACT_DIR = 'linux_ppc64le_' + env.BUILD_NUMBER
 
-                                    sh "mkdir -p ${WORKSPACE}/${LINUX_PPC64LE_ARTIFACT_DIR}"
-                                }
-                            }
-                            post {
-                                success {
+                                    sh "mkdir -p ${{WORKSPACE}}/${{LINUX_PPC64LE_ARTIFACT_DIR}}"
+                                }}
+                            }}
+                            post {{
+                                success {{
                                     copyArtifacts filter: 'sapmachine-*.tar.gz', projectName: 'build--branch-linux_ppc64le', target: env.LINUX_PPC64LE_ARTIFACT_DIR, selector:
                                     [
                                         $class: 'SpecificBuildSelector',
                                         buildNumber: env.LINUX_PPC64LE_JOB_ID
                                     ]
 
-                                    script {
+                                    script {{
                                         def artifacts_selector = env.LINUX_PPC64LE_ARTIFACT_DIR + "/*.tar.gz"
                                         step ([$class: 'ArtifactArchiver', artifacts: artifacts_selector]);
-                                    }
+                                    }}
 
-                                    sh "rm -rf ${WORKSPACE}/${LINUX_PPC64LE_ARTIFACT_DIR}"
-                                }
-                            }
-                        }
-                        stage('Linux ppc64') {
-                            when {
-                                expression { params.BUILD_LINUX_PPC64 == true }
-                            }
-                            steps {
-                                script {
-                                    def job_linux_ppc64 = build job: 'build--branch-linux_ppc64', propagate: false, wait: true, parameters:
+                                    sh "rm -rf ${{WORKSPACE}}/${{LINUX_PPC64LE_ARTIFACT_DIR}}"
+                                }}
+                            }}
+                        }}
+                        stage('Linux ppc64') {{
+                            when {{
+                                expression {{ params.BUILD_LINUX_PPC64 == true }}
+                            }}
+                            steps {{
+                                script {{
+                                    def job_linux_ppc64 = build job: 'build-{major}-{build_type}-linux_ppc64', propagate: false, wait: true, parameters:
                                     [
                                         string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
                                         string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
@@ -522,33 +523,33 @@
                                     env.LINUX_PPC64_JOB_ID = Integer.toString(job_linux_ppc64.getNumber())
                                     env.LINUX_PPC64_ARTIFACT_DIR = 'linux_ppc64_' + env.BUILD_NUMBER
 
-                                    sh "mkdir -p ${WORKSPACE}/${LINUX_PPC64_ARTIFACT_DIR}"
-                                }
-                            }
-                            post {
-                                success {
+                                    sh "mkdir -p ${{WORKSPACE}}/${{LINUX_PPC64_ARTIFACT_DIR}}"
+                                }}
+                            }}
+                            post {{
+                                success {{
                                     copyArtifacts filter: 'sapmachine-*.tar.gz', projectName: 'build--branch-linux_ppc64', target: env.LINUX_PPC64_ARTIFACT_DIR, selector:
                                     [
                                         $class: 'SpecificBuildSelector',
                                         buildNumber: env.LINUX_PPC64_JOB_ID
                                     ]
 
-                                    script {
+                                    script {{
                                         def artifacts_selector = env.LINUX_PPC64_ARTIFACT_DIR + "/*.tar.gz"
                                         step ([$class: 'ArtifactArchiver', artifacts: artifacts_selector]);
-                                    }
+                                    }}
 
-                                    sh "rm -rf ${WORKSPACE}/${LINUX_PPC64_ARTIFACT_DIR}"
-                                }
-                            }
-                        }
-                        stage('Windows x86 64') {
-                            when {
-                                expression { params.BUILD_WINDOWS_X86_64 == true }
-                            }
-                            steps {
-                                script {
-                                    def job_windows_x86_64 = build job: 'build--branch-windows_x86_64', propagate: false, wait: true, parameters:
+                                    sh "rm -rf ${{WORKSPACE}}/${{LINUX_PPC64_ARTIFACT_DIR}}"
+                                }}
+                            }}
+                        }}
+                        stage('Windows x86 64') {{
+                            when {{
+                                expression {{ params.BUILD_WINDOWS_X86_64 == true }}
+                            }}
+                            steps {{
+                                script {{
+                                    def job_windows_x86_64 = build job: 'build-{major}-{build_type}-windows_x86_64', propagate: false, wait: true, parameters:
                                     [
                                         string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
                                         string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
@@ -565,33 +566,33 @@
                                     env.WINDOWS_X86_64_JOB_ID = Integer.toString(job_windows_x86_64.getNumber())
                                     env.WINDOWS_X86_64_ARTIFACT_DIR = 'windows_x86_64_' + env.BUILD_NUMBER
 
-                                    sh "mkdir -p ${WORKSPACE}/${WINDOWS_X86_64_ARTIFACT_DIR}"
-                                }
-                            }
-                            post {
-                                success {
+                                    sh "mkdir -p ${{WORKSPACE}}/${{WINDOWS_X86_64_ARTIFACT_DIR}}"
+                                }}
+                            }}
+                            post {{
+                                success {{
                                     copyArtifacts filter: 'sapmachine-*.zip', projectName: 'build--branch-windows_x86_64', target: env.WINDOWS_X86_64_ARTIFACT_DIR, selector:
                                     [
                                         $class: 'SpecificBuildSelector',
                                         buildNumber: env.WINDOWS_X86_64_JOB_ID
                                     ]
 
-                                    script {
+                                    script {{
                                         def artifacts_selector = env.WINDOWS_X86_64_ARTIFACT_DIR + "/*.zip"
                                         step ([$class: 'ArtifactArchiver', artifacts: artifacts_selector]);
-                                    }
+                                    }}
 
-                                    sh "rm -rf ${WORKSPACE}/${WINDOWS_X86_64_ARTIFACT_DIR}"
-                                }
-                            }
-                        }
-                        stage('macOS x86 64') {
-                            when {
-                                expression { params.BUILD_MACOS_X86_64 == true }
-                            }
-                            steps {
-                                script {
-                                    def job_macos_x86_64 = build job: 'build--branch-macos_x86_64', propagate: false, wait: true, parameters:
+                                    sh "rm -rf ${{WORKSPACE}}/${{WINDOWS_X86_64_ARTIFACT_DIR}}"
+                                }}
+                            }}
+                        }}
+                        stage('macOS x86 64') {{
+                            when {{
+                                expression {{ params.BUILD_MACOS_X86_64 == true }}
+                            }}
+                            steps {{
+                                script {{
+                                    def job_macos_x86_64 = build job: 'build-{major}-{build_type}-macos_x86_64', propagate: false, wait: true, parameters:
                                     [
                                         string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
                                         string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
@@ -608,30 +609,30 @@
                                     env.MACOS_X86_64_JOB_ID = Integer.toString(job_macos_x86_64.getNumber())
                                     env.MACOS_X86_64_ARTIFACT_DIR = 'macos_x86_64_' + env.BUILD_NUMBER
 
-                                    sh "mkdir -p ${WORKSPACE}/${MACOS_X86_64_ARTIFACT_DIR}"
-                                }
-                            }
-                            post {
-                                success {
-                                    copyArtifacts filter: 'sapmachine-*.tar.gz', projectName: 'build--branch-macos_x86_64', target: env.MACOS_X86_64_ARTIFACT_DIR, selector:
+                                    sh "mkdir -p ${{WORKSPACE}}/${{MACOS_X86_64_ARTIFACT_DIR}}"
+                                }}
+                            }}
+                            post {{
+                                success {{
+                                    copyArtifacts filter: 'sapmachine-*.tar.gz', projectName: 'build-{major}-{build_type}-macos_x86_64', target: env.MACOS_X86_64_ARTIFACT_DIR, selector:
                                     [
                                         $class: 'SpecificBuildSelector',
                                         buildNumber: env.MACOS_X86_64_JOB_ID
                                     ]
 
-                                    script {
+                                    script {{
                                         def artifacts_selector = env.MACOS_X86_64_ARTIFACT_DIR + "/*.tar.gz"
                                         step ([$class: 'ArtifactArchiver', artifacts: artifacts_selector]);
-                                    }
+                                    }}
 
-                                    sh "rm -rf ${WORKSPACE}/${MACOS_X86_64_ARTIFACT_DIR}"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
+                                    sh "rm -rf ${{WORKSPACE}}/${{MACOS_X86_64_ARTIFACT_DIR}}"
+                                }}
+                            }}
+                        }}
+                    }}
+                }}
+            }}
+        }}
 
 
 

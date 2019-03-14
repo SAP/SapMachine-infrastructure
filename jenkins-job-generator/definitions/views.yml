@@ -2,7 +2,7 @@
     name: 'Snapshot Builds'
     description: 'Snapshot Builds'
     view-type: list
-    regex: 'build-[\d]+-snapshot-.*$'
+    regex: 'build-[\d]+-snapshot-.*$|build-service-snapshot-[\d]+$'
 
 - view:
     name: 'Release Builds'
@@ -20,7 +20,7 @@
     name: 'Branch Builds'
     description: 'Branch Builds'
     view-type: list
-    regex: 'build--branch-.*$|branch-build-service$'
+    regex: 'build--branch-.*$|build-service-branch-$'
 
 - view:
     name: 'Linux x86 64 Builds'
