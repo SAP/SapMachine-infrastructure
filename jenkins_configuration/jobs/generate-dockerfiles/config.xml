@@ -2,7 +2,7 @@
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps">
     <script>pipeline {
     agent {
-        label "repository"
+        label "linux_x86_64"
     }
     stages {
         stage("Checkout Infrastructure") {
@@ -10,32 +10,30 @@
                 checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
             }
         }
-        stage('Generate') {
+        stage('Generate Dockerfiles') {
             agent {
-                  dockerfile {
-                      dir "SapMachine-Infrastructure/dockerfiles/infrastructure"
-                      reuseNode true
-                      label "repository"
-                  }
-              }
-              environment {
-                  GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
-              }
-              steps {
-                  withCredentials([
-                    [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
-                    ]) {
-                      sh "python SapMachine-Infrastructure/lib/generate_website_data.py"
-                    }
-              }
-          }
+                dockerfile {
+                    dir "SapMachine-Infrastructure/dockerfiles/ubuntu_16_04_x86_64"
+                    reuseNode true
+                    label "linux_x86_64"
+                }
+            }
+            steps {
+                withCredentials([
+                        [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
+                        ]) {
+                    sh "cd SapMachine-Infrastructure &amp;&amp; python lib/generate_dockerfiles.py"
+                }
+            }
+        }
     }
     post {
-        always {
+        cleanup {
             cleanWs deleteDirs: true, disableDeferredWipeout: true
         }
     }
-}</script>
+}
+</script>
     <sandbox>false</sandbox>
   </definition>
   <actions/>
@@ -45,7 +43,16 @@
   <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
   <concurrentBuild>false</concurrentBuild>
   <canRoam>true</canRoam>
-  <properties/>
+  <properties>
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>-1</daysToKeep>
+        <numToKeep>100</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>-1</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
+  </properties>
   <scm class="hudson.scm.NullSCM"/>
   <publishers/>
   <buildWrappers/>

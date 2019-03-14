@@ -1,5 +1,5 @@
 <?xml version='1.1' encoding='UTF-8'?>
-<flow-definition plugin="workflow-job@2.31">
+<flow-definition plugin="workflow-job@2.32">
   <actions>
     <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.3.6"/>
   </actions>
@@ -185,7 +185,7 @@
 }
 
             when {
-                expression { params.RUN_TESTS == true }
+                expression { params.RUN_TESTS == true &amp;&amp; params.hotspot_test_groups }
             }
             environment {
               SCIMARK_2_CP = &apos;/opt/scimark2/scimark2lib.jar&apos;
@@ -215,7 +215,7 @@
 }
 
             when {
-                expression { params.RUN_TESTS == true }
+                expression { params.RUN_TESTS == true &amp;&amp; params.jdk_test_groups }
             }
             environment {
               TESTSUITE = &apos;jdk&apos;
@@ -245,7 +245,7 @@
 }
 
             when {
-                expression { params.RUN_TESTS == true }
+                expression { params.RUN_TESTS == true &amp;&amp; params.langtools_test_groups }
             }
             environment {
               TESTSUITE = &apos;langtools&apos;
@@ -322,6 +322,14 @@
                         string(name: &apos;GIT_TAG_NAME&apos;, value: params.GIT_TAG_NAME),
                         [$class: &apos;BooleanParameterValue&apos;, name: &apos;DEPLOY&apos;, value: true]
                     ]
+            }
+        }
+        stage(&apos;Generate Dockerfiles&apos;) {
+            when {
+                expression { params.PUBLISH == true &amp;&amp; params.RELEASE == true &amp;&amp; JOB_NAME ==~ /((\S*)(linux_x86_64)(\S*))/ }
+            }
+            steps {
+                build job: &apos;generate-dockerfiles&apos;, propagate: false, wait: true
             }
         }
     }
