@@ -60,7 +60,7 @@ if [ -z $BOOT_JDK ]; then
 fi
 
 VENDOR_NAME="SAP SE"
-VENDOR_URL="https://sapmachine.io"
+VENDOR_URL="https://sapmachine.io/"
 VENDOR_BUG_URL="https://github.com/SAP/SapMachine/issues/new"
 VENDOR_VM_BUG_URL="https://github.com/SAP/SapMachine/issues/new"
 
