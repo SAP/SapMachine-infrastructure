@@ -42,30 +42,16 @@
             docker_agent: ''
 
 - project:
-    name: snapshot-builds
+    name: builds
     major: *majors
-    build_type: snapshot
+    build_type:
+        - snapshot
+        - release
+        - pr-validation
     platform: *platforms
     jobs:
         - build-{major}-{build_type}-{platform}
         - build-service-{build_type}-{major}
-
-- project:
-    name: release-builds
-    major: *majors
-    build_type: release
-    publish_default: true
-    platform: *platforms
-    jobs:
-        - build-{major}-{build_type}-{platform}
-
-- project:
-    name: pr-validation-builds
-    major: *majors
-    build_type: pr-validation
-    platform: *platforms
-    jobs:
-        - build-{major}-{build_type}-{platform}
         - validate-pr-{major}
 
 - project:
@@ -73,7 +59,7 @@
     major:
         - '':
            branch_name: sapmachine
-    build_type: branch
+    build_type: user_branch
     platform: *platforms
     jobs:
         - build-{major}-{build_type}-{platform}
@@ -88,63 +74,64 @@
         - build-discarder:
             num-to-keep: 100
             artifact-num-to-keep: 1
+
     parameters:
-      - string:
-          name: SAPMACHINE_GIT_REPOSITORY
-          default: 'https://github.com/SAP/SapMachine.git'
-          description: 'The Git repository to use.'
-      - string:
-          name: SAPMACHINE_GIT_BRANCH
-          default: '{branch_name}'
-          description: 'The Git branch to build.'
-      - string:
-          name: GIT_TAG_NAME
-          default: ''
-          description: 'The Git tag to build.'
-      - string:
-          name: GITHUB_PR_NUMBER
-          default: ''
-          description: 'The GitHub Pull Request number. Only used in Pull Request validation builds.'
-      - string:
-          name: SAPMACHINE_ARCHIVE_NAME_PREFIX
-          default: 'sapmachine{major}-{platform}'
-          description: 'The prefix of the bundle archive.'
-      - string:
-           name: _CONFIGURE_SYSROOT
-           default: '{configure_sysroot_default}'
-           description: 'Sysroot configuration passed to configure script.'
-      - string:
-           name: EXTRA_CONFIGURE_OPTIONS
-           default: ''
-           description: 'Configure options passed directly to configure script.'
-      - string:
-          name: hotspot_test_groups
-          default: ':tier1'
-          description: 'Select the test group for jtreg hotspot tests. Empty means disabled.'
-      - string:
-          name: jdk_test_groups
-          default: ':tier1'
-          description: 'Select the test group for jtreg jdk tests. Empty means disabled.'
-      - string:
-          name: langtools_test_groups
-          default: '"jdk tools lib"'
-          description: 'Select the test group for jtreg langtools tests. Empty means disabled.'
-      - bool:
-          name: RUN_TESTS
-          default: true
-          description: 'enable/disable jtreg runs'
-      - bool:
-          name: RUN_DACAPO
-          default: false
-          description: 'enable/disable dacapo run'
-      - bool:
-          name: PUBLISH
-          default: '{publish_default}'
-          description: 'When set to true, the resulting bundles will be published to GitHub.'
-      - bool:
-          name: RELEASE
-          default: '{release_default}'
-          description: 'When set to true, marks this build as a release build, otherwise as pre-release.'
+        - string:
+            name: SAPMACHINE_GIT_REPOSITORY
+            default: 'https://github.com/SAP/SapMachine.git'
+            description: 'The Git repository to use.'
+        - string:
+            name: SAPMACHINE_GIT_BRANCH
+            default: '{branch_name}'
+            description: 'The Git branch to build.'
+        - string:
+            name: GIT_TAG_NAME
+            default: ''
+            description: 'The Git tag to build.'
+        - string:
+            name: GITHUB_PR_NUMBER
+            default: ''
+            description: 'The GitHub Pull Request number. Only used in Pull Request validation builds.'
+        - string:
+            name: SAPMACHINE_ARCHIVE_NAME_PREFIX
+            default: 'sapmachine{major}-{platform}'
+            description: 'The prefix of the bundle archive.'
+        - string:
+            name: _CONFIGURE_SYSROOT
+            default: '{configure_sysroot_default}'
+            description: 'Sysroot configuration passed to configure script.'
+        - string:
+            name: EXTRA_CONFIGURE_OPTIONS
+            default: ''
+            description: 'Configure options passed directly to configure script.'
+        - string:
+            name: hotspot_test_groups
+            default: ':tier1'
+            description: 'Select the test group for jtreg hotspot tests. Empty means disabled.'
+        - string:
+            name: jdk_test_groups
+            default: ':tier1'
+            description: 'Select the test group for jtreg jdk tests. Empty means disabled.'
+        - string:
+            name: langtools_test_groups
+            default: '"jdk tools lib"'
+            description: 'Select the test group for jtreg langtools tests. Empty means disabled.'
+        - bool:
+            name: RUN_TESTS
+            default: true
+            description: 'enable/disable jtreg runs'
+        - bool:
+            name: RUN_DACAPO
+            default: false
+            description: 'enable/disable dacapo run'
+        - bool:
+            name: PUBLISH
+            default: '{publish_default}'
+            description: 'When set to true, the resulting bundles will be published to GitHub.'
+        - bool:
+            name: RELEASE
+            default: '{release_default}'
+            description: 'When set to true, marks this build as a release build, otherwise as pre-release.'
 
     dsl: |
         pipeline {{
@@ -286,7 +273,7 @@
                 }}
                 stage('Publish GitHub') {{
                     when {{
-                        expression {{ params.PUBLISH == true }}
+                        expression {{ params.PUBLISH == true && JOB_NAME ==~ /((\S*)(release)(\S*))/}}
                     }}
                     environment {{
                       SAPMACHINE_GIT_REPO = 'github.com/SAP/SapMachine.git'
@@ -302,7 +289,7 @@
                 }}
                 stage('Publish Website Data') {{
                     when {{
-                        expression {{ params.PUBLISH == true }}
+                        expression {{ params.PUBLISH == true && JOB_NAME ==~ /((\S*)(release)(\S*))/}}
                     }}
                     steps {{
                         build job: 'generate-website-data', propagate: false, wait: false
@@ -310,7 +297,7 @@
                 }}
                 stage('Publish CF Java Buildpack Data') {{
                     when {{
-                        expression {{ params.PUBLISH == true && params.RELEASE == true && JOB_NAME ==~ /((\S*)(linux_x86_64)(\S*))/ }}
+                        expression {{ params.PUBLISH == true && params.RELEASE == true && JOB_NAME ==~ /((\S*)(release-linux_x86_64)(\S*))/ }}
                     }}
                     steps {{
                         build job: 'generate-cf-java-buildpack-data', propagate: false, wait: false
@@ -318,7 +305,7 @@
                 }}
                 stage('Publish Debian Linux Packages') {{
                     when {{
-                        expression {{ params.PUBLISH == true && params.RELEASE == true && JOB_NAME ==~ /((\S*)(linux_x86_64)(\S*))/ }}
+                        expression {{ params.PUBLISH == true && params.RELEASE == true && JOB_NAME ==~ /((\S*)(release-linux_x86_64)(\S*))/ }}
                     }}
                     steps {{
                         build job: 'debian-package', propagate: false, wait: true, parameters:
@@ -330,7 +317,7 @@
                 }}
                 stage('Generate Dockerfiles') {{
                     when {{
-                        expression {{ params.PUBLISH == true && params.RELEASE == true && JOB_NAME ==~ /((\S*)(linux_x86_64)(\S*))/ }}
+                        expression {{ params.PUBLISH == true && params.RELEASE == true && JOB_NAME ==~ /((\S*)(release-linux_x86_64)(\S*))/ }}
                     }}
                     steps {{
                         build job: 'generate-dockerfiles', propagate: false, wait: true
@@ -357,6 +344,7 @@
         - build-discarder:
             days-to-keep: 14
             artifact-days-to-keep: 7
+
     parameters:
         - string:
             name: SAPMACHINE_GIT_REPOSITORY
@@ -393,6 +381,14 @@
             name: RUN_TESTS
             default: true
             description: 'enable/disable jtreg runs'
+        - bool:
+            name: PUBLISH
+            default: '{publish_default}'
+            description: 'When set to true, the resulting bundles will be published to GitHub. (Only used in release builds!)'
+        - bool:
+            name: RELEASE
+            default: '{release_default}'
+            description: 'When set to true, marks this build as a release build, otherwise as pre-release. (Only used in release builds!)'
         - string:
             name: hotspot_test_groups
             default: ':tier1'
@@ -430,8 +426,8 @@
                                         string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                         string(name: 'langtools_test_groups', value: params.langtools_test_groups),
                                         [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
-                                        [$class: 'BooleanParameterValue', name: 'PUBLISH', value: false],
-                                        [$class: 'BooleanParameterValue', name: 'RELEASE', value: false]
+                                        [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
+                                        [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
                                     ]
 
                                     env.LINUX_X86_64_JOB_ID = Integer.toString(job_linux_x86_64.getNumber())
@@ -473,8 +469,8 @@
                                         string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                         string(name: 'langtools_test_groups', value: params.langtools_test_groups),
                                         [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
-                                        [$class: 'BooleanParameterValue', name: 'PUBLISH', value: false],
-                                        [$class: 'BooleanParameterValue', name: 'RELEASE', value: false]
+                                        [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
+                                        [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
                                     ]
 
                                     env.LINUX_PPC64LE_JOB_ID = Integer.toString(job_linux_ppc64le.getNumber())
@@ -516,8 +512,8 @@
                                         string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                         string(name: 'langtools_test_groups', value: params.langtools_test_groups),
                                         [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
-                                        [$class: 'BooleanParameterValue', name: 'PUBLISH', value: false],
-                                        [$class: 'BooleanParameterValue', name: 'RELEASE', value: false]
+                                        [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
+                                        [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
                                     ]
 
                                     env.LINUX_PPC64_JOB_ID = Integer.toString(job_linux_ppc64.getNumber())
@@ -559,8 +555,8 @@
                                         string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                         string(name: 'langtools_test_groups', value: params.langtools_test_groups),
                                         [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
-                                        [$class: 'BooleanParameterValue', name: 'PUBLISH', value: false],
-                                        [$class: 'BooleanParameterValue', name: 'RELEASE', value: false]
+                                        [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
+                                        [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
                                     ]
 
                                     env.WINDOWS_X86_64_JOB_ID = Integer.toString(job_windows_x86_64.getNumber())
@@ -602,8 +598,8 @@
                                         string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                         string(name: 'langtools_test_groups', value: params.langtools_test_groups),
                                         [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
-                                        [$class: 'BooleanParameterValue', name: 'PUBLISH', value: false],
-                                        [$class: 'BooleanParameterValue', name: 'RELEASE', value: false]
+                                        [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
+                                        [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
                                     ]
 
                                     env.MACOS_X86_64_JOB_ID = Integer.toString(job_macos_x86_64.getNumber())

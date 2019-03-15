@@ -8,7 +8,7 @@
     name: 'Release Builds'
     description: 'Release Builds'
     view-type: list
-    regex: 'build-[\d]+-release-.*$'
+    regex: 'build-[\d]+-release-.*$|build-service-release-[\d]+$'
 
 - view:
     name: 'Pull Request Validation Builds '
@@ -17,10 +17,10 @@
     regex: 'build-[\d]+-pr-validation-.*$|validate-pr-[\d]+$'
 
 - view:
-    name: 'Branch Builds'
-    description: 'Branch Builds'
+    name: 'User Branch Builds'
+    description: 'User Branch Builds'
     view-type: list
-    regex: 'build--branch-.*$|build-service-branch-$'
+    regex: 'build--user_branch-.*$|build-service-user_branch-$'
 
 - view:
     name: 'Linux x86 64 Builds'
