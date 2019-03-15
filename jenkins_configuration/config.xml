@@ -36,53 +36,6 @@
       <filterQueue>false</filterQueue>
       <properties class="hudson.model.View$PropertyList"/>
     </hudson.model.AllView>
-    <hudson.plugins.sectioned__view.SectionedView plugin="sectioned-view@1.25">
-      <owner class="hudson" reference="../../.."/>
-      <name>Legacy</name>
-      <filterExecutors>false</filterExecutors>
-      <filterQueue>false</filterQueue>
-      <properties class="hudson.model.View$PropertyList"/>
-      <sections>
-        <hudson.plugins.sectioned__view.ListViewSection>
-          <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator"/>
-          </jobNames>
-          <jobFilters/>
-          <name>Docker 12</name>
-          <includeRegex>.*12-docker.*</includeRegex>
-          <width>HALF</width>
-          <alignment>LEFT</alignment>
-          <columns>
-            <hudson.views.StatusColumn/>
-            <hudson.views.WeatherColumn/>
-            <hudson.views.JobColumn/>
-            <hudson.views.LastSuccessColumn/>
-            <hudson.views.LastFailureColumn/>
-            <hudson.views.LastDurationColumn/>
-            <hudson.views.BuildButtonColumn/>
-          </columns>
-        </hudson.plugins.sectioned__view.ListViewSection>
-        <hudson.plugins.sectioned__view.ListViewSection>
-          <jobNames>
-            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.sectioned__view.ListViewSection/jobNames/comparator"/>
-          </jobNames>
-          <jobFilters/>
-          <name>Docker 11</name>
-          <includeRegex>.*11-docker.*</includeRegex>
-          <width>HALF</width>
-          <alignment>RIGHT</alignment>
-          <columns>
-            <hudson.views.StatusColumn/>
-            <hudson.views.WeatherColumn/>
-            <hudson.views.JobColumn/>
-            <hudson.views.LastSuccessColumn/>
-            <hudson.views.LastFailureColumn/>
-            <hudson.views.LastDurationColumn/>
-            <hudson.views.BuildButtonColumn/>
-          </columns>
-        </hudson.plugins.sectioned__view.ListViewSection>
-      </sections>
-    </hudson.plugins.sectioned__view.SectionedView>
     <listView>
       <owner class="hudson" reference="../../.."/>
       <name>Branch Builds</name>
@@ -103,7 +56,7 @@
         <hudson.views.LastDurationColumn/>
         <hudson.views.BuildButtonColumn/>
       </columns>
-      <includeRegex>build--branch-.*$|branch-build-service$</includeRegex>
+      <includeRegex>build--branch-.*$|build-service-branch-$</includeRegex>
       <recurse>false</recurse>
     </listView>
     <listView>
@@ -218,7 +171,7 @@
         <hudson.views.LastDurationColumn/>
         <hudson.views.BuildButtonColumn/>
       </columns>
-      <includeRegex>build-[\d]+-snapshot-.*$</includeRegex>
+      <includeRegex>build-[\d]+-snapshot-.*$|build-service-snapshot-[\d]+$</includeRegex>
       <recurse>false</recurse>
     </listView>
     <listView>

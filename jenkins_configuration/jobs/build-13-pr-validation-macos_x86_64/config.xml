@@ -117,7 +117,7 @@
                 CREATE_NO_BUILD_TAR_GZ = &apos;true&apos;
             }
             steps {
-                sh &apos;SapMachine-Infrastructure/build-pipe/build.sh&apos;
+                sh &apos;SapMachine-Infrastructure/lib/build.sh&apos;
             }
             post {
                 success {
@@ -164,7 +164,7 @@
               TESTSUITE = &apos;hotspot&apos;
             }
             steps {
-                sh &quot;bash SapMachine-Infrastructure/test-pipe/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${env.TESTSUITE} ${params.hotspot_test_groups} || true&quot;
+                sh &quot;bash SapMachine-Infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${env.TESTSUITE} ${params.hotspot_test_groups} || true&quot;
                 publishHTML target: [
                     allowMissing: false,
                     alwaysLinkToLastBuild: false,
@@ -186,7 +186,7 @@
               TESTSUITE = &apos;jdk&apos;
             }
             steps {
-                sh &quot;bash SapMachine-Infrastructure/test-pipe/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${env.TESTSUITE} ${params.jdk_test_groups} || true&quot;
+                sh &quot;bash SapMachine-Infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${env.TESTSUITE} ${params.jdk_test_groups} || true&quot;
 
                 publishHTML target: [
                     allowMissing: false,
@@ -209,7 +209,7 @@
               TESTSUITE = &apos;langtools&apos;
             }
             steps {
-                sh &quot;bash SapMachine-Infrastructure/test-pipe/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${env.TESTSUITE} ${params.langtools_test_groups}  || true&quot;
+                sh &quot;bash SapMachine-Infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${env.TESTSUITE} ${params.langtools_test_groups}  || true&quot;
 
                 publishHTML target: [
                     allowMissing: false,

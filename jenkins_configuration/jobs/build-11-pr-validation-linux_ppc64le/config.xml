@@ -2,12 +2,6 @@
 <flow-definition plugin="workflow-job@2.32">
   <actions>
     <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.3.6"/>
-    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.3.6">
-      <jobProperties/>
-      <triggers/>
-      <parameters/>
-      <options/>
-    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
   </actions>
   <description>This project is generated. Do not modify manually.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
@@ -130,7 +124,7 @@
                 CREATE_NO_BUILD_TAR_GZ = &apos;true&apos;
             }
             steps {
-                sh &apos;SapMachine-Infrastructure/build-pipe/build.sh&apos;
+                sh &apos;SapMachine-Infrastructure/lib/build.sh&apos;
             }
             post {
                 success {
@@ -198,7 +192,7 @@
               TESTSUITE = &apos;hotspot&apos;
             }
             steps {
-                sh &quot;bash SapMachine-Infrastructure/test-pipe/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${env.TESTSUITE} ${params.hotspot_test_groups} || true&quot;
+                sh &quot;bash SapMachine-Infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${env.TESTSUITE} ${params.hotspot_test_groups} || true&quot;
                 publishHTML target: [
                     allowMissing: false,
                     alwaysLinkToLastBuild: false,
@@ -227,7 +221,7 @@
               TESTSUITE = &apos;jdk&apos;
             }
             steps {
-                sh &quot;bash SapMachine-Infrastructure/test-pipe/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${env.TESTSUITE} ${params.jdk_test_groups} || true&quot;
+                sh &quot;bash SapMachine-Infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${env.TESTSUITE} ${params.jdk_test_groups} || true&quot;
 
                 publishHTML target: [
                     allowMissing: false,
@@ -257,7 +251,7 @@
               TESTSUITE = &apos;langtools&apos;
             }
             steps {
-                sh &quot;bash SapMachine-Infrastructure/test-pipe/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${env.TESTSUITE} ${params.langtools_test_groups}  || true&quot;
+                sh &quot;bash SapMachine-Infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${env.TESTSUITE} ${params.langtools_test_groups}  || true&quot;
 
                 publishHTML target: [
                     allowMissing: false,

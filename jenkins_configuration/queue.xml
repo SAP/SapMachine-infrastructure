@@ -1,5 +1,337 @@
 <?xml version='1.1' encoding='UTF-8'?>
 <hudson.model.Queue_-State>
-  <counter>28858</counter>
-  <items/>
+  <counter>28986</counter>
+  <items>
+    <hudson.model.Queue_-BlockedItem>
+      <actions>
+        <hudson.model.CauseAction>
+          <causeBag class="linked-hash-map">
+            <entry>
+              <org.jenkinsci.plugins.github.pullrequest.GitHubPRCause plugin="github-pullrequest@0.2.4">
+                <skip>false</skip>
+                <reason>PR opened</reason>
+                <htmlUrl>https://github.com/SAP/SapMachine/pull/339</htmlUrl>
+                <title>Merge to tag jdk-13+12</title>
+                <gitUrl>git://github.com/SAP/SapMachine.git</gitUrl>
+                <sshUrl>git@github.com:SAP/SapMachine.git</sshUrl>
+                <pollingLog>Running GitHub Pull Request trigger check for Mar 15, 2019 1:08:14 AM on SAP/SapMachine
+GitHub rate limit before check: GHRateLimit{remaining=4991, limit=5000, resetDate=Fri Mar 15 02:07:28 UTC 2019}
+No matching comments found for 339
+Pull Request Opened: state has changed (PR was opened)
+</pollingLog>
+                <headSha>ea4035e187be956662d3f0c319aae9b5bf7e47f7</headSha>
+                <number>339</number>
+                <mergeable>false</mergeable>
+                <targetBranch>sapmachine</targetBranch>
+                <sourceBranch>pr-jdk-13+12</sourceBranch>
+                <body>please pull</body>
+                <sourceRepoOwner>SAP</sourceRepoOwner>
+                <triggerSenderName>Github Bot of the SapMachine.</triggerSenderName>
+                <labels/>
+                <commitAuthorName></commitAuthorName>
+                <commitAuthorEmail></commitAuthorEmail>
+                <condRef>head</condRef>
+                <state>OPEN</state>
+              </org.jenkinsci.plugins.github.pullrequest.GitHubPRCause>
+              <int>1</int>
+            </entry>
+          </causeBag>
+        </hudson.model.CauseAction>
+        <hudson.model.ParametersAction>
+          <safeParameters class="sorted-set">
+            <string>GITHUB_PR_AUTHOR_EMAIL</string>
+            <string>GITHUB_PR_BODY</string>
+            <string>GITHUB_PR_CAUSE_SKIP</string>
+            <string>GITHUB_PR_COMMENT_BODY</string>
+            <string>GITHUB_PR_COMMENT_BODY_MATCH</string>
+            <string>GITHUB_PR_COMMIT_AUTHOR_EMAIL</string>
+            <string>GITHUB_PR_COMMIT_AUTHOR_NAME</string>
+            <string>GITHUB_PR_COND_REF</string>
+            <string>GITHUB_PR_HEAD_SHA</string>
+            <string>GITHUB_PR_LABELS</string>
+            <string>GITHUB_PR_NUMBER</string>
+            <string>GITHUB_PR_SHORT_DESC</string>
+            <string>GITHUB_PR_SOURCE_BRANCH</string>
+            <string>GITHUB_PR_SOURCE_REPO_OWNER</string>
+            <string>GITHUB_PR_STATE</string>
+            <string>GITHUB_PR_TARGET_BRANCH</string>
+            <string>GITHUB_PR_TITLE</string>
+            <string>GITHUB_PR_TRIGGER_SENDER_AUTHOR</string>
+            <string>GITHUB_PR_TRIGGER_SENDER_EMAIL</string>
+            <string>GITHUB_PR_URL</string>
+            <string>GITHUB_REPO_GIT_URL</string>
+            <string>GITHUB_REPO_SSH_URL</string>
+          </safeParameters>
+          <parameters>
+            <hudson.model.StringParameterValue>
+              <name>GITHUB_PR_TRIGGER_SENDER_AUTHOR</name>
+              <value>Github Bot of the SapMachine.</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>GITHUB_PR_TRIGGER_SENDER_EMAIL</name>
+              <value></value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>GITHUB_PR_COMMIT_AUTHOR_NAME</name>
+              <value></value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>GITHUB_PR_COMMIT_AUTHOR_EMAIL</name>
+              <value></value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>GITHUB_PR_TARGET_BRANCH</name>
+              <value>sapmachine</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>GITHUB_PR_SOURCE_BRANCH</name>
+              <value>pr-jdk-13+12</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>GITHUB_PR_AUTHOR_EMAIL</name>
+              <value></value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>GITHUB_PR_BODY</name>
+              <value>please pull</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>GITHUB_PR_SHORT_DESC</name>
+              <value>GitHub PR #&lt;a href=\&quot;https://github.com/SAP/SapMachine/pull/339\&quot;&gt;339&lt;/a&gt;, PR opened</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>GITHUB_PR_TITLE</name>
+              <value>Merge to tag jdk-13+12</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>GITHUB_PR_URL</name>
+              <value>https://github.com/SAP/SapMachine/pull/339</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>GITHUB_PR_SOURCE_REPO_OWNER</name>
+              <value>SAP</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>GITHUB_PR_HEAD_SHA</name>
+              <value>ea4035e187be956662d3f0c319aae9b5bf7e47f7</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>GITHUB_PR_COND_REF</name>
+              <value>head</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.BooleanParameterValue>
+              <name>GITHUB_PR_CAUSE_SKIP</name>
+              <value>false</value>
+            </hudson.model.BooleanParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>GITHUB_PR_NUMBER</name>
+              <value>339</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>GITHUB_PR_STATE</name>
+              <value>OPEN</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>GITHUB_PR_COMMENT_BODY</name>
+              <value></value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>GITHUB_PR_COMMENT_BODY_MATCH</name>
+              <value></value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>GITHUB_PR_LABELS</name>
+              <value></value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>GITHUB_REPO_GIT_URL</name>
+              <value>git://github.com/SAP/SapMachine.git</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>GITHUB_REPO_SSH_URL</name>
+              <value>git@github.com:SAP/SapMachine.git</value>
+            </hudson.model.StringParameterValue>
+          </parameters>
+        </hudson.model.ParametersAction>
+        <org.jenkinsci.plugins.github.pullrequest.GitHubPRBadgeAction plugin="github-pullrequest@0.2.4">
+          <htmlUrl>https://github.com/SAP/SapMachine/pull/339</htmlUrl>
+          <title>Merge to tag jdk-13+12</title>
+          <number>339</number>
+        </org.jenkinsci.plugins.github.pullrequest.GitHubPRBadgeAction>
+      </actions>
+      <id>28976</id>
+      <task class="org.jenkinsci.plugins.workflow.job.WorkflowJob">validate-pr-13</task>
+      <inQueueSince>1552612094810</inQueueSince>
+      <buildableStartMilliseconds>1552612104188</buildableStartMilliseconds>
+      <outer-class>queue</outer-class>
+    </hudson.model.Queue_-BlockedItem>
+    <hudson.model.Queue_-BuildableItem>
+      <actions/>
+      <id>28986</id>
+      <task class="org.jenkinsci.plugins.workflow.support.steps.ExecutorStepExecution$PlaceholderTask" plugin="workflow-durable-task-step@2.29">
+        <context class="org.jenkinsci.plugins.workflow.cps.CpsStepContext" plugin="workflow-cps@2.64">
+          <executionRef class="org.jenkinsci.plugins.workflow.job.WorkflowRun$Owner" plugin="workflow-job@2.32">
+            <job>build-11-release-linux_ppc64</job>
+            <id>6</id>
+          </executionRef>
+          <id>3</id>
+          <bodyHeads/>
+          <body class="org.jenkinsci.plugins.workflow.cps.StaticBodyReference" resolves-to="org.jenkinsci.plugins.workflow.cps.HandleBodyReference">
+            <id>1</id>
+          </body>
+          <threadId>0</threadId>
+          <stepDescriptorId>org.jenkinsci.plugins.workflow.support.steps.ExecutorStep</stepDescriptorId>
+        </context>
+        <label>linux_ppc64</label>
+        <runId>build-11-release-linux_ppc64#6</runId>
+      </task>
+      <inQueueSince>1552612165399</inQueueSince>
+      <buildableStartMilliseconds>1552612165399</buildableStartMilliseconds>
+      <isPending>false</isPending>
+    </hudson.model.Queue_-BuildableItem>
+    <hudson.model.Queue_-BuildableItem>
+      <actions/>
+      <id>28985</id>
+      <task class="org.jenkinsci.plugins.workflow.support.steps.ExecutorStepExecution$PlaceholderTask" plugin="workflow-durable-task-step@2.29">
+        <context class="org.jenkinsci.plugins.workflow.cps.CpsStepContext" plugin="workflow-cps@2.64">
+          <executionRef class="org.jenkinsci.plugins.workflow.job.WorkflowRun$Owner" plugin="workflow-job@2.32">
+            <job>build-11-release-windows_x86_64</job>
+            <id>5</id>
+          </executionRef>
+          <id>3</id>
+          <bodyHeads/>
+          <body class="org.jenkinsci.plugins.workflow.cps.StaticBodyReference" resolves-to="org.jenkinsci.plugins.workflow.cps.HandleBodyReference">
+            <id>1</id>
+          </body>
+          <threadId>0</threadId>
+          <stepDescriptorId>org.jenkinsci.plugins.workflow.support.steps.ExecutorStep</stepDescriptorId>
+        </context>
+        <label>windows_x86_64</label>
+        <runId>build-11-release-windows_x86_64#5</runId>
+      </task>
+      <inQueueSince>1552612165394</inQueueSince>
+      <buildableStartMilliseconds>1552612165395</buildableStartMilliseconds>
+      <isPending>false</isPending>
+    </hudson.model.Queue_-BuildableItem>
+    <hudson.model.Queue_-BuildableItem>
+      <actions/>
+      <id>28983</id>
+      <task class="org.jenkinsci.plugins.workflow.support.steps.ExecutorStepExecution$PlaceholderTask" plugin="workflow-durable-task-step@2.29">
+        <context class="org.jenkinsci.plugins.workflow.cps.CpsStepContext" plugin="workflow-cps@2.64">
+          <executionRef class="org.jenkinsci.plugins.workflow.job.WorkflowRun$Owner" plugin="workflow-job@2.32">
+            <job>build-11-release-macos_x86_64</job>
+            <id>6</id>
+          </executionRef>
+          <id>3</id>
+          <bodyHeads/>
+          <body class="org.jenkinsci.plugins.workflow.cps.StaticBodyReference" resolves-to="org.jenkinsci.plugins.workflow.cps.HandleBodyReference">
+            <id>1</id>
+          </body>
+          <threadId>0</threadId>
+          <stepDescriptorId>org.jenkinsci.plugins.workflow.support.steps.ExecutorStep</stepDescriptorId>
+        </context>
+        <label>macos_x86_64</label>
+        <runId>build-11-release-macos_x86_64#6</runId>
+      </task>
+      <inQueueSince>1552612165380</inQueueSince>
+      <buildableStartMilliseconds>1552612165380</buildableStartMilliseconds>
+      <isPending>false</isPending>
+    </hudson.model.Queue_-BuildableItem>
+    <hudson.model.Queue_-BuildableItem>
+      <actions/>
+      <id>28982</id>
+      <task class="org.jenkinsci.plugins.workflow.support.steps.ExecutorStepExecution$PlaceholderTask" plugin="workflow-durable-task-step@2.29">
+        <context class="org.jenkinsci.plugins.workflow.cps.CpsStepContext" plugin="workflow-cps@2.64">
+          <executionRef class="org.jenkinsci.plugins.workflow.job.WorkflowRun$Owner" plugin="workflow-job@2.32">
+            <job>build-11-release-linux_ppc64le</job>
+            <id>6</id>
+          </executionRef>
+          <id>3</id>
+          <bodyHeads/>
+          <body class="org.jenkinsci.plugins.workflow.cps.StaticBodyReference" resolves-to="org.jenkinsci.plugins.workflow.cps.HandleBodyReference">
+            <id>1</id>
+          </body>
+          <threadId>0</threadId>
+          <stepDescriptorId>org.jenkinsci.plugins.workflow.support.steps.ExecutorStep</stepDescriptorId>
+        </context>
+        <label>linux_ppc64le</label>
+        <runId>build-11-release-linux_ppc64le#6</runId>
+      </task>
+      <inQueueSince>1552612165376</inQueueSince>
+      <buildableStartMilliseconds>1552612165377</buildableStartMilliseconds>
+      <isPending>false</isPending>
+    </hudson.model.Queue_-BuildableItem>
+    <hudson.model.Queue_-BuildableItem>
+      <actions/>
+      <id>28968</id>
+      <task class="org.jenkinsci.plugins.workflow.support.steps.ExecutorStepExecution$PlaceholderTask" plugin="workflow-durable-task-step@2.29">
+        <context class="org.jenkinsci.plugins.workflow.cps.CpsStepContext" plugin="workflow-cps@2.64">
+          <executionRef class="org.jenkinsci.plugins.workflow.job.WorkflowRun$Owner" plugin="workflow-job@2.32">
+            <job>build-12-pr-validation-windows_x86_64</job>
+            <id>8</id>
+          </executionRef>
+          <id>3</id>
+          <bodyHeads/>
+          <body class="org.jenkinsci.plugins.workflow.cps.StaticBodyReference" resolves-to="org.jenkinsci.plugins.workflow.cps.HandleBodyReference">
+            <id>1</id>
+          </body>
+          <threadId>0</threadId>
+          <stepDescriptorId>org.jenkinsci.plugins.workflow.support.steps.ExecutorStep</stepDescriptorId>
+        </context>
+        <label>windows_x86_64</label>
+        <runId>build-12-pr-validation-windows_x86_64#8</runId>
+      </task>
+      <inQueueSince>1552606014351</inQueueSince>
+      <buildableStartMilliseconds>1552606014351</buildableStartMilliseconds>
+      <isPending>false</isPending>
+    </hudson.model.Queue_-BuildableItem>
+    <hudson.model.Queue_-BuildableItem>
+      <actions/>
+      <id>28966</id>
+      <task class="org.jenkinsci.plugins.workflow.support.steps.ExecutorStepExecution$PlaceholderTask" plugin="workflow-durable-task-step@2.29">
+        <context class="org.jenkinsci.plugins.workflow.cps.CpsStepContext" plugin="workflow-cps@2.64">
+          <executionRef class="org.jenkinsci.plugins.workflow.job.WorkflowRun$Owner" plugin="workflow-job@2.32">
+            <job>build-12-pr-validation-macos_x86_64</job>
+            <id>8</id>
+          </executionRef>
+          <id>3</id>
+          <bodyHeads/>
+          <body class="org.jenkinsci.plugins.workflow.cps.StaticBodyReference" resolves-to="org.jenkinsci.plugins.workflow.cps.HandleBodyReference">
+            <id>1</id>
+          </body>
+          <threadId>0</threadId>
+          <stepDescriptorId>org.jenkinsci.plugins.workflow.support.steps.ExecutorStep</stepDescriptorId>
+        </context>
+        <label>macos_x86_64</label>
+        <runId>build-12-pr-validation-macos_x86_64#8</runId>
+      </task>
+      <inQueueSince>1552606014348</inQueueSince>
+      <buildableStartMilliseconds>1552606014348</buildableStartMilliseconds>
+      <isPending>false</isPending>
+    </hudson.model.Queue_-BuildableItem>
+    <hudson.model.Queue_-BuildableItem>
+      <actions/>
+      <id>28954</id>
+      <task class="org.jenkinsci.plugins.workflow.support.steps.ExecutorStepExecution$PlaceholderTask" plugin="workflow-durable-task-step@2.29">
+        <context class="org.jenkinsci.plugins.workflow.cps.CpsStepContext" plugin="workflow-cps@2.64">
+          <executionRef class="org.jenkinsci.plugins.workflow.job.WorkflowRun$Owner" plugin="workflow-job@2.32">
+            <job>build-13-pr-validation-windows_x86_64</job>
+            <id>21</id>
+          </executionRef>
+          <id>3</id>
+          <bodyHeads/>
+          <body class="org.jenkinsci.plugins.workflow.cps.StaticBodyReference" resolves-to="org.jenkinsci.plugins.workflow.cps.HandleBodyReference">
+            <id>1</id>
+          </body>
+          <threadId>0</threadId>
+          <stepDescriptorId>org.jenkinsci.plugins.workflow.support.steps.ExecutorStep</stepDescriptorId>
+        </context>
+        <label>windows_x86_64</label>
+        <runId>build-13-pr-validation-windows_x86_64#21</runId>
+      </task>
+      <inQueueSince>1552603360884</inQueueSince>
+      <buildableStartMilliseconds>1552603360889</buildableStartMilliseconds>
+      <isPending>false</isPending>
+    </hudson.model.Queue_-BuildableItem>
+  </items>
 </hudson.model.Queue_-State>
