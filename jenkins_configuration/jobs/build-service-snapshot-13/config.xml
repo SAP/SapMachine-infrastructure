@@ -23,8 +23,8 @@
                                 string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                 string(name: 'langtools_test_groups', value: params.langtools_test_groups),
                                 [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
-                                [$class: 'BooleanParameterValue', name: 'PUBLISH', value: false],
-                                [$class: 'BooleanParameterValue', name: 'RELEASE', value: false]
+                                [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
+                                [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
                             ]
 
                             env.LINUX_X86_64_JOB_ID = Integer.toString(job_linux_x86_64.getNumber())
@@ -66,8 +66,8 @@
                                 string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                 string(name: 'langtools_test_groups', value: params.langtools_test_groups),
                                 [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
-                                [$class: 'BooleanParameterValue', name: 'PUBLISH', value: false],
-                                [$class: 'BooleanParameterValue', name: 'RELEASE', value: false]
+                                [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
+                                [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
                             ]
 
                             env.LINUX_PPC64LE_JOB_ID = Integer.toString(job_linux_ppc64le.getNumber())
@@ -109,8 +109,8 @@
                                 string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                 string(name: 'langtools_test_groups', value: params.langtools_test_groups),
                                 [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
-                                [$class: 'BooleanParameterValue', name: 'PUBLISH', value: false],
-                                [$class: 'BooleanParameterValue', name: 'RELEASE', value: false]
+                                [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
+                                [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
                             ]
 
                             env.LINUX_PPC64_JOB_ID = Integer.toString(job_linux_ppc64.getNumber())
@@ -152,8 +152,8 @@
                                 string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                 string(name: 'langtools_test_groups', value: params.langtools_test_groups),
                                 [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
-                                [$class: 'BooleanParameterValue', name: 'PUBLISH', value: false],
-                                [$class: 'BooleanParameterValue', name: 'RELEASE', value: false]
+                                [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
+                                [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
                             ]
 
                             env.WINDOWS_X86_64_JOB_ID = Integer.toString(job_windows_x86_64.getNumber())
@@ -195,8 +195,8 @@
                                 string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                 string(name: 'langtools_test_groups', value: params.langtools_test_groups),
                                 [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
-                                [$class: 'BooleanParameterValue', name: 'PUBLISH', value: false],
-                                [$class: 'BooleanParameterValue', name: 'RELEASE', value: false]
+                                [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
+                                [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
                             ]
 
                             env.MACOS_X86_64_JOB_ID = Integer.toString(job_macos_x86_64.getNumber())
@@ -296,6 +296,16 @@
           <name>RUN_TESTS</name>
           <description>enable/disable jtreg runs</description>
           <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>PUBLISH</name>
+          <description>When set to true, the resulting bundles will be published to GitHub. (Only used in release builds!)</description>
+          <defaultValue>false</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>RELEASE</name>
+          <description>When set to true, marks this build as a release build, otherwise as pre-release. (Only used in release builds!)</description>
+          <defaultValue>false</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>hotspot_test_groups</name>

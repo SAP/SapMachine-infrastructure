@@ -2,7 +2,7 @@
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps">
     <script>pipeline {
     agent {
-        label "linux_x86_64"
+        label "macos_x86_64"
     }
     stages {
         stage("Checkout Infrastructure") {
@@ -11,14 +11,7 @@
             }
         }
         stage("Build") {
-            agent {
-    dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_14_04_x86_64"
-        reuseNode true
-        label "linux_x86_64"
-    }
-}
-
+            
             environment {
                 CREATE_NO_BUILD_TAR_GZ = 'true'
             }
@@ -32,14 +25,7 @@
             }
         }
         stage('Copy JTREG Artifacts') {
-            agent {
-    dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_14_04_x86_64"
-        reuseNode true
-        label "linux_x86_64"
-    }
-}
-
+            
             when {
                 expression { params.RUN_TESTS == true }
             }
@@ -54,14 +40,7 @@
             }
         }
         stage('Run Dacapo') {
-            agent {
-    dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_14_04_x86_64"
-        reuseNode true
-        label "linux_x86_64"
-    }
-}
-
+            
             when {
                 expression { params.RUN_DACAPO == true }
             }
@@ -75,14 +54,7 @@
             }
         }
         stage('Run jtreg hotspot') {
-            agent {
-    dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_14_04_x86_64"
-        reuseNode true
-        label "linux_x86_64"
-    }
-}
-
+            
             when {
                 expression { params.RUN_TESTS == true &amp;&amp; params.hotspot_test_groups }
             }
@@ -105,14 +77,7 @@
             }
         }
         stage('Run jtreg jdk') {
-            agent {
-    dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_14_04_x86_64"
-        reuseNode true
-        label "linux_x86_64"
-    }
-}
-
+            
             when {
                 expression { params.RUN_TESTS == true &amp;&amp; params.jdk_test_groups }
             }
@@ -135,14 +100,7 @@
             }
         }
         stage('Run jtreg langtools') {
-            agent {
-    dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_14_04_x86_64"
-        reuseNode true
-        label "linux_x86_64"
-    }
-}
-
+            
             when {
                 expression { params.RUN_TESTS == true &amp;&amp; params.langtools_test_groups }
             }
@@ -181,7 +139,7 @@
         }
         stage('Publish GitHub') {
             when {
-                expression { params.PUBLISH == true }
+                expression { params.PUBLISH == true &amp;&amp; JOB_NAME ==~ /((\S*)(release)(\S*))/}
             }
             environment {
               SAPMACHINE_GIT_REPO = 'github.com/SAP/SapMachine.git'
@@ -191,13 +149,13 @@
             }
             steps {
                 sh '''
-                SapMachine-Infrastructure/build-pipe/publish.sh
+                SapMachine-Infrastructure/lib/publish.sh
                 '''
             }
         }
         stage('Publish Website Data') {
             when {
-                expression { params.PUBLISH == true }
+                expression { params.PUBLISH == true &amp;&amp; JOB_NAME ==~ /((\S*)(release)(\S*))/}
             }
             steps {
                 build job: 'generate-website-data', propagate: false, wait: false
@@ -205,7 +163,7 @@
         }
         stage('Publish CF Java Buildpack Data') {
             when {
-                expression { params.PUBLISH == true &amp;&amp; params.RELEASE == true &amp;&amp; JOB_NAME ==~ /((\S*)(linux_x86_64)(\S*))/ }
+                expression { params.PUBLISH == true &amp;&amp; params.RELEASE == true &amp;&amp; JOB_NAME ==~ /((\S*)(release-linux_x86_64)(\S*))/ }
             }
             steps {
                 build job: 'generate-cf-java-buildpack-data', propagate: false, wait: false
@@ -213,7 +171,7 @@
         }
         stage('Publish Debian Linux Packages') {
             when {
-                expression { params.PUBLISH == true &amp;&amp; params.RELEASE == true &amp;&amp; JOB_NAME ==~ /((\S*)(linux_x86_64)(\S*))/ }
+                expression { params.PUBLISH == true &amp;&amp; params.RELEASE == true &amp;&amp; JOB_NAME ==~ /((\S*)(release-linux_x86_64)(\S*))/ }
             }
             steps {
                 build job: 'debian-package', propagate: false, wait: true, parameters:
@@ -225,7 +183,7 @@
         }
         stage('Generate Dockerfiles') {
             when {
-                expression { params.PUBLISH == true &amp;&amp; params.RELEASE == true &amp;&amp; JOB_NAME ==~ /((\S*)(linux_x86_64)(\S*))/ }
+                expression { params.PUBLISH == true &amp;&amp; params.RELEASE == true &amp;&amp; JOB_NAME ==~ /((\S*)(release-linux_x86_64)(\S*))/ }
             }
             steps {
                 build job: 'generate-dockerfiles', propagate: false, wait: true
@@ -286,12 +244,12 @@
         <hudson.model.StringParameterDefinition>
           <name>SAPMACHINE_ARCHIVE_NAME_PREFIX</name>
           <description>The prefix of the bundle archive.</description>
-          <defaultValue>sapmachine-linux_x86_64</defaultValue>
+          <defaultValue>sapmachine-macos_x86_64</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>_CONFIGURE_SYSROOT</name>
           <description>Sysroot configuration passed to configure script.</description>
-          <defaultValue>--with-sysroot=/opt/sysroot-sles11-x86_64 --with-freetype-lib=/opt/sysroot-sles11-x86_64/usr/lib64 --with-freetype-include=/opt/sysroot-sles11-x86_64/usr/include --with-stdc++lib=static</defaultValue>
+          <defaultValue/>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>EXTRA_CONFIGURE_OPTIONS</name>

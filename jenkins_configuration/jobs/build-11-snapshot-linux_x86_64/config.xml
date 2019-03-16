@@ -181,7 +181,7 @@
         }
         stage('Publish GitHub') {
             when {
-                expression { params.PUBLISH == true }
+                expression { params.PUBLISH == true &amp;&amp; JOB_NAME ==~ /((\S*)(release)(\S*))/}
             }
             environment {
               SAPMACHINE_GIT_REPO = 'github.com/SAP/SapMachine.git'
@@ -191,13 +191,13 @@
             }
             steps {
                 sh '''
-                SapMachine-Infrastructure/build-pipe/publish.sh
+                SapMachine-Infrastructure/lib/publish.sh
                 '''
             }
         }
         stage('Publish Website Data') {
             when {
-                expression { params.PUBLISH == true }
+                expression { params.PUBLISH == true &amp;&amp; JOB_NAME ==~ /((\S*)(release)(\S*))/}
             }
             steps {
                 build job: 'generate-website-data', propagate: false, wait: false
@@ -205,7 +205,7 @@
         }
         stage('Publish CF Java Buildpack Data') {
             when {
-                expression { params.PUBLISH == true &amp;&amp; params.RELEASE == true &amp;&amp; JOB_NAME ==~ /((\S*)(linux_x86_64)(\S*))/ }
+                expression { params.PUBLISH == true &amp;&amp; params.RELEASE == true &amp;&amp; JOB_NAME ==~ /((\S*)(release-linux_x86_64)(\S*))/ }
             }
             steps {
                 build job: 'generate-cf-java-buildpack-data', propagate: false, wait: false
@@ -213,7 +213,7 @@
         }
         stage('Publish Debian Linux Packages') {
             when {
-                expression { params.PUBLISH == true &amp;&amp; params.RELEASE == true &amp;&amp; JOB_NAME ==~ /((\S*)(linux_x86_64)(\S*))/ }
+                expression { params.PUBLISH == true &amp;&amp; params.RELEASE == true &amp;&amp; JOB_NAME ==~ /((\S*)(release-linux_x86_64)(\S*))/ }
             }
             steps {
                 build job: 'debian-package', propagate: false, wait: true, parameters:
@@ -225,7 +225,7 @@
         }
         stage('Generate Dockerfiles') {
             when {
-                expression { params.PUBLISH == true &amp;&amp; params.RELEASE == true &amp;&amp; JOB_NAME ==~ /((\S*)(linux_x86_64)(\S*))/ }
+                expression { params.PUBLISH == true &amp;&amp; params.RELEASE == true &amp;&amp; JOB_NAME ==~ /((\S*)(release-linux_x86_64)(\S*))/ }
             }
             steps {
                 build job: 'generate-dockerfiles', propagate: false, wait: true

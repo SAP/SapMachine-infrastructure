@@ -13,7 +13,7 @@
                     }
                     steps {
                         script {
-                            def job_linux_x86_64 = build job: 'build--branch-linux_x86_64', propagate: false, wait: true, parameters:
+                            def job_linux_x86_64 = build job: 'build-12-release-linux_x86_64', propagate: false, wait: true, parameters:
                             [
                                 string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
                                 string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
@@ -23,8 +23,8 @@
                                 string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                 string(name: 'langtools_test_groups', value: params.langtools_test_groups),
                                 [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
-                                [$class: 'BooleanParameterValue', name: 'PUBLISH', value: false],
-                                [$class: 'BooleanParameterValue', name: 'RELEASE', value: false]
+                                [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
+                                [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
                             ]
 
                             env.LINUX_X86_64_JOB_ID = Integer.toString(job_linux_x86_64.getNumber())
@@ -56,7 +56,7 @@
                     }
                     steps {
                         script {
-                            def job_linux_ppc64le = build job: 'build--branch-linux_ppc64le', propagate: false, wait: true, parameters:
+                            def job_linux_ppc64le = build job: 'build-12-release-linux_ppc64le', propagate: false, wait: true, parameters:
                             [
                                 string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
                                 string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
@@ -66,8 +66,8 @@
                                 string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                 string(name: 'langtools_test_groups', value: params.langtools_test_groups),
                                 [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
-                                [$class: 'BooleanParameterValue', name: 'PUBLISH', value: false],
-                                [$class: 'BooleanParameterValue', name: 'RELEASE', value: false]
+                                [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
+                                [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
                             ]
 
                             env.LINUX_PPC64LE_JOB_ID = Integer.toString(job_linux_ppc64le.getNumber())
@@ -99,7 +99,7 @@
                     }
                     steps {
                         script {
-                            def job_linux_ppc64 = build job: 'build--branch-linux_ppc64', propagate: false, wait: true, parameters:
+                            def job_linux_ppc64 = build job: 'build-12-release-linux_ppc64', propagate: false, wait: true, parameters:
                             [
                                 string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
                                 string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
@@ -109,8 +109,8 @@
                                 string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                 string(name: 'langtools_test_groups', value: params.langtools_test_groups),
                                 [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
-                                [$class: 'BooleanParameterValue', name: 'PUBLISH', value: false],
-                                [$class: 'BooleanParameterValue', name: 'RELEASE', value: false]
+                                [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
+                                [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
                             ]
 
                             env.LINUX_PPC64_JOB_ID = Integer.toString(job_linux_ppc64.getNumber())
@@ -142,7 +142,7 @@
                     }
                     steps {
                         script {
-                            def job_windows_x86_64 = build job: 'build--branch-windows_x86_64', propagate: false, wait: true, parameters:
+                            def job_windows_x86_64 = build job: 'build-12-release-windows_x86_64', propagate: false, wait: true, parameters:
                             [
                                 string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
                                 string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
@@ -152,8 +152,8 @@
                                 string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                 string(name: 'langtools_test_groups', value: params.langtools_test_groups),
                                 [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
-                                [$class: 'BooleanParameterValue', name: 'PUBLISH', value: false],
-                                [$class: 'BooleanParameterValue', name: 'RELEASE', value: false]
+                                [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
+                                [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
                             ]
 
                             env.WINDOWS_X86_64_JOB_ID = Integer.toString(job_windows_x86_64.getNumber())
@@ -185,7 +185,7 @@
                     }
                     steps {
                         script {
-                            def job_macos_x86_64 = build job: 'build--branch-macos_x86_64', propagate: false, wait: true, parameters:
+                            def job_macos_x86_64 = build job: 'build-12-release-macos_x86_64', propagate: false, wait: true, parameters:
                             [
                                 string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
                                 string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
@@ -195,8 +195,8 @@
                                 string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                 string(name: 'langtools_test_groups', value: params.langtools_test_groups),
                                 [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
-                                [$class: 'BooleanParameterValue', name: 'PUBLISH', value: false],
-                                [$class: 'BooleanParameterValue', name: 'RELEASE', value: false]
+                                [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
+                                [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
                             ]
 
                             env.MACOS_X86_64_JOB_ID = Integer.toString(job_macos_x86_64.getNumber())
@@ -207,7 +207,7 @@
                     }
                     post {
                         success {
-                            copyArtifacts filter: 'sapmachine-*.tar.gz', projectName: 'build--branch-macos_x86_64', target: env.MACOS_X86_64_ARTIFACT_DIR, selector:
+                            copyArtifacts filter: 'sapmachine-*.tar.gz', projectName: 'build-12-release-macos_x86_64', target: env.MACOS_X86_64_ARTIFACT_DIR, selector:
                             [
                                 $class: 'SpecificBuildSelector',
                                 buildNumber: env.MACOS_X86_64_JOB_ID
@@ -255,7 +255,7 @@
         <hudson.model.StringParameterDefinition>
           <name>SAPMACHINE_GIT_BRANCH</name>
           <description>The Git branch to build.</description>
-          <defaultValue>sapmachine</defaultValue>
+          <defaultValue>sapmachine12</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>GIT_TAG_NAME</name>
@@ -296,6 +296,16 @@
           <name>RUN_TESTS</name>
           <description>enable/disable jtreg runs</description>
           <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>PUBLISH</name>
+          <description>When set to true, the resulting bundles will be published to GitHub. (Only used in release builds!)</description>
+          <defaultValue>false</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>RELEASE</name>
+          <description>When set to true, marks this build as a release build, otherwise as pre-release. (Only used in release builds!)</description>
+          <defaultValue>false</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>hotspot_test_groups</name>
