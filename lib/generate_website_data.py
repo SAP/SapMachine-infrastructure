@@ -82,20 +82,15 @@ def main(argv=None):
     token = utils.get_github_api_accesstoken()
     org = 'SAP'
     repository = 'SapMachine'
-    github_api = str.format('https://api.github.com/repos/{0}/{1}/releases', org, repository)
     asset_pattern = re.compile(utils.sapmachine_asset_pattern())
     major_dict = {}
     release_dict = {}
     image_dict = {}
     latest_link_dict = {}
-    request = Request(github_api)
 
-    if token is not None:
-        request.add_header('Authorization', str.format('token {0}', token))
+    releases = utils.github_api_request('releases', per_page=100)
 
-    response = json.loads(urlopen(request).read())
-
-    for release in response:
+    for release in releases:
         version, version_part, major, build_number, sap_build_number, os_ext = utils.sapmachine_tag_components(release['name'])
 
         is_prerelease = release['prerelease']
