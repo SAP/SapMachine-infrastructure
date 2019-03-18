@@ -10,7 +10,6 @@ import re
 import utils
 import argparse
 
-from urllib2 import urlopen, Request, quote
 from os.path import join
 
 def write_index_yaml(assets, target):
@@ -21,17 +20,12 @@ def write_index_yaml(assets, target):
 
 def main(argv=None):
     token = utils.get_github_api_accesstoken()
-    github_api = 'https://api.github.com/repos/SAP/SapMachine/releases'
     asset_pattern = re.compile(utils.sapmachine_asset_pattern())
     asset_map = {}
 
-    request = Request(github_api)
+    releases = utils.github_api_request('releases', per_page=100)
 
-    if token is not None:
-        request.add_header('Authorization', str.format('token {0}', token))
-
-    response = json.loads(urlopen(request).read())
-    for release in response:
+    for release in releases:
         if release['prerelease'] is True:
             continue
 
