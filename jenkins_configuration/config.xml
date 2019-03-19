@@ -5,7 +5,7 @@
     <string>hudsonHomeIsFull</string>
     <string>hudson.node_monitors.MonitorMarkedNodeOffline</string>
   </disabledAdministrativeMonitors>
-  <version>2.150.3</version>
+  <version>2.164.1</version>
   <installStateName>RESTART</installStateName>
   <numExecutors>4</numExecutors>
   <mode>NORMAL</mode>
@@ -36,29 +36,6 @@
       <filterQueue>false</filterQueue>
       <properties class="hudson.model.View$PropertyList"/>
     </hudson.model.AllView>
-    <listView>
-      <owner class="hudson" reference="../../.."/>
-      <name>Branch Builds</name>
-      <description>Branch Builds&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
-      <filterExecutors>false</filterExecutors>
-      <filterQueue>false</filterQueue>
-      <properties class="hudson.model.View$PropertyList"/>
-      <jobNames>
-        <comparator class="hudson.util.CaseInsensitiveComparator"/>
-      </jobNames>
-      <jobFilters/>
-      <columns>
-        <hudson.views.StatusColumn/>
-        <hudson.views.WeatherColumn/>
-        <hudson.views.JobColumn/>
-        <hudson.views.LastSuccessColumn/>
-        <hudson.views.LastFailureColumn/>
-        <hudson.views.LastDurationColumn/>
-        <hudson.views.BuildButtonColumn/>
-      </columns>
-      <includeRegex>build--branch-.*$|build-service-branch-$</includeRegex>
-      <recurse>false</recurse>
-    </listView>
     <listView>
       <owner class="hudson" reference="../../.."/>
       <name>Linux ppc64 Builds</name>

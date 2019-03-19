@@ -1,45 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?><flow-definition plugin="workflow-job">
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps">
-    <script>pipeline {
-    agent {
-        label "linux_x86_64"
-    }
-    stages {
-        stage("Checkout Infrastructure") {
-            steps {
-                checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
-            }
-        }
-        stage('Generate Manifest') {
-            agent {
-                dockerfile {
-                    dir "SapMachine-Infrastructure/dockerfiles/ubuntu_16_04_x86_64"
-                    reuseNode true
-                    label "linux_x86_64"
-                }
-            }
-            steps {
-                sh "cd SapMachine-Infrastructure &amp;&amp; python lib/make_docker_manifest.py -d dockerfiles/official -m ../sapmachine.manifest --latest ${LATEST_MAJOR}"
-                archiveArtifacts 'sapmachine.manifest'
-            }
-        }
-    }
-    post {
-        cleanup {
-            cleanWs deleteDirs: true, disableDeferredWipeout: true
-        }
-    }
-}
-</script>
-    <sandbox>false</sandbox>
-  </definition>
+<?xml version='1.1' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@2.32">
   <actions/>
   <description>This project is generated. Do not modify manually.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
-  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
-  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
-  <concurrentBuild>false</concurrentBuild>
-  <canRoam>true</canRoam>
   <properties>
     <jenkins.model.BuildDiscarderProperty>
       <strategy class="hudson.tasks.LogRotator">
@@ -55,11 +18,45 @@
           <name>LATEST_MAJOR</name>
           <description>The latest major release for which the manifest shall be generated.</description>
           <defaultValue>11</defaultValue>
+          <trim>false</trim>
         </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
+    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty/>
   </properties>
-  <scm class="hudson.scm.NullSCM"/>
-  <publishers/>
-  <buildWrappers/>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.64">
+    <script>pipeline {
+    agent {
+        label &quot;linux_x86_64&quot;
+    }
+    stages {
+        stage(&quot;Checkout Infrastructure&quot;) {
+            steps {
+                checkout changelog: false, poll: false, scm: [$class: &apos;GitSCM&apos;, branches: [[name: &apos;*/master&apos;]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: &apos;RelativeTargetDirectory&apos;, relativeTargetDir: &apos;SapMachine-Infrastructure&apos;]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: &apos;SapMachine-github&apos;, url: &apos;https://github.com/SAP/SapMachine-infrastructure.git&apos;]]]
+            }
+        }
+        stage(&apos;Generate Manifest&apos;) {
+            agent {
+                dockerfile {
+                    dir &quot;SapMachine-Infrastructure/dockerfiles/ubuntu_16_04_x86_64&quot;
+                    reuseNode true
+                    label &quot;linux_x86_64&quot;
+                }
+            }
+            steps {
+                sh &quot;cd SapMachine-Infrastructure &amp;&amp; python lib/make_docker_manifest.py -d dockerfiles/official -m ../sapmachine.manifest --latest ${LATEST_MAJOR}&quot;
+                archiveArtifacts &apos;sapmachine.manifest&apos;
+            }
+        }
+    }
+    post {
+        cleanup {
+            cleanWs deleteDirs: true, disableDeferredWipeout: true
+        }
+    }
+}
+</script>
+    <sandbox>false</sandbox>
+  </definition>
+  <disabled>false</disabled>
 </flow-definition>
