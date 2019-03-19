@@ -10,7 +10,6 @@ import re
 import utils
 import argparse
 
-from urllib2 import urlopen, Request, quote
 from os.path import join
 
 def main(argv=None):
@@ -18,19 +17,9 @@ def main(argv=None):
     parser.add_argument('-t', '--tag', help='the SapMachine Git tag', metavar='TAG', required=True)
     args = parser.parse_args()
 
-    token = utils.get_github_api_accesstoken()
-    org = 'SAP'
-    repository = 'SapMachine'
-    github_api = str.format('https://api.github.com/repos/{0}/{1}/releases', org, repository)
+    releases = utils.github_api_request('releases', per_page=100)
 
-    request = Request(github_api)
-
-    if token is not None:
-        request.add_header('Authorization', str.format('token {0}', token))
-
-    response = json.loads(urlopen(request).read())
-
-    for release in response:
+    for release in releases:
         if release['tag_name'] == args.tag:
             print(release['published_at'].split('T')[0])
 
