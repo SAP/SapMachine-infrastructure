@@ -54,6 +54,12 @@ def run_jenkins_jobs(major, tag):
         print(str.format('starting jenkins job "{0}" ...', job))
         server.build_job(job, job_params)
 
+def create_sapmachine_tag(jdk_tag, commit_id, git_target_dir):
+    print(str.format('creating tag "{0}"', jdk_tag.as_sapmachine_tag()))
+    utils.run_cmd(str.format('git checkout {0}', commit_id).split(' '), cwd=git_target_dir)
+    utils.run_cmd(str.format('git tag {0}', jdk_tag.as_sapmachine_tag()).split(' '), cwd=git_target_dir)
+    utils.run_cmd(str.format('git push origin {0}', jdk_tag.as_sapmachine_tag()).split(' '), cwd=git_target_dir)
+
 def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('--workdir', help='the temporary working directory', metavar='DIR', default="tags_work", required=False)
@@ -112,20 +118,43 @@ def main(argv=None):
             match_jdk_tag = re.search(JDKTag.jdk_tag_pattern, commit_message)
 
             if match_merge_commit is not None and match_jdk_tag is not None:
+                jdk_tag = JDKTag(match_jdk_tag)
                 print(str.format('found latest merge commit "{0}" for branch "{1}"', commit_message, branch))
                 _, tags, _ = utils.run_cmd(str.format('git tag --contains {0}', commit_id).split(' '), cwd=git_target_dir, std=True, throw=False)
 
                 if not tags:
                     # not tagged yet
                     # create sapmachine tag
-                    jdk_tag = JDKTag(match_jdk_tag)
-                    print(str.format('creating tag "{0}"', jdk_tag.as_sapmachine_tag()))
-                    utils.run_cmd(str.format('git checkout {0}', commit_id).split(' '), cwd=git_target_dir)
-                    utils.run_cmd(str.format('git tag {0}', jdk_tag.as_sapmachine_tag()).split(' '), cwd=git_target_dir)
-                    utils.run_cmd(str.format('git push origin {0}', jdk_tag.as_sapmachine_tag()).split(' '), cwd=git_target_dir)
+                    create_sapmachine_tag(jdk_tag, commit_id, git_target_dir)
                     run_jenkins_jobs(major, jdk_tag.as_sapmachine_tag())
-                else:
-                    print('already tagged ...')
+                elif not jdk_tag.is_ga():
+                    # check wether there is a JDK GA tag which has no corresponding sapmachine tag yet
+                    # get the commit to which the most recent (before GA) tag is pointing to
+                    _, jdk_tag_commit, _ = utils.run_cmd(str.format('git rev-list -n 1 {0}', jdk_tag.as_string()).split(' '), cwd=git_target_dir, std=True, throw=False)
+
+                    if jdk_tag_commit:
+                        jdk_tag_commit = jdk_tag_commit.rstrip()
+                        # get all tags associated with the commit
+                        _, tags_for_commit, _ = utils.run_cmd(str.format('git tag --contains {0}', jdk_tag_commit).split(' '), cwd=git_target_dir, std=True, throw=False)
+
+                        if tags_for_commit:
+                            tags_for_commit = tags_for_commit.splitlines()
+
+                            # search for a GA tag
+                            for tag in tags_for_commit:
+                                match = re.search(JDKTag.jdk_tag_pattern, tag)
+
+                                if match:
+                                    as_jdk_tag = JDKTag(match)
+
+                                    if as_jdk_tag.is_ga():
+                                        # GA tag found
+                                        # create sapmachine tag
+                                        create_sapmachine_tag(as_jdk_tag, commit_id, git_target_dir)
+                                        run_jenkins_jobs(major, as_jdk_tag.as_sapmachine_tag())
+
+                    else:
+                        print('already tagged ...')
 
                 break
 
