@@ -133,7 +133,7 @@ else
   --with-vendor-vm-bug-url="$VENDOR_VM_BUG_URL" \
     $_CONFIGURE_OPTION_VERSION_BUILD \
     $_CONFIGURE_SYSROOT \
-    $EXTRA_CONFIGURE_OPTIONS \
+    $EXTRA_CONFIGURE_OPTIONS
 fi
 
 make JOBS=12 product-bundles test-image docs-zip
