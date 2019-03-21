@@ -93,6 +93,10 @@
             default: ''
             description: 'The GitHub Pull Request number. Only used in Pull Request validation builds.'
         - string:
+            name: BUILD_NUMBER
+            default: ''
+            description: 'Sets the version build number explicitely.'
+        - string:
             name: SAPMACHINE_ARCHIVE_NAME_PREFIX
             default: 'sapmachine{major}-{platform}'
             description: 'The prefix of the bundle archive.'
@@ -359,6 +363,10 @@
             default: ''
             escription: 'The Git tag to build.'
         - string:
+            name: BUILD_NUMBER
+            default: ''
+            description: 'Sets the version build number explicitely.'
+        - string:
             name: EXTRA_CONFIGURE_OPTIONS
             default: ''
             description: 'Configure options passed directly to configure script.'
@@ -421,6 +429,7 @@
                                         string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
                                         string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
                                         string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
+                                        string(name: 'BUILD_NUMBER', value: params.BUILD_NUMBER),
                                         string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
                                         string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                         string(name: 'jdk_test_groups', value: params.jdk_test_groups),
@@ -464,6 +473,7 @@
                                         string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
                                         string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
                                         string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
+                                        string(name: 'BUILD_NUMBER', value: params.BUILD_NUMBER),
                                         string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
                                         string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                         string(name: 'jdk_test_groups', value: params.jdk_test_groups),
@@ -507,6 +517,7 @@
                                         string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
                                         string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
                                         string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
+                                        string(name: 'BUILD_NUMBER', value: params.BUILD_NUMBER),
                                         string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
                                         string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                         string(name: 'jdk_test_groups', value: params.jdk_test_groups),
@@ -550,6 +561,7 @@
                                         string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
                                         string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
                                         string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
+                                        string(name: 'BUILD_NUMBER', value: params.BUILD_NUMBER),
                                         string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
                                         string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                         string(name: 'jdk_test_groups', value: params.jdk_test_groups),
@@ -593,6 +605,7 @@
                                         string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
                                         string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
                                         string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
+                                        string(name: 'BUILD_NUMBER', value: params.BUILD_NUMBER),
                                         string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
                                         string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                         string(name: 'jdk_test_groups', value: params.jdk_test_groups),

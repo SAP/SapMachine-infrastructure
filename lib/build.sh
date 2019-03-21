@@ -73,7 +73,9 @@ if [[ $GIT_TAG_NAME == sapmachine-* ]]; then
     exit 1
   fi
 
-  if [[ "$VERSION_BUILD_NUMBER" != "N/A" ]]; then
+  if [[ ! -z $BUILD_NUMBER ]]; then
+    _CONFIGURE_OPTION_VERSION_BUILD="--with-version-build=$BUILD_NUMBER"
+  elif [[ "$VERSION_BUILD_NUMBER" != "N/A" ]]; then
     _CONFIGURE_OPTION_VERSION_BUILD="--with-version-build=$VERSION_BUILD_NUMBER"
   fi
 
@@ -115,6 +117,10 @@ if [[ $GIT_TAG_NAME == sapmachine-* ]]; then
     $_CONFIGURE_SYSROOT \
     $EXTRA_CONFIGURE_OPTIONS
 else
+  if [[ ! -z $BUILD_NUMBER ]]; then
+    _CONFIGURE_OPTION_VERSION_BUILD="--with-version-build=$BUILD_NUMBER"
+  fi
+
   BUILD_DATE=$(date -u "+%Y-%m-%d")
   bash ./configure \
   --with-boot-jdk=$BOOT_JDK \
@@ -125,8 +131,9 @@ else
   --with-vendor-url="$VENDOR_URL" \
   --with-vendor-bug-url="$VENDOR_BUG_URL" \
   --with-vendor-vm-bug-url="$VENDOR_VM_BUG_URL" \
+    $_CONFIGURE_OPTION_VERSION_BUILD \
     $_CONFIGURE_SYSROOT \
-    $EXTRA_CONFIGURE_OPTIONS
+    $EXTRA_CONFIGURE_OPTIONS \
 fi
 
 make JOBS=12 product-bundles test-image docs-zip
