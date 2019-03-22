@@ -1,17 +1,17 @@
 <?xml version='1.1' encoding='UTF-8'?>
 <flow-definition plugin="workflow-job@2.32">
-  <actions/>
+  <actions>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.3.6"/>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.3.6">
+      <jobProperties/>
+      <triggers/>
+      <parameters/>
+      <options/>
+    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
+  </actions>
   <description>This project is generated. Do not modify manually.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
   <properties>
-    <jenkins.model.BuildDiscarderProperty>
-      <strategy class="hudson.tasks.LogRotator">
-        <daysToKeep>14</daysToKeep>
-        <numToKeep>-1</numToKeep>
-        <artifactDaysToKeep>7</artifactDaysToKeep>
-        <artifactNumToKeep>-1</artifactNumToKeep>
-      </strategy>
-    </jenkins.model.BuildDiscarderProperty>
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
         <hudson.model.StringParameterDefinition>
@@ -29,6 +29,12 @@
         <hudson.model.StringParameterDefinition>
           <name>GIT_TAG_NAME</name>
           <description></description>
+          <defaultValue></defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>BUILD_NUMBER</name>
+          <description>Sets the version build number explicitely.</description>
           <defaultValue></defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
@@ -98,6 +104,14 @@
         </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>14</daysToKeep>
+        <numToKeep>-1</numToKeep>
+        <artifactDaysToKeep>7</artifactDaysToKeep>
+        <artifactNumToKeep>-1</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
   </properties>
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.64">
     <script>pipeline {
@@ -118,6 +132,7 @@
                                 string(name: &apos;SAPMACHINE_GIT_REPOSITORY&apos;, value: params.SAPMACHINE_GIT_REPOSITORY),
                                 string(name: &apos;SAPMACHINE_GIT_BRANCH&apos;, value: params.SAPMACHINE_GIT_BRANCH),
                                 string(name: &apos;GIT_TAG_NAME&apos;, value: params.GIT_TAG_NAME),
+                                string(name: &apos;BUILD_NUMBER&apos;, value: params.BUILD_NUMBER),
                                 string(name: &apos;EXTRA_CONFIGURE_OPTIONS&apos;, value: params.EXTRA_CONFIGURE_OPTIONS),
                                 string(name: &apos;hotspot_test_groups&apos;, value: params.hotspot_test_groups),
                                 string(name: &apos;jdk_test_groups&apos;, value: params.jdk_test_groups),
@@ -161,6 +176,7 @@
                                 string(name: &apos;SAPMACHINE_GIT_REPOSITORY&apos;, value: params.SAPMACHINE_GIT_REPOSITORY),
                                 string(name: &apos;SAPMACHINE_GIT_BRANCH&apos;, value: params.SAPMACHINE_GIT_BRANCH),
                                 string(name: &apos;GIT_TAG_NAME&apos;, value: params.GIT_TAG_NAME),
+                                string(name: &apos;BUILD_NUMBER&apos;, value: params.BUILD_NUMBER),
                                 string(name: &apos;EXTRA_CONFIGURE_OPTIONS&apos;, value: params.EXTRA_CONFIGURE_OPTIONS),
                                 string(name: &apos;hotspot_test_groups&apos;, value: params.hotspot_test_groups),
                                 string(name: &apos;jdk_test_groups&apos;, value: params.jdk_test_groups),
@@ -204,6 +220,7 @@
                                 string(name: &apos;SAPMACHINE_GIT_REPOSITORY&apos;, value: params.SAPMACHINE_GIT_REPOSITORY),
                                 string(name: &apos;SAPMACHINE_GIT_BRANCH&apos;, value: params.SAPMACHINE_GIT_BRANCH),
                                 string(name: &apos;GIT_TAG_NAME&apos;, value: params.GIT_TAG_NAME),
+                                string(name: &apos;BUILD_NUMBER&apos;, value: params.BUILD_NUMBER),
                                 string(name: &apos;EXTRA_CONFIGURE_OPTIONS&apos;, value: params.EXTRA_CONFIGURE_OPTIONS),
                                 string(name: &apos;hotspot_test_groups&apos;, value: params.hotspot_test_groups),
                                 string(name: &apos;jdk_test_groups&apos;, value: params.jdk_test_groups),
@@ -247,6 +264,7 @@
                                 string(name: &apos;SAPMACHINE_GIT_REPOSITORY&apos;, value: params.SAPMACHINE_GIT_REPOSITORY),
                                 string(name: &apos;SAPMACHINE_GIT_BRANCH&apos;, value: params.SAPMACHINE_GIT_BRANCH),
                                 string(name: &apos;GIT_TAG_NAME&apos;, value: params.GIT_TAG_NAME),
+                                string(name: &apos;BUILD_NUMBER&apos;, value: params.BUILD_NUMBER),
                                 string(name: &apos;EXTRA_CONFIGURE_OPTIONS&apos;, value: params.EXTRA_CONFIGURE_OPTIONS),
                                 string(name: &apos;hotspot_test_groups&apos;, value: params.hotspot_test_groups),
                                 string(name: &apos;jdk_test_groups&apos;, value: params.jdk_test_groups),
@@ -290,6 +308,7 @@
                                 string(name: &apos;SAPMACHINE_GIT_REPOSITORY&apos;, value: params.SAPMACHINE_GIT_REPOSITORY),
                                 string(name: &apos;SAPMACHINE_GIT_BRANCH&apos;, value: params.SAPMACHINE_GIT_BRANCH),
                                 string(name: &apos;GIT_TAG_NAME&apos;, value: params.GIT_TAG_NAME),
+                                string(name: &apos;BUILD_NUMBER&apos;, value: params.BUILD_NUMBER),
                                 string(name: &apos;EXTRA_CONFIGURE_OPTIONS&apos;, value: params.EXTRA_CONFIGURE_OPTIONS),
                                 string(name: &apos;hotspot_test_groups&apos;, value: params.hotspot_test_groups),
                                 string(name: &apos;jdk_test_groups&apos;, value: params.jdk_test_groups),
