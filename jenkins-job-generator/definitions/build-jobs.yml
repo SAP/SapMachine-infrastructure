@@ -263,7 +263,6 @@
                 stage('Archive') {{
                     steps {{
                         archive 'test.zip'
-                        archive 'apidocs.zip'
                         archive 'support_gensrc.zip'
 
                         script {{
