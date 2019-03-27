@@ -128,6 +128,7 @@ def main(argv=None):
                     create_sapmachine_tag(jdk_tag, commit_id, git_target_dir)
                     run_jenkins_jobs(major, jdk_tag.as_sapmachine_tag())
                 elif not jdk_tag.is_ga():
+                    tags = tags.splitlines()
                     # check wether there is a JDK GA tag which has no corresponding sapmachine tag yet
                     # get the commit to which the most recent (before GA) tag is pointing to
                     _, jdk_tag_commit, _ = utils.run_cmd(str.format('git rev-list -n 1 {0}', jdk_tag.as_string()).split(' '), cwd=git_target_dir, std=True, throw=False)
@@ -147,7 +148,7 @@ def main(argv=None):
                                 if match:
                                     as_jdk_tag = JDKTag(match)
 
-                                    if as_jdk_tag.is_ga():
+                                    if as_jdk_tag.is_ga() and as_jdk_tag.as_sapmachine_tag() not in tags:
                                         # GA tag found
                                         # create sapmachine tag
                                         create_sapmachine_tag(as_jdk_tag, commit_id, git_target_dir)
