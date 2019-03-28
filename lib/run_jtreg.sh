@@ -82,6 +82,6 @@ fi
 if [ "${TEST_SUITE}" == "langtools" ]; then
     ${JT_HOME}/bin/jtreg -dir:${JDK_LOCATION}/test/${TEST_SUITE} -xml -verbose:summary \
     -exclude:${JDK_LOCATION}/test/${TEST_SUITE}/ProblemList.txt -exclude:${JDK_LOCATION}/test/${TEST_SUITE}/ProblemList-SapMachine.txt \
-    -conc:${CONCURRENCY} -vmoption:-Xmx704m -w:test_report_${TEST_SUITE}/JTwork -r:test_report_${TEST_SUITE}/JTreport \
+    -conc:${CONCURRENCY} -vmoption:-Xmx768m -w:test_report_${TEST_SUITE}/JTwork -r:test_report_${TEST_SUITE}/JTreport \
     -a -ignore:quiet -timeoutFactor:5 -agentvm -testjdk:${TEST_JDK} ${TEST_GROUPS}
 fi
