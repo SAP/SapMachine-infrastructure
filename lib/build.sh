@@ -136,7 +136,7 @@ else
     $EXTRA_CONFIGURE_OPTIONS
 fi
 
-make JOBS=12 product-bundles test-image docs-zip
+make JOBS=12 product-bundles test-image
 if [[ $UNAME == Darwin ]]; then
     make JOBS=12 mac-legacy-jre-bundle || true
 else
@@ -195,11 +195,9 @@ fi
 
 rm "${WORKSPACE}/${SAPMACHINE_BUNDLE_PREFIX}jdk-*" || true
 rm "${WORKSPACE}/${SAPMACHINE_BUNDLE_PREFIX}jre-*" || true
-rm "${WORKSPACE}/apidocs.zip" || true
 
 cp ${JDK_BUNDLE_NAME} "${WORKSPACE}"
 cp ${JRE_BUNDLE_NAME} "${WORKSPACE}"
-cp *-docs.zip "${WORKSPACE}/apidocs.zip"
 
 echo "${JDK_BUNDLE_NAME}" > "${WORKSPACE}/jdk_bundle_name.txt"
 echo "${JRE_BUNDLE_NAME}" > "${WORKSPACE}/jre_bundle_name.txt"
