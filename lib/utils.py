@@ -11,6 +11,7 @@ import tarfile
 import gzip
 import re
 import json
+import platform
 
 from urllib2 import urlopen, Request, quote
 from os import remove
@@ -401,3 +402,19 @@ class JDKTag:
         ts += (self.build_number,)
         to += (other.get_build_number(),)
         return ts > to
+
+def get_system():
+    system = platform.system().lower()
+
+    if system == 'darwin':
+        return 'osx'
+    else:
+        return system
+
+def get_arch():
+    arch = platform.machine().lower()
+
+    if arch == 'x86_64':
+        return 'x64'
+    else:
+        return arch
