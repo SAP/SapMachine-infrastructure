@@ -153,7 +153,7 @@
                     {docker_agent}
                     environment {{
                         CREATE_NO_BUILD_TAR_GZ = 'true'
-                        BOOT_JDK = "`pwd`/boot_jdk"
+                        BOOT_JDK = "${{WORKSPACE}}/boot_jdk"
                     }}
                     steps {{
                         sh 'SapMachine-Infrastructure/lib/build.sh'
