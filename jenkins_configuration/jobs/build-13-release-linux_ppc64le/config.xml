@@ -8,6 +8,7 @@
         stage("Checkout Infrastructure") {
             steps {
                 checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+                sh "python SapMachine-Infrastructure/lib/download_boot_jdk.py -m 13 -d `pwd`"
             }
         }
         stage("Build") {
@@ -21,6 +22,7 @@
 
             environment {
                 CREATE_NO_BUILD_TAR_GZ = 'true'
+                BOOT_JDK = "${WORKSPACE}/boot_jdk"
             }
             steps {
                 sh 'SapMachine-Infrastructure/lib/build.sh'
