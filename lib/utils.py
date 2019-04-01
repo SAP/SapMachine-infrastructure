@@ -6,12 +6,12 @@ All rights reserved. Confidential and proprietary.
 import os
 import sys
 import shutil
-import zipfile
 import tarfile
 import gzip
 import re
 import json
 import platform
+from zipfile import ZipFile, ZipInfo
 
 from urllib2 import urlopen, Request, quote
 from os import remove
@@ -36,9 +36,25 @@ def run_cmd(cmdline, throw=True, cwd=None, env=None, std=False, shell=False):
         return (retcode, out, err)
     return retcode
 
+'''
+    Preserves the executable bits
+'''
+class SafeZipFile(ZipFile):
+    def extract(self, member, path=None, pwd=None):
+        if not isinstance(member, ZipInfo):
+            member = self.getinfo(member)
+
+        if path is None:
+            path = os.getcwd()
+
+        ret_val = self._extract_member(member, path, pwd)
+        attr = member.external_attr >> 16
+        os.chmod(ret_val, attr)
+        return ret_val
+
 def extract_archive(archive, target):
     if archive.endswith('.zip'):
-        with zipfile.ZipFile(archive, 'r') as zip_ref:
+        with SafeZipFile(archive) as zip_ref:
             print(str.format('Extracting zip archive {0} ...', archive))
             zip_ref.extractall(target)
 
