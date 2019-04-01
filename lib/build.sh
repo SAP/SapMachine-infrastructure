@@ -54,9 +54,9 @@ if [[ -z $NO_CHECKOUT ]]; then
 fi
 
 if [ -z $BOOT_JDK ]; then
-  if [ -e "/opt/boot_jdk" ]; then
-    BOOT_JDK="/opt/boot_jdk"
-  fi
+  # error
+  echo "No boot JDK specified!"
+  exit 1
 fi
 
 VENDOR_NAME="SAP SE"
