@@ -12,10 +12,6 @@ else
     SEDFLAGS='-rn'
 fi
 
-if [[ ! -z $CREATE_NO_BUILD_TAR_GZ ]]; then
-  INFRASTRUCTURE='/SapMachine-Infrastructure'
-fi
-
 if [[ $UNAME == CYGWIN* ]]; then
   WORKSPACE=$(cygpath -u "${WORKSPACE}")
 fi
@@ -65,7 +61,7 @@ VENDOR_BUG_URL="https://github.com/SAP/SapMachine/issues/new"
 VENDOR_VM_BUG_URL="https://github.com/SAP/SapMachine/issues/new"
 
 if [[ $GIT_TAG_NAME == sapmachine-* ]]; then
-  read VERSION VERSION_PART VERSION_MAJOR VERSION_BUILD_NUMBER SAPMACHINE_VERSION VERSION_OS_EXT<<< $(python ${WORKSPACE}${INFRASTRUCTURE}/lib/get_tag_version_components.py -t $GIT_TAG_NAME)
+  read VERSION VERSION_PART VERSION_MAJOR VERSION_BUILD_NUMBER SAPMACHINE_VERSION VERSION_OS_EXT<<< $(python ${WORKSPACE}/SapMachine-Infrastructure/lib/get_tag_version_components.py -t $GIT_TAG_NAME)
 
   if [[ -z $VERSION || -z $VERSION_MAJOR ]]; then
     # error
@@ -95,7 +91,7 @@ if [[ $GIT_TAG_NAME == sapmachine-* ]]; then
     VERSION_PRE_OPT=''
   fi
 
-  VERSION_DATE=$(python ..${INFRASTRUCTURE}/lib/get_tag_timestamp.py -t $GIT_TAG_NAME)
+  VERSION_DATE=$(python ../SapMachine-Infrastructure/lib/get_tag_timestamp.py -t $GIT_TAG_NAME)
 
   if [[ -z $VERSION_DATE ]]; then
     VERSION_DATE=$(date -u "+%Y-%m-%d")
@@ -203,8 +199,3 @@ echo "${JDK_BUNDLE_NAME}" > "${WORKSPACE}/jdk_bundle_name.txt"
 echo "${JRE_BUNDLE_NAME}" > "${WORKSPACE}/jre_bundle_name.txt"
 
 cp ../test-results/$GTEST_RESULT_PATH/gtest.xml "${WORKSPACE}"
-
-if [[ -z $CREATE_NO_BUILD_TAR_GZ ]]; then
-  cd "${WORKSPACE}/SapMachine"
-  tar czf "${WORKSPACE}/build.tar.gz" build
-fi

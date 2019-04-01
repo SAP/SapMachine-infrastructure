@@ -160,7 +160,6 @@
                 stage("Build") {{
                     {docker_agent}
                     environment {{
-                        CREATE_NO_BUILD_TAR_GZ = 'true'
                         BOOT_JDK = "${{WORKSPACE}}/boot_jdk"
                     }}
                     steps {{
