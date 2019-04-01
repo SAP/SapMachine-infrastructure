@@ -21,11 +21,7 @@ def main(argv=None):
     parser.add_argument('-d', '--destination', help='the download destination', metavar='DIR', required=True)
     args = parser.parse_args()
 
-    try:
-        major_to_build = int(args.major)
-    except e:
-        major_to_build = 99999
-
+    major_to_build = int(args.major)
     destination = os.path.realpath(args.destination)
     releases = utils.github_api_request('releases', per_page=100)
     platform = str.format('{0}-{1}_bin', utils.get_system(), utils.get_arch())
