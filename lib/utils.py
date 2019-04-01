@@ -406,7 +406,9 @@ class JDKTag:
 def get_system():
     system = platform.system().lower()
 
-    if system == 'darwin':
+    if system.startswith('msys') or system.startswith('cygwin') or system.startswith('win'):
+        return 'windows'
+    elif system == 'darwin':
         return 'osx'
     else:
         return system

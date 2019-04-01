@@ -24,7 +24,7 @@ def main(argv=None):
     major_to_build = int(args.major)
     destination = os.path.realpath(args.destination)
     releases = utils.github_api_request('releases', per_page=100)
-    platform = str.format('{0}-{1}', utils.get_system(), utils.get_arch())
+    platform = str.format('{0}-{1}_bin', utils.get_system(), utils.get_arch())
 
     for release in releases:
 
