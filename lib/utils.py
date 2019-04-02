@@ -260,7 +260,7 @@ def get_github_api_accesstoken():
         return os.environ[key]
     return None
 
-def github_api_request(api=None, url=None, owner='SAP', repository='SapMachine', data=None, method='GET', per_page=None):
+def github_api_request(api=None, url=None, owner='SAP', repository='SapMachine', data=None, method='GET', per_page=None, content_type=None):
     load_next = True
     result = None
     token = get_github_api_accesstoken()
@@ -281,6 +281,12 @@ def github_api_request(api=None, url=None, owner='SAP', repository='SapMachine',
 
         if token is not None:
             request.add_header('Authorization', str.format('token {0}', token))
+
+        if content_type is not None:
+            request.add_header('Content-Type', content_type)
+
+        if data is not None:
+            request.add_header('Content-Length', len(data))
 
         try:
             response = urlopen(request)

@@ -11,24 +11,8 @@ import utils
 import argparse
 import mimetypes
 
-from urllib import quote
-from urllib2 import urlopen, Request, quote
+from urllib2 import quote
 from os.path import join
-
-def create_request(path, data=None, method='GET'):
-    org = 'SAP'
-    repository = 'SapMachine'
-    github_api = str.format('https://api.github.com/repos/{0}/{1}', org, repository)
-    request_url = str.format('{0}/{1}', github_api, path)
-    token = utils.get_github_api_accesstoken()
-
-    if token is None:
-        raise Exception('no GitHub API access token specified')
-
-    request = Request(request_url, data=data)
-    request.get_method = lambda: method
-    request.add_header('Authorization', str.format('token {0}', token))
-    return request
 
 
 def main(argv=None):
@@ -49,20 +33,19 @@ def main(argv=None):
         asset_name = os.path.basename(asset_file)
         asset_mime_type = mimetypes.guess_type(asset_file)
 
-        if asset_mime_type is None:
+        if asset_mime_type is None or asset_mime_type[0] is None:
             asset_mime_type = 'application/octet-stream'
             print(str.format('could not detect mime-type: falling back to "{0}"', asset_mime_type))
         else:
             asset_mime_type = asset_mime_type[0]
             print(str.format('detected mime-type "{0}"', asset_mime_type))
 
-    request = create_request('releases')
-    response = json.loads(urlopen(request).read())
+    releases = utils.github_api_request('releases', per_page=100)
 
     release_id = None
     upload_url = None
 
-    for release in response:
+    for release in releases:
         if release['tag_name'] == tag:
             release_id = release['id']
             upload_url = release['upload_url']
@@ -73,9 +56,7 @@ def main(argv=None):
         release does not exist yet -> create it
         '''
         data = json.dumps({ "tag_name": tag, "name": tag, "body": description, "draft": False, "prerelease": prerelease })
-        request = create_request('releases', data=data, method='POST')
-        request.add_header('Content-Type', 'application/json')
-        response = json.loads(urlopen(request).read())
+        response = utils.github_api_request('releases', data=data, method='POST', content_type='application/json')
         release_id = response['id']
         upload_url = response['upload_url']
         print(str.format('created release "{0}"', tag))
@@ -85,18 +66,16 @@ def main(argv=None):
         asset file is specified (-a)
         first check wether the asset already exists
         '''
-        request = create_request(str.format('releases/{0}/assets', release_id))
-        response = json.loads(urlopen(request).read())
+        assets = utils.github_api_request(str.format('releases/{0}/assets', release_id), per_page=50)
 
-        for asset in response:
+        for asset in assets:
             if asset['name'] == asset_name:
                 '''
                 asset already exists -> delete it
                 '''
                 print(str.format('deleting already existing asset "{0}" ...', asset_name))
                 asset_id = asset['id']
-                request = create_request(str.format('releases/assets/{0}', asset_id), method='DELETE')
-                urlopen(request).read()
+                utils.github_api_request(str.format('releases/assets/{0}', asset_id), method='DELETE')
                 break
 
         upload_url = str(upload_url.split('{', 1)[0] + '?name=' + quote(asset_name))
@@ -115,12 +94,8 @@ def main(argv=None):
                 '''
                 upload the asset file
                 '''
-                request = Request(upload_url, data=asset_data)
-                request.add_header('Authorization', str.format('token {0}', utils.get_github_api_accesstoken()))
-                request.add_header('Content-Type', asset_mime_type)
-                request.add_header('Content-Length', str(asset_length))
                 print(str.format('uploading asset "{0}" with a length of {1} bytes ...', asset_name, str(asset_length)))
-                response = json.loads(urlopen(request).read())
+                utils.github_api_request(url=upload_url, data=asset_data, method='POST', content_type=asset_mime_type)
                 break
             except IOError:
                 _type, value, _traceback = sys.exc_info()
