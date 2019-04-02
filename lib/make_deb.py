@@ -105,7 +105,7 @@ def main(argv=None):
     version = version.replace('-', '.')
     jdk_name = str.format('sapmachine-{0}-jdk-{1}', major, version)
 
-    jdk_url, jre_url = utils.fetch_tag(tag, 'linux-x64', utils.get_github_api_accesstoken())
+    jdk_url, jre_url = utils.get_asset_url(tag, 'linux-x64')
 
     utils.remove_if_exists(work_dir)
     mkdir(work_dir)
