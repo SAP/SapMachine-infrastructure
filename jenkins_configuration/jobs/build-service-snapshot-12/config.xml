@@ -168,7 +168,7 @@
                     }
                     post {
                         success {
-                            copyArtifacts filter: 'sapmachine-*.zip', projectName: 'build--branch-windows_x86_64', target: env.WINDOWS_X86_64_ARTIFACT_DIR, selector:
+                            copyArtifacts filter: 'sapmachine-*.zip', projectName: 'build-12-snapshot-windows_x86_64', target: env.WINDOWS_X86_64_ARTIFACT_DIR, selector:
                             [
                                 $class: 'SpecificBuildSelector',
                                 buildNumber: env.WINDOWS_X86_64_JOB_ID
