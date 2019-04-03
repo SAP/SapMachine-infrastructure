@@ -6,21 +6,44 @@
   <sshUrl>git@github.com:SAP/SapMachine.git</sshUrl>
   <pulls class="concurrent-hash-map">
     <entry>
-      <int>357</int>
+      <int>361</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>357</number>
-        <issueUpdatedAt>2019-04-01 18:30:02.0 UTC</issueUpdatedAt>
-        <title>Merge to tag jdk-13+14</title>
-        <body>please pull</body>
-        <prUpdatedAt>2019-04-01 18:30:02.0 UTC</prUpdatedAt>
-        <headSha>0843674a032dfa18bf5c44ccfb13e21d94c43af5</headSha>
-        <headRef>pr-jdk-13+14</headRef>
+        <number>361</number>
+        <issueUpdatedAt>2019-04-02 15:01:51.0 UTC</issueUpdatedAt>
+        <title>SapMachine (11) #359: Cherry-Pick JDK-8221083 and JDK-8221483 to sapmachine11</title>
+        <body>fixes #359 &#xd;
+&#xd;
+</body>
+        <prUpdatedAt>2019-04-02 15:01:51.0 UTC</prUpdatedAt>
+        <headSha>1008447b78c69e36852d2d3d0cfc0c82bcf079cf</headSha>
+        <headRef>cherrypick-ppc-11</headRef>
         <mergeable>true</mergeable>
-        <baseRef>sapmachine</baseRef>
-        <userLogin>SapMachine</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/357</htmlUrl>
+        <baseRef>sapmachine11</baseRef>
+        <userLogin>RealCLanger</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/361</htmlUrl>
         <labels/>
-        <lastCommentCreatedAt>2019-04-01 18:30:02.0 UTC</lastCommentCreatedAt>
+        <lastCommentCreatedAt>2019-04-02 15:01:50.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>SAP</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>362</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>362</number>
+        <issueUpdatedAt>2019-04-03 01:07:57.0 UTC</issueUpdatedAt>
+        <title>Merge to tag jdk-11.0.3+6</title>
+        <body>please pull</body>
+        <prUpdatedAt>2019-04-03 01:07:57.0 UTC</prUpdatedAt>
+        <headSha>0e9bc797d10a8357bd9de6dce9eb5146b143aa11</headSha>
+        <headRef>pr-jdk-11.0.3+6</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine11</baseRef>
+        <userLogin>SapMachine</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/362</htmlUrl>
+        <labels/>
+        <lastCommentCreatedAt>2019-04-03 01:07:54.0 UTC</lastCommentCreatedAt>
         <sourceRepoOwner>SAP</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
