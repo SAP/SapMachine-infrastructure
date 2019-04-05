@@ -6,20 +6,65 @@
   <sshUrl>git@github.com:SAP/SapMachine.git</sshUrl>
   <pulls class="concurrent-hash-map">
     <entry>
-      <int>363</int>
+      <int>365</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>363</number>
-        <issueUpdatedAt>2019-04-04 01:08:06.0 UTC</issueUpdatedAt>
-        <title>Merge to tag jdk-13+15</title>
-        <body>please pull</body>
-        <prUpdatedAt>2019-04-04 01:08:06.0 UTC</prUpdatedAt>
-        <headSha>9679dd43ec248c27711ca703c2362cf4da6cc34d</headSha>
-        <headRef>pr-jdk-13+15</headRef>
-        <mergeable>false</mergeable>
+        <number>365</number>
+        <issueUpdatedAt>2019-04-04 12:19:24.0 UTC</issueUpdatedAt>
+        <title>SapMachine #364: Diffs in make/SourceRevision.gmk obsolete after JDK-8210283</title>
+        <body>fixes #364</body>
+        <prUpdatedAt>2019-04-04 12:19:24.0 UTC</prUpdatedAt>
+        <headSha>d06d91dfa82d92b6670571f89a153bd0212807cc</headSha>
+        <headRef>sourcerevisionfix</headRef>
+        <mergeable>true</mergeable>
         <baseRef>sapmachine</baseRef>
-        <userLogin>SapMachine</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/363</htmlUrl>
+        <userLogin>RealCLanger</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/365</htmlUrl>
         <labels/>
+        <lastCommentCreatedAt>2019-04-04 12:19:24.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>SAP</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>366</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>366</number>
+        <issueUpdatedAt>2019-04-04 13:34:02.0 UTC</issueUpdatedAt>
+        <title>SapMachine(12) #364: Diffs in make/SourceRevision.gmk obsolete after JDK-8210283</title>
+        <body>fixes #364</body>
+        <prUpdatedAt>2019-04-04 13:34:02.0 UTC</prUpdatedAt>
+        <headSha>472232ef5de0d14664c734c3510d5532f014c6a4</headSha>
+        <headRef>sourcerevisionfix12</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine12</baseRef>
+        <userLogin>RealCLanger</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/366</htmlUrl>
+        <labels/>
+        <lastCommentCreatedAt>2019-04-04 12:37:42.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>SAP</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>367</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>367</number>
+        <issueUpdatedAt>2019-04-04 13:33:36.0 UTC</issueUpdatedAt>
+        <title> SapMachine(11) #364: Diffs in make/SourceRevision.gmk obsolete after JDK-8210283</title>
+        <body>I&apos;m first reverting the SapMachine diffs. Then I cherry-pick 3 changes from jdk12 to get the OpenJDK default support for git. Cherry-pick of these 3 changes was requested for jdk11u-dev as well.&#xd;
+&#xd;
+fixes #364</body>
+        <prUpdatedAt>2019-04-04 13:33:36.0 UTC</prUpdatedAt>
+        <headSha>23b3c1bbe726813faf52644432be01653f7b8c3d</headSha>
+        <headRef>sourcerevisionfix11</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine11</baseRef>
+        <userLogin>RealCLanger</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/367</htmlUrl>
+        <labels/>
+        <lastCommentCreatedAt>2019-04-04 13:33:36.0 UTC</lastCommentCreatedAt>
         <sourceRepoOwner>SAP</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>

@@ -1,15 +1,15 @@
 <?xml version='1.1' encoding='UTF-8'?>
 <hudson.model.Queue_-State>
-  <counter>714</counter>
+  <counter>790</counter>
   <items>
     <hudson.model.Queue_-BuildableItem>
       <actions/>
-      <id>713</id>
+      <id>786</id>
       <task class="org.jenkinsci.plugins.workflow.support.steps.ExecutorStepExecution$PlaceholderTask" plugin="workflow-durable-task-step@2.29">
         <context class="org.jenkinsci.plugins.workflow.cps.CpsStepContext" plugin="workflow-cps@2.65">
           <executionRef class="org.jenkinsci.plugins.workflow.job.WorkflowRun$Owner" plugin="workflow-job@2.32">
-            <job>build-11-release-macos_x86_64</job>
-            <id>10</id>
+            <job>build-13-release-windows_x86_64</job>
+            <id>20</id>
           </executionRef>
           <id>3</id>
           <bodyHeads/>
@@ -19,11 +19,59 @@
           <threadId>0</threadId>
           <stepDescriptorId>org.jenkinsci.plugins.workflow.support.steps.ExecutorStep</stepDescriptorId>
         </context>
-        <label>macos_x86_64</label>
-        <runId>build-11-release-macos_x86_64#10</runId>
+        <label>windows_x86_64</label>
+        <runId>build-13-release-windows_x86_64#20</runId>
       </task>
-      <inQueueSince>1554340155298</inQueueSince>
-      <buildableStartMilliseconds>1554340155298</buildableStartMilliseconds>
+      <inQueueSince>1554426512020</inQueueSince>
+      <buildableStartMilliseconds>1554426512021</buildableStartMilliseconds>
+      <isPending>false</isPending>
+    </hudson.model.Queue_-BuildableItem>
+    <hudson.model.Queue_-BuildableItem>
+      <actions/>
+      <id>771</id>
+      <task class="org.jenkinsci.plugins.workflow.support.steps.ExecutorStepExecution$PlaceholderTask" plugin="workflow-durable-task-step@2.29">
+        <context class="org.jenkinsci.plugins.workflow.cps.CpsStepContext" plugin="workflow-cps@2.65">
+          <executionRef class="org.jenkinsci.plugins.workflow.job.WorkflowRun$Owner" plugin="workflow-job@2.32">
+            <job>build-11-pr-validation-windows_x86_64</job>
+            <id>34</id>
+          </executionRef>
+          <id>3</id>
+          <bodyHeads/>
+          <body class="org.jenkinsci.plugins.workflow.cps.StaticBodyReference" resolves-to="org.jenkinsci.plugins.workflow.cps.HandleBodyReference">
+            <id>1</id>
+          </body>
+          <threadId>0</threadId>
+          <stepDescriptorId>org.jenkinsci.plugins.workflow.support.steps.ExecutorStep</stepDescriptorId>
+        </context>
+        <label>windows_x86_64</label>
+        <runId>build-11-pr-validation-windows_x86_64#34</runId>
+      </task>
+      <inQueueSince>1554384824812</inQueueSince>
+      <buildableStartMilliseconds>1554384824812</buildableStartMilliseconds>
+      <isPending>false</isPending>
+    </hudson.model.Queue_-BuildableItem>
+    <hudson.model.Queue_-BuildableItem>
+      <actions/>
+      <id>759</id>
+      <task class="org.jenkinsci.plugins.workflow.support.steps.ExecutorStepExecution$PlaceholderTask" plugin="workflow-durable-task-step@2.29">
+        <context class="org.jenkinsci.plugins.workflow.cps.CpsStepContext" plugin="workflow-cps@2.65">
+          <executionRef class="org.jenkinsci.plugins.workflow.job.WorkflowRun$Owner" plugin="workflow-job@2.32">
+            <job>build-12-pr-validation-windows_x86_64</job>
+            <id>16</id>
+          </executionRef>
+          <id>3</id>
+          <bodyHeads/>
+          <body class="org.jenkinsci.plugins.workflow.cps.StaticBodyReference" resolves-to="org.jenkinsci.plugins.workflow.cps.HandleBodyReference">
+            <id>1</id>
+          </body>
+          <threadId>0</threadId>
+          <stepDescriptorId>org.jenkinsci.plugins.workflow.support.steps.ExecutorStep</stepDescriptorId>
+        </context>
+        <label>windows_x86_64</label>
+        <runId>build-12-pr-validation-windows_x86_64#16</runId>
+      </task>
+      <inQueueSince>1554381474594</inQueueSince>
+      <buildableStartMilliseconds>1554381474596</buildableStartMilliseconds>
       <isPending>false</isPending>
     </hudson.model.Queue_-BuildableItem>
   </items>
