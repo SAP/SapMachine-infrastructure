@@ -47,12 +47,13 @@ def write_as_rtf(source, target):
         lines = fin.readlines()
 
         with open(target, 'w') as fout:
-            fout.write('{\\rtf1\r\n')
+            fout.write('{\\rtf1\\ansi\\ansicpg1252\\deff0\\nouicompat\\deflang1033{\\fonttbl{\\f0\\fnil\\fcharset0 Consolas;}}\r\n')
+            fout.write('{\\*\\SapMachine Generator}\\viewkind4\\uc1\r\n')
+            fout.write('\\pard\\sl240\\slmult1\\f0\\fs16\\lang7 ')
 
             for line in lines:
+                fout.write(line.rstrip())
                 fout.write('\\par\r\n')
-                fout.write(line)
-                fout.write('\r\n')
 
             fout.write('}\r\n')
 
@@ -74,6 +75,9 @@ def main(argv=None):
     os.makedirs(work_dir)
 
     version, version_part, major, build_number, sap_build_number, os_ext = utils.sapmachine_tag_components(tag)
+    sapmachine_version = [int(e) for e in version_part.split('.')]
+    sapmachine_version += [0 for sapmachine_version in range(0, 3 - len(sapmachine_version))]
+    sapmachine_version = str.format('{0}.{1}.{2}', sapmachine_version[0], sapmachine_version[1], sapmachine_version[2])
 
     download_jdk(work_dir, tag)
     utils.git_clone('github.com/SAP/SapMachine.git', 'sapmachine' + major, join(work_dir, 'sapmachine_git'))
@@ -105,22 +109,25 @@ def main(argv=None):
         join(work_dir, 'SapMachine.wxs'),
         product_id,
         upgrade_code,
-        version_part
+        sapmachine_version
     )
 
     utils.run_cmd('heat dir SourceDir -srd -gg -template:module -cg SapMachineGroup -out SapMachineModule.wxs'.split(' '), cwd=work_dir)
 
-    with open(join(work_dir, 'SapMachineModule.wxs'), 'rw') as sapmachine_module:
+    with open(join(work_dir, 'SapMachineModule.wxs'), 'r+') as sapmachine_module:
         sapmachine_module_content = sapmachine_module.read()
         sapmachine_module_content = sapmachine_module_content.replace('PUT-MODULE-NAME-HERE', 'SapMachineModule')
         sapmachine_module_content = sapmachine_module_content.replace('PUT-COMPANY-NAME-HERE', 'SapMachine Team')
-        sapmachine_module.truncate(0)
+        sapmachine_module.seek(0)
+        sapmachine_module.truncate()
         sapmachine_module.write(sapmachine_module_content)
 
     utils.run_cmd('candle SapMachineModule.wxs'.split(' '), cwd=work_dir)
     utils.run_cmd('light SapMachineModule.wixobj'.split(' '), cwd=work_dir)
     utils.run_cmd('candle SapMachine.wxs'.split(' '), cwd=work_dir)
     utils.run_cmd('light -ext WixUIExtension SapMachine.wixobj'.split(' '), cwd=work_dir)
+	
+    os.rename(join(work_dir, 'SapMachine.msi'), join(cwd, str.format('SapMachine-{0}.msi', sapmachine_version)))
 
     return 0
 
