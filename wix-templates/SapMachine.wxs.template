@@ -1,96 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <Product Name='SapMachine' Id='${PRODUCT_ID}' UpgradeCode='${UPGRADE_CODE}'
-    Language='1033' Codepage='1252' Version='${VERSION}' Manufacturer='SapMachine Team'>
+	<Product Name='SapMachine' Id='${PRODUCT_ID}' UpgradeCode='${UPGRADE_CODE}' Language='1033' Codepage='1252' Version='${VERSION}' Manufacturer='SapMachine Team'>
 
-    <Package Id='*' Keywords='Installer' Description="SapMachine ${VERSION} Installer"
-      Comments='https://sapmachine.io' Manufacturer='SapMachine Team'
-      InstallerVersion='200' Languages='1033' Compressed='yes' SummaryCodepage='1252' />
+		<Package Id='*' Keywords='Installer' Description="SapMachine ${VERSION} Installer" Comments='https://sapmachine.io' Manufacturer='SapMachine Team' InstallerVersion='200' Languages='1033' Compressed='yes' SummaryCodepage='1252' />
 
-    <Upgrade Id='${UPGRADE_CODE}'>
-        <UpgradeVersion OnlyDetect='no' Property='OLDERFOUND'
-            Maximum='${VERSION}' IncludeMaximum='no' />
-        <UpgradeVersion OnlyDetect='yes' Property='SELFFOUND'
-            Minimum='${VERSION}' IncludeMinimum='yes'
-            Maximum='${VERSION}' IncludeMaximum='yes' />
-        <UpgradeVersion OnlyDetect='yes' Property='NEWERFOUND'
-            Minimum='${VERSION}' IncludeMinimum='no' />
-    </Upgrade>
+		<Upgrade Id='${UPGRADE_CODE}'>
+			<UpgradeVersion OnlyDetect='no' Property='OLDERFOUND' Maximum='${VERSION}' IncludeMaximum='no' />
+			<UpgradeVersion OnlyDetect='yes' Property='SELFFOUND' Minimum='${VERSION}' IncludeMinimum='yes' Maximum='${VERSION}' IncludeMaximum='yes' />
+			<UpgradeVersion OnlyDetect='yes' Property='NEWERFOUND' Minimum='${VERSION}' IncludeMinimum='no' />
+		</Upgrade>
 
-    <CustomAction Id='AlreadyUpdated' Error='SapMachine has already been updated to ${VERSION} or newer.' />
-    <CustomAction Id='NoDowngrade' Error='A later version of SapMachine is already installed.' />
+		<CustomAction Id='AlreadyUpdated' Error='SapMachine has already been updated to ${VERSION} or newer.' />
+		<CustomAction Id='NoDowngrade' Error='A later version of SapMachine is already installed.' />
 
-    <InstallExecuteSequence>
-        <RemoveExistingProducts After="InstallInitialize" />
-        <Custom Action='AlreadyUpdated' After='FindRelatedProducts'>SELFFOUND</Custom>
-        <Custom Action='NoDowngrade' After='FindRelatedProducts'>NEWERFOUND</Custom>
-    </InstallExecuteSequence>
+		<InstallExecuteSequence>
+			<RemoveExistingProducts After="InstallInitialize" />
+			<Custom Action='AlreadyUpdated' After='FindRelatedProducts'>SELFFOUND</Custom>
+			<Custom Action='NoDowngrade' After='FindRelatedProducts'>NEWERFOUND</Custom>
+		</InstallExecuteSequence>
 
-    <Condition Message="This application is only supported on 64-bit Windows.">
-        <![CDATA[VersionNT64]]>
-    </Condition>
+		<Condition Message="This application is only supported on 64-bit Windows.">
+			<![CDATA[VersionNT64]]>
+		</Condition>
 
-    <Condition Message="This application is only supported on Windows 7 or higher.">
-        <![CDATA[Installed OR (VersionNT >= 601)]]>
-    </Condition>
+		<Condition Message="This application is only supported on Windows 7 or higher.">
+			<![CDATA[Installed OR (VersionNT >= 601)]]>
+		</Condition>
 
-	<Property Id="ALLUSERS" Value="1" />
-    <Property Id="ARPPRODUCTICON" Value="logo.ico" />
-	<Icon Id="logo.ico" SourceFile="sapmachine.ico" />
+		<Property Id="ALLUSERS" Value="1" />
+		<Property Id="ARPPRODUCTICON" Value="sapmachine-icon" />
+		<Icon Id="sapmachine-icon" SourceFile="sapmachine.ico" />
 
-    <Media Id="1" Cabinet="product.cab" EmbedCab="yes" />
+		<Media Id="1" Cabinet="product.cab" EmbedCab="yes" />
 
-    <Directory Id='TARGETDIR' Name='SourceDir'>
-      <Directory Id='ProgramFilesFolder' Name='PFiles'>
-        <Directory Id='SapMachineDir' Name='SapMachine'>
-          <Directory Id='INSTALLDIR' Name='${VERSION}'>
-			<Merge Id="SapMachineModule" Language="1033" SourceFile="SapMachineModule.msm" DiskId="1" />
-          </Directory>
-        </Directory>
-      </Directory>
-    </Directory>
+		<Directory Id='TARGETDIR' Name='SourceDir'>
+			<Directory Id='ProgramFiles64Folder' Name='PFiles'>
+				<Directory Id='SapMachineDir' Name='SapMachine'>
+					<Directory Id='INSTALLDIR' Name='${MAJOR}'>
+						<Merge Id="SapMachineModule" Language="1033" SourceFile="SapMachineModule.msm" DiskId="1" />
+					</Directory>
+				</Directory>
+			</Directory>
+		</Directory>
 
-	<DirectoryRef Id="INSTALLDIR">
-		<Component Id="AddToEnvironmentPath" Guid="*">
-			<RegistryValue Root="HKLM" Key="SOFTWARE\SapMachine\${VERSION}\MSI" Name="EnvironmentPath" Type="integer" Value="1" KeyPath="yes" />
-			<Environment Id="PATH" Name="PATH" Value="[INSTALLDIR]bin" Permanent="no" Part="first" Action="set" System="yes" />
-		</Component>
+		<DirectoryRef Id="INSTALLDIR">
+			<Component Id="AddToPath" Guid="*">
+				<RegistryValue Root="HKLM" Key="SOFTWARE\SapMachine\${VERSION}\MSI" Name="EnvironmentPath" Type="integer" Value="1" KeyPath="yes" />
+				<Environment Id="PATH" Name="PATH" Value="[INSTALLDIR]bin" Permanent="no" Part="first" Action="set" System="yes" />
+			</Component>
 
-		<Component Id="SetJavaHomeVariable" Guid="*">
-			<RegistryValue Root="HKLM" Key="SOFTWARE\SapMachine\${VERSION}\MSI" Name="JavaHome" Type="integer" Value="1" KeyPath="yes" />
-			<Environment Id="JAVA_HOME" Name="JAVA_HOME" Value="[INSTALLDIR]" Permanent="no" Action="set" System="yes" />
-		</Component>
+			<Component Id="SetJavaHomeVariable" Guid="*">
+				<RegistryValue Root="HKLM" Key="SOFTWARE\SapMachine\${VERSION}\MSI" Name="JavaHome" Type="integer" Value="1" KeyPath="yes" />
+				<Environment Id="JAVA_HOME" Name="JAVA_HOME" Value="[INSTALLDIR]" Permanent="no" Action="set" System="yes" />
+			</Component>
 
-		<Component Id="SetJarFileRunWith" Guid="*">
-			<RegistryValue Root="HKLM" Key="SOFTWARE\Classes\.jar" Type="string" Value="SapMachine.jarfile" KeyPath="yes" />
-			<RegistryValue Root="HKLM" Key="SOFTWARE\Classes\.jar" Type="string" Name="Content Type" Value="application/jar" KeyPath="no" />
-			<RegistryValue Root="HKLM" Key="SOFTWARE\Classes\SapMachine.jarfile\shell\open\command" Type="string" Value="&quot;[INSTALLDIR]bin\javaw.exe&quot; -jar &quot;%1&quot; %*" KeyPath="no" />
-		</Component>
-	</DirectoryRef>
+			<Component Id="SetJarFileRunWith" Guid="*">
+				<RegistryValue Root="HKLM" Key="SOFTWARE\Classes\.jar" Type="string" Value="SapMachine.jarfile" KeyPath="yes" />
+				<RegistryValue Root="HKLM" Key="SOFTWARE\Classes\.jar" Type="string" Name="Content Type" Value="application/jar" KeyPath="no" />
+				<RegistryValue Root="HKLM" Key="SOFTWARE\Classes\SapMachine.jarfile\shell\open\command" Type="string" Value="&quot;[INSTALLDIR]bin\javaw.exe&quot; -jar &quot;%1&quot; %*" KeyPath="no" />
+			</Component>
+		</DirectoryRef>
 
-	<Feature Id="OptionalFeatures" ConfigurableDirectory="INSTALLDIR" Level="1" Title="Optional Features" Description="Optional Features" Absent="disallow" Display="expand" AllowAdvertise="no" InstallDefault="local">
-		<Feature Id="FeatureEnvironment" Level="1" Title="Add to PATH" Description="Add the SapMachine bin directory to the PATH variable." Absent="allow" AllowAdvertise="no" InstallDefault="followParent">
-			<ComponentRef Id="AddToEnvironmentPath" />
+		<Feature Id="OptionalFeatures" ConfigurableDirectory="INSTALLDIR" Level="1" Title="Optional Features" Description="Optional Features" Absent="disallow" Display="expand" AllowAdvertise="no" InstallDefault="local">
+			<Feature Id="FeatureEnvironment" Level="2" Title="Add to PATH" Description="Add the SapMachine bin directory to the PATH variable." Absent="allow" AllowAdvertise="no" InstallDefault="followParent">
+				<ComponentRef Id="AddToPath" />
+			</Feature>
+
+			<Feature Id="FeatureJavaHome" Level="2" Title="Set JAVA_HOME" Description="Set the JAVA_HOME environment variable." Absent="allow" AllowAdvertise="no" InstallDefault="followParent">
+				<ComponentRef Id="SetJavaHomeVariable" />
+			</Feature>
+
+			<Feature Id="FeatureJarFileRunWith" Level="2" Title="Run jar files with SapMachine" Description="Run jar files with SapMachine." Absent="allow" AllowAdvertise="no" InstallDefault="followParent">
+				<ComponentRef Id="SetJarFileRunWith" />
+			</Feature>
 		</Feature>
 
-		<Feature Id="FeatureJavaHome" Level="2" Title="Set JAVA_HOME" Description="Set JAVA_HOME environment variable." Absent="allow" AllowAdvertise="no" InstallDefault="followParent">
-			<ComponentRef Id="SetJavaHomeVariable" />
+		<Feature Id="Msm" Title="SapMachine Installation" Description="The required files for the SapMachine installation." Level="1" Absent="disallow">
+			<MergeRef Id="SapMachineModule" />
 		</Feature>
 
-		<Feature Id="FeatureJarFileRunWith" Level="2" Title="Run jar files with SapMachine" Description="Run jar files with SapMachine." Absent="allow" AllowAdvertise="no" InstallDefault="followParent">
-			<ComponentRef Id="SetJarFileRunWith" />
-		</Feature>
-	</Feature>
+		<WixVariable Id="WixUILicenseRtf" Value="license.rtf" />
 
-	<Feature Id="Msm" Title="SapMachine Installation" Description="The required files for the SapMachine installation." Level="1" Absent="disallow">
-      <MergeRef Id="SapMachineModule" />
-    </Feature>
+		<UI>
+			<UIRef Id="WixUI_FeatureTree" />
+		</UI>
 
-	<WixVariable Id="WixUILicenseRtf" Value="license.rtf" />
-
-	<UI>
-      <UIRef Id="WixUI_FeatureTree" />
-    </UI>
-
-  </Product>
+	</Product>
 </Wix>

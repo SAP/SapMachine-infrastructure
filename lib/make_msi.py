@@ -16,14 +16,15 @@ import argparse
 from os.path import join
 from string import Template
 
-def create_sapmachine_wxs(template, target, product_id, upgrade_code, version):
+def create_sapmachine_wxs(template, target, product_id, upgrade_code, version, major):
     sapmachine_wxs_content = None
 
     with open(template, 'r') as sapmachine_wxs_template:
         sapmachine_wxs_content = Template(sapmachine_wxs_template.read()).substitute(
             PRODUCT_ID=product_id,
             UPGRADE_CODE=upgrade_code,
-            VERSION=version
+            VERSION=version,
+            MAJOR=major
         )
 
     with open(target, 'w') as sapmachine_wxs:
@@ -76,8 +77,11 @@ def main(argv=None):
 
     version, version_part, major, build_number, sap_build_number, os_ext = utils.sapmachine_tag_components(tag)
     sapmachine_version = [int(e) for e in version_part.split('.')]
-    sapmachine_version += [0 for sapmachine_version in range(0, 3 - len(sapmachine_version))]
-    sapmachine_version = str.format('{0}.{1}.{2}', sapmachine_version[0], sapmachine_version[1], sapmachine_version[2])
+
+    if len(sapmachine_version) < 3:
+        sapmachine_version += [0 for sapmachine_version in range(0, 3 - len(sapmachine_version))]
+
+    sapmachine_version = '.'.join(sapmachine_version)
 
     download_jdk(work_dir, tag)
     utils.git_clone('github.com/SAP/SapMachine.git', 'sapmachine' + major, join(work_dir, 'sapmachine_git'))
@@ -109,7 +113,8 @@ def main(argv=None):
         join(work_dir, 'SapMachine.wxs'),
         product_id,
         upgrade_code,
-        sapmachine_version
+        sapmachine_version,
+        major
     )
 
     utils.run_cmd('heat dir SourceDir -srd -gg -template:module -cg SapMachineGroup -out SapMachineModule.wxs'.split(' '), cwd=work_dir)
@@ -126,7 +131,7 @@ def main(argv=None):
     utils.run_cmd('light SapMachineModule.wixobj'.split(' '), cwd=work_dir)
     utils.run_cmd('candle SapMachine.wxs'.split(' '), cwd=work_dir)
     utils.run_cmd('light -ext WixUIExtension SapMachine.wixobj'.split(' '), cwd=work_dir)
-	
+
     os.rename(join(work_dir, 'SapMachine.msi'), join(cwd, str.format('SapMachine-{0}.msi', sapmachine_version)))
 
     return 0
