@@ -16,6 +16,12 @@ import argparse
 from os.path import join
 from string import Template
 
+def prepare(work_dir, tag, major):
+    utils.remove_if_exists(work_dir)
+    os.makedirs(work_dir)
+    download_jdk(work_dir, tag)
+    utils.git_clone('github.com/SAP/SapMachine.git', 'sapmachine' + major, join(work_dir, 'sapmachine_git'))
+
 def create_sapmachine_wxs(template, target, product_id, upgrade_code, version, major):
     sapmachine_wxs_content = None
 
@@ -72,19 +78,16 @@ def main(argv=None):
     product_id = None
     upgrade_code = None
 
-    utils.remove_if_exists(work_dir)
-    os.makedirs(work_dir)
-
     version, version_part, major, build_number, sap_build_number, os_ext = utils.sapmachine_tag_components(tag)
-    sapmachine_version = [int(e) for e in version_part.split('.')]
+    sapmachine_version = [e for e in version_part.split('.')]
 
     if len(sapmachine_version) < 3:
-        sapmachine_version += [0 for sapmachine_version in range(0, 3 - len(sapmachine_version))]
+        sapmachine_version += ['0' for sapmachine_version in range(0, 3 - len(sapmachine_version))]
 
     sapmachine_version = '.'.join(sapmachine_version)
 
-    download_jdk(work_dir, tag)
-    utils.git_clone('github.com/SAP/SapMachine.git', 'sapmachine' + major, join(work_dir, 'sapmachine_git'))
+    prepare(work_dir, tag, major)
+
     shutil.copyfile(
         join(work_dir, 'sapmachine_git', 'src', 'java.base', 'windows', 'native', 'launcher', 'icons', 'awt.ico'),
         join(work_dir, 'sapmachine.ico')
@@ -116,8 +119,10 @@ def main(argv=None):
         sapmachine_version,
         major
     )
+    
+    shutil.copyfile(join(work_dir, 'SourceDir', 'release'), join(work_dir, 'release'))
 
-    utils.run_cmd('heat dir SourceDir -srd -gg -template:module -cg SapMachineGroup -out SapMachineModule.wxs'.split(' '), cwd=work_dir)
+    utils.run_cmd('heat dir SourceDir -swall -srd -gg -platform x64 -template:module -cg SapMachineGroup -out SapMachineModule.wxs'.split(' '), cwd=work_dir)
 
     with open(join(work_dir, 'SapMachineModule.wxs'), 'r+') as sapmachine_module:
         sapmachine_module_content = sapmachine_module.read()
@@ -127,9 +132,9 @@ def main(argv=None):
         sapmachine_module.truncate()
         sapmachine_module.write(sapmachine_module_content)
 
-    utils.run_cmd('candle SapMachineModule.wxs'.split(' '), cwd=work_dir)
+    utils.run_cmd('candle -arch x64 SapMachineModule.wxs'.split(' '), cwd=work_dir)
     utils.run_cmd('light SapMachineModule.wixobj'.split(' '), cwd=work_dir)
-    utils.run_cmd('candle SapMachine.wxs'.split(' '), cwd=work_dir)
+    utils.run_cmd('candle -arch x64 SapMachine.wxs'.split(' '), cwd=work_dir)
     utils.run_cmd('light -ext WixUIExtension SapMachine.wixobj'.split(' '), cwd=work_dir)
 
     os.rename(join(work_dir, 'SapMachine.msi'), join(cwd, str.format('SapMachine-{0}.msi', sapmachine_version)))

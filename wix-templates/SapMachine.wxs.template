@@ -28,8 +28,8 @@
 		</Condition>
 
 		<Property Id="ALLUSERS" Value="1" />
-		<Property Id="ARPPRODUCTICON" Value="sapmachine-icon" />
-		<Icon Id="sapmachine-icon" SourceFile="sapmachine.ico" />
+		<Property Id="ARPPRODUCTICON" Value="SapMachineIcon" />
+		<Icon Id="SapMachineIcon" SourceFile="sapmachine.ico" />
 
 		<Media Id="1" Cabinet="product.cab" EmbedCab="yes" />
 
@@ -37,6 +37,9 @@
 			<Directory Id='ProgramFiles64Folder' Name='PFiles'>
 				<Directory Id='SapMachineDir' Name='SapMachine'>
 					<Directory Id='INSTALLDIR' Name='${MAJOR}'>
+                        <Component Id='ReleaseFile' Guid='*'>
+                            <File Id='Release' Name='release' DiskId='1' Source='release' KeyPath='yes' />
+                        </Component>
 						<Merge Id="SapMachineModule" Language="1033" SourceFile="SapMachineModule.msm" DiskId="1" />
 					</Directory>
 				</Directory>
@@ -75,8 +78,11 @@
 			</Feature>
 		</Feature>
 
-		<Feature Id="Msm" Title="SapMachine Installation" Description="The required files for the SapMachine installation." Level="1" Absent="disallow">
+		<Feature Id="MandatoryFeatures" Title="Mandatory Features" Description="Mandatory Features" Level="1" Absent="disallow">
 			<MergeRef Id="SapMachineModule" />
+            <Feature Id="FeatureReleaseFile" Absent="disallow" Display="hidden">
+                <ComponentRef Id="ReleaseFile" />
+            </Feature>
 		</Feature>
 
 		<WixVariable Id="WixUILicenseRtf" Value="license.rtf" />
