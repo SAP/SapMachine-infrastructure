@@ -119,7 +119,7 @@ def main(argv=None):
         sapmachine_version,
         major
     )
-    
+
     shutil.copyfile(join(work_dir, 'SourceDir', 'release'), join(work_dir, 'release'))
 
     utils.run_cmd('heat dir SourceDir -swall -srd -gg -platform x64 -template:module -cg SapMachineGroup -out SapMachineModule.wxs'.split(' '), cwd=work_dir)
@@ -137,7 +137,7 @@ def main(argv=None):
     utils.run_cmd('candle -arch x64 SapMachine.wxs'.split(' '), cwd=work_dir)
     utils.run_cmd('light -ext WixUIExtension SapMachine.wixobj'.split(' '), cwd=work_dir)
 
-    os.rename(join(work_dir, 'SapMachine.msi'), join(cwd, str.format('SapMachine-{0}.msi', sapmachine_version)))
+    os.rename(join(work_dir, 'SapMachine.msi'), join(cwd, str.format('sapmachine-jdk-{0}_windows-x64_bin.msi', version_part)))
 
     return 0
 
