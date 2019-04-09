@@ -317,7 +317,7 @@ def github_api_request(api=None, url=None, owner='SAP', repository='SapMachine',
     return result
 
 def sapmachine_asset_pattern():
-    return '[^-]+-([^-]+)-([^_]+)_([^_]+)_bin(\.tar\.gz|\.zip)'
+    return '[^-]+-([^-]+)-([^_]+)_([^_]+)_bin(\.tar\.gz|\.zip|\.msi)'
 
 def get_asset_url(tag, platform):
     jre_url = None

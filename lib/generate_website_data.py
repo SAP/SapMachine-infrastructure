@@ -15,11 +15,12 @@ from string import Template
 
 #'linux-x64-musl': 'Linux x64 musl',
 os_description = {
-    'linux-x64':     { 'ordinal': 1, 'name': 'Linux x64' },
-    'linux-ppc64le': { 'ordinal': 2, 'name': 'Linux ppc64le' },
-    'linux-ppc64':   { 'ordinal': 3, 'name': 'Linux ppc64' },
-    'windows-x64':   { 'ordinal': 4, 'name': 'Windows x64'},
-    'osx-x64':       { 'ordinal': 5, 'name': 'macOS x64'}
+    'linux-x64':             { 'ordinal': 1, 'name': 'Linux x64' },
+    'linux-ppc64le':         { 'ordinal': 2, 'name': 'Linux ppc64le' },
+    'linux-ppc64':           { 'ordinal': 3, 'name': 'Linux ppc64' },
+    'windows-x64':           { 'ordinal': 4, 'name': 'Windows x64'},
+    'windows-x64-installer': { 'ordinal': 5, 'name': 'Windows x64 Installer'},
+    'osx-x64':               { 'ordinal': 6, 'name': 'macOS x64'}
 }
 
 latest_template = '''---
@@ -131,6 +132,11 @@ def main(argv=None):
 
                 if asset_image_type == 'jdk':
                     asset_os = match.group(3)
+                    file_type = match.group(4)
+
+                    if asset_os == 'windows-x64' and file_type == '.msi':
+                        asset_os = 'windows-x64-installer'
+
                     tag = release['name']
                     image_is_lts = utils.sapmachine_is_lts(major) and not release['prerelease']
 
