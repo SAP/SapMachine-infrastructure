@@ -1,0 +1,65 @@
+- job:
+    name: windows-installer
+    description: 'This project is generated. Do not modify manually.'
+    project-type: pipeline
+    concurrent: false
+    properties:
+        - build-discarder:
+            num-to-keep: 100
+            artifact-num-to-keep: 1
+    parameters:
+        - string:
+            name: GIT_TAG_NAME
+            default: ''
+            description: 'The Git tag to create a Windows installer from.'
+        - bool:
+            name: DEPLOY
+            default: false
+            description: 'When set to true, the resulting installer will be deployed.'
+    dsl: |
+        pipeline {
+            agent {
+                label 'wix_toolset'
+            }
+            stages {
+                stage("Checkout Infrastructure") {
+                    steps {
+                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+                    }
+                }
+                stage('Build') {
+                    environment {
+                      GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
+                    }
+                    steps {
+                      withCredentials([
+                            [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
+                            ]) {
+                          sh "rm -f *.msi"
+                          sh "python SapMachine-Infrastructure/lib/make_msi.py --tag=${params.GIT_TAG_NAME} --templates-directory=SapMachine-Infrastructure/wix-templates"
+                      }
+                    }
+                    post {
+                        success {
+                            archive "*.msi"
+                        }
+                    }
+                }
+                stage('Deploy') {
+                    when {
+                        expression { params.DEPLOY == true }
+                    }
+                    environment {
+                      GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
+                    }
+                    steps {
+                      sh "python SapMachine-Infrastructure/lib/github_publis.py --tag=${params.GIT_TAG_NAME} --asset=SapMachine*.msi"
+                    }
+                }
+            }
+            post {
+                always {
+                    cleanWs deleteDirs: true, disableDeferredWipeout: true
+                }
+            }
+        }
