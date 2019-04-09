@@ -53,7 +53,7 @@
                       GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
                     }
                     steps {
-                      sh "python SapMachine-Infrastructure/lib/github_publis.py --tag=${params.GIT_TAG_NAME} --asset=sapmachine*.msi"
+                      sh "python SapMachine-Infrastructure/lib/github_publish.py --tag=${params.GIT_TAG_NAME} --asset=sapmachine*.msi"
                     }
                 }
             }
