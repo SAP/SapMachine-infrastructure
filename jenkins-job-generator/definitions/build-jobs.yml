@@ -484,7 +484,7 @@
                             }}
                             post {{
                                 success {{
-                                    copyArtifacts filter: 'sapmachine-*.tar.gz', projectName: 'build--branch-linux_x86_64', target: env.LINUX_X86_64_ARTIFACT_DIR, selector:
+                                    copyArtifacts filter: 'sapmachine-*.tar.gz', projectName: 'build-{major}-{build_type}-linux_x86_64', target: env.LINUX_X86_64_ARTIFACT_DIR, selector:
                                     [
                                         $class: 'SpecificBuildSelector',
                                         buildNumber: env.LINUX_X86_64_JOB_ID
@@ -529,7 +529,7 @@
                             }}
                             post {{
                                 success {{
-                                    copyArtifacts filter: 'sapmachine-*.tar.gz', projectName: 'build--branch-linux_ppc64le', target: env.LINUX_PPC64LE_ARTIFACT_DIR, selector:
+                                    copyArtifacts filter: 'sapmachine-*.tar.gz', projectName: 'build-{major}-{build_type}-linux_ppc64le', target: env.LINUX_PPC64LE_ARTIFACT_DIR, selector:
                                     [
                                         $class: 'SpecificBuildSelector',
                                         buildNumber: env.LINUX_PPC64LE_JOB_ID
@@ -574,7 +574,7 @@
                             }}
                             post {{
                                 success {{
-                                    copyArtifacts filter: 'sapmachine-*.tar.gz', projectName: 'build--branch-linux_ppc64', target: env.LINUX_PPC64_ARTIFACT_DIR, selector:
+                                    copyArtifacts filter: 'sapmachine-*.tar.gz', projectName: 'build-{major}-{build_type}-linux_ppc64', target: env.LINUX_PPC64_ARTIFACT_DIR, selector:
                                     [
                                         $class: 'SpecificBuildSelector',
                                         buildNumber: env.LINUX_PPC64_JOB_ID
