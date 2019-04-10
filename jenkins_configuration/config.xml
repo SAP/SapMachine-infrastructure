@@ -25,7 +25,62 @@
   <jdks/>
   <viewsTabBar class="hudson.views.DefaultViewsTabBar"/>
   <myViewsTabBar class="hudson.views.DefaultMyViewsTabBar"/>
-  <clouds/>
+  <clouds>
+    <hudson.plugins.ec2.EC2Cloud plugin="ec2@1.42">
+      <name>ec2-SapMachine-Windows</name>
+      <useInstanceProfileForCredentials>false</useInstanceProfileForCredentials>
+      <roleArn></roleArn>
+      <roleSessionName></roleSessionName>
+      <credentialsId>JekinsAWSKey</credentialsId>
+      <privateKey>
+        <privateKey>{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}</privateKey>
+      </privateKey>
+      <instanceCap>6</instanceCap>
+      <templates>
+        <hudson.plugins.ec2.SlaveTemplate>
+          <ami>ami-0fbd38ef086d6fec6</ami>
+          <description>Windows Slave (EC2 Cloud)</description>
+          <zone>us-east-1d</zone>
+          <securityGroups>JenkinsWindowsSlave</securityGroups>
+          <remoteFS>C:\jenkins</remoteFS>
+          <type>T3Medium</type>
+          <ebsOptimized>true</ebsOptimized>
+          <monitoring>false</monitoring>
+          <t2Unlimited>false</t2Unlimited>
+          <labels>windows_x86_64</labels>
+          <mode>EXCLUSIVE</mode>
+          <initScript></initScript>
+          <tmpDir>C:\TEMP</tmpDir>
+          <userData></userData>
+          <numExecutors>1</numExecutors>
+          <remoteAdmin>GLOBAL\Administrator</remoteAdmin>
+          <jvmopts></jvmopts>
+          <subnetId></subnetId>
+          <idleTerminationMinutes>30</idleTerminationMinutes>
+          <iamInstanceProfile></iamInstanceProfile>
+          <deleteRootOnTermination>false</deleteRootOnTermination>
+          <useEphemeralDevices>false</useEphemeralDevices>
+          <customDeviceMapping></customDeviceMapping>
+          <instanceCap>2147483647</instanceCap>
+          <stopOnTerminate>true</stopOnTerminate>
+          <usePrivateDnsName>false</usePrivateDnsName>
+          <associatePublicIp>false</associatePublicIp>
+          <useDedicatedTenancy>false</useDedicatedTenancy>
+          <amiType class="hudson.plugins.ec2.WindowsData">
+            <password>{AQAAABAAAAAwV9/0E5JbuZAN0X5RjAvMTz/LNEgu/B6H8JOOz/D2Z1yDkQdlryR99Rfgn7RWFurzXUwuvc4wV42pef2FT0/HmA==}</password>
+            <useHTTPS>false</useHTTPS>
+            <bootDelay>3</bootDelay>
+          </amiType>
+          <launchTimeout>2147483647</launchTimeout>
+          <connectBySSHProcess>false</connectBySSHProcess>
+          <connectUsingPublicIp>false</connectUsingPublicIp>
+          <nextSubnet>0</nextSubnet>
+        </hudson.plugins.ec2.SlaveTemplate>
+      </templates>
+      <region>us-east-1</region>
+      <noDelayProvisioning>true</noDelayProvisioning>
+    </hudson.plugins.ec2.EC2Cloud>
+  </clouds>
   <quietPeriod>5</quietPeriod>
   <scmCheckoutRetryCount>0</scmCheckoutRetryCount>
   <views>
@@ -171,7 +226,7 @@
         <hudson.views.LastDurationColumn/>
         <hudson.views.BuildButtonColumn/>
       </columns>
-      <includeRegex>build-.*-windows_x86_64$</includeRegex>
+      <includeRegex>build-.*-windows_x86_64$|windows-installer</includeRegex>
       <recurse>false</recurse>
     </listView>
     <listView>

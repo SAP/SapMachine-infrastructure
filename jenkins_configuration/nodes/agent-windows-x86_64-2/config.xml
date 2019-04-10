@@ -2,7 +2,7 @@
 <slave>
   <name>agent-windows-x86_64-2</name>
   <description></description>
-  <remoteFS>c:\jenkins</remoteFS>
+  <remoteFS>c:\jenkins_2</remoteFS>
   <numExecutors>1</numExecutors>
   <mode>EXCLUSIVE</mode>
   <retentionStrategy class="hudson.slaves.RetentionStrategy$Always"/>
@@ -13,7 +13,7 @@
       <failIfWorkDirIsMissing>false</failIfWorkDirIsMissing>
     </workDirSettings>
   </launcher>
-  <label>windows_x86_64</label>
+  <label>wix_toolset</label>
   <nodeProperties>
     <hudson.slaves.EnvironmentVariablesNodeProperty>
       <envVars serialization="custom">

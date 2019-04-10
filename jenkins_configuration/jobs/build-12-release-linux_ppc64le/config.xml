@@ -203,6 +203,18 @@
                 '''
             }
         }
+        stage('Publish Windows Installer') {
+            when {
+                expression { params.PUBLISH == true &amp;&amp; JOB_NAME ==~ /((\S*)(release-windows_x86_64)(\S*))/ }
+            }
+            steps {
+                build job: 'windows-installer', propagate: false, wait: true, parameters:
+                    [
+                        string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
+                        [$class: 'BooleanParameterValue', name: 'DEPLOY', value: true]
+                    ]
+            }
+        }
         stage('Publish Website Data') {
             when {
                 expression { params.PUBLISH == true &amp;&amp; JOB_NAME ==~ /((\S*)(release)(\S*))/}
