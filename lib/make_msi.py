@@ -20,7 +20,20 @@ def prepare(work_dir, tag, major):
     utils.remove_if_exists(work_dir)
     os.makedirs(work_dir)
     download_jdk(work_dir, tag)
-    utils.git_clone('github.com/SAP/SapMachine.git', 'sapmachine' + major, join(work_dir, 'sapmachine_git'))
+
+    maybe_sapmachine_branch = 'sapmachine' + major
+    sapmachine_branch = None
+    branches = utils.github_api_request('branches', per_page=100)
+
+    for branch in branches:
+        if branch['name'] == maybe_sapmachine_branch:
+            sapmachine_branch = maybe_sapmachine_branch
+            break
+
+    if sapmachine_branch is None:
+        sapmachine_branch = 'sapmachine'
+
+    utils.git_clone('github.com/SAP/SapMachine.git', sapmachine_branch, join(work_dir, 'sapmachine_git'))
 
 def create_sapmachine_wxs(template, target, product_id, upgrade_code, version, major):
     sapmachine_wxs_content = None
