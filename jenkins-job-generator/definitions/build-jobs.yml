@@ -149,11 +149,17 @@
                         script {{
                             def major = "{major}"
 
-                            if (major?.trim()) {{
-                                sh "python SapMachine-Infrastructure/lib/download_boot_jdk.py -m {major} -d `pwd`"
-                            }} else {{
-                                sh "python SapMachine-Infrastructure/lib/download_boot_jdk.py -m 99999 -d `pwd`"
+                            if (!major?.trim()) {{
+                                def match = (SAPMACHINE_GIT_BRANCH =~ /sapmachine(\d*)/)
+                                if (match &&
+                                    match[0]) {{
+                                    major = match[0][1])
+                                }} else {{
+                                    major = "9999"
+                                }}
                             }}
+
+                            sh "python SapMachine-Infrastructure/lib/download_boot_jdk.py -m ${{major}} -d `pwd`"
                         }}
                     }}
                 }}
