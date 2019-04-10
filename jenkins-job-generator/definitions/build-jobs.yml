@@ -153,7 +153,7 @@
                                 def match = (SAPMACHINE_GIT_BRANCH =~ /sapmachine(\d*)/)
                                 if (match &&
                                     match[0]) {{
-                                    major = match[0][1])
+                                    major = match[0][1]
                                 }} else {{
                                     major = "9999"
                                 }}
