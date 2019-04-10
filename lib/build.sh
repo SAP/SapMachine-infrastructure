@@ -132,12 +132,7 @@ else
     $EXTRA_CONFIGURE_OPTIONS
 fi
 
-make JOBS=12 product-bundles test-image
-if [[ $UNAME == Darwin ]]; then
-    make JOBS=12 mac-legacy-jre-bundle || true
-else
-    make JOBS=12 legacy-jre-image || true
-fi
+make JOBS=12 product-bundles legacy-bundles test-image
 
 make run-test-gtest
 
@@ -164,30 +159,6 @@ JDK_NAME=$(ls ${SAPMACHINE_BUNDLE_PREFIX}jdk-*_bin.*)
 read JDK_MAJOR JDK_SUFFIX<<< $(echo $JDK_NAME | sed $SEDFLAGS 's/'"${SAPMACHINE_BUNDLE_PREFIX}"'jdk-([0-9]+((\.[0-9]+))*)(.*)/ \1 \4 /p')
 JDK_BUNDLE_NAME="${SAPMACHINE_BUNDLE_PREFIX}jdk-${JDK_MAJOR}${JDK_SUFFIX}"
 JRE_BUNDLE_NAME="${SAPMACHINE_BUNDLE_PREFIX}jre-${JDK_MAJOR}${JDK_SUFFIX}"
-
-HAS_JRE=$(ls ${SAPMACHINE_BUNDLE_PREFIX}jre* | wc -l)
-
-if [ "$HAS_JRE" -lt "1" ]; then
-  JRE_BUNDLE_TOP_DIR="${SAPMACHINE_BUNDLE_PREFIX}jre-$JDK_MAJOR.jre"
-
-  rm -rf $JRE_BUNDLE_NAME
-  mkdir $JRE_BUNDLE_TOP_DIR
-  if [[ $UNAME == Darwin ]]; then
-      cp -a ../images/${SAPMACHINE_BUNDLE_PREFIX}jre-bundle/$JRE_BUNDLE_TOP_DIR* .
-      SetFile -a b ${SAPMACHINE_BUNDLE_PREFIX}jre*
-  else
-      cp -r ../images/jre/* $JRE_BUNDLE_TOP_DIR
-  fi
-  find $JRE_BUNDLE_TOP_DIR -name "*.debuginfo" -type f -delete
-
-  if [ ${JDK_SUFFIX: -4} == ".zip" ]; then
-    zip -r $JRE_BUNDLE_NAME $JRE_BUNDLE_TOP_DIR
-  else
-    tar -czf  $JRE_BUNDLE_NAME $JRE_BUNDLE_TOP_DIR
-  fi
-
-  rm -rf $JRE_BUNDLE_TOP_DIR
-fi
 
 rm "${WORKSPACE}/${SAPMACHINE_BUNDLE_PREFIX}jdk-*" || true
 rm "${WORKSPACE}/${SAPMACHINE_BUNDLE_PREFIX}jre-*" || true
