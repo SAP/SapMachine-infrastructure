@@ -109,6 +109,10 @@
             default: ''
             description: 'Configure options passed directly to configure script.'
         - string:
+            name: BOOT_JDK_MAJOR
+            default: ''
+            description: 'Specify the boot JDK major version explicitly.'
+        - string:
             name: hotspot_test_groups
             default: ':tier1'
             description: 'Select the test group for jtreg hotspot tests. Empty means disabled.'
@@ -149,7 +153,9 @@
                         script {{
                             def major = "{major}"
 
-                            if (!major?.trim()) {{
+                            if (BOOT_JDK_MAJOR?.trim()) {{
+                                major = BOOT_JDK_MAJOR
+                            }} else if (!major?.trim()) {{
                                 def match = (SAPMACHINE_GIT_BRANCH =~ /sapmachine(\d*)/)
                                 if (match &&
                                     match[0]) {{
