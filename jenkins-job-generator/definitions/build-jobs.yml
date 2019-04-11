@@ -324,7 +324,6 @@
                             ]) {{
                             sh "rm -f *.msi"
                             sh "python SapMachine-Infrastructure/lib/make_msi.py --tag=${{params.GIT_TAG_NAME}} --templates-directory=SapMachine-Infrastructure/wix-templates"
-                            sh "SapMachine-infrastructure/lib/publish_msi.sh"
                             archiveArtifacts allowEmptyArchive: true, artifacts: "*.msi"
                         }}
                     }}
