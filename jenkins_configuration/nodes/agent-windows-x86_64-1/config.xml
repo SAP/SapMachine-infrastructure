@@ -1,5 +1,19 @@
 <?xml version='1.1' encoding='UTF-8'?>
 <slave>
+  <temporaryOfflineCause class="hudson.slaves.OfflineCause$UserCause">
+    <timestamp>1554909921594</timestamp>
+    <description>
+      <holder>
+        <owner>hudson.slaves.Messages</owner>
+      </holder>
+      <key>SlaveComputer.DisconnectedBy</key>
+      <args>
+        <string>arno</string>
+        <string> : Test autoscaling</string>
+      </args>
+    </description>
+    <userId>arno</userId>
+  </temporaryOfflineCause>
   <name>agent-windows-x86_64-1</name>
   <description></description>
   <remoteFS>c:\jenkins</remoteFS>

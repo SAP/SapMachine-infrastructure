@@ -11,11 +11,19 @@
                 script {
                     def major = "13"
 
-                    if (major?.trim()) {
-                        sh "python SapMachine-Infrastructure/lib/download_boot_jdk.py -m 13 -d `pwd`"
-                    } else {
-                        sh "python SapMachine-Infrastructure/lib/download_boot_jdk.py -m 99999 -d `pwd`"
+                    if (BOOT_JDK_MAJOR?.trim()) {
+                        major = BOOT_JDK_MAJOR
+                    } else if (!major?.trim()) {
+                        def match = (SAPMACHINE_GIT_BRANCH =~ /sapmachine(\d*)/)
+                        if (match &amp;&amp;
+                            match[0]) {
+                            major = match[0][1]
+                        } else {
+                            major = "9999"
+                        }
                     }
+
+                    sh "python SapMachine-Infrastructure/lib/download_boot_jdk.py -m ${major} -d `pwd`"
                 }
             }
         }
@@ -279,6 +287,11 @@
         <hudson.model.StringParameterDefinition>
           <name>EXTRA_CONFIGURE_OPTIONS</name>
           <description>Configure options passed directly to configure script.</description>
+          <defaultValue/>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>BOOT_JDK_MAJOR</name>
+          <description>Specify the boot JDK major version explicitly.</description>
           <defaultValue/>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
