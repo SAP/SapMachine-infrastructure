@@ -9,6 +9,7 @@ import shutil
 import argparse
 import tempfile
 import utils
+import xml.etree.ElementTree
 
 from os.path import join
 
@@ -32,6 +33,16 @@ def push_sapmachine_infra(local_repo):
     utils.run_cmd(['git', 'fetch'], cwd=local_repo, env=env)
     utils.run_cmd(['git', 'rebase'], cwd=local_repo, env=env)
     utils.run_cmd(['git', 'push'], cwd=local_repo, env=env)
+
+def remove_sensitive_data(config_xml, elements):
+    config = xml.etree.ElementTree.parse(config_xml)
+    config_root = config.getroot()
+
+    for e in elements:
+        for private_key in config_root.iter(e):
+            if private_key.text.rstrip():
+                print(private_key.text)
+                private_key.text = 'REMOVED_BY_BACKUP'
 
 def copy_configurations(src_dir, target_dir):
     exclude_dirs = ['users', 'secrets', 'workspace', '.cache', 'caches', 'logs', 'plugins', 'fingerprints']
@@ -66,6 +77,7 @@ def copy_configurations(src_dir, target_dir):
                     os.makedirs(config_xml_target_dir)
 
                 shutil.copy(config_xml, config_xml_target_dir)
+                remove_sensitive_data(join(config_xml_target_dir, file), ['privateKey', 'password'])
 
 def create_plugin_list(src_dir, target_dir):
     import json
