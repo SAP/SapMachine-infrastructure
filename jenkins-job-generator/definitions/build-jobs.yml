@@ -315,12 +315,18 @@
                     when {{
                         expression {{ params.PUBLISH == true && JOB_NAME ==~ /((\S*)(release-windows_x86_64)(\S*))/ }}
                     }}
+                    environment {{
+                      GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
+                    }}
                     steps {{
-                        build job: 'windows-installer', propagate: false, wait: true, parameters:
-                            [
-                                string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
-                                [$class: 'BooleanParameterValue', name: 'DEPLOY', value: true]
-                            ]
+                        withCredentials([
+                            [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
+                            ]) {{
+                            sh "rm -f *.msi"
+                            sh "python SapMachine-Infrastructure/lib/make_msi.py --tag=${{params.GIT_TAG_NAME}} --templates-directory=SapMachine-Infrastructure/wix-templates"
+                            sh "SapMachine-infrastructure/lib/publish_msi.sh"
+                            archiveArtifacts allowEmptyArchive: true, artifacts: "*.msi"
+                        }}
                     }}
                 }}
                 stage('Publish Website Data') {{
