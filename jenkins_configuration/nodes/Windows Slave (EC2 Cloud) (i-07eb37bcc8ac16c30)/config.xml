@@ -1,25 +1,25 @@
 <?xml version='1.1' encoding='UTF-8'?>
 <hudson.plugins.ec2.EC2Slave plugin="ec2@1.42">
-  <name>Windows Slave (EC2 Cloud) (i-0fe4dd4054d10112a)</name>
+  <name>Windows Slave (EC2 Cloud) (i-07eb37bcc8ac16c30)</name>
   <remoteFS>C:\jenkins</remoteFS>
   <numExecutors>1</numExecutors>
   <mode>EXCLUSIVE</mode>
   <retentionStrategy class="hudson.plugins.ec2.EC2RetentionStrategy">
-    <idleTerminationMinutes>30</idleTerminationMinutes>
+    <idleTerminationMinutes>10</idleTerminationMinutes>
   </retentionStrategy>
   <launcher class="hudson.plugins.ec2.win.EC2WindowsLauncher">
     <sleepBetweenAttempts>10000</sleepBetweenAttempts>
   </launcher>
   <label>windows_x86_64</label>
   <nodeProperties/>
-  <instanceId>i-0fe4dd4054d10112a</instanceId>
+  <instanceId>i-07eb37bcc8ac16c30</instanceId>
   <initScript></initScript>
   <tmpDir>C:\TEMP\</tmpDir>
   <remoteAdmin>Administrator</remoteAdmin>
   <templateDescription>Windows Slave (EC2 Cloud)</templateDescription>
   <jvmopts></jvmopts>
   <stopOnTerminate>false</stopOnTerminate>
-  <idleTerminationMinutes>30</idleTerminationMinutes>
+  <idleTerminationMinutes>10</idleTerminationMinutes>
   <usePrivateDnsName>false</usePrivateDnsName>
   <useDedicatedTenancy>false</useDedicatedTenancy>
   <isConnected>false</isConnected>
@@ -39,6 +39,6 @@
     <useHTTPS>false</useHTTPS>
     <bootDelay>3</bootDelay>
   </amiType>
-  <instanceType>m4.4xlarge</instanceType>
+  <instanceType>c5d.4xlarge</instanceType>
   <launchTimeout>2147483647</launchTimeout>
 </hudson.plugins.ec2.EC2Slave>
