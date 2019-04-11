@@ -41,8 +41,9 @@ def remove_sensitive_data(config_xml, elements):
     for e in elements:
         for private_key in config_root.iter(e):
             if private_key.text.rstrip():
-                print(private_key.text)
                 private_key.text = 'REMOVED_BY_BACKUP'
+
+    config_xml.write(config_xml)
 
 def copy_configurations(src_dir, target_dir):
     exclude_dirs = ['users', 'secrets', 'workspace', '.cache', 'caches', 'logs', 'plugins', 'fingerprints']
