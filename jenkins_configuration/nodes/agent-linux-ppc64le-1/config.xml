@@ -1,11 +1,10 @@
-<?xml version='1.1' encoding='UTF-8'?>
 <slave>
   <name>agent-linux-ppc64le-1</name>
-  <description></description>
+  <description />
   <remoteFS>/home/jenkins/slave-home</remoteFS>
   <numExecutors>1</numExecutors>
   <mode>EXCLUSIVE</mode>
-  <retentionStrategy class="hudson.slaves.RetentionStrategy$Always"/>
+  <retentionStrategy class="hudson.slaves.RetentionStrategy$Always" />
   <launcher class="hudson.slaves.JNLPLauncher">
     <workDirSettings>
       <disabled>false</disabled>
@@ -14,5 +13,5 @@
     </workDirSettings>
   </launcher>
   <label>linux_ppc64le</label>
-  <nodeProperties/>
+  <nodeProperties />
 </slave>

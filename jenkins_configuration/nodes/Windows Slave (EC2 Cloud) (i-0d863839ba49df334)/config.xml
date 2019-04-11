@@ -1,4 +1,3 @@
-<?xml version='1.1' encoding='UTF-8'?>
 <hudson.plugins.ec2.EC2Slave plugin="ec2@1.42">
   <name>Windows Slave (EC2 Cloud) (i-0d863839ba49df334)</name>
   <remoteFS>C:\jenkins</remoteFS>
@@ -11,13 +10,13 @@
     <sleepBetweenAttempts>10000</sleepBetweenAttempts>
   </launcher>
   <label>windows_x86_64</label>
-  <nodeProperties/>
+  <nodeProperties />
   <instanceId>i-0d863839ba49df334</instanceId>
-  <initScript></initScript>
+  <initScript />
   <tmpDir>C:\TEMP\</tmpDir>
   <remoteAdmin>Administrator</remoteAdmin>
   <templateDescription>Windows Slave (EC2 Cloud)</templateDescription>
-  <jvmopts></jvmopts>
+  <jvmopts />
   <stopOnTerminate>false</stopOnTerminate>
   <idleTerminationMinutes>10</idleTerminationMinutes>
   <usePrivateDnsName>false</usePrivateDnsName>
@@ -35,7 +34,7 @@
   </tags>
   <cloudName>ec2-SapMachine-Windows</cloudName>
   <amiType class="hudson.plugins.ec2.WindowsData">
-    <password>{AQAAABAAAAAwDKTIciI8EhmbbYn7Mv46mZ9JK/adCA1/peiX5+6mfN7azWPdbQMd+7Qv1BmNphSIQkpAsOHuA82S5U/0VbzWAQ==}</password>
+    <password>REMOVED_BY_BACKUP</password>
     <useHTTPS>false</useHTTPS>
     <bootDelay>3</bootDelay>
   </amiType>

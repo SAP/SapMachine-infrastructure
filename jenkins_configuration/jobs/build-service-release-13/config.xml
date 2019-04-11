@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><flow-definition plugin="workflow-job">
+<flow-definition plugin="workflow-job">
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps">
     <script>pipeline {
     agent {
@@ -239,7 +239,7 @@
 </script>
     <sandbox>false</sandbox>
   </definition>
-  <actions/>
+  <actions />
   <description>This project is generated. Do not modify manually.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
   <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
@@ -269,47 +269,47 @@
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>GIT_TAG_NAME</name>
-          <description/>
-          <defaultValue/>
+          <description />
+          <defaultValue />
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>BUILD_NUMBER</name>
           <description>Sets the version build number explicitely.</description>
-          <defaultValue/>
+          <defaultValue />
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>EXTRA_CONFIGURE_OPTIONS</name>
           <description>Configure options passed directly to configure script.</description>
-          <defaultValue/>
+          <defaultValue />
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>BOOT_JDK_MAJOR</name>
           <description>Specify the boot JDK major version explicitly.</description>
-          <defaultValue/>
+          <defaultValue />
         </hudson.model.StringParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>BUILD_LINUX_X86_64</name>
-          <description/>
+          <description />
           <defaultValue>true</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>BUILD_LINUX_PPC64LE</name>
-          <description/>
+          <description />
           <defaultValue>true</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>BUILD_LINUX_PPC64</name>
-          <description/>
+          <description />
           <defaultValue>true</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>BUILD_WINDOWS_X86_64</name>
-          <description/>
+          <description />
           <defaultValue>true</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>BUILD_MACOS_X86_64</name>
-          <description/>
+          <description />
           <defaultValue>true</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
@@ -345,7 +345,7 @@
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>
-  <scm class="hudson.scm.NullSCM"/>
-  <publishers/>
-  <buildWrappers/>
+  <scm class="hudson.scm.NullSCM" />
+  <publishers />
+  <buildWrappers />
 </flow-definition>

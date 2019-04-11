@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><flow-definition plugin="workflow-job">
+<flow-definition plugin="workflow-job">
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps">
     <script>pipeline {
     agent {
@@ -48,7 +48,7 @@
 }</script>
     <sandbox>false</sandbox>
   </definition>
-  <actions/>
+  <actions />
   <description>This project is generated. Do not modify manually.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
   <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
@@ -69,7 +69,7 @@
         <hudson.model.StringParameterDefinition>
           <name>GIT_TAG_NAME</name>
           <description>The Git tag to create a Windows installer from.</description>
-          <defaultValue/>
+          <defaultValue />
         </hudson.model.StringParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>DEPLOY</name>
@@ -79,7 +79,7 @@
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>
-  <scm class="hudson.scm.NullSCM"/>
-  <publishers/>
-  <buildWrappers/>
+  <scm class="hudson.scm.NullSCM" />
+  <publishers />
+  <buildWrappers />
 </flow-definition>

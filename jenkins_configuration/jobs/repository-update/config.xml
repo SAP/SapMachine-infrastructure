@@ -1,52 +1,28 @@
-<?xml version='1.1' encoding='UTF-8'?>
-<flow-definition plugin="workflow-job@2.32">
-  <actions>
-    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.3.7"/>
-  </actions>
-  <description>This project is generated. Do not modify manually.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
-  <keepDependencies>false</keepDependencies>
-  <properties>
-    <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
-      <triggers>
-        <hudson.triggers.TimerTrigger>
-          <spec>@midnight</spec>
-        </hudson.triggers.TimerTrigger>
-      </triggers>
-    </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
-    <jenkins.model.BuildDiscarderProperty>
-      <strategy class="hudson.tasks.LogRotator">
-        <daysToKeep>-1</daysToKeep>
-        <numToKeep>100</numToKeep>
-        <artifactDaysToKeep>-1</artifactDaysToKeep>
-        <artifactNumToKeep>-1</artifactNumToKeep>
-      </strategy>
-    </jenkins.model.BuildDiscarderProperty>
-    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty/>
-  </properties>
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.65">
+<flow-definition plugin="workflow-job">
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps">
     <script>pipeline {
     agent {
-        label &quot;repository&quot;
+        label "repository"
     }
     stages {
-        stage(&quot;Checkout Infrastructure&quot;) {
+        stage("Checkout Infrastructure") {
             steps {
-                checkout changelog: false, poll: false, scm: [$class: &apos;GitSCM&apos;, branches: [[name: &apos;*/master&apos;]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: &apos;RelativeTargetDirectory&apos;, relativeTargetDir: &apos;SapMachine-Infrastructure&apos;]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: &apos;SapMachine-github&apos;, url: &apos;https://github.com/SAP/SapMachine-infrastructure.git&apos;]]]
+                checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
             }
         }
-        stage(&apos;Build&apos;) {
+        stage('Build') {
             agent {
                 dockerfile {
-                    dir &quot;SapMachine-Infrastructure/dockerfiles/infrastructure&quot;
+                    dir "SapMachine-Infrastructure/dockerfiles/infrastructure"
                     reuseNode true
-                    label &quot;repository&quot;
+                    label "repository"
                 }
             }
             steps {
                 withCredentials([
-                    [$class: &apos;UsernamePasswordMultiBinding&apos;, credentialsId: &apos;SapMachine-github&apos;, usernameVariable: &apos;GIT_USER&apos;, passwordVariable: &apos;GIT_PASSWORD&apos;]
+                    [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
                     ]) {
-                        sh &apos;&apos;&apos;
+                        sh '''
                         openjdk_repositories=$(python SapMachine-Infrastructure/lib/list_openjdk_repositories.py)
 
                         for i in ${openjdk_repositories}
@@ -54,7 +30,7 @@
                             :
                             SapMachine-Infrastructure/lib/update_repo.sh $i
                         done
-                        &apos;&apos;&apos;
+                        '''
                 }
             }
         }
@@ -63,5 +39,29 @@
 </script>
     <sandbox>false</sandbox>
   </definition>
-  <disabled>false</disabled>
+  <actions />
+  <description>This project is generated. Do not modify manually.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+  <keepDependencies>false</keepDependencies>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <concurrentBuild>false</concurrentBuild>
+  <canRoam>true</canRoam>
+  <properties>
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>-1</daysToKeep>
+        <numToKeep>100</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>-1</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM" />
+  <triggers class="vector">
+    <hudson.triggers.TimerTrigger>
+      <spec>@midnight</spec>
+    </hudson.triggers.TimerTrigger>
+  </triggers>
+  <publishers />
+  <buildWrappers />
 </flow-definition>

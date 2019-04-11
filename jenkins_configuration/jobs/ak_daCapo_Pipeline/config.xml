@@ -1,12 +1,11 @@
-<?xml version='1.1' encoding='UTF-8'?>
 <flow-definition plugin="workflow-job@2.31">
   <actions>
-    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.3.4.1"/>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.3.4.1" />
     <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.3.4.1">
-      <jobProperties/>
-      <triggers/>
-      <parameters/>
-      <options/>
+      <jobProperties />
+      <triggers />
+      <parameters />
+      <options />
     </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
   </actions>
   <description>AKN Dacapo Pipeline Playground</description>
@@ -25,33 +24,33 @@
     <script>pipeline {
     agent {
         docker { 
-            image &apos;reshnm/dacapo&apos; 
-            label &apos;linux_x86_64&apos;
+            image 'reshnm/dacapo' 
+            label 'linux_x86_64'
             reuseNode true
         }
     }
     stages {
-        stage(&apos;Clone SapMachine Infrastructure&apos;) {
+        stage('Clone SapMachine Infrastructure') {
             steps {
-                git &apos;https://github.com/SAP/SapMachine-infrastructure.git&apos;
-                sh &quot;ls -l&quot;
+                git 'https://github.com/SAP/SapMachine-infrastructure.git'
+                sh "ls -l"
             }
         }
-        stage(&apos;Run Dacapo&apos;) {
+        stage('Run Dacapo') {
             steps {
-                sh &quot;java -version&quot;
-                sh &quot;which java&quot;
-                sh &quot;python --version&quot;
-                sh &quot;ls -l&quot;
-                sh &quot;ls -l /opt&quot;
-                sh &quot;ls -l /opt/sapmachine-11-jdk&quot;
-                sh &quot;python lib/run_dacapo.py &apos;/opt/dacapo/dacapo.jar&apos;&quot;
+                sh "java -version"
+                sh "which java"
+                sh "python --version"
+                sh "ls -l"
+                sh "ls -l /opt"
+                sh "ls -l /opt/sapmachine-11-jdk"
+                sh "python lib/run_dacapo.py '/opt/dacapo/dacapo.jar'"
             }
         }
     }
 }</script>
     <sandbox>true</sandbox>
   </definition>
-  <triggers/>
+  <triggers />
   <disabled>false</disabled>
 </flow-definition>

@@ -1,11 +1,10 @@
-<?xml version='1.1' encoding='UTF-8'?>
 <slave>
   <name>agent-ubuntu-local</name>
-  <description></description>
+  <description />
   <remoteFS>/home/jenkins/agent</remoteFS>
   <numExecutors>1</numExecutors>
   <mode>EXCLUSIVE</mode>
-  <retentionStrategy class="hudson.slaves.RetentionStrategy$Always"/>
+  <retentionStrategy class="hudson.slaves.RetentionStrategy$Always" />
   <launcher class="hudson.slaves.JNLPLauncher">
     <workDirSettings>
       <disabled>false</disabled>
@@ -13,6 +12,6 @@
       <failIfWorkDirIsMissing>false</failIfWorkDirIsMissing>
     </workDirSettings>
   </launcher>
-  <label></label>
-  <nodeProperties/>
+  <label />
+  <nodeProperties />
 </slave>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><flow-definition plugin="workflow-job">
+<flow-definition plugin="workflow-job">
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps">
     <script>pipeline {
     agent {
@@ -197,7 +197,7 @@
 </script>
     <sandbox>false</sandbox>
   </definition>
-  <actions/>
+  <actions />
   <description>This project is generated. Do not modify manually.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
   <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
@@ -207,7 +207,7 @@
   <properties>
     <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github">
       <projectUrl>https://github.com/SAP/SapMachine</projectUrl>
-      <displayName/>
+      <displayName />
     </com.coravy.hudson.plugins.github.GithubProjectProperty>
     <jenkins.model.BuildDiscarderProperty>
       <strategy class="hudson.tasks.LogRotator">
@@ -218,7 +218,7 @@
       </strategy>
     </jenkins.model.BuildDiscarderProperty>
   </properties>
-  <scm class="hudson.scm.NullSCM"/>
+  <scm class="hudson.scm.NullSCM" />
   <triggers class="vector">
     <org.jenkinsci.plugins.github.pullrequest.GitHubPRTrigger plugin="github-pullrequest@0.2.4">
       <spec>H/1 * * * *</spec>
@@ -238,18 +238,18 @@
         <errors class="java.util.Collections$SynchronizedSet" serialization="custom">
           <java.util.Collections_-SynchronizedCollection>
             <default>
-              <c class="set"/>
-              <mutex class="java.util.Collections$SynchronizedSet" reference="../../.."/>
+              <c class="set" />
+              <mutex class="java.util.Collections$SynchronizedSet" reference="../../.." />
             </default>
           </java.util.Collections_-SynchronizedCollection>
         </errors>
       </errorsAction>
       <events>
-        <org.jenkinsci.plugins.github.pullrequest.events.impl.GitHubPRCommitEvent/>
+        <org.jenkinsci.plugins.github.pullrequest.events.impl.GitHubPRCommitEvent />
         <org.jenkinsci.plugins.github.pullrequest.events.impl.GitHubPRCommentEvent>
           <comment>retest this please</comment>
         </org.jenkinsci.plugins.github.pullrequest.events.impl.GitHubPRCommentEvent>
-        <org.jenkinsci.plugins.github.pullrequest.events.impl.GitHubPROpenEvent/>
+        <org.jenkinsci.plugins.github.pullrequest.events.impl.GitHubPROpenEvent />
       </events>
       <preStatus>false</preStatus>
       <branchRestriction>
@@ -259,6 +259,6 @@
       </branchRestriction>
     </org.jenkinsci.plugins.github.pullrequest.GitHubPRTrigger>
   </triggers>
-  <publishers/>
-  <buildWrappers/>
+  <publishers />
+  <buildWrappers />
 </flow-definition>

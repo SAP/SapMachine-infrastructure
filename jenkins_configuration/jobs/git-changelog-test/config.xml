@@ -1,21 +1,20 @@
-<?xml version='1.1' encoding='UTF-8'?>
 <flow-definition plugin="workflow-job@2.25">
-  <actions/>
-  <description></description>
+  <actions />
+  <description />
   <keepDependencies>false</keepDependencies>
-  <properties/>
+  <properties />
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.57">
     <script>node {
  deleteDir()
- sh &quot;&quot;&quot;
+ sh """
  git clone https://github.com/SAP/SapMachine.git .
  mkdir report
- &quot;&quot;&quot;
+ """
     
- def changelogString = gitChangelog returnType: &apos;STRING&apos;,
-  from: [type: &apos;COMMIT&apos;, value: &apos;1934192d98e22332b790376a87edb4fa9945eba1&apos;],
-  to: [type: &apos;REF&apos;, value: &apos;sapmachine11&apos;],
-  template: &quot;&quot;&quot;
+ def changelogString = gitChangelog returnType: 'STRING',
+  from: [type: 'COMMIT', value: '1934192d98e22332b790376a87edb4fa9945eba1'],
+  to: [type: 'REF', value: 'sapmachine11'],
+  template: """
 &lt;h1&gt; Git Changelog changelog &lt;/h1&gt;
 
 &lt;p&gt;
@@ -27,7 +26,7 @@ Changelog of Git Changelog.
  {{#issues}}
  {{#hasIssue}}
  {{#hasLink}}
-&lt;h2&gt; {{name}} &lt;a href=&quot;{{link}}&quot;&gt;{{issue}}&lt;/a&gt; {{title}} &lt;/h2&gt;
+&lt;h2&gt; {{name}} &lt;a href="{{link}}"&gt;{{issue}}&lt;/a&gt; {{title}} &lt;/h2&gt;
  {{/hasLink}}
  {{^hasLink}}
 &lt;h2&gt; {{name}} {{issue}} {{title}} &lt;/h2&gt;
@@ -39,7 +38,7 @@ Changelog of Git Changelog.
 
 
  {{#commits}}
-&lt;a href=&quot;https://github.com/SAP/SapMachine/commit/{{hash}}&quot;&gt;{{hash}}&lt;/a&gt; {{authorName}} &lt;i&gt;{{commitTime}}&lt;/i&gt;
+&lt;a href="https://github.com/SAP/SapMachine/commit/{{hash}}"&gt;{{hash}}&lt;/a&gt; {{authorName}} &lt;i&gt;{{commitTime}}&lt;/i&gt;
 &lt;p&gt;
 &lt;h3&gt;{{{messageTitle}}}&lt;/h3&gt;
 
@@ -53,21 +52,21 @@ Changelog of Git Changelog.
 
  {{/issues}}
 {{/tags}}
- &quot;&quot;&quot;
+ """
 
- writeFile file: &apos;report/changelog.html&apos;, text: changelogString
+ writeFile file: 'report/changelog.html', text: changelogString
  
   publishHTML target: [
         allowMissing: false,
         alwaysLinkToLastBuild: false,
         keepAll: true,
-        reportDir: &apos;report&apos;,
-        reportFiles: &apos;changelog.html&apos;,
-        reportName: &apos;Git Changelog&apos;
+        reportDir: 'report',
+        reportFiles: 'changelog.html',
+        reportName: 'Git Changelog'
     ]
 }</script>
     <sandbox>true</sandbox>
   </definition>
-  <triggers/>
+  <triggers />
   <disabled>false</disabled>
 </flow-definition>
