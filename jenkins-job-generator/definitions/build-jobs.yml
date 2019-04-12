@@ -322,9 +322,13 @@
                         withCredentials([
                             [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
                             ]) {{
-                            sh "rm -f *.msi"
-                            sh "python SapMachine-Infrastructure/lib/make_msi.py --tag=${{params.GIT_TAG_NAME}} --templates-directory=SapMachine-Infrastructure/wix-templates"
-                            archiveArtifacts allowEmptyArchive: true, artifacts: "*.msi"
+                            script {{
+                                def jdk_bundle_name = readFile "${{env.WORKSPACE}}/jdk_bundle_name.txt"
+
+                                sh "rm -f *.msi"
+                                sh "python SapMachine-Infrastructure/lib/make_msi.py --asset=${{jdk_bundle_name}} --sapmachine-directory=${{WORKSPACE}}/SapMachine --templates-directory=SapMachine-Infrastructure/wix-templates"
+                                archiveArtifacts allowEmptyArchive: true, artifacts: "*.msi"
+                            }}
                         }}
                     }}
                 }}

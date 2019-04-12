@@ -52,19 +52,21 @@ class SafeZipFile(ZipFile):
         os.chmod(ret_val, attr)
         return ret_val
 
-def extract_archive(archive, target):
+def extract_archive(archive, target, remove_archive=True):
     if archive.endswith('.zip'):
         with SafeZipFile(archive) as zip_ref:
             print(str.format('Extracting zip archive {0} ...', archive))
             zip_ref.extractall(target)
 
-        remove(archive)
+        if remove_archive:
+            remove(archive)
     elif archive.endswith('tar.gz'):
         print(str.format('Extracting tar.gz archive {0} ...', archive))
         with tarfile.open(archive, 'r') as tar_ref:
             tar_ref.extractall(target)
 
-        remove(archive)
+        if remove_archive:
+            remove(archive)
     else:
         move(archive, target)
 

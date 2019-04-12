@@ -16,25 +16,6 @@ import argparse
 from os.path import join
 from string import Template
 
-def prepare(work_dir, tag, major):
-    utils.remove_if_exists(work_dir)
-    os.makedirs(work_dir)
-    download_jdk(work_dir, tag)
-
-    maybe_sapmachine_branch = 'sapmachine' + major
-    sapmachine_branch = None
-    branches = utils.github_api_request('branches', per_page=100)
-
-    for branch in branches:
-        if branch['name'] == maybe_sapmachine_branch:
-            sapmachine_branch = maybe_sapmachine_branch
-            break
-
-    if sapmachine_branch is None:
-        sapmachine_branch = 'sapmachine'
-
-    utils.git_clone('github.com/SAP/SapMachine.git', sapmachine_branch, join(work_dir, 'sapmachine_git'))
-
 def create_sapmachine_wxs(template, target, product_id, upgrade_code, version, major):
     sapmachine_wxs_content = None
 
@@ -48,19 +29,6 @@ def create_sapmachine_wxs(template, target, product_id, upgrade_code, version, m
 
     with open(target, 'w') as sapmachine_wxs:
         sapmachine_wxs.write(sapmachine_wxs_content)
-
-def download_jdk(target, tag):
-    releases = utils.github_api_request('releases', per_page=100)
-
-    for release in releases:
-        if release['name'] == tag:
-            for asset in release['assets']:
-                if 'windows-x64_bin' in asset['name'] and asset['name'].endswith('.zip'):
-                    utils.download_artifact(asset['browser_download_url'], join(target, 'sapmachine.zip'))
-                    utils.extract_archive(join(target, 'sapmachine.zip'), target)
-                    sapmachine_folder = glob.glob(join(target, 'sapmachine*'))
-                    os.rename(sapmachine_folder[0], join(target, 'SourceDir'))
-                    return
 
 def write_as_rtf(source, target):
     with open(source, 'r') as fin:
@@ -79,19 +47,30 @@ def write_as_rtf(source, target):
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
-    parser.add_argument('-t', '--tag', help='the tag to create the msi installer from', metavar='TAG', required=True)
+    parser.add_argument('-a', '--asset', help='the SapMachine JDK asset file', metavar='ASSET', required=True)
     parser.add_argument('-d', '--templates-directory', help='specify the templates directory', metavar='DIR', required=True)
+    parser.add_argument('-s', '--sapmachine-directory', help='specify the SapMachine GIT directory', metavar='DIR', required=True)
     args = parser.parse_args()
 
     templates_dir = os.path.realpath(args.templates_directory)
     cwd = os.getcwd()
     work_dir = join(cwd, 'msi_work')
-    tag = args.tag
+    asset = os.path.realpath(args.asset)
+    sapmachine_git_dir = args.sapmachine_directory
     products = None
     product_id = None
     upgrade_code = None
 
-    version, version_part, major, build_number, sap_build_number, os_ext = utils.sapmachine_tag_components(tag)
+    utils.remove_if_exists(work_dir)
+    os.makedirs(work_dir)
+
+    utils.extract_archive(asset, work_dir, remove_archive=False)
+    sapmachine_folder = glob.glob(join(work_dir, 'sapmachine*'))
+    os.rename(sapmachine_folder[0], join(work_dir, 'SourceDir'))
+
+    _, _, version_output = utils.run_cmd([join(work_dir, 'SourceDir', 'bin', 'java.exe'), '-version'], std=True)
+
+    version, version_part, major, build_number, sap_build_number = utils.sapmachine_version_components(version_output, multiline=True)
     sapmachine_version = [e for e in version_part.split('.')]
 
     if len(sapmachine_version) < 3:
@@ -99,13 +78,11 @@ def main(argv=None):
 
     sapmachine_version = '.'.join(sapmachine_version)
 
-    prepare(work_dir, tag, major)
-
     shutil.copyfile(
-        join(work_dir, 'sapmachine_git', 'src', 'java.base', 'windows', 'native', 'launcher', 'icons', 'awt.ico'),
+        join(sapmachine_git_dir, 'src', 'java.base', 'windows', 'native', 'launcher', 'icons', 'awt.ico'),
         join(work_dir, 'sapmachine.ico')
     )
-    write_as_rtf(join(work_dir, 'sapmachine_git', 'LICENSE'), join(work_dir, 'license.rtf'))
+    write_as_rtf(join(sapmachine_git_dir, 'LICENSE'), join(work_dir, 'license.rtf'))
 
     with open(join(templates_dir, 'products.yml'), 'r') as products_yml:
         products = yaml.safe_load(products_yml.read())
@@ -150,7 +127,7 @@ def main(argv=None):
     utils.run_cmd('candle -arch x64 SapMachine.wxs'.split(' '), cwd=work_dir)
     utils.run_cmd('light -ext WixUIExtension SapMachine.wixobj'.split(' '), cwd=work_dir)
 
-    os.rename(join(work_dir, 'SapMachine.msi'), join(cwd, str.format('sapmachine-jdk-{0}_windows-x64_bin.msi', version)))
+    os.rename(join(work_dir, 'SapMachine.msi'), join(cwd, str.format('sapmachine-jdk-{0}_windows-x64_bin.msi', version_part)))
 
     return 0
 
