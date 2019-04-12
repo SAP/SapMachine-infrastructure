@@ -4,7 +4,7 @@
     <string>hudsonHomeIsFull</string>
     <string>hudson.node_monitors.MonitorMarkedNodeOffline</string>
   </disabledAdministrativeMonitors>
-  <version>2.164.1</version>
+  <version>2.164.2</version>
   <installStateName>RESTART</installStateName>
   <numExecutors>4</numExecutors>
   <mode>NORMAL</mode>
@@ -37,7 +37,7 @@
       <instanceCap>6</instanceCap>
       <templates>
         <hudson.plugins.ec2.SlaveTemplate>
-          <ami>ami-062427d0bae8ac188</ami>
+          <ami>ami-09d261fede9a92cef</ami>
           <description>Windows Slave (EC2 Cloud)</description>
           <zone>us-east-1d</zone>
           <securityGroups>JenkinsWindowsSlave</securityGroups>
