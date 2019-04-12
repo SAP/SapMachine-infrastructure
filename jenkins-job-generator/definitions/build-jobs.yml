@@ -295,22 +295,6 @@
                         }}
                     }}
                 }}
-                stage('Publish GitHub') {{
-                    when {{
-                        expression {{ params.PUBLISH == true && JOB_NAME ==~ /((\S*)(release)(\S*))/}}
-                    }}
-                    environment {{
-                      SAPMACHINE_GIT_REPO = 'github.com/SAP/SapMachine.git'
-                      SAPMACHINE_PUBLISH_GITHUB_TOKEN = credentials('SapMachine-Github-Token')
-                      SAPMACHINE_PUBLISH_GITHUB_REPO_NAME = 'SapMachine'
-                      SAPMACHINE_PUBLISH_GITHUB_USER = 'SAP'
-                    }}
-                    steps {{
-                        sh '''
-                        SapMachine-Infrastructure/lib/publish.sh
-                        '''
-                    }}
-                }}
                 stage('Build Windows Installer') {{
                     when {{
                         expression {{ JOB_NAME ==~ /((\S*)(windows_x86_64)(\S*))/ }}
@@ -331,6 +315,22 @@
                                 archiveArtifacts allowEmptyArchive: true, artifacts: "*.msi"
                             }}
                         }}
+                    }}
+                }}
+                stage('Publish GitHub') {{
+                    when {{
+                        expression {{ params.PUBLISH == true && JOB_NAME ==~ /((\S*)(release)(\S*))/}}
+                    }}
+                    environment {{
+                      SAPMACHINE_GIT_REPO = 'github.com/SAP/SapMachine.git'
+                      SAPMACHINE_PUBLISH_GITHUB_TOKEN = credentials('SapMachine-Github-Token')
+                      SAPMACHINE_PUBLISH_GITHUB_REPO_NAME = 'SapMachine'
+                      SAPMACHINE_PUBLISH_GITHUB_USER = 'SAP'
+                    }}
+                    steps {{
+                        sh '''
+                        SapMachine-Infrastructure/lib/publish.sh
+                        '''
                     }}
                 }}
                 stage('Publish Windows Installer') {{
