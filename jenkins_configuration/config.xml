@@ -37,12 +37,12 @@
       <instanceCap>6</instanceCap>
       <templates>
         <hudson.plugins.ec2.SlaveTemplate>
-          <ami>ami-09d261fede9a92cef</ami>
+          <ami>ami-054000fb6af490082</ami>
           <description>Windows Slave (EC2 Cloud)</description>
           <zone>us-east-1d</zone>
           <securityGroups>JenkinsWindowsSlave</securityGroups>
           <remoteFS>C:\jenkins</remoteFS>
-          <type>M5d4xlarge</type>
+          <type>M54xlarge</type>
           <ebsOptimized>true</ebsOptimized>
           <monitoring>false</monitoring>
           <t2Unlimited>false</t2Unlimited>
