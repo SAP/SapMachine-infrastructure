@@ -18,9 +18,9 @@ def test_repositories(repository_base, repository_suffix=''):
     openjdk_repositories = ['jdk/jdk']
     code = 200
     jdk_major = 10
-    retries = 5
+    retries = 10
 
-    while code == 200 and retries > 0:
+    while code == 200 or retries > 0:
         retries -= 1
         repository = repository_base + str(jdk_major) + repository_suffix
         jdk_major += 1
