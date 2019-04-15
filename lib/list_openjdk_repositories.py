@@ -18,8 +18,10 @@ def test_repositories(repository_base, repository_suffix=''):
     openjdk_repositories = ['jdk/jdk']
     code = 200
     jdk_major = 10
+    retries = 5
 
-    while code == 200:
+    while code == 200 and retries > 0:
+        retrues -= 1
         repository = repository_base + str(jdk_major) + repository_suffix
         jdk_major += 1
 
@@ -43,6 +45,7 @@ def main(argv=None):
 
     openjdk_repositories.extend(test_repositories('jdk/jdk'))
     openjdk_repositories.extend(test_repositories('jdk-updates/jdk', 'u'))
+    openjdk_repositories.extend(test_repositories('jdk-updates/jdk', 'u-dev'))
 
     print(args.separator.join(openjdk_repositories))
     return 0
