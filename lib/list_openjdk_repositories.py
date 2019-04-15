@@ -15,7 +15,6 @@ from urllib2 import urlopen, Request, quote, HTTPError
 openjdk_hg_base = 'http://hg.openjdk.java.net/'
 
 def test_repositories(repository_base, repository_suffix=''):
-    openjdk_repositories = ['jdk/jdk']
     code = 200
     jdk_major = 10
     retries = 10
@@ -41,7 +40,7 @@ def main(argv=None):
     parser.add_argument('-s', '--separator', help='the separator char', metavar='SEPARATOR', required=False, default=' ')
     args = parser.parse_args()
 
-    openjdk_repositories = []
+    openjdk_repositories = ['jdk/jdk']
 
     openjdk_repositories.extend(test_repositories('jdk/jdk'))
     openjdk_repositories.extend(test_repositories('jdk-updates/jdk', 'u'))
