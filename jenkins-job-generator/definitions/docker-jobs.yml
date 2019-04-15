@@ -14,7 +14,7 @@
     dsl: |
         pipeline {
             agent {
-                label "linux_x86_64"
+                label "docker"
             }
             stages {
                 stage("Checkout Infrastructure") {
@@ -27,7 +27,7 @@
                         dockerfile {
                             dir "SapMachine-Infrastructure/dockerfiles/ubuntu_16_04_x86_64"
                             reuseNode true
-                            label "linux_x86_64"
+                            label "docker"
                         }
                     }
                     steps {
@@ -54,7 +54,7 @@
     dsl: |
         pipeline {
             agent {
-                label "linux_x86_64"
+                label "docker"
             }
             stages {
                 stage("Checkout Infrastructure") {
@@ -67,7 +67,7 @@
                         dockerfile {
                             dir "SapMachine-Infrastructure/dockerfiles/ubuntu_16_04_x86_64"
                             reuseNode true
-                            label "linux_x86_64"
+                            label "docker"
                         }
                     }
                     steps {

@@ -57,7 +57,7 @@
     dsl: |
         pipeline {
               agent {
-                  label 'linux_x86_64'
+                  label 'cloud_foundry'
               }
               stages {
                   stage("Checkout Infrastructure") {

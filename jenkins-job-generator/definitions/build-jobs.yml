@@ -476,7 +476,7 @@
     dsl: |
         pipeline {{
             agent {{
-                label 'linux_x86_64'
+                label 'build_service'
             }}
             stages {{
                 stage('Trigger Builds') {{
@@ -769,7 +769,7 @@
     dsl: |
         pipeline {{
             agent {{
-                label 'linux_x86_64'
+                label 'pr_validation'
             }}
             stages {{
                 stage("Checkout Infrastructure") {{
