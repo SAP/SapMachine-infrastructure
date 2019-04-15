@@ -160,9 +160,11 @@
                                 if (match &&
                                     match[0]) {{
                                     major = match[0][1]
-                                }} else {{
-                                    major = "9999"
                                 }}
+                            }}
+
+                            if (!major?.trim()) {{
+                                major = "9999"
                             }}
 
                             sh "python SapMachine-Infrastructure/lib/download_boot_jdk.py -m ${{major}} -d `pwd`"
