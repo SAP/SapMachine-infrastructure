@@ -21,7 +21,7 @@ def test_repositories(repository_base, repository_suffix=''):
     retries = 5
 
     while code == 200 and retries > 0:
-        retrues -= 1
+        retries -= 1
         repository = repository_base + str(jdk_major) + repository_suffix
         jdk_major += 1
 
