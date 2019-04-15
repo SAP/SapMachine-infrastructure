@@ -127,7 +127,9 @@ def main(argv=None):
     utils.run_cmd('candle -arch x64 SapMachine.wxs'.split(' '), cwd=work_dir)
     utils.run_cmd('light -ext WixUIExtension SapMachine.wixobj'.split(' '), cwd=work_dir)
 
-    os.rename(join(work_dir, 'SapMachine.msi'), join(cwd, str.format('sapmachine-jdk-{0}_windows-x64_bin.msi', version_part)))
+    msi_name = os.path.basename(asset)
+    msi_name = os.path.splitext(msi_name)[0]
+    os.rename(join(work_dir, 'SapMachine.msi'), join(cwd, str.format('{0}.msi', msi_name)))
 
     return 0
 
