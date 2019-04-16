@@ -15,6 +15,7 @@ from urllib2 import urlopen, Request, quote, HTTPError
 openjdk_hg_base = 'http://hg.openjdk.java.net/'
 
 def test_repositories(repository_base, repository_suffix=''):
+    openjdk_repositories = []
     code = 200
     jdk_major = 10
     retries = 10
