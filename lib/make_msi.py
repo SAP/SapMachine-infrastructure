@@ -97,7 +97,7 @@ def main(argv=None):
         with open(join(templates_dir, 'products.yml'), 'w') as products_yml:
             products_yml.write(yaml.dump(products, default_flow_style=False))
 
-        utils.git_commit(infrastructure_dir, 'Updated product codes.', ['products.yml'])
+        utils.git_commit(infrastructure_dir, 'Updated product codes.', [join('wix-templates', 'products.yml')])
         utils.git_push(infrastructure_dir)
     else:
         product_id = products[major]['product_id']
