@@ -717,7 +717,7 @@
     name: validate-pr-{major}
     description: 'This project is generated. Do not modify manually.'
     project-type: pipeline
-    parallel: true
+    concurrent: true
     properties:
         - github:
             url: 'https://github.com/SAP/SapMachine'
