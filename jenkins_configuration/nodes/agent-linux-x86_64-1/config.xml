@@ -2,7 +2,7 @@
   <name>agent-linux-x86_64-1</name>
   <description />
   <remoteFS>/home/jenkins/slave-home</remoteFS>
-  <numExecutors>4</numExecutors>
+  <numExecutors>8</numExecutors>
   <mode>NORMAL</mode>
   <retentionStrategy class="hudson.slaves.RetentionStrategy$Always" />
   <launcher class="hudson.slaves.JNLPLauncher">
@@ -12,6 +12,6 @@
       <failIfWorkDirIsMissing>false</failIfWorkDirIsMissing>
     </workDirSettings>
   </launcher>
-  <label>linux_x86_64 repository cloud_foundry</label>
+  <label>build_service pr_validation repository cloud_foundry docker</label>
   <nodeProperties />
 </slave>

@@ -2,7 +2,7 @@
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps">
     <script>pipeline {
     agent {
-        label 'linux_x86_64'
+        label 'pr_validation'
     }
     stages {
         stage("Checkout Infrastructure") {

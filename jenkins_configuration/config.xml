@@ -26,7 +26,7 @@
   <myViewsTabBar class="hudson.views.DefaultMyViewsTabBar" />
   <clouds>
     <hudson.plugins.ec2.EC2Cloud plugin="ec2@1.42">
-      <name>ec2-SapMachine-Windows</name>
+      <name>ec2-SapMachine Windows</name>
       <useInstanceProfileForCredentials>false</useInstanceProfileForCredentials>
       <roleArn />
       <roleSessionName />
@@ -69,6 +69,61 @@
             <password>REMOVED_BY_BACKUP</password>
             <useHTTPS>false</useHTTPS>
             <bootDelay>3</bootDelay>
+          </amiType>
+          <launchTimeout>2147483647</launchTimeout>
+          <connectBySSHProcess>false</connectBySSHProcess>
+          <connectUsingPublicIp>false</connectUsingPublicIp>
+          <nextSubnet>0</nextSubnet>
+        </hudson.plugins.ec2.SlaveTemplate>
+      </templates>
+      <region>us-east-1</region>
+      <noDelayProvisioning>true</noDelayProvisioning>
+    </hudson.plugins.ec2.EC2Cloud>
+    <hudson.plugins.ec2.EC2Cloud plugin="ec2@1.42">
+      <name>ec2-SapMachine Linux</name>
+      <useInstanceProfileForCredentials>false</useInstanceProfileForCredentials>
+      <roleArn />
+      <roleSessionName />
+      <credentialsId>JekinsAWSKey</credentialsId>
+      <privateKey>
+        <privateKey>REMOVED_BY_BACKUP</privateKey>
+      </privateKey>
+      <instanceCap>6</instanceCap>
+      <templates>
+        <hudson.plugins.ec2.SlaveTemplate>
+          <ami>ami-04786eb63ff1cba15</ami>
+          <description>Linux Slave (EC2 Cloud)</description>
+          <zone>us-east-1d</zone>
+          <securityGroups>JenkinsLinuxSlave</securityGroups>
+          <remoteFS>/home/ubuntu/slave_home</remoteFS>
+          <type>M54xlarge</type>
+          <ebsOptimized>true</ebsOptimized>
+          <monitoring>false</monitoring>
+          <t2Unlimited>false</t2Unlimited>
+          <labels>linux_x86_64 linux_ec2_test</labels>
+          <mode>EXCLUSIVE</mode>
+          <initScript />
+          <tmpDir />
+          <userData />
+          <numExecutors>2</numExecutors>
+          <remoteAdmin>ubuntu</remoteAdmin>
+          <jvmopts />
+          <subnetId />
+          <idleTerminationMinutes>10</idleTerminationMinutes>
+          <iamInstanceProfile />
+          <deleteRootOnTermination>false</deleteRootOnTermination>
+          <useEphemeralDevices>false</useEphemeralDevices>
+          <customDeviceMapping />
+          <instanceCap>3</instanceCap>
+          <stopOnTerminate>false</stopOnTerminate>
+          <usePrivateDnsName>false</usePrivateDnsName>
+          <associatePublicIp>false</associatePublicIp>
+          <useDedicatedTenancy>false</useDedicatedTenancy>
+          <amiType class="hudson.plugins.ec2.UnixData">
+            <rootCommandPrefix />
+            <slaveCommandPrefix />
+            <slaveCommandSuffix />
+            <sshPort>22</sshPort>
           </amiType>
           <launchTimeout>2147483647</launchTimeout>
           <connectBySSHProcess>false</connectBySSHProcess>
