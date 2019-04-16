@@ -48,11 +48,9 @@ def write_as_rtf(source, target):
 def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('-a', '--asset', help='the SapMachine JDK asset file', metavar='ASSET', required=True)
-    parser.add_argument('-d', '--templates-directory', help='specify the templates directory', metavar='DIR', required=True)
     parser.add_argument('-s', '--sapmachine-directory', help='specify the SapMachine GIT directory', metavar='DIR', required=True)
     args = parser.parse_args()
 
-    templates_dir = os.path.realpath(args.templates_directory)
     cwd = os.getcwd()
     work_dir = join(cwd, 'msi_work')
     asset = os.path.realpath(args.asset)
@@ -84,6 +82,10 @@ def main(argv=None):
     )
     write_as_rtf(join(sapmachine_git_dir, 'LICENSE'), join(work_dir, 'license.rtf'))
 
+    infrastructure_dir = join(work_dir, 'sapmachine_infrastructure')
+    templates_dir = join(infrastructure_dir, 'wix-templates')
+    utils.git_clone('github.com/SAP/SapMachine-infrastructure', 'master', infrastructure_dir)
+
     with open(join(templates_dir, 'products.yml'), 'r') as products_yml:
         products = yaml.safe_load(products_yml.read())
 
@@ -95,8 +97,8 @@ def main(argv=None):
         with open(join(templates_dir, 'products.yml'), 'w') as products_yml:
             products_yml.write(yaml.dump(products, default_flow_style=False))
 
-        utils.git_commit(templates_dir, 'Updated product codes.', ['products.yml'])
-        utils.git_push(templates_dir)
+        utils.git_commit(infrastructure_dir, 'Updated product codes.', ['products.yml'])
+        utils.git_push(infrastructure_dir)
     else:
         product_id = products[major]['product_id']
         upgrade_code = products[major]['upgrade_code']
