@@ -130,7 +130,7 @@ def main(argv=None):
     utils.run_cmd('light -ext WixUIExtension SapMachine.wixobj'.split(' '), cwd=work_dir)
 
     msi_name = os.path.basename(asset)
-    msi_name = os.path.splitext(msi_name)[0].replace('+', '.')
+    msi_name = os.path.splitext(msi_name)[0]
     os.rename(join(work_dir, 'SapMachine.msi'), join(cwd, str.format('{0}.msi', msi_name)))
 
     return 0

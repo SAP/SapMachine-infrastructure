@@ -207,7 +207,20 @@ rm "${WORKSPACE}/${SAPMACHINE_BUNDLE_PREFIX}jre-*" || true
 cp ${JDK_BUNDLE_NAME} "${WORKSPACE}"
 cp ${JRE_BUNDLE_NAME} "${WORKSPACE}"
 
-echo "${JDK_BUNDLE_NAME}" > "${WORKSPACE}/jdk_bundle_name.txt"
-echo "${JRE_BUNDLE_NAME}" > "${WORKSPACE}/jre_bundle_name.txt"
+if [ "$RELEASE" == true ]; then
+  # remove build number +xx from release build filenames
+  ARCHIVE_NAME_JDK="$(echo $JDK_BUNDLE_NAME | sed 's/\+[0-9]*//')"
+  ARCHIVE_NAME_JRE="$(echo $JRE_BUNDLE_NAME | sed 's/\+[0-9]*//')"
+else
+  # substitute build number +xx to .xx to avoid problmes with uploads. + is no good character :-)
+  ARCHIVE_NAME_JDK="$(echo $JDK_BUNDLE_NAME | sed 's/\+/\./')"
+  ARCHIVE_NAME_JRE="$(echo $JRE_BUNDLE_NAME | sed 's/\+/\./')"
+fi
+
+mv "${WORKSPACE}/${JDK_BUNDLE_NAME}" "${WORKSPACE}/${ARCHIVE_NAME_JDK}"
+mv "${WORKSPACE}/${JRE_BUNDLE_NAME}" "${WORKSPACE}/${ARCHIVE_NAME_JRE}"
+
+echo "${ARCHIVE_NAME_JDK}" > "${WORKSPACE}/jdk_bundle_name.txt"
+echo "${ARCHIVE_NAME_JRE}" > "${WORKSPACE}/jre_bundle_name.txt"
 
 cp ../test-results/$GTEST_RESULT_PATH/gtest.xml "${WORKSPACE}"
