@@ -10,4 +10,4 @@ RUN rm -rf /var/lib/apt/lists/* && apt-get clean && apt-get update \
 RUN wget -q -O - https://dist.sapmachine.io/debian/sapmachine.key | apt-key add - \
     && echo "deb http://dist.sapmachine.io/debian/amd64/ ./" >> /etc/apt/sources.list \
     && apt-get update \
-    && apt-get -y --no-install-recommends install sapmachine-12-jdk=12
+    && apt-get -y --no-install-recommends install sapmachine-12-jdk=12.0.1
