@@ -268,7 +268,7 @@ def get_github_api_accesstoken():
         return os.environ[key]
     return None
 
-def github_api_request(api=None, url=None, owner='SAP', repository='SapMachine', data=None, method='GET', per_page=None, content_type=None):
+def github_api_request(api=None, url=None, owner='SAP', repository='SapMachine', data=None, method='GET', per_page=None, content_type=None, url_parameter=[]):
     load_next = True
     result = None
     token = get_github_api_accesstoken()
@@ -279,10 +279,12 @@ def github_api_request(api=None, url=None, owner='SAP', repository='SapMachine',
 
     while load_next:
         if url is None:
-            url_parameter = ''
+            url_parameter_string = ''
             if per_page is not None:
-                url_parameter = str.format('?per_page={0}', per_page)
-            url = str.format('https://api.github.com/repos/{0}/{1}/{2}{3}', owner, repository, api, url_parameter)
+                url_parameter.append(str.format('per_page={0}', per_page))
+            if len(url_parameter) > 0:
+                url_parameter_string = '?' + '&'.join(url_parameter)
+            url = str.format('https://api.github.com/repos/{0}/{1}/{2}{3}', owner, repository, api, url_parameter_string)
 
         request = Request(url, data=data)
         request.get_method = lambda: method
