@@ -45,7 +45,7 @@ def main(argv=None):
 
     openjdk_repositories.extend(test_repositories('jdk/jdk'))
     openjdk_repositories.extend(test_repositories('jdk-updates/jdk', 'u'))
-    openjdk_repositories.extend(test_repositories('jdk-updates/jdk', 'u-dev'))
+    #openjdk_repositories.extend(test_repositories('jdk-updates/jdk', 'u-dev'))
 
     print(args.separator.join(openjdk_repositories))
     return 0
