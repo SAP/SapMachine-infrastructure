@@ -152,7 +152,7 @@ def main(argv=None):
 
                                     if as_jdk_tag.is_ga() and as_jdk_tag.as_sapmachine_tag() not in tags:
                                         # GA tag found
-                                        # check whether there is already for this tag
+                                        # check whether there is already a pull request for this tag
                                         pull_request_title = str.format('Merge to tag {0}', as_jdk_tag.as_string())
                                         pull_request_exits = False
 
