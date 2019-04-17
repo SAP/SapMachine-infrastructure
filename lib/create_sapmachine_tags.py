@@ -69,6 +69,8 @@ def main(argv=None):
     utils.remove_if_exists(workdir)
     os.makedirs(workdir)
 
+    pull_requests = utils.github_api_request('pulls', per_page=100, url_parameter=['state=all'])
+
     # clone the SapMachine repository
     git_target_dir = join(workdir, 'sapmachine')
     utils.git_clone('github.com/SAP/SapMachine.git', 'sapmachine', git_target_dir)
@@ -150,9 +152,23 @@ def main(argv=None):
 
                                     if as_jdk_tag.is_ga() and as_jdk_tag.as_sapmachine_tag() not in tags:
                                         # GA tag found
-                                        # create sapmachine tag
-                                        create_sapmachine_tag(as_jdk_tag, commit_id, git_target_dir)
-                                        run_jenkins_jobs(major, as_jdk_tag.as_sapmachine_tag())
+                                        # check whether there is already for this tag
+                                        pull_request_title = str.format('Merge to tag {0}', as_jdk_tag.as_string())
+                                        pull_request_exits = False
+
+                                        for pull_request in pull_requests:
+                                            if pull_request['title'] == pull_request_title:
+                                                # there is already a pull request for this tag
+                                                # don't create sapmachine tag
+                                                pull_request_exits = True
+                                                break
+
+                                        if not pull_request_exits:
+                                            # create sapmachine tag
+                                            create_sapmachine_tag(as_jdk_tag, commit_id, git_target_dir)
+                                            run_jenkins_jobs(major, as_jdk_tag.as_sapmachine_tag())
+
+                                        break
 
                     else:
                         print('already tagged ...')
