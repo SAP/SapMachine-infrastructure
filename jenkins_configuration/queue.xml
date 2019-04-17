@@ -1,4 +1,77 @@
 <hudson.model.Queue_-State>
-  <counter>1478</counter>
-  <items />
+  <counter>1672</counter>
+  <items>
+    <hudson.model.Queue_-BuildableItem>
+      <actions />
+      <id>1662</id>
+      <task class="org.jenkinsci.plugins.workflow.support.steps.ExecutorStepExecution$PlaceholderTask" plugin="workflow-durable-task-step@2.29">
+        <context class="org.jenkinsci.plugins.workflow.cps.CpsStepContext" plugin="workflow-cps@2.65">
+          <executionRef class="org.jenkinsci.plugins.workflow.job.WorkflowRun$Owner" plugin="workflow-job@2.32">
+            <job>build-12-pr-validation-linux_ppc64</job>
+            <id>26</id>
+          </executionRef>
+          <id>3</id>
+          <bodyHeads />
+          <body class="org.jenkinsci.plugins.workflow.cps.StaticBodyReference" resolves-to="org.jenkinsci.plugins.workflow.cps.HandleBodyReference">
+            <id>1</id>
+          </body>
+          <threadId>0</threadId>
+          <stepDescriptorId>org.jenkinsci.plugins.workflow.support.steps.ExecutorStep</stepDescriptorId>
+        </context>
+        <label>linux_ppc64</label>
+        <runId>build-12-pr-validation-linux_ppc64#26</runId>
+      </task>
+      <inQueueSince>1555458844893</inQueueSince>
+      <buildableStartMilliseconds>1555458844893</buildableStartMilliseconds>
+      <isPending>false</isPending>
+    </hudson.model.Queue_-BuildableItem>
+    <hudson.model.Queue_-BuildableItem>
+      <actions />
+      <id>1655</id>
+      <task class="org.jenkinsci.plugins.workflow.support.steps.ExecutorStepExecution$PlaceholderTask" plugin="workflow-durable-task-step@2.29">
+        <context class="org.jenkinsci.plugins.workflow.cps.CpsStepContext" plugin="workflow-cps@2.65">
+          <executionRef class="org.jenkinsci.plugins.workflow.job.WorkflowRun$Owner" plugin="workflow-job@2.32">
+            <job>build-12-pr-validation-linux_ppc64le</job>
+            <id>44</id>
+          </executionRef>
+          <id>3</id>
+          <bodyHeads />
+          <body class="org.jenkinsci.plugins.workflow.cps.StaticBodyReference" resolves-to="org.jenkinsci.plugins.workflow.cps.HandleBodyReference">
+            <id>1</id>
+          </body>
+          <threadId>0</threadId>
+          <stepDescriptorId>org.jenkinsci.plugins.workflow.support.steps.ExecutorStep</stepDescriptorId>
+        </context>
+        <label>linux_ppc64le</label>
+        <runId>build-12-pr-validation-linux_ppc64le#44</runId>
+      </task>
+      <inQueueSince>1555454363487</inQueueSince>
+      <buildableStartMilliseconds>1555454363487</buildableStartMilliseconds>
+      <isPending>false</isPending>
+    </hudson.model.Queue_-BuildableItem>
+    <hudson.model.Queue_-BuildableItem>
+      <actions />
+      <id>1650</id>
+      <task class="org.jenkinsci.plugins.workflow.support.steps.ExecutorStepExecution$PlaceholderTask" plugin="workflow-durable-task-step@2.29">
+        <context class="org.jenkinsci.plugins.workflow.cps.CpsStepContext" plugin="workflow-cps@2.65">
+          <executionRef class="org.jenkinsci.plugins.workflow.job.WorkflowRun$Owner" plugin="workflow-job@2.32">
+            <job>build-11-release-linux_ppc64</job>
+            <id>12</id>
+          </executionRef>
+          <id>3</id>
+          <bodyHeads />
+          <body class="org.jenkinsci.plugins.workflow.cps.StaticBodyReference" resolves-to="org.jenkinsci.plugins.workflow.cps.HandleBodyReference">
+            <id>1</id>
+          </body>
+          <threadId>0</threadId>
+          <stepDescriptorId>org.jenkinsci.plugins.workflow.support.steps.ExecutorStep</stepDescriptorId>
+        </context>
+        <label>linux_ppc64</label>
+        <runId>build-11-release-linux_ppc64#12</runId>
+      </task>
+      <inQueueSince>1555453493192</inQueueSince>
+      <buildableStartMilliseconds>1555453493193</buildableStartMilliseconds>
+      <isPending>false</isPending>
+    </hudson.model.Queue_-BuildableItem>
+  </items>
 </hudson.model.Queue_-State>
