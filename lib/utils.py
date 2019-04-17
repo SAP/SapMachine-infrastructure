@@ -243,10 +243,16 @@ def git_tag(dir, tag_name):
         print('git tag failed')
 
 def git_push(dir):
+    env = os.environ.copy()
+    env['GIT_AUTHOR_NAME'] = 'SapMachine'
+    env['GIT_AUTHOR_EMAIL'] = 'sapmachine@sap.com'
+    env['GIT_COMMITTER_NAME'] = env['GIT_AUTHOR_NAME']
+    env['GIT_COMMITTER_EMAIL'] = env['GIT_AUTHOR_EMAIL']
+
     try:
         run_cmd(['git', 'fetch'], cwd=dir)
-        run_cmd(['git', 'rebase'], cwd=dir)
-        run_cmd(['git', 'push'], cwd=dir)
+        run_cmd(['git', 'rebase'], cwd=dir, env=env)
+        run_cmd(['git', 'push'], cwd=dir, env=env)
     except Exception:
         print('git push failed')
 
