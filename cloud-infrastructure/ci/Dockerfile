@@ -51,7 +51,7 @@ RUN chmod +x /usr/share/jenkins/read-slave-secret.sh
 
 
 USER jenkins
-ENV JAVA_OPTS="-Djenkins.install.runSetupWizard=false -Djava.util.logging.config.file=/var/jenkins_home/log.properties -Dorg.jenkinsci.plugins.durabletask.BourneShellScript.HEARTBEAT_CHECK_INTERVAL=6000 -Dorg.jenkinsci.plugins.docker.workflow.client.DockerClient.CLIENT_TIMEOUT=6000"
+ENV JAVA_OPTS="-Djenkins.install.runSetupWizard=false -Djava.util.logging.config.file=/var/jenkins_home/log.properties -Dorg.jenkinsci.plugins.durabletask.BourneShellScript.HEARTBEAT_CHECK_INTERVAL=6000 -Dorg.jenkinsci.plugins.docker.workflow.client.DockerClient.CLIENT_TIMEOUT=6000 -Dhudson.slaves.ChannelPinger.pingIntervalSeconds=120"
 ENV JAVA_ARGS="-Xms10g"
 VOLUME /var/pkg
 VOLUME /var/slaves

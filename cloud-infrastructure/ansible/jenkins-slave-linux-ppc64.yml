@@ -10,6 +10,7 @@
       - name: 'install python2'
         raw: sudo dnf -y install python libselinux-python
     vars:
+      slave_jar_version: 3.21
       jenkins_master_url: https://ci.sapmachine.io/computer/agent-linux-ppc64-1/slave-agent.jnlp
       jenkins_slave_name: agent-linux-ppc64-1
       boot_jdk_url: https://github.com/SAP/SapMachine/releases/download/sapmachine-11.0.1%2B13-0/sapmachine-jdk-11.0.1.13_linux-ppc64_bin.tar.gz
@@ -177,7 +178,7 @@
       # download the jenkins slave jar file
       - name: download Jenkins Slave jar
         get_url:
-          url: "https://ci.sapmachine.io/jnlpJars/agent.jar"
+          url: "https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/{{ slave_jar_version }}/remoting-{{ slave_jar_version }}.jar"
           dest: /home/jenkins/slave.jar
           force: yes
         become: yes
