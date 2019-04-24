@@ -70,7 +70,9 @@ def main(argv=None):
 
             # only store the latest jdk tag (version comparison)
             if  major not in jdk_tags or jdk_tag.is_greater_than(jdk_tags[major]):
-                jdk_tags[major] = jdk_tag
+                # filter jdk update tags with build number "0" like jdk-11.0.3+0
+                if not (jdk_tag.is_update() and jdk_tag.get_build_number() == 0):
+                    jdk_tags[major] = jdk_tag
 
 
     # clone the SapMachine repository

@@ -400,7 +400,6 @@ class JDKTag:
     def as_string(self):
         return self.tag
 
-
     def as_sapmachine_tag(self):
         if self.sapmachine_tag == None:
             self.sapmachine_tag = str.format('sapmachine-{0}{1}',
@@ -419,6 +418,9 @@ class JDKTag:
 
     def is_ga(self):
         return self.tag_is_ga
+
+    def is_update(self):
+        return '.' in self.version_string
 
     def equals(self, other):
         return self.tag == other.tag
