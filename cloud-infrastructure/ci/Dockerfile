@@ -40,7 +40,6 @@ COPY log.properties /var/jenkins_home/log.properties
 RUN chown -R jenkins:jenkins /var/log/jenkins
 RUN chown -R jenkins:jenkins /var/pkg
 RUN chown -R jenkins:jenkins /var/slaves
-RUN chown -R jenkins:jenkins /var/docs
 RUN chown jenkins:jenkins /usr/share/jenkins/ref/init.groovy.d/*.groovy
 RUN chown jenkins:jenkins /var/slaves/credentials.yml
 RUN chown jenkins:jenkins /usr/share/jenkins/read-sapmachine-pw.sh
@@ -52,9 +51,8 @@ RUN chmod +x /usr/share/jenkins/read-slave-secret.sh
 
 USER jenkins
 ENV JAVA_OPTS="-Djenkins.install.runSetupWizard=false -Djava.util.logging.config.file=/var/jenkins_home/log.properties -Dorg.jenkinsci.plugins.durabletask.BourneShellScript.HEARTBEAT_CHECK_INTERVAL=6000 -Dorg.jenkinsci.plugins.docker.workflow.client.DockerClient.CLIENT_TIMEOUT=6000 -Dhudson.slaves.ChannelPinger.pingIntervalSeconds=120"
-ENV JAVA_ARGS="-Xms10g"
+# ENV JAVA_ARGS="-Xms10g"
 VOLUME /var/pkg
 VOLUME /var/slaves
 VOLUME /var/log/jenkins
-VOLUME /var/docs
 WORKDIR /var/jenkins_home
