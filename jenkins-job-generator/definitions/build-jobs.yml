@@ -657,6 +657,17 @@
                                         step ([$class: 'ArtifactArchiver', artifacts: artifacts_selector]);
                                     }}
 
+                                    copyArtifacts filter: 'sapmachine-*.msi', projectName: 'build-{major}-{build_type}-windows_x86_64', target: env.WINDOWS_X86_64_ARTIFACT_DIR, selector:
+                                    [
+                                        $class: 'SpecificBuildSelector',
+                                        buildNumber: env.WINDOWS_X86_64_JOB_ID
+                                    ]
+
+                                    script {{
+                                        def artifacts_selector = env.WINDOWS_X86_64_ARTIFACT_DIR + "/*.msi"
+                                        step ([$class: 'ArtifactArchiver', artifacts: artifacts_selector]);
+                                    }}
+
                                     sh "rm -rf ${{WORKSPACE}}/${{WINDOWS_X86_64_ARTIFACT_DIR}}"
                                 }}
                             }}
