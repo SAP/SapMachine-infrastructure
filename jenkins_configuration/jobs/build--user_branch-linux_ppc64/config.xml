@@ -247,11 +247,12 @@
     }
     post {
         unsuccessful {
-            when {
-                expression { !(JOB_NAME ==~ /((\S*)(windows_x86_64)(\S*))/) }
-            }
-           sh 'zip -rq workspace.zip .'
-           archiveArtifacts allowEmptyArchive: true, artifacts: 'workspace.zip'
+           script {
+               if (!(JOB_NAME ==~ /((\S*)(windows_x86_64)(\S*))/)) {
+                   sh 'zip -rq workspace.zip .'
+                   archiveArtifacts allowEmptyArchive: true, artifacts: 'workspace.zip'
+               }
+           }
         }
         cleanup {
             cleanWs deleteDirs: true, disableDeferredWipeout: true
