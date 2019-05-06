@@ -445,7 +445,7 @@ def get_system():
 def get_arch():
     arch = platform.machine().lower()
 
-    if arch == 'x86_64':
+    if arch == 'x86_64' or arch == 'amd64':
         return 'x64'
     else:
         return arch
