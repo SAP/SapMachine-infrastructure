@@ -118,8 +118,9 @@ def main(argv=None):
     if new_cask_version >= current_cask_version:
         with open(join(cask_dir, cask_file_name), 'w') as cask_file:
             cask_file.write(cask_content)
-            utils.git_commit(homebrew_dir, str.format('Updated {0}.', cask_file_name), [join('Casks', cask_file_name)])
-            utils.git_push(homebrew_dir)
+
+        utils.git_commit(homebrew_dir, str.format('Updated {0}.', cask_file_name), [join('Casks', cask_file_name)])
+        utils.git_push(homebrew_dir)
 
     return 0
 
