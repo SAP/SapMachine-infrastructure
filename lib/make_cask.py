@@ -49,12 +49,7 @@ def version_to_tuple(version, build_number):
         version = map(int, version.split('.'))
         version.extend([0 for i in range(5 - len(version))])
         version = tuple(version)
-
-        if build_number is not None:
-            version += (int(build_number),)
-        else:
-            version += (99999,)
-
+        version += (int(build_number),) if build_number is not None else (99999,)
         return version
 
     return None
