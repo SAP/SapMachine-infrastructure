@@ -1,4 +1,4 @@
-FROM jenkins/jenkins:lts
+FROM jenkins/jenkins:jdk11
 
 USER root
 RUN apt-get update && apt-get install -qq -y --no-install-recommends \

@@ -12,7 +12,7 @@
     vars:
       ansible_user: ubuntu
       ansible_ssh_private_key_file: SapMachine.pem
-      slave_jar_version: 3.21
+      slave_jar_version: 3.29
       jenkins_master_url: https://ci.sapmachine.io/computer/agent-linux-x86_64-1/slave-agent.jnlp
       jenkins_slave_name: agent-linux-x86_64-1
 
@@ -21,6 +21,15 @@
       - name: install apt-transport-https
         apt:
           name: apt-transport-https
+          state: latest
+          install_recommends: no
+        become: yes
+        tags:
+          - packages.apt-transport-https
+
+      - name: install curl
+        apt:
+          name: curl
           state: latest
           install_recommends: no
         become: yes
@@ -61,16 +70,6 @@
         become: yes
         tags:
           - packages.docker-compose
-
-      - name: install OpenJDK 8 JRE
-        apt:
-         name: openjdk-8-jre
-         state: latest
-         install_recommends: no
-        become: yes
-        tags:
-          - packages.openjdk
-          - jenkins_slave
 
       - name: install zip
         apt:
@@ -282,6 +281,43 @@
         tags:
           - jenkins_master.wait_for
 
+      - name: "wait for dist.sapmachine.io"
+        uri:
+          url: "http://dist.sapmachine.io/debian/amd64/Packages"
+          status_code: 200
+        register: result
+        until: result.status == 200
+        retries: 60
+        delay: 1
+        tags:
+          - packages.sapmachine_key
+
+      - name: add SapMachine apt key
+        apt_key:
+          url: https://dist.sapmachine.io/debian/sapmachine.key
+          state: present
+        become: yes
+        tags:
+          - packages.sapmachine_key
+
+      - name: add SapMachine repository
+        apt_repository:
+          repo: deb http://dist.sapmachine.io/debian/amd64/ ./
+          state: present
+        become: yes
+        tags:
+          - packages.sapmachine_repository
+
+      - name: install SapMachine 11 JDK
+        apt:
+          name: sapmachine-11-jdk
+          state: latest
+          install_recommends: no
+        become: yes
+        tags:
+          - packages.sapmachine
+          - jenkins_slave
+
       # read the jenkins slave secret for the jenkins slave
       - name: read Jenkins Slave secret
         command: "docker exec ci bash /usr/share/jenkins/read-slave-secret.sh {{ jenkins_slave_name }}"
@@ -302,26 +338,6 @@
         tags:
           - jenkins_slave
           - jenkins_slave.start
-
-      # start the cAdvisor Docker container
-      # see: https://github.com/google/cadvisor
-      - name: start cAdvisor Docker container
-        docker_container:
-          name: cadvisor
-          image: google/cadvisor:latest
-          restart_policy: unless-stopped
-          volumes:
-            - /:/rootfs:ro
-            - /var/run:/var/run:rw
-            - /sys:/sys:ro
-            - /var/lib/docker/:/var/lib/docker:ro
-            - /dev/disk/:/dev/disk:ro
-          ports:
-            - 8080:8080
-          detach: yes
-        become: yes
-        tags:
-          docker.start_cAdvisor
 
       # display the jenkins SapMachine password
       - name: show Jenkins SapMachine password
