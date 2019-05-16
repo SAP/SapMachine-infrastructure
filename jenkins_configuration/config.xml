@@ -4,7 +4,7 @@
     <string>hudsonHomeIsFull</string>
     <string>hudson.node_monitors.MonitorMarkedNodeOffline</string>
   </disabledAdministrativeMonitors>
-  <version>2.164.3</version>
+  <version>2.177</version>
   <installStateName>RESTART</installStateName>
   <numExecutors>4</numExecutors>
   <mode>EXCLUSIVE</mode>
@@ -91,7 +91,7 @@
       <instanceCap>6</instanceCap>
       <templates>
         <hudson.plugins.ec2.SlaveTemplate>
-          <ami>ami-04786eb63ff1cba15</ami>
+          <ami>ami-020c0998cf9c3635c</ami>
           <description>Linux Slave (EC2 Cloud)</description>
           <zone>us-east-1d</zone>
           <securityGroups>JenkinsLinuxSlave</securityGroups>
@@ -116,7 +116,7 @@
           <customDeviceMapping />
           <instanceCap>3</instanceCap>
           <stopOnTerminate>false</stopOnTerminate>
-          <connectionStrategy>PRIVATE_IP</connectionStrategy>
+          <connectionStrategy>PUBLIC_IP</connectionStrategy>
           <associatePublicIp>false</associatePublicIp>
           <useDedicatedTenancy>false</useDedicatedTenancy>
           <amiType class="hudson.plugins.ec2.UnixData">
