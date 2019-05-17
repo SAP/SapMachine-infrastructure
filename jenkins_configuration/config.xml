@@ -37,7 +37,7 @@
       <instanceCap>6</instanceCap>
       <templates>
         <hudson.plugins.ec2.SlaveTemplate>
-          <ami>ami-054000fb6af490082</ami>
+          <ami>ami-0dfe244b34c38fff9</ami>
           <description>Windows Slave (EC2 Cloud)</description>
           <zone>us-east-1d</zone>
           <securityGroups>JenkinsWindowsSlave</securityGroups>
@@ -62,7 +62,7 @@
           <customDeviceMapping />
           <instanceCap>3</instanceCap>
           <stopOnTerminate>false</stopOnTerminate>
-          <connectionStrategy>PRIVATE_IP</connectionStrategy>
+          <connectionStrategy>PUBLIC_IP</connectionStrategy>
           <associatePublicIp>false</associatePublicIp>
           <useDedicatedTenancy>false</useDedicatedTenancy>
           <amiType class="hudson.plugins.ec2.WindowsData">
