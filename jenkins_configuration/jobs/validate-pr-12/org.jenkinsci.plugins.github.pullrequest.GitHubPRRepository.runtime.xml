@@ -3,5 +3,54 @@
   <githubUrl>https://github.com/SAP/SapMachine</githubUrl>
   <gitUrl>git://github.com/SAP/SapMachine.git</gitUrl>
   <sshUrl>git@github.com:SAP/SapMachine.git</sshUrl>
-  <pulls class="concurrent-hash-map" />
+  <pulls class="concurrent-hash-map">
+    <entry>
+      <int>410</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>410</number>
+        <issueUpdatedAt>2019-05-28 18:33:31.0 UTC</issueUpdatedAt>
+        <title>SapMachine: Increase LogEventsBufferEntries (#409)</title>
+        <body>Increase LogEventsBufferEntries (#409) to 75,  we want to see more events in hs_err file.
+
+The description of this pull request goes here.
+
+fixes #409 
+
+</body>
+        <prUpdatedAt>2019-05-28 18:33:31.0 UTC</prUpdatedAt>
+        <headSha>a95b4485933e3dcbf435dde5406bb1e079ed08bf</headSha>
+        <headRef>MBaesken-patch-1</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine</baseRef>
+        <userLogin>MBaesken</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/410</htmlUrl>
+        <labels />
+        <lastCommentCreatedAt>2019-05-28 15:17:50.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>SAP</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>411</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>411</number>
+        <issueUpdatedAt>2019-05-29 01:08:58.0 UTC</issueUpdatedAt>
+        <title>Merge to tag jdk-11.0.4+5</title>
+        <body>please pull</body>
+        <prUpdatedAt>2019-05-29 01:08:58.0 UTC</prUpdatedAt>
+        <headSha>f5a8ab077ab2f40f5df697303d9df9ec4eacbb2d</headSha>
+        <headRef>pr-jdk-11.0.4+5</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine11</baseRef>
+        <userLogin>SapMachine</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/411</htmlUrl>
+        <labels />
+        <lastCommentCreatedAt>2019-05-29 01:08:55.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>SAP</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+  </pulls>
 </org.jenkinsci.plugins.github.pullrequest.GitHubPRRepository>
