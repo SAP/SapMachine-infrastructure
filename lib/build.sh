@@ -108,6 +108,9 @@ if [[ $GIT_TAG_NAME == sapmachine-* ]]; then
   --with-version-pre=$VERSION_PRE_OPT \
   --with-version-date=$VERSION_DATE \
   --disable-warnings-as-errors \
+  --with-macosx-bundle-name-base=SapMachine \
+  --with-macosx-bundle-id-base=com.sap.openjdk \
+  --with-jdk-rc-name=SapMachine \
   --with-vendor-name="$VENDOR_NAME" \
   --with-vendor-url="$VENDOR_URL" \
   --with-vendor-bug-url="$VENDOR_BUG_URL" \
@@ -127,6 +130,9 @@ else
   --with-version-opt="sapmachine-$BUILD_DATE" \
   --with-version-pre=snapshot \
   --disable-warnings-as-errors \
+  --with-macosx-bundle-name-base=SapMachine \
+  --with-macosx-bundle-id-base=com.sap.openjdk \
+  --with-jdk-rc-name=SapMachine \
   --with-vendor-name="$VENDOR_NAME" \
   --with-vendor-url="$VENDOR_URL" \
   --with-vendor-bug-url="$VENDOR_BUG_URL" \
