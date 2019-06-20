@@ -1,21 +1,21 @@
 <hudson.plugins.ec2.EC2Slave plugin="ec2@1.43">
-  <name>EC2 (SapMachine Windows) - Windows Slave (EC2 Cloud) (i-087f1dee79e615b70)</name>
-  <remoteFS>C:\jenkins</remoteFS>
+  <name>EC2 (SapMachine Linux) - Linux Slave (EC2 Cloud) (i-00c410c01a56f7a88)</name>
+  <remoteFS>/home/ubuntu/slave_home</remoteFS>
   <numExecutors>1</numExecutors>
   <mode>EXCLUSIVE</mode>
   <retentionStrategy class="hudson.plugins.ec2.EC2RetentionStrategy">
     <idleTerminationMinutes>10</idleTerminationMinutes>
   </retentionStrategy>
-  <launcher class="hudson.plugins.ec2.win.EC2WindowsLauncher">
-    <sleepBetweenAttempts>10000</sleepBetweenAttempts>
+  <launcher class="hudson.plugins.ec2.ssh.EC2UnixLauncher">
+    <FAILED>-1</FAILED>
   </launcher>
-  <label>windows_x86_64</label>
+  <label>linux_x86_64</label>
   <nodeProperties />
-  <instanceId>i-087f1dee79e615b70</instanceId>
+  <instanceId>i-00c410c01a56f7a88</instanceId>
   <initScript />
-  <tmpDir>C:\TEMP\</tmpDir>
-  <remoteAdmin>Administrator</remoteAdmin>
-  <templateDescription>Windows Slave (EC2 Cloud)</templateDescription>
+  <tmpDir />
+  <remoteAdmin>ubuntu</remoteAdmin>
+  <templateDescription>Linux Slave (EC2 Cloud)</templateDescription>
   <jvmopts />
   <stopOnTerminate>false</stopOnTerminate>
   <idleTerminationMinutes>10</idleTerminationMinutes>
@@ -24,18 +24,19 @@
   <tags class="linked-list">
     <hudson.plugins.ec2.EC2Tag>
       <name>jenkins_slave_type</name>
-      <value>demand_Windows Slave (EC2 Cloud)</value>
+      <value>demand_Linux Slave (EC2 Cloud)</value>
     </hudson.plugins.ec2.EC2Tag>
     <hudson.plugins.ec2.EC2Tag>
       <name>jenkins_server_url</name>
       <value>https://ci.sapmachine.io/</value>
     </hudson.plugins.ec2.EC2Tag>
   </tags>
-  <cloudName>ec2-SapMachine Windows</cloudName>
-  <amiType class="hudson.plugins.ec2.WindowsData">
-    <password>REMOVED_BY_BACKUP</password>
-    <useHTTPS>false</useHTTPS>
-    <bootDelay>120</bootDelay>
+  <cloudName>ec2-SapMachine Linux</cloudName>
+  <amiType class="hudson.plugins.ec2.UnixData">
+    <rootCommandPrefix />
+    <slaveCommandPrefix />
+    <slaveCommandSuffix />
+    <sshPort>22</sshPort>
   </amiType>
   <maxTotalUses>-1</maxTotalUses>
   <instanceType>m5.4xlarge</instanceType>
