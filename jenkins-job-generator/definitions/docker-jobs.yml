@@ -6,11 +6,6 @@
     properties:
         - build-discarder:
             num-to-keep: 100
-    parameters:
-        - string:
-            name: LATEST_MAJOR
-            default: '11'
-            description: 'The latest major release for which the manifest shall be generated.'
     dsl: |
         pipeline {
             agent {
@@ -31,7 +26,7 @@
                         }
                     }
                     steps {
-                        sh "cd SapMachine-Infrastructure && python lib/make_docker_manifest.py -d dockerfiles/official -m ../sapmachine.manifest --latest ${LATEST_MAJOR}"
+                        sh "cd SapMachine-Infrastructure && python lib/make_docker_manifest.py -d dockerfiles/official -m ../sapmachine.manifest"
                         archiveArtifacts 'sapmachine.manifest'
                     }
                 }
