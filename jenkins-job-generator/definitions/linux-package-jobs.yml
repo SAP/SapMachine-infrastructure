@@ -57,3 +57,36 @@
                 }
             }
         }
+
+- job:
+    name: recreate-debian-repository
+    description: 'This project is generated. Do not modify manually.'
+    project-type: pipeline
+    concurrent: false
+    properties:
+        - build-discarder:
+            num-to-keep: 100
+            artifact-num-to-keep: 1
+    dsl: |
+        pipeline {
+            agent {
+                label 'agent-ubuntu-local'
+            }
+            stages {
+                stage("Checkout Infrastructure") {
+                    steps {
+                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+                    }
+                }
+                stage('Recreate') {
+                    steps {
+                            sh "python SapMachine-Infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/amd64"
+                    }
+                }
+            }
+            post {
+                always {
+                    cleanWs deleteDirs: true, disableDeferredWipeout: true
+                }
+            }
+        }
