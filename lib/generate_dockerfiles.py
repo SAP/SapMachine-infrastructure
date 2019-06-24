@@ -33,7 +33,6 @@ RUN export GNUPGHOME="$$(mktemp -d)" \\
     && rm -rf /var/lib/apt/lists/*
 
 CMD ["jshell"]
-
 '''
 
 
