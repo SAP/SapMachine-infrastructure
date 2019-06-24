@@ -21,7 +21,7 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends wget ca-certificates gnupg2 \
     && rm -rf /var/lib/apt/lists/*
 
-RUN export GNUPGHOME="$(mktemp -d)" \
+RUN export GNUPGHOME="$$(mktemp -d)" \
     && wget -q -O - http://dist.sapmachine.io/debian/sapmachine.old.key | gpg --batch --import \
     && gpg --batch --export --armor 'DA4C 00C1 BDB1 3763 8608 4E20 C7EB 4578 740A EEA2' > /etc/apt/trusted.gpg.d/sapmachine.old.gpg.asc \
     && wget -q -O - http://dist.sapmachine.io/debian/sapmachine.key | gpg --batch --import \
