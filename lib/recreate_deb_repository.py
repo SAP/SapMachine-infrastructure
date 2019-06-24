@@ -13,14 +13,22 @@ from os import remove
 from os.path import join
 from os.path import exists
 
+
+pgp_default_key = '3ABCFE23'
+
 def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('-r', '--repository', help='specify the repository directory', metavar='DIR', required=True)
     parser.add_argument('-s', '--sign', help='PGP sign the repository', action='store_true', default=False)
+    parser.add_argument('-k', '--key', help='The PGP key uid to use for signing', metavar='KEY', required=False)
     args = parser.parse_args()
 
     repository = args.repository
     pgp_sign = args.sign
+    key = args.key
+
+    if key is None:
+        key = pgp_default_key
 
     utils.remove_if_exists(join(repository, 'Packages'))
     utils.remove_if_exists(join(repository, 'Packages.gz'))
@@ -75,8 +83,8 @@ def main(argv=None):
         release_file.write('\n')
 
     if pgp_sign is True:
-        utils.run_cmd(['gpg', '--clearsign', '--digest-algo', 'SHA512', '--no-tty', '-o', 'InRelease', 'Release'], cwd=repository)
-        utils.run_cmd(['gpg', '-abs',        '--digest-algo', 'SHA512', '--no-tty', '-o', 'Release.gpg', 'Release'], cwd=repository)
+        utils.run_cmd(['gpg', '--default-key', key, '--clearsign', '--digest-algo', 'SHA512', '--no-tty', '-o', 'InRelease', 'Release'], cwd=repository)
+        utils.run_cmd(['gpg', '--default-key', key, '-abs',        '--digest-algo', 'SHA512', '--no-tty', '-o', 'Release.gpg', 'Release'], cwd=repository)
 
 if __name__ == "__main__":
     sys.exit(main())
