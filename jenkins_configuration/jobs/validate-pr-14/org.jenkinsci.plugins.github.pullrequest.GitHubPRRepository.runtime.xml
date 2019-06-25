@@ -5,27 +5,62 @@
   <sshUrl>git@github.com:SAP/SapMachine.git</sshUrl>
   <pulls class="concurrent-hash-map">
     <entry>
-      <int>421</int>
+      <int>432</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>421</number>
-        <issueUpdatedAt>2019-06-22 14:02:54.0 UTC</issueUpdatedAt>
-        <title>Rename external representation of Statistical History</title>
+        <number>432</number>
+        <issueUpdatedAt>2019-06-24 17:53:24.0 UTC</issueUpdatedAt>
+        <title>Rename external representation of Statistical History (JDK11)</title>
         <body>Rename "Statistical History" to "Vitals" with a minimum of fuss:
-1) rename command: VM.stathist -&gt; VM.vitals
-2) rename switches: "EnableStatHist" -&gt; "EnableVitals" etc.
 
-fixes #420 
+rename command: VM.stathist -&gt; VM.vitals
+rename switches: "EnableStatHist" -&gt; "EnableVitals" etc.
+
+(cherry picked from commit 7fc8c42184d7279a145f81146a12ce879ecd2ca2 with some manual changes needed since classLoaderData.inline.hpp has been split into classLoaderDataGraph.inline.hpp after JDK11)
+
+fixes #420
+
+
 
 </body>
-        <prUpdatedAt>2019-06-22 14:02:54.0 UTC</prUpdatedAt>
-        <headSha>4ba8817dc609c2d677a1a261a35a07d96e2e1ae6</headSha>
-        <headRef>stathist-rename</headRef>
+        <prUpdatedAt>2019-06-24 17:53:24.0 UTC</prUpdatedAt>
+        <headSha>b9db1461d384d0b90603a708b6f17be871ebc5a4</headSha>
+        <headRef>stathist-rename-11</headRef>
         <mergeable>true</mergeable>
-        <baseRef>sapmachine</baseRef>
+        <baseRef>sapmachine11</baseRef>
         <userLogin>tstuefe</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/421</htmlUrl>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/432</htmlUrl>
         <labels />
-        <lastCommentCreatedAt>2019-06-22 14:02:54.0 UTC</lastCommentCreatedAt>
+        <lastCommentCreatedAt>2019-06-24 17:16:40.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>SAP</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>433</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>433</number>
+        <issueUpdatedAt>2019-06-24 17:53:08.0 UTC</issueUpdatedAt>
+        <title>Rename external representation of Statistical History (JDK12)</title>
+        <body>Rename "Statistical History" to "Vitals" with a minimum of fuss:
+
+rename command: VM.stathist -&gt; VM.vitals
+rename switches: "EnableStatHist" -&gt; "EnableVitals" etc.
+
+(cherry picked from commit 7fc8c42184d7279a145f81146a12ce879ecd2ca2 ; applied cleanly.)
+
+fixes #420
+
+</body>
+        <prUpdatedAt>2019-06-24 17:53:08.0 UTC</prUpdatedAt>
+        <headSha>eaebf290fabf8589b6b357d7e47ff400aa47ffe3</headSha>
+        <headRef>stathist-rename-12</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine12</baseRef>
+        <userLogin>tstuefe</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/433</htmlUrl>
+        <labels />
+        <lastCommentCreatedAt>2019-06-24 17:52:21.0 UTC</lastCommentCreatedAt>
         <sourceRepoOwner>SAP</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
