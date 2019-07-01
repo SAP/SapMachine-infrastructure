@@ -145,7 +145,7 @@ fi
 make JOBS=12 product-bundles test-image
 
 legacy_bundles_available=1
-make JOBS=12 legacy-bundles | true
+make JOBS=12 legacy-bundles || true
 
 if [ ${PIPESTATUS[0]} -ne 0 ]; then
   legacy_bundles_available=0
