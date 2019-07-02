@@ -25,7 +25,7 @@
   <viewsTabBar class="hudson.views.DefaultViewsTabBar" />
   <myViewsTabBar class="hudson.views.DefaultMyViewsTabBar" />
   <clouds>
-    <hudson.plugins.ec2.EC2Cloud plugin="ec2@1.43">
+    <hudson.plugins.ec2.EC2Cloud plugin="ec2@1.44.1">
       <name>ec2-SapMachine Windows</name>
       <useInstanceProfileForCredentials>false</useInstanceProfileForCredentials>
       <roleArn />
@@ -79,7 +79,7 @@
       <region>us-east-1</region>
       <noDelayProvisioning>true</noDelayProvisioning>
     </hudson.plugins.ec2.EC2Cloud>
-    <hudson.plugins.ec2.EC2Cloud plugin="ec2@1.43">
+    <hudson.plugins.ec2.EC2Cloud plugin="ec2@1.44.1">
       <name>ec2-SapMachine Linux</name>
       <useInstanceProfileForCredentials>false</useInstanceProfileForCredentials>
       <roleArn />

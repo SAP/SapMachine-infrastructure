@@ -5,72 +5,10 @@
   <sshUrl>git@github.com:SAP/SapMachine.git</sshUrl>
   <pulls class="concurrent-hash-map">
     <entry>
-      <int>432</int>
-      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>432</number>
-        <issueUpdatedAt>2019-06-27 09:56:00.0 UTC</issueUpdatedAt>
-        <title>Rename external representation of Statistical History (JDK11)</title>
-        <body>Rename "Statistical History" to "Vitals" with a minimum of fuss:
-
-rename command: VM.stathist -&gt; VM.vitals
-rename switches: "EnableStatHist" -&gt; "EnableVitals" etc.
-
-(cherry picked from commit 7fc8c42184d7279a145f81146a12ce879ecd2ca2 with some manual changes needed since classLoaderData.inline.hpp has been split into classLoaderDataGraph.inline.hpp after JDK11)
-
-fixes #420
-
-
-
-</body>
-        <prUpdatedAt>2019-06-27 09:56:00.0 UTC</prUpdatedAt>
-        <headSha>b9db1461d384d0b90603a708b6f17be871ebc5a4</headSha>
-        <headRef>stathist-rename-11</headRef>
-        <mergeable>true</mergeable>
-        <baseRef>sapmachine11</baseRef>
-        <userLogin>tstuefe</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/432</htmlUrl>
-        <labels />
-        <lastCommentCreatedAt>2019-06-24 17:16:40.0 UTC</lastCommentCreatedAt>
-        <sourceRepoOwner>SAP</sourceRepoOwner>
-        <state>OPEN</state>
-        <inBadState>false</inBadState>
-      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-    </entry>
-    <entry>
-      <int>433</int>
-      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>433</number>
-        <issueUpdatedAt>2019-06-27 09:54:44.0 UTC</issueUpdatedAt>
-        <title>Rename external representation of Statistical History (JDK12)</title>
-        <body>Rename "Statistical History" to "Vitals" with a minimum of fuss:
-
-rename command: VM.stathist -&gt; VM.vitals
-rename switches: "EnableStatHist" -&gt; "EnableVitals" etc.
-
-(cherry picked from commit 7fc8c42184d7279a145f81146a12ce879ecd2ca2 ; applied cleanly.)
-
-fixes #420
-
-</body>
-        <prUpdatedAt>2019-06-27 09:54:44.0 UTC</prUpdatedAt>
-        <headSha>eaebf290fabf8589b6b357d7e47ff400aa47ffe3</headSha>
-        <headRef>stathist-rename-12</headRef>
-        <mergeable>true</mergeable>
-        <baseRef>sapmachine12</baseRef>
-        <userLogin>tstuefe</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/433</htmlUrl>
-        <labels />
-        <lastCommentCreatedAt>2019-06-24 17:52:21.0 UTC</lastCommentCreatedAt>
-        <sourceRepoOwner>SAP</sourceRepoOwner>
-        <state>OPEN</state>
-        <inBadState>false</inBadState>
-      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-    </entry>
-    <entry>
       <int>435</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>435</number>
-        <issueUpdatedAt>2019-06-26 07:14:48.0 UTC</issueUpdatedAt>
+        <issueUpdatedAt>2019-07-01 10:25:19.0 UTC</issueUpdatedAt>
         <title>bring to SapMachine : 8225345: Provide Cloud IAAS related info on Lin&#8230;</title>
         <body>&#8230;ux in the hs_err file
 
@@ -81,7 +19,7 @@ The description of this pull request goes here.
 fixes #434
 
 </body>
-        <prUpdatedAt>2019-06-26 07:14:48.0 UTC</prUpdatedAt>
+        <prUpdatedAt>2019-07-01 10:25:19.0 UTC</prUpdatedAt>
         <headSha>47ec19291a06d1b65a27a85694c15fb06f130a16</headSha>
         <headRef>mbaesken-8225345-linuxiaas</headRef>
         <mergeable>true</mergeable>
@@ -96,42 +34,21 @@ fixes #434
       </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
     </entry>
     <entry>
-      <int>437</int>
+      <int>440</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>437</number>
-        <issueUpdatedAt>2019-06-28 01:16:57.0 UTC</issueUpdatedAt>
-        <title>Merge to tag jdk-14+3</title>
+        <number>440</number>
+        <issueUpdatedAt>2019-07-02 01:11:22.0 UTC</issueUpdatedAt>
+        <title>Merge to tag jdk-11.0.4+10</title>
         <body>please pull</body>
-        <prUpdatedAt>2019-06-28 01:16:57.0 UTC</prUpdatedAt>
-        <headSha>55e127dc4eb78bac13591a1020306fdcef001fef</headSha>
-        <headRef>pr-jdk-14+3</headRef>
+        <prUpdatedAt>2019-07-02 01:11:22.0 UTC</prUpdatedAt>
+        <headSha>76c551ab9c7dc70dd8cae65ab73126c7d2d8e354</headSha>
+        <headRef>pr-jdk-11.0.4+10</headRef>
         <mergeable>true</mergeable>
-        <baseRef>sapmachine</baseRef>
+        <baseRef>sapmachine11</baseRef>
         <userLogin>SapMachine</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/437</htmlUrl>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/440</htmlUrl>
         <labels />
-        <lastCommentCreatedAt>2019-06-28 01:11:31.0 UTC</lastCommentCreatedAt>
-        <sourceRepoOwner>SAP</sourceRepoOwner>
-        <state>OPEN</state>
-        <inBadState>false</inBadState>
-      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-    </entry>
-    <entry>
-      <int>438</int>
-      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>438</number>
-        <issueUpdatedAt>2019-06-28 01:17:08.0 UTC</issueUpdatedAt>
-        <title>Merge to tag jdk-13+27</title>
-        <body>please pull</body>
-        <prUpdatedAt>2019-06-28 01:17:08.0 UTC</prUpdatedAt>
-        <headSha>5e8abdd51e72ce8bac5ba9130a20328af452525f</headSha>
-        <headRef>pr-jdk-13+27</headRef>
-        <mergeable>true</mergeable>
-        <baseRef>sapmachine13</baseRef>
-        <userLogin>SapMachine</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/438</htmlUrl>
-        <labels />
-        <lastCommentCreatedAt>2019-06-28 01:11:53.0 UTC</lastCommentCreatedAt>
+        <lastCommentCreatedAt>2019-07-02 01:11:22.0 UTC</lastCommentCreatedAt>
         <sourceRepoOwner>SAP</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
