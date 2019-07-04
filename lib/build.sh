@@ -115,10 +115,10 @@ if [[ $GIT_TAG_NAME == sapmachine-* ]]; then
   --with-vendor-url="$VENDOR_URL" \
   --with-vendor-bug-url="$VENDOR_BUG_URL" \
   --with-vendor-vm-bug-url="$VENDOR_VM_BUG_URL" \
-    $_CONFIGURE_OPTION_VERSION_BUILD \
-    $_CONFIGURE_OPTION_VERSION_EXTRA \
-    $_CONFIGURE_SYSROOT \
-    $EXTRA_CONFIGURE_OPTIONS
+  $_CONFIGURE_OPTION_VERSION_BUILD \
+  $_CONFIGURE_OPTION_VERSION_EXTRA \
+  $_CONFIGURE_SYSROOT \
+  $EXTRA_CONFIGURE_OPTIONS
 else
   if [[ ! -z $BUILD_NUMBER ]]; then
     _CONFIGURE_OPTION_VERSION_BUILD="--with-version-build=$BUILD_NUMBER"
@@ -137,25 +137,31 @@ else
   --with-vendor-url="$VENDOR_URL" \
   --with-vendor-bug-url="$VENDOR_BUG_URL" \
   --with-vendor-vm-bug-url="$VENDOR_VM_BUG_URL" \
-    $_CONFIGURE_OPTION_VERSION_BUILD \
-    $_CONFIGURE_SYSROOT \
-    $EXTRA_CONFIGURE_OPTIONS
+  $_CONFIGURE_OPTION_VERSION_BUILD \
+  $_CONFIGURE_SYSROOT \
+  $EXTRA_CONFIGURE_OPTIONS
 fi
 
-make JOBS=12 product-bundles test-image
-
+# try to build with legacy-bundles in one step
 legacy_bundles_available=1
-make JOBS=12 legacy-bundles || true
+make JOBS=12 product-bundles legacy-bundles test-image || true
 
+# In case there was an error, we give it another try without legacy bundles
+# and try to create the legacy bundle manually afterwards.
+# This is needed to support building older source versions that didn't have
+# the legacy-bundles target.
+# Drawback: If there is a real build error, we'll restart the build and run
+# into it again.
 if [ ${PIPESTATUS[0]} -ne 0 ]; then
   legacy_bundles_available=0
+  make JOBS=12 product-bundles test-image
 fi
 
 if [ $legacy_bundles_available -ne 1 ]; then
   if [[ $UNAME == Darwin ]]; then
     make JOBS=12 mac-legacy-jre-bundle || true
   else
-      make JOBS=12 legacy-jre-image || true
+    make JOBS=12 legacy-jre-image || true
   fi
 fi
 
