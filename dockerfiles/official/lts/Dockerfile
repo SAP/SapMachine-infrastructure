@@ -13,7 +13,7 @@ RUN export GNUPGHOME="$(mktemp -d)" \
     && gpgconf --kill all && rm -rf "$GNUPGHOME" \
     && echo "deb http://dist.sapmachine.io/debian/amd64/ ./" > /etc/apt/sources.list.d/sapmachine.list \
     && apt-get update \
-    && apt-get -y --no-install-recommends install sapmachine-11-jdk=11.0.3 \
+    && apt-get -y --no-install-recommends install sapmachine-11-jdk=11.0.4 \
     && rm -rf /var/lib/apt/lists/*
 
 CMD ["jshell"]
