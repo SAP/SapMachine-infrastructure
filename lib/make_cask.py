@@ -77,6 +77,10 @@ def main(argv=None):
     version, version_part, major, build_number, sap_build_number, os_ext = utils.sapmachine_tag_components(tag)
 
     if is_prerelease:
+        if build_number is None:
+            print('No build number given. Aborting ...')
+            sys.exit()
+
         cask_content = Template(pre_release_cask_template).substitute(
             MAJOR=major,
             VERSION=version_part,
@@ -89,7 +93,6 @@ def main(argv=None):
         cask_content = Template(release_cask_template).substitute(
             MAJOR=major,
             VERSION=version_part,
-            BUILD_NUMBER=build_number,
             IMAGE_TYPE=image_type,
             SHA256=sha256sum
         )
