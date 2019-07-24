@@ -1,4 +1,22 @@
 <hudson.model.Queue_-State>
-  <counter>4987</counter>
-  <items />
+  <counter>4996</counter>
+  <items>
+    <hudson.model.Queue_-BlockedItem>
+      <actions>
+        <hudson.model.CauseAction>
+          <causeBag class="linked-hash-map">
+            <entry>
+              <hudson.triggers.TimerTrigger_-TimerTriggerCause />
+              <int>1</int>
+            </entry>
+          </causeBag>
+        </hudson.model.CauseAction>
+      </actions>
+      <id>4996</id>
+      <task class="org.jenkinsci.plugins.workflow.job.WorkflowJob">repository-update</task>
+      <inQueueSince>1563930180974</inQueueSince>
+      <buildableStartMilliseconds>1563930180975</buildableStartMilliseconds>
+      <outer-class>queue</outer-class>
+    </hudson.model.Queue_-BlockedItem>
+  </items>
 </hudson.model.Queue_-State>
