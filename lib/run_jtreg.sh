@@ -68,7 +68,7 @@ if [ "${TEST_SUITE}" == "hotspot" ]; then
     ${JT_HOME}/bin/jtreg -dir:${JDK_LOCATION}/test/${TEST_SUITE}/jtreg -xml -verbose:summary -nativepath:${TEST_NATIVE_LIB} \
      -exclude:${JDK_LOCATION}/test/${TEST_SUITE}/jtreg/ProblemList.txt -exclude:${JDK_LOCATION}/test/${TEST_SUITE}/jtreg/ProblemList-SapMachine.txt \
      -conc:${NUM_CPUS} -vmoption:-Xmx384m -w:test_report_${TEST_SUITE}/JTwork -r:test_report_${TEST_SUITE}/JTreport \
-     -a -ignore:quiet -timeoutFactor:5 -agentvm -javaoption:-Djava.awt.headless=true -javaoption:-DSCIMARK_2_CP=${SCIMARK_2_CP} "-k:(!ignore)&(!stress)&(!headful)" -testjdk:${TEST_JDK} ${TEST_GROUPS}
+     -a -ignore:quiet -timeoutFactor:5 -agentvm -javaoption:-Djava.awt.headless=true -javaoption:-DSCIMARK_2_CP=${SCIMARK_2_CP} "-k:(!ignore)&(!stress)&(!headful)" "-e:ProgramFiles(x86)" -testjdk:${TEST_JDK} ${TEST_GROUPS}
 fi
 
 if [ "${TEST_SUITE}" == "jdk" ]; then
