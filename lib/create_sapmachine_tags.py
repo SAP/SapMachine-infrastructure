@@ -60,6 +60,31 @@ def create_sapmachine_tag(jdk_tag, commit_id, git_target_dir):
     utils.run_cmd(str.format('git tag {0}', jdk_tag.as_sapmachine_tag()).split(' '), cwd=git_target_dir)
     utils.run_cmd(str.format('git push origin {0}', jdk_tag.as_sapmachine_tag()).split(' '), cwd=git_target_dir)
 
+def get_latest_non_ga_tag(jdk_tag):
+    latest_non_ga_tag = None
+
+    if jdk_tag.is_ga():
+         # fetch all tags
+        tags = utils.github_api_request('tags', per_page=300)
+        latest_non_ga_tag = None
+
+        # iterate all tags
+        for tag in tags:
+            # filter for jdk tags
+            match = JDKTag.jdk_tag_pattern.match(tag['name'])
+
+            if match is not None:
+                # found a jdk tag
+                t = JDKTag(match)
+                major = t.get_major()
+
+                if major is jdk_tag.get_major() and not t.is_ga():
+                    if latest_non_ga_tag is None or t.is_greater_than(latest_non_ga_tag):
+                        latest_non_ga_tag = t
+
+    return latest_non_ga_tag
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('--workdir', help='the temporary working directory', metavar='DIR', default="tags_work", required=False)
@@ -128,7 +153,19 @@ def main(argv=None):
                     # not tagged yet
                     # create sapmachine tag
                     create_sapmachine_tag(jdk_tag, commit_id, git_target_dir)
-                    run_jenkins_jobs(major, jdk_tag.as_sapmachine_tag())
+
+                    # when the tag is a GA tag, we build the last tag before the GA tag
+                    if jdk_tag.is_ga():
+                        latest_non_ga_tag = get_latest_non_ga_tag(jdk_tag)
+                        _, tag_exists, _ = utils.run_cmd(str.format('git tag -l {0}', latest_non_ga_tag.as_sapmachine_tag()).split(' '), cwd=git_target_dir, std=True, throw=False)
+
+                        if not tag_exists and latest_non_ga_tag is not None:
+                            create_sapmachine_tag(latest_non_ga_tag, commit_id, git_target_dir)
+                            run_jenkins_jobs(major, latest_non_ga_tag.as_sapmachine_tag())
+                    else:
+                        run_jenkins_jobs(major, jdk_tag.as_sapmachine_tag())
+
+
                 elif not jdk_tag.is_ga():
                     tags = tags.splitlines()
                     # check wether there is a JDK GA tag which has no corresponding sapmachine tag yet
@@ -166,7 +203,13 @@ def main(argv=None):
                                         if not pull_request_exits:
                                             # create sapmachine tag
                                             create_sapmachine_tag(as_jdk_tag, commit_id, git_target_dir)
-                                            run_jenkins_jobs(major, as_jdk_tag.as_sapmachine_tag())
+                                            # we build the last tag before the GA tag
+                                            latest_non_ga_tag = get_latest_non_ga_tag(as_jdk_tag)
+                                            _, tag_exists, _ = utils.run_cmd(str.format('git tag -l {0}', latest_non_ga_tag.as_sapmachine_tag()).split(' '), cwd=git_target_dir, std=True, throw=False)
+
+                                            if not tag_exists and latest_non_ga_tag is not None:
+                                                create_sapmachine_tag(latest_non_ga_tag, commit_id, git_target_dir)
+                                                run_jenkins_jobs(major, latest_non_ga_tag.as_sapmachine_tag())
 
                                         break
 
