@@ -13,7 +13,7 @@
   <properties>
     <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
       <triggers>
-        <org.jenkinsci.plugins.github.pullrequest.GitHubPRTrigger plugin="github-pullrequest@0.2.5">
+        <org.jenkinsci.plugins.github.pullrequest.GitHubPRTrigger plugin="github-pullrequest@0.2.6">
           <spec>H/1 * * * *</spec>
           <triggerMode>HEAVY_HOOKS</triggerMode>
           <cancelQueued>false</cancelQueued>
