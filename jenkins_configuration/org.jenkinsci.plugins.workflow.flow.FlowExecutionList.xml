@@ -1,30 +1,66 @@
 <list>
   <flow-owner plugin="workflow-job@2.33">
-    <job>validate-pr-14</job>
+    <job>build-14-release-macos_x86_64</job>
+    <id>9</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@2.33">
+    <job>build-14-release-windows_x86_64</job>
+    <id>9</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@2.33">
+    <job>build-14-release-linux_ppc64le</job>
+    <id>9</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@2.33">
+    <job>build-14-release-linux_x86_64</job>
+    <id>9</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@2.33">
+    <job>build-14-release-linux_ppc64</job>
+    <id>9</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@2.33">
+    <job>build-11-release-linux_ppc64le</job>
+    <id>28</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@2.33">
+    <job>build-11-release-linux_ppc64</job>
+    <id>29</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@2.33">
+    <job>build-11-release-macos_x86_64</job>
+    <id>29</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@2.33">
+    <job>build-11-release-windows_x86_64</job>
+    <id>38</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@2.33">
+    <job>build-11-release-linux_x86_64</job>
+    <id>32</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@2.33">
+    <job>build-13-release-macos_x86_64</job>
     <id>36</id>
   </flow-owner>
   <flow-owner plugin="workflow-job@2.33">
-    <job>build-14-pr-validation-linux_ppc64</job>
-    <id>35</id>
+    <job>build-13-release-linux_x86_64</job>
+    <id>39</id>
   </flow-owner>
   <flow-owner plugin="workflow-job@2.33">
-    <job>validate-pr-11</job>
-    <id>83</id>
+    <job>build-13-release-linux_ppc64le</job>
+    <id>31</id>
   </flow-owner>
   <flow-owner plugin="workflow-job@2.33">
-    <job>build-11-pr-validation-macos_x86_64</job>
-    <id>85</id>
+    <job>build-13-release-linux_ppc64</job>
+    <id>32</id>
   </flow-owner>
   <flow-owner plugin="workflow-job@2.33">
-    <job>build-11-pr-validation-linux_ppc64le</job>
-    <id>117</id>
-  </flow-owner>
-  <flow-owner plugin="workflow-job@2.33">
-    <job>build-11-pr-validation-linux_ppc64</job>
-    <id>91</id>
+    <job>build-13-release-windows_x86_64</job>
+    <id>42</id>
   </flow-owner>
   <flow-owner plugin="workflow-job@2.33">
     <job>jenkins-configuration-backup</job>
-    <id>157</id>
+    <id>158</id>
   </flow-owner>
 </list>
