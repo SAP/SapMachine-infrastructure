@@ -21,7 +21,8 @@ def write_index_yaml(assets, target):
 def main(argv=None):
     token = utils.get_github_api_accesstoken()
     asset_pattern = re.compile(utils.sapmachine_asset_pattern())
-    asset_map = {}
+    asset_map_jre = {}
+    asset_map_jdk = {}
 
     releases = utils.github_api_request('releases', per_page=100)
 
@@ -42,7 +43,7 @@ def main(argv=None):
                 asset_image_type = match.group(1)
                 asset_os = match.group(3)
 
-                if asset_os == 'linux-x64' and asset_image_type == 'jre':
+                if asset_os == 'linux-x64':
                     sapmachine_version = [int(e) for e in version_part.split('.')]
                     sapmachine_version += [0 for sapmachine_version in range(0, 5 - len(sapmachine_version))]
 
@@ -56,11 +57,16 @@ def main(argv=None):
                         sapmachine_version[3],
                         sapmachine_version[4],
                         build_number if build_number else '0')
-                    asset_map[buildpack_version] = asset['browser_download_url']
+
+                    if asset_image_type == 'jre':
+                        asset_map_jre[buildpack_version] = asset['browser_download_url']
+                    else:
+                        asset_map_jdk[buildpack_version] = asset['browser_download_url']
 
     local_repo = join(os.getcwd(), 'gh-pages')
     utils.git_clone('github.com/SAP/SapMachine.git', 'gh-pages', local_repo)
-    write_index_yaml(asset_map, join(local_repo, 'assets', 'cf', 'jre', 'linux', 'x86_64'))
+    write_index_yaml(asset_map_jre, join(local_repo, 'assets', 'cf', 'jre', 'linux', 'x86_64'))
+    write_index_yaml(asset_map_jdk, join(local_repo, 'assets', 'cf', 'jre', 'linux', 'x86_64'))
     utils.git_commit(local_repo, 'Updated index.yml', ['assets'])
     utils.git_push(local_repo)
     utils.remove_if_exists(local_repo)
