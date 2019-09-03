@@ -249,6 +249,7 @@ if [[ $UNAME == Darwin ]]; then
   mkdir -p ${DMG_BASE}
   tar -xzf "${WORKSPACE}/${ARCHIVE_NAME_JDK}" -C ${DMG_BASE}
   hdiutil create -srcfolder ${DMG_BASE} -fs HFS+ -volname ${DMG_NAME} "${WORKSPACE}/${DMG_NAME}.dmg"
+  echo "${DMG_NAME}.dmg" > "${WORKSPACE}/jdk_dmg_name.txt"
 
   # jre
   DMG_NAME=$(basename ${ARCHIVE_NAME_JRE} .tar.gz)
@@ -256,6 +257,7 @@ if [[ $UNAME == Darwin ]]; then
   mkdir -p ${DMG_BASE}
   tar -xzf "${WORKSPACE}/${ARCHIVE_NAME_JRE}" -C ${DMG_BASE}
   hdiutil create -srcfolder ${DMG_BASE} -fs HFS+ -volname ${DMG_NAME} "${WORKSPACE}/${DMG_NAME}.dmg"
+  echo "${DMG_NAME}.dmg" > "${WORKSPACE}/jre_dmg_name.txt"
 fi
 
 cp ../test-results/$GTEST_RESULT_PATH/gtest.xml "${WORKSPACE}"

@@ -65,6 +65,17 @@ python SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${AR
 
 UNAME=`uname`
 if [[ $UNAME == Darwin ]]; then
+    DMG_NAME_JDK="$(cat jdk_dmg_name.txt)"
+    DMG_NAME_JRE="$(cat jre_dmg_name.txt)"
+
+    shasum -a 256 $DMG_NAME_JDK > $DMG_SUM_JDK
+    shasum -a 256 $DMG_NAME_JRE > $DMG_SUM_JRE
+
+    python SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${DMG_NAME_JDK}"
+    python SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${DMG_NAME_JRE}"
+    python SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${DMG_SUM_JDK}"
+    python SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${DMG_SUM_JRE}"
+
     JDK_SHA256=`shasum -a 256 $ARCHIVE_NAME_JDK | awk '{ print $1 }'`
     JRE_SHA256=`shasum -a 256 $ARCHIVE_NAME_JRE | awk '{ print $1 }'`
 
