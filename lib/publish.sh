@@ -68,6 +68,9 @@ if [[ $UNAME == Darwin ]]; then
     DMG_NAME_JDK="$(cat jdk_dmg_name.txt)"
     DMG_NAME_JRE="$(cat jre_dmg_name.txt)"
 
+    DMG_SUM_JDK="$(echo $DMG_NAME_JDK | sed 's/dmg/sha256\.txt/')"
+    DMG_SUM_JRE="$(echo $DMG_NAME_JRE | sed 's/dmg/sha256\.txt/')"
+
     shasum -a 256 $DMG_NAME_JDK > $DMG_SUM_JDK
     shasum -a 256 $DMG_NAME_JRE > $DMG_SUM_JRE
 
