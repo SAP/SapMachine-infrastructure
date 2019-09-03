@@ -243,11 +243,18 @@ echo "${ARCHIVE_NAME_JRE}" > "${WORKSPACE}/jre_bundle_name.txt"
 if [[ $UNAME == Darwin ]]; then
   # create dmg
   DMG_BASE="${WORKSPACE}/dmg_base"
+  # jdk
   DMG_NAME=$(basename ${ARCHIVE_NAME_JDK} .tar.gz)
   rm -rf ${DMG_BASE}
   mkdir -p ${DMG_BASE}
   tar -xzf "${WORKSPACE}/${ARCHIVE_NAME_JDK}" -C ${DMG_BASE}
+  hdiutil create -srcfolder ${DMG_BASE} -fs HFS+ -volname ${DMG_NAME} "${WORKSPACE}/${DMG_NAME}.dmg"
 
+  # jre
+  DMG_NAME=$(basename ${ARCHIVE_NAME_JRE} .tar.gz)
+  rm -rf ${DMG_BASE}
+  mkdir -p ${DMG_BASE}
+  tar -xzf "${WORKSPACE}/${ARCHIVE_NAME_JRE}" -C ${DMG_BASE}
   hdiutil create -srcfolder ${DMG_BASE} -fs HFS+ -volname ${DMG_NAME} "${WORKSPACE}/${DMG_NAME}.dmg"
 fi
 
