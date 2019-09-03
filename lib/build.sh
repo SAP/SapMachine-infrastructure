@@ -246,7 +246,7 @@ if [[ $UNAME == Darwin ]]; then
   DMG_NAME=$(basename ${ARCHIVE_NAME_JDK} .tar.gz)
   rm -rf ${DMG_BASE}
   mkdir -p ${DMG_BASE}
-  tar -xzf ${ARCHIVE_NAME_JDK} -C ${DMG_BASE}
+  tar -xzf "${WORKSPACE}/${ARCHIVE_NAME_JDK}" -C ${DMG_BASE}
 
   hdiutil create -srcfolder ${DMG_BASE} -fs HFS+ -volname ${DMG_NAME} "${WORKSPACE}/${DMG_NAME}.dmg"
 fi
