@@ -263,6 +263,7 @@
             steps {
                 archive 'test.zip'
                 archive 'support_gensrc.zip'
+                archive '*.dmg'
 
                 script {
                     def jdk_bundle_name = readFile "${env.WORKSPACE}/jdk_bundle_name.txt"
