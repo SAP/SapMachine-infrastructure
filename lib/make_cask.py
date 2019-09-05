@@ -17,7 +17,7 @@ cask 'sapmachine${MAJOR}-${IMAGE_TYPE}' do
   version '${VERSION}'
   sha256 '${SHA256}'
 
-  url "https://github.com/SAP/SapMachine/releases/download/sapmachine-#{version}/sapmachine-${IMAGE_TYPE}-#{version}_osx-x64_bin.tar.gz"
+  url "https://github.com/SAP/SapMachine/releases/download/sapmachine-#{version}/sapmachine-${IMAGE_TYPE}-#{version}_osx-x64_bin.dmg"
   appcast "https://sap.github.io/SapMachine/latest/#{version.major}"
   name 'SapMachine OpenJDK Development Kit'
   homepage 'https://sapmachine.io/'
@@ -33,7 +33,7 @@ cask 'sapmachine${MAJOR}-ea-${IMAGE_TYPE}' do
   version '${VERSION},${BUILD_NUMBER}'
   sha256 '${SHA256}'
 
-  url "https://github.com/SAP/SapMachine/releases/download/sapmachine-#{version.before_comma}%2B#{version.after_comma}/sapmachine-${IMAGE_TYPE}-#{version.before_comma}-ea.#{version.after_comma}_osx-x64_bin.tar.gz"
+  url "https://github.com/SAP/SapMachine/releases/download/sapmachine-#{version.before_comma}%2B#{version.after_comma}/sapmachine-${IMAGE_TYPE}-#{version.before_comma}-ea.#{version.after_comma}_osx-x64_bin.dmg"
   appcast "https://sap.github.io/SapMachine/latest/#{version.major}"
   name 'SapMachine OpenJDK Development Kit'
   homepage 'https://sapmachine.io/'
