@@ -124,6 +124,8 @@ def main(argv=None):
                 url = release['html_url']
             )
 
+        has_dmg = False
+
         for asset in assets:
             match = asset_pattern.match(asset['name'])
 
@@ -136,6 +138,12 @@ def main(argv=None):
 
                     if asset_os == 'windows-x64' and file_type == '.msi':
                         asset_os = 'windows-x64-installer'
+
+                    if asset_os == 'osx-x64':
+                        if file_type == '.dmg':
+                            has_dmg = True
+                        elif has_dmg:
+                            continue
 
                     tag = release['name']
                     image_is_lts = utils.sapmachine_is_lts(major) and not release['prerelease']
@@ -199,7 +207,6 @@ def main(argv=None):
         })
 
     push_to_git(files)
-
     return 0
 
 if __name__ == "__main__":
