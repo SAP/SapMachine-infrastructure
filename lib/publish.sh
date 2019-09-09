@@ -79,8 +79,8 @@ if [[ $UNAME == Darwin ]]; then
     python SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${DMG_SUM_JDK}"
     python SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${DMG_SUM_JRE}"
 
-    JDK_SHA256=`shasum -a 256 $ARCHIVE_NAME_JDK | awk '{ print $1 }'`
-    JRE_SHA256=`shasum -a 256 $ARCHIVE_NAME_JRE | awk '{ print $1 }'`
+    JDK_SHA256=`shasum -a 256 $DMG_NAME_JDK | awk '{ print $1 }'`
+    JRE_SHA256=`shasum -a 256 $DMG_NAME_JRE | awk '{ print $1 }'`
 
     python SapMachine-Infrastructure/lib/make_cask.py -t $GIT_TAG_NAME --sha256sum $JDK_SHA256 -i jdk $PRE_RELEASE_OPT
     python SapMachine-Infrastructure/lib/make_cask.py -t $GIT_TAG_NAME --sha256sum $JRE_SHA256 -i jre $PRE_RELEASE_OPT
