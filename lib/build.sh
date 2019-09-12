@@ -241,6 +241,8 @@ echo "${ARCHIVE_NAME_JDK}" > "${WORKSPACE}/jdk_bundle_name.txt"
 echo "${ARCHIVE_NAME_JRE}" > "${WORKSPACE}/jre_bundle_name.txt"
 
 if [[ $UNAME == Darwin ]]; then
+  rm -rf *.dmg
+
   # create dmg
   DMG_BASE="${WORKSPACE}/dmg_base"
   # jdk
