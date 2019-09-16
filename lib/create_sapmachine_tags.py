@@ -27,13 +27,7 @@ def run_jenkins_jobs(major, tag):
     jenkins_user = os.environ['JENKINS_CREDENTIALS_USR']
     jenkins_password = os.environ['JENKINS_CREDENTIALS_PSW']
 
-    server = Jenkins(jenkins_url, username=jenkins_user, password=jenkins_password,
-        requester=CrumbRequester(
-            baseurl=jenkins_url,
-            username=jenkins_user,
-            password=jenkins_password
-        )
-    )
+    server = Jenkins(jenkins_url, username=jenkins_user, password=jenkins_password, useCrumb=True)
 
     build_jobs = [
         str.format('build-{0}-release-linux_x86_64', major),
