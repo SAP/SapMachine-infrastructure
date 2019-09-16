@@ -87,7 +87,6 @@
                             dir "SapMachine-Infrastructure/dockerfiles/infrastructure"
                             reuseNode true
                             label "repository"
-                            additionalBuildArgs "--no-cache"
                         }
                     }
                     environment {
