@@ -35,6 +35,8 @@ def run_jenkins_jobs(major, tag):
         )
     )
 
+    server.use_auth_cookie()
+
     build_jobs = [
         str.format('build-{0}-release-linux_x86_64', major),
         str.format('build-{0}-release-linux_ppc64le', major),
