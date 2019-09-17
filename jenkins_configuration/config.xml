@@ -4,7 +4,7 @@
     <string>hudsonHomeIsFull</string>
     <string>hudson.node_monitors.MonitorMarkedNodeOffline</string>
   </disabledAdministrativeMonitors>
-  <version>2.193</version>
+  <version>2.194</version>
   <installStateName>RESTART</installStateName>
   <numExecutors>4</numExecutors>
   <mode>EXCLUSIVE</mode>
@@ -478,13 +478,14 @@
   </views>
   <primaryView>Linux x86 64 Builds</primaryView>
   <slaveAgentPort>50000</slaveAgentPort>
-  <disabledAgentProtocols>
-    <string>JNLP-connect</string>
-    <string>JNLP2-connect</string>
-  </disabledAgentProtocols>
   <label />
-  <crumbIssuer class="hudson.security.csrf.DefaultCrumbIssuer">
-    <excludeClientIPFromCrumb>false</excludeClientIPFromCrumb>
+  <crumbIssuer class="org.jenkinsci.plugins.strictcrumbissuer.StrictCrumbIssuer" plugin="strict-crumb-issuer@2.0.1">
+    <checkClientIP>false</checkClientIP>
+    <checkSameSource>false</checkSameSource>
+    <checkOnlyLocalPath>false</checkOnlyLocalPath>
+    <checkSessionMatch>true</checkSessionMatch>
+    <xorMasking>true</xorMasking>
+    <hoursValid>2</hoursValid>
   </crumbIssuer>
   <nodeProperties />
   <globalNodeProperties />

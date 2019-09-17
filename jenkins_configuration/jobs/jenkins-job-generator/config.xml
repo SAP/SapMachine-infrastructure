@@ -1,4 +1,4 @@
-<flow-definition plugin="workflow-job@2.33">
+<flow-definition plugin="workflow-job@2.35">
   <actions />
   <description>This project is generated. Do not modify manually.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
@@ -33,7 +33,7 @@
     </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
     <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty />
   </properties>
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.73">
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.74">
     <script>pipeline {
     agent {
         label "repository"
