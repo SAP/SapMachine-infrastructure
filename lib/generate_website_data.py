@@ -217,10 +217,7 @@ def main(argv=None):
             'commit_message': str.format('Updated latest link for SapMachine {0}', major)
         })
 
-    #push_to_git(files)
-    with open('website_data.json', 'w') as dump:
-        dump.write(json.dumps(json_root, indent=4))
-
+    push_to_git(files)
     return 0
 
 if __name__ == "__main__":
