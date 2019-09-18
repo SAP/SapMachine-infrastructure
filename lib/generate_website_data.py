@@ -164,10 +164,13 @@ def main(argv=None):
                     release_dict[major].add_asset(asset['browser_download_url'], asset_os, tag)
 
     latest_lts_version = 0
+    latest_non_lts_version = 0
 
     for major in image_dict:
         if image_dict[major]['lts'] and int(major) > latest_lts_version:
             latest_lts_version = int(major)
+        if not image_dict[major]['lts'] and not image_dict[major]['ea'] and int(major) > latest_non_lts_version:
+            latest_non_lts_version = int(major)
 
     json_root = {
         'imageTypes':[],
@@ -176,7 +179,15 @@ def main(argv=None):
     }
 
     for major in sorted(image_dict):
-        if int(major) > latest_lts_version or image_dict[major]['lts']:
+        add = False
+        if image_dict[major]['lts']:
+            if int(major) >= latest_lts_version:
+                add = True
+        else:
+            if int(major) >= latest_non_lts_version and int(major) >= latest_lts_version:
+                add = True
+
+        if add:
             json_root['imageTypes'].append({'id': major, 'label': image_dict[major]['label'], 'lts': image_dict[major]['lts'], 'ea': image_dict[major]['ea']})
         else:
             del image_dict[major]
@@ -206,7 +217,10 @@ def main(argv=None):
             'commit_message': str.format('Updated latest link for SapMachine {0}', major)
         })
 
-    push_to_git(files)
+    #push_to_git(files)
+    with open('website_data.json', 'w') as dump:
+        dump.write(json.dumps(json_root, indent=4))
+
     return 0
 
 if __name__ == "__main__":
