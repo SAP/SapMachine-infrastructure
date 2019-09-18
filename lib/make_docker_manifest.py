@@ -48,7 +48,7 @@ def main(argv=None):
                 major = version_match.group(1)
                 version = version_match.group(2)
                 retcode, git_commit, err = utils.run_cmd(['git', 'log', '-n', '1', '--pretty=format:%H', '--', join(directory, 'Dockerfile')], std=True)
-                tags = str.format('{0}, {1}, {2}', major, version if version != major else '', 'latest' if dir == 'stable' else 'lts')
+                tags = str.format('{0},{1} {2}', major, str.format(' {0},', version) if version != major else '', 'latest' if dir == 'stable' else 'lts')
 
                 if images:
                     images += '\n\n'
