@@ -108,9 +108,15 @@ def main(argv=None):
     with open(join(work_dir, 'sapmachine.spec'), 'w') as specfile:
         specfile.write(specfile_content)
 
-    rpmbuild_cmd = str.format('rpmbuild -bb -v --buildroot={0}/BUILD {0}/sapmachine.spec --define', work_dir)
+    rpmbuild_dir = join(work_dir, 'rpmbuild')
+    mkdir(rpmbuild_dir)
+
+    rpmbuild_cmd = str.format('rpmbuild -bb -v --buildroot={0}/BUILD {0}/sapmachine.spec', work_dir)
     rpmbuild_cmd = rpmbuild_cmd.split(' ')
+    rpmbuild_cmd.append('--define')
     rpmbuild_cmd.append(str.format('_rpmdir {0}', work_dir))
+    rpmbuild_cmd.append('--define')
+    rpmbuild_cmd.append(str.format('_topdir {0}', rpmbuild_dir))
     utils.run_cmd(rpmbuild_cmd, cwd=work_dir)
 
     rpm_files = glob.glob(join(work_dir, 'x86_64', '*.rpm'))
