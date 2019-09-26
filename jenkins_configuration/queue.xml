@@ -1,4 +1,46 @@
 <hudson.model.Queue_-State>
-  <counter>6731</counter>
-  <items />
+  <counter>6767</counter>
+  <items>
+    <hudson.model.Queue_-BlockedItem>
+      <actions>
+        <hudson.model.CauseAction>
+          <causeBag class="linked-hash-map">
+            <entry>
+              <hudson.model.Cause_-UpstreamCause>
+                <upstreamProject>jenkins-job-generator-trigger</upstreamProject>
+                <upstreamUrl>job/jenkins-job-generator-trigger/</upstreamUrl>
+                <upstreamBuild>67</upstreamBuild>
+                <upstreamCauses>
+                  <hudson.triggers.SCMTrigger_-SCMTriggerCause />
+                </upstreamCauses>
+              </hudson.model.Cause_-UpstreamCause>
+              <int>1</int>
+            </entry>
+          </causeBag>
+        </hudson.model.CauseAction>
+      </actions>
+      <id>6748</id>
+      <task class="org.jenkinsci.plugins.workflow.job.WorkflowJob">jenkins-job-generator</task>
+      <inQueueSince>1569404593679</inQueueSince>
+      <buildableStartMilliseconds>1569404598809</buildableStartMilliseconds>
+      <outer-class>queue</outer-class>
+    </hudson.model.Queue_-BlockedItem>
+    <hudson.model.Queue_-BlockedItem>
+      <actions>
+        <hudson.model.CauseAction>
+          <causeBag class="linked-hash-map">
+            <entry>
+              <hudson.triggers.TimerTrigger_-TimerTriggerCause />
+              <int>1</int>
+            </entry>
+          </causeBag>
+        </hudson.model.CauseAction>
+      </actions>
+      <id>6767</id>
+      <task class="org.jenkinsci.plugins.workflow.job.WorkflowJob">repository-update</task>
+      <inQueueSince>1569459780570</inQueueSince>
+      <buildableStartMilliseconds>1569459780570</buildableStartMilliseconds>
+      <outer-class reference="../../hudson.model.Queue_-BlockedItem/outer-class" />
+    </hudson.model.Queue_-BlockedItem>
+  </items>
 </hudson.model.Queue_-State>
