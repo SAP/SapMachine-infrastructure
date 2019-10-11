@@ -1,4 +1,155 @@
 <hudson.model.Queue_-State>
-  <counter>7159</counter>
-  <items />
+  <counter>7200</counter>
+  <items>
+    <hudson.model.Queue_-BlockedItem>
+      <actions>
+        <hudson.model.CauseAction>
+          <causeBag class="linked-hash-map">
+            <entry>
+              <hudson.model.Cause_-UpstreamCause>
+                <upstreamProject>validate-pr-14</upstreamProject>
+                <upstreamUrl>job/validate-pr-14/</upstreamUrl>
+                <upstreamBuild>72</upstreamBuild>
+                <upstreamCauses>
+                  <org.jenkinsci.plugins.github.pullrequest.GitHubPRCause plugin="github-pullrequest@0.2.6">
+                    <skip>false</skip>
+                    <reason>Commit changed</reason>
+                    <htmlUrl>https://github.com/SAP/SapMachine/pull/521</htmlUrl>
+                    <title>Merge to tag jdk-14+18</title>
+                    <gitUrl>git://github.com/SAP/SapMachine.git</gitUrl>
+                    <sshUrl>git@github.com:SAP/SapMachine.git</sshUrl>
+                    <headSha>004b394867c508e4614ad397fcda3c7e7e77b4cb</headSha>
+                    <number>521</number>
+                    <mergeable>false</mergeable>
+                    <targetBranch>sapmachine</targetBranch>
+                    <sourceBranch>pr-jdk-14+18</sourceBranch>
+                    <body>please pull</body>
+                    <sourceRepoOwner>SAP</sourceRepoOwner>
+                    <triggerSenderName>Github Bot of the SapMachine.</triggerSenderName>
+                    <labels />
+                    <commitAuthorName />
+                    <commitAuthorEmail />
+                    <condRef>head</condRef>
+                    <state>OPEN</state>
+                  </org.jenkinsci.plugins.github.pullrequest.GitHubPRCause>
+                </upstreamCauses>
+              </hudson.model.Cause_-UpstreamCause>
+              <int>1</int>
+            </entry>
+          </causeBag>
+        </hudson.model.CauseAction>
+        <org.jenkinsci.plugins.workflow.support.steps.build.BuildUpstreamNodeAction plugin="pipeline-build-step@2.9">
+          <upstreamNodeId>88</upstreamNodeId>
+          <upstreamRunId>validate-pr-14#72</upstreamRunId>
+        </org.jenkinsci.plugins.workflow.support.steps.build.BuildUpstreamNodeAction>
+        <org.jenkinsci.plugins.workflow.support.steps.build.BuildTriggerAction plugin="pipeline-build-step@2.9">
+          <triggers>
+            <org.jenkinsci.plugins.workflow.support.steps.build.BuildTriggerAction_-Trigger>
+              <context class="org.jenkinsci.plugins.workflow.cps.CpsStepContext" plugin="workflow-cps@2.74">
+                <executionRef class="org.jenkinsci.plugins.workflow.job.WorkflowRun$Owner" plugin="workflow-job@2.35">
+                  <job>validate-pr-14</job>
+                  <id>72</id>
+                </executionRef>
+                <id>88</id>
+                <bodyHeads />
+                <threadId>64</threadId>
+                <stepDescriptorId>org.jenkinsci.plugins.workflow.support.steps.build.BuildTriggerStep</stepDescriptorId>
+              </context>
+              <propagate>false</propagate>
+            </org.jenkinsci.plugins.workflow.support.steps.build.BuildTriggerAction_-Trigger>
+          </triggers>
+        </org.jenkinsci.plugins.workflow.support.steps.build.BuildTriggerAction>
+        <hudson.model.ParametersAction>
+          <safeParameters class="sorted-set" />
+          <parameters>
+            <hudson.model.StringParameterValue>
+              <name>BOOT_JDK_MAJOR</name>
+              <description>Specify the boot JDK major version explicitly.</description>
+              <value />
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>SAPMACHINE_GIT_REPOSITORY</name>
+              <description>The Git repository to use.</description>
+              <value>https://github.com/SAP/SapMachine.git</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>GIT_TAG_NAME</name>
+              <description>The Git tag to build.</description>
+              <value />
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>_CONFIGURE_SYSROOT</name>
+              <description>Sysroot configuration passed to configure script.</description>
+              <value />
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>jdk_test_groups</name>
+              <description>Select the test group for jtreg jdk tests. Empty means disabled.</description>
+              <value>:tier1</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.BooleanParameterValue>
+              <name>RUN_DACAPO</name>
+              <description>enable/disable dacapo run</description>
+              <value>false</value>
+            </hudson.model.BooleanParameterValue>
+            <hudson.model.BooleanParameterValue>
+              <name>PUBLISH</name>
+              <description>When set to true, the resulting bundles will be published to GitHub.</description>
+              <value>false</value>
+            </hudson.model.BooleanParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>hotspot_test_groups</name>
+              <description>Select the test group for jtreg hotspot tests. Empty means disabled.</description>
+              <value>:tier1</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>langtools_test_groups</name>
+              <description>Select the test group for jtreg langtools tests. Empty means disabled.</description>
+              <value>"jdk tools lib"</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.BooleanParameterValue>
+              <name>RELEASE</name>
+              <description>When set to true, marks this build as a release build, otherwise as pre-release.</description>
+              <value>false</value>
+            </hudson.model.BooleanParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>SAPMACHINE_ARCHIVE_NAME_PREFIX</name>
+              <description>The prefix of the bundle archive.</description>
+              <value>sapmachine14-windows_x86_64</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>EXTRA_CONFIGURE_OPTIONS</name>
+              <description>Configure options passed directly to configure script.</description>
+              <value />
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>BUILD_NUMBER</name>
+              <description>Sets the version build number explicitely.</description>
+              <value />
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>GITHUB_PR_NUMBER</name>
+              <description>The GitHub Pull Request number. Only used in Pull Request validation builds.</description>
+              <value>521</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>SAPMACHINE_GIT_BRANCH</name>
+              <description>The Git branch to build.</description>
+              <value>sapmachine</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.BooleanParameterValue>
+              <name>RUN_TESTS</name>
+              <description>enable/disable jtreg runs</description>
+              <value>true</value>
+            </hudson.model.BooleanParameterValue>
+          </parameters>
+        </hudson.model.ParametersAction>
+      </actions>
+      <id>7180</id>
+      <task class="org.jenkinsci.plugins.workflow.job.WorkflowJob">build-14-pr-validation-windows_x86_64</task>
+      <inQueueSince>1570695882285</inQueueSince>
+      <buildableStartMilliseconds>1570695888604</buildableStartMilliseconds>
+      <outer-class>queue</outer-class>
+    </hudson.model.Queue_-BlockedItem>
+  </items>
 </hudson.model.Queue_-State>
