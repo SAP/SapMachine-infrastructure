@@ -14,7 +14,7 @@
            branch_name: sapmachine
     platforms: &platforms
         - linux_x86_64:
-            configure_sysroot_default: '--with-sysroot=/opt/sysroot-sles11-x86_64 --with-freetype-lib=/opt/sysroot-sles11-x86_64/usr/lib64 --with-freetype-include=/opt/sysroot-sles11-x86_64/usr/include --with-stdc++lib=static'
+            configure_sysroot_default: '--with-sysroot=/opt/sysroot-sles11-x86_64 --with-stdc++lib=static'
             docker_agent: |
                 agent {{
                     dockerfile {{
@@ -24,7 +24,7 @@
                     }}
                 }}
         - linux_ppc64le:
-            configure_sysroot_default: '--with-sysroot=/opt/sysroot-sles12-ppc64le --with-freetype-lib=/opt/sysroot-sles12-ppc64le/usr/lib64 --with-freetype-include=/opt/sysroot-sles12-ppc64le/usr/include --with-stdc++lib=static'
+            configure_sysroot_default: '--with-sysroot=/opt/sysroot-sles12-ppc64le --with-stdc++lib=static'
             docker_agent: |
                 agent {{
                     dockerfile {{
@@ -37,7 +37,7 @@
             configure_sysroot_default: ''
             docker_agent: ''
         - linux_ppc64:
-            configure_sysroot_default: '--with-devkit=/opt/devkits/ppc64-linux-gnu-to-ppc64-linux-gnu --with-freetype-lib=/opt/devkits/ppc64-linux-gnu-to-ppc64-linux-gnu/ppc64-linux-gnu/sysroot/usr/lib64 --with-freetype-include=/opt/devkits/ppc64-linux-gnu-to-ppc64-linux-gnu/ppc64-linux-gnu/sysroot/usr/include'
+            configure_sysroot_default: '--with-devkit=/opt/devkits/ppc64-linux-gnu-to-ppc64-linux-gnu'
             docker_agent: ''
         - windows_x86_64:
             configure_sysroot_default: ''
