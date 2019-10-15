@@ -32,6 +32,8 @@ RUN export GNUPGHOME="$$(mktemp -d)" \\
     && apt-get -y --no-install-recommends install ${version} \\
     && rm -rf /var/lib/apt/lists/*
 
+ENV JAVA_HOME=/usr/lib/jvm/sapmachine-${major}
+
 CMD ["jshell"]
 '''
 
@@ -53,7 +55,10 @@ def process_release(release, prefix, tags, git_dir):
         dockerfile_path = join(dockerfile_dir, 'Dockerfile')
 
         with open(dockerfile_path, 'w+') as dockerfile:
-            dockerfile.write(Template(dockerfile_template).substitute(version=str.format('sapmachine-{0}-jdk={1}', major, version_part)))
+            dockerfile.write(Template(dockerfile_template).substitute(
+                version=str.format('sapmachine-{0}-jdk={1}', major, version_part),
+                major=major
+            ))
 
         utils.git_commit(git_dir, 'updated Dockerfile', [dockerfile_path])
         utils.git_tag(git_dir, tag_name)
