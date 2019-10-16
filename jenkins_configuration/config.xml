@@ -4,7 +4,7 @@
     <string>hudsonHomeIsFull</string>
     <string>hudson.node_monitors.MonitorMarkedNodeOffline</string>
   </disabledAdministrativeMonitors>
-  <version>2.197</version>
+  <version>2.200</version>
   <installStateName>RESTART</installStateName>
   <numExecutors>4</numExecutors>
   <mode>EXCLUSIVE</mode>
@@ -25,7 +25,7 @@
   <viewsTabBar class="hudson.views.DefaultViewsTabBar" />
   <myViewsTabBar class="hudson.views.DefaultMyViewsTabBar" />
   <clouds>
-    <hudson.plugins.ec2.EC2Cloud plugin="ec2@1.44.1">
+    <hudson.plugins.ec2.EC2Cloud plugin="ec2@1.46.1">
       <name>ec2-SapMachine Windows</name>
       <useInstanceProfileForCredentials>false</useInstanceProfileForCredentials>
       <roleArn />
@@ -61,25 +61,29 @@
           <useEphemeralDevices>false</useEphemeralDevices>
           <customDeviceMapping />
           <instanceCap>3</instanceCap>
+          <minimumNumberOfInstances>0</minimumNumberOfInstances>
           <stopOnTerminate>false</stopOnTerminate>
           <connectionStrategy>PUBLIC_IP</connectionStrategy>
-          <associatePublicIp>false</associatePublicIp>
+          <associatePublicIp>true</associatePublicIp>
           <useDedicatedTenancy>false</useDedicatedTenancy>
           <amiType class="hudson.plugins.ec2.WindowsData">
             <password>REMOVED_BY_BACKUP</password>
             <useHTTPS>false</useHTTPS>
             <bootDelay>200</bootDelay>
+            <specifyPassword>true</specifyPassword>
           </amiType>
           <launchTimeout>2147483647</launchTimeout>
           <connectBySSHProcess>false</connectBySSHProcess>
           <maxTotalUses>-1</maxTotalUses>
           <nextSubnet>0</nextSubnet>
+          <usePrivateDnsName>false</usePrivateDnsName>
+          <connectUsingPublicIp>true</connectUsingPublicIp>
         </hudson.plugins.ec2.SlaveTemplate>
       </templates>
       <region>us-east-1</region>
       <noDelayProvisioning>true</noDelayProvisioning>
     </hudson.plugins.ec2.EC2Cloud>
-    <hudson.plugins.ec2.EC2Cloud plugin="ec2@1.44.1">
+    <hudson.plugins.ec2.EC2Cloud plugin="ec2@1.46.1">
       <name>ec2-SapMachine Linux</name>
       <useInstanceProfileForCredentials>false</useInstanceProfileForCredentials>
       <roleArn />
@@ -115,9 +119,10 @@
           <useEphemeralDevices>false</useEphemeralDevices>
           <customDeviceMapping />
           <instanceCap>3</instanceCap>
+          <minimumNumberOfInstances>0</minimumNumberOfInstances>
           <stopOnTerminate>false</stopOnTerminate>
           <connectionStrategy>PUBLIC_IP</connectionStrategy>
-          <associatePublicIp>false</associatePublicIp>
+          <associatePublicIp>true</associatePublicIp>
           <useDedicatedTenancy>false</useDedicatedTenancy>
           <amiType class="hudson.plugins.ec2.UnixData">
             <rootCommandPrefix />
@@ -129,6 +134,8 @@
           <connectBySSHProcess>false</connectBySSHProcess>
           <maxTotalUses>-1</maxTotalUses>
           <nextSubnet>0</nextSubnet>
+          <usePrivateDnsName>false</usePrivateDnsName>
+          <connectUsingPublicIp>true</connectUsingPublicIp>
         </hudson.plugins.ec2.SlaveTemplate>
       </templates>
       <region>us-east-1</region>
