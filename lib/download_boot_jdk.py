@@ -21,7 +21,8 @@ def main(argv=None):
     parser.add_argument('-d', '--destination', help='the download destination', metavar='DIR', required=True)
     args = parser.parse_args()
 
-    major_to_build = int(args.major)
+    boot_jdk_major_max = int(args.major)
+    boot_jdk_major_min = boot_jdk_major_max - 1
     destination = os.path.realpath(args.destination)
     releases = utils.github_api_request('releases', per_page=100)
     platform = str.format('{0}-{1}_bin', utils.get_system(), utils.get_arch())
@@ -38,7 +39,7 @@ def main(argv=None):
 
         major = int(major)
 
-        if major <= major_to_build:
+        if major <= boot_jdk_major_max and major >= boot_jdk_major_min:
             assets = release['assets']
 
             for asset in assets:
