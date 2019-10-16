@@ -105,6 +105,10 @@
             name: GIT_TAG_NAME
             default: ''
             description: 'The Git tag to create a debian package from.'
+        - bool:
+            name: PUBLISH
+            default: '{publish_default}'
+            description: 'When set to true, the resulting RPMs will be published to GitHub.'
     dsl: |
         pipeline {
             agent {
@@ -134,6 +138,25 @@
                     post {
                         success {
                             archive "*.rpm"
+                        }
+                    }
+                },
+                stage('Publish') {
+                    when {
+                        expression { params.PUBLISH == true }
+                    }
+                    agent {
+                        dockerfile {
+                            dir "SapMachine-Infrastructure/dockerfiles/fedora-rpm"
+                            reuseNode true
+                            label "linux_x86_64"
+                        }
+                    }
+                    steps {
+                        withCredentials([
+                            [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
+                            ]) {
+                            sh "SapMachine-Infrastructure/lib/publish_rpm.sh"
                         }
                     }
                 }

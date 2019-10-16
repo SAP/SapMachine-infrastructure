@@ -382,7 +382,7 @@
                             ]
                     }}
                 }}
-                stage('Build RPM Linux Packages') {{
+                stage('Build and Publish RPM Linux Packages') {{
                     when {{
                         expression {{ params.PUBLISH == true && params.RELEASE == true && JOB_NAME ==~ /((\S*)(release-linux_x86_64)(\S*))/ }}
                     }}
@@ -390,19 +390,8 @@
                         build job: 'rpm-package', propagate: false, wait: true, parameters:
                             [
                                 string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
+                                [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
                             ]
-                    }}
-                }}
-                stage('Publish RPM Linux Packages') {{
-                    when {{
-                        expression {{ params.PUBLISH == true && params.RELEASE == true && JOB_NAME ==~ /((\S*)(release-linux_x86_64)(\S*))/ }}
-                    }}
-                    steps {{
-                        withCredentials([
-                            [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
-                            ]) {{
-                            sh "SapMachine-Infrastructure/lib/publish_rpm.sh"
-                        }}
                     }}
                 }}
                 stage('Generate Dockerfiles') {{
