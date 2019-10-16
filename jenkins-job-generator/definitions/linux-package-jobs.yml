@@ -140,7 +140,7 @@
                             archive "*.rpm"
                         }
                     }
-                },
+                }
                 stage('Publish') {
                     when {
                         expression { params.PUBLISH == true }
