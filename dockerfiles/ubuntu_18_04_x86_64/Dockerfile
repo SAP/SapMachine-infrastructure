@@ -22,7 +22,6 @@ zip \
 wget \
 git \
 unzip \
-realpath \
 libfontconfig1-dev \
 ca-certificates \
 curl \
