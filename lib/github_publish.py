@@ -12,6 +12,7 @@ import argparse
 import mimetypes
 
 from urllib2 import quote
+from urllib2 import URLError
 from os.path import join
 
 
@@ -100,6 +101,9 @@ def main(argv=None):
             except IOError:
                 _type, value, _traceback = sys.exc_info()
                 print(str.format('Error uploading asset "{0}": {1}', asset_name, value.strerror))
+                retry -= 1
+            except URLError:
+                print(str.format('Error uploading asset "{0}"', asset_name))
                 retry -= 1
 
 if __name__ == "__main__":
