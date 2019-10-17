@@ -1,16 +1,10 @@
 <flow-definition plugin="workflow-job@2.35">
-  <actions />
+  <actions>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.3.9" />
+  </actions>
   <description>This project is generated. Do not modify manually.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
   <properties>
-    <jenkins.model.BuildDiscarderProperty>
-      <strategy class="hudson.tasks.LogRotator">
-        <daysToKeep>-1</daysToKeep>
-        <numToKeep>100</numToKeep>
-        <artifactDaysToKeep>-1</artifactDaysToKeep>
-        <artifactNumToKeep>1</artifactNumToKeep>
-      </strategy>
-    </jenkins.model.BuildDiscarderProperty>
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
         <hudson.model.StringParameterDefinition>
@@ -107,6 +101,14 @@
         </hudson.model.BooleanParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>-1</daysToKeep>
+        <numToKeep>100</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>1</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
     <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty />
   </properties>
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.74">
@@ -316,7 +318,7 @@
                 withCredentials([
                     [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
                     ]) {
-                    sh "SapMachine-infrastructure/lib/publish_msi.sh"
+                    sh "SapMachine-Infrastructure/lib/publish_msi.sh"
                 }
             }
         }
@@ -348,7 +350,7 @@
                     ]
             }
         }
-        stage('Build RPM Linux Packages') {
+        stage('Build and Publish RPM Linux Packages') {
             when {
                 expression { params.PUBLISH == true &amp;&amp; params.RELEASE == true &amp;&amp; JOB_NAME ==~ /((\S*)(release-linux_x86_64)(\S*))/ }
             }
@@ -356,19 +358,8 @@
                 build job: 'rpm-package', propagate: false, wait: true, parameters:
                     [
                         string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
+                        [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
                     ]
-            }
-        }
-        stage('Publish RPM Linux Packages') {
-            when {
-                expression { params.PUBLISH == true &amp;&amp; params.RELEASE == true &amp;&amp; JOB_NAME ==~ /((\S*)(release-linux_x86_64)(\S*))/ }
-            }
-            steps {
-                withCredentials([
-                    [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
-                    ]) {
-                    sh "SapMachine-infrastructure/lib/publish_rpm.sh"
-                }
             }
         }
         stage('Generate Dockerfiles') {
