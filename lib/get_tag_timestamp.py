@@ -19,9 +19,10 @@ def main(argv=None):
 
     releases = utils.github_api_request('releases', per_page=100)
 
-    for release in releases:
-        if release['tag_name'] == args.tag:
-            print(release['published_at'].split('T')[0])
+    if releases is not None:
+        for release in releases:
+            if release['tag_name'] == args.tag:
+                print(release['published_at'].split('T')[0])
 
 if __name__ == "__main__":
     sys.exit(main())
