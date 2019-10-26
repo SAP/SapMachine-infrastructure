@@ -5,6 +5,59 @@
   <sshUrl>git@github.com:SAP/SapMachine.git</sshUrl>
   <pulls class="concurrent-hash-map">
     <entry>
+      <int>529</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>529</number>
+        <issueUpdatedAt>2019-10-25 13:50:09.0 UTC</issueUpdatedAt>
+        <title>8218628: Add detailed message to NullPointerException describing what&#8230;</title>
+        <body>&#8230; is null.
+
+Summary: This is the implementation of JEP 358: Helpful NullPointerExceptions.
+Reviewed-by: coleenp, clanger, rschmelter, rriggs, forax, mr
+
+(cherry picked from commit dfdf8d16151bd27aa288b7f7c981e70651350ad8)
+
+The description of this pull request goes here.
+
+fixes #528</body>
+        <prUpdatedAt>2019-10-25 13:50:09.0 UTC</prUpdatedAt>
+        <headSha>dd88dc9778ed38afd08abcb9d82eded02c50f597</headSha>
+        <headRef>goetz_downport_8218628</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine11</baseRef>
+        <userLogin>GoeLin</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/529</htmlUrl>
+        <labels />
+        <lastCommentCreatedAt>2019-10-25 13:50:09.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>SAP</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>531</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>531</number>
+        <issueUpdatedAt>2019-10-25 14:19:55.0 UTC</issueUpdatedAt>
+        <title>SapMachine #530: 8233014: Enable ShowCodeDetailsInExceptionMessages per default.</title>
+        <body>We want to push this change earl. In OpenJDK, it is planned for 15 or later. 
+
+fixes #530</body>
+        <prUpdatedAt>2019-10-25 14:19:55.0 UTC</prUpdatedAt>
+        <headSha>266bc44ce16c84e1ea2492c7b19de44605fc47e2</headSha>
+        <headRef>goetz_8233014-enable_NPE</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine</baseRef>
+        <userLogin>GoeLin</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/531</htmlUrl>
+        <labels />
+        <lastCommentCreatedAt>2019-10-25 14:19:55.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>SAP</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
       <int>502</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>502</number>
@@ -22,27 +75,6 @@ fixes #501</body>
         <htmlUrl>https://github.com/SAP/SapMachine/pull/502</htmlUrl>
         <labels />
         <lastCommentCreatedAt>2019-09-19 14:17:20.0 UTC</lastCommentCreatedAt>
-        <sourceRepoOwner>SAP</sourceRepoOwner>
-        <state>OPEN</state>
-        <inBadState>false</inBadState>
-      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-    </entry>
-    <entry>
-      <int>527</int>
-      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>527</number>
-        <issueUpdatedAt>2019-10-24 01:12:07.0 UTC</issueUpdatedAt>
-        <title>Merge to tag jdk-14+20</title>
-        <body>please pull</body>
-        <prUpdatedAt>2019-10-24 01:12:07.0 UTC</prUpdatedAt>
-        <headSha>0cc9d6837b9fd0aa3ece5d8fef54bd8c0defb3e0</headSha>
-        <headRef>pr-jdk-14+20</headRef>
-        <mergeable>true</mergeable>
-        <baseRef>sapmachine</baseRef>
-        <userLogin>SapMachine</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/527</htmlUrl>
-        <labels />
-        <lastCommentCreatedAt>2019-10-24 01:11:35.0 UTC</lastCommentCreatedAt>
         <sourceRepoOwner>SAP</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
