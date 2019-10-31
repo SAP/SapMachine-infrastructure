@@ -8,11 +8,9 @@
       <int>529</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>529</number>
-        <issueUpdatedAt>2019-10-29 17:37:48.0 UTC</issueUpdatedAt>
-        <title>8218628: Add detailed message to NullPointerException describing what&#8230;</title>
-        <body>&#8230; is null.
-
-Summary: This is the implementation of JEP 358: Helpful NullPointerExceptions.
+        <issueUpdatedAt>2019-10-30 15:09:59.0 UTC</issueUpdatedAt>
+        <title>SapMachine11: Cherry-pick 8218628: Add detailed message to NullPointerException describing what is null</title>
+        <body>Summary: This is the implementation of JEP 358: Helpful NullPointerExceptions.
 Reviewed-by: coleenp, clanger, rschmelter, rriggs, forax, mr
 
 (cherry picked from commit dfdf8d16151bd27aa288b7f7c981e70651350ad8)
@@ -20,15 +18,15 @@ Reviewed-by: coleenp, clanger, rschmelter, rriggs, forax, mr
 The description of this pull request goes here.
 
 fixes #528</body>
-        <prUpdatedAt>2019-10-29 17:37:48.0 UTC</prUpdatedAt>
-        <headSha>dd88dc9778ed38afd08abcb9d82eded02c50f597</headSha>
+        <prUpdatedAt>2019-10-30 15:09:59.0 UTC</prUpdatedAt>
+        <headSha>59505a0b56230d2bc6d727ee7dd7573077b817c1</headSha>
         <headRef>goetz_downport_8218628</headRef>
         <mergeable>true</mergeable>
         <baseRef>sapmachine11</baseRef>
         <userLogin>GoeLin</userLogin>
         <htmlUrl>https://github.com/SAP/SapMachine/pull/529</htmlUrl>
         <labels />
-        <lastCommentCreatedAt>2019-10-25 13:50:09.0 UTC</lastCommentCreatedAt>
+        <lastCommentCreatedAt>2019-10-30 15:09:59.0 UTC</lastCommentCreatedAt>
         <sourceRepoOwner>SAP</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
@@ -38,12 +36,12 @@ fixes #528</body>
       <int>531</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>531</number>
-        <issueUpdatedAt>2019-10-29 17:41:37.0 UTC</issueUpdatedAt>
-        <title>SapMachine #530: 8233014: Enable ShowCodeDetailsInExceptionMessages per default.</title>
+        <issueUpdatedAt>2019-10-30 08:18:49.0 UTC</issueUpdatedAt>
+        <title>SapMachine #530: Enable ShowCodeDetailsInExceptionMessages per default in SapMachine (JDK-8233014)</title>
         <body>We want to push this change earl. In OpenJDK, it is planned for 15 or later. 
 
 fixes #530</body>
-        <prUpdatedAt>2019-10-29 17:41:37.0 UTC</prUpdatedAt>
+        <prUpdatedAt>2019-10-30 08:18:49.0 UTC</prUpdatedAt>
         <headSha>266bc44ce16c84e1ea2492c7b19de44605fc47e2</headSha>
         <headRef>goetz_8233014-enable_NPE</headRef>
         <mergeable>true</mergeable>
@@ -53,6 +51,27 @@ fixes #530</body>
         <labels />
         <lastCommentCreatedAt>2019-10-25 14:19:55.0 UTC</lastCommentCreatedAt>
         <sourceRepoOwner>SAP</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>532</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>532</number>
+        <issueUpdatedAt>2019-10-30 15:08:52.0 UTC</issueUpdatedAt>
+        <title>SapMachine13: Cherry-pick 8218628: Add detailed message to NullPointerException describing what is null</title>
+        <body>fixes #528</body>
+        <prUpdatedAt>2019-10-30 15:08:52.0 UTC</prUpdatedAt>
+        <headSha>b3c7201b60676aa914cbfc44e3ad035a4f85a8d1</headSha>
+        <headRef>sapmachine13-npe-cherrypick</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine13</baseRef>
+        <userLogin>RealCLanger</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/532</htmlUrl>
+        <labels />
+        <lastCommentCreatedAt>2019-10-30 15:08:52.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>RealCLanger</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
       </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
