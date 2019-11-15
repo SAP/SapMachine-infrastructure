@@ -26,21 +26,7 @@
   <myViewsTabBar class="hudson.views.DefaultMyViewsTabBar" />
   <clouds>
     <hudson.plugins.ec2.EC2Cloud plugin="ec2@1.46.1">
-      <name>ec2-SapMachine Windows</name>
-      <useInstanceProfileForCredentials>false</useInstanceProfileForCredentials>
-      <roleArn />
-      <roleSessionName />
-      <credentialsId>JekinsAWSKey</credentialsId>
-      <privateKey>
-        <privateKey>REMOVED_BY_BACKUP</privateKey>
-      </privateKey>
-      <instanceCap>6</instanceCap>
-      <templates class="empty-list" />
-      <region>us-east-1</region>
-      <noDelayProvisioning>true</noDelayProvisioning>
-    </hudson.plugins.ec2.EC2Cloud>
-    <hudson.plugins.ec2.EC2Cloud plugin="ec2@1.46.1">
-      <name>ec2-SapMachine Linux</name>
+      <name>ec2-SapMachine Cloud</name>
       <useInstanceProfileForCredentials>false</useInstanceProfileForCredentials>
       <roleArn />
       <roleSessionName />
@@ -52,7 +38,7 @@
       <templates>
         <hudson.plugins.ec2.SlaveTemplate>
           <ami>ami-020c0998cf9c3635c</ami>
-          <description>Linux Slave (EC2 Cloud)</description>
+          <description>Linux Slave</description>
           <zone>us-east-1d</zone>
           <securityGroups>JenkinsLinuxSlave</securityGroups>
           <remoteFS>/home/ubuntu/slave_home</remoteFS>
@@ -85,6 +71,49 @@
             <slaveCommandPrefix />
             <slaveCommandSuffix />
             <sshPort>22</sshPort>
+          </amiType>
+          <launchTimeout>2147483647</launchTimeout>
+          <connectBySSHProcess>false</connectBySSHProcess>
+          <maxTotalUses>-1</maxTotalUses>
+          <nextSubnet>0</nextSubnet>
+          <usePrivateDnsName>false</usePrivateDnsName>
+          <connectUsingPublicIp>true</connectUsingPublicIp>
+        </hudson.plugins.ec2.SlaveTemplate>
+        <hudson.plugins.ec2.SlaveTemplate>
+          <ami>ami-04c37b4c2a2403b0b</ami>
+          <description>Windows Slave</description>
+          <zone>us-east-1d</zone>
+          <securityGroups>JenkinsWindowsSlave</securityGroups>
+          <remoteFS>C:\jenkins</remoteFS>
+          <type>M54xlarge</type>
+          <ebsOptimized>true</ebsOptimized>
+          <monitoring>false</monitoring>
+          <t2Unlimited>false</t2Unlimited>
+          <labels>windows_x86_64</labels>
+          <mode>NORMAL</mode>
+          <initScript />
+          <tmpDir>C:\TEMP\</tmpDir>
+          <userData />
+          <numExecutors>1</numExecutors>
+          <remoteAdmin>Administrator</remoteAdmin>
+          <jvmopts />
+          <subnetId />
+          <idleTerminationMinutes>10</idleTerminationMinutes>
+          <iamInstanceProfile />
+          <deleteRootOnTermination>false</deleteRootOnTermination>
+          <useEphemeralDevices>false</useEphemeralDevices>
+          <customDeviceMapping />
+          <instanceCap>3</instanceCap>
+          <minimumNumberOfInstances>0</minimumNumberOfInstances>
+          <stopOnTerminate>false</stopOnTerminate>
+          <connectionStrategy>PUBLIC_IP</connectionStrategy>
+          <associatePublicIp>true</associatePublicIp>
+          <useDedicatedTenancy>false</useDedicatedTenancy>
+          <amiType class="hudson.plugins.ec2.WindowsData">
+            <password>REMOVED_BY_BACKUP</password>
+            <useHTTPS>false</useHTTPS>
+            <bootDelay>200</bootDelay>
+            <specifyPassword>true</specifyPassword>
           </amiType>
           <launchTimeout>2147483647</launchTimeout>
           <connectBySSHProcess>false</connectBySSHProcess>

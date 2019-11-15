@@ -1,12 +1,6 @@
 <flow-definition plugin="workflow-job@2.36">
   <actions>
     <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.4.0" />
-    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.4.0">
-      <jobProperties />
-      <triggers />
-      <parameters />
-      <options />
-    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
   </actions>
   <description>This project is generated. Do not modify manually.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
@@ -117,7 +111,7 @@
     </jenkins.model.BuildDiscarderProperty>
     <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty />
   </properties>
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.75">
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.76">
     <script>pipeline {
     agent {
         label "linux_ppc64le"
