@@ -47,13 +47,15 @@ def write_as_rtf(source, target):
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
-    parser.add_argument('-a', '--asset', help='the SapMachine JDK asset file', metavar='ASSET', required=True)
+    parser.add_argument('-a', '--asset', help='the SapMachine asset file', metavar='ASSET', required=True)
+    parser.add_argument('--jre', help='Build SapMachine JRE installer', metavar='JRE', action='store_true', default=False)
     parser.add_argument('-s', '--sapmachine-directory', help='specify the SapMachine GIT directory', metavar='DIR', required=True)
     args = parser.parse_args()
 
     cwd = os.getcwd()
     work_dir = join(cwd, 'msi_work')
     asset = os.path.realpath(args.asset)
+    is_jre = args.jre
     sapmachine_git_dir = args.sapmachine_directory
     products = None
     product_id = None
@@ -89,10 +91,10 @@ def main(argv=None):
     with open(join(templates_dir, 'products.yml'), 'r') as products_yml:
         products = yaml.safe_load(products_yml.read())
 
-    if major not in products:
+    if major not in products['jre' if is_jre else 'jdk']:
         product_id = str(uuid.uuid4())
         upgrade_code = str(uuid.uuid4())
-        products[major] = { 'product_id': product_id, 'upgrade_code': upgrade_code }
+        products['jre' if is_jre else 'jdk'][major] = { 'product_id': product_id, 'upgrade_code': upgrade_code }
 
         with open(join(templates_dir, 'products.yml'), 'w') as products_yml:
             products_yml.write(yaml.dump(products, default_flow_style=False))
@@ -100,11 +102,11 @@ def main(argv=None):
         utils.git_commit(infrastructure_dir, 'Updated product codes.', [join('wix-templates', 'products.yml')])
         utils.git_push(infrastructure_dir)
     else:
-        product_id = products[major]['product_id']
-        upgrade_code = products[major]['upgrade_code']
+        product_id = products['jre' if is_jre else 'jdk'][major]['product_id']
+        upgrade_code = products['jre' if is_jre else 'jdk'][major]['upgrade_code']
 
     create_sapmachine_wxs(
-        join(templates_dir, 'SapMachine.wxs.template'),
+        join(templates_dir, 'SapMachine.jre.wxs.template' if is_jre else 'SapMachine.jre.wxs.template'),
         join(work_dir, 'SapMachine.wxs'),
         product_id,
         upgrade_code,

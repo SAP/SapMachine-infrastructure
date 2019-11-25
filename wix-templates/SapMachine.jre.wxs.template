@@ -2,7 +2,7 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <Product Name='SapMachine' Id='${PRODUCT_ID}' UpgradeCode='${UPGRADE_CODE}' Language='1033' Codepage='1252' Version='${VERSION}' Manufacturer='SapMachine Team'>
 
-    <Package Id='*' Keywords='Installer' Description="SapMachine ${VERSION} JDK Installer" Comments='https://sapmachine.io' Manufacturer='SapMachine Team' InstallerVersion='200' Languages='1033' Compressed='yes' SummaryCodepage='1252' />
+    <Package Id='*' Keywords='Installer' Description="SapMachine ${VERSION} JRE Installer" Comments='https://sapmachine.io' Manufacturer='SapMachine Team' InstallerVersion='200' Languages='1033' Compressed='yes' SummaryCodepage='1252' />
 
     <Upgrade Id='${UPGRADE_CODE}'>
         <UpgradeVersion OnlyDetect='no' Property='OLDERFOUND' Maximum='${VERSION}' IncludeMaximum='no' />
@@ -10,8 +10,8 @@
         <UpgradeVersion OnlyDetect='yes' Property='NEWERFOUND' Minimum='${VERSION}' IncludeMinimum='no' />
     </Upgrade>
 
-    <CustomAction Id='AlreadyUpdated' Error='SapMachine has already been updated to ${VERSION} or newer.' />
-    <CustomAction Id='NoDowngrade' Error='A later version of SapMachine is already installed.' />
+    <CustomAction Id='AlreadyUpdated' Error='SapMachine JRE has already been updated to ${VERSION} or newer.' />
+    <CustomAction Id='NoDowngrade' Error='A later version of SapMachine JRE is already installed.' />
 
     <InstallExecuteSequence>
         <RemoveExistingProducts After="InstallInitialize" />
@@ -36,7 +36,7 @@
     <Directory Id='TARGETDIR' Name='SourceDir'>
         <Directory Id='ProgramFiles64Folder' Name='PFiles'>
         <Directory Id='SapMachineDir' Name='SapMachine'>
-            <Directory Id='JDKDir' Name='JDK'>
+            <Directory Id='JREDir' Name='JRE'>
             <Directory Id='INSTALLDIR' Name='${MAJOR}'>
                 <Component Id='ReleaseFile' Guid='*'>
                 <File Id='Release' Name='release' DiskId='1' Source='release' KeyPath='yes' />
@@ -50,12 +50,12 @@
 
     <DirectoryRef Id="INSTALLDIR">
         <Component Id="AddToPath" Guid="*">
-        <RegistryValue Root="HKLM" Key="SOFTWARE\SapMachine\JDK\${VERSION}\MSI" Name="EnvironmentPath" Type="integer" Value="1" KeyPath="yes" />
+        <RegistryValue Root="HKLM" Key="SOFTWARE\SapMachine\JRE\${VERSION}\MSI" Name="EnvironmentPath" Type="integer" Value="1" KeyPath="yes" />
         <Environment Id="PATH" Name="PATH" Value="[INSTALLDIR]bin" Permanent="no" Part="first" Action="set" System="yes" />
         </Component>
 
         <Component Id="SetJavaHomeVariable" Guid="*">
-        <RegistryValue Root="HKLM" Key="SOFTWARE\SapMachine\JDK\${VERSION}\MSI" Name="JavaHome" Type="integer" Value="1" KeyPath="yes" />
+        <RegistryValue Root="HKLM" Key="SOFTWARE\SapMachine\JRE\${VERSION}\MSI" Name="JavaHome" Type="integer" Value="1" KeyPath="yes" />
         <Environment Id="JAVA_HOME" Name="JAVA_HOME" Value="[INSTALLDIR]" Permanent="no" Action="set" System="yes" />
         </Component>
 
@@ -66,8 +66,8 @@
         </Component>
 
         <Component Id="SetRegistryKeys" Guid="*">
-        <RegistryValue Root="HKLM" Key="SOFTWARE\SapMachine\JDK\${VERSION}" Name="JavaHome" Type="string" Value="[INSTALLDIR]" KeyPath="yes" />
-        <RegistryValue Root="HKLM" Key="SOFTWARE\SapMachine\JDK\${VERSION}" Name="RuntimeLib" Type="string" Value="[INSTALLDIR]bin\server\jvm.dll" KeyPath="no" />
+        <RegistryValue Root="HKLM" Key="SOFTWARE\SapMachine\JRE\${VERSION}" Name="JavaHome" Type="string" Value="[INSTALLDIR]" KeyPath="yes" />
+        <RegistryValue Root="HKLM" Key="SOFTWARE\SapMachine\JRE\${VERSION}" Name="RuntimeLib" Type="string" Value="[INSTALLDIR]bin\server\jvm.dll" KeyPath="no" />
         </Component>
     </DirectoryRef>
 

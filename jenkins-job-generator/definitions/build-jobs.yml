@@ -313,10 +313,13 @@
                             ]) {{
                             script {{
                                 def jdk_bundle_name = readFile "${{env.WORKSPACE}}/jdk_bundle_name.txt"
+                                def jre_bundle_name = readFile "${{env.WORKSPACE}}/jre_bundle_name.txt"
                                 jdk_bundle_name = jdk_bundle_name.trim()
+                                jre_bundle_name = jre_bundle_name.trim()
 
                                 sh "rm -f *.msi"
                                 sh "python SapMachine-Infrastructure/lib/make_msi.py --sapmachine-directory=`pwd`/SapMachine --asset=${{jdk_bundle_name}}"
+                                sh "python SapMachine-Infrastructure/lib/make_msi.py --sapmachine-directory=`pwd`/SapMachine --jre --asset=${{jre_bundle_name}}"
                                 archiveArtifacts allowEmptyArchive: true, artifacts: "*.msi"
                             }}
                         }}
