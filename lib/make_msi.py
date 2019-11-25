@@ -90,11 +90,16 @@ def main(argv=None):
 
     with open(join(templates_dir, 'products.yml'), 'r') as products_yml:
         products = yaml.safe_load(products_yml.read())
+        print(products)
 
-    if major not in products['jre' if is_jre else 'jdk']:
+    image_type = 'jre' if is_jre else 'jdk'
+
+    if products[image_type] is None or major not in products[image_type]:
         product_id = str(uuid.uuid4())
         upgrade_code = str(uuid.uuid4())
-        products['jre' if is_jre else 'jdk'][major] = { 'product_id': product_id, 'upgrade_code': upgrade_code }
+        if products[image_type] is None:
+            products[image_type] = {}
+        products[image_type][major] = { 'product_id': product_id, 'upgrade_code': upgrade_code }
 
         with open(join(templates_dir, 'products.yml'), 'w') as products_yml:
             products_yml.write(yaml.dump(products, default_flow_style=False))
@@ -102,8 +107,8 @@ def main(argv=None):
         utils.git_commit(infrastructure_dir, 'Updated product codes.', [join('wix-templates', 'products.yml')])
         utils.git_push(infrastructure_dir)
     else:
-        product_id = products['jre' if is_jre else 'jdk'][major]['product_id']
-        upgrade_code = products['jre' if is_jre else 'jdk'][major]['upgrade_code']
+        product_id = products[image_type][major]['product_id']
+        upgrade_code = products[image_type][major]['upgrade_code']
 
     create_sapmachine_wxs(
         join(templates_dir, 'SapMachine.jre.wxs.template' if is_jre else 'SapMachine.jre.wxs.template'),
