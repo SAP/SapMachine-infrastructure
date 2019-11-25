@@ -48,7 +48,7 @@ def write_as_rtf(source, target):
 def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('-a', '--asset', help='the SapMachine asset file', metavar='ASSET', required=True)
-    parser.add_argument('--jre', help='Build SapMachine JRE installer', metavar='JRE', action='store_true', default=False)
+    parser.add_argument('-j', '--jre', help='Build SapMachine JRE installer', action='store_true', default=False)
     parser.add_argument('-s', '--sapmachine-directory', help='specify the SapMachine GIT directory', metavar='DIR', required=True)
     args = parser.parse_args()
 
