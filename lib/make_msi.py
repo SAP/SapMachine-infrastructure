@@ -111,7 +111,7 @@ def main(argv=None):
         upgrade_code = products[image_type][major]['upgrade_code']
 
     create_sapmachine_wxs(
-        join(templates_dir, 'SapMachine.jre.wxs.template' if is_jre else 'SapMachine.jre.wxs.template'),
+        join(templates_dir, 'SapMachine.jre.wxs.template' if is_jre else 'SapMachine.jdk.wxs.template'),
         join(work_dir, 'SapMachine.wxs'),
         product_id,
         upgrade_code,
