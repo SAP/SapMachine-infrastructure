@@ -23,6 +23,11 @@ os_description = {
     'osx-x64':               { 'ordinal': 6, 'name': 'macOS x64'}
 }
 
+image_type_description = {
+    'jdk':  { 'ordinal': 1, 'name': 'JDK' },
+    'jre':  { 'ordinal': 2, 'name': 'JRE' },
+}
+
 latest_template = '''---
 layout: default
 title: Latest SapMachine ${major} Release
@@ -36,11 +41,14 @@ class Releases:
         self.major = major
         self.releases = {}
 
-    def add_asset(self, asset_url, os, tag):
+    def add_asset(self, asset_url, image_type, os, tag):
         if tag not in self.releases:
             self.releases[tag] = {}
 
-        self.releases[tag][os] = asset_url
+        if image_type not in self.releases[tag]:
+            self.releases[tag][image_type] = {}
+
+        self.releases[tag][image_type][os] = asset_url
 
     def clear_assets(self):
         self.releases.clear()
@@ -57,8 +65,10 @@ class Releases:
                 'tag': tag
             }
 
-            for os in self.releases[tag]:
-                release[os] = self.releases[tag][os]
+            for image_type in self.releases[tag]:
+                release[image_type] = {}
+                for os in self.releases[tag][image_type]:
+                    release[image_type][os] = self.releases[tag][image_type][os]
 
             json_root[self.major]['releases'].append(release)
 
@@ -131,37 +141,35 @@ def main(argv=None):
 
             if match is not None:
                 asset_image_type = match.group(1)
+                asset_os = match.group(3)
+                file_type = match.group(4)
 
-                if asset_image_type == 'jdk':
-                    asset_os = match.group(3)
-                    file_type = match.group(4)
+                if asset_os == 'windows-x64' and file_type == '.msi':
+                    asset_os = 'windows-x64-installer'
 
-                    if asset_os == 'windows-x64' and file_type == '.msi':
-                        asset_os = 'windows-x64-installer'
+                if asset_os == 'osx-x64':
+                    if file_type == '.dmg':
+                        has_dmg = True
+                    elif has_dmg:
+                        continue
 
-                    if asset_os == 'osx-x64':
-                        if file_type == '.dmg':
-                            has_dmg = True
-                        elif has_dmg:
-                            continue
+                tag = release['name']
+                image_is_lts = utils.sapmachine_is_lts(major) and not release['prerelease']
 
-                    tag = release['name']
-                    image_is_lts = utils.sapmachine_is_lts(major) and not release['prerelease']
+                if major not in image_dict:
+                    image_dict[major] = {
+                        'label': str.format('SapMachine {0}', major),
+                        'lts': image_is_lts,
+                        'ea': release['prerelease']
+                    }
 
-                    if major not in image_dict:
-                        image_dict[major] = {
-                            'label': str.format('SapMachine {0}', major),
-                            'lts': image_is_lts,
-                            'ea': release['prerelease']
-                        }
+                if major in release_dict:
+                    releases_for_major = release_dict[major]
+                else:
+                    releases_for_major = Releases(major)
+                    release_dict[major] = releases_for_major
 
-                    if major in release_dict:
-                        releases = release_dict[major]
-                    else:
-                        releases = Releases(major)
-                        release_dict[major] = releases
-
-                    release_dict[major].add_asset(asset['browser_download_url'], asset_os, tag)
+                release_dict[major].add_asset(asset['browser_download_url'], asset_image_type, asset_os, tag)
 
     latest_lts_version = 0
     latest_non_lts_version = 0
@@ -173,6 +181,7 @@ def main(argv=None):
             latest_non_lts_version = int(major)
 
     json_root = {
+        'majors':[],
         'imageTypes':[],
         'os':[],
         'assets':{}
@@ -188,15 +197,21 @@ def main(argv=None):
                 add = True
 
         if add:
-            json_root['imageTypes'].append({'id': major, 'label': image_dict[major]['label'], 'lts': image_dict[major]['lts'], 'ea': image_dict[major]['ea']})
+            json_root['majors'].append({'id': major, 'label': image_dict[major]['label'], 'lts': image_dict[major]['lts'], 'ea': image_dict[major]['ea']})
         else:
             del image_dict[major]
 
     def get_os_key(os):
         return os_description[os]['ordinal']
 
+    def get_image_type_key(image_type):
+        return image_type_description[image_type]['ordinal']
+
     for os in sorted(os_description, key=get_os_key):
         json_root['os'].append({'key': os, 'value': os_description[os]['name'], 'ordinal': os_description[os]['ordinal']})
+
+    for image_type in sorted(image_type_description, key=get_image_type_key):
+        json_root['imageTypes'].append({'key': image_type, 'value': image_type_description[image_type]['name'], 'ordinal': image_type_description[image_type]['ordinal']})
 
     for major in release_dict:
         if major in image_dict:
@@ -218,6 +233,10 @@ def main(argv=None):
         })
 
     push_to_git(files)
+
+    #with open('website_data.json', 'w') as website_data_json:
+    #    website_data_json.write(json.dumps(json_root, indent=4))
+
     return 0
 
 if __name__ == "__main__":
