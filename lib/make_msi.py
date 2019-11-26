@@ -90,7 +90,6 @@ def main(argv=None):
 
     with open(join(templates_dir, 'products.yml'), 'r') as products_yml:
         products = yaml.safe_load(products_yml.read())
-        print(products)
 
     image_type = 'jre' if is_jre else 'jdk'
 
