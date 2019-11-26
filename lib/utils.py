@@ -12,8 +12,8 @@ import re
 import json
 import platform
 from zipfile import ZipFile, ZipInfo
-
-from urllib2 import urlopen, Request, quote
+from urllib.request import urlopen, Request
+from urllib.parse import quote
 from os import remove
 from os.path import join
 from os.path import exists
@@ -23,7 +23,7 @@ from shutil import move
 def run_cmd(cmdline, throw=True, cwd=None, env=None, std=False, shell=False):
     import subprocess
 
-    print str.format('calling {0}', cmdline)
+    print(str.format('calling {0}', cmdline))
     if std:
         subproc = subprocess.Popen(cmdline, cwd=cwd, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=shell)
         out, err = subproc.communicate()
@@ -55,13 +55,13 @@ class SafeZipFile(ZipFile):
 def extract_archive(archive, target, remove_archive=True):
     if archive.endswith('.zip'):
         with SafeZipFile(archive) as zip_ref:
-            print(str.format('Extracting zip archive {0} ...', archive))
+            print((str.format('Extracting zip archive {0} ...', archive)))
             zip_ref.extractall(target)
 
         if remove_archive:
             remove(archive)
     elif archive.endswith('tar.gz'):
-        print(str.format('Extracting tar.gz archive {0} ...', archive))
+        print((str.format('Extracting tar.gz archive {0} ...', archive)))
         with tarfile.open(archive, 'r') as tar_ref:
             tar_ref.extractall(target)
 
@@ -71,14 +71,14 @@ def extract_archive(archive, target, remove_archive=True):
         move(archive, target)
 
 def download_artifact(url, target):
-    import urllib
+    import urllib.request, urllib.parse, urllib.error
 
     if exists(target):
         remove(target)
 
     with open(target,'wb') as file:
-        print(str.format('Downloading {0} ...', url))
-        file.write(urllib.urlopen(url, proxies={}).read())
+        print((str.format('Downloading {0} ...', url)))
+        file.write(urllib.request.urlopen(url).read())
 
 def make_tgz_archive(src, dest, arcname=None):
     if exists(dest):
@@ -300,7 +300,7 @@ def github_api_request(api=None, url=None, owner='SAP', repository='SapMachine',
 
         try:
             response = urlopen(request)
-            link = response.info().getheader('Link')
+            link = response.info().get('Link')
 
             if result is None:
                 result = json.loads(response.read())
@@ -321,7 +321,7 @@ def github_api_request(api=None, url=None, owner='SAP', repository='SapMachine',
                         load_next = True
 
         except Exception as e:
-            print(str.format('{0}: "{1}"', url, e))
+            print((str.format('{0}: "{1}"', url, e)))
             return None
 
     return result
@@ -350,10 +350,10 @@ def get_asset_url(tag, platform):
                     asset_version = match.group(2)
                     asset_platform = match.group(3)
 
-                    print(str.format('found {0} image with version={1} and platform={2}',
+                    print((str.format('found {0} image with version={1} and platform={2}',
                         asset_image_type,
                         asset_version,
-                        asset_platform))
+                        asset_platform)))
 
                     if asset_image_type == 'jdk' and asset_platform == platform:
                         jdk_url = download_url
@@ -392,7 +392,7 @@ class JDKTag:
         else:
             self.build_number = int(self.build_number)
 
-        self.version = map(int, self.version)
+        self.version = list(map(int, self.version))
         self.version.extend([0 for i in range(5 - len(self.version))])
 
         self.sapmachine_tag = None

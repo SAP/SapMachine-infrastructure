@@ -13,7 +13,8 @@ import shutil
 import glob
 
 from os.path import join
-from urllib2 import urlopen, Request, quote
+from urllib.request import urlopen, Request
+from urllib.parse import quote
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
