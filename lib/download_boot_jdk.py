@@ -46,7 +46,7 @@ def main(argv=None):
                 asset_name = asset['name']
                 asset_url = asset['browser_download_url']
 
-                if 'jdk' in asset_name and platform in asset_name and not asset_name.endswith('.txt'):
+                if 'jdk' in asset_name and platform in asset_name and (asset_name.endswith('.tar.gz') or asset_name.endswith('.zip')):
                     archive_path = join(destination, asset_name)
                     utils.remove_if_exists(archive_path)
                     utils.download_artifact(asset_url, archive_path)
