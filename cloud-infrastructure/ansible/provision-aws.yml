@@ -1,7 +1,7 @@
 # Copyright (c) 2001-2018 by SAP SE, Walldorf, Germany.
 # All rights reserved. Confidential and proprietary.
 
-# ansible 2.4
+# ansible 2.9
 ---
   - name: Setup AWS for SapMachine
     hosts: local
@@ -9,10 +9,10 @@
     gather_facts: False
 
     vars:
-      instance_type: m4.4xlarge
+      instance_type: t3a.xlarge
       instance_name: SapMachine Master
       security_group: SapMachine Master
-      image: ami-66506c1c # Ubuntu 16.04
+      image: ami-04b9e92b5572fa0d1 # Ubuntu 18.04
       keypair: SapMachine
       region: us-east-1
       zone: sapmachine.io
@@ -36,11 +36,15 @@
             - proto: tcp
               from_port: 22
               to_port: 22
-              cidr_ip: 155.56.0.0/16
+              cidr_ip: 155.56.40.0/22
             - proto: tcp
-              from_port: 8080
-              to_port: 8080
-              cidr_ip: 155.56.0.0/16
+              from_port: 22
+              to_port: 22
+              cidr_ip: 155.56.68.208/28
+            - proto: tcp
+              from_port: 22
+              to_port: 22
+              cidr_ip: 193.16.224.0/25
             - proto: tcp
               from_port: 80
               to_port: 80
@@ -52,7 +56,23 @@
             - proto: tcp
               from_port: 50000
               to_port: 50000
+              # Jenkins local Slave
               cidr_ip: "{{ eip.public_ip }}/32"
+            - proto: tcp
+              from_port: 50000
+              to_port: 50000
+              # Jenkins macOS Slave
+              cidr_ip: 193.16.224.0/25
+            - proto: tcp
+              from_port: 50000
+              to_port: 50000
+              # Jenkins Linux Slave
+              group_id: "sg-051529de3f02c1983"
+            - proto: tcp
+              from_port: 50000
+              to_port: 50000
+              # Jenkins Windows Slave
+              group_id: "sg-0d78996f78394c304"
           rules_egress:
             - proto: all
               cidr_ip: 0.0.0.0/0
@@ -71,7 +91,8 @@
           volumes:
             - device_name: /dev/sda1
               volume_type: gp2
-              volume_size: 1024
+              volume_size: 2048
+              encrypted: yes
               tags:
                 Name: "{{ instance_name }}"
         register: ec2
@@ -150,18 +171,6 @@
           state: present
           zone: "{{ zone }}"
           record: "{{ zone }}"
-          type: A
-          ttl: 300
-          value: "{{ eip.public_ip }}"
-          overwrite: yes
-          wait: yes
-
-      - name: Create DNS A record for "docs"$
-        local_action:
-          module: route53
-          state: present
-          zone: "{{ zone }}"
-          record: "docs.{{ zone }}"
           type: A
           ttl: 300
           value: "{{ eip.public_ip }}"

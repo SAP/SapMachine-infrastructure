@@ -1,22 +1,28 @@
 # Copyright (c) 2001-2018 by SAP SE, Walldorf, Germany.
 # All rights reserved. Confidential and proprietary.
 
-# ansible 2.4
+# ansible 2.9
 ---
   - name: Setup SapMachine Master server
     hosts: SapMachineMaster
-    gather_facts: False
+    gather_facts: Yes
     pre_tasks:
-      - name: 'install python2'
-        raw: sudo apt-get update && sudo apt-get -qq -y --no-install-recommends install python
+      - name: 'install python'
+        raw: sudo apt-get update && sudo apt-get -qq -y --no-install-recommends install python python3
     vars:
       ansible_user: ubuntu
       ansible_ssh_private_key_file: SapMachine.pem
-      slave_jar_version: 3.29
       jenkins_master_url: https://ci.sapmachine.io/computer/agent-linux-x86_64-1/slave-agent.jnlp
       jenkins_slave_name: agent-linux-x86_64-1
 
     tasks:
+
+      - name: System details
+        debug: msg="{{ item }}"
+        with_items:
+        - "{{ ansible_distribution }}"
+        - "{{ ansible_distribution_version }}"
+        - "{{ ansible_distribution_major_version }}"
 
       - name: install apt-transport-https
         apt:
@@ -44,13 +50,23 @@
         tags:
           - packages.docker_key
 
-      - name: add docker repository
+      - name: add docker repository 16.04 Xenial
         apt_repository:
          repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable
          state: present
         become: yes
         tags:
-          - packages.docker_repository
+          - packages.docker_repository_xenial
+        when: ansible_distribution_major_version == '16'
+
+      - name: add docker repository 18.04 Bionic
+        apt_repository:
+         repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable
+         state: present
+        become: yes
+        tags:
+          - packages.docker_repository_bionic
+        when: ansible_distribution_major_version == '18'
 
       # install docker, docker-compose, OpenJDK 8 JRE
       - name: install docker-ce
@@ -166,18 +182,6 @@
         tags:
           - jenkins_slave
           - jenkins_slave.create_home
-
-      # download the jenkins slave jar file
-      - name: download Jenkins Slave jar
-        get_url:
-          url: "https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/{{ slave_jar_version }}/remoting-{{ slave_jar_version }}.jar"
-          dest: /home/jenkins/slave.jar
-          force: yes
-        become: yes
-        become_user: jenkins
-        tags:
-          - jenkins_slave
-          - jenkins_slave.download_slave_jar
 
       # copy the script file to start the jenkins slave
       - name: copy Jenkins Slave files
@@ -327,6 +331,29 @@
         tags:
           - jenkins_slave
           - jenkins_slave.secret
+
+      - name: "wait for ci.sapmachine.io"
+        uri:
+          url: "http://ci.sapmachine.io"
+          status_code: 200
+        register: result
+        until: result.status == 200
+        retries: 60
+        delay: 1
+        tags:
+          - jenkins_slave
+
+      # download the jenkins slave jar file
+      - name: download Jenkins Slave jar
+        get_url:
+          url: "http://ci.sapmachine.io/jnlpJars/agent.jar"
+          dest: /home/jenkins/slave.jar
+          force: yes
+        become: yes
+        become_user: jenkins
+        tags:
+          - jenkins_slave
+          - jenkins_slave.download_slave_jar
 
       # start the jenkins slave
       - name: start Jenkins Slave
