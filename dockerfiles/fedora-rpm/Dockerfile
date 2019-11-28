@@ -1,6 +1,7 @@
 FROM fedora:latest
 
-RUN dnf install -y python2 \
+RUN dnf install -y \
+    python3 \
     ca-certificates \
     fedora-packager \
     rpmdevtools \

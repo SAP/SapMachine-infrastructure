@@ -28,7 +28,7 @@ ca-certificates \
 curl \
 pandoc \
 graphviz \
-python \
+python3 \
 ant \
 patch \
 mercurial \

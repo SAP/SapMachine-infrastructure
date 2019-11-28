@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 
 RUN apt-get update && apt-get install -qq -y --no-install-recommends \
 zip \
@@ -8,11 +8,9 @@ curl \
 git \
 mercurial \
 unzip \
-realpath \
-python \
-python-dev \
-python-pip \
-python-setuptools \
+python3 \
+python3-setuptools \
+python3-pip \
 libffi-dev \
 openssl \
 libssl-dev \
@@ -21,11 +19,11 @@ g++
 
 RUN useradd -ms /bin/bash jenkins -u 1002
 
-RUN easy_install hg-git
+RUN pip3 install hg-git
 RUN echo "[extensions]\nhgext.bookmarks =\nhggit =" > /etc/mercurial/hgrc
 
 RUN cd ~ && git clone https://github.com/reshnm/git-hg-again.git && cp git-hg-again/githg.py  /usr/lib/git-core/git-hg
 
-RUN pip install jenkins-job-builder
-RUN pip install jenkinsapi
-RUN pip install pyyaml
+RUN pip3 install jenkins-job-builder
+RUN pip3 install jenkinsapi
+RUN pip3 install pyyaml
