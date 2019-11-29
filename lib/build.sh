@@ -64,6 +64,13 @@ VENDOR_URL="https://sapmachine.io/"
 VENDOR_BUG_URL="https://github.com/SAP/SapMachine/issues/new"
 VENDOR_VM_BUG_URL="https://github.com/SAP/SapMachine/issues/new"
 
+if [[ $UNAME == Darwin ]]; then
+  _CONFIGURE_OS_OPTIONS="--with-macosx-bundle-name-base=SapMachine --with-macosx-bundle-id-base=com.sap.openjdk"
+fi
+if [[ $UNAME == CYGWIN* ]]; then
+  _CONFIGURE_OS_OPTIONS="--with-jdk-rc-name=SapMachine --with-native-debug-symbols=external"
+fi
+
 if [[ $GIT_TAG_NAME == sapmachine-* ]]; then
   read VERSION VERSION_PART VERSION_MAJOR VERSION_BUILD_NUMBER SAPMACHINE_VERSION VERSION_OS_EXT<<< $(python ${WORKSPACE}/SapMachine-Infrastructure/lib/get_tag_version_components.py -t $GIT_TAG_NAME)
 
@@ -107,10 +114,7 @@ if [[ $GIT_TAG_NAME == sapmachine-* ]]; then
   --with-version-opt=${LTS}sapmachine \
   --with-version-pre=$VERSION_PRE_OPT \
   --with-version-date=$VERSION_DATE \
-  --disable-warnings-as-errors \
-  --with-macosx-bundle-name-base=SapMachine \
-  --with-macosx-bundle-id-base=com.sap.openjdk \
-  --with-jdk-rc-name=SapMachine \
+  $_CONFIGURE_OS_OPTIONS \
   --with-vendor-name="$VENDOR_NAME" \
   --with-vendor-url="$VENDOR_URL" \
   --with-vendor-bug-url="$VENDOR_BUG_URL" \
@@ -130,10 +134,7 @@ else
   --with-boot-jdk=$BOOT_JDK \
   --with-version-opt="sapmachine-$BUILD_DATE" \
   --with-version-pre=snapshot \
-  --disable-warnings-as-errors \
-  --with-macosx-bundle-name-base=SapMachine \
-  --with-macosx-bundle-id-base=com.sap.openjdk \
-  --with-jdk-rc-name=SapMachine \
+  $_CONFIGURE_OS_OPTIONS \
   --with-vendor-name="$VENDOR_NAME" \
   --with-vendor-url="$VENDOR_URL" \
   --with-vendor-bug-url="$VENDOR_BUG_URL" \
