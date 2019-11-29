@@ -13,18 +13,29 @@ import argparse
 from urllib2 import urlopen, Request, quote, HTTPError
 
 openjdk_hg_base = 'http://hg.openjdk.java.net/'
+jdk_major_start = 11
+exception_list = [
+    'jdk/jdk11',
+    'jdk/jdk12',
+    'jdk-updates/jdk12u',
+    'jdk-updates/jdk12u-dev',
+    'jdk/jdk13'
+]
 
 def test_repositories(repository_base, repository_suffix=''):
     openjdk_repositories = []
     code = 200
-    jdk_major = 10
+    jdk_major = jdk_major_start
     retries = 10
 
     while code == 200 or retries > 0:
-        retries -= 1
         repository = repository_base + str(jdk_major) + repository_suffix
         jdk_major += 1
 
+        if repository in exception_list:
+            continue
+
+        retries -= 1
         request = Request(openjdk_hg_base + repository)
 
         try:
