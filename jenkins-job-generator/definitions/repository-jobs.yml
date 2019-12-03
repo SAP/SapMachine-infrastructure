@@ -20,9 +20,9 @@
                     }
                 }
                 stage('Build') {
-                    environment {{
+                    environment {
                     GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
-                    }}
+                    }
                     agent {
                         dockerfile {
                             dir "SapMachine-Infrastructure/dockerfiles/infrastructure"
