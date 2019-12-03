@@ -4,13 +4,10 @@ set -ex
 HG_HOST="hg.openjdk.java.net"
 HG_PATH=$1
 
-
-if [[ -z "$GIT_USER" ]] || [[ -z "$GIT_PASSWORD" ]]; then
-    echo "Missing mandatory environment variables GIT_USER or GIT_PASSWORD"
-    exit 1
+if [[ -z $SAPMACHINE_GIT_REPOSITORY ]]; then
+  SAPMACHINE_GIT_REPOSITORY="https://github.com/SAP/SapMachine.git"
 fi
 
-GIT_REPO="http://${GIT_USER}:${GIT_PASSWORD}@github.com/SAP/SapMachine"
 REPO_PATH="$(basename $HG_PATH)"
 
 echo $WORKSPACE
@@ -19,12 +16,12 @@ cd $WORKSPACE
 if [ ! -d $REPO_PATH ]; then
   git hg clone "http://$HG_HOST/$HG_PATH" $REPO_PATH
   cd $REPO_PATH
-  git remote add origin $GIT_REPO
+  git remote add origin $SAPMACHINE_GIT_REPOSITORY
   git checkout -b "$HG_PATH"
 else
   cd $REPO_PATH
   git remote remove origin
-  git remote add origin $GIT_REPO
+  git remote add origin $SAPMACHINE_GIT_REPOSITORY
   git checkout "$HG_PATH"
   git hg pull
 fi
