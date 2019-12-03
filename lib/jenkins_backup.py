@@ -1,5 +1,5 @@
 '''
-Copyright (c) 2001-2017 by SAP SE, Walldorf, Germany.
+Copyright (c) 2001-2019 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
@@ -14,8 +14,8 @@ import xml.etree.ElementTree
 from os.path import join
 
 git_user = os.environ['GIT_USER']
-git_password = os.environ['GIT_PASSWORD']
-repo = str.format('https://{0}:{1}@github.com/SAP/SapMachine-infrastructure.git', git_user, git_password)
+github_api_access_token = os.environ['GITHUB_API_ACCESS_TOKEN']
+repo = str.format('https://{0}:{1}@github.com/SAP/SapMachine-infrastructure.git', git_user, github_api_access_token)
 branch = 'master'
 jenkins_configuration = 'jenkins_configuration'
 
