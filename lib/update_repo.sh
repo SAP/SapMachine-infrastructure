@@ -4,9 +4,12 @@ set -ex
 HG_HOST="hg.openjdk.java.net"
 HG_PATH=$1
 
-if [[ -z $SAPMACHINE_GIT_REPOSITORY ]]; then
-  SAPMACHINE_GIT_REPOSITORY="https://github.com/SAP/SapMachine.git"
+if [[ -z "$GIT_USER" ]] || [[ -z "$GITHUB_API_ACCESS_TOKEN" ]]; then
+    echo "Missing mandatory environment variables GIT_USER or GITHUB_API_ACCESS_TOKEN"
+    exit 1
 fi
+
+SAPMACHINE_GIT_REPOSITORY="https://${GIT_USER}:${GITHUB_API_ACCESS_TOKEN}@github.com/SAP/SapMachine.git"
 
 REPO_PATH="$(basename $HG_PATH)"
 
