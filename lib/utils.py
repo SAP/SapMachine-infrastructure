@@ -217,9 +217,9 @@ def sapmachine_version_components(version_in, multiline=False):
 
 def git_clone(repo, branch, target):
     git_user = os.environ['GIT_USER']
-    git_password = os.environ['GIT_PASSWORD']
+    github_api_access_token = os.environ['GITHUB_API_ACCESS_TOKEN']
     remove_if_exists(target)
-    run_cmd(['git', 'clone', '-b', branch, str.format('https://{0}:{1}@{2}', git_user, git_password, repo), target])
+    run_cmd(['git', 'clone', '-b', branch, str.format('https://{0}:{1}@{2}', git_user, github_api_access_token, repo), target])
 
 def git_commit(dir, message, to_add):
     env = os.environ.copy()

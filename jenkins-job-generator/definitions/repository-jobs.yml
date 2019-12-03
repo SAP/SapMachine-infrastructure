@@ -21,7 +21,7 @@
                 }
                 stage('Build') {
                     environment {
-                    GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
+                        GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
                     }
                     agent {
                         dockerfile {

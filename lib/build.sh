@@ -25,11 +25,7 @@ if [[ -z $NO_CHECKOUT ]]; then
     SAPMACHINE_GIT_REPOSITORY="https://github.com/SAP/SapMachine.git"
   fi
 
-  if [[ ! -z $GIT_USER && ! -z GIT_PASSWORD ]]; then
-    git clone -b $SAPMACHINE_GIT_BRANCH "https://$GIT_USER:$GIT_PASSWORD@$SAPMACHINE_GIT_REPOSITORY" "${WORKSPACE}/SapMachine"
-  else
-    git clone -b $SAPMACHINE_GIT_BRANCH $SAPMACHINE_GIT_REPOSITORY "${WORKSPACE}/SapMachine"
-  fi
+  git clone -b $SAPMACHINE_GIT_BRANCH $SAPMACHINE_GIT_REPOSITORY "${WORKSPACE}/SapMachine"
 fi
 
 cd "${WORKSPACE}/SapMachine"
