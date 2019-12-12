@@ -1,5 +1,5 @@
 <hudson.plugins.ec2.EC2Slave plugin="ec2@1.46.1">
-  <name>EC2 (SapMachine Cloud) - Linux Slave (i-038ba96bcc1b1d462)</name>
+  <name>EC2 (SapMachine Cloud) - Linux Slave (i-02250a0a0e23f9236)</name>
   <remoteFS>/home/ubuntu/slave_home</remoteFS>
   <numExecutors>1</numExecutors>
   <mode>EXCLUSIVE</mode>
@@ -12,7 +12,7 @@
   </launcher>
   <label>linux_x86_64</label>
   <nodeProperties />
-  <instanceId>i-038ba96bcc1b1d462</instanceId>
+  <instanceId>i-02250a0a0e23f9236</instanceId>
   <initScript />
   <tmpDir />
   <remoteAdmin>ubuntu</remoteAdmin>
@@ -24,12 +24,12 @@
   <isConnected>false</isConnected>
   <tags class="linked-list">
     <hudson.plugins.ec2.EC2Tag>
-      <name>jenkins_server_url</name>
-      <value>https://ci.sapmachine.io/</value>
-    </hudson.plugins.ec2.EC2Tag>
-    <hudson.plugins.ec2.EC2Tag>
       <name>jenkins_slave_type</name>
       <value>demand_Linux Slave</value>
+    </hudson.plugins.ec2.EC2Tag>
+    <hudson.plugins.ec2.EC2Tag>
+      <name>jenkins_server_url</name>
+      <value>https://ci.sapmachine.io/</value>
     </hudson.plugins.ec2.EC2Tag>
   </tags>
   <cloudName>ec2-SapMachine Cloud</cloudName>
