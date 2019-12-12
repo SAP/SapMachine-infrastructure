@@ -46,7 +46,7 @@
                         expression { params.DEPLOY == true }
                     }
                     steps {
-                            sh "cp *.deb /var/pkg/deb/amd64"
+                            sh "cp -n *.deb /var/pkg/deb/amd64 || true"
                             sh "python SapMachine-Infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/amd64"
                     }
                 }
