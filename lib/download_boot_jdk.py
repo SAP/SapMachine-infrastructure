@@ -26,12 +26,12 @@ def main(argv=None):
     destination = os.path.realpath(args.destination)
     releases = utils.github_api_request('releases', per_page=100)
     platform = str.format('{0}-{1}_bin', utils.get_system(), utils.get_arch())
-    accept_prerelease = False
+    retries = 2
 
-    while True:
+    while retries > 0:
         for release in releases:
 
-            if not accept_prerelease and release['prerelease']:
+            if release['prerelease']:
                 continue
 
             version, version_part, major, build_number, sap_build_number, os_ext = utils.sapmachine_tag_components(release['name'])
@@ -77,10 +77,9 @@ def main(argv=None):
                                 utils.remove_if_exists(join(boot_jdk_exploded, 'Contents'))
 
                         return 0
-        if not accept_prerelease:
-            accept_prerelease = True
-        else:
-            break
+        retries -= 1
+        if retries == 1:
+            boot_jdk_major_min = boot_jdk_major_max - 2
 
     return 0
 
