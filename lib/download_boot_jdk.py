@@ -26,55 +26,61 @@ def main(argv=None):
     destination = os.path.realpath(args.destination)
     releases = utils.github_api_request('releases', per_page=100)
     platform = str.format('{0}-{1}_bin', utils.get_system(), utils.get_arch())
+    accept_prerelease = False
 
-    for release in releases:
+    while True:
+        for release in releases:
 
-        if release['prerelease']:
-            continue
+            if not accept_prerelease and release['prerelease']:
+                continue
 
-        version, version_part, major, build_number, sap_build_number, os_ext = utils.sapmachine_tag_components(release['name'])
+            version, version_part, major, build_number, sap_build_number, os_ext = utils.sapmachine_tag_components(release['name'])
 
-        if major is None:
-            continue
+            if major is None:
+                continue
 
-        major = int(major)
+            major = int(major)
 
-        if major <= boot_jdk_major_max and major >= boot_jdk_major_min:
-            assets = release['assets']
+            if major <= boot_jdk_major_max and major >= boot_jdk_major_min:
+                assets = release['assets']
 
-            for asset in assets:
-                asset_name = asset['name']
-                asset_url = asset['browser_download_url']
+                for asset in assets:
+                    asset_name = asset['name']
+                    asset_url = asset['browser_download_url']
 
-                if 'jdk' in asset_name and platform in asset_name and (asset_name.endswith('.tar.gz') or asset_name.endswith('.zip')):
-                    archive_path = join(destination, asset_name)
-                    utils.remove_if_exists(archive_path)
-                    utils.download_artifact(asset_url, archive_path)
-                    boot_jdk_exploded = join(destination, 'boot_jdk')
-                    utils.remove_if_exists(boot_jdk_exploded)
-                    os.makedirs(boot_jdk_exploded)
-                    utils.extract_archive(archive_path, boot_jdk_exploded)
+                    if 'jdk' in asset_name and platform in asset_name and (asset_name.endswith('.tar.gz') or asset_name.endswith('.zip')):
+                        archive_path = join(destination, asset_name)
+                        utils.remove_if_exists(archive_path)
+                        utils.download_artifact(asset_url, archive_path)
+                        boot_jdk_exploded = join(destination, 'boot_jdk')
+                        utils.remove_if_exists(boot_jdk_exploded)
+                        os.makedirs(boot_jdk_exploded)
+                        utils.extract_archive(archive_path, boot_jdk_exploded)
 
-                    sapmachine_folder = glob.glob(join(boot_jdk_exploded, 'sapmachine*'))
+                        sapmachine_folder = glob.glob(join(boot_jdk_exploded, 'sapmachine*'))
 
-                    if sapmachine_folder is not None:
-                        sapmachine_folder = sapmachine_folder[0]
-                        files = os.listdir(sapmachine_folder)
-
-                        for f in files:
-                            shutil.move(join(sapmachine_folder, f), boot_jdk_exploded)
-
-                        utils.remove_if_exists(sapmachine_folder)
-
-                        if utils.get_system() == 'osx':
-                            files = os.listdir(join(boot_jdk_exploded, 'Contents', 'Home'))
+                        if sapmachine_folder is not None:
+                            sapmachine_folder = sapmachine_folder[0]
+                            files = os.listdir(sapmachine_folder)
 
                             for f in files:
-                                shutil.move(join(boot_jdk_exploded, 'Contents', 'Home', f), boot_jdk_exploded)
+                                shutil.move(join(sapmachine_folder, f), boot_jdk_exploded)
 
-                            utils.remove_if_exists(join(boot_jdk_exploded, 'Contents'))
+                            utils.remove_if_exists(sapmachine_folder)
 
-                    return 0
+                            if utils.get_system() == 'osx':
+                                files = os.listdir(join(boot_jdk_exploded, 'Contents', 'Home'))
+
+                                for f in files:
+                                    shutil.move(join(boot_jdk_exploded, 'Contents', 'Home', f), boot_jdk_exploded)
+
+                                utils.remove_if_exists(join(boot_jdk_exploded, 'Contents'))
+
+                        return 0
+        if not accept_prerelease:
+            accept_prerelease = True
+        else:
+            break
 
     return 0
 
