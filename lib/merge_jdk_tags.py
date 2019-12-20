@@ -13,7 +13,6 @@ import argparse
 from utils import JDKTag
 from os.path import join
 
-containing_branches_pattern = re.compile('sapmachine.*|pr-jdk.*')
 branch_pattern = re.compile('sapmachine([\d]+)?$')
 
 def main(argv=None):
@@ -88,6 +87,7 @@ def main(argv=None):
 
         # check whether the jdk tag is already contained in the sapmachine branch
         _, out, _ = utils.run_cmd(str.format('git branch -a --contains tags/{0}', latest_tag_for_branch.as_string()).split(' '), cwd=git_target_dir, std=True, throw=False)
+        containing_branches_pattern = re.compile('{0}}|pr-jdk-{1}.*'.format(sapmachine_branch[0], sapmachine_branch[1]))
         match = re.search(containing_branches_pattern, out)
 
         if match is None:
