@@ -1,10 +1,54 @@
 <list>
   <flow-owner plugin="workflow-job@2.36">
-    <job>build-11-release-windows_x86_64</job>
-    <id>68</id>
+    <job>validate-pr-15</job>
+    <id>8</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@2.36">
+    <job>validate-pr-14</job>
+    <id>104</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@2.36">
+    <job>build-15-pr-validation-linux_x86_64</job>
+    <id>8</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@2.36">
+    <job>build-15-pr-validation-linux_ppc64</job>
+    <id>7</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@2.36">
+    <job>build-15-pr-validation-linux_ppc64le</job>
+    <id>7</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@2.36">
+    <job>build-15-pr-validation-macos_x86_64</job>
+    <id>8</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@2.36">
+    <job>build-15-pr-validation-windows_x86_64</job>
+    <id>8</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@2.36">
+    <job>build-14-pr-validation-linux_ppc64</job>
+    <id>99</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@2.36">
+    <job>build-14-pr-validation-linux_ppc64le</job>
+    <id>98</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@2.36">
+    <job>build-14-pr-validation-linux_x86_64</job>
+    <id>99</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@2.36">
+    <job>build-14-pr-validation-macos_x86_64</job>
+    <id>101</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@2.36">
+    <job>build-14-pr-validation-windows_x86_64</job>
+    <id>101</id>
   </flow-owner>
   <flow-owner plugin="workflow-job@2.36">
     <job>jenkins-configuration-backup</job>
-    <id>312</id>
+    <id>313</id>
   </flow-owner>
 </list>
