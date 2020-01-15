@@ -80,7 +80,7 @@ def get_latest_non_ga_tag(jdk_tag):
                 t = JDKTag(match)
                 major = t.get_major()
 
-                if major is jdk_tag.get_major() and not t.is_ga():
+                if major is jdk_tag.get_major() and not t.is_ga() and not t.is_greater_than(jdk_tag):
                     if latest_non_ga_tag is None or t.is_greater_than(latest_non_ga_tag):
                         latest_non_ga_tag = t
 
