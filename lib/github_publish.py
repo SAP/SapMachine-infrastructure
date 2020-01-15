@@ -68,43 +68,41 @@ def main(argv=None):
         first check wether the asset already exists
         '''
         assets = utils.github_api_request(str.format('releases/{0}/assets', release_id), per_page=50)
-        asset_already_exists = False
 
         for asset in assets:
             if asset['name'] == asset_name:
                 '''
                 asset already exists -> skip
                 '''
-                print(str.format('skipping already existing asset "{0}" ...', asset_name))
-                asset_already_exists = True
+                print(str.format('error: asset "{0}" already exists ...', asset_name))
+                return 1
 
-        if not asset_already_exists:
-            upload_url = str(upload_url.split('{', 1)[0] + '?name=' + quote(asset_name))
+        upload_url = str(upload_url.split('{', 1)[0] + '?name=' + quote(asset_name))
 
-            '''
-            read the contents of the asset file
-            '''
-            with open(asset_file, 'rb') as asset_file:
-                asset_data = asset_file.read()
-                asset_length = len(asset_data)
+        '''
+        read the contents of the asset file
+        '''
+        with open(asset_file, 'rb') as asset_file:
+            asset_data = asset_file.read()
+            asset_length = len(asset_data)
 
-            retry = 2
+        retry = 2
 
-            while retry > 0:
-                try:
-                    '''
-                    upload the asset file
-                    '''
-                    print(str.format('uploading asset "{0}" with a length of {1} bytes ...', asset_name, str(asset_length)))
-                    utils.github_api_request(url=upload_url, data=asset_data, method='POST', content_type=asset_mime_type)
-                    break
-                except IOError:
-                    _type, value, _traceback = sys.exc_info()
-                    print(str.format('Error uploading asset "{0}": {1}', asset_name, value.strerror))
-                    retry -= 1
-                except URLError:
-                    print(str.format('Error uploading asset "{0}"', asset_name))
-                    retry -= 1
+        while retry > 0:
+            try:
+                '''
+                upload the asset file
+                '''
+                print(str.format('uploading asset "{0}" with a length of {1} bytes ...', asset_name, str(asset_length)))
+                utils.github_api_request(url=upload_url, data=asset_data, method='POST', content_type=asset_mime_type)
+                break
+            except IOError:
+                _type, value, _traceback = sys.exc_info()
+                print(str.format('Error uploading asset "{0}": {1}', asset_name, value.strerror))
+                retry -= 1
+            except URLError:
+                print(str.format('Error uploading asset "{0}"', asset_name))
+                retry -= 1
 
     return 0
 
