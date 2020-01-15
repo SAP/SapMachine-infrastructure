@@ -51,12 +51,11 @@ HAS_ZIP=$(ls sapmachine-jdk-*_bin.zip | wc -l)
 if [ "$HAS_ZIP" -lt "1" ]; then
     ARCHIVE_SUM_JDK="$(echo $ARCHIVE_NAME_JDK | sed 's/tar\.gz/sha256\.txt/')"
     ARCHIVE_SUM_JRE="$(echo $ARCHIVE_NAME_JRE | sed 's/tar\.gz/sha256\.txt/')"
-    ARCHIVE_SUM_SYMBOLS="$(echo $ARCHIVE_NAME_SYMBOLS | sed 's/tar\.gz/sha256\.txt/')"
 else
     ARCHIVE_SUM_JDK="$(echo $ARCHIVE_NAME_JDK | sed 's/zip/sha256\.txt/')"
     ARCHIVE_SUM_JRE="$(echo $ARCHIVE_NAME_JRE | sed 's/zip/sha256\.txt/')"
-    ARCHIVE_SUM_SYMBOLS="$(echo $ARCHIVE_NAME_SYMBOLS | sed 's/zip/sha256\.txt/')"
 fi
+ARCHIVE_SUM_SYMBOLS="$(echo $ARCHIVE_NAME_SYMBOLS | sed 's/tar\.gz/sha256\.txt/')"
 
 shasum -a 256 $ARCHIVE_NAME_JDK > $ARCHIVE_SUM_JDK
 shasum -a 256 $ARCHIVE_NAME_JRE > $ARCHIVE_SUM_JRE
