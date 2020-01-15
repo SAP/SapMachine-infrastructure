@@ -44,24 +44,30 @@ ls -la
 
 ARCHIVE_NAME_JDK="$(cat jdk_bundle_name.txt)"
 ARCHIVE_NAME_JRE="$(cat jre_bundle_name.txt)"
+ARCHIVE_NAME_SYMBOLS="$(cat symbols_bundle_name.txt)"
 
 HAS_ZIP=$(ls sapmachine-jdk-*_bin.zip | wc -l)
 
 if [ "$HAS_ZIP" -lt "1" ]; then
     ARCHIVE_SUM_JDK="$(echo $ARCHIVE_NAME_JDK | sed 's/tar\.gz/sha256\.txt/')"
     ARCHIVE_SUM_JRE="$(echo $ARCHIVE_NAME_JRE | sed 's/tar\.gz/sha256\.txt/')"
+    ARCHIVE_SUM_SYMBOLS="$(echo $ARCHIVE_NAME_SYMBOLS | sed 's/tar\.gz/sha256\.txt/')"
 else
     ARCHIVE_SUM_JDK="$(echo $ARCHIVE_NAME_JDK | sed 's/zip/sha256\.txt/')"
     ARCHIVE_SUM_JRE="$(echo $ARCHIVE_NAME_JRE | sed 's/zip/sha256\.txt/')"
+    ARCHIVE_SUM_SYMBOLS="$(echo $ARCHIVE_NAME_SYMBOLS | sed 's/zip/sha256\.txt/')"
 fi
 
 shasum -a 256 $ARCHIVE_NAME_JDK > $ARCHIVE_SUM_JDK
 shasum -a 256 $ARCHIVE_NAME_JRE > $ARCHIVE_SUM_JRE
+shasum -a 256 $ARCHIVE_NAME_SYMBOLS > $ARCHIVE_SUM_SYMBOLS
 
 python SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${ARCHIVE_NAME_JDK}"
 python SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${ARCHIVE_NAME_JRE}"
+python SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${ARCHIVE_NAME_SYMBOLS}"
 python SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${ARCHIVE_SUM_JDK}"
 python SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${ARCHIVE_SUM_JRE}"
+python SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${ARCHIVE_SUM_SYMBOLS}"
 
 UNAME=`uname`
 if [[ $UNAME == Darwin ]]; then
