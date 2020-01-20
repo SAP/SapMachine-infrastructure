@@ -152,7 +152,11 @@ def main(argv=None):
                 _, tags, _ = utils.run_cmd(str.format('git tag --contains {0}', commit_id).split(' '), cwd=git_target_dir, std=True, throw=False)
 
                 if not tags:
-                    # not tagged yet
+                    _, tag_exists, _ = utils.run_cmd(str.format('git tag -l {0}', jdk_tag.as_sapmachine_tag()).split(' '), cwd=git_target_dir, std=True, throw=False)
+                    if tag_exists:
+                        break
+
+                    # not tagged yet and tag doesn't exist yet
                     # create sapmachine tag
                     create_sapmachine_tag(jdk_tag, commit_id, git_target_dir)
 
