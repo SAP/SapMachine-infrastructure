@@ -1,0 +1,53 @@
+- job:
+    name: osx-upload
+    description: 'This project is generated. Do not modify manually.'
+    project-type: pipeline
+    concurrent: false
+    properties:
+        - build-discarder:
+            num-to-keep: 100
+            artifact-num-to-keep: 1
+    parameters:
+        - string:
+            name: GIT_TAG_NAME
+            default: ''
+            description: 'The Git tag to create a debian package from.'
+        - bool:
+            name: PUBLISH_CASKS
+            default: false
+            description: 'When set to true, update homebrew casks.'
+        - file:
+            name: JDK
+            description: 'The SapMachine JDK archive.'
+        - file:
+            name: JRE
+            description: 'The SapMachine JRE archive.'
+        - file:
+            name: SYMBOLS
+            description: 'The SapMachine SYMBOLS archive.'
+    dsl: |
+        pipeline {
+            agent {
+                label 'macos_x86_64'
+            }
+            stages {
+                stage("Checkout Infrastructure") {
+                    steps {
+                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+                    }
+                }
+                stage('Deploy') {
+                    environment {
+                      GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
+                    }
+                    steps {
+                        sh "SapMachine-Infrastructure/lib/publish_osx.sh"
+                    }
+                }
+            }
+            post {
+                always {
+                    cleanWs deleteDirs: true, disableDeferredWipeout: true
+                }
+            }
+        }

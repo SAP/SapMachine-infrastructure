@@ -3,12 +3,17 @@ set -ex
 
 TIMESTAMP=`date +'%Y%m%d_%H_%M_%S'`
 TIMESTAMP_LONG=`date +'%Y/%m/%d %H:%M:%S'`
+UNAME=`uname`
 
 export GITHUB_API_ACCESS_TOKEN=$SAPMACHINE_PUBLISH_GITHUB_TOKEN
 
 PRE_RELEASE_OPT="-p"
 if [ "$RELEASE" == true ]; then
   PRE_RELEASE_OPT=""
+
+  if [[ $UNAME == Darwin ]]; then
+    exit 0
+  fi
 fi
 
 if [[ -z $SAPMACHINE_GIT_REPOSITORY ]]; then
@@ -68,7 +73,6 @@ python SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${AR
 python SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${ARCHIVE_SUM_JRE}"
 python SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${ARCHIVE_SUM_SYMBOLS}"
 
-UNAME=`uname`
 if [[ $UNAME == Darwin ]]; then
     DMG_NAME_JDK="$(cat jdk_dmg_name.txt)"
     DMG_NAME_JRE="$(cat jre_dmg_name.txt)"
