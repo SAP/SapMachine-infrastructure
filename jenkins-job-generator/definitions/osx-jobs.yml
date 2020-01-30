@@ -1,12 +1,13 @@
 - job:
     name: osx-upload
     description: 'This project is generated. Do not modify manually.'
-    project-type: pipeline
+    project-type: freestyle
+    node: master
     concurrent: false
     properties:
         - build-discarder:
             num-to-keep: 100
-            artifact-num-to-keep: 1
+            artifact-num-to-keep: 10
     parameters:
         - string:
             name: GIT_TAG_NAME
@@ -25,6 +26,31 @@
         - file:
             name: SYMBOLS
             description: 'The SapMachine SYMBOLS archive.'
+    publishers:
+      - archive:
+          artifacts: 'JDK, JRE, SYMBOLS'
+      - trigger-parameterized-builds:
+        - project: osx-upload-processor
+          current-parameters: true
+
+- job:
+    name: osx-upload-processor
+    description: 'This project is generated. Do not modify manually.'
+    project-type: pipeline
+    concurrent: false
+    properties:
+        - build-discarder:
+            num-to-keep: 100
+            artifact-num-to-keep: 1
+    parameters:
+        - string:
+            name: GIT_TAG_NAME
+            default: ''
+            description: 'The Git tag to create a debian package from.'
+        - bool:
+            name: PUBLISH_CASKS
+            default: false
+            description: 'When set to true, update homebrew casks.'
     dsl: |
         pipeline {
             agent {
@@ -34,6 +60,11 @@
                 stage("Checkout Infrastructure") {
                     steps {
                         checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+                    }
+                }
+                stage('Copy Upstream Artifacts') {
+                    steps {
+                        copyArtifacts filter: 'JDK, JRE, SYMBOLS', projectName: 'osx-upload', selector: upstream()
                     }
                 }
                 stage('Deploy') {
