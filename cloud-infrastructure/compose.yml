@@ -18,7 +18,9 @@ volumes:
 services:
   # reverse proxy
   nginxproxy:
-    image: jwilder/nginx-proxy
+    build:
+      context: ./proxy
+      dockerfile: Dockerfile
     container_name: nginxproxy
     hostname: nginxproxy
     restart:
