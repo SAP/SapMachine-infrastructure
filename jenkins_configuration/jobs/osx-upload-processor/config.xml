@@ -1,7 +1,7 @@
 <flow-definition plugin="workflow-job@2.36">
   <actions>
-    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.5.1" />
-    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.5.1">
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.5.0" />
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.5.0">
       <jobProperties />
       <triggers />
       <parameters />
@@ -16,24 +16,30 @@
         <daysToKeep>-1</daysToKeep>
         <numToKeep>100</numToKeep>
         <artifactDaysToKeep>-1</artifactDaysToKeep>
-        <artifactNumToKeep>-1</artifactNumToKeep>
+        <artifactNumToKeep>1</artifactNumToKeep>
       </strategy>
     </jenkins.model.BuildDiscarderProperty>
-    <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
-      <triggers>
-        <hudson.triggers.TimerTrigger>
-          <spec>@midnight</spec>
-        </hudson.triggers.TimerTrigger>
-      </triggers>
-    </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>GIT_TAG_NAME</name>
+          <description>The Git tag to create a debian package from.</description>
+          <defaultValue />
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>PUBLISH_CASKS</name>
+          <description>When set to true, update homebrew casks.</description>
+          <defaultValue>false</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
     <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty />
   </properties>
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.78">
     <script>pipeline {
     agent {
-        node {
-            label 'master'
-        }
+        label 'macos_x86_64'
     }
     stages {
         stage("Checkout Infrastructure") {
@@ -41,28 +47,26 @@
                 checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
             }
         }
-        stage('Backup') {
+        stage('Copy Upstream Artifacts') {
+            steps {
+                copyArtifacts filter: 'JDK, JRE, SYMBOLS', projectName: 'osx-upload', selector: upstream()
+            }
+        }
+        stage('Deploy') {
             environment {
-                GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
+              GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
             }
             steps {
-                withCredentials([
-                    [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
-                    ]) {
-                sh '''
-                    python SapMachine-Infrastructure/lib/jenkins_backup.py -s /var/jenkins_home
-                    '''
-                }
+                sh "SapMachine-Infrastructure/lib/publish_osx.sh"
             }
         }
     }
     post {
-        cleanup {
+        always {
             cleanWs deleteDirs: true, disableDeferredWipeout: true
         }
     }
-}
-</script>
+}</script>
     <sandbox>false</sandbox>
   </definition>
   <disabled>false</disabled>
