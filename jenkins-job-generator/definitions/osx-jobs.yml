@@ -70,7 +70,7 @@
                 }
                 stage('Copy Upstream Artifacts') {
                     steps {
-                        copyArtifacts filter: 'JDK, JRE, SYMBOLS', projectName: 'osx-upload', selector: upstream()
+                        copyArtifacts filter: 'JDK_TGZ, JRE_TGZ, JDK_DMG, JRE_DMG, SYMBOLS', projectName: 'osx-upload', selector: upstream()
                     }
                 }
                 stage('Deploy') {
