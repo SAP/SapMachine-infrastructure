@@ -6,29 +6,14 @@ read VERSION VERSION_PART VERSION_MAJOR VERSION_BUILD_NUMBER SAPMACHINE_VERSION 
 ARCHIVE_NAME_JDK="sapmachine-jdk-${VERSION}_osx-x64_bin.tar.gz"
 ARCHIVE_NAME_JRE="sapmachine-jre-${VERSION}_osx-x64_bin.tar.gz"
 ARCHIVE_NAME_SYMBOLS="sapmachine-jdk-${VERSION}_osx-x64_bin-symbols.tar.gz"
+DMG_NAME_JDK="sapmachine-jdk-${VERSION}_osx-x64_bin.dmg"
+DMG_NAME_JRE="sapmachine-jdk-${VERSION}_osx-x64_bin.dmg"
 
-mv JDK $ARCHIVE_NAME_JDK
-mv JRE $ARCHIVE_NAME_JRE
+mv JDK_TGZ $ARCHIVE_NAME_JDK
+mv JRE_TGZ $ARCHIVE_NAME_JRE
 mv SYMBOLS $ARCHIVE_NAME_SYMBOLS
-
-# create dmg
-DMG_BASE="${WORKSPACE}/dmg_base"
-# jdk
-DMG_NAME_JDK=$(basename ${ARCHIVE_NAME_JDK} .tar.gz)
-rm -rf ${DMG_BASE}
-mkdir -p ${DMG_BASE}
-tar -xzf "${WORKSPACE}/${ARCHIVE_NAME_JDK}" -C ${DMG_BASE}
-hdiutil create -srcfolder ${DMG_BASE} -fs HFS+ -volname ${DMG_NAME_JDK} "${WORKSPACE}/${DMG_NAME_JDK}.dmg"
-
-# jre
-DMG_NAME_JRE=$(basename ${ARCHIVE_NAME_JRE} .tar.gz)
-rm -rf ${DMG_BASE}
-mkdir -p ${DMG_BASE}
-tar -xzf "${WORKSPACE}/${ARCHIVE_NAME_JRE}" -C ${DMG_BASE}
-hdiutil create -srcfolder ${DMG_BASE} -fs HFS+ -volname ${DMG_NAME_JRE} "${WORKSPACE}/${DMG_NAME_JRE}.dmg"
-
-DMG_NAME_JDK="${DMG_NAME_JDK}.dmg"
-DMG_NAME_JRE="${DMG_NAME_JRE}.dmg"
+mv JDK_DMG $DMG_NAME_JDK
+mv JRE_DMG $DMG_NAME_JRE
 
 ARCHIVE_SUM_JDK="$(echo $ARCHIVE_NAME_JDK | sed 's/tar\.gz/sha256\.txt/')"
 ARCHIVE_SUM_JRE="$(echo $ARCHIVE_NAME_JRE | sed 's/tar\.gz/sha256\.txt/')"

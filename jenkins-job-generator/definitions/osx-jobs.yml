@@ -18,17 +18,23 @@
             default: false
             description: 'When set to true, update homebrew casks.'
         - file:
-            name: JDK
-            description: 'The SapMachine JDK archive.'
+            name: JDK_TGZ
+            description: 'The SapMachine JDK .tar.gz archive.'
         - file:
-            name: JRE
-            description: 'The SapMachine JRE archive.'
+            name: JRE_TGZ
+            description: 'The SapMachine JRE .tar.gz archive.'
+        - file:
+            name: JDK_DMG
+            description: 'The SapMachine JDK .dmg disk image.'
+        - file:
+            name: JRE_DMG
+            description: 'The SapMachine JRE .dmg disk image.'
         - file:
             name: SYMBOLS
             description: 'The SapMachine SYMBOLS archive.'
     publishers:
       - archive:
-          artifacts: 'JDK, JRE, SYMBOLS'
+          artifacts: 'JDK_TGZ, JRE_TGZ, JDK_DMG, JRE_DMG, SYMBOLS'
       - trigger-parameterized-builds:
         - project: osx-upload-processor
           current-parameters: true
