@@ -2,6 +2,11 @@
   <actions />
   <description>This project is generated. Do not modify manually.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <concurrentBuild>false</concurrentBuild>
+  <assignedNode>master</assignedNode>
+  <canRoam>false</canRoam>
   <properties>
     <jenkins.model.BuildDiscarderProperty>
       <strategy class="hudson.tasks.LogRotator">
@@ -17,7 +22,6 @@
           <name>GIT_TAG_NAME</name>
           <description>The Git tag to create a debian package from.</description>
           <defaultValue />
-          <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>PUBLISH_CASKS</name>
@@ -25,12 +29,20 @@
           <defaultValue>false</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.FileParameterDefinition>
-          <name>JDK</name>
-          <description>The SapMachine JDK archive.</description>
+          <name>JDK_TGZ</name>
+          <description>The SapMachine JDK .tar.gz archive.</description>
         </hudson.model.FileParameterDefinition>
         <hudson.model.FileParameterDefinition>
-          <name>JRE</name>
-          <description>The SapMachine JRE archive.</description>
+          <name>JRE_TGZ</name>
+          <description>The SapMachine JRE .tar.gz archive.</description>
+        </hudson.model.FileParameterDefinition>
+        <hudson.model.FileParameterDefinition>
+          <name>JDK_DMG</name>
+          <description>The SapMachine JDK .dmg disk image.</description>
+        </hudson.model.FileParameterDefinition>
+        <hudson.model.FileParameterDefinition>
+          <name>JRE_DMG</name>
+          <description>The SapMachine JRE .dmg disk image.</description>
         </hudson.model.FileParameterDefinition>
         <hudson.model.FileParameterDefinition>
           <name>SYMBOLS</name>
@@ -40,24 +52,18 @@
     </hudson.model.ParametersDefinitionProperty>
   </properties>
   <scm class="hudson.scm.NullSCM" />
-  <assignedNode>master</assignedNode>
-  <canRoam>false</canRoam>
-  <disabled>false</disabled>
-  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
-  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
-  <triggers />
-  <concurrentBuild>false</concurrentBuild>
   <builders />
   <publishers>
     <hudson.tasks.ArtifactArchiver>
-      <artifacts>JDK, JRE, SYMBOLS</artifacts>
+      <artifacts>JDK_TGZ, JRE_TGZ, JDK_DMG, JRE_DMG, SYMBOLS</artifacts>
       <allowEmptyArchive>false</allowEmptyArchive>
       <onlyIfSuccessful>false</onlyIfSuccessful>
       <fingerprint>false</fingerprint>
       <defaultExcludes>true</defaultExcludes>
       <caseSensitive>true</caseSensitive>
+      <latestOnly>false</latestOnly>
     </hudson.tasks.ArtifactArchiver>
-    <hudson.plugins.parameterizedtrigger.BuildTrigger plugin="parameterized-trigger@2.36">
+    <hudson.plugins.parameterizedtrigger.BuildTrigger>
       <configs>
         <hudson.plugins.parameterizedtrigger.BuildTriggerConfig>
           <configs>
@@ -65,8 +71,8 @@
           </configs>
           <projects>osx-upload-processor</projects>
           <condition>ALWAYS</condition>
-          <triggerWithNoParameters>false</triggerWithNoParameters>
           <triggerFromChildProjects>false</triggerFromChildProjects>
+          <triggerWithNoParameters>false</triggerWithNoParameters>
         </hudson.plugins.parameterizedtrigger.BuildTriggerConfig>
       </configs>
     </hudson.plugins.parameterizedtrigger.BuildTrigger>
