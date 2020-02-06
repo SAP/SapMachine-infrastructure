@@ -1,5 +1,64 @@
-<flow-definition plugin="workflow-job">
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps">
+<flow-definition plugin="workflow-job@2.36">
+  <actions />
+  <description>This project is generated. Do not modify manually.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.29.5">
+      <projectUrl>https://github.com/SAP/SapMachine</projectUrl>
+      <displayName />
+    </com.coravy.hudson.plugins.github.GithubProjectProperty>
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>-1</daysToKeep>
+        <numToKeep>100</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>1</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
+    <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+      <triggers>
+        <org.jenkinsci.plugins.github.pullrequest.GitHubPRTrigger plugin="github-pullrequest@0.2.6">
+          <spec>H/1 * * * *</spec>
+          <triggerMode>HEAVY_HOOKS</triggerMode>
+          <cancelQueued>false</cancelQueued>
+          <abortRunning>false</abortRunning>
+          <skipFirstRun>false</skipFirstRun>
+          <repoProviders>
+            <com.github.kostyasha.github.integration.generic.repoprovider.GitHubPluginRepoProvider>
+              <cacheConnection>true</cacheConnection>
+              <manageHooks>true</manageHooks>
+              <repoPermission>ADMIN</repoPermission>
+            </com.github.kostyasha.github.integration.generic.repoprovider.GitHubPluginRepoProvider>
+          </repoProviders>
+          <errorsAction>
+            <description>GitHub Pull Requests Trigger Errors</description>
+            <errors class="java.util.Collections$SynchronizedSet" serialization="custom">
+              <java.util.Collections_-SynchronizedCollection>
+                <default>
+                  <c class="set" />
+                  <mutex class="java.util.Collections$SynchronizedSet" reference="../../.." />
+                </default>
+              </java.util.Collections_-SynchronizedCollection>
+            </errors>
+          </errorsAction>
+          <events>
+            <org.jenkinsci.plugins.github.pullrequest.events.impl.GitHubPRCommitEvent />
+            <org.jenkinsci.plugins.github.pullrequest.events.impl.GitHubPRCommentEvent>
+              <comment>retest this please</comment>
+            </org.jenkinsci.plugins.github.pullrequest.events.impl.GitHubPRCommentEvent>
+            <org.jenkinsci.plugins.github.pullrequest.events.impl.GitHubPROpenEvent />
+          </events>
+          <preStatus>false</preStatus>
+          <branchRestriction>
+            <targetBranchList>
+              <string>sapmachine</string>
+            </targetBranchList>
+          </branchRestriction>
+        </org.jenkinsci.plugins.github.pullrequest.GitHubPRTrigger>
+      </triggers>
+    </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.78">
     <script>pipeline {
     agent {
         label 'pr_validation'
@@ -197,68 +256,6 @@
 </script>
     <sandbox>false</sandbox>
   </definition>
-  <actions />
-  <description>This project is generated. Do not modify manually.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
-  <keepDependencies>false</keepDependencies>
-  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
-  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
   <concurrentBuild>true</concurrentBuild>
-  <canRoam>true</canRoam>
-  <properties>
-    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github">
-      <projectUrl>https://github.com/SAP/SapMachine</projectUrl>
-      <displayName />
-    </com.coravy.hudson.plugins.github.GithubProjectProperty>
-    <jenkins.model.BuildDiscarderProperty>
-      <strategy class="hudson.tasks.LogRotator">
-        <daysToKeep>-1</daysToKeep>
-        <numToKeep>100</numToKeep>
-        <artifactDaysToKeep>-1</artifactDaysToKeep>
-        <artifactNumToKeep>1</artifactNumToKeep>
-      </strategy>
-    </jenkins.model.BuildDiscarderProperty>
-  </properties>
-  <scm class="hudson.scm.NullSCM" />
-  <triggers class="vector">
-    <org.jenkinsci.plugins.github.pullrequest.GitHubPRTrigger plugin="github-pullrequest@0.2.4">
-      <spec>H/1 * * * *</spec>
-      <triggerMode>HEAVY_HOOKS</triggerMode>
-      <cancelQueued>false</cancelQueued>
-      <abortRunning>false</abortRunning>
-      <skipFirstRun>false</skipFirstRun>
-      <repoProviders>
-        <com.github.kostyasha.github.integration.generic.repoprovider.GitHubPluginRepoProvider>
-          <cacheConnection>true</cacheConnection>
-          <manageHooks>true</manageHooks>
-          <repoPermission>ADMIN</repoPermission>
-        </com.github.kostyasha.github.integration.generic.repoprovider.GitHubPluginRepoProvider>
-      </repoProviders>
-      <errorsAction>
-        <description>GitHub Pull Requests Trigger Errors</description>
-        <errors class="java.util.Collections$SynchronizedSet" serialization="custom">
-          <java.util.Collections_-SynchronizedCollection>
-            <default>
-              <c class="set" />
-              <mutex class="java.util.Collections$SynchronizedSet" reference="../../.." />
-            </default>
-          </java.util.Collections_-SynchronizedCollection>
-        </errors>
-      </errorsAction>
-      <events>
-        <org.jenkinsci.plugins.github.pullrequest.events.impl.GitHubPRCommitEvent />
-        <org.jenkinsci.plugins.github.pullrequest.events.impl.GitHubPRCommentEvent>
-          <comment>retest this please</comment>
-        </org.jenkinsci.plugins.github.pullrequest.events.impl.GitHubPRCommentEvent>
-        <org.jenkinsci.plugins.github.pullrequest.events.impl.GitHubPROpenEvent />
-      </events>
-      <preStatus>false</preStatus>
-      <branchRestriction>
-        <targetBranchList>
-          <string>sapmachine</string>
-        </targetBranchList>
-      </branchRestriction>
-    </org.jenkinsci.plugins.github.pullrequest.GitHubPRTrigger>
-  </triggers>
-  <publishers />
-  <buildWrappers />
+  <disabled>false</disabled>
 </flow-definition>
