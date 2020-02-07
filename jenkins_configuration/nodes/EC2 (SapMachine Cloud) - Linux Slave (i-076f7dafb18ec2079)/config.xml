@@ -1,16 +1,16 @@
 <hudson.plugins.ec2.EC2Slave plugin="ec2@1.49.1">
-  <name>EC2 (SapMachine Cloud) - Linux Slave (i-0f235e98daea8c795)</name>
+  <name>EC2 (SapMachine Cloud) - Linux Slave (i-076f7dafb18ec2079)</name>
   <remoteFS>/home/ubuntu/slave_home</remoteFS>
   <numExecutors>1</numExecutors>
   <mode>EXCLUSIVE</mode>
   <retentionStrategy class="hudson.plugins.ec2.EC2RetentionStrategy">
-    <nextCheckAfter>-1</nextCheckAfter>
+    <nextCheckAfter>1581037775269</nextCheckAfter>
     <idleTerminationMinutes>10</idleTerminationMinutes>
   </retentionStrategy>
   <launcher class="hudson.plugins.ec2.ssh.EC2UnixLauncher" />
   <label>linux_x86_64</label>
   <nodeProperties />
-  <instanceId>i-0f235e98daea8c795</instanceId>
+  <instanceId>i-076f7dafb18ec2079</instanceId>
   <initScript />
   <tmpDir />
   <remoteAdmin>ubuntu</remoteAdmin>
