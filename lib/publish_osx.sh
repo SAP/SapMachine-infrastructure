@@ -7,7 +7,7 @@ ARCHIVE_NAME_JDK="sapmachine-jdk-${VERSION}_osx-x64_bin.tar.gz"
 ARCHIVE_NAME_JRE="sapmachine-jre-${VERSION}_osx-x64_bin.tar.gz"
 ARCHIVE_NAME_SYMBOLS="sapmachine-jdk-${VERSION}_osx-x64_bin-symbols.tar.gz"
 DMG_NAME_JDK="sapmachine-jdk-${VERSION}_osx-x64_bin.dmg"
-DMG_NAME_JRE="sapmachine-jdk-${VERSION}_osx-x64_bin.dmg"
+DMG_NAME_JRE="sapmachine-jre-${VERSION}_osx-x64_bin.dmg"
 
 mv JDK_TGZ $ARCHIVE_NAME_JDK
 mv JRE_TGZ $ARCHIVE_NAME_JRE
