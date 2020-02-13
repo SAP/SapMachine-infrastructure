@@ -76,6 +76,15 @@ def main(argv=None):
     if len(sapmachine_version) < 3:
         sapmachine_version += ['0' for sapmachine_version in range(0, 3 - len(sapmachine_version))]
 
+    if len(sapmachine_version) == 4:
+        sapmachine_version[3] = (sapmachine_version[3] < 8) & 0xFF00
+
+    if len(sapmachine_version) == 5:
+        merged_version = (sapmachine_version[3] < 8) | (sapmachine_version[4] & 0xFF)
+
+        del sapmachine_version[4]
+        sapmachine_version[3] = merged_version
+
     sapmachine_version = '.'.join(sapmachine_version)
 
     shutil.copyfile(
