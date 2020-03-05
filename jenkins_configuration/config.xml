@@ -5,7 +5,7 @@
     <string>hudson.node_monitors.MonitorMarkedNodeOffline</string>
     <string>OldData</string>
   </disabledAdministrativeMonitors>
-  <version>2.219</version>
+  <version>2.223</version>
   <installStateName>RESTART</installStateName>
   <numExecutors>4</numExecutors>
   <mode>EXCLUSIVE</mode>
@@ -173,7 +173,7 @@
       <filterQueue>false</filterQueue>
       <properties class="hudson.model.View$PropertyList" />
       <jobNames>
-        <comparator class="hudson.util.CaseInsensitiveComparator" />
+        <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator" />
       </jobNames>
       <jobFilters />
       <columns>
@@ -196,7 +196,7 @@
       <filterQueue>false</filterQueue>
       <properties class="hudson.model.View$PropertyList" />
       <jobNames>
-        <comparator class="hudson.util.CaseInsensitiveComparator" />
+        <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator" />
       </jobNames>
       <jobFilters />
       <columns>
@@ -219,7 +219,7 @@
       <filterQueue>false</filterQueue>
       <properties class="hudson.model.View$PropertyList" />
       <jobNames>
-        <comparator class="hudson.util.CaseInsensitiveComparator" />
+        <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator" />
       </jobNames>
       <jobFilters />
       <columns>
@@ -242,7 +242,7 @@
       <filterQueue>false</filterQueue>
       <properties class="hudson.model.View$PropertyList" />
       <jobNames>
-        <comparator class="hudson.util.CaseInsensitiveComparator" />
+        <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator" />
       </jobNames>
       <jobFilters />
       <columns>
@@ -265,7 +265,7 @@
       <filterQueue>false</filterQueue>
       <properties class="hudson.model.View$PropertyList" />
       <jobNames>
-        <comparator class="hudson.util.CaseInsensitiveComparator" />
+        <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator" />
       </jobNames>
       <jobFilters />
       <columns>
@@ -288,7 +288,7 @@
       <filterQueue>false</filterQueue>
       <properties class="hudson.model.View$PropertyList" />
       <jobNames>
-        <comparator class="hudson.util.CaseInsensitiveComparator" />
+        <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator" />
       </jobNames>
       <jobFilters />
       <columns>
@@ -311,7 +311,7 @@
       <filterQueue>false</filterQueue>
       <properties class="hudson.model.View$PropertyList" />
       <jobNames>
-        <comparator class="hudson.util.CaseInsensitiveComparator" />
+        <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator" />
       </jobNames>
       <jobFilters />
       <columns>
@@ -334,7 +334,7 @@
       <filterQueue>false</filterQueue>
       <properties class="hudson.model.View$PropertyList" />
       <jobNames>
-        <comparator class="hudson.util.CaseInsensitiveComparator" />
+        <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator" />
         <string>generate-website-data</string>
         <string>jenkins-configuration-backup</string>
         <string>jenkins-configuration-restore</string>
@@ -364,7 +364,7 @@
       <filterQueue>false</filterQueue>
       <properties class="hudson.model.View$PropertyList" />
       <jobNames>
-        <comparator class="hudson.util.CaseInsensitiveComparator" />
+        <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator" />
         <string>jtreg</string>
       </jobNames>
       <jobFilters />
@@ -387,7 +387,7 @@
       <filterQueue>false</filterQueue>
       <properties class="hudson.model.View$PropertyList" />
       <jobNames>
-        <comparator class="hudson.util.CaseInsensitiveComparator" />
+        <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator" />
         <string>generate-cf-java-buildpack-data</string>
         <string>test-cf-java-buildpack-data</string>
       </jobNames>
@@ -411,7 +411,7 @@
       <filterQueue>false</filterQueue>
       <properties class="hudson.model.View$PropertyList" />
       <jobNames>
-        <comparator class="hudson.util.CaseInsensitiveComparator" />
+        <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator" />
         <string>docker-manifest</string>
         <string>generate-dockerfiles</string>
       </jobNames>
@@ -435,7 +435,7 @@
       <filterQueue>false</filterQueue>
       <properties class="hudson.model.View$PropertyList" />
       <jobNames>
-        <comparator class="hudson.util.CaseInsensitiveComparator" />
+        <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator" />
         <string>debian-package</string>
         <string>recreate-debian-repository</string>
         <string>rpm-package</string>
@@ -460,7 +460,7 @@
       <filterQueue>false</filterQueue>
       <properties class="hudson.model.View$PropertyList" />
       <jobNames>
-        <comparator class="hudson.util.CaseInsensitiveComparator" />
+        <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator" />
       </jobNames>
       <jobFilters />
       <columns>
