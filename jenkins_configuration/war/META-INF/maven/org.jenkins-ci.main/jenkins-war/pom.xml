@@ -2,11 +2,11 @@
   <ns0:modelVersion>4.0.0</ns0:modelVersion>
   <ns0:groupId>org.jenkins-ci.main</ns0:groupId>
   <ns0:artifactId>jenkins-war</ns0:artifactId>
-  <ns0:version>2.223</ns0:version>
+  <ns0:version>2.224</ns0:version>
   <ns0:packaging>war</ns0:packaging>
   <ns0:name>Jenkins war</ns0:name>
   <ns0:description>Creates a war file. Also includes additional static web resources, such as images, CSS, JavaScript, and some HTML files.</ns0:description>
-  <ns0:url>https://jenkins.io/jenkins-parent/jenkins-war/</ns0:url>
+  <ns0:url>https://github.com/jenkinsci/pom/jenkins-parent/jenkins-war</ns0:url>
   <ns0:inceptionYear>2004</ns0:inceptionYear>
   <ns0:licenses>
     <ns0:license>
@@ -47,17 +47,17 @@
       </ns0:otherArchives>
     </ns0:mailingList>
     <ns0:mailingList>
-      <ns0:name>Hudson Japanese user discussion list</ns0:name>
-      <ns0:subscribe>hudson-ja+subscribe@googlegroups.com</ns0:subscribe>
-      <ns0:unsubscribe>hudson-ja+unsubscribe@googlegroups.com</ns0:unsubscribe>
-      <ns0:post>hudson-ja@googlegroups.com</ns0:post>
-      <ns0:archive>http://hudson.361315.n4.nabble.com/Hudson-ja-f361157.html</ns0:archive>
+      <ns0:name>Jenkins Japanese user discussion list</ns0:name>
+      <ns0:subscribe>jenkinsci-ja+subscribe@googlegroups.com</ns0:subscribe>
+      <ns0:unsubscribe>jenkinsci-ja+unsubscribe@googlegroups.com</ns0:unsubscribe>
+      <ns0:post>jenkinsci-ja@googlegroups.com</ns0:post>
+      <ns0:archive>http://jenkinsci.361315.n4.nabble.com/Jenkins-ja-f361157.html</ns0:archive>
     </ns0:mailingList>
   </ns0:mailingLists>
   <ns0:scm>
     <ns0:connection>scm:git:git://github.com/jenkinsci/jenkins.git/jenkins-war</ns0:connection>
     <ns0:developerConnection>scm:git:ssh://git@github.com/jenkinsci/jenkins.git/jenkins-war</ns0:developerConnection>
-    <ns0:tag>jenkins-2.223</ns0:tag>
+    <ns0:tag>jenkins-2.224</ns0:tag>
     <ns0:url>https://github.com/jenkinsci/jenkins/jenkins-war</ns0:url>
   </ns0:scm>
   <ns0:issueManagement>
@@ -92,7 +92,7 @@
     <ns0:dependency>
       <ns0:groupId>org.jenkins-ci.main</ns0:groupId>
       <ns0:artifactId>jenkins-core</ns0:artifactId>
-      <ns0:version>2.223</ns0:version>
+      <ns0:version>2.224</ns0:version>
       <ns0:scope>compile</ns0:scope>
       <ns0:exclusions>
         <ns0:exclusion>
@@ -114,7 +114,7 @@
     <ns0:dependency>
       <ns0:groupId>org.jenkins-ci.main</ns0:groupId>
       <ns0:artifactId>cli</ns0:artifactId>
-      <ns0:version>2.223</ns0:version>
+      <ns0:version>2.224</ns0:version>
       <ns0:scope>compile</ns0:scope>
     </ns0:dependency>
     <ns0:dependency>
@@ -201,7 +201,7 @@
     <ns0:dependency>
       <ns0:groupId>org.codehaus.mojo</ns0:groupId>
       <ns0:artifactId>animal-sniffer-annotations</ns0:artifactId>
-      <ns0:version>1.17</ns0:version>
+      <ns0:version>1.18</ns0:version>
       <ns0:scope>provided</ns0:scope>
       <ns0:optional>true</ns0:optional>
     </ns0:dependency>
