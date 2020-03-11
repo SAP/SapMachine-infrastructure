@@ -1,5 +1,11 @@
-<flow-definition plugin="workflow-job">
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps">
+<flow-definition plugin="workflow-job@2.36">
+  <actions />
+  <description>This project is generated. Do not modify manually.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty />
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.80">
     <script>pipeline {
     agent {
         label "repository"
@@ -38,15 +44,5 @@
 }</script>
     <sandbox>false</sandbox>
   </definition>
-  <actions />
-  <description>This project is generated. Do not modify manually.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
-  <keepDependencies>false</keepDependencies>
-  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
-  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
-  <concurrentBuild>false</concurrentBuild>
-  <canRoam>true</canRoam>
-  <properties />
-  <scm class="hudson.scm.NullSCM" />
-  <publishers />
-  <buildWrappers />
+  <disabled>false</disabled>
 </flow-definition>
