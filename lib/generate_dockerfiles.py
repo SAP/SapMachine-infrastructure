@@ -15,7 +15,7 @@ from string import Template
 from utils import github_api_request
 
 dockerfile_template = '''
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 
 RUN apt-get update \\
     && apt-get install -y --no-install-recommends wget ca-certificates gnupg2 \\
