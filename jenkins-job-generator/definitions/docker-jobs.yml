@@ -26,7 +26,7 @@
                         }
                     }
                     steps {
-                        sh "cd SapMachine-Infrastructure && python lib/make_docker_manifest.py -d dockerfiles/official -m ../sapmachine.manifest"
+                        sh "cd SapMachine-Infrastructure && python3 lib/make_docker_manifest.py -d dockerfiles/official -m ../sapmachine.manifest"
                         archiveArtifacts 'sapmachine.manifest'
                     }
                 }
@@ -72,7 +72,7 @@
                         withCredentials([
                                 [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
                                 ]) {
-                            sh "cd SapMachine-Infrastructure && python lib/generate_dockerfiles.py"
+                            sh "cd SapMachine-Infrastructure && python3 lib/generate_dockerfiles.py"
                         }
                     }
                 }

@@ -3,7 +3,7 @@ FROM jenkins/jenkins:jdk11
 USER root
 RUN apt-get update && apt-get install -qq -y --no-install-recommends \
 git \
-python \
+python3 \
 ca-certificates \
 wget \
 vim \
@@ -12,7 +12,7 @@ less
 
 USER jenkins
 RUN git clone https://github.com/sap/SapMachine-infrastructure /tmp/SapMachine-infrastructure
-RUN python /tmp/SapMachine-infrastructure/lib/jenkins_restore.py -s /tmp/SapMachine-infrastructure -t /var/jenkins_home --install-plugins
+RUN python3 /tmp/SapMachine-infrastructure/lib/jenkins_restore.py -s /tmp/SapMachine-infrastructure -t /var/jenkins_home --install-plugins
 RUN rm -rf /tmp/SapMachine-infrastructure
 
 COPY init-sapmachine.groovy /usr/share/jenkins/ref/init.groovy.d/init-sapmachine.groovy

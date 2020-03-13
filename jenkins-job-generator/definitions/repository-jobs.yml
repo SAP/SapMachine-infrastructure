@@ -35,7 +35,7 @@
                             [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
                             ]) {
                                 sh '''
-                                openjdk_repositories=$(python SapMachine-Infrastructure/lib/list_openjdk_repositories.py)
+                                openjdk_repositories=$(python3 SapMachine-Infrastructure/lib/list_openjdk_repositories.py)
 
                                 for i in ${openjdk_repositories}
                                 do
@@ -101,8 +101,8 @@
                             [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
                             ]) {
                             sh '''
-                            python SapMachine-Infrastructure/lib/merge_jdk_tags.py
-                            python SapMachine-Infrastructure/lib/create_sapmachine_tags.py
+                            python3 SapMachine-Infrastructure/lib/merge_jdk_tags.py
+                            python3 SapMachine-Infrastructure/lib/create_sapmachine_tags.py
                             '''
                         }
                     }

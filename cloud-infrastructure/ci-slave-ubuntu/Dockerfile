@@ -1,9 +1,9 @@
-FROM ubuntu:16.04
+FROM ubuntu:20.04
 
 RUN apt-get update && apt-get install -qq -y --no-install-recommends \
 dh-make \
 devscripts \
-python \
+python3 \
 git \
 ca-certificates \
 fakeroot \
@@ -17,7 +17,6 @@ curl \
 zip \
 unzip \
 wget \
-realpath \
 file
 
 ARG uid=1000
