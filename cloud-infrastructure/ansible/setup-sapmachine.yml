@@ -8,7 +8,7 @@
     gather_facts: Yes
     pre_tasks:
       - name: 'install python'
-        raw: sudo apt-get update && sudo apt-get -qq -y --no-install-recommends install python python3
+        raw: sudo rm -rf /etc/apt/sources.list.d/dist_sapmachine_io_debian_amd64.list && sudo apt-get update && sudo apt-get -qq -y --no-install-recommends install python python3
     vars:
       ansible_user: ubuntu
       ansible_ssh_private_key_file: SapMachine.pem
