@@ -65,3 +65,5 @@ RUN mkdir -p /opt/dacapo
 RUN wget https://sourceforge.net/projects/dacapobench/files/9.12-bach-MR1/dacapo-9.12-MR1-bach.jar/download -O /opt/dacapo/dacapo.jar
 
 WORKDIR /
+
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 10
