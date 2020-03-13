@@ -9,8 +9,9 @@ import json
 import re
 import utils
 import argparse
-
-from urllib2 import urlopen, Request, quote, HTTPError
+from urllib.request import urlopen, Request
+from urllib.parse import quote
+from urllib.error import HTTPError
 
 openjdk_hg_base = 'http://hg.openjdk.java.net/'
 jdk_major_start = 11
@@ -42,7 +43,7 @@ def test_repositories(repository_base, repository_suffix=''):
             response = urlopen(request)
             code = response.code
             openjdk_repositories.append(repository)
-        except HTTPError, e:
+        except HTTPError as e:
             code = e.code
 
     return openjdk_repositories

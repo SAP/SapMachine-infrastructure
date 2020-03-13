@@ -8,7 +8,7 @@ import sys
 import shutil
 import zipfile
 import tarfile
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import re
 import datetime
 import argparse

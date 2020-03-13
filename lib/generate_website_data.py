@@ -8,8 +8,8 @@ import sys
 import json
 import re
 import utils
-
-from urllib2 import urlopen, Request, quote
+from urllib.request import urlopen, Request
+from urllib.parse import quote
 from os.path import join
 from string import Template
 

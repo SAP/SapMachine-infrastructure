@@ -8,8 +8,9 @@ import sys
 import re
 import utils
 import yaml
-
-from urllib2 import urlopen, Request, quote, HTTPError
+from urllib.request import urlopen, Request
+from urllib.parse import quote
+from urllib.error import HTTPError
 
 cf_yml_url = 'https://sap.github.io/SapMachine/assets/cf/jre/linux/x86_64/index.yml'
 cf_version_pattern = re.compile('(((\d+)\.(\d+)\.(\d+))_(\d+)\.(\d+))\.b(\d+)')
@@ -20,7 +21,7 @@ def main(argv=None):
 
     try:
         response = urlopen(request)
-    except HTTPError, e:
+    except HTTPError as e:
         return 1
 
     try:
@@ -42,7 +43,7 @@ def main(argv=None):
                 if response.code != 200:
                     return 1
 
-            except HTTPError, e:
+            except HTTPError as e:
                 return 1
 
     except yaml.YAMLError as e:

@@ -141,7 +141,7 @@ def main(argv=None):
             commit_messages = [commit_message for commit_message in commit_messages.split(os.linesep) if commit_message]
             commit_ids = [commit_id for commit_id in commit_ids.split(os.linesep) if commit_id]
 
-        merge_commits = map(lambda x,y:[x,y],commit_messages,commit_ids)
+        merge_commits = list(map(lambda x,y:[x,y],commit_messages,commit_ids))
 
         for merge_commit in merge_commits:
             commit_message = merge_commit[0]

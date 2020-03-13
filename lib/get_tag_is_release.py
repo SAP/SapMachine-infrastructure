@@ -9,8 +9,8 @@ import json
 import re
 import utils
 import argparse
-
-from urllib2 import urlopen, Request, quote
+from urllib.request import urlopen, Request
+from urllib.parse import quote
 from os.path import join
 
 def main(argv=None):

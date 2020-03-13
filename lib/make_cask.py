@@ -46,7 +46,7 @@ end
 
 def version_to_tuple(version, build_number):
     if version is not None:
-        version = map(int, version.split('.'))
+        version = list(map(int, version.split('.')))
         version.extend([0 for i in range(5 - len(version))])
         version = tuple(version)
         version += (int(build_number),) if build_number is not None else (99999,)

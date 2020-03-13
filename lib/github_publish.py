@@ -11,8 +11,8 @@ import utils
 import argparse
 import mimetypes
 
-from urllib2 import quote
-from urllib2 import URLError
+from urllib.parse import quote
+from urllib.error import URLError
 from os.path import join
 
 
