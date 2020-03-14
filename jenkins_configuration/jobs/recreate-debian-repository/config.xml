@@ -1,4 +1,4 @@
-<flow-definition plugin="workflow-job@2.36">
+<flow-definition plugin="workflow-job@2.37">
   <actions />
   <description>This project is generated. Do not modify manually.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
@@ -26,7 +26,7 @@
         }
         stage('Recreate') {
             steps {
-                    sh "python SapMachine-Infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/amd64"
+                    sh "python3 SapMachine-Infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/amd64"
             }
         }
     }

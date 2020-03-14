@@ -1,4 +1,4 @@
-<flow-definition plugin="workflow-job@2.36">
+<flow-definition plugin="workflow-job@2.37">
   <actions />
   <description>This project is generated. Do not modify manually.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
@@ -27,13 +27,13 @@
         stage('Generate Manifest') {
             agent {
                 dockerfile {
-                    dir "SapMachine-Infrastructure/dockerfiles/ubuntu_16_04_x86_64"
+                    dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04_x86_64"
                     reuseNode true
                     label "docker"
                 }
             }
             steps {
-                sh "cd SapMachine-Infrastructure &amp;&amp; python lib/make_docker_manifest.py -d dockerfiles/official -m ../sapmachine.manifest"
+                sh "cd SapMachine-Infrastructure &amp;&amp; python3 lib/make_docker_manifest.py -d dockerfiles/official -m ../sapmachine.manifest"
                 archiveArtifacts 'sapmachine.manifest'
             }
         }

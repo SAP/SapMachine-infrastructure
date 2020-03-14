@@ -1,4 +1,4 @@
-<flow-definition plugin="workflow-job@2.36">
+<flow-definition plugin="workflow-job@2.37">
   <actions />
   <description>This project is generated. Do not modify manually.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
@@ -77,7 +77,7 @@
             steps {
                 script {
                     env.VERIFICATION_RESULT = sh(
-                        script: "python SapMachine-Infrastructure/lib/verify_pr.py -p ${env.GITHUB_PR_NUMBER}",
+                        script: "python3 SapMachine-Infrastructure/lib/verify_pr.py -p ${env.GITHUB_PR_NUMBER}",
                         returnStatus: true
                     )
 

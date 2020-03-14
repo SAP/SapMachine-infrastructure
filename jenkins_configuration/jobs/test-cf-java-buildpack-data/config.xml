@@ -1,7 +1,7 @@
-<flow-definition plugin="workflow-job@2.36">
+<flow-definition plugin="workflow-job@2.37">
   <actions>
-    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.5.1" />
-    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.5.1">
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.6.0" />
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.6.0">
       <jobProperties />
       <triggers />
       <parameters />
@@ -49,7 +49,7 @@
               }
               steps {
                   sh '''
-                      python SapMachine-Infrastructure/lib/test_cf_buildpack_data.py
+                      python3 SapMachine-Infrastructure/lib/test_cf_buildpack_data.py
                   '''
               }
           }

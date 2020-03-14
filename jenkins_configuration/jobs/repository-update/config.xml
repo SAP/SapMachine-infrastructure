@@ -1,7 +1,7 @@
-<flow-definition plugin="workflow-job@2.36">
+<flow-definition plugin="workflow-job@2.37">
   <actions>
-    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.5.1" />
-    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.5.1">
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.6.0" />
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.6.0">
       <jobProperties />
       <triggers />
       <parameters />
@@ -55,7 +55,7 @@
                     [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
                     ]) {
                         sh '''
-                        openjdk_repositories=$(python SapMachine-Infrastructure/lib/list_openjdk_repositories.py)
+                        openjdk_repositories=$(python3 SapMachine-Infrastructure/lib/list_openjdk_repositories.py)
 
                         for i in ${openjdk_repositories}
                         do

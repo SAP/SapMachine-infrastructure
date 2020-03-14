@@ -1,4 +1,4 @@
-<flow-definition plugin="workflow-job@2.36">
+<flow-definition plugin="workflow-job@2.37">
   <actions />
   <description>This project is generated. Do not modify manually.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
@@ -50,7 +50,7 @@
             agent {
                 dockerfile {
                     label 'linux_x86_64'
-                    dir "SapMachine-Infrastructure/dockerfiles/ubuntu_16_04_x86_64"
+                    dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04_x86_64"
                     reuseNode true
                 }
             }

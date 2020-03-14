@@ -1,4 +1,4 @@
-<flow-definition plugin="workflow-job@2.36">
+<flow-definition plugin="workflow-job@2.37">
   <actions />
   <description>This project is generated. Do not modify manually.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
@@ -39,7 +39,7 @@
                 withCredentials([
                         [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
                         ]) {
-                    sh "cd SapMachine-Infrastructure &amp;&amp; python lib/generate_dockerfiles.py"
+                    sh "cd SapMachine-Infrastructure &amp;&amp; python3 lib/generate_dockerfiles.py"
                 }
             }
         }

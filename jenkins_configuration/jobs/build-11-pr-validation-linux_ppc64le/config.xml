@@ -1,13 +1,5 @@
-<flow-definition plugin="workflow-job@2.36">
-  <actions>
-    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.6.0" />
-    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.6.0">
-      <jobProperties />
-      <triggers />
-      <parameters />
-      <options />
-    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
-  </actions>
+<flow-definition plugin="workflow-job@2.37">
+  <actions />
   <description>This project is generated. Do not modify manually.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
   <properties>
@@ -143,7 +135,7 @@
                         major = "9999"
                     }
 
-                    sh "python SapMachine-Infrastructure/lib/download_boot_jdk.py -m ${major} -d `pwd`"
+                    sh "python3 SapMachine-Infrastructure/lib/download_boot_jdk.py -m ${major} -d `pwd`"
                 }
             }
         }
@@ -207,8 +199,8 @@
             }
             steps {
                 sh "echo 'run dacapo'"
-                sh "python --version"
-                sh "python SapMachine-Infrastructure/lib/run_dacapo.py ${env.DACAPO_CP}"
+                sh "python3 --version"
+                sh "python3 SapMachine-Infrastructure/lib/run_dacapo.py ${env.DACAPO_CP}"
             }
         }
         stage('Run jtreg hotspot') {
@@ -334,8 +326,8 @@
                         jre_bundle_name = jre_bundle_name.trim()
 
                         sh "rm -f *.msi"
-                        sh "python SapMachine-Infrastructure/lib/make_msi.py --sapmachine-directory=`pwd`/SapMachine --asset=${jdk_bundle_name}"
-                        sh "python SapMachine-Infrastructure/lib/make_msi.py --sapmachine-directory=`pwd`/SapMachine --jre --asset=${jre_bundle_name}"
+                        sh "python3 SapMachine-Infrastructure/lib/make_msi.py --sapmachine-directory=`pwd`/SapMachine --asset=${jdk_bundle_name}"
+                        sh "python3 SapMachine-Infrastructure/lib/make_msi.py --sapmachine-directory=`pwd`/SapMachine --jre --asset=${jre_bundle_name}"
                         archiveArtifacts allowEmptyArchive: true, artifacts: "*.msi"
                     }
                 }

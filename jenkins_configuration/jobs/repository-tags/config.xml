@@ -1,13 +1,5 @@
-<flow-definition plugin="workflow-job@2.36">
-  <actions>
-    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.5.1" />
-    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.5.1">
-      <jobProperties />
-      <triggers />
-      <parameters />
-      <options />
-    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
-  </actions>
+<flow-definition plugin="workflow-job@2.37">
+  <actions />
   <description>This project is generated. Do not modify manually.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
   <properties>
@@ -63,8 +55,8 @@
                     [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
                     ]) {
                     sh '''
-                    python SapMachine-Infrastructure/lib/merge_jdk_tags.py
-                    python SapMachine-Infrastructure/lib/create_sapmachine_tags.py
+                    python3 SapMachine-Infrastructure/lib/merge_jdk_tags.py
+                    python3 SapMachine-Infrastructure/lib/create_sapmachine_tags.py
                     '''
                 }
             }
