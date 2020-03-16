@@ -302,6 +302,9 @@ def github_api_request(api=None, url=None, owner='SAP', repository='SapMachine',
                 url_parameter_string = '?' + '&'.join(url_parameter)
             url = str.format('https://api.github.com/repos/{0}/{1}/{2}{3}', owner, repository, api, url_parameter_string)
 
+        if type(data) == str:
+            data = data.encode('utf-8')
+
         request = Request(url, data=data)
         request.get_method = lambda: method
 
