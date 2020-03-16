@@ -9,6 +9,7 @@ git \
 mercurial \
 unzip \
 python \
+python-setuptools \
 python-pip \
 python3 \
 python3-setuptools \
