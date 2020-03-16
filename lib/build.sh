@@ -72,7 +72,7 @@ if [[ $UNAME == CYGWIN* ]]; then
 fi
 
 if [[ $GIT_TAG_NAME == sapmachine-* ]]; then
-  read VERSION VERSION_PART VERSION_MAJOR VERSION_BUILD_NUMBER SAPMACHINE_VERSION VERSION_OS_EXT<<< $(python ${WORKSPACE}/SapMachine-Infrastructure/lib/get_tag_version_components.py -t $GIT_TAG_NAME)
+  read VERSION VERSION_PART VERSION_MAJOR VERSION_BUILD_NUMBER SAPMACHINE_VERSION VERSION_OS_EXT<<< $(python3 ${WORKSPACE}/SapMachine-Infrastructure/lib/get_tag_version_components.py -t $GIT_TAG_NAME)
 
   if [[ -z $VERSION || -z $VERSION_MAJOR ]]; then
     # error
@@ -102,7 +102,7 @@ if [[ $GIT_TAG_NAME == sapmachine-* ]]; then
     VERSION_PRE_OPT=''
   fi
 
-  VERSION_DATE=$(python ../SapMachine-Infrastructure/lib/get_tag_timestamp.py -t $GIT_TAG_NAME)
+  VERSION_DATE=$(python3 ../SapMachine-Infrastructure/lib/get_tag_timestamp.py -t $GIT_TAG_NAME)
 
   if [[ -z $VERSION_DATE ]]; then
     VERSION_DATE=$(date -u "+%Y-%m-%d")
