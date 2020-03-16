@@ -1,7 +1,7 @@
 #!/bin/bash
 set -ex
 
-read VERSION VERSION_PART VERSION_MAJOR VERSION_BUILD_NUMBER SAPMACHINE_VERSION VERSION_OS_EXT<<< $(python ${WORKSPACE}/SapMachine-Infrastructure/lib/get_tag_version_components.py -t $GIT_TAG_NAME)
+read VERSION VERSION_PART VERSION_MAJOR VERSION_BUILD_NUMBER SAPMACHINE_VERSION VERSION_OS_EXT<<< $(python3 ${WORKSPACE}/SapMachine-Infrastructure/lib/get_tag_version_components.py -t $GIT_TAG_NAME)
 
 ARCHIVE_NAME_JDK="sapmachine-jdk-${VERSION}_osx-x64_bin.tar.gz"
 ARCHIVE_NAME_JRE="sapmachine-jre-${VERSION}_osx-x64_bin.tar.gz"
@@ -27,21 +27,21 @@ shasum -a 256 $ARCHIVE_NAME_SYMBOLS > $ARCHIVE_SUM_SYMBOLS
 shasum -a 256 $DMG_NAME_JDK > $DMG_SUM_JDK
 shasum -a 256 $DMG_NAME_JRE > $DMG_SUM_JRE
 
-python SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${ARCHIVE_NAME_JDK}"
-python SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${ARCHIVE_NAME_JRE}"
-python SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${ARCHIVE_NAME_SYMBOLS}"
-python SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${ARCHIVE_SUM_JDK}"
-python SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${ARCHIVE_SUM_JRE}"
-python SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${ARCHIVE_SUM_SYMBOLS}"
-python SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${DMG_NAME_JDK}"
-python SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${DMG_NAME_JRE}"
-python SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${DMG_SUM_JDK}"
-python SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${DMG_SUM_JRE}"
+python3 SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${ARCHIVE_NAME_JDK}"
+python3 SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${ARCHIVE_NAME_JRE}"
+python3 SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${ARCHIVE_NAME_SYMBOLS}"
+python3 SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${ARCHIVE_SUM_JDK}"
+python3 SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${ARCHIVE_SUM_JRE}"
+python3 SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${ARCHIVE_SUM_SYMBOLS}"
+python3 SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${DMG_NAME_JDK}"
+python3 SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${DMG_NAME_JRE}"
+python3 SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${DMG_SUM_JDK}"
+python3 SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${DMG_SUM_JRE}"
 
 if [ "$PUBLISH_CASKS" == true ]; then
     JDK_SHA256=`shasum -a 256 $DMG_NAME_JDK | awk '{ print $1 }'`
     JRE_SHA256=`shasum -a 256 $DMG_NAME_JRE | awk '{ print $1 }'`
 
-    python SapMachine-Infrastructure/lib/make_cask.py -t $GIT_TAG_NAME --sha256sum $JDK_SHA256 -i jdk
-    python SapMachine-Infrastructure/lib/make_cask.py -t $GIT_TAG_NAME --sha256sum $JRE_SHA256 -i jre
+    python3 SapMachine-Infrastructure/lib/make_cask.py -t $GIT_TAG_NAME --sha256sum $JDK_SHA256 -i jdk
+    python3 SapMachine-Infrastructure/lib/make_cask.py -t $GIT_TAG_NAME --sha256sum $JRE_SHA256 -i jre
 fi
