@@ -37,6 +37,10 @@ def run_cmd(cmdline, throw=True, cwd=None, env=None, std=False, shell=False):
             out = out.decode('utf-8')
         except (UnicodeDecodeError, AttributeError):
             pass
+        try:
+            err = err.decode('utf-8')
+        except (UnicodeDecodeError, AttributeError):
+            pass
         return (retcode, out, err)
     return retcode
 
