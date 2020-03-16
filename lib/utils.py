@@ -33,6 +33,10 @@ def run_cmd(cmdline, throw=True, cwd=None, env=None, std=False, shell=False):
     if throw and retcode != 0:
         raise Exception(str.format('command failed with exit code {0}: {1}', retcode, cmdline))
     if std:
+        try:
+            out = out.decode('utf-8')
+        except (UnicodeDecodeError, AttributeError):
+            pass
         return (retcode, out, err)
     return retcode
 
