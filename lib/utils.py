@@ -307,9 +307,13 @@ def github_api_request(api=None, url=None, owner='SAP', repository='SapMachine',
             link = response.info().get('Link')
 
             if result is None:
-                result = json.loads(response.read())
+                try:
+                    response = response.read().decode('utf-8')
+                except (UnicodeDecodeError, AttributeError):
+                    response = response.read()
+                result = json.loads(response)
             else:
-                result.extend(json.loads(response.read()))
+                result.extend(json.loads(response))
 
             load_next = False
 
