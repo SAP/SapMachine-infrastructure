@@ -56,6 +56,18 @@ class SafeZipFile(ZipFile):
         os.chmod(ret_val, attr)
         return ret_val
 
+    def extractall(self, path=None, members=None, pwd=None):
+        if members is None:
+            members = self.namelist()
+
+        if path is None:
+            path = os.getcwd()
+        else:
+            path = os.fspath(path)
+
+        for zipinfo in members:
+            self.extract(zipinfo, path, pwd)
+
 def extract_archive(archive, target, remove_archive=True):
     if archive.endswith('.zip'):
         with SafeZipFile(archive) as zip_ref:
