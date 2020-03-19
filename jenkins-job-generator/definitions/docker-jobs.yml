@@ -60,7 +60,7 @@
                 stage('Generate Dockerfiles') {
                     agent {
                         dockerfile {
-                            dir "SapMachine-Infrastructure/dockerfiles/ubuntu_16_04_x86_64"
+                            dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04_x86_64"
                             reuseNode true
                             label "docker"
                         }
