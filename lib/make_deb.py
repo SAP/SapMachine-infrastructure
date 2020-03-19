@@ -90,6 +90,9 @@ def generate_configuration(templates_dir, major, target_dir, exploded_image, src
                 license=gather_licenses(src_dir)
             ))
 
+    with open(join(target_dir, 'compat'), 'w+') as compat_out:
+        compat_out.write('10')
+
 def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('-t', '--tag', help='the tag to create the debian packages from', metavar='TAG', required=True)
