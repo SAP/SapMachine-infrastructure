@@ -118,7 +118,7 @@ def main(argv=None):
     current_cask_version = version_to_tuple(current_cask_version, current_cask_build_number)
     new_cask_version = version_to_tuple(version_part, build_number)
 
-    if new_cask_version >= current_cask_version:
+    if current_cask_version is None or new_cask_version >= current_cask_version:
         with open(join(cask_dir, cask_file_name), 'w') as cask_file:
             cask_file.write(cask_content)
 
