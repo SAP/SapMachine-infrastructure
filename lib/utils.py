@@ -115,7 +115,10 @@ def make_gz_archive(src, dest):
     archive = gzip.open(dest, "w", compresslevel=9)
 
     with open(src, 'r') as src_file:
-        archive.write(src_file.read())
+        data = src_file.read()
+        if type(data) == str:
+            data = data.encode('utf-8')
+        archive.write(data)
 
     archive.close()
 
