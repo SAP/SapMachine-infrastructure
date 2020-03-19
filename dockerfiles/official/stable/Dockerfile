@@ -1,5 +1,5 @@
 
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends wget ca-certificates gnupg2 \
@@ -13,9 +13,9 @@ RUN export GNUPGHOME="$(mktemp -d)" \
     && gpgconf --kill all && rm -rf "$GNUPGHOME" \
     && echo "deb http://dist.sapmachine.io/debian/amd64/ ./" > /etc/apt/sources.list.d/sapmachine.list \
     && apt-get update \
-    && apt-get -y --no-install-recommends install sapmachine-13-jdk=13.0.2 \
+    && apt-get -y --no-install-recommends install sapmachine-14-jdk=14 \
     && rm -rf /var/lib/apt/lists/*
 
-ENV JAVA_HOME=/usr/lib/jvm/sapmachine-13
+ENV JAVA_HOME=/usr/lib/jvm/sapmachine-14
 
 CMD ["jshell"]
