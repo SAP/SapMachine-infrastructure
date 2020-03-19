@@ -93,7 +93,7 @@ def main(argv=None):
             lts_release = release
             lts_release_major = major
         else:
-            if not stable_release and major > lts_release_major:
+            if not stable_release and int(major) > int(lts_release_major):
                 stable_release = release
 
         if lts_release and stable_release:
