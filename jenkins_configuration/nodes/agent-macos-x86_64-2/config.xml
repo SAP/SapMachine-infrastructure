@@ -1,4 +1,18 @@
 <slave>
+  <temporaryOfflineCause class="hudson.slaves.OfflineCause$UserCause">
+    <timestamp>1584545108933</timestamp>
+    <description>
+      <holder>
+        <owner>hudson.slaves.Messages</owner>
+      </holder>
+      <key>SlaveComputer.DisconnectedBy</key>
+      <args>
+        <string>arno</string>
+        <string> : Set this node offline until autoconf is reinstalled.</string>
+      </args>
+    </description>
+    <userId>arno</userId>
+  </temporaryOfflineCause>
   <name>agent-macos-x86_64-2</name>
   <description />
   <remoteFS>/Users/jvmtests/sapmachine/jenkins</remoteFS>
@@ -11,6 +25,7 @@
       <internalDir>remoting</internalDir>
       <failIfWorkDirIsMissing>false</failIfWorkDirIsMissing>
     </workDirSettings>
+    <webSocket>false</webSocket>
   </launcher>
   <label>macos_x86_64</label>
   <nodeProperties />
