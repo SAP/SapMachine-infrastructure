@@ -1,13 +1,5 @@
 <flow-definition plugin="workflow-job@2.37">
-  <actions>
-    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.6.0" />
-    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.6.0">
-      <jobProperties />
-      <triggers />
-      <parameters />
-      <options />
-    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
-  </actions>
+  <actions />
   <description>This project is generated. Do not modify manually.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
   <properties>
@@ -264,5 +256,6 @@
 </script>
     <sandbox>false</sandbox>
   </definition>
+  <concurrentBuild>true</concurrentBuild>
   <disabled>false</disabled>
 </flow-definition>

@@ -1,5 +1,39 @@
-<flow-definition plugin="workflow-job">
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps">
+<flow-definition plugin="workflow-job@2.37">
+  <actions />
+  <description>This project is generated. Do not modify manually.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>-1</daysToKeep>
+        <numToKeep>100</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>-1</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
+    <hudson.plugins.buildblocker.BuildBlockerProperty plugin="build-blocker-plugin@1.7.3">
+      <useBuildBlocker>true</useBuildBlocker>
+      <blockLevel>GLOBAL</blockLevel>
+      <scanQueueFor>DISABLED</scanQueueFor>
+      <blockingJobs>.*</blockingJobs>
+    </hudson.plugins.buildblocker.BuildBlockerProperty>
+    <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+      <triggers>
+        <jenkins.triggers.ReverseBuildTrigger>
+          <spec />
+          <upstreamProjects>jenkins-job-generator-trigger</upstreamProjects>
+          <threshold>
+            <name>SUCCESS</name>
+            <ordinal>0</ordinal>
+            <color>BLUE</color>
+            <completeBuild>true</completeBuild>
+          </threshold>
+        </jenkins.triggers.ReverseBuildTrigger>
+      </triggers>
+    </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty />
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.80">
     <script>pipeline {
     agent {
         label "repository"
@@ -36,44 +70,5 @@
 </script>
     <sandbox>false</sandbox>
   </definition>
-  <actions />
-  <description>This project is generated. Do not modify manually.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
-  <keepDependencies>false</keepDependencies>
-  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
-  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
-  <concurrentBuild>false</concurrentBuild>
-  <canRoam>true</canRoam>
-  <properties>
-    <jenkins.model.BuildDiscarderProperty>
-      <strategy class="hudson.tasks.LogRotator">
-        <daysToKeep>-1</daysToKeep>
-        <numToKeep>100</numToKeep>
-        <artifactDaysToKeep>-1</artifactDaysToKeep>
-        <artifactNumToKeep>-1</artifactNumToKeep>
-      </strategy>
-    </jenkins.model.BuildDiscarderProperty>
-    <hudson.plugins.buildblocker.BuildBlockerProperty plugin="build-blocker-plugin@1.7.3">
-      <useBuildBlocker>true</useBuildBlocker>
-      <blockLevel>GLOBAL</blockLevel>
-      <scanQueueFor>DISABLED</scanQueueFor>
-      <blockingJobs>.*</blockingJobs>
-    </hudson.plugins.buildblocker.BuildBlockerProperty>
-    <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
-      <triggers>
-        <jenkins.triggers.ReverseBuildTrigger>
-          <spec />
-          <upstreamProjects>jenkins-job-generator-trigger</upstreamProjects>
-          <threshold>
-            <name>SUCCESS</name>
-            <ordinal>0</ordinal>
-            <color>BLUE</color>
-            <completeBuild>true</completeBuild>
-          </threshold>
-        </jenkins.triggers.ReverseBuildTrigger>
-      </triggers>
-    </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
-  </properties>
-  <scm class="hudson.scm.NullSCM" />
-  <publishers />
-  <buildWrappers />
+  <disabled>false</disabled>
 </flow-definition>
