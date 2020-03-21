@@ -52,7 +52,7 @@
             }
             steps {
                 sh 'rm -f *.rpm'
-                sh "/usr/bin/python2 SapMachine-Infrastructure/lib/make_rpm.py --tag=${params.GIT_TAG_NAME}"
+                sh "/usr/bin/python3 SapMachine-Infrastructure/lib/make_rpm.py --tag=${params.GIT_TAG_NAME}"
             }
             post {
                 success {
