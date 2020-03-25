@@ -20,7 +20,9 @@ exception_list = [
     'jdk/jdk12',
     'jdk-updates/jdk12u',
     'jdk-updates/jdk12u-dev',
-    'jdk/jdk13'
+    'jdk/jdk13',
+    'jdk-updates/jdk13u',
+    'jdk-updates/jdk13u-dev'
 ]
 
 def test_repositories(repository_base, repository_suffix=''):
