@@ -1,6 +1,8 @@
 FROM jenkins/jenkins:jdk11
 
 USER root
+ENV DEBIAN_FRONTEND=noninteractive
+
 RUN apt-get update && apt-get install -qq -y --no-install-recommends \
 git \
 python3 \
