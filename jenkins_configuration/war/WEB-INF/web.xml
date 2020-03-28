@@ -1,5 +1,5 @@
 <ns0:web-app xmlns:ns0="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" metadata-complete="true" version="3.1" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
-  <ns0:display-name>Jenkins v2.227</ns0:display-name>
+  <ns0:display-name>Jenkins v2.228</ns0:display-name>
   <ns0:description>Build management system</ns0:description>
 
   <ns0:servlet>
@@ -21,6 +21,11 @@
     <ns0:url-pattern>/*</ns0:url-pattern>
   </ns0:servlet-mapping>
 
+  <ns0:filter>
+    <ns0:filter-name>suspicious-request-filter</ns0:filter-name>
+    <ns0:filter-class>jenkins.security.SuspiciousRequestFilter</ns0:filter-class>
+    <ns0:async-supported>true</ns0:async-supported>
+  </ns0:filter>
   <ns0:filter>
     <ns0:filter-name>diagnostic-name-filter</ns0:filter-name>
     <ns0:filter-class>org.kohsuke.stapler.DiagnosticThreadNameFilter</ns0:filter-class>
@@ -53,7 +58,11 @@
   </ns0:filter>
 
   
-  
+
+  <ns0:filter-mapping>
+    <ns0:filter-name>suspicious-request-filter</ns0:filter-name>
+    <ns0:url-pattern>/*</ns0:url-pattern>
+  </ns0:filter-mapping>
   <ns0:filter-mapping>
     <ns0:filter-name>diagnostic-name-filter</ns0:filter-name>
     <ns0:url-pattern>/*</ns0:url-pattern>
