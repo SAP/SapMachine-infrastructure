@@ -68,7 +68,7 @@ if [[ $UNAME == Darwin ]]; then
   _CONFIGURE_OS_OPTIONS="--with-macosx-bundle-name-base=SapMachine --with-macosx-bundle-id-base=com.sap.openjdk"
 fi
 if [[ $UNAME == CYGWIN* ]]; then
-  _CONFIGURE_OS_OPTIONS="--with-jdk-rc-name=SapMachine --with-native-debug-symbols=external"
+  _CONFIGURE_OS_OPTIONS="--with-jdk-rc-name=SapMachine --with-external-symbols-in-bundles=public"
 fi
 
 if [[ $GIT_TAG_NAME == sapmachine-* ]]; then
