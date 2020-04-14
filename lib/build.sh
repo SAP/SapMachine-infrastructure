@@ -153,7 +153,7 @@ else
   --with-vendor-url="$VENDOR_URL" \
   --with-vendor-bug-url="$VENDOR_BUG_URL" \
   --with-vendor-vm-bug-url="$VENDOR_VM_BUG_URL" \
-  --with-vendor-version-string=SapMachine
+  --with-vendor-version-string=SapMachine \
   --with-freetype=bundled \
   $_CONFIGURE_OPTION_VERSION_BUILD \
   $_CONFIGURE_SYSROOT \
