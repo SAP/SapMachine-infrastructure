@@ -80,40 +80,10 @@ if [[ $GIT_TAG_NAME == sapmachine-* ]]; then
     exit 1
   fi
 
-  if [[ ! -z $BUILD_NUMBER ]]; then
-    _CONFIGURE_OPTION_VERSION_BUILD="--with-version-build=$BUILD_NUMBER"
-  elif [[ "$VERSION_BUILD_NUMBER" != "N/A" ]]; then
-    _CONFIGURE_OPTION_VERSION_BUILD="--with-version-build=$VERSION_BUILD_NUMBER"
-  fi
-
-  if [[ "$VERSION_SAPMACHINE" != "N/A" ]]; then
-    _CONFIGURE_OPTION_VERSION_EXTRA="--with-version-extra1=$VERSION_SAPMACHINE"
-  fi
-
-  # set ea when we don't do a release build
   if [ "$RELEASE" != true ]; then
-    _CONFIGURE_OPTION_VERSION_PRE="--with-version-pre=ea"
-  fi
-
-  # add sapmachine as version-opt up to SapMachine14.
-  # LTS is set for release build of SapMachine11. Will be needed for 17 again.
-  if [ "$VERSION_MAJOR" -lt "15" ]; then
-    if [[ "$VERSION_MAJOR" == "11" && "$RELEASE" == true ]]; then
-      _CONFIGURE_OPTION_VERSION_OPT="--with-version-opt=LTS-sapmachine"
-    else
-      _CONFIGURE_OPTION_VERSION_OPT="--with-version-opt=sapmachine"
-    fi
-  fi
-
-  # set vendor version for sapmachine >= 15, >= 14.0.2 and >= 11.0.8
-  if [ "$VERSION_MAJOR" -gt "14" ]; then
-    _CONFIGURE_OPTION_VENDOR_VERSION_STRING="--with-vendor-version-string=SapMachine"
+    VERSION_CONFIGURE_OPTS=$(python3 ../SapMachine-Infrastructure/lib/get_version_configure_opts.py -t $GIT_TAG_NAME)
   else
-    if [[ "$VERSION_MAJOR" == "14" && "$VERSION_UPDATE" -gt "1" ]]; then
-      _CONFIGURE_OPTION_VENDOR_VERSION_STRING="--with-vendor-version-string=SapMachine"
-    elif [[ "$VERSION_MAJOR" == "11" && "$VERSION_UPDATE" -gt "7" ]]; then
-      _CONFIGURE_OPTION_VENDOR_VERSION_STRING="--with-vendor-version-string=SapMachine"
-    fi
+    VERSION_CONFIGURE_OPTS=$(python3 ../SapMachine-Infrastructure/lib/get_version_configure_opts.py -t $GIT_TAG_NAME -p)
   fi
 
   VERSION_DATE=$(python3 ../SapMachine-Infrastructure/lib/get_tag_timestamp.py -t $GIT_TAG_NAME)
@@ -124,18 +94,14 @@ if [[ $GIT_TAG_NAME == sapmachine-* ]]; then
   bash ./configure \
   --with-boot-jdk=$BOOT_JDK \
   --with-version-feature=$VERSION_MAJOR \
-  $_CONFIGURE_OPTION_VERSION_PRE \
-  $_CONFIGURE_OPTION_VERSION_OPT \
+  $VERSION_CONFIGURE_OPTS \
   --with-version-date=$VERSION_DATE \
   $_CONFIGURE_OS_OPTIONS \
   --with-vendor-name="$VENDOR_NAME" \
   --with-vendor-url="$VENDOR_URL" \
   --with-vendor-bug-url="$VENDOR_BUG_URL" \
   --with-vendor-vm-bug-url="$VENDOR_VM_BUG_URL" \
-  $_CONFIGURE_OPTION_VENDOR_VERSION_STRING \
   --with-freetype=bundled \
-  $_CONFIGURE_OPTION_VERSION_BUILD \
-  $_CONFIGURE_OPTION_VERSION_EXTRA \
   $_CONFIGURE_SYSROOT \
   $EXTRA_CONFIGURE_OPTIONS
 else
