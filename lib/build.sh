@@ -72,30 +72,14 @@ if [[ $UNAME == CYGWIN* ]]; then
 fi
 
 if [[ $GIT_TAG_NAME == sapmachine-* ]]; then
-  read VERSION VERSION_PART VERSION_MAJOR VERSION_UPDATE VERSION_SAPMACHINE VERSION_BUILD_NUMBER VERSION_OS_EXT<<< $(python3 ${WORKSPACE}/SapMachine-Infrastructure/lib/get_tag_version_components.py -t $GIT_TAG_NAME)
-
-  if [[ -z $VERSION || -z $VERSION_MAJOR ]]; then
-    # error
-    echo "Invalid tag!"
-    exit 1
+  if [ "$RELEASE" != true ]; then
+    _PRE_RELEASE=" -p"
   fi
-
-  if [ "$RELEASE" == true ]; then
-    VERSION_CONFIGURE_OPTS=$(python3 ../SapMachine-Infrastructure/lib/get_version_configure_opts.py -t $GIT_TAG_NAME)
-  else
-    VERSION_CONFIGURE_OPTS=$(python3 ../SapMachine-Infrastructure/lib/get_version_configure_opts.py -t $GIT_TAG_NAME -p)
-  fi
-
-  VERSION_DATE=$(python3 ../SapMachine-Infrastructure/lib/get_tag_timestamp.py -t $GIT_TAG_NAME)
-  if [[ -z $VERSION_DATE ]]; then
-    VERSION_DATE=$(date -u "+%Y-%m-%d")
-  fi
+  VERSION_CONFIGURE_OPTS=$(python3 ../SapMachine-Infrastructure/lib/get_version_configure_opts.py -t $GIT_TAG_NAME $_PRE_RELEASE)
 
   bash ./configure \
   --with-boot-jdk=$BOOT_JDK \
-  --with-version-feature=$VERSION_MAJOR \
   $VERSION_CONFIGURE_OPTS \
-  --with-version-date=$VERSION_DATE \
   $_CONFIGURE_OS_OPTIONS \
   --with-vendor-name="$VENDOR_NAME" \
   --with-vendor-url="$VENDOR_URL" \

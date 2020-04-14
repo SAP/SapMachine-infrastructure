@@ -7,7 +7,9 @@ import os
 import sys
 import utils
 import argparse
+from datetime import date
 
+VERSION_DATE_ARG =          '--with-version-date={0}'
 VERSION_BUILD_ARG =         '--with-version-build={0}'
 VERSION_PRE_ARG =           '--with-version-pre=ea'
 VERSION_OPT_ARG =           '--with-version-opt={0}'
@@ -23,10 +25,18 @@ def main(argv=None):
     tag = args.tag
     is_pre_release = args.prerelease
     version, version_part, major, update, version_sap, build_number, os_ext = utils.sapmachine_tag_components(tag)
-
     is_lts = utils.sapmachine_is_lts(major)
     major = int(major)
     update = int(update)
+
+    release_date = date.today().strftime("%Y-%m-%d")
+    releases = utils.github_api_request('releases', per_page=100)
+    if releases is not None:
+        for release in releases:
+            if release['tag_name'] == tag:
+                release_date = release['published_at'].split('T')[0]
+
+    version_date_opt = VERSION_DATE_ARG.format(release_date)
 
     version_build_opt = ''
 
@@ -62,6 +72,7 @@ def main(argv=None):
         version_extra_opt = VERSION_EXTRA_ARG.format(version_sap)
 
     configure_opts = ' '.join([
+        version_date_opt,
         version_build_opt,
         version_pre_opt,
         version_opt,
