@@ -43,7 +43,7 @@ def main(argv=None):
 
     configure_opts.append(VERSION_DATE_ARG.format(release_date))
 
-    if os.environ['BUILD_NUMBER']:
+    if 'BUILD_NUMBER' in os.environ and os.environ['BUILD_NUMBER']:
         configure_opts.append(VERSION_BUILD_ARG.format(os.environ['BUILD_NUMBER']))
         print(str.format("Set build id from environment: {0}", os.environ['BUILD_NUMBER']), file=sys.stderr)
     elif build_number is not None:
