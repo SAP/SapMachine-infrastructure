@@ -1,7 +1,7 @@
 #!/bin/bash
 set -ex
 
-read VERSION VERSION_PART VERSION_MAJOR VERSION_BUILD_NUMBER SAPMACHINE_VERSION VERSION_OS_EXT<<< $(python3 ${WORKSPACE}/SapMachine-Infrastructure/lib/get_tag_version_components.py -t $GIT_TAG_NAME)
+read VERSION VERSION_PART VERSION_MAJOR VERSION_UPDATE VERSION_SAPMACHINE VERSION_BUILD_NUMBER VERSION_OS_EXT<<< $(python3 ${WORKSPACE}/SapMachine-Infrastructure/lib/get_tag_version_components.py -t $GIT_TAG_NAME)
 
 ARCHIVE_NAME_JDK="sapmachine-jdk-${VERSION}_osx-x64_bin.tar.gz"
 ARCHIVE_NAME_JRE="sapmachine-jre-${VERSION}_osx-x64_bin.tar.gz"

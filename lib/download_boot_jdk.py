@@ -35,7 +35,7 @@ def main(argv=None):
             if release['prerelease']:
                 continue
 
-            version, version_part, major, build_number, sap_build_number, os_ext = utils.sapmachine_tag_components(release['name'])
+            version, version_part, major, update, version_sap, build_number, os_ext = utils.sapmachine_tag_components(release['name'])
 
             if major is None:
                 continue

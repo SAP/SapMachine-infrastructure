@@ -104,7 +104,7 @@ def main(argv=None):
 
     cwd = os.getcwd()
     work_dir = join(cwd, 'deb_work')
-    version, version_part, major, build_number, sap_build_number, os_ext = utils.sapmachine_tag_components(tag)
+    version, version_part, major, update, version_sap, build_number, os_ext = utils.sapmachine_tag_components(tag)
     version = version.replace('-', '.')
     jdk_name = str.format('sapmachine-{0}-jdk-{1}', major, version)
 

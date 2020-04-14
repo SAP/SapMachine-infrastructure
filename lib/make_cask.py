@@ -74,7 +74,7 @@ def main(argv=None):
     utils.remove_if_exists(work_dir)
     os.makedirs(work_dir)
 
-    version, version_part, major, build_number, sap_build_number, os_ext = utils.sapmachine_tag_components(tag)
+    version, version_part, major, update, version_sap, build_number, os_ext = utils.sapmachine_tag_components(tag)
 
     if is_prerelease:
         if build_number is None:

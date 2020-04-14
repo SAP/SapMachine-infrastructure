@@ -11,6 +11,7 @@ import gzip
 import re
 import json
 import platform
+import zipfile
 from zipfile import ZipFile, ZipInfo
 from urllib.request import urlopen, Request
 from urllib.parse import quote
@@ -126,7 +127,7 @@ def make_zip_archive(src, dest, top_dir):
     if exists(dest):
         rmtree(top_dir)
 
-    zip = zipfile.ZipFile(dest, 'w')
+    zip = ZipFile(dest, 'w')
 
     for root, dirs, files in os.walk(src):
         for file in files:
@@ -181,7 +182,7 @@ def sapmachine_tag_components(tag, multiline=False):
         match = pattern.match(tag)
 
     if match is None:
-        return None, None, None, None, None, None
+        return None, None, None, None, None, None, None
 
     version = match.group(2)
     version_part = match.group(4)
@@ -192,22 +193,22 @@ def sapmachine_tag_components(tag, multiline=False):
     else:
         build_number = ''
 
-    if len(match.groups()) >= 12:
-        sap_build_number = match.group(12)
-    else:
-        sap_build_number = ''
-
     if len(match.groups()) >= 13:
         os_ext = match.group(13)
     else:
         os_ext = ''
 
-    if not sap_build_number:
-        version_parts = version_part.split('.')
-        if len(version_parts) >= 5:
-            sap_build_number = version_parts[4]
+    version_parts = version_part.split('.')
+    if len(version_parts) >= 3:
+        update = version_parts[2]
 
-    return version, version_part, major, build_number, sap_build_number, os_ext
+    if len(match.groups()) >= 12:
+        version_sap = match.group(12)
+    else:
+        if len(version_parts) >= 5:
+            version_sap = version_parts[4]
+
+    return version, version_part, major, update, version_sap, build_number, os_ext
 
 def sapmachine_version_pattern():
     return '((((\d+)((\.(\d+))*)?)(-ea)?(-snapshot)?\+(\d+))(-LTS)?-sapmachine(-(\d+))?)'
@@ -229,14 +230,49 @@ def sapmachine_version_components(version_in, multiline=False):
     build_number = match.group(9)
 
     if len(match.groups()) >= 12:
-        sap_build_number = match.group(12)
-        #version += '-' + sap_build_number
+        version_sap = match.group(12)
     else:
         version_parts = version_part.split('.')
         if len(version_parts) >= 5:
-            sap_build_number = version_parts[4]
+            version_sap = version_parts[4]
 
-    return version, version_part, major, build_number, sap_build_number
+    return version, version_part, major, version_sap, build_number
+
+def sapmachine_branch_pattern():
+    return 'sapmachine([\d]+)?$'
+
+def get_sapmachine_branches():
+    sapmachine_latest = 0
+    sapmachine_branches = []
+
+    # fetch all branches
+    branches = github_api_request('branches', per_page=100)
+
+    # iterate all branches of the SapMachine repository
+    branch_pattern = re.compile(sapmachine_branch_pattern())
+    for branch in branches:
+        # filter for sapmachine branches
+        match = branch_pattern.match(branch['name'])
+
+        if match is not None:
+            if match.group(1) is not None:
+                # found sapmachine branch
+                major = int(match.group(1))
+                print(str.format('found sapmachine branch "{0}" with major "{1}"', branch['name'], major))
+                sapmachine_branches.append([branch['name'], major])
+                sapmachine_latest = max(sapmachine_latest, major)
+            else:
+                print(str.format('found sapmachine branch "{0}"', branch['name']))
+                sapmachine_branches.append([branch['name'], 0])
+
+    sapmachine_latest += 1
+
+    # set the major version for "sapmachine" branch which always contains the latest changes from "jdk/jdk"
+    for sapmachine_branch in sapmachine_branches:
+        if sapmachine_branch[1] == 0:
+            sapmachine_branch[1] = sapmachine_latest
+
+    return sapmachine_branches
 
 def git_clone(repo, branch, target):
     git_user = os.environ['GIT_USER']

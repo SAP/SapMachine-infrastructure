@@ -16,7 +16,6 @@ from os.path import join
 from jenkinsapi.jenkins import Jenkins
 from jenkinsapi.utils.crumb_requester import CrumbRequester
 
-branch_pattern = re.compile('sapmachine([\d]+)?$')
 merge_commit_pattern = re.compile('Merge pull request #\d+ from SAP/pr-jdk-')
 
 def run_jenkins_jobs(major, tag):
@@ -106,30 +105,9 @@ def main(argv=None):
     utils.git_clone('github.com/SAP/SapMachine.git', 'sapmachine', git_target_dir)
 
     # fetch all branches
-    branches = utils.github_api_request('branches', per_page=100)
-    sapmachine_latest = 0
-    sapmachine_branches = []
-
-    # iterate all branches of the SapMachine repository
-    for branch in branches:
-        # filter for sapmachine branches
-        match = branch_pattern.match(branch['name'])
-
-        if match is not None:
-            # found sapmachine branch
-            if match.group(1) is not None:
-                major = int(match.group(1))
-                sapmachine_branches.append([branch['name'], major])
-                sapmachine_latest = max(major, sapmachine_latest)
-            else:
-                sapmachine_branches.append([branch['name'], 0])
-
-    sapmachine_latest += 1
+    sapmachine_branches = utils.get_sapmachine_branches()
 
     for branch in sapmachine_branches:
-        if branch[1] == 0:
-            branch[1] = sapmachine_latest
-
         major = branch[1]
         utils.run_cmd(str.format('git checkout {0}', branch[0]).split(' '), cwd=git_target_dir)
 
@@ -154,29 +132,31 @@ def main(argv=None):
                 print(str.format('found latest merge commit "{0}" for branch "{1}"', commit_message, branch))
                 _, tags, _ = utils.run_cmd(str.format('git tag --contains {0}', commit_id).split(' '), cwd=git_target_dir, std=True, throw=False)
 
+                # no tag contains the merge commit of jdk_tag yet
                 if not tags:
+                    # the corresponding sapmachine tag already exists. Weird, but no messing around here...
                     if exists_sapmachine_tag(jdk_tag, git_target_dir):
                         break
 
-                    # not tagged yet and tag doesn't exist yet
-                    # create sapmachine tag
+                    # create the sapmachine tag
                     create_sapmachine_tag(jdk_tag, commit_id, git_target_dir)
 
-                    # when the tag is a GA tag, we build the last tag before the GA tag
                     if jdk_tag.is_ga():
+                        # when the tag is a GA tag, make sure the last tag before the GA tag has been built
                         latest_non_ga_tag = get_latest_non_ga_tag(jdk_tag)
 
                         if latest_non_ga_tag is not None and not exists_sapmachine_tag(latest_non_ga_tag, git_target_dir):
                             create_sapmachine_tag(latest_non_ga_tag, commit_id, git_target_dir)
                             run_jenkins_jobs(major, latest_non_ga_tag.as_sapmachine_tag())
                     else:
+                        # build the new tag (EA release)
                         run_jenkins_jobs(major, jdk_tag.as_sapmachine_tag())
 
-
+                # there are tags containing the merge commit of jdk_tag already
+                # check wether there is a JDK GA tag which has no corresponding sapmachine tag yet
                 elif not jdk_tag.is_ga():
                     tags = tags.splitlines()
-                    # check wether there is a JDK GA tag which has no corresponding sapmachine tag yet
-                    # get the commit to which the most recent (before GA) tag is pointing to
+                    # get the commit to which jdk_tag is pointing to
                     _, jdk_tag_commit, _ = utils.run_cmd(str.format('git rev-list -n 1 {0}', jdk_tag.as_string()).split(' '), cwd=git_target_dir, std=True, throw=False)
 
                     if jdk_tag_commit:
@@ -210,7 +190,7 @@ def main(argv=None):
                                         if not pull_request_exits:
                                             # create sapmachine tag
                                             create_sapmachine_tag(as_jdk_tag, commit_id, git_target_dir)
-                                            # we build the last tag before the GA tag
+                                            # make sure the last tag before the GA tag has been built
                                             latest_non_ga_tag = get_latest_non_ga_tag(as_jdk_tag)
 
                                             if latest_non_ga_tag is not None and not exists_sapmachine_tag(latest_non_ga_tag, git_target_dir):

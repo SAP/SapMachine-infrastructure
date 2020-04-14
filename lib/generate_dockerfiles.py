@@ -40,7 +40,7 @@ CMD ["jshell"]
 
 
 def process_release(release, prefix, tags, git_dir):
-    version, version_part, major, build_number, sap_build_number, os_ext = utils.sapmachine_tag_components(release['name'])
+    version, version_part, major, update, version_sap, build_number, os_ext = utils.sapmachine_tag_components(release['name'])
     tag_name = str.format('{0}-{1}', prefix, version_part)
     skip_tag = False
     dockerfile_dir = join(git_dir, 'dockerfiles', 'official', prefix)
@@ -87,7 +87,7 @@ def main(argv=None):
         if release['prerelease']:
             continue
 
-        version, version_part, major, build_number, sap_build_number, os_ext = utils.sapmachine_tag_components(release['name'])
+        version, version_part, major, update, version_sap, build_number, os_ext = utils.sapmachine_tag_components(release['name'])
 
         if utils.sapmachine_is_lts(major) and not lts_release:
             lts_release = release

@@ -72,7 +72,7 @@ if [[ $UNAME == CYGWIN* ]]; then
 fi
 
 if [[ $GIT_TAG_NAME == sapmachine-* ]]; then
-  read VERSION VERSION_PART VERSION_MAJOR VERSION_BUILD_NUMBER SAPMACHINE_VERSION VERSION_OS_EXT<<< $(python3 ${WORKSPACE}/SapMachine-Infrastructure/lib/get_tag_version_components.py -t $GIT_TAG_NAME)
+  read VERSION VERSION_PART VERSION_MAJOR VERSION_UPDATE VERSION_SAPMACHINE VERSION_BUILD_NUMBER VERSION_OS_EXT<<< $(python3 ${WORKSPACE}/SapMachine-Infrastructure/lib/get_tag_version_components.py -t $GIT_TAG_NAME)
 
   if [[ -z $VERSION || -z $VERSION_MAJOR ]]; then
     # error
@@ -86,24 +86,37 @@ if [[ $GIT_TAG_NAME == sapmachine-* ]]; then
     _CONFIGURE_OPTION_VERSION_BUILD="--with-version-build=$VERSION_BUILD_NUMBER"
   fi
 
-  if [[ "$SAPMACHINE_VERSION" != "N/A" ]]; then
-    _CONFIGURE_OPTION_VERSION_EXTRA="--with-version-extra1=$SAPMACHINE_VERSION"
+  if [[ "$VERSION_SAPMACHINE" != "N/A" ]]; then
+    _CONFIGURE_OPTION_VERSION_EXTRA="--with-version-extra1=$VERSION_SAPMACHINE"
   fi
 
-  VERSION_PRE_OPT="ea"
+  # set ea when we don't do a release build
+  if [ "$RELEASE" != true ]; then
+    _CONFIGURE_OPTION_VERSION_PRE="--with-version-pre=ea"
+  fi
 
-  if [ "$RELEASE" == true ]; then
-    if [ "$VERSION_MAJOR" == "11" ]; then
-      LTS='LTS-'
+  # add sapmachine as version-opt up to SapMachine14.
+  # LTS is set for release build of SapMachine11. Will be needed for 17 again.
+  if [ "$VERSION_MAJOR" -lt "15" ]; then
+    if [[ "$VERSION_MAJOR" == "11" && "$RELEASE" == true ]]; then
+      _CONFIGURE_OPTION_VERSION_OPT="--with-version-opt=LTS-sapmachine"
     else
-      LTS=''
+      _CONFIGURE_OPTION_VERSION_OPT="--with-version-opt=sapmachine"
     fi
+  fi
 
-    VERSION_PRE_OPT=''
+  # set vendor version for sapmachine >= 15, >= 14.0.2 and >= 11.0.8
+  if [ "$VERSION_MAJOR" -gt "14" ]; then
+    _CONFIGURE_OPTION_VENDOR_VERSION_STRING="--with-vendor-version-string=SapMachine"
+  else
+    if [[ "$VERSION_MAJOR" == "14" && "$VERSION_UPDATE" -gt "1" ]]; then
+      _CONFIGURE_OPTION_VENDOR_VERSION_STRING="--with-vendor-version-string=SapMachine"
+    elif [[ "$VERSION_MAJOR" == "11" && "$VERSION_UPDATE" -gt "7" ]]; then
+      _CONFIGURE_OPTION_VENDOR_VERSION_STRING="--with-vendor-version-string=SapMachine"
+    fi
   fi
 
   VERSION_DATE=$(python3 ../SapMachine-Infrastructure/lib/get_tag_timestamp.py -t $GIT_TAG_NAME)
-
   if [[ -z $VERSION_DATE ]]; then
     VERSION_DATE=$(date -u "+%Y-%m-%d")
   fi
@@ -111,14 +124,15 @@ if [[ $GIT_TAG_NAME == sapmachine-* ]]; then
   bash ./configure \
   --with-boot-jdk=$BOOT_JDK \
   --with-version-feature=$VERSION_MAJOR \
-  --with-version-opt=${LTS}sapmachine \
-  --with-version-pre=$VERSION_PRE_OPT \
+  $_CONFIGURE_OPTION_VERSION_PRE \
+  $_CONFIGURE_OPTION_VERSION_OPT \
   --with-version-date=$VERSION_DATE \
   $_CONFIGURE_OS_OPTIONS \
   --with-vendor-name="$VENDOR_NAME" \
   --with-vendor-url="$VENDOR_URL" \
   --with-vendor-bug-url="$VENDOR_BUG_URL" \
   --with-vendor-vm-bug-url="$VENDOR_VM_BUG_URL" \
+  $_CONFIGURE_OPTION_VENDOR_VERSION_STRING \
   --with-freetype=bundled \
   $_CONFIGURE_OPTION_VERSION_BUILD \
   $_CONFIGURE_OPTION_VERSION_EXTRA \
@@ -132,13 +146,14 @@ else
   BUILD_DATE=$(date -u "+%Y-%m-%d")
   bash ./configure \
   --with-boot-jdk=$BOOT_JDK \
-  --with-version-opt="sapmachine-$BUILD_DATE" \
   --with-version-pre=snapshot \
+  --with-version-opt="$BUILD_DATE" \
   $_CONFIGURE_OS_OPTIONS \
   --with-vendor-name="$VENDOR_NAME" \
   --with-vendor-url="$VENDOR_URL" \
   --with-vendor-bug-url="$VENDOR_BUG_URL" \
   --with-vendor-vm-bug-url="$VENDOR_VM_BUG_URL" \
+  --with-vendor-version-string=SapMachine
   --with-freetype=bundled \
   $_CONFIGURE_OPTION_VERSION_BUILD \
   $_CONFIGURE_SYSROOT \

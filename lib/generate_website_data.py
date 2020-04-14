@@ -102,7 +102,7 @@ def main(argv=None):
     releases = utils.github_api_request('releases', per_page=100)
 
     for release in releases:
-        version, version_part, major, build_number, sap_build_number, os_ext = utils.sapmachine_tag_components(release['name'])
+        version, version_part, major, update, version_sap, build_number, os_ext = utils.sapmachine_tag_components(release['name'])
 
         is_prerelease = release['prerelease']
 

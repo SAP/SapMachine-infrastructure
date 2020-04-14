@@ -30,7 +30,7 @@ def main(argv=None):
         if release['prerelease'] is True:
             continue
 
-        version, version_part, major, build_number, sap_build_number, os_ext = utils.sapmachine_tag_components(release['name'])
+        version, version_part, major, update, version_sap, build_number, os_ext = utils.sapmachine_tag_components(release['name'])
         assets = release['assets']
 
         if version is None or os_ext:
@@ -47,8 +47,8 @@ def main(argv=None):
                     sapmachine_version = [int(e) for e in version_part.split('.')]
                     sapmachine_version += [0 for sapmachine_version in range(0, 5 - len(sapmachine_version))]
 
-                    if sap_build_number:
-                        sapmachine_version[4] = int(sap_build_number)
+                    if version_sap:
+                        sapmachine_version[4] = int(version_sap)
 
                     buildpack_version = str.format('{0}.{1}.{2}_{3}.{4}.b{5}',
                         sapmachine_version[0],

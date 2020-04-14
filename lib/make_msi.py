@@ -70,7 +70,7 @@ def main(argv=None):
 
     _, _, version_output = utils.run_cmd([join(work_dir, 'SourceDir', 'bin', 'java.exe'), '-version'], std=True)
 
-    version, version_part, major, build_number, sap_build_number = utils.sapmachine_version_components(version_output, multiline=True)
+    version, version_part, major, version_sap, build_number = utils.sapmachine_version_components(version_output, multiline=True)
     sapmachine_version = [e for e in version_part.split('.')]
 
     if len(sapmachine_version) < 3:

@@ -24,34 +24,8 @@ def main(argv=None):
     utils.remove_if_exists(workdir)
     os.makedirs(workdir)
 
-    sapmachine_latest = 0
-    sapmachine_branches = []
-
     # fetch all branches
-    branches = utils.github_api_request('branches', per_page=100)
-
-    # iterate all branches of the SapMachine repository
-    for branch in branches:
-        # filter for sapmachine branches
-        match = branch_pattern.match(branch['name'])
-
-        if match is not None:
-            if match.group(1) is not None:
-                # found sapmachine branch
-                major = int(match.group(1))
-                print(str.format('found sapmachine branch "{0}" with major "{1}"', branch['name'], major))
-                sapmachine_branches.append([branch['name'], major])
-                sapmachine_latest = max(sapmachine_latest, major)
-            else:
-                print(str.format('found sapmachine branch "{0}"', branch['name']))
-                sapmachine_branches.append([branch['name'], 0])
-
-    sapmachine_latest += 1
-
-    # set the major version for "sapmachine" branch which always contains the latest changes from "jdk/jdk"
-    for sapmachine_branch in sapmachine_branches:
-        if sapmachine_branch[1] is 0:
-            sapmachine_branch[1] = sapmachine_latest
+    sapmachine_branches = utils.get_sapmachine_branches()
 
     # fetch all tags
     jdk_tags = {}
@@ -91,7 +65,7 @@ def main(argv=None):
         match = re.search(containing_branches_pattern, out)
 
         if match is None:
-            # the jdk tag is not contained i a sapmachine branch
+            # the jdk tag is not contained in a sapmachine branch
             # create a pull request branch and a pull request.
             print(str.format('creating pull request "pr-{0}" with base branch "{1}"', latest_tag_for_branch.as_string(), sapmachine_branch))
             utils.run_cmd(str.format('git checkout {0}', latest_tag_for_branch.as_string()).split(' '), cwd=git_target_dir)
@@ -104,7 +78,6 @@ def main(argv=None):
                 sapmachine_branch[0])
 
             utils.github_api_request('pulls', data=pull_request, method='POST')
-
 
     utils.remove_if_exists(workdir)
     return 0
