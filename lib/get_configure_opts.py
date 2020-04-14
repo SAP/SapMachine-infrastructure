@@ -25,7 +25,7 @@ def main(argv=None):
     tag = args.tag
     is_pre_release = args.prerelease
     version, version_part, major, update, version_sap, build_number, os_ext = utils.sapmachine_tag_components(tag)
-    print(str.format("Info from tag {0}, {1}, {2}, {3}, {4}, {5}, {6}", version, version_part, major, update, version_sap, build_number, os_ext))
+    print(str.format("Info from tag {0}, {1}, {2}, {3}, {4}, {5}, {6}", version, version_part, major, update, version_sap, build_number, os_ext), file=sys.stderr)
     is_lts = utils.sapmachine_is_lts(major)
     major = int(major)
     update = int(update)
@@ -33,22 +33,22 @@ def main(argv=None):
     configure_opts = []
 
     release_date = date.today().strftime("%Y-%m-%d")
-    print(str.format("Today: {0}", release_date))
+    print(str.format("Today: {0}", release_date), file=sys.stderr)
     releases = utils.github_api_request('releases', per_page=100)
     if releases is not None:
         for release in releases:
             if release['tag_name'] == tag:
                 release_date = release['published_at'].split('T')[0]
-                print(str.format("Set release date from tag: {0}", release_date))
+                print(str.format("Set release date from tag: {0}", release_date), file=sys.stderr)
 
     configure_opts.append(VERSION_DATE_ARG.format(release_date))
 
     if os.environ['BUILD_NUMBER']:
         configure_opts.append(VERSION_BUILD_ARG.format(os.environ['BUILD_NUMBER']))
-        print(str.format("Set build id from environment: {0}", os.environ['BUILD_NUMBER']))
+        print(str.format("Set build id from environment: {0}", os.environ['BUILD_NUMBER']), file=sys.stderr)
     elif build_number is not None:
         configure_opts.append(VERSION_BUILD_ARG.format(build_number))
-        print(str.format("Set build id from calculated build number: {0}", build_number))
+        print(str.format("Set build id from calculated build number: {0}", build_number), file=sys.stderr)
 
     if is_pre_release:
         configure_opts.append(VERSION_PRE_ARG)
