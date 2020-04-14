@@ -25,7 +25,7 @@ def main(argv=None):
     tag = args.tag
     is_pre_release = args.prerelease
     version, version_part, major, update, version_sap, build_number, os_ext = utils.sapmachine_tag_components(tag)
-    print(str.format("Info from tag {0}, {0}, {0}, {0}, {0}, {0}, {0}", version, version_part, major, update, version_sap, build_number, os_ext))
+    print(str.format("Info from tag {0}, {1}, {2}, {3}, {4}, {5}, {6}", version, version_part, major, update, version_sap, build_number, os_ext))
     is_lts = utils.sapmachine_is_lts(major)
     major = int(major)
     update = int(update)
@@ -41,32 +41,32 @@ def main(argv=None):
                 release_date = release['published_at'].split('T')[0]
                 print(str.format("Set release date from tag: {0}", release_date))
 
-    configure_opts.add(VERSION_DATE_ARG.format(release_date))
+    configure_opts.append(VERSION_DATE_ARG.format(release_date))
 
-    if 'BUILD_NUMBER' in os.environ:
-        configure_opts.add(VERSION_BUILD_ARG.format(os.environ['BUILD_NUMBER']))
+    if os.environ['BUILD_NUMBER']:
+        configure_opts.append(VERSION_BUILD_ARG.format(os.environ['BUILD_NUMBER']))
         print(str.format("Set build id from environment: {0}", os.environ['BUILD_NUMBER']))
     elif build_number is not None:
-        configure_opts.add(VERSION_BUILD_ARG.format(build_number))
+        configure_opts.append(VERSION_BUILD_ARG.format(build_number))
         print(str.format("Set build id from calculated build number: {0}", build_number))
 
     if is_pre_release:
-        configure_opts.add(VERSION_PRE_ARG)
+        configure_opts.append(VERSION_PRE_ARG)
 
     if is_lts and not is_pre_release:
         if major < 15:
-            configure_opts.add(VERSION_OPT_ARG.format('LTS-sapmachine'))
+            configure_opts.append(VERSION_OPT_ARG.format('LTS-sapmachine'))
         else:
-            configure_opts.add(VERSION_OPT_ARG.format('LTS'))
+            configure_opts.append(VERSION_OPT_ARG.format('LTS'))
     else:
         if major < 15:
-            configure_opts.add(VERSION_OPT_ARG.format('sapmachine'))
+            configure_opts.append(VERSION_OPT_ARG.format('sapmachine'))
 
     if (major > 14) or (major is 14 and update > 1) or (major is 11 and update > 7):
-        configure_opts.add(VENDOR_VERSION_STRING_ARG)
+        configure_opts.append(VENDOR_VERSION_STRING_ARG)
 
     if version_sap is not None:
-        configure_opts.add(VERSION_EXTRA_ARG.format(version_sap))
+        configure_opts.append(VERSION_EXTRA_ARG.format(version_sap))
 
     print(' '.join(configure_opts))
 

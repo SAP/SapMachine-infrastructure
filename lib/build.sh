@@ -75,11 +75,11 @@ if [[ $GIT_TAG_NAME == sapmachine-* ]]; then
   if [ "$RELEASE" != true ]; then
     _PRE_RELEASE=" -p"
   fi
-  VERSION_CONFIGURE_OPTS=$(python3 ../SapMachine-Infrastructure/lib/get_version_configure_opts.py -t $GIT_TAG_NAME $_PRE_RELEASE)
+  _CONFIGURE_OPTS=$(python3 ../SapMachine-Infrastructure/lib/get_configure_opts.py -t $GIT_TAG_NAME $_PRE_RELEASE)
 
   bash ./configure \
   --with-boot-jdk=$BOOT_JDK \
-  $VERSION_CONFIGURE_OPTS \
+  $_CONFIGURE_OPTS \
   $_CONFIGURE_OS_OPTIONS \
   --with-vendor-name="$VENDOR_NAME" \
   --with-vendor-url="$VENDOR_URL" \
