@@ -201,12 +201,16 @@ def sapmachine_tag_components(tag, multiline=False):
     version_parts = version_part.split('.')
     if len(version_parts) >= 3:
         update = version_parts[2]
+    else:
+        update = '0'
 
     if len(match.groups()) >= 12:
         version_sap = match.group(12)
     else:
         if len(version_parts) >= 5:
             version_sap = version_parts[4]
+        else:
+            version_sap = ''
 
     return version, version_part, major, update, version_sap, build_number, os_ext
 
