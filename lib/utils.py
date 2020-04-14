@@ -166,7 +166,7 @@ def copytree(source, dest):
 def sapmachine_is_lts(major):
     lts_releases = [
         '11',
-        '18'
+        '17'
     ]
     return major in lts_releases
 
@@ -215,7 +215,7 @@ def sapmachine_tag_components(tag, multiline=False):
     return version, version_part, major, update, version_sap, build_number, os_ext
 
 def sapmachine_version_pattern():
-    return '((((\d+)((\.(\d+))*)?)(-ea)?(-snapshot)?\+(\d+))(-LTS)?-sapmachine(-(\d+))?)'
+    return '(((\d+)((\.(\d+))*)?)(-ea|-snapshot)?\+(\d+))(-LTS)?'
 
 def sapmachine_version_components(version_in, multiline=False):
     pattern = re.compile(sapmachine_version_pattern())
@@ -228,17 +228,15 @@ def sapmachine_version_components(version_in, multiline=False):
     if match is None:
         return None, None, None, None, None
 
-    version = match.group(2)
-    version_part = match.group(3)
-    major = match.group(4)
-    build_number = match.group(9)
-
-    if len(match.groups()) >= 12:
-        version_sap = match.group(12)
+    version = match.group(1)
+    version_part = match.group(2)
+    major = match.group(3)
+    version_parts = version_part.split('.')
+    if len(version_parts) >= 5:
+        version_sap = version_parts[4]
     else:
-        version_parts = version_part.split('.')
-        if len(version_parts) >= 5:
-            version_sap = version_parts[4]
+        version_sap = ''
+    build_number = match.group(8)
 
     return version, version_part, major, version_sap, build_number
 
