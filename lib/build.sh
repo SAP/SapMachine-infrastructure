@@ -80,7 +80,7 @@ if [[ $GIT_TAG_NAME == sapmachine-* ]]; then
     exit 1
   fi
 
-  if [ "$RELEASE" != true ]; then
+  if [ "$RELEASE" == true ]; then
     VERSION_CONFIGURE_OPTS=$(python3 ../SapMachine-Infrastructure/lib/get_version_configure_opts.py -t $GIT_TAG_NAME)
   else
     VERSION_CONFIGURE_OPTS=$(python3 ../SapMachine-Infrastructure/lib/get_version_configure_opts.py -t $GIT_TAG_NAME -p)
