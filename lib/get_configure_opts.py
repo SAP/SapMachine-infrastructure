@@ -11,7 +11,7 @@ from datetime import date
 
 VERSION_DATE_ARG =          '--with-version-date={0}'
 VERSION_BUILD_ARG =         '--with-version-build={0}'
-VERSION_PRE_ARG =           '--with-version-pre=ea'
+VERSION_PRE_ARG =           '--with-version-pre={0}'
 VERSION_OPT_ARG =           '--with-version-opt={0}'
 VENDOR_VERSION_STRING_ARG = '--with-vendor-version-string=SapMachine'
 VERSION_EXTRA_ARG =         '--with-version-extra1={0}'
@@ -51,7 +51,9 @@ def main(argv=None):
         print(str.format("Set build id from calculated build number: {0}", build_number), file=sys.stderr)
 
     if is_pre_release:
-        configure_opts.append(VERSION_PRE_ARG)
+        configure_opts.append(VERSION_PRE_ARG.format('ea'))
+    else:
+        configure_opts.append(VERSION_PRE_ARG.format(''))
 
     if is_lts and not is_pre_release:
         if major < 15:
