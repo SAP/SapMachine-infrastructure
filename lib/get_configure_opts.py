@@ -63,6 +63,8 @@ def main(argv=None):
     else:
         if major < 15:
             configure_opts.append(VERSION_OPT_ARG.format('sapmachine'))
+        else:
+            configure_opts.append(VERSION_OPT_ARG.format(''))
 
     if (major > 14) or (major is 14 and update > 1) or (major is 11 and update > 7):
         configure_opts.append(VENDOR_VERSION_STRING_ARG)
