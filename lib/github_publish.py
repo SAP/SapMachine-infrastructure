@@ -41,7 +41,7 @@ def main(argv=None):
             asset_mime_type = asset_mime_type[0]
             print(str.format('detected mime-type "{0}"', asset_mime_type))
 
-    releases = utils.github_api_request('releases', per_page=100)
+    releases = utils.get_github_releases()
 
     release_id = None
     upload_url = None

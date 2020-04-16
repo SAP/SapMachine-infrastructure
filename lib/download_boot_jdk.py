@@ -25,7 +25,7 @@ def main(argv=None):
     boot_jdk_major_max = int(args.major)
     boot_jdk_major_min = boot_jdk_major_max - 1
     destination = os.path.realpath(args.destination)
-    releases = utils.github_api_request('releases', per_page=100)
+    releases = utils.get_github_releases()
     platform = str.format('{0}-{1}_bin', utils.get_system(), utils.get_arch())
     retries = 2
 

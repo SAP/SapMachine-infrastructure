@@ -409,6 +409,13 @@ def get_github_infrastructure_tags():
         github_infrastructure_tags = github_api_request('tags', repository='SapMachine-infrastructure', per_page=100)
     return github_infrastructure_tags
 
+github_releases = None
+def get_github_releases():
+    global github_releases
+    if github_releases is None:
+        github_releases = github_api_request('releases', per_page=100)
+    return github_releases
+
 def sapmachine_asset_pattern():
     return '[^-]+-([^-]+)-([^_]+)_([^_]+)_bin(\.tar\.gz|\.zip|\.msi|\.dmg)'
 

@@ -34,7 +34,7 @@ def main(argv=None):
 
     release_date = date.today().strftime("%Y-%m-%d")
     print(str.format("Today: {0}", release_date), file=sys.stderr)
-    releases = utils.github_api_request('releases', per_page=100)
+    releases = utils.get_github_releases()
     if releases is not None:
         for release in releases:
             if release['tag_name'] == tag:

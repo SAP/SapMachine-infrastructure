@@ -99,7 +99,7 @@ def main(argv=None):
     image_dict = {}
     latest_link_dict = {}
 
-    releases = utils.github_api_request('releases', per_page=100)
+    releases = utils.get_github_releases()
 
     for release in releases:
         version, version_part, major, update, version_sap, build_number, os_ext = utils.sapmachine_tag_components(release['name'])

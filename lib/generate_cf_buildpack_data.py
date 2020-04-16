@@ -24,7 +24,7 @@ def main(argv=None):
     asset_map_jre = {}
     asset_map_jdk = {}
 
-    releases = utils.github_api_request('releases', per_page=100)
+    releases = utils.get_github_releases()
 
     for release in releases:
         if release['prerelease'] is True:
