@@ -40,7 +40,7 @@ def main(argv=None):
         # filter out jdk update tags with build number "0" like jdk-11.0.3+0
         if ((jdk_tag.get_major() not in jdk_tags or jdk_tag.is_greater_than(jdk_tags[jdk_tag.get_major()])) and
             not (jdk_tag.get_update() > 0 and (jdk_tag.get_build_number() if jdk_tag.get_build_number() is not None else 0) == 0)):
-            jdk_tags[major] = jdk_tag
+            jdk_tags[jdk_tag.get_major()] = jdk_tag
 
     # clone the SapMachine repository
     git_target_dir = join(workdir, 'sapmachine')
