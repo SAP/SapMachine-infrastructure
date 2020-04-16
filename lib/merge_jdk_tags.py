@@ -29,7 +29,7 @@ def main(argv=None):
 
     # fetch all tags
     jdk_tags = {}
-    tags = utils.github_api_request('tags', per_page=300)
+    tags = utils.get_github_tags()
 
     # iterate all tags
     for tag in tags:

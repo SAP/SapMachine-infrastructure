@@ -66,7 +66,7 @@ def get_latest_non_ga_tag(jdk_tag):
 
     if jdk_tag.is_ga():
          # fetch all tags
-        tags = utils.github_api_request('tags', per_page=300)
+        tags = utils.get_github_tags()
         latest_non_ga_tag = None
 
         # iterate all tags

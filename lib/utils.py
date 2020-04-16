@@ -395,6 +395,20 @@ def github_api_request(api=None, url=None, owner='SAP', repository='SapMachine',
 
     return result
 
+github_tags = None
+def get_github_tags():
+    global github_tags
+    if github_tags is None:
+        github_tags = github_api_request('tags', per_page=300)
+    return github_tags
+
+github_infrastructure_tags = None
+def get_github_infrastructure_tags():
+    global github_infrastructure_tags
+    if github_infrastructure_tags is None:
+        github_infrastructure_tags = github_api_request('tags', repository='SapMachine-infrastructure', per_page=100)
+    return github_infrastructure_tags
+
 def sapmachine_asset_pattern():
     return '[^-]+-([^-]+)-([^_]+)_([^_]+)_bin(\.tar\.gz|\.zip|\.msi|\.dmg)'
 
