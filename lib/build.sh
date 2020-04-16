@@ -59,11 +59,6 @@ if [ -z $BOOT_JDK ]; then
   exit 1
 fi
 
-VENDOR_NAME="SAP SE"
-VENDOR_URL="https://sapmachine.io/"
-VENDOR_BUG_URL="https://github.com/SAP/SapMachine/issues/new"
-VENDOR_VM_BUG_URL="https://github.com/SAP/SapMachine/issues/new"
-
 if [[ $UNAME == Darwin ]]; then
   _CONFIGURE_OS_OPTIONS="--with-macosx-bundle-name-base=SapMachine --with-macosx-bundle-id-base=com.sap.openjdk"
 fi
@@ -71,44 +66,25 @@ if [[ $UNAME == CYGWIN* ]]; then
   _CONFIGURE_OS_OPTIONS="--with-jdk-rc-name=SapMachine --with-external-symbols-in-bundles=public"
 fi
 
-if [[ $GIT_TAG_NAME == sapmachine-* ]]; then
-  if [ "$RELEASE" != true ]; then
-    _PRE_RELEASE=" -p"
-  fi
-  _CONFIGURE_OPTS=$(python3 ../SapMachine-Infrastructure/lib/get_configure_opts.py -t $GIT_TAG_NAME $_PRE_RELEASE)
-
-  bash ./configure \
-  --with-boot-jdk=$BOOT_JDK \
-  $_CONFIGURE_OPTS \
-  $_CONFIGURE_OS_OPTIONS \
-  --with-vendor-name="$VENDOR_NAME" \
-  --with-vendor-url="$VENDOR_URL" \
-  --with-vendor-bug-url="$VENDOR_BUG_URL" \
-  --with-vendor-vm-bug-url="$VENDOR_VM_BUG_URL" \
-  --with-freetype=bundled \
-  $_CONFIGURE_SYSROOT \
-  $EXTRA_CONFIGURE_OPTIONS
-else
-  if [[ ! -z $BUILD_NUMBER ]]; then
-    _CONFIGURE_OPTION_VERSION_BUILD="--with-version-build=$BUILD_NUMBER"
-  fi
-
-  BUILD_DATE=$(date -u "+%Y-%m-%d")
-  bash ./configure \
-  --with-boot-jdk=$BOOT_JDK \
-  --with-version-pre=snapshot \
-  --with-version-opt="$BUILD_DATE" \
-  $_CONFIGURE_OS_OPTIONS \
-  --with-vendor-name="$VENDOR_NAME" \
-  --with-vendor-url="$VENDOR_URL" \
-  --with-vendor-bug-url="$VENDOR_BUG_URL" \
-  --with-vendor-vm-bug-url="$VENDOR_VM_BUG_URL" \
-  --with-vendor-version-string=SapMachine \
-  --with-freetype=bundled \
-  $_CONFIGURE_OPTION_VERSION_BUILD \
-  $_CONFIGURE_SYSROOT \
-  $EXTRA_CONFIGURE_OPTIONS
+if [[ ! -z $GIT_TAG_NAME ]]; then
+  _GIT_TAG=" -t $GIT_TAG_NAME"
 fi
+if [[ ! -z $BUILD_NUMBER ]]; then
+  _BUILD_NUMBER="-b $BUILD_NUMBER"
+fi
+if [ "$RELEASE" == true ]; then
+  _RELEASE=" -r"
+fi
+
+_CONFIGURE_OPTS=$(python3 ../SapMachine-Infrastructure/lib/get_configure_opts.py $_GIT_TAG $_RELEASE $_BUILD_NUMBER)
+
+bash ./configure \
+--with-boot-jdk=$BOOT_JDK \
+$_CONFIGURE_OPTS \
+$_CONFIGURE_OS_OPTIONS \
+--with-freetype=bundled \
+$_CONFIGURE_SYSROOT \
+$EXTRA_CONFIGURE_OPTIONS
 
 # try to build with legacy-bundles in one step
 legacy_bundles_available=1
