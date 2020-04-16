@@ -15,6 +15,12 @@ class Tag:
             return tag
         return SapMachineTag.from_string(string)
 
+    @staticmethod
+    def calc_version(version_string):
+        version = list(map(int, version_string.split('.')))
+        version.extend([0 for i in range(5 - len(version))])
+        return version
+
     def as_string(self):
         return self.tag
 
@@ -110,7 +116,7 @@ class Tag:
         return latest_non_ga_tag
 
 class JDKTag(Tag):
-    tag_pattern = re.compile('jdk-(\d+(\.\d+)*)(\+(\d+))?(-ga)?$')
+    tag_pattern = re.compile('jdk-((\d+(\.\d+)*)(\+(\d+))?)(-ga)?$')
 
     @staticmethod
     def from_string(string):
@@ -125,15 +131,14 @@ class JDKTag(Tag):
 
         self.tag = match.group(0)
         self.version_string = match.group(1)
-        self.version = list(map(int, self.version_string.split('.')))
-        self.version.extend([0 for i in range(5 - len(self.version))])
-        self.build_number = match.group(4)
+        self.version = Tag.calc_version(match.group(2))
+        self.build_number = match.group(5)
         if (self.build_number) is not None:
             self.build_number = int(self.build_number)
-        self.ga = match.group(5) == '-ga'
+        self.ga = match.group(6) == '-ga'
 
 class SapMachineTag(Tag):
-    tag_pattern = re.compile('sapmachine-(\d+(\.\d+)*)(\+(\d+))?(-(\d+))?(\-(\S+))?$')
+    tag_pattern = re.compile('sapmachine-((\d+(\.\d+)*)(\+(\d+))?)(-(\d+))?(\-(\S+))?$')
 
     @staticmethod
     def from_string(string):
@@ -148,16 +153,23 @@ class SapMachineTag(Tag):
 
         self.tag = match.group(0)
         self.version_string = match.group(1)
-        self.version = list(map(int, self.version_string.split('.')))
-        self.version.extend([0 for i in range(5 - len(self.version))])
-        self.build_number = match.group(4)
-        if (self.build_number) is None:
+        self.version = Tag.calc_version(match.group(2))
+        self.build_number = match.group(5)
+        if self.build_number is None:
             self.ga = True
         else:
             self.build_number = int(self.build_number)
             self.ga = False
 
-        if self.version[4] == 0 and len(match.groups()) >= 6:
-            version_sap = match.group(6)
+        # That part is to support some legacy tags.
+        # We had tags where we appended the SapMachine version to the tag.
+        # E.g. sapmachine-10.0.2+13-0
+        # But we only use the 5th digit in the java.version scheme nowadays.
+        # So self.version_string will become normalized
+        if self.version[4] == 0 and len(match.groups()) >= 7:
+            version_sap = match.group(7)
             if version_sap is not None:
                 self.version[4] = int(version_sap)
+                self.version_string = ".".join(list(map(str, self.version)))
+                if self.build_number is not None:
+                    self.version_string += "+" + str(self.build_number)
