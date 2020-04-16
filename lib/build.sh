@@ -141,6 +141,15 @@ zip -rq "${WORKSPACE}/test.zip" make/data/lsrdata
 zip -rq "${WORKSPACE}/test.zip" make/data/blacklistedcertsconverter/blacklisted.certs.pem || true
 zip -rq "${WORKSPACE}/test.zip" make/data/unicodedata || true
 zip -rq "${WORKSPACE}/test.zip" make/data/tzdata || true
+zip -rq "${WORKSPACE}/test.zip" src/jdk.incubator.jpackage/windows/classes/jdk/incubator/jpackage/internal || true
+zip -rq "${WORKSPACE}/test.zip" src/jdk.incubator.jpackage/linux/classes/jdk/incubator/jpackage/internal || true
+zip -rq "${WORKSPACE}/test.zip" src/jdk.incubator.jpackage/macosx/classes/jdk/incubator/jpackage/internal || true
+zip -rq "${WORKSPACE}/test.zip" src/java.base/share/classes/javax/security/auth/ || true
+zip -rq "${WORKSPACE}/test.zip" src/java.base/share/classes/sun/security/provider/ || true
+zip -rq "${WORKSPACE}/test.zip" src/java.base/share/classes/sun/security/tools/ || true
+zip -rq "${WORKSPACE}/test.zip" src/jdk.crypto.cryptoki/share/classes/sun/security/pkcs11/SunPKCS11.java || true
+zip -rq "${WORKSPACE}/test.zip" src/jdk.jartool/share/classes/sun/security/tools/jarsigner/Main.java || true
+zip -rq "${WORKSPACE}/test.zip" src/jdk.security.auth/share/classes/com/sun/security/auth/ || true
 
 cd "${WORKSPACE}/SapMachine/build"
 cd "$(ls)"
