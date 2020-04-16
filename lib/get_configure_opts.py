@@ -74,5 +74,7 @@ def main(argv=None):
 
     print(' '.join(configure_opts))
 
+    return 0
+
 if __name__ == "__main__":
     sys.exit(main())
