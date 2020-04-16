@@ -76,7 +76,7 @@ if [ "$RELEASE" == true ]; then
   _RELEASE=" -r"
 fi
 
-_CONFIGURE_OPTS=($(python3 ../SapMachine-Infrastructure/lib/get_configure_opts.py $_GIT_TAG $_RELEASE $_BUILD_NUMBER))
+eval _CONFIGURE_OPTS=($(python3 ../SapMachine-Infrastructure/lib/get_configure_opts.py $_GIT_TAG $_RELEASE $_BUILD_NUMBER))
 
 bash ./configure \
 --with-boot-jdk=$BOOT_JDK \
