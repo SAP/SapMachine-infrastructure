@@ -131,11 +131,15 @@ class JDKTag(Tag):
 
         self.tag = match.group(0)
         self.version_string = match.group(1)
-        self.version = Tag.calc_version(match.group(2))
+        self.version_string_without_build = match.group(2)
+        self.version = Tag.calc_version(self.version_string_without_build)
         self.build_number = match.group(5)
         if (self.build_number) is not None:
             self.build_number = int(self.build_number)
         self.ga = match.group(6) == '-ga'
+
+    def as_sapmachine_tag_string(self):
+        return str.format('sapmachine-{0}', self.version_string_without_build if self.ga else self.version_string)
 
 class SapMachineTag(Tag):
     tag_pattern = re.compile('sapmachine-((\d+(\.\d+)*)(\+(\d+))?)(-(\d+))?(\-(\S+))?$')

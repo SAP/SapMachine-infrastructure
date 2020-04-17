@@ -23,7 +23,7 @@ def main(argv=None):
     os.makedirs(workdir)
 
     # fetch all branches
-    sapmachine_branches = utils.get_sapmachine_branches()
+    sapmachine_branches = utils.get_active_sapmachine_branches()
 
     # fetch all tags
     tags = utils.get_github_tags()

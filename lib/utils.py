@@ -243,36 +243,29 @@ def sapmachine_version_components(version_in, multiline=False):
 def sapmachine_branch_pattern():
     return 'sapmachine([\d]+)?$'
 
-def get_sapmachine_branches():
+def get_active_sapmachine_branches():
     sapmachine_latest = 0
     sapmachine_branches = []
 
     # fetch all branches
     branches = github_api_request('branches', per_page=100)
 
-    # iterate all branches of the SapMachine repository
+    # iterate all branches of the SapMachine repository and filter for sapmachine<nn>
     branch_pattern = re.compile(sapmachine_branch_pattern())
     for branch in branches:
-        # filter for sapmachine branches
         match = branch_pattern.match(branch['name'])
+        if match is not None and match.group(1) is not None:
+            # found sapmachine branch
+            major = int(match.group(1))
+            # ignore inactive ones
+            if major < 11 or major == 12 or major == 13:
+                continue
+            print(str.format('found sapmachine branch "{0}" with major "{1}"', branch['name'], major))
+            sapmachine_branches.append([branch['name'], major])
+            sapmachine_latest = max(sapmachine_latest, major)
 
-        if match is not None:
-            if match.group(1) is not None:
-                # found sapmachine branch
-                major = int(match.group(1))
-                print(str.format('found sapmachine branch "{0}" with major "{1}"', branch['name'], major))
-                sapmachine_branches.append([branch['name'], major])
-                sapmachine_latest = max(sapmachine_latest, major)
-            else:
-                print(str.format('found sapmachine branch "{0}"', branch['name']))
-                sapmachine_branches.append([branch['name'], 0])
-
-    sapmachine_latest += 1
-
-    # set the major version for "sapmachine" branch which always contains the latest changes from "jdk/jdk"
-    for sapmachine_branch in sapmachine_branches:
-        if sapmachine_branch[1] == 0:
-            sapmachine_branch[1] = sapmachine_latest
+    # also add "sapmachine" branch with up to date major version
+    sapmachine_branches.append(["sapmachine", sapmachine_latest + 1])
 
     return sapmachine_branches
 
@@ -466,61 +459,6 @@ def sapmachine_tag_is_release(tag):
             return not release['prerelease']
 
     return False
-
-class JDKTag:
-    jdk_tag_pattern = re.compile('jdk-((\d+)(\.\d+)*)(\+\d+|-ga)$')
-
-    def __init__(self, match):
-        self.tag = match.group(0)
-        self.version_string = match.group(1)
-        self.version = match.group(1).split('.')
-        self.build_number = match.group(4)[1:]
-        self.tag_is_ga = self.build_number == 'ga'
-
-        if self.tag_is_ga:
-            self.build_number = 999999
-        else:
-            self.build_number = int(self.build_number)
-
-        self.version = list(map(int, self.version))
-        self.version.extend([0 for i in range(5 - len(self.version))])
-
-        self.sapmachine_tag = None
-
-    def as_string(self):
-        return self.tag
-
-    def as_sapmachine_tag(self):
-        if self.sapmachine_tag == None:
-            self.sapmachine_tag = str.format('sapmachine-{0}{1}',
-                self.version_string,
-                '' if self.tag_is_ga else '+' + str(self.build_number))
-        return self.sapmachine_tag
-
-    def get_version(self):
-        return self.version
-
-    def get_major(self):
-        return self.version[0]
-
-    def get_build_number(self):
-        return self.build_number
-
-    def is_ga(self):
-        return self.tag_is_ga
-
-    def is_update(self):
-        return '.' in self.version_string
-
-    def equals(self, other):
-        return self.tag == other.tag
-
-    def is_greater_than(self, other):
-        ts = tuple(self.version)
-        to = tuple(other.get_version())
-        ts += (self.build_number,)
-        to += (other.get_build_number(),)
-        return ts > to
 
 def get_system():
     system = platform.system().lower()
