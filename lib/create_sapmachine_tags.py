@@ -66,8 +66,6 @@ def get_merge_commits():
         commit_messages = [commit_message for commit_message in commit_messages.split(os.linesep) if commit_message]
         commit_ids = [commit_id for commit_id in commit_ids.split(os.linesep) if commit_id]
 
-    print(str.format("Length of commit messages: {0}, Length of commit ids: {1}", len(commit_messages), len(commit_ids)))
-
     return list(map(lambda x,y:[x,y],commit_messages,commit_ids))
 
 def create_sapmachine_tag(jdk_tag, commit_id):
