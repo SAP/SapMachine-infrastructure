@@ -13,8 +13,9 @@ from versions import Tag, SapMachineTag, JDKTag
 def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('-t', '--tag', help='Test a tag', metavar='TAG')
-    parser.add_argument('-l', '--list-latest-non-ga', help='List the latest non-ga tag', action='store_true', default=False)
-    parser.add_argument('-a', '--test-all-tags', nargs='?', default='not present', const='all', help='List the latest non-ga tag, value could be sap,jdk,unknown')
+    parser.add_argument('-l', '--list-latest-non-ga', default=False, help='List the latest non-ga tag', action='store_true')
+    parser.add_argument('-a', '--test-all-tags', nargs='?', default='not present', const='all', help='List latest tags, value could be sap,jdk,unknown')
+    parser.add_argument('-r', '--test-all-releases', default=False, help='List latest releases', action='store_true')
     parser.add_argument('-v', '--jvm', help='Test a VM', metavar='VM Path')
     args = parser.parse_args()
 
@@ -66,6 +67,18 @@ def main(argv=None):
                         print("  Latest non-ga tag:")
                         latest_non_ga.print_details(indent = '  ')
 
+    if args.test_all_releases:
+        releases = utils.get_github_releases()
+        if releases is None:
+            print("Could not get releases from GitHub")
+            sys.exit(-1)
+        for release in releases:
+            t = SapMachineTag.from_string(release['name'])
+            if t is None:
+                print(str.format("Release {0} is unknown.", release['name']))
+            else:
+                t.print_details()
+
     if args.jvm:
         _, std_out, std_err = utils.run_cmd([join(args.jvm, 'bin', 'java.exe'), '-version'], std=True)
         print('Stdout:')
@@ -78,6 +91,8 @@ def main(argv=None):
         print(' '.join([version_component if version_component else 'N/A' for version_component in version_components]))
         sapmachine_version = [e for e in version_part.split('.')]
         print(sapmachine_version)
+
+    return 0
 
 if __name__ == "__main__":
     sys.exit(main())

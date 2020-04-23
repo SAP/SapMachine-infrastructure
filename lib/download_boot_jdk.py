@@ -3,18 +3,15 @@ Copyright (c) 2001-2019 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
-import os
-import sys
-import json
-import re
-import utils
 import argparse
-import shutil
 import glob
+import os
+import shutil
+import sys
+import utils
 
 from os.path import join
-from urllib.request import urlopen, Request
-from urllib.parse import quote
+from versions import SapMachineTag
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
@@ -35,12 +32,12 @@ def main(argv=None):
             if release['prerelease']:
                 continue
 
-            version, version_part, major, update, version_sap, build_number, os_ext = utils.sapmachine_tag_components(release['name'])
+            tag = SapMachineTag.from_string(release['name'])
 
-            if major is None:
+            if tag is None:
+                print(str.format("SapMachine release {0} not recognized", release['name']))
                 continue
-
-            major = int(major)
+            major = tag.get_major()
 
             if major <= boot_jdk_major_max and major >= boot_jdk_major_min:
                 assets = release['assets']

@@ -7,7 +7,11 @@ import re
 import sys
 import utils
 
+# This class represents a repository tag.
+# It could be both, a SapMachine or a JDK tag.
 class Tag:
+    # This method returns a tag instance from a string
+    # Could be None, if it does not conform to the format
     @staticmethod
     def from_string(string):
         tag = JDKTag.from_string(string)
@@ -15,50 +19,66 @@ class Tag:
             return tag
         return SapMachineTag.from_string(string)
 
+    # This method creates a list of 5 ints, representing the
+    # JDK version from the dotted String representation
     @staticmethod
     def calc_version(version_string):
         version = list(map(int, version_string.split('.')))
         version.extend([0 for i in range(5 - len(version))])
         return version
 
+    # the tag as string
     def as_string(self):
         return self.tag
 
+    # true if it is a JDK tag, false otherwise
     def is_jdk_tag(self):
         return self.__class__.__name__ == 'JDKTag'
 
+    # true if it is a SapMachine tag, false otherwise
     def is_sapmachine_tag(self):
         return self.__class__.__name__ == 'SapMachineTag'
 
-    def print_details(self, indent = ''):
-        print(str.format('{0}{1}: {2}', indent, self.__class__.__name__, self.tag))
-        print(str.format('{0}  version string: {1}', indent, self.get_version_string()))
-        print(str.format('{0}  major         : {1}', indent, self.get_major()))
-        print(str.format('{0}  update        : {1}', indent, self.get_update()))
-        print(str.format('{0}  version_sap   : {1}', indent, self.get_version_sap()))
-        print(str.format('{0}  build number  : {1}', indent, self.get_build_number()))
-        print(str.format('{0}  ga            : {1}', indent, self.is_ga()))
-
+    # returns the version as string
     def get_version_string(self):
         return self.version_string
 
+    # returns the version as list of int
+    def get_version(self):
+        return self.version
+
+    # returns the major part of the version as int, e.g. the first value.
     def get_major(self):
         return self.version[0]
 
+    # returns the update part of the version as int, e.g. the third value.
     def get_update(self):
         return self.version[2]
 
+    # returns the vendor(SAP) specific part of the version, e.g. the fifth value. Could be None.
     def get_version_sap(self):
         if self.version[4] > 0:
             return self.version[4]
         else:
             return None
 
+    # returns the build number as int.
     def get_build_number(self):
         return self.build_number
 
+    # True if this is a GA tag.
     def is_ga(self):
         return self.ga
+
+    # Prints the tag details, can be used for debugging
+    def print_details(self, indent = ''):
+        print(str.format('{0}{1}: {2}', indent, self.__class__.__name__, self.as_string()))
+        print(str.format('{0}  version string: {1}', indent, self.get_version_string()))
+        print(str.format('{0}  major         : {1}', indent, self.get_major()))
+        print(str.format('{0}  update        : {1}', indent, self.get_update()))
+        print(str.format('{0}  version_sap   : {1}', indent, self.get_version_sap()))
+        print(str.format('{0}  build number  : {1}', indent, self.get_build_number()))
+        print(str.format('{0}  ga            : {1}', indent, self.is_ga()))
 
     def equals(self, other):
         return self.tag == other.tag
@@ -79,6 +99,7 @@ class Tag:
         else:
             return False
 
+    # Creates a new tag Object of the same type (e.g. JDK or SapMachine) from the match value.
     def get_new_tag_of_same_type(self, match):
         if self.__class__ == JDKTag:
             return JDKTag(match)
@@ -87,6 +108,7 @@ class Tag:
         else:
             return None
 
+    # Find the latest non GA tag (if this tag is GA). It returns itself, if it isn't a GA tag.
     def get_latest_non_ga_tag(self):
         if not self.is_ga():
             return self
@@ -115,6 +137,10 @@ class Tag:
 
         return latest_non_ga_tag
 
+# Implementation of JDK tag. Examples:
+# jdk-12.0.2+8
+# jdk-12.0.2-ga
+# jdk-12+7
 class JDKTag(Tag):
     tag_pattern = re.compile('jdk-((\d+(\.\d+)*)(\+(\d+))?)(-ga)?$')
 
@@ -141,6 +167,15 @@ class JDKTag(Tag):
     def as_sapmachine_tag_string(self):
         return str.format('sapmachine-{0}', self.version_string_without_build if self.ga else self.version_string)
 
+# Implementation of SapMachine Tag. Examples:
+# sapmachine-14+9
+# sapmachine-14.0.1+1
+# sapmachine-13.0.1
+# sapmachine-11+4-0-alpine
+#
+# Basic pattern support for indicating the SAP version with a -nn appendix and an OS tag like -alpine
+# is only kept for compatibility. It is not used any more. If we find a Sap Version of -nn, a possible
+# 5th digit in the verison part takes precedence.
 class SapMachineTag(Tag):
     tag_pattern = re.compile('sapmachine-((\d+(\.\d+)*)(\+(\d+))?)(-(\d+))?(\-(\S+))?$')
 
@@ -169,7 +204,7 @@ class SapMachineTag(Tag):
         # We had tags where we appended the SapMachine version to the tag.
         # E.g. sapmachine-10.0.2+13-0
         # But we only use the 5th digit in the java.version scheme nowadays.
-        # So self.version_string will become normalized
+        # So self.version_string will be normalized to the new representation.
         if self.version[4] == 0 and len(match.groups()) >= 7:
             version_sap = match.group(7)
             if version_sap is not None:
