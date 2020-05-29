@@ -32,6 +32,14 @@ if [[ -z $NO_CHECKOUT ]]; then
   fi
 fi
 
+if [ -d gtest ]; then
+  rm -rf gtest;
+fi
+
+GTEST_DIR="${WORKSPACE}/gtest"
+export GTEST_DIR
+git clone -b release-1.8.1 https://github.com/google/googletest.git $GTEST_DIR
+
 cd "${WORKSPACE}/SapMachine"
 
 git config user.name SAPMACHINE_GIT_USER

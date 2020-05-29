@@ -20,6 +20,7 @@ VENDOR_NAME_ARG =           '"--with-vendor-name=SAP SE"'
 VENDOR_URL_ARG =            '--with-vendor-url=https://sapmachine.io/'
 VENDOR_BUG_URL_ARG =        '--with-vendor-bug-url=https://github.com/SAP/SapMachine/issues/new'
 VENDOR_VM_BUG_URL_ARG =     '--with-vendor-vm-bug-url=https://github.com/SAP/SapMachine/issues/new'
+GETEST_OPT =                '--with-gtest={0}'
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
@@ -117,6 +118,10 @@ def main(argv=None):
     configure_opts.append(VENDOR_URL_ARG)
     configure_opts.append(VENDOR_BUG_URL_ARG)
     configure_opts.append(VENDOR_VM_BUG_URL_ARG)
+
+    # set getest option
+    if tag is None or tag.get_major >= 15:
+        configure_opts.append(GETEST_OPT.format(os.environ['GTEST_DIR']))
 
     print(' '.join(configure_opts))
 
