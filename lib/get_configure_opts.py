@@ -7,6 +7,7 @@ import os
 import sys
 import utils
 import argparse
+import re
 from datetime import date
 from versions import SapMachineTag
 
@@ -27,6 +28,7 @@ def main(argv=None):
     parser.add_argument('-t', '--tag', help='the SapMachine git tag', metavar='TAG')
     parser.add_argument('-b', '--build', help='the build number to use, overrules any value from tag(s)', metavar='BUILD_NR')
     parser.add_argument('-r', '--release', help='set if this is a release build', action='store_true', default=False)
+    parser.add_argument('-g', '--branch', help='the SapMachine git branch', metavar='BRANCH')
     args = parser.parse_args()
 
     configure_opts = []
@@ -37,6 +39,17 @@ def main(argv=None):
         tag = SapMachineTag.from_string(args.tag)
         if tag is None:
             print(str.format("Passed tag {0} not recognized as SapMachine tag, handling as snapshot build", args.tag), file=sys.stderr)
+
+    # parse major from SapMachine branch, if given
+    major_from_branch = 0
+    if args.branch:
+        branch_pattern = re.compile(utils.sapmachine_branch_pattern())
+        match = branch_pattern.match(args.branch)
+        if match is not None:
+            if match.group(1) is not None:
+                major_from_branch = int(match.group(1))
+            else:
+                major_from_branch = 9999
 
     # determine and set version date
     release_date = None
@@ -120,8 +133,9 @@ def main(argv=None):
     configure_opts.append(VENDOR_VM_BUG_URL_ARG)
 
     # set getest option
-    if tag is None or tag.get_major() >= 15:
-        configure_opts.append(GTEST_OPT.format(os.environ['GTEST_DIR']))
+    if 'GTEST_DIR' in os.environ:
+        if (tag is not None and tag.get_major() >= 15) or major_from_branch >= 15:
+            configure_opts.append(GTEST_OPT.format(os.environ['GTEST_DIR']))
 
     print(' '.join(configure_opts))
 
