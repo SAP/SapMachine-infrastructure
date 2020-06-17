@@ -46,6 +46,9 @@ Provides: java-${major}
 Provides: java-devel-${major}
 Provides: java-sdk-${major}
 
+%define _source_payload w7.xzdio
+%define _binary_payload w7.xzdio
+
 %description
 The SapMachine Java Development Kit
 https://sapmachine.io
