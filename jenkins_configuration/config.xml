@@ -26,7 +26,7 @@
   <viewsTabBar class="hudson.views.DefaultViewsTabBar" />
   <myViewsTabBar class="hudson.views.DefaultMyViewsTabBar" />
   <clouds>
-    <hudson.plugins.ec2.EC2Cloud plugin="ec2@1.50.3">
+    <hudson.plugins.ec2.EC2Cloud plugin="ec2@1.49.1">
       <name>ec2-SapMachine Cloud</name>
       <useInstanceProfileForCredentials>false</useInstanceProfileForCredentials>
       <roleArn />
@@ -66,7 +66,6 @@
           <minimumNumberOfSpareInstances>0</minimumNumberOfSpareInstances>
           <stopOnTerminate>false</stopOnTerminate>
           <connectionStrategy>PUBLIC_IP</connectionStrategy>
-          <hostKeyVerificationStrategy>CHECK_NEW_SOFT</hostKeyVerificationStrategy>
           <associatePublicIp>true</associatePublicIp>
           <useDedicatedTenancy>false</useDedicatedTenancy>
           <amiType class="hudson.plugins.ec2.UnixData">
@@ -107,12 +106,11 @@
           <deleteRootOnTermination>false</deleteRootOnTermination>
           <useEphemeralDevices>false</useEphemeralDevices>
           <customDeviceMapping />
-          <instanceCap>1</instanceCap>
+          <instanceCap>3</instanceCap>
           <minimumNumberOfInstances>0</minimumNumberOfInstances>
           <minimumNumberOfSpareInstances>0</minimumNumberOfSpareInstances>
           <stopOnTerminate>false</stopOnTerminate>
           <connectionStrategy>PUBLIC_IP</connectionStrategy>
-          <hostKeyVerificationStrategy>CHECK_NEW_SOFT</hostKeyVerificationStrategy>
           <associatePublicIp>true</associatePublicIp>
           <useDedicatedTenancy>false</useDedicatedTenancy>
           <amiType class="hudson.plugins.ec2.WindowsData">
@@ -120,7 +118,6 @@
             <useHTTPS>false</useHTTPS>
             <bootDelay>200</bootDelay>
             <specifyPassword>true</specifyPassword>
-            <allowSelfSignedCertificate>false</allowSelfSignedCertificate>
           </amiType>
           <launchTimeout>2147483647</launchTimeout>
           <connectBySSHProcess>false</connectBySSHProcess>
