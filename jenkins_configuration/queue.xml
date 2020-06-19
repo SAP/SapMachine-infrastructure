@@ -1,14 +1,14 @@
 <hudson.model.Queue_-State>
-  <counter>6729</counter>
+  <counter>6793</counter>
   <items>
     <hudson.model.Queue_-BuildableItem>
       <actions />
-      <id>6728</id>
+      <id>6792</id>
       <task class="org.jenkinsci.plugins.workflow.support.steps.ExecutorStepExecution$PlaceholderTask" plugin="workflow-durable-task-step@2.35">
         <context class="org.jenkinsci.plugins.workflow.cps.CpsStepContext" plugin="workflow-cps@2.80">
           <executionRef class="org.jenkinsci.plugins.workflow.job.WorkflowRun$Owner" plugin="workflow-job@2.39">
-            <job>build-16-release-windows_x86_64</job>
-            <id>1</id>
+            <job>build-16-pr-validation-macos_x86_64</job>
+            <id>5</id>
           </executionRef>
           <id>3</id>
           <bodyHeads />
@@ -18,11 +18,59 @@
           <threadId>0</threadId>
           <stepDescriptorId>org.jenkinsci.plugins.workflow.support.steps.ExecutorStep</stepDescriptorId>
         </context>
-        <label>windows_x86_64</label>
-        <runId>build-16-release-windows_x86_64#1</runId>
+        <label>macos_x86_64</label>
+        <runId>build-16-pr-validation-macos_x86_64#5</runId>
       </task>
-      <inQueueSince>1592442764636</inQueueSince>
-      <buildableStartMilliseconds>1592442764636</buildableStartMilliseconds>
+      <inQueueSince>1592529099455</inQueueSince>
+      <buildableStartMilliseconds>1592529099469</buildableStartMilliseconds>
+      <isPending>false</isPending>
+    </hudson.model.Queue_-BuildableItem>
+    <hudson.model.Queue_-BuildableItem>
+      <actions />
+      <id>6791</id>
+      <task class="org.jenkinsci.plugins.workflow.support.steps.ExecutorStepExecution$PlaceholderTask" plugin="workflow-durable-task-step@2.35">
+        <context class="org.jenkinsci.plugins.workflow.cps.CpsStepContext" plugin="workflow-cps@2.80">
+          <executionRef class="org.jenkinsci.plugins.workflow.job.WorkflowRun$Owner" plugin="workflow-job@2.39">
+            <job>build-16-pr-validation-linux_ppc64le</job>
+            <id>5</id>
+          </executionRef>
+          <id>3</id>
+          <bodyHeads />
+          <body class="org.jenkinsci.plugins.workflow.cps.StaticBodyReference" resolves-to="org.jenkinsci.plugins.workflow.cps.HandleBodyReference">
+            <id>1</id>
+          </body>
+          <threadId>0</threadId>
+          <stepDescriptorId>org.jenkinsci.plugins.workflow.support.steps.ExecutorStep</stepDescriptorId>
+        </context>
+        <label>linux_ppc64le</label>
+        <runId>build-16-pr-validation-linux_ppc64le#5</runId>
+      </task>
+      <inQueueSince>1592529099435</inQueueSince>
+      <buildableStartMilliseconds>1592529099453</buildableStartMilliseconds>
+      <isPending>false</isPending>
+    </hudson.model.Queue_-BuildableItem>
+    <hudson.model.Queue_-BuildableItem>
+      <actions />
+      <id>6790</id>
+      <task class="org.jenkinsci.plugins.workflow.support.steps.ExecutorStepExecution$PlaceholderTask" plugin="workflow-durable-task-step@2.35">
+        <context class="org.jenkinsci.plugins.workflow.cps.CpsStepContext" plugin="workflow-cps@2.80">
+          <executionRef class="org.jenkinsci.plugins.workflow.job.WorkflowRun$Owner" plugin="workflow-job@2.39">
+            <job>build-16-pr-validation-linux_ppc64</job>
+            <id>5</id>
+          </executionRef>
+          <id>3</id>
+          <bodyHeads />
+          <body class="org.jenkinsci.plugins.workflow.cps.StaticBodyReference" resolves-to="org.jenkinsci.plugins.workflow.cps.HandleBodyReference">
+            <id>1</id>
+          </body>
+          <threadId>0</threadId>
+          <stepDescriptorId>org.jenkinsci.plugins.workflow.support.steps.ExecutorStep</stepDescriptorId>
+        </context>
+        <label>linux_ppc64</label>
+        <runId>build-16-pr-validation-linux_ppc64#5</runId>
+      </task>
+      <inQueueSince>1592529099253</inQueueSince>
+      <buildableStartMilliseconds>1592529099259</buildableStartMilliseconds>
       <isPending>false</isPending>
     </hudson.model.Queue_-BuildableItem>
   </items>
