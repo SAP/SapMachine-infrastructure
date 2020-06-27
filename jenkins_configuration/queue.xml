@@ -1,4 +1,29 @@
 <hudson.model.Queue_-State>
-  <counter>7178</counter>
-  <items />
+  <counter>7258</counter>
+  <items>
+    <hudson.model.Queue_-BuildableItem>
+      <actions />
+      <id>7255</id>
+      <task class="org.jenkinsci.plugins.workflow.support.steps.ExecutorStepExecution$PlaceholderTask" plugin="workflow-durable-task-step@2.35">
+        <context class="org.jenkinsci.plugins.workflow.cps.CpsStepContext" plugin="workflow-cps@2.80">
+          <executionRef class="org.jenkinsci.plugins.workflow.job.WorkflowRun$Owner" plugin="workflow-job@2.39">
+            <job>build-15-release-windows_x86_64</job>
+            <id>42</id>
+          </executionRef>
+          <id>3</id>
+          <bodyHeads />
+          <body class="org.jenkinsci.plugins.workflow.cps.StaticBodyReference" resolves-to="org.jenkinsci.plugins.workflow.cps.HandleBodyReference">
+            <id>1</id>
+          </body>
+          <threadId>0</threadId>
+          <stepDescriptorId>org.jenkinsci.plugins.workflow.support.steps.ExecutorStep</stepDescriptorId>
+        </context>
+        <label>windows_x86_64</label>
+        <runId>build-15-release-windows_x86_64#42</runId>
+      </task>
+      <inQueueSince>1593220343179</inQueueSince>
+      <buildableStartMilliseconds>1593220343180</buildableStartMilliseconds>
+      <isPending>false</isPending>
+    </hudson.model.Queue_-BuildableItem>
+  </items>
 </hudson.model.Queue_-State>
