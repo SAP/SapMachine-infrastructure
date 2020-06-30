@@ -27,6 +27,7 @@ g++
 RUN useradd -ms /bin/bash jenkins -u 1002
 
 RUN pip install hg-git
+RUN pip3 install hg-git
 RUN echo "[extensions]\nhgext.bookmarks =\nhggit =" > /etc/mercurial/hgrc
 
 RUN cd ~ && git clone https://github.com/reshnm/git-hg-again.git && cp git-hg-again/githg.py  /usr/lib/git-core/git-hg
