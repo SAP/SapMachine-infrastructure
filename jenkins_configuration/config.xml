@@ -26,7 +26,7 @@
   <viewsTabBar class="hudson.views.DefaultViewsTabBar" />
   <myViewsTabBar class="hudson.views.DefaultMyViewsTabBar" />
   <clouds>
-    <hudson.plugins.ec2.EC2Cloud plugin="ec2@1.49.1">
+    <hudson.plugins.ec2.EC2Cloud plugin="ec2@1.50.3">
       <name>ec2-SapMachine Cloud</name>
       <useInstanceProfileForCredentials>false</useInstanceProfileForCredentials>
       <roleArn />
@@ -66,6 +66,7 @@
           <minimumNumberOfSpareInstances>0</minimumNumberOfSpareInstances>
           <stopOnTerminate>false</stopOnTerminate>
           <connectionStrategy>PUBLIC_IP</connectionStrategy>
+          <hostKeyVerificationStrategy>CHECK_NEW_SOFT</hostKeyVerificationStrategy>
           <associatePublicIp>true</associatePublicIp>
           <useDedicatedTenancy>false</useDedicatedTenancy>
           <amiType class="hudson.plugins.ec2.UnixData">
@@ -93,7 +94,7 @@
           <monitoring>false</monitoring>
           <t2Unlimited>false</t2Unlimited>
           <labels>windows_x86_64</labels>
-          <mode>NORMAL</mode>
+          <mode>EXCLUSIVE</mode>
           <initScript />
           <tmpDir>C:\TEMP\</tmpDir>
           <userData />
@@ -101,8 +102,8 @@
           <remoteAdmin>Administrator</remoteAdmin>
           <jvmopts />
           <subnetId />
-          <idleTerminationMinutes>10</idleTerminationMinutes>
-          <iamInstanceProfile />
+          <idleTerminationMinutes>20</idleTerminationMinutes>
+          <iamInstanceProfile>1</iamInstanceProfile>
           <deleteRootOnTermination>false</deleteRootOnTermination>
           <useEphemeralDevices>false</useEphemeralDevices>
           <customDeviceMapping />
@@ -110,7 +111,18 @@
           <minimumNumberOfInstances>0</minimumNumberOfInstances>
           <minimumNumberOfSpareInstances>0</minimumNumberOfSpareInstances>
           <stopOnTerminate>false</stopOnTerminate>
+          <tags>
+            <hudson.plugins.ec2.EC2Tag>
+              <name>Name</name>
+              <value>Windows _Slave</value>
+            </hudson.plugins.ec2.EC2Tag>
+            <hudson.plugins.ec2.EC2Tag>
+              <name />
+              <value />
+            </hudson.plugins.ec2.EC2Tag>
+          </tags>
           <connectionStrategy>PUBLIC_IP</connectionStrategy>
+          <hostKeyVerificationStrategy>CHECK_NEW_SOFT</hostKeyVerificationStrategy>
           <associatePublicIp>true</associatePublicIp>
           <useDedicatedTenancy>false</useDedicatedTenancy>
           <amiType class="hudson.plugins.ec2.WindowsData">
@@ -118,6 +130,7 @@
             <useHTTPS>false</useHTTPS>
             <bootDelay>200</bootDelay>
             <specifyPassword>true</specifyPassword>
+            <allowSelfSignedCertificate>true</allowSelfSignedCertificate>
           </amiType>
           <launchTimeout>2147483647</launchTimeout>
           <connectBySSHProcess>false</connectBySSHProcess>
