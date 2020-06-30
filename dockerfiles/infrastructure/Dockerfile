@@ -16,6 +16,8 @@ python-pip \
 python3 \
 python3-setuptools \
 python3-pip \
+python-dev \
+python3-dev \
 libffi-dev \
 openssl \
 libssl-dev \
