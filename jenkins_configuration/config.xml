@@ -140,6 +140,52 @@
           <usePrivateDnsName>false</usePrivateDnsName>
           <connectUsingPublicIp>true</connectUsingPublicIp>
         </hudson.plugins.ec2.SlaveTemplate>
+        <hudson.plugins.ec2.SlaveTemplate>
+          <ami>ami-04bc9ab2b74e7703e</ami>
+          <description>WindowSSH</description>
+          <zone>us-east-1d</zone>
+          <securityGroups>WindowsClientSSH</securityGroups>
+          <remoteFS>C:\jenkins</remoteFS>
+          <type>M54xlarge</type>
+          <ebsOptimized>true</ebsOptimized>
+          <monitoring>false</monitoring>
+          <t2Unlimited>false</t2Unlimited>
+          <labels>windows_x86_64</labels>
+          <mode>EXCLUSIVE</mode>
+          <initScript />
+          <tmpDir>C:\temp</tmpDir>
+          <userData />
+          <numExecutors>1</numExecutors>
+          <remoteAdmin>jenkins</remoteAdmin>
+          <jvmopts />
+          <subnetId />
+          <idleTerminationMinutes>30</idleTerminationMinutes>
+          <iamInstanceProfile />
+          <deleteRootOnTermination>false</deleteRootOnTermination>
+          <useEphemeralDevices>false</useEphemeralDevices>
+          <customDeviceMapping />
+          <instanceCap>1</instanceCap>
+          <minimumNumberOfInstances>0</minimumNumberOfInstances>
+          <minimumNumberOfSpareInstances>0</minimumNumberOfSpareInstances>
+          <stopOnTerminate>false</stopOnTerminate>
+          <connectionStrategy>PUBLIC_IP</connectionStrategy>
+          <hostKeyVerificationStrategy>OFF</hostKeyVerificationStrategy>
+          <associatePublicIp>true</associatePublicIp>
+          <useDedicatedTenancy>false</useDedicatedTenancy>
+          <amiType class="hudson.plugins.ec2.UnixData">
+            <rootCommandPrefix />
+            <slaveCommandPrefix />
+            <slaveCommandSuffix />
+            <sshPort>22</sshPort>
+          </amiType>
+          <launchTimeout>2147483647</launchTimeout>
+          <connectBySSHProcess>false</connectBySSHProcess>
+          <maxTotalUses>-1</maxTotalUses>
+          <nodeProperties />
+          <nextSubnet>0</nextSubnet>
+          <usePrivateDnsName>false</usePrivateDnsName>
+          <connectUsingPublicIp>true</connectUsingPublicIp>
+        </hudson.plugins.ec2.SlaveTemplate>
       </templates>
       <region>us-east-1</region>
       <noDelayProvisioning>true</noDelayProvisioning>
