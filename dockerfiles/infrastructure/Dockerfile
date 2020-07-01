@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -10,13 +10,9 @@ curl \
 git \
 mercurial \
 unzip \
-python \
-python-setuptools \
-python-pip \
 python3 \
 python3-setuptools \
 python3-pip \
-python-dev \
 python3-dev \
 libffi-dev \
 openssl \
@@ -26,8 +22,9 @@ g++
 
 RUN useradd -ms /bin/bash jenkins -u 1002
 
-RUN pip install hg-git
-RUN pip3 install hg-git
+RUN pip3 install wheel
+RUN pip3 install hg-git==0.9.0a1
+RUN pip3 install mercurial
 RUN echo "[extensions]\nhgext.bookmarks =\nhggit =" > /etc/mercurial/hgrc
 
 RUN cd ~ && git clone https://github.com/reshnm/git-hg-again.git && cp git-hg-again/githg.py  /usr/lib/git-core/git-hg
