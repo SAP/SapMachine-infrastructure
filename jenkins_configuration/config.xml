@@ -84,68 +84,11 @@
           <connectUsingPublicIp>true</connectUsingPublicIp>
         </hudson.plugins.ec2.SlaveTemplate>
         <hudson.plugins.ec2.SlaveTemplate>
-          <ami>ami-0b6fa65148bbedeb7</ami>
-          <description>Windows Slave</description>
-          <zone>us-east-1d</zone>
-          <securityGroups>JenkinsWindowsSlave</securityGroups>
-          <remoteFS>C:\jenkins</remoteFS>
-          <type>M54xlarge</type>
-          <ebsOptimized>true</ebsOptimized>
-          <monitoring>false</monitoring>
-          <t2Unlimited>false</t2Unlimited>
-          <labels>windows_x86_64</labels>
-          <mode>EXCLUSIVE</mode>
-          <initScript />
-          <tmpDir>C:\TEMP\</tmpDir>
-          <userData />
-          <numExecutors>1</numExecutors>
-          <remoteAdmin>Administrator</remoteAdmin>
-          <jvmopts />
-          <subnetId />
-          <idleTerminationMinutes>20</idleTerminationMinutes>
-          <iamInstanceProfile>1</iamInstanceProfile>
-          <deleteRootOnTermination>false</deleteRootOnTermination>
-          <useEphemeralDevices>false</useEphemeralDevices>
-          <customDeviceMapping />
-          <instanceCap>1</instanceCap>
-          <minimumNumberOfInstances>0</minimumNumberOfInstances>
-          <minimumNumberOfSpareInstances>0</minimumNumberOfSpareInstances>
-          <stopOnTerminate>false</stopOnTerminate>
-          <tags>
-            <hudson.plugins.ec2.EC2Tag>
-              <name>Name</name>
-              <value>Windows _Slave</value>
-            </hudson.plugins.ec2.EC2Tag>
-            <hudson.plugins.ec2.EC2Tag>
-              <name />
-              <value />
-            </hudson.plugins.ec2.EC2Tag>
-          </tags>
-          <connectionStrategy>PUBLIC_IP</connectionStrategy>
-          <hostKeyVerificationStrategy>CHECK_NEW_SOFT</hostKeyVerificationStrategy>
-          <associatePublicIp>true</associatePublicIp>
-          <useDedicatedTenancy>false</useDedicatedTenancy>
-          <amiType class="hudson.plugins.ec2.WindowsData">
-            <password>REMOVED_BY_BACKUP</password>
-            <useHTTPS>false</useHTTPS>
-            <bootDelay>200</bootDelay>
-            <specifyPassword>true</specifyPassword>
-            <allowSelfSignedCertificate>true</allowSelfSignedCertificate>
-          </amiType>
-          <launchTimeout>2147483647</launchTimeout>
-          <connectBySSHProcess>false</connectBySSHProcess>
-          <maxTotalUses>-1</maxTotalUses>
-          <nodeProperties />
-          <nextSubnet>0</nextSubnet>
-          <usePrivateDnsName>false</usePrivateDnsName>
-          <connectUsingPublicIp>true</connectUsingPublicIp>
-        </hudson.plugins.ec2.SlaveTemplate>
-        <hudson.plugins.ec2.SlaveTemplate>
-          <ami>ami-04bc9ab2b74e7703e</ami>
-          <description>WindowSSH</description>
+          <ami>ami-0ec492ac61a1dcd9c</ami>
+          <description>Window Slave</description>
           <zone>us-east-1d</zone>
           <securityGroups>WindowsClientSSH</securityGroups>
-          <remoteFS>C:\jenkins</remoteFS>
+          <remoteFS>C:\jenkins_work</remoteFS>
           <type>M54xlarge</type>
           <ebsOptimized>true</ebsOptimized>
           <monitoring>false</monitoring>
@@ -164,7 +107,7 @@
           <deleteRootOnTermination>false</deleteRootOnTermination>
           <useEphemeralDevices>false</useEphemeralDevices>
           <customDeviceMapping />
-          <instanceCap>1</instanceCap>
+          <instanceCap>3</instanceCap>
           <minimumNumberOfInstances>0</minimumNumberOfInstances>
           <minimumNumberOfSpareInstances>0</minimumNumberOfSpareInstances>
           <stopOnTerminate>false</stopOnTerminate>

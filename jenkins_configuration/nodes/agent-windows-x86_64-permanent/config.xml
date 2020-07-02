@@ -1,4 +1,18 @@
 <slave>
+  <temporaryOfflineCause class="hudson.slaves.OfflineCause$UserCause">
+    <timestamp>1593630533599</timestamp>
+    <description>
+      <holder>
+        <owner>hudson.slaves.Messages</owner>
+      </holder>
+      <key>SlaveComputer.DisconnectedBy</key>
+      <args>
+        <string>arno</string>
+        <string> : Disable this one until we need it again.</string>
+      </args>
+    </description>
+    <userId>arno</userId>
+  </temporaryOfflineCause>
   <name>agent-windows-x86_64-permanent</name>
   <description />
   <remoteFS>C:\jenkins</remoteFS>
