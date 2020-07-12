@@ -225,9 +225,14 @@ if [[ $UNAME == Darwin ]]; then
   rm -rf ${DMG_BASE}
   mkdir -p ${DMG_BASE}
   tar -xzf "${WORKSPACE}/${ARCHIVE_NAME_JDK}" -C ${DMG_BASE}
-  # We see sometimes errors like "hdiutil: create failed - Resource busy." when invoking it right after tar. Let's try sleeping a little bit.
-  sleep 10s
-  hdiutil create -srcfolder ${DMG_BASE} -fs HFS+ -volname ${DMG_NAME} "${WORKSPACE}/${DMG_NAME}.dmg"
+  hdiutil create -srcfolder ${DMG_BASE} -fs HFS+ -volname ${DMG_NAME} "${WORKSPACE}/${DMG_NAME}.dmg" || true
+  if [ ${PIPESTATUS[0]} -ne 0 ]; then
+    # We see sometimes errors like "hdiutil: create failed - Resource busy." when invoking it right after tar.
+    # Let's retry after sleeping a little while.
+    sleep 30s
+    hdiutil create -srcfolder ${DMG_BASE} -fs HFS+ -volname ${DMG_NAME} "${WORKSPACE}/${DMG_NAME}.dmg" || true
+  fi
+
   echo "${DMG_NAME}.dmg" > "${WORKSPACE}/jdk_dmg_name.txt"
 
   # jre
@@ -235,9 +240,13 @@ if [[ $UNAME == Darwin ]]; then
   rm -rf ${DMG_BASE}
   mkdir -p ${DMG_BASE}
   tar -xzf "${WORKSPACE}/${ARCHIVE_NAME_JRE}" -C ${DMG_BASE}
-  # We see sometimes errors like "hdiutil: create failed - Resource busy." when invoking it right after tar. Let's try sleeping a little bit.
-  sleep 10s
-  hdiutil create -srcfolder ${DMG_BASE} -fs HFS+ -volname ${DMG_NAME} "${WORKSPACE}/${DMG_NAME}.dmg"
+  hdiutil create -srcfolder ${DMG_BASE} -fs HFS+ -volname ${DMG_NAME} "${WORKSPACE}/${DMG_NAME}.dmg" || true
+  if [ ${PIPESTATUS[0]} -ne 0 ]; then
+    # We see sometimes errors like "hdiutil: create failed - Resource busy." when invoking it right after tar.
+    # Let's retry after sleeping a little while.
+    sleep 30s
+    hdiutil create -srcfolder ${DMG_BASE} -fs HFS+ -volname ${DMG_NAME} "${WORKSPACE}/${DMG_NAME}.dmg" || true
+  fi
   echo "${DMG_NAME}.dmg" > "${WORKSPACE}/jre_dmg_name.txt"
 fi
 
