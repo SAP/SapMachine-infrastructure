@@ -168,7 +168,10 @@ def sapmachine_is_lts(major):
         '11',
         '17'
     ]
-    return major in lts_releases
+    major_as_str = major
+    if not isinstance(major, str):
+        major_as_str = str(major)
+    return major_as_str in lts_releases
 
 def sapmachine_tag_pattern():
     return '(sapmachine)-((((\d+)((\.(\d+))*)?)(\+(\d+))?)(-(\d+))?)(\-((\S)+))?'
