@@ -235,6 +235,7 @@ if [[ $UNAME == Darwin ]]; then
   rm -rf ${DMG_BASE}
   mkdir -p ${DMG_BASE}
   tar -xzf "${WORKSPACE}/${ARCHIVE_NAME_JRE}" -C ${DMG_BASE}
+  hdierror=0
   hdiutil create -srcfolder ${DMG_BASE} -fs HFS+ -volname ${DMG_NAME} "${WORKSPACE}/${DMG_NAME}.dmg" || hdierror=1
   if [ $hdierror -ne 0 ]; then
     # We see sometimes errors like "hdiutil: create failed - Resource busy." when invoking it right after tar.
