@@ -97,50 +97,44 @@ $_CONFIGURE_OS_OPTIONS \
 $_CONFIGURE_SYSROOT \
 $EXTRA_CONFIGURE_OPTIONS
 
-# try to build with legacy-bundles in one step
+# Try to build with legacy-bundles in one step.
+# In case there is an error, we give it another try without legacy bundles and try to create the legacy bundle manually afterwards.
+# This is needed to support building older source versions that didn't have the legacy-bundles target.
+# Drawback: If there is a real build error, we'll restart the build and run into it again.
+
 legacy_bundles_available=1
-make JOBS=12 product-bundles legacy-bundles test-image | true
+make JOBS=12 product-bundles legacy-bundles test-image || legacy_bundles_available=0
 
-# In case there was an error, we give it another try without legacy bundles
-# and try to create the legacy bundle manually afterwards.
-# This is needed to support building older source versions that didn't have
-# the legacy-bundles target.
-# Drawback: If there is a real build error, we'll restart the build and run
-# into it again.
-if [ ${PIPESTATUS[0]} -ne 0 ]; then
-  legacy_bundles_available=0
+if [ legacy_bundles_available -ne 1 ]; then
   make JOBS=12 product-bundles test-image
-fi
-
-if [ $legacy_bundles_available -ne 1 ]; then
   if [[ $UNAME == Darwin ]]; then
-    make JOBS=12 mac-legacy-jre-bundle | true
+    make JOBS=12 mac-legacy-jre-bundle || true
   else
-    make JOBS=12 legacy-jre-image | true
+    make JOBS=12 legacy-jre-image || true
   fi
 fi
 
 make run-test-gtest
 
-rm "${WORKSPACE}/test.zip" | true
+rm "${WORKSPACE}/test.zip" || true
 zip -rq "${WORKSPACE}/test.zip" test
 zip -rq "${WORKSPACE}/test.zip" make/data/lsrdata
-zip -rq "${WORKSPACE}/test.zip" make/data/blacklistedcertsconverter/blacklisted.certs.pem | true
-zip -rq "${WORKSPACE}/test.zip" make/data/unicodedata | true
-zip -rq "${WORKSPACE}/test.zip" make/data/tzdata | true
-zip -rq "${WORKSPACE}/test.zip" src/jdk.incubator.jpackage/windows/classes/jdk/incubator/jpackage/internal | true
-zip -rq "${WORKSPACE}/test.zip" src/jdk.incubator.jpackage/linux/classes/jdk/incubator/jpackage/internal | true
-zip -rq "${WORKSPACE}/test.zip" src/jdk.incubator.jpackage/macosx/classes/jdk/incubator/jpackage/internal | true
-zip -rq "${WORKSPACE}/test.zip" src/java.base/share/classes/javax/security/auth/ | true
-zip -rq "${WORKSPACE}/test.zip" src/java.base/share/classes/sun/security/provider/ | true
-zip -rq "${WORKSPACE}/test.zip" src/java.base/share/classes/sun/security/tools/ | true
-zip -rq "${WORKSPACE}/test.zip" src/jdk.crypto.cryptoki/share/classes/sun/security/pkcs11/SunPKCS11.java | true
-zip -rq "${WORKSPACE}/test.zip" src/jdk.jartool/share/classes/sun/security/tools/jarsigner/Main.java | true
-zip -rq "${WORKSPACE}/test.zip" src/jdk.security.auth/share/classes/com/sun/security/auth/ | true
-zip -rq "${WORKSPACE}/test.zip" src/java.xml.crypto/share/classes/org/jcp/xml/dsig/internal/dom/XMLDSigRI.java | true
-zip -rq "${WORKSPACE}/test.zip" src/*/*/legal/ | true
-zip -rq "${WORKSPACE}/test.zip" make/data/publicsuffixlist/VERSION | true
-zip -rq "${WORKSPACE}/test.zip" src/java.smartcardio/unix/native/libj2pcsc/MUSCLE/pcsclite.h | true
+zip -rq "${WORKSPACE}/test.zip" make/data/blacklistedcertsconverter/blacklisted.certs.pem || true
+zip -rq "${WORKSPACE}/test.zip" make/data/unicodedata || true
+zip -rq "${WORKSPACE}/test.zip" make/data/tzdata || true
+zip -rq "${WORKSPACE}/test.zip" src/jdk.incubator.jpackage/windows/classes/jdk/incubator/jpackage/internal || true
+zip -rq "${WORKSPACE}/test.zip" src/jdk.incubator.jpackage/linux/classes/jdk/incubator/jpackage/internal || true
+zip -rq "${WORKSPACE}/test.zip" src/jdk.incubator.jpackage/macosx/classes/jdk/incubator/jpackage/internal || true
+zip -rq "${WORKSPACE}/test.zip" src/java.base/share/classes/javax/security/auth/ || true
+zip -rq "${WORKSPACE}/test.zip" src/java.base/share/classes/sun/security/provider/ || true
+zip -rq "${WORKSPACE}/test.zip" src/java.base/share/classes/sun/security/tools/ || true
+zip -rq "${WORKSPACE}/test.zip" src/jdk.crypto.cryptoki/share/classes/sun/security/pkcs11/SunPKCS11.java || true
+zip -rq "${WORKSPACE}/test.zip" src/jdk.jartool/share/classes/sun/security/tools/jarsigner/Main.java || true
+zip -rq "${WORKSPACE}/test.zip" src/jdk.security.auth/share/classes/com/sun/security/auth/ || true
+zip -rq "${WORKSPACE}/test.zip" src/java.xml.crypto/share/classes/org/jcp/xml/dsig/internal/dom/XMLDSigRI.java || true
+zip -rq "${WORKSPACE}/test.zip" src/*/*/legal/ || true
+zip -rq "${WORKSPACE}/test.zip" make/data/publicsuffixlist/VERSION || true
+zip -rq "${WORKSPACE}/test.zip" src/java.smartcardio/unix/native/libj2pcsc/MUSCLE/pcsclite.h || true
 
 cd "${WORKSPACE}/SapMachine/build"
 cd "$(ls)"
@@ -188,8 +182,8 @@ if [ $legacy_bundles_available -ne 1 ]; then
   fi
 fi
 
-rm "${WORKSPACE}/${SAPMACHINE_BUNDLE_PREFIX}jdk-*" | true
-rm "${WORKSPACE}/${SAPMACHINE_BUNDLE_PREFIX}jre-*" | true
+rm "${WORKSPACE}/${SAPMACHINE_BUNDLE_PREFIX}jdk-*" || true
+rm "${WORKSPACE}/${SAPMACHINE_BUNDLE_PREFIX}jre-*" || true
 
 cp ${JDK_BUNDLE_NAME} "${WORKSPACE}"
 cp ${JRE_BUNDLE_NAME} "${WORKSPACE}"
@@ -225,8 +219,9 @@ if [[ $UNAME == Darwin ]]; then
   rm -rf ${DMG_BASE}
   mkdir -p ${DMG_BASE}
   tar -xzf "${WORKSPACE}/${ARCHIVE_NAME_JDK}" -C ${DMG_BASE}
-  hdiutil create -srcfolder ${DMG_BASE} -fs HFS+ -volname ${DMG_NAME} "${WORKSPACE}/${DMG_NAME}.dmg" | true
-  if [ ${PIPESTATUS[0]} -ne 0 ]; then
+  hdierror=0
+  hdiutil create -srcfolder ${DMG_BASE} -fs HFS+ -volname ${DMG_NAME} "${WORKSPACE}/${DMG_NAME}.dmg" || hdierror=1
+  if [ $hdierror -ne 0 ]; then
     # We see sometimes errors like "hdiutil: create failed - Resource busy." when invoking it right after tar.
     # Let's retry after sleeping a little while.
     sleep 30s
@@ -240,8 +235,8 @@ if [[ $UNAME == Darwin ]]; then
   rm -rf ${DMG_BASE}
   mkdir -p ${DMG_BASE}
   tar -xzf "${WORKSPACE}/${ARCHIVE_NAME_JRE}" -C ${DMG_BASE}
-  hdiutil create -srcfolder ${DMG_BASE} -fs HFS+ -volname ${DMG_NAME} "${WORKSPACE}/${DMG_NAME}.dmg" | true
-  if [ ${PIPESTATUS[0]} -ne 0 ]; then
+  hdiutil create -srcfolder ${DMG_BASE} -fs HFS+ -volname ${DMG_NAME} "${WORKSPACE}/${DMG_NAME}.dmg" || hdierror=1
+  if [ $hdierror -ne 0 ]; then
     # We see sometimes errors like "hdiutil: create failed - Resource busy." when invoking it right after tar.
     # Let's retry after sleeping a little while.
     sleep 30s

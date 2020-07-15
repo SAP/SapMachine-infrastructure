@@ -38,10 +38,10 @@ if [ -z $GIT_TAG_NAME ]; then
     git push --tags
     popd
     GIT_TAG_DESCRIPTION="${SAPMACHINE_ARCHIVE_NAME_PREFIX} Snapshot ${TIMESTAMP_LONG}"
-    python3 SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -d "$GIT_TAG_DESCRIPTION" $PRE_RELEASE_OPT | true
+    python3 SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -d "$GIT_TAG_DESCRIPTION" $PRE_RELEASE_OPT || true
 else
     GIT_TAG_NAME=$(echo $GIT_TAG_NAME | sed 's/-alpine//')
-    python3 SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME $PRE_RELEASE_OPT | true
+    python3 SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME $PRE_RELEASE_OPT || true
 fi
 
 ls -la
