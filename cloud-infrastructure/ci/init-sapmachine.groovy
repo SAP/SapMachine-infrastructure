@@ -84,7 +84,7 @@ if (0 == getInitLevel()) {
         sleep 10000
         println "--> applying Jenkins configuration"
         runCmd("git clone https://github.com/sap/SapMachine-infrastructure /tmp/SapMachine-infrastructure")
-        runCmd("python /tmp/SapMachine-infrastructure/lib/jenkins_restore.py -s /tmp/SapMachine-infrastructure -t ${jenkins_home}")
+        runCmd("python3 /tmp/SapMachine-infrastructure/lib/jenkins_restore.py -s /tmp/SapMachine-infrastructure -t ${jenkins_home}")
         runCmd("rm -rf /tmp/SapMachine-infrastructure")
         println "--> applying Jenkins configuration ... done"
 

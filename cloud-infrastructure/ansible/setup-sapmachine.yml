@@ -68,6 +68,15 @@
           - packages.docker_repository_bionic
         when: ansible_distribution_major_version == '18'
 
+      - name: add docker repository 20.04 Focal
+        apt_repository:
+         repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+         state: present
+        become: yes
+        tags:
+          - packages.docker_repository_focal
+        when: ansible_distribution_major_version == '20'
+
       # install docker, docker-compose, OpenJDK 8 JRE
       - name: install docker-ce
         apt:
