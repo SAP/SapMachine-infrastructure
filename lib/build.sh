@@ -105,7 +105,7 @@ $EXTRA_CONFIGURE_OPTIONS
 legacy_bundles_available=1
 make JOBS=12 product-bundles legacy-bundles test-image || legacy_bundles_available=0
 
-if [ legacy_bundles_available -ne 1 ]; then
+if [ $legacy_bundles_available -ne 1 ]; then
   make JOBS=12 product-bundles test-image
   if [[ $UNAME == Darwin ]]; then
     make JOBS=12 mac-legacy-jre-bundle || true
