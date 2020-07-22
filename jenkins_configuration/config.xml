@@ -40,7 +40,7 @@
       <templates>
         <hudson.plugins.ec2.SlaveTemplate>
           <ami>ami-0c56ec54e32abff21</ami>
-          <description>Linux Slave</description>
+          <description>Linux Client</description>
           <zone>us-east-1d</zone>
           <securityGroups>JenkinsLinuxSlave</securityGroups>
           <remoteFS>/home/ubuntu/slave_home</remoteFS>
@@ -86,9 +86,9 @@
         </hudson.plugins.ec2.SlaveTemplate>
         <hudson.plugins.ec2.SlaveTemplate>
           <ami>ami-0ec492ac61a1dcd9c</ami>
-          <description>Window Slave</description>
+          <description>Windows Client</description>
           <zone>us-east-1d</zone>
-          <securityGroups>WindowsClientSSH</securityGroups>
+          <securityGroups>JenkinsWindowsClient</securityGroups>
           <remoteFS>C:\jenkins_work</remoteFS>
           <type>M54xlarge</type>
           <ebsOptimized>true</ebsOptimized>
@@ -112,8 +112,14 @@
           <minimumNumberOfInstances>0</minimumNumberOfInstances>
           <minimumNumberOfSpareInstances>0</minimumNumberOfSpareInstances>
           <stopOnTerminate>false</stopOnTerminate>
+          <tags>
+            <hudson.plugins.ec2.EC2Tag>
+              <name>Name</name>
+              <value>Dynamic Windows Client</value>
+            </hudson.plugins.ec2.EC2Tag>
+          </tags>
           <connectionStrategy>PUBLIC_IP</connectionStrategy>
-          <hostKeyVerificationStrategy>OFF</hostKeyVerificationStrategy>
+          <hostKeyVerificationStrategy>ACCEPT_NEW</hostKeyVerificationStrategy>
           <associatePublicIp>true</associatePublicIp>
           <useDedicatedTenancy>false</useDedicatedTenancy>
           <amiType class="hudson.plugins.ec2.UnixData">
