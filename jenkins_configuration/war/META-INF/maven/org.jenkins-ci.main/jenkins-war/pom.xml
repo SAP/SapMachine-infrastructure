@@ -2,7 +2,7 @@
   <ns0:modelVersion>4.0.0</ns0:modelVersion>
   <ns0:groupId>org.jenkins-ci.main</ns0:groupId>
   <ns0:artifactId>jenkins-war</ns0:artifactId>
-  <ns0:version>2.240</ns0:version>
+  <ns0:version>2.248</ns0:version>
   <ns0:packaging>war</ns0:packaging>
   <ns0:name>Jenkins war</ns0:name>
   <ns0:description>Creates a war file. Also includes additional static web resources, such as images, CSS, JavaScript, and some HTML files.</ns0:description>
@@ -57,7 +57,7 @@
   <ns0:scm>
     <ns0:connection>scm:git:git://github.com/jenkinsci/jenkins.git/jenkins-war</ns0:connection>
     <ns0:developerConnection>scm:git:ssh://git@github.com/jenkinsci/jenkins.git/jenkins-war</ns0:developerConnection>
-    <ns0:tag>jenkins-2.240</ns0:tag>
+    <ns0:tag>jenkins-2.248</ns0:tag>
     <ns0:url>https://github.com/jenkinsci/jenkins/jenkins-war</ns0:url>
   </ns0:scm>
   <ns0:issueManagement>
@@ -92,7 +92,7 @@
     <ns0:dependency>
       <ns0:groupId>org.jenkins-ci.main</ns0:groupId>
       <ns0:artifactId>jenkins-core</ns0:artifactId>
-      <ns0:version>2.240</ns0:version>
+      <ns0:version>2.248</ns0:version>
       <ns0:scope>compile</ns0:scope>
       <ns0:exclusions>
         <ns0:exclusion>
@@ -112,13 +112,13 @@
     <ns0:dependency>
       <ns0:groupId>org.jenkins-ci.main</ns0:groupId>
       <ns0:artifactId>remoting</ns0:artifactId>
-      <ns0:version>4.3</ns0:version>
+      <ns0:version>4.5</ns0:version>
       <ns0:scope>compile</ns0:scope>
     </ns0:dependency>
     <ns0:dependency>
       <ns0:groupId>org.jenkins-ci.main</ns0:groupId>
       <ns0:artifactId>cli</ns0:artifactId>
-      <ns0:version>2.240</ns0:version>
+      <ns0:version>2.248</ns0:version>
       <ns0:scope>compile</ns0:scope>
     </ns0:dependency>
     <ns0:dependency>
@@ -142,7 +142,7 @@
     <ns0:dependency>
       <ns0:groupId>org.jenkins-ci.modules</ns0:groupId>
       <ns0:artifactId>windows-slave-installer</ns0:artifactId>
-      <ns0:version>1.12</ns0:version>
+      <ns0:version>2.0</ns0:version>
       <ns0:scope>compile</ns0:scope>
     </ns0:dependency>
     <ns0:dependency>
