@@ -36,6 +36,9 @@
         - macos_x86_64:
             configure_sysroot_default: ''
             docker_agent: ''
+        - linux_aarch64:
+            configure_sysroot_default: ''
+            docker_agent: ''
         - linux_ppc64:
             configure_sysroot_default: '--with-devkit=/opt/devkits/ppc64-linux-gnu-to-ppc64-linux-gnu'
             docker_agent: ''
