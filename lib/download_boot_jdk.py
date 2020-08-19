@@ -31,7 +31,7 @@ extra_bootjdks = [
         'name': 'sapmachine-14.0.2',
         'assets': [
             {
-                'name': 'sapmachine-jdk-14.0.4_linux-aarch64_bin.tar.gz',
+                'name': 'sapmachine-jdk-14.0.2_linux-aarch64_bin.tar.gz',
                 'browser_download_url': 'https://github.com/AdoptOpenJDK/openjdk14-binaries/releases/download/jdk-14.0.2%2B12/OpenJDK14U-jdk_aarch64_linux_hotspot_14.0.2_12.tar.gz'
             }
         ]
