@@ -13,6 +13,31 @@ import utils
 from os.path import join
 from versions import SapMachineTag
 
+# this list is a temporary solution until we have aarch64 release available
+# remove this list once they are available
+extra_bootjdks = [
+    {
+        'prerelease': False,
+        'name': 'sapmachine-11.0.8',
+        'assets': [
+            {
+                'name': 'sapmachine-jdk-11.0.8_linux-aarch64_bin.tar.gz',
+                'browser_download_url': 'https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.8%2B10/OpenJDK11U-jdk_aarch64_linux_hotspot_11.0.8_10.tar.gz'
+            }
+        ]
+    },
+    {
+        'prerelease': False,
+        'name': 'sapmachine-14.0.2',
+        'assets': [
+            {
+                'name': 'sapmachine-jdk-14.0.4_linux-aarch64_bin.tar.gz',
+                'browser_download_url': 'https://github.com/AdoptOpenJDK/openjdk14-binaries/releases/download/jdk-14.0.2%2B12/OpenJDK14U-jdk_aarch64_linux_hotspot_14.0.2_12.tar.gz'
+            }
+        ]
+    }
+]
+
 def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('-m', '--major', help='the SapMachine major version to build', metavar='MAJOR', required=True)
@@ -25,6 +50,8 @@ def main(argv=None):
     releases = utils.get_github_releases()
     platform = str.format('{0}-{1}_bin', utils.get_system(), utils.get_arch())
     retries = 2
+
+    releases = extra_bootjdks + releases
 
     while retries > 0:
         for release in releases:
@@ -55,7 +82,7 @@ def main(argv=None):
                         os.makedirs(boot_jdk_exploded)
                         utils.extract_archive(archive_path, boot_jdk_exploded)
 
-                        sapmachine_folder = glob.glob(join(boot_jdk_exploded, 'sapmachine*'))
+                        sapmachine_folder = [f for f_ in [glob.glob(join(boot_jdk_exploded, e)) for e in ('sapmachine*', 'jdk*')] for f in f_]
 
                         if sapmachine_folder is not None:
                             sapmachine_folder = sapmachine_folder[0]
