@@ -484,6 +484,29 @@
       <includeRegex>build--user_branch-.*$|build-service-user_branch-$</includeRegex>
       <recurse>false</recurse>
     </listView>
+    <listView>
+      <owner class="hudson" reference="../../.." />
+      <name>Linux aarch64 Builds (Beta)</name>
+      <description>Linux aarch64 Builds (Beta)&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <properties class="hudson.model.View$PropertyList" />
+      <jobNames>
+        <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator" />
+      </jobNames>
+      <jobFilters />
+      <columns>
+        <hudson.views.StatusColumn />
+        <hudson.views.WeatherColumn />
+        <hudson.views.JobColumn />
+        <hudson.views.LastSuccessColumn />
+        <hudson.views.LastFailureColumn />
+        <hudson.views.LastDurationColumn />
+        <hudson.views.BuildButtonColumn />
+      </columns>
+      <includeRegex>build-.*-linux_aarch64$</includeRegex>
+      <recurse>false</recurse>
+    </listView>
   </views>
   <primaryView>Linux x86 64 Builds</primaryView>
   <slaveAgentPort>50000</slaveAgentPort>

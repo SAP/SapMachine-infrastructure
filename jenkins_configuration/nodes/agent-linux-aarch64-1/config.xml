@@ -1,0 +1,20 @@
+<slave>
+  <name>agent-linux-aarch64-1</name>
+  <description />
+  <remoteFS>/home/jenkins/slave-home</remoteFS>
+  <numExecutors>1</numExecutors>
+  <mode>EXCLUSIVE</mode>
+  <retentionStrategy class="hudson.slaves.RetentionStrategy$Always" />
+  <launcher class="hudson.plugins.sshslaves.SSHLauncher" plugin="ssh-slaves@1.31.2">
+    <host>18.156.90.35</host>
+    <port>22</port>
+    <credentialsId>d81ef82e-d60d-4d63-98f0-6ff5500ae439</credentialsId>
+    <launchTimeoutSeconds>60</launchTimeoutSeconds>
+    <maxNumRetries>10</maxNumRetries>
+    <retryWaitTime>15</retryWaitTime>
+    <sshHostKeyVerificationStrategy class="hudson.plugins.sshslaves.verifiers.NonVerifyingKeyVerificationStrategy" />
+    <tcpNoDelay>true</tcpNoDelay>
+  </launcher>
+  <label>linux_aarch64</label>
+  <nodeProperties />
+</slave>
