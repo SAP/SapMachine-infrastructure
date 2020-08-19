@@ -92,13 +92,17 @@ def main(argv=None):
         configure_opts.append(VERSION_BUILD_ARG.format(build_number))
 
     # set version pre
+    version_pre = ''
     if not args.release:
         if tag is None:
-            configure_opts.append(VERSION_PRE_ARG.format('snapshot'))
+            version_pre = 'snapshot'
         else:
-            configure_opts.append(VERSION_PRE_ARG.format('ea'))
-    else:
-        configure_opts.append(VERSION_PRE_ARG.format(''))
+            version_pre = 'ea'
+
+    if utils.get_arch().startswith('aarch64'):
+        version_pre += '-beta'
+
+    configure_opts.append(VERSION_PRE_ARG.format(version_pre))
 
     # set version opt
     if tag is None:
