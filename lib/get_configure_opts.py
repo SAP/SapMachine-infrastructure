@@ -100,7 +100,10 @@ def main(argv=None):
             version_pre = 'ea'
 
     if utils.get_arch().startswith('aarch64'):
-        version_pre += '-beta'
+        if not version_pre:
+            version_pre = 'beta'
+        else:
+            version_pre += '-beta'
 
     configure_opts.append(VERSION_PRE_ARG.format(version_pre))
 
