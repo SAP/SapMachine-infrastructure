@@ -128,6 +128,37 @@
                         }
                     }
                 }
+                stage('Build linux_aarch64') {
+                    when {
+                        expression {
+                            env.VERIFICATION_RESULT == "1"
+                        }
+                    }
+                    environment {
+                        GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
+                        CONTEXT = "validate-pr-15-linux_aarch64"
+                    }
+                    steps {
+                        script {
+                            setGitHubPullRequestStatus context: CONTEXT, state: 'PENDING'
+
+                            def job = build job: 'build-15-pr-validation-linux_aarch64', propagate: false, wait: true, parameters:
+                                [
+                                    string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER),
+                                    booleanParam(name: 'PUBLISH', value: false),
+                                    booleanParam(name: 'RUN_TESTS', value: true),
+                                ]
+
+                            if (job.result == 'SUCCESS') {
+                                setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS'
+                            } else  if (job.result == 'UNSTABLE') {
+                                setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'tests failed'
+                            } else {
+                                setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'build failed'
+                            }
+                        }
+                    }
+                }
                 stage('Build macos_x86_64') {
                     when {
                         expression {
