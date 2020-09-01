@@ -244,7 +244,7 @@ def sapmachine_version_components(version_in, multiline=False):
     return version, version_part, major, version_sap, build_number
 
 def sapmachine_branch_pattern():
-    return 'sapmachine([\d]+)?$'
+    return 'sapmachine([\d]+)?(-sec)?$'
 
 def get_active_sapmachine_branches():
     sapmachine_latest = 0
