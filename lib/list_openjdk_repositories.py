@@ -22,10 +22,11 @@ exception_list = [
     'jdk-updates/jdk12u-dev',
     'jdk/jdk13',
     'jdk-updates/jdk13u',
-    'jdk-updates/jdk13u-dev'
+    'jdk-updates/jdk13u-dev',
     'jdk/jdk14',
     'jdk-updates/jdk14u',
     'jdk-updates/jdk14u-dev',
+    'jdk/jdk15',
     'jdk/jdk'
 ]
 
@@ -59,7 +60,7 @@ def main(argv=None):
     parser.add_argument('-s', '--separator', help='the separator char', metavar='SEPARATOR', required=False, default=' ')
     args = parser.parse_args()
 
-    openjdk_repositories = ['jdk/jdk']
+    openjdk_repositories = []
 
     openjdk_repositories.extend(test_repositories('jdk/jdk'))
     openjdk_repositories.extend(test_repositories('jdk-updates/jdk', 'u'))
