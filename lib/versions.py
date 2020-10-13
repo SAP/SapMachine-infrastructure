@@ -43,9 +43,17 @@ class Tag:
     def get_version_string(self):
         return self.version_string
 
+    # returns the version without build number as string
+    def get_version_string_without_build(self):
+        return self.version_string_without_build
+
     # returns the version as list of int
     def get_version(self):
         return self.version
+
+    # returns the version as tuple
+    def get_version_tuple(self):
+        return version_to_tuple(self.version_string_without_build, self.build_number)
 
     # returns the major part of the version as int, e.g. the first value.
     def get_major(self):
@@ -62,7 +70,7 @@ class Tag:
         else:
             return None
 
-    # returns the build number as int.
+    # returns the build number as int, could be None.
     def get_build_number(self):
         return self.build_number
 
@@ -192,7 +200,8 @@ class SapMachineTag(Tag):
 
         self.tag = match.group(0)
         self.version_string = match.group(1)
-        self.version = Tag.calc_version(match.group(2))
+        self.version_string_without_build = match.group(2)
+        self.version = Tag.calc_version(self.version_string_without_build)
         self.build_number = match.group(5)
         if self.build_number is None:
             self.ga = True
@@ -212,3 +221,13 @@ class SapMachineTag(Tag):
                 self.version_string = ".".join(list(map(str, self.version)))
                 if self.build_number is not None:
                     self.version_string += "+" + str(self.build_number)
+
+def version_to_tuple(version_without_build_number, build_number):
+    if version_without_build_number is not None:
+        version = list(map(int, version_without_build_number.split('.')))
+        version.extend([0 for i in range(5 - len(version))])
+        version = tuple(version)
+        version += (int(build_number),) if build_number is not None else (99999,)
+        return version
+
+    return None
