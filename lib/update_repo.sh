@@ -29,9 +29,4 @@ else
   git hg pull
 fi
 
-# we need the force push here, as jdk/jdk may contain jdk-10+xx tags,
-# which leads to a conflict as the same tag is contained in the jdk/jdk10 repository
-# as long we push the jdk10 branch after the jdk branch it's ok. However, we should fix this
-# and delete  new jdk-10+xx tags in the jdk/jdk branch before pushing.
-
-git push --tags --force origin "$HG_PATH"
+git push --tags origin "$HG_PATH"
