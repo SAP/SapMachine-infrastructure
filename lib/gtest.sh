@@ -9,9 +9,6 @@ if [[ $UNAME == CYGWIN* ]]; then
   WORKSPACE=$(cygpath -u "${WORKSPACE}")
 fi
 
-#GTEST_DIR="${WORKSPACE}/gtest"
-#export GTEST_DIR
-
 cd "${WORKSPACE}/SapMachine"
 
 make run-test-gtest

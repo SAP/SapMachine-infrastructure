@@ -130,6 +130,10 @@
             default: '"jdk tools lib"'
             description: 'Select the test group for jtreg langtools tests. Empty means disabled.'
         - bool:
+            name: RUN_GTESTS
+            default: true
+            description: 'enable/disable gtest runs'
+        - bool:
             name: RUN_TESTS
             default: true
             description: 'enable/disable jtreg runs'
@@ -184,13 +188,24 @@
                     steps {{
                         sh 'SapMachine-Infrastructure/lib/build.sh'
                     }}
+                }}
+                stage("GTest") {{
+                    {docker_agent}
+                    when {{
+                        expression {{ params.RUN_GTESTS == true }}
+                    }}
+                    steps {{
+                        catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {{
+                            sh 'SapMachine-Infrastructure/lib/gtest.sh'
+                        }}
+                    }}
                     post {{
                         success {{
                             junit 'gtest.xml'
                         }}
                     }}
                 }}
-                stage('Copy JTREG Artifacts') {{
+                stage('Copy JTREG') {{
                     {docker_agent}
                     when {{
                         expression {{ params.RUN_TESTS == true }}
@@ -203,20 +218,6 @@
                             target: 'jtreg']);
                         }}
                         sh 'cd jtreg && unzip jtreg.zip'
-                    }}
-                }}
-                stage('Run Dacapo') {{
-                    {docker_agent}
-                    when {{
-                        expression {{ params.RUN_DACAPO == true }}
-                    }}
-                    environment {{
-                        DACAPO_CP='${{DACAPO_CLASSPATH}}'
-                    }}
-                    steps {{
-                        sh "echo 'run dacapo'"
-                        sh "python3 --version"
-                        sh "python3 SapMachine-Infrastructure/lib/run_dacapo.py ${{env.DACAPO_CP}}"
                     }}
                 }}
                 stage('Run jtreg hotspot') {{
@@ -286,6 +287,20 @@
                         ]
                         junit "test_report_${{env.TESTSUITE}}/JTwork/**/*.jtr.xml"
                         archiveArtifacts allowEmptyArchive: true, artifacts: "test_report_${{env.TESTSUITE}}/JTwork/**/hs_err_pid*.log"
+                    }}
+                }}
+                stage('Run Dacapo') {{
+                    {docker_agent}
+                    when {{
+                        expression {{ params.RUN_DACAPO == true }}
+                    }}
+                    environment {{
+                        DACAPO_CP='${{DACAPO_CLASSPATH}}'
+                    }}
+                    steps {{
+                        sh "echo 'run dacapo'"
+                        sh "python3 --version"
+                        sh "python3 SapMachine-Infrastructure/lib/run_dacapo.py ${{env.DACAPO_CP}}"
                     }}
                 }}
                 stage('Archive') {{
@@ -482,6 +497,10 @@
             name: BUILD_MACOS_X86_64
             default: true
         - bool:
+            name: RUN_GTESTS
+            default: true
+            description: 'enable/disable gtest runs'
+        - bool:
             name: RUN_TESTS
             default: true
             description: 'enable/disable jtreg runs'
@@ -531,6 +550,7 @@
                                         string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                         string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                         string(name: 'langtools_test_groups', value: params.langtools_test_groups),
+                                        [$class: 'BooleanParameterValue', name: 'RUN_GTESTS', value: params.RUN_GTESTS],
                                         [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
                                         [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
                                         [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
@@ -576,6 +596,7 @@
                                         string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                         string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                         string(name: 'langtools_test_groups', value: params.langtools_test_groups),
+                                        [$class: 'BooleanParameterValue', name: 'RUN_GTESTS', value: params.RUN_GTESTS],
                                         [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
                                         [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
                                         [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
@@ -621,6 +642,7 @@
                                         string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                         string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                         string(name: 'langtools_test_groups', value: params.langtools_test_groups),
+                                        [$class: 'BooleanParameterValue', name: 'RUN_GTESTS', value: params.RUN_GTESTS],
                                         [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
                                         [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
                                         [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
@@ -666,6 +688,7 @@
                                         string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                         string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                         string(name: 'langtools_test_groups', value: params.langtools_test_groups),
+                                        [$class: 'BooleanParameterValue', name: 'RUN_GTESTS', value: params.RUN_GTESTS],
                                         [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
                                         [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
                                         [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
@@ -711,6 +734,7 @@
                                         string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                         string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                         string(name: 'langtools_test_groups', value: params.langtools_test_groups),
+                                        [$class: 'BooleanParameterValue', name: 'RUN_GTESTS', value: params.RUN_GTESTS],
                                         [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
                                         [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
                                         [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
@@ -767,6 +791,7 @@
                                         string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                         string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                         string(name: 'langtools_test_groups', value: params.langtools_test_groups),
+                                        [$class: 'BooleanParameterValue', name: 'RUN_GTESTS', value: params.RUN_GTESTS],
                                         [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
                                         [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
                                         [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
@@ -909,12 +934,13 @@
                                         [
                                             string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER),
                                             booleanParam(name: 'PUBLISH', value: false),
-                                            booleanParam(name: 'RUN_TESTS', value: true),
+                                            booleanParam(name: 'RUN_GTESTS', value: true),
+                                            booleanParam(name: 'RUN_TESTS', value: true)
                                         ]
 
                                     if (job.result == 'SUCCESS') {{
                                         setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS'
-                                    }} else  if (job.result == 'UNSTABLE') {{
+                                    }} else if (job.result == 'UNSTABLE') {{
                                         setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'tests failed'
                                     }} else {{
                                         setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'build failed'
@@ -940,12 +966,13 @@
                                         [
                                             string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER),
                                             booleanParam(name: 'PUBLISH', value: false),
-                                            booleanParam(name: 'RUN_TESTS', value: true),
+                                            booleanParam(name: 'RUN_GTESTS', value: true),
+                                            booleanParam(name: 'RUN_TESTS', value: true)
                                         ]
 
                                     if (job.result == 'SUCCESS') {{
                                         setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS'
-                                    }} else  if (job.result == 'UNSTABLE') {{
+                                    }} else if (job.result == 'UNSTABLE') {{
                                         setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'tests failed'
                                     }} else {{
                                         setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'build failed'
@@ -971,12 +998,13 @@
                                         [
                                             string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER),
                                             booleanParam(name: 'PUBLISH', value: false),
-                                            booleanParam(name: 'RUN_TESTS', value: true),
+                                            booleanParam(name: 'RUN_GTESTS', value: true),
+                                            booleanParam(name: 'RUN_TESTS', value: true)
                                         ]
 
                                     if (job.result == 'SUCCESS') {{
                                         setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS'
-                                    }} else  if (job.result == 'UNSTABLE') {{
+                                    }} else if (job.result == 'UNSTABLE') {{
                                         setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'tests failed'
                                     }} else {{
                                         setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'build failed'
@@ -1002,12 +1030,13 @@
                                         [
                                             string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER),
                                             booleanParam(name: 'PUBLISH', value: false),
-                                            booleanParam(name: 'RUN_TESTS', value: true),
+                                            booleanParam(name: 'RUN_GTESTS', value: true),
+                                            booleanParam(name: 'RUN_TESTS', value: true)
                                         ]
 
                                     if (job.result == 'SUCCESS') {{
                                         setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS'
-                                    }} else  if (job.result == 'UNSTABLE') {{
+                                    }} else if (job.result == 'UNSTABLE') {{
                                         setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'tests failed'
                                     }} else {{
                                         setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'build failed'
@@ -1033,12 +1062,13 @@
                                         [
                                             string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER),
                                             booleanParam(name: 'PUBLISH', value: false),
-                                            booleanParam(name: 'RUN_TESTS', value: true),
+                                            booleanParam(name: 'RUN_GTESTS', value: true),
+                                            booleanParam(name: 'RUN_TESTS', value: true)
                                         ]
 
                                     if (job.result == 'SUCCESS') {{
                                         setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS'
-                                    }} else  if (job.result == 'UNSTABLE') {{
+                                    }} else if (job.result == 'UNSTABLE') {{
                                         setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'tests failed'
                                     }} else {{
                                         setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'build failed'
@@ -1064,12 +1094,13 @@
                                         [
                                             string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER),
                                             booleanParam(name: 'PUBLISH', value: false),
-                                            booleanParam(name: 'RUN_TESTS', value: true),
+                                            booleanParam(name: 'RUN_GTESTS', value: true),
+                                            booleanParam(name: 'RUN_TESTS', value: true)
                                         ]
 
                                     if (job.result == 'SUCCESS') {{
                                         setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS'
-                                    }} else  if (job.result == 'UNSTABLE') {{
+                                    }} else if (job.result == 'UNSTABLE') {{
                                         setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'tests failed'
                                     }} else {{
                                         setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'build failed'

@@ -32,15 +32,10 @@ if [[ -z $NO_CHECKOUT ]]; then
   fi
 fi
 
-#if [ -d gtest ]; then
-#  rm -rf gtest;
-#fi
-
 if [[ $RUN_GTESTS == true ]]; then
   GTEST_DIR="${WORKSPACE}/gtest"
   export GTEST_DIR
   git clone -b release-1.8.1 https://github.com/google/googletest.git $GTEST_DIR
-  #GTEST_RESULT_PATH="gtest_all_server"
 fi
 
 cd "${WORKSPACE}/SapMachine"
@@ -114,8 +109,6 @@ if [ $legacy_bundles_available -ne 1 ]; then
     make JOBS=12 legacy-jre-image || true
   fi
 fi
-
-#make run-test-gtest
 
 rm "${WORKSPACE}/test.zip" || true
 zip -rq "${WORKSPACE}/test.zip" test
@@ -246,5 +239,3 @@ if [[ $UNAME == Darwin ]]; then
   fi
   echo "${DMG_NAME}.dmg" > "${WORKSPACE}/jre_dmg_name.txt"
 fi
-
-#cp ../test-results/$GTEST_RESULT_PATH/gtest.xml "${WORKSPACE}"
