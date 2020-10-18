@@ -36,7 +36,7 @@ fi
 #  rm -rf gtest;
 #fi
 
-if [[ ! -z $RUN_TESTS ]]; then
+if [[ $RUN_GTESTS == true ]]; then
   GTEST_DIR="${WORKSPACE}/gtest"
   export GTEST_DIR
   git clone -b release-1.8.1 https://github.com/google/googletest.git $GTEST_DIR
