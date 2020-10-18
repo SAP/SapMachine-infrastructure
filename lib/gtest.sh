@@ -11,11 +11,12 @@ fi
 
 GTEST_DIR="${WORKSPACE}/gtest"
 export GTEST_DIR
-
 GTEST_RESULT_PATH="gtest_all_server"
 
 cd "${WORKSPACE}/SapMachine"
 
 make run-test-gtest
 
+cd "build"
+cd "$(ls)"
 cp test-results/$GTEST_RESULT_PATH/gtest.xml "${WORKSPACE}"
