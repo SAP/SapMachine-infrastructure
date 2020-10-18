@@ -32,13 +32,13 @@ if [[ -z $NO_CHECKOUT ]]; then
   fi
 fi
 
-if [ -d gtest ]; then
-  rm -rf gtest;
-fi
+#if [ -d gtest ]; then
+#  rm -rf gtest;
+#fi
 
-GTEST_DIR="${WORKSPACE}/gtest"
-export GTEST_DIR
-git clone -b release-1.8.1 https://github.com/google/googletest.git $GTEST_DIR
+#GTEST_DIR="${WORKSPACE}/gtest"
+#export GTEST_DIR
+#git clone -b release-1.8.1 https://github.com/google/googletest.git $GTEST_DIR
 
 cd "${WORKSPACE}/SapMachine"
 
@@ -48,7 +48,7 @@ git config user.email SAPMACHINE_GIT_EMAIL
 GIT_REVISION=$(git rev-parse HEAD)
 echo "Git Revision=${GIT_REVISION}"
 
-GTEST_RESULT_PATH="gtest_all_server"
+#GTEST_RESULT_PATH="gtest_all_server"
 
 if [[ -z $NO_CHECKOUT ]]; then
   if [ "$GITHUB_PR_NUMBER" ]; then
@@ -114,7 +114,7 @@ if [ $legacy_bundles_available -ne 1 ]; then
   fi
 fi
 
-make run-test-gtest
+#make run-test-gtest
 
 rm "${WORKSPACE}/test.zip" || true
 zip -rq "${WORKSPACE}/test.zip" test
@@ -246,4 +246,4 @@ if [[ $UNAME == Darwin ]]; then
   echo "${DMG_NAME}.dmg" > "${WORKSPACE}/jre_dmg_name.txt"
 fi
 
-cp ../test-results/$GTEST_RESULT_PATH/gtest.xml "${WORKSPACE}"
+#cp ../test-results/$GTEST_RESULT_PATH/gtest.xml "${WORKSPACE}"
