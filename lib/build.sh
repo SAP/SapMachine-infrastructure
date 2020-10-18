@@ -36,9 +36,9 @@ fi
 #  rm -rf gtest;
 #fi
 
-#GTEST_DIR="${WORKSPACE}/gtest"
-#export GTEST_DIR
-#git clone -b release-1.8.1 https://github.com/google/googletest.git $GTEST_DIR
+GTEST_DIR="${WORKSPACE}/gtest"
+export GTEST_DIR
+git clone -b release-1.8.1 https://github.com/google/googletest.git $GTEST_DIR
 
 cd "${WORKSPACE}/SapMachine"
 
@@ -48,7 +48,7 @@ git config user.email SAPMACHINE_GIT_EMAIL
 GIT_REVISION=$(git rev-parse HEAD)
 echo "Git Revision=${GIT_REVISION}"
 
-#GTEST_RESULT_PATH="gtest_all_server"
+GTEST_RESULT_PATH="gtest_all_server"
 
 if [[ -z $NO_CHECKOUT ]]; then
   if [ "$GITHUB_PR_NUMBER" ]; then
