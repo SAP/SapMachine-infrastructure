@@ -23,9 +23,7 @@ REPO_PATH="$(basename $REPO)"
 cd $WORKSPACE
 
 # uncomment/modify to cleanup workspace
-if [[ -z $HG ]]; then
-  rm -rf jdk
-fi
+#rm -rf jdk14*
 
 if [ ! -d $REPO_PATH ]; then
   git $HG clone "$REPO_URL$REPO" $REPO_PATH
@@ -42,10 +40,10 @@ else
   git checkout "$REPO"
   if [[ -z $HG ]]; then
     git fetch origin
-    git rebase origin/$REPO
+    git rebase origin/master
   else
     git $HG pull
   fi
 fi
 
-git push --follow-tags "$REPO"
+git push -u sapmachine --follow-tags "$REPO"
