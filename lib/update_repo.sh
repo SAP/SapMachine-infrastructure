@@ -36,7 +36,9 @@ if [ ! -d $REPO_PATH ]; then
 else
   cd $REPO_PATH
   #git remote remove sapmachine
-  #git remote add sapmachine $SAPMACHINE_GIT_REPOSITORY
+  if [[ ! -z $HG ]]; then
+    git remote add sapmachine $SAPMACHINE_GIT_REPOSITORY
+  fi
   git checkout "$REPO"
   if [[ -z $HG ]]; then
     git fetch origin
