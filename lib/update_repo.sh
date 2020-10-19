@@ -38,4 +38,4 @@ else
   git $HG pull
 fi
 
-git push --tags sapmachine "$REPO"
+git push --follow-tags sapmachine "$REPO"
