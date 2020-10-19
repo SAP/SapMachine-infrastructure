@@ -1,123 +1,5 @@
-<flow-definition plugin="workflow-job@2.39">
-  <actions>
-    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.7.1" />
-    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.7.1">
-      <jobProperties />
-      <triggers />
-      <parameters />
-      <options />
-    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
-  </actions>
-  <description>This project is generated. Do not modify manually.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
-  <keepDependencies>false</keepDependencies>
-  <properties>
-    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty />
-    <jenkins.model.BuildDiscarderProperty>
-      <strategy class="hudson.tasks.LogRotator">
-        <daysToKeep>-1</daysToKeep>
-        <numToKeep>100</numToKeep>
-        <artifactDaysToKeep>-1</artifactDaysToKeep>
-        <artifactNumToKeep>1</artifactNumToKeep>
-      </strategy>
-    </jenkins.model.BuildDiscarderProperty>
-    <hudson.model.ParametersDefinitionProperty>
-      <parameterDefinitions>
-        <hudson.model.StringParameterDefinition>
-          <name>SAPMACHINE_GIT_REPOSITORY</name>
-          <description>The Git repository to use.</description>
-          <defaultValue>https://github.com/SAP/SapMachine.git</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>SAPMACHINE_GIT_BRANCH</name>
-          <description>The Git branch to build.</description>
-          <defaultValue>sapmachine</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>GIT_TAG_NAME</name>
-          <description>The Git tag to build.</description>
-          <defaultValue />
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>GITHUB_PR_NUMBER</name>
-          <description>The GitHub Pull Request number. Only used in Pull Request validation builds.</description>
-          <defaultValue />
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>BUILD_NUMBER</name>
-          <description>Sets the version build number explicitely.</description>
-          <defaultValue />
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>SAPMACHINE_ARCHIVE_NAME_PREFIX</name>
-          <description>The prefix of the bundle archive.</description>
-          <defaultValue>sapmachine16-linux_ppc64</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>_CONFIGURE_SYSROOT</name>
-          <description>Sysroot configuration passed to configure script.</description>
-          <defaultValue>--with-devkit=/opt/devkits/ppc64-linux-gnu-to-ppc64-linux-gnu</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>EXTRA_CONFIGURE_OPTIONS</name>
-          <description>Configure options passed directly to configure script.</description>
-          <defaultValue />
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>BOOT_JDK_MAJOR</name>
-          <description>Specify the boot JDK major version explicitly.</description>
-          <defaultValue />
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>hotspot_test_groups</name>
-          <description>Select the test group for jtreg hotspot tests. Empty means disabled.</description>
-          <defaultValue>:tier1</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>jdk_test_groups</name>
-          <description>Select the test group for jtreg jdk tests. Empty means disabled.</description>
-          <defaultValue>:tier1</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>langtools_test_groups</name>
-          <description>Select the test group for jtreg langtools tests. Empty means disabled.</description>
-          <defaultValue>"jdk tools lib"</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.BooleanParameterDefinition>
-          <name>RUN_TESTS</name>
-          <description>enable/disable jtreg runs</description>
-          <defaultValue>true</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
-        <hudson.model.BooleanParameterDefinition>
-          <name>RUN_DACAPO</name>
-          <description>enable/disable dacapo run</description>
-          <defaultValue>false</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
-        <hudson.model.BooleanParameterDefinition>
-          <name>PUBLISH</name>
-          <description>When set to true, the resulting bundles will be published to GitHub.</description>
-          <defaultValue>false</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
-        <hudson.model.BooleanParameterDefinition>
-          <name>RELEASE</name>
-          <description>When set to true, marks this build as a release build, otherwise as pre-release.</description>
-          <defaultValue>false</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
-      </parameterDefinitions>
-    </hudson.model.ParametersDefinitionProperty>
-  </properties>
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.82">
+<flow-definition plugin="workflow-job">
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps">
     <script>pipeline {
     agent {
         label "linux_ppc64"
@@ -155,13 +37,24 @@
             steps {
                 sh 'SapMachine-Infrastructure/lib/build.sh'
             }
+        }
+        stage("GTest") {
+            
+            when {
+                expression { params.RUN_GTESTS == true }
+            }
+            steps {
+                catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
+                    sh 'SapMachine-Infrastructure/lib/gtest.sh'
+                }
+            }
             post {
                 success {
                     junit 'gtest.xml'
                 }
             }
         }
-        stage('Copy JTREG Artifacts') {
+        stage('Copy JTREG') {
             
             when {
                 expression { params.RUN_TESTS == true }
@@ -174,20 +67,6 @@
                     target: 'jtreg']);
                 }
                 sh 'cd jtreg &amp;&amp; unzip jtreg.zip'
-            }
-        }
-        stage('Run Dacapo') {
-            
-            when {
-                expression { params.RUN_DACAPO == true }
-            }
-            environment {
-                DACAPO_CP='${DACAPO_CLASSPATH}'
-            }
-            steps {
-                sh "echo 'run dacapo'"
-                sh "python3 --version"
-                sh "python3 SapMachine-Infrastructure/lib/run_dacapo.py ${env.DACAPO_CP}"
             }
         }
         stage('Run jtreg hotspot') {
@@ -257,6 +136,20 @@
                 ]
                 junit "test_report_${env.TESTSUITE}/JTwork/**/*.jtr.xml"
                 archiveArtifacts allowEmptyArchive: true, artifacts: "test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log"
+            }
+        }
+        stage('Run Dacapo') {
+            
+            when {
+                expression { params.RUN_DACAPO == true }
+            }
+            environment {
+                DACAPO_CP='${DACAPO_CLASSPATH}'
+            }
+            steps {
+                sh "echo 'run dacapo'"
+                sh "python3 --version"
+                sh "python3 SapMachine-Infrastructure/lib/run_dacapo.py ${env.DACAPO_CP}"
             }
         }
         stage('Archive') {
@@ -401,5 +294,119 @@
 </script>
     <sandbox>false</sandbox>
   </definition>
-  <disabled>false</disabled>
+  <actions />
+  <description>This project is generated. Do not modify manually.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty />
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>-1</daysToKeep>
+        <numToKeep>100</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>1</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>SAPMACHINE_GIT_REPOSITORY</name>
+          <description>The Git repository to use.</description>
+          <defaultValue>https://github.com/SAP/SapMachine.git</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>SAPMACHINE_GIT_BRANCH</name>
+          <description>The Git branch to build.</description>
+          <defaultValue>sapmachine</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>GIT_TAG_NAME</name>
+          <description>The Git tag to build.</description>
+          <defaultValue />
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>GITHUB_PR_NUMBER</name>
+          <description>The GitHub Pull Request number. Only used in Pull Request validation builds.</description>
+          <defaultValue />
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>BUILD_NUMBER</name>
+          <description>Sets the version build number explicitely.</description>
+          <defaultValue />
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>SAPMACHINE_ARCHIVE_NAME_PREFIX</name>
+          <description>The prefix of the bundle archive.</description>
+          <defaultValue>sapmachine16-linux_ppc64</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>_CONFIGURE_SYSROOT</name>
+          <description>Sysroot configuration passed to configure script.</description>
+          <defaultValue>--with-devkit=/opt/devkits/ppc64-linux-gnu-to-ppc64-linux-gnu</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>EXTRA_CONFIGURE_OPTIONS</name>
+          <description>Configure options passed directly to configure script.</description>
+          <defaultValue />
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>BOOT_JDK_MAJOR</name>
+          <description>Specify the boot JDK major version explicitly.</description>
+          <defaultValue />
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>hotspot_test_groups</name>
+          <description>Select the test group for jtreg hotspot tests. Empty means disabled.</description>
+          <defaultValue>:tier1</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>jdk_test_groups</name>
+          <description>Select the test group for jtreg jdk tests. Empty means disabled.</description>
+          <defaultValue>:tier1</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>langtools_test_groups</name>
+          <description>Select the test group for jtreg langtools tests. Empty means disabled.</description>
+          <defaultValue>"jdk tools lib"</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>RUN_GTESTS</name>
+          <description>enable/disable gtest runs</description>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>RUN_TESTS</name>
+          <description>enable/disable jtreg runs</description>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>RUN_DACAPO</name>
+          <description>enable/disable dacapo run</description>
+          <defaultValue>false</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>PUBLISH</name>
+          <description>When set to true, the resulting bundles will be published to GitHub.</description>
+          <defaultValue>false</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>RELEASE</name>
+          <description>When set to true, marks this build as a release build, otherwise as pre-release.</description>
+          <defaultValue>false</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
 </flow-definition>

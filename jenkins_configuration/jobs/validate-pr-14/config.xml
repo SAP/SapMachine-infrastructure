@@ -53,12 +53,13 @@
                                 [
                                     string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER),
                                     booleanParam(name: 'PUBLISH', value: false),
-                                    booleanParam(name: 'RUN_TESTS', value: true),
+                                    booleanParam(name: 'RUN_GTESTS', value: true),
+                                    booleanParam(name: 'RUN_TESTS', value: true)
                                 ]
 
                             if (job.result == 'SUCCESS') {
                                 setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS'
-                            } else  if (job.result == 'UNSTABLE') {
+                            } else if (job.result == 'UNSTABLE') {
                                 setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'tests failed'
                             } else {
                                 setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'build failed'
@@ -84,12 +85,13 @@
                                 [
                                     string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER),
                                     booleanParam(name: 'PUBLISH', value: false),
-                                    booleanParam(name: 'RUN_TESTS', value: true),
+                                    booleanParam(name: 'RUN_GTESTS', value: true),
+                                    booleanParam(name: 'RUN_TESTS', value: true)
                                 ]
 
                             if (job.result == 'SUCCESS') {
                                 setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS'
-                            } else  if (job.result == 'UNSTABLE') {
+                            } else if (job.result == 'UNSTABLE') {
                                 setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'tests failed'
                             } else {
                                 setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'build failed'
@@ -115,12 +117,13 @@
                                 [
                                     string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER),
                                     booleanParam(name: 'PUBLISH', value: false),
-                                    booleanParam(name: 'RUN_TESTS', value: true),
+                                    booleanParam(name: 'RUN_GTESTS', value: true),
+                                    booleanParam(name: 'RUN_TESTS', value: true)
                                 ]
 
                             if (job.result == 'SUCCESS') {
                                 setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS'
-                            } else  if (job.result == 'UNSTABLE') {
+                            } else if (job.result == 'UNSTABLE') {
                                 setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'tests failed'
                             } else {
                                 setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'build failed'
@@ -146,12 +149,13 @@
                                 [
                                     string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER),
                                     booleanParam(name: 'PUBLISH', value: false),
-                                    booleanParam(name: 'RUN_TESTS', value: true),
+                                    booleanParam(name: 'RUN_GTESTS', value: true),
+                                    booleanParam(name: 'RUN_TESTS', value: true)
                                 ]
 
                             if (job.result == 'SUCCESS') {
                                 setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS'
-                            } else  if (job.result == 'UNSTABLE') {
+                            } else if (job.result == 'UNSTABLE') {
                                 setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'tests failed'
                             } else {
                                 setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'build failed'
@@ -177,12 +181,13 @@
                                 [
                                     string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER),
                                     booleanParam(name: 'PUBLISH', value: false),
-                                    booleanParam(name: 'RUN_TESTS', value: true),
+                                    booleanParam(name: 'RUN_GTESTS', value: true),
+                                    booleanParam(name: 'RUN_TESTS', value: true)
                                 ]
 
                             if (job.result == 'SUCCESS') {
                                 setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS'
-                            } else  if (job.result == 'UNSTABLE') {
+                            } else if (job.result == 'UNSTABLE') {
                                 setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'tests failed'
                             } else {
                                 setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'build failed'
@@ -208,12 +213,13 @@
                                 [
                                     string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER),
                                     booleanParam(name: 'PUBLISH', value: false),
-                                    booleanParam(name: 'RUN_TESTS', value: true),
+                                    booleanParam(name: 'RUN_GTESTS', value: true),
+                                    booleanParam(name: 'RUN_TESTS', value: true)
                                 ]
 
                             if (job.result == 'SUCCESS') {
                                 setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS'
-                            } else  if (job.result == 'UNSTABLE') {
+                            } else if (job.result == 'UNSTABLE') {
                                 setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'tests failed'
                             } else {
                                 setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'build failed'

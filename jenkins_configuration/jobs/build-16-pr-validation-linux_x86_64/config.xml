@@ -95,6 +95,11 @@
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
+          <name>RUN_GTESTS</name>
+          <description>enable/disable gtest runs</description>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
           <name>RUN_TESTS</name>
           <description>enable/disable jtreg runs</description>
           <defaultValue>true</defaultValue>
@@ -162,13 +167,31 @@
             steps {
                 sh 'SapMachine-Infrastructure/lib/build.sh'
             }
+        }
+        stage("GTest") {
+            agent {
+    dockerfile {
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_14_04_x86_64"
+        reuseNode true
+        label "linux_x86_64"
+    }
+}
+
+            when {
+                expression { params.RUN_GTESTS == true }
+            }
+            steps {
+                catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
+                    sh 'SapMachine-Infrastructure/lib/gtest.sh'
+                }
+            }
             post {
                 success {
                     junit 'gtest.xml'
                 }
             }
         }
-        stage('Copy JTREG Artifacts') {
+        stage('Copy JTREG') {
             agent {
     dockerfile {
         dir "SapMachine-Infrastructure/dockerfiles/ubuntu_14_04_x86_64"
@@ -188,27 +211,6 @@
                     target: 'jtreg']);
                 }
                 sh 'cd jtreg &amp;&amp; unzip jtreg.zip'
-            }
-        }
-        stage('Run Dacapo') {
-            agent {
-    dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_14_04_x86_64"
-        reuseNode true
-        label "linux_x86_64"
-    }
-}
-
-            when {
-                expression { params.RUN_DACAPO == true }
-            }
-            environment {
-                DACAPO_CP='${DACAPO_CLASSPATH}'
-            }
-            steps {
-                sh "echo 'run dacapo'"
-                sh "python3 --version"
-                sh "python3 SapMachine-Infrastructure/lib/run_dacapo.py ${env.DACAPO_CP}"
             }
         }
         stage('Run jtreg hotspot') {
@@ -299,6 +301,27 @@
                 ]
                 junit "test_report_${env.TESTSUITE}/JTwork/**/*.jtr.xml"
                 archiveArtifacts allowEmptyArchive: true, artifacts: "test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log"
+            }
+        }
+        stage('Run Dacapo') {
+            agent {
+    dockerfile {
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_14_04_x86_64"
+        reuseNode true
+        label "linux_x86_64"
+    }
+}
+
+            when {
+                expression { params.RUN_DACAPO == true }
+            }
+            environment {
+                DACAPO_CP='${DACAPO_CLASSPATH}'
+            }
+            steps {
+                sh "echo 'run dacapo'"
+                sh "python3 --version"
+                sh "python3 SapMachine-Infrastructure/lib/run_dacapo.py ${env.DACAPO_CP}"
             }
         }
         stage('Archive') {
