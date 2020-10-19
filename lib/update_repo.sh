@@ -23,9 +23,9 @@ REPO_PATH="$(basename $REPO)"
 cd $WORKSPACE
 
 # modify/uncomment to clean up workspace
-#if [[ $REPO_PATH == "jdk15u" ]]; then
-#  rm -rf jdk15u
-#fi
+if [[ $REPO_PATH == "jdk15u" ]]; then
+  rm -rf jdk15u
+fi
 
 if [ ! -d $REPO_PATH ]; then
   git $HG clone "$REPO_URL$REPO" $REPO_PATH
