@@ -23,8 +23,7 @@ REPO_PATH="$(basename $REPO)"
 cd $WORKSPACE
 
 # uncomment/modify to cleanup workspace
-rm -rf jdk
-rm -rf jdk14*
+#rm -rf jdk14*
 
 if [ ! -d $REPO_PATH ]; then
   git $HG clone "$REPO_URL$REPO" $REPO_PATH
