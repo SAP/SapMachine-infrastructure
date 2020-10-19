@@ -1,32 +1,42 @@
 #!/bin/bash
 set -ex
 
-HG_HOST="hg.openjdk.java.net"
-HG_PATH=$1
-
 if [[ -z "$GIT_USER" ]] || [[ -z "$GITHUB_API_ACCESS_TOKEN" ]]; then
-    echo "Missing mandatory environment variables GIT_USER or GITHUB_API_ACCESS_TOKEN"
-    exit 1
+  echo "Missing mandatory environment variables GIT_USER or GITHUB_API_ACCESS_TOKEN"
+   exit 1
+fi
+
+if [[ $1 == "-m" ]]; then
+  HG=" hg"
+  REPO=$2
+  REPO_URL="http://hg.openjdk.java.net/"
+else
+  HG=""
+  REPO=$1
+  REPO_URL="https://github.com/"
 fi
 
 SAPMACHINE_GIT_REPOSITORY="https://${GIT_USER}:${GITHUB_API_ACCESS_TOKEN}@github.com/SAP/SapMachine.git"
 
-REPO_PATH="$(basename $HG_PATH)"
+REPO_PATH="$(basename $REPO)"
 
-echo $WORKSPACE
 cd $WORKSPACE
 
+# uncomment/modify to cleanup workspace
+rm -rf jdk
+rm -rf jdk14*
+
 if [ ! -d $REPO_PATH ]; then
-  git hg clone "http://$HG_HOST/$HG_PATH" $REPO_PATH
+  git $HG clone "$REPO_URL$REPO" $REPO_PATH
   cd $REPO_PATH
-  git remote add origin $SAPMACHINE_GIT_REPOSITORY
-  git checkout -b "$HG_PATH"
+  git remote add sapmachine $SAPMACHINE_GIT_REPOSITORY
+  git checkout -b "$REPO"
 else
   cd $REPO_PATH
-  git remote remove origin
-  git remote add origin $SAPMACHINE_GIT_REPOSITORY
-  git checkout "$HG_PATH"
-  git hg pull
+  git remote remove sapmachine
+  git remote add sapmachine $SAPMACHINE_GIT_REPOSITORY
+  git checkout "$REPO"
+  git $HG pull
 fi
 
-git push --tags origin "$HG_PATH"
+git push --tags sapmachine "$REPO"

@@ -189,7 +189,7 @@
                         sh 'SapMachine-Infrastructure/lib/build.sh'
                     }}
                 }}
-                stage("GTest") {{
+                stage("Run GTests") {{
                     {docker_agent}
                     when {{
                         expression {{ params.RUN_GTESTS == true }}

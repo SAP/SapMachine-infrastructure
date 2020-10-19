@@ -14,7 +14,10 @@ from urllib.parse import quote
 from urllib.error import HTTPError
 
 openjdk_hg_base = 'http://hg.openjdk.java.net/'
+openjdk_git_base = 'https://github.com/'
+
 jdk_major_start = 11
+
 exception_list = [
     'jdk/jdk11',
     'jdk/jdk12',
@@ -30,7 +33,7 @@ exception_list = [
     'jdk/jdk'
 ]
 
-def test_repositories(repository_base, repository_suffix=''):
+def test_repositories(scm_base, repository_base, repository_suffix = ''):
     openjdk_repositories = []
     code = 200
     jdk_major = jdk_major_start
@@ -44,7 +47,7 @@ def test_repositories(repository_base, repository_suffix=''):
             continue
 
         retries -= 1
-        request = Request(openjdk_hg_base + repository)
+        request = Request(scm_base + repository)
 
         try:
             response = urlopen(request)
@@ -58,13 +61,18 @@ def test_repositories(repository_base, repository_suffix=''):
 def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('-s', '--separator', help='the separator char', metavar='SEPARATOR', required=False, default=' ')
+    parser.add_argument('-m', '--mercurial', help='enumerate mercurial repositories, instead of git', action='store_true', default=False)
     args = parser.parse_args()
 
     openjdk_repositories = []
 
-    openjdk_repositories.extend(test_repositories('jdk/jdk'))
-    openjdk_repositories.extend(test_repositories('jdk-updates/jdk', 'u'))
-    openjdk_repositories.extend(test_repositories('jdk-updates/jdk', 'u-dev'))
+    if args.mercurial:
+        openjdk_repositories.extend(test_repositories(openjdk_hg_base, 'jdk/jdk'))
+        openjdk_repositories.extend(test_repositories(openjdk_hg_base, 'jdk-updates/jdk', 'u'))
+        openjdk_repositories.extend(test_repositories(openjdk_hg_base, 'jdk-updates/jdk', 'u-dev'))
+    else:
+        openjdk_repositories.append('openjdk/jdk')
+        #openjdk_repositories.extend(test_repositories(openjdk_git_base, 'openjdk/jdk'))
 
     print(args.separator.join(openjdk_repositories))
     return 0
