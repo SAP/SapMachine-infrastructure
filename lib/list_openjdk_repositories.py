@@ -29,8 +29,18 @@ exception_list = [
     'jdk/jdk14',
     'jdk-updates/jdk14u',
     'jdk-updates/jdk14u-dev',
-    'jdk/jdk15',
-    'jdk/jdk'
+    'jdk/jdk15'
+    'openjdk/jdk11',
+    'openjdk/jdk12',
+    'openjdk/jdk12u',
+    'openjdk/jdk12u-dev',
+    'openjdk/jdk13',
+    'openjdk/jdk13u',
+    'openjdk/jdk13u-dev',
+    'openjdk/jdk14',
+    'openjdk/jdk14u',
+    'openjdk/jdk14u-dev',
+    'openjdk/jdk15'
 ]
 
 def test_repositories(scm_base, repository_base, repository_suffix = ''):
@@ -66,13 +76,14 @@ def main(argv=None):
 
     openjdk_repositories = []
 
-    if args.mercurial:
-        openjdk_repositories.extend(test_repositories(openjdk_hg_base, 'jdk/jdk'))
-        openjdk_repositories.extend(test_repositories(openjdk_hg_base, 'jdk-updates/jdk', 'u'))
-        openjdk_repositories.extend(test_repositories(openjdk_hg_base, 'jdk-updates/jdk', 'u-dev'))
-    else:
+    if args.mercurial != True:
         openjdk_repositories.append('openjdk/jdk')
-        #openjdk_repositories.extend(test_repositories(openjdk_git_base, 'openjdk/jdk'))
+        openjdk_repositories.extend(test_repositories(openjdk_git_base, 'openjdk/jdk', 'u'))
+        openjdk_repositories.extend(test_repositories(openjdk_git_base, 'openjdk/jdk', 'u-dev'))
+    #else:
+        #openjdk_repositories.extend(test_repositories(openjdk_hg_base, 'jdk/jdk'))
+        #openjdk_repositories.extend(test_repositories(openjdk_hg_base, 'jdk-updates/jdk', 'u'))
+        #openjdk_repositories.extend(test_repositories(openjdk_hg_base, 'jdk-updates/jdk', 'u-dev'))
 
     print(args.separator.join(openjdk_repositories))
     return 0
