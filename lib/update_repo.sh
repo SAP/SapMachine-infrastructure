@@ -23,16 +23,17 @@ REPO_PATH="$(basename $REPO)"
 cd $WORKSPACE
 
 # uncomment/modify to cleanup workspace
-#rm -rf jdk14*
+rm -rf jdk
+rm -rf jdk15
 
 if [ ! -d $REPO_PATH ]; then
   git $HG clone "$REPO_URL$REPO" $REPO_PATH
   cd $REPO_PATH
   git remote add sapmachine $SAPMACHINE_GIT_REPOSITORY
   git checkout -b "$REPO"
-  if [[ -z $HG ]]; then
-    git branch --set-upstream-to=sapmachine/$REPO
-  fi
+  #if [[ -z $HG ]]; then
+  #  git branch --set-upstream-to=sapmachine/$REPO
+  #fi
 else
   cd $REPO_PATH
   #git remote remove sapmachine
