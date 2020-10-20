@@ -45,7 +45,7 @@
                 sh 'SapMachine-Infrastructure/lib/build.sh'
             }
         }
-        stage("GTest") {
+        stage("Run GTests") {
             agent {
     dockerfile {
         dir "SapMachine-Infrastructure/dockerfiles/ubuntu_14_04_x86_64"
