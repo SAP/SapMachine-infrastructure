@@ -9,7 +9,7 @@ The jobs run on our [Jenkins](https://ci.sapmachine.io/) installation.
 Mercurial repos are imported to branches **jdk/jdk** and **jdk/jdk10**.
 Every few hours, we poll the upstream mercurial repositories and add new changes and tags ([*update-pipeline* on jenkins]( https://ci.sapmachine.io/view/repository-update/job/update-pipeline/)).
 
-The SapMachine Github Repository https://github.com/SAP/SapMachine is organized into the following branches:
+The [SapMachine Github Repository](https://github.com/SAP/SapMachine) is organized into the following branches:
 
 *  **jdk/jdk** and **jdk/jdk10** are mirrors of the corresponding mercurial repos.
 * **sapmachine10**: **jdk/jdk10** + our changes.
@@ -36,7 +36,7 @@ As most of the jobs run in docker containers, docker must be installed on the sl
 Some of the jobs need push access to the [SapMachine repository](https://github.com/SAP/SapMachine). It is possible to work with a fork of this repository. The credentials have to be configured in Jenkis. 
  
 ## Installation
-After installing jenkins, one pipelin job has to be configured that runs the Pipeline [jenkins-restore-pipeline](jenkins-restore-pipeline/Jenkinsfile). This jobs imports the whole jenkins configuration. After running this job, the configuration has to be reloaded.
+After installing jenkins, one pipeline job has to be configured that runs the Pipeline [jenkins-restore-pipeline](jenkins-restore-pipeline/Jenkinsfile). This jobs imports the whole jenkins configuration. After running this job, the configuration has to be reloaded.
 To get all the jobs to function, missing credentials have to be added. Depending on the jenkins installation, some missing plugins have to be installed. 
 If working with a forked SapMachine repository, the repository URL in most of the Jenkinsfiles has to be changed accordingly.
 
