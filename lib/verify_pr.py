@@ -152,7 +152,7 @@ def main(argv=None):
     # check wether the complete validation has to run
     pull_request_files = github_api_request(str.format('pulls/{0}/files', pull_request_id))
 
-    roots_requiring_verification = ['make', 'src', 'test', 'Makefile', 'configure']
+    roots_requiring_verification = ['make', 'src', 'test', 'Makefile', 'configure', '.github']
     requires_verification = False
 
     for pr_file in pull_request_files:
