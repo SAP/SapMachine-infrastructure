@@ -385,10 +385,6 @@ def github_api_request(api=None, url=None, owner='SAP', repository='SapMachine',
                         url = next_url
                         load_next = True
 
-        except Exception as e:
-            print((str.format('{0}: "{1}"', url, e)))
-            return None
-
     return result
 
 github_tags = None

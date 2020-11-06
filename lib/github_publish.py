@@ -15,7 +15,6 @@ from urllib.parse import quote
 from urllib.error import URLError
 from os.path import join
 
-
 def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('-t', '--tag', help='the SapMachine tag', metavar='MAJOR', required=True)
