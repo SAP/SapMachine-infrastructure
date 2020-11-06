@@ -358,32 +358,31 @@ def github_api_request(api=None, url=None, owner='SAP', repository='SapMachine',
         if data is not None:
             request.add_header('Content-Length', len(data))
 
+        response = urlopen(request)
+        link = response.info().get('Link')
+
         try:
-            response = urlopen(request)
-            link = response.info().get('Link')
+            response = response.read().decode('utf-8')
+        except (UnicodeDecodeError, AttributeError):
+            response = response.read()
 
-            try:
-                response = response.read().decode('utf-8')
-            except (UnicodeDecodeError, AttributeError):
-                response = response.read()
+        if result is None:
+            result = json.loads(response)
+        else:
+            result.extend(json.loads(response))
 
-            if result is None:
-                result = json.loads(response)
-            else:
-                result.extend(json.loads(response))
+        load_next = False
 
-            load_next = False
+        if link is not None and method == 'GET':
+            match = re.search(link_pattern, link)
 
-            if link is not None and method == 'GET':
-                match = re.search(link_pattern, link)
+            if match is not None:
+                next_url = match.group(4)
+                last_url = match.group(6)
 
-                if match is not None:
-                    next_url = match.group(4)
-                    last_url = match.group(6)
-
-                    if next_url != last_url:
-                        url = next_url
-                        load_next = True
+                if next_url != last_url:
+                    url = next_url
+                    load_next = True
 
     return result
 
