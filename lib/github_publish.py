@@ -10,6 +10,7 @@ import re
 import utils
 import argparse
 import mimetypes
+import traceback
 
 from urllib.parse import quote
 from urllib.error import URLError
@@ -103,6 +104,7 @@ def main(argv=None):
                 break
             except IOError:
                 _type, value, _traceback = sys.exc_info()
+                traceback.print_exception(_type, value, _traceback)
                 print(str.format('Error uploading asset "{0}": {1}', asset_name, value.strerror))
                 retry -= 1
             except URLError:
