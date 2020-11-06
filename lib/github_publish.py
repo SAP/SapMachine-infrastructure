@@ -38,12 +38,8 @@ def main(argv=None):
             asset_mime_type = 'application/octet-stream'
             print(str.format('could not detect mime-type: falling back to "{0}"', asset_mime_type))
         else:
-            if asset_mime_type[0] == "application/x-redhat-package-manager":
-              asset_mime_type = 'application/octet-stream'
-              print(str.format('using mime-type "{0}" instead of detected pplication/x-redhat-package-manager', asset_mime_type))
-            else:
-              asset_mime_type = asset_mime_type[0]
-              print(str.format('detected mime-type "{0}"', asset_mime_type))
+            asset_mime_type = asset_mime_type[0]
+            print(str.format('detected mime-type "{0}"', asset_mime_type))
 
     releases = utils.get_github_releases()
 
@@ -102,14 +98,13 @@ def main(argv=None):
                 utils.github_api_request(url=upload_url, data=asset_data, method='POST', content_type=asset_mime_type)
                 rc = 0
                 break
-            except IOError:
-                _type, value, _traceback = sys.exc_info()
-                traceback.print_exception(_type, value, _traceback)
-                print(str.format('Error uploading asset "{0}": {1}', asset_name, value.strerror))
+            except IOError as e:
+                # _type, value, _traceback = sys.exc_info()
+                # traceback.print_exception(_type, value, _traceback)
+                print(str.format('Error uploading asset "{0}": {1}', asset_name, e))
                 retry -= 1
-            except URLError:
-                _type, value, _traceback = sys.exc_info()
-                print(str.format('Error uploading asset "{0}"', asset_name))
+            except URLError as e:
+                print(str.format('Error uploading asset "{0}": {1}', asset_name, e))
                 retry -= 1
 
     return rc
