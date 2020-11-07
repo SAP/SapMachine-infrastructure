@@ -3,49 +3,5 @@
   <githubUrl>https://github.com/SAP/SapMachine</githubUrl>
   <gitUrl>git://github.com/SAP/SapMachine.git</gitUrl>
   <sshUrl>git@github.com:SAP/SapMachine.git</sshUrl>
-  <pulls class="concurrent-hash-map">
-    <entry>
-      <int>755</int>
-      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>755</number>
-        <issueUpdatedAt>2020-11-05 18:51:15.0 UTC</issueUpdatedAt>
-        <title>SapMachine #747: Vitals: display commit state on Linux</title>
-        <body>Add a column to the output - linux only - which displays overcommit state. Helps in analyzing allocation- and thread/fork-failures.
-
-Looks like this:
-
-```
-  1 Vitals:
-  2 ------------system------------
-&lt;snip&gt;
-  4              crt: Committed-to-Commit-Limit ratio (percent)
-&lt;snip&gt;
- 51 Short Term Values:
- 52                       -------------------system------------------- -------------------process-------------------- ------------------------------------jvm------------------------------------
- 53                                                  -------cpu-------      -------rss-------      -cpu- ---io---     --heap--- ---------meta---------          ----jthr----- --cldg-- ---cls----
- 54 Time                  avail crt swap si so pr pb us sy id wa st gu virt all anon file shm swdo us sy of rd wr thr comm used comm used csc csu gctr code mlc num nd cr st  num anon num ld uld
- 55 
- 56 2020-11-02 11:19:03   10,5g 108 256k        3  0                   6,6g 69m  37m  32m  0k   0k        2        18 254m   3m 192k 111k 64k  2k  21m   7m  0k   9  1    16m   3    0 447
-```
-
-Column "crt" shows overcommit state, in percent (108 in my case)
-
-fixes #747
-
-</body>
-        <prUpdatedAt>2020-11-05 18:51:15.0 UTC</prUpdatedAt>
-        <headSha>65f8e46475286e8ceaa17060cdb94642fdc78857</headSha>
-        <headRef>747-display-commit-state-on-linux</headRef>
-        <mergeable>true</mergeable>
-        <baseRef>sapmachine</baseRef>
-        <userLogin>tstuefe</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/755</htmlUrl>
-        <labels />
-        <lastCommentCreatedAt>2020-11-05 12:22:53.0 UTC</lastCommentCreatedAt>
-        <sourceRepoOwner>SAP</sourceRepoOwner>
-        <state>OPEN</state>
-        <inBadState>false</inBadState>
-      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-    </entry>
-  </pulls>
+  <pulls class="concurrent-hash-map" />
 </org.jenkinsci.plugins.github.pullrequest.GitHubPRRepository>

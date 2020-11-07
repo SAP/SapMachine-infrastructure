@@ -64,7 +64,7 @@
             }
             post {
                 success {
-                    archive "*.rpm"
+                    archiveArtifacts allowEmptyArchive: true, artifacts: "*.rpm"
                 }
             }
         }
@@ -78,6 +78,9 @@
                     reuseNode true
                     label "linux_x86_64"
                 }
+            }
+            environment {
+              GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
             }
             steps {
                 withCredentials([

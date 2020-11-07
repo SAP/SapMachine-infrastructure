@@ -1,13 +1,49 @@
-<flow-definition plugin="workflow-job@2.39">
-  <actions>
-    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.7.1" />
-    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.7.1">
-      <jobProperties />
-      <triggers />
-      <parameters />
-      <options />
-    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
-  </actions>
+<flow-definition plugin="workflow-job">
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps">
+    <script>pipeline {
+    agent {
+        label 'agent-ubuntu-local'
+    }
+    stages {
+        stage("Checkout Infrastructure") {
+            steps {
+                checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+            }
+        }
+        stage('Build') {
+            environment {
+              GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
+            }
+            steps {
+                sh 'rm -f *.deb'
+                sh "python3 SapMachine-Infrastructure/lib/make_deb.py --tag=${params.GIT_TAG_NAME} --templates-directory=SapMachine-Infrastructure/debian-templates"
+            }
+            post {
+                success {
+                    archiveArtifacts allowEmptyArchive: true, artifacts: "*.deb"
+                }
+            }
+        }
+        stage('Deploy') {
+            when {
+                expression { params.DEPLOY == true }
+            }
+            steps {
+                    sh "cp -n *.deb /var/pkg/deb/amd64 || true"
+                    sh "python3 SapMachine-Infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/amd64"
+            }
+        }
+    }
+    post {
+        always {
+            cleanWs deleteDirs: true, disableDeferredWipeout: true
+        }
+    }
+}
+</script>
+    <sandbox>false</sandbox>
+  </definition>
+  <actions />
   <description>This project is generated. Do not modify manually.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
   <properties>
@@ -36,49 +72,4 @@
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.82">
-    <script>pipeline {
-    agent {
-        label 'agent-ubuntu-local'
-    }
-    stages {
-        stage("Checkout Infrastructure") {
-            steps {
-                checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
-            }
-        }
-        stage('Build') {
-            environment {
-              GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
-            }
-            steps {
-                sh 'rm -f *.deb'
-                sh "python3 SapMachine-Infrastructure/lib/make_deb.py --tag=${params.GIT_TAG_NAME} --templates-directory=SapMachine-Infrastructure/debian-templates"
-            }
-            post {
-                success {
-                    archive "*.deb"
-                }
-            }
-        }
-        stage('Deploy') {
-            when {
-                expression { params.DEPLOY == true }
-            }
-            steps {
-                    sh "cp -n *.deb /var/pkg/deb/amd64 || true"
-                    sh "python3 SapMachine-Infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/amd64"
-            }
-        }
-    }
-    post {
-        always {
-            cleanWs deleteDirs: true, disableDeferredWipeout: true
-        }
-    }
-}
-</script>
-    <sandbox>false</sandbox>
-  </definition>
-  <disabled>false</disabled>
 </flow-definition>
