@@ -50,7 +50,7 @@
     build_type:
         - snapshot
         - release
-        - pr-validation
+        - pr-validation:
             triggers:
                 - raw:
                     xml: |
@@ -118,7 +118,7 @@
         - build-discarder:
             num-to-keep: 100
             artifact-num-to-keep: 1
-
+    triggers:
     parameters:
         - string:
             name: SAPMACHINE_GIT_REPOSITORY
