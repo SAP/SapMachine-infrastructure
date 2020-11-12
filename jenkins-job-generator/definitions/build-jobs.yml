@@ -545,6 +545,8 @@
     project-type: pipeline
     concurrent: true
     properties:
+        - github:
+            url: 'https://github.com/SAP/SapMachine'
         - build-discarder:
             days-to-keep: 14
             artifact-days-to-keep: 7
