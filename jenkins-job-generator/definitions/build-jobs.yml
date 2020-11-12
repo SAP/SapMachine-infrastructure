@@ -513,7 +513,7 @@
                     }}
                     environment {{
                         GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
-                        CONTEXT = "validate-pr-{major}-{platform}
+                        CONTEXT = "validate-pr-{major}-{platform}"
                     }}
                     steps {{
                         if (job.result == 'SUCCESS') {{
