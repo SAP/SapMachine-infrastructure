@@ -3,7 +3,10 @@
     publish_default: false
     release_default: false
     allow_concurrent_builds: false
-    trigger: ''
+    trigger: |
+        <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+            <triggers/>
+        </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
     majors: &majors
         - '11':
            branch_name: sapmachine11
