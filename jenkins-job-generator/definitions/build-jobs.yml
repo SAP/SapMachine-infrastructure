@@ -122,6 +122,8 @@
     project-type: pipeline
     concurrent: '{allow_concurrent_builds}'
     properties:
+        - github:
+            url: 'https://github.com/SAP/SapMachine'
         - build-discarder:
             num-to-keep: 100
             artifact-num-to-keep: 1
@@ -545,8 +547,6 @@
     project-type: pipeline
     concurrent: true
     properties:
-        - github:
-            url: 'https://github.com/SAP/SapMachine'
         - build-discarder:
             days-to-keep: 14
             artifact-days-to-keep: 7
