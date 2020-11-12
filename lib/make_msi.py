@@ -77,10 +77,10 @@ def main(argv=None):
         sapmachine_version += ['0' for sapmachine_version in range(0, 3 - len(sapmachine_version))]
 
     if len(sapmachine_version) == 4:
-        sapmachine_version[3] = str((int(sapmachine_version[3]) < 8) & 0xFF00)
+        sapmachine_version[3] = str((int(sapmachine_version[3]) << 8) & 0xFF00)
 
     if len(sapmachine_version) == 5:
-        merged_version = str((int(sapmachine_version[3]) < 8) | (int(sapmachine_version[4]) & 0xFF))
+        merged_version = str((int(sapmachine_version[3]) << 8) | (int(sapmachine_version[4]) & 0xFF))
 
         del sapmachine_version[4]
         sapmachine_version[3] = merged_version
