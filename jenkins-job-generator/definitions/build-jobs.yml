@@ -43,14 +43,10 @@
         - windows_x86_64:
             configure_sysroot_default: ''
             docker_agent: ''
-
-- project:
-    name: builds
-    major: *majors
-    build_type:
-        - snapshot
+    build_types: &build_types
+        - snapshot:
             trigger: ''
-        - release
+        - release:
             trigger: ''
         - pr-validation:
             trigger: |
@@ -92,6 +88,11 @@
                         </targetBranchList>
                     </branchRestriction>
                 </org.jenkinsci.plugins.github.pullrequest.GitHubPRTrigger>
+
+- project:
+    name: builds
+    major: *majors
+    build_type: *build_types
     platform: *platforms
     jobs:
         - build-{major}-{build_type}-{platform}
