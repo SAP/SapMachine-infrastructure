@@ -516,12 +516,14 @@
                         CONTEXT = "validate-pr-{major}-{platform}"
                     }}
                     steps {{
-                        if (job.result == 'SUCCESS') {{
-                            setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS'
-                        }} else if (job.result == 'UNSTABLE') {{
-                            setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'tests failed'
-                        }} else {{
-                            setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'build failed'
+                        script {{
+                            if (job.result == 'SUCCESS') {{
+                                setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS'
+                            }} else if (job.result == 'UNSTABLE') {{
+                                setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'tests failed'
+                            }} else {{
+                                setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'build failed'
+                            }}
                         }}
                     }}
                 }}
