@@ -3,6 +3,7 @@
     publish_default: false
     release_default: false
     allow_concurrent_builds: false
+    trigger: ''
     majors: &majors
         - '11':
            branch_name: sapmachine11
@@ -44,50 +45,52 @@
             configure_sysroot_default: ''
             docker_agent: ''
     build_types: &build_types
-        - snapshot:
-            trigger: ''
-        - release:
-            trigger: ''
+        - snapshot
+        - release
         - pr-validation:
             trigger: |
-                <org.jenkinsci.plugins.github.pullrequest.GitHubPRTrigger plugin="github-pullrequest@0.2.4">
-                    <spec>H/1 * * * *</spec>
-                    <triggerMode>HEAVY_HOOKS</triggerMode>
-                    <cancelQueued>false</cancelQueued>
-                    <abortRunning>false</abortRunning>
-                    <skipFirstRun>false</skipFirstRun>
-                    <repoProviders>
-                        <com.github.kostyasha.github.integration.generic.repoprovider.GitHubPluginRepoProvider>
-                        <cacheConnection>true</cacheConnection>
-                        <manageHooks>true</manageHooks>
-                        <repoPermission>ADMIN</repoPermission>
-                        </com.github.kostyasha.github.integration.generic.repoprovider.GitHubPluginRepoProvider>
-                    </repoProviders>
-                    <errorsAction>
-                        <description>GitHub Pull Requests Trigger Errors</description>
-                        <errors class="java.util.Collections$SynchronizedSet" serialization="custom">
-                        <java.util.Collections_-SynchronizedCollection>
-                            <default>
-                            <c class="set"/>
-                            <mutex class="java.util.Collections$SynchronizedSet" reference="../../.."/>
-                            </default>
-                        </java.util.Collections_-SynchronizedCollection>
-                        </errors>
-                    </errorsAction>
-                    <events>
-                        <org.jenkinsci.plugins.github.pullrequest.events.impl.GitHubPRCommitEvent/>
-                        <org.jenkinsci.plugins.github.pullrequest.events.impl.GitHubPRCommentEvent>
-                        <comment>retest this please</comment>
-                        </org.jenkinsci.plugins.github.pullrequest.events.impl.GitHubPRCommentEvent>
-                        <org.jenkinsci.plugins.github.pullrequest.events.impl.GitHubPROpenEvent/>
-                    </events>
-                    <preStatus>false</preStatus>
-                    <branchRestriction>
-                        <targetBranchList>
-                        <string>{branch_name}</string>
-                        </targetBranchList>
-                    </branchRestriction>
-                </org.jenkinsci.plugins.github.pullrequest.GitHubPRTrigger>
+                <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+                    <triggers>
+                        <org.jenkinsci.plugins.github.pullrequest.GitHubPRTrigger plugin="github-pullrequest@0.2.4">
+                            <spec>H/1 * * * *</spec>
+                            <triggerMode>HEAVY_HOOKS</triggerMode>
+                            <cancelQueued>false</cancelQueued>
+                            <abortRunning>false</abortRunning>
+                            <skipFirstRun>false</skipFirstRun>
+                            <repoProviders>
+                                <com.github.kostyasha.github.integration.generic.repoprovider.GitHubPluginRepoProvider>
+                                <cacheConnection>true</cacheConnection>
+                                <manageHooks>true</manageHooks>
+                                <repoPermission>ADMIN</repoPermission>
+                                </com.github.kostyasha.github.integration.generic.repoprovider.GitHubPluginRepoProvider>
+                            </repoProviders>
+                            <errorsAction>
+                                <description>GitHub Pull Requests Trigger Errors</description>
+                                <errors class="java.util.Collections$SynchronizedSet" serialization="custom">
+                                <java.util.Collections_-SynchronizedCollection>
+                                    <default>
+                                    <c class="set"/>
+                                    <mutex class="java.util.Collections$SynchronizedSet" reference="../../.."/>
+                                    </default>
+                                </java.util.Collections_-SynchronizedCollection>
+                                </errors>
+                            </errorsAction>
+                            <events>
+                                <org.jenkinsci.plugins.github.pullrequest.events.impl.GitHubPRCommitEvent/>
+                                <org.jenkinsci.plugins.github.pullrequest.events.impl.GitHubPRCommentEvent>
+                                <comment>retest this please</comment>
+                                </org.jenkinsci.plugins.github.pullrequest.events.impl.GitHubPRCommentEvent>
+                                <org.jenkinsci.plugins.github.pullrequest.events.impl.GitHubPROpenEvent/>
+                            </events>
+                            <preStatus>false</preStatus>
+                            <branchRestriction>
+                                <targetBranchList>
+                                <string>{branch_name}</string>
+                                </targetBranchList>
+                            </branchRestriction>
+                        </org.jenkinsci.plugins.github.pullrequest.GitHubPRTrigger>
+                    </triggers>
+                </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
 
 - project:
     name: builds
@@ -119,7 +122,6 @@
         - build-discarder:
             num-to-keep: 100
             artifact-num-to-keep: 1
-    triggers:
         - raw:
             xml: '{trigger}'
     parameters:
