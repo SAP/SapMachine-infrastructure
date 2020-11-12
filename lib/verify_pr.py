@@ -118,12 +118,11 @@ def is_pr_ok_to_test(pull_request):
 def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('-p', '--pull-request', help='the Pull Request number', metavar='NUMBER', required=True)
+    parser.add_argument('-c', '--comment', help='if set, comment in PR', action='store_true', default=False)
     args = parser.parse_args()
 
-    pull_request_id = args.pull_request
-
     # request the pull request information
-    pull_request = github_api_request(str.format('pulls/{0}', pull_request_id))
+    pull_request = github_api_request(str.format('pulls/{0}', args.pull_request))
 
     comments_url = pull_request['comments_url']
     pr_author = pull_request['user']['login']
@@ -131,8 +130,9 @@ def main(argv=None):
 
     if not is_pr_ok_to_test(pull_request):
         message = create_request_for_admin_comment(pr_author)
-        github_api_request(url=comments_url, data=message, method='POST')
         print(str.format('Pull Request validation failed: "{0}"', message))
+        if args.comment:
+            github_api_request(url=comments_url, data=message, method='POST')
         return 0
 
     # if the author is in the exception list, the validation is skipped
@@ -142,12 +142,14 @@ def main(argv=None):
             validate_pull_request(pull_request['body'])
         except Exception as error:
             message = create_failure_comment(pr_author, str.format('this pull request doesn\'t meet the expectations. {0}', error))
-            github_api_request(url=comments_url, data=message, method='POST')
             print(str.format('Pull Request validation failed: "{0}"', message))
+            if args.comment:
+                github_api_request(url=comments_url, data=message, method='POST')
             return 0
 
         # all formal requirements are met
-        github_api_request(url=comments_url, data=create_success_comment(pr_author), method='POST')
+        if args.comment:
+            github_api_request(url=comments_url, data=create_success_comment(pr_author), method='POST')
 
     # check wether the complete validation has to run
     pull_request_files = github_api_request(str.format('pulls/{0}/files', pull_request_id))
