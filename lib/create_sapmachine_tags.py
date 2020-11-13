@@ -36,7 +36,8 @@ def run_jenkins_jobs(major, tag):
         )
     )
 
-    #server.use_auth_cookie()
+    # strange, but with that one I got a 403: https://ci.sapmachine.io/view/Infrastructure/job/repository-tags/191/
+    # server.use_auth_cookie()
 
     build_jobs = [
         str.format('build-{0}-release-linux_x86_64', major),
@@ -161,9 +162,6 @@ def main(argv=None):
     os.makedirs(workdir)
     global git_target_dir
     git_target_dir = join(workdir, 'sapmachine')
-
-    #temporary test
-    run_jenkins_jobs(16, "jdk-16+24")
 
     # fetch all branches
     sapmachine_branches = utils.get_active_sapmachine_branches()
