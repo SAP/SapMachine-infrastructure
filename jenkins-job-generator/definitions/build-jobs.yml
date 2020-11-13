@@ -550,14 +550,14 @@
                         }}
                     }}
                 }}
-                unsuccessful {{
-                    script {{
-                        if (!(JOB_NAME ==~ /((\S*)(windows_x86_64)(\S*))/)) {{
-                            sh 'zip -rq workspace.zip .'
-                            archiveArtifacts allowEmptyArchive: true, artifacts: 'workspace.zip'
-                        }}
-                    }}
-                }}
+                // unsuccessful {{
+                //     script {{
+                //         if (!(JOB_NAME ==~ /((\S*)(windows_x86_64)(\S*))/)) {{
+                //             sh 'zip -rq workspace.zip .'
+                //             archiveArtifacts allowEmptyArchive: true, artifacts: 'workspace.zip'
+                //         }}
+                //     }}
+                // }}
                 cleanup {{
                     cleanWs deleteDirs: true, disableDeferredWipeout: true
                 }}
