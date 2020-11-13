@@ -221,7 +221,7 @@
                             env.VERIFICATION_RESULT = "1"
                         }}
                         cleanWs deleteDirs: true, disableDeferredWipeout: true
-                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
                     }}
                 }}
                 stage('Verify PR') {{
@@ -251,7 +251,7 @@
                         expression {{ env.VERIFICATION_RESULT != "2" }}
                     }}
                     steps {{
-                        checkout changelog: true, poll: false, scm: [$class: 'GitSCM', branches: [[name: "*/${{params.SAPMACHINE_GIT_BRANCH}}"]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine.git']]]
+                        checkout changelog: true, poll: false, scm: [$class: 'GitSCM', branches: [[name: "*/${{params.SAPMACHINE_GIT_BRANCH}}"]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine.git']]]
                     }}
                 }}
                 stage('Download Prerequisites') {{
@@ -278,7 +278,7 @@
 
                             sh "python3 SapMachine-Infrastructure/lib/download_boot_jdk.py -m ${{major}} -d `pwd`"
                             if (params.RUN_GTESTS == true) {{
-                                checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/tags/v1.8.1']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'gtest']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/google/googletest.git']]]
+                                checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/tags/release-1.8.1']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'gtest']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/google/googletest.git']]]
                             }}
                         }}
                     }}
