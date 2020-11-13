@@ -57,7 +57,7 @@
                         <org.jenkinsci.plugins.github.pullrequest.GitHubPRTrigger plugin="github-pullrequest@0.2.4">
                             <spec>H/1 * * * *</spec>
                             <triggerMode>HEAVY_HOOKS</triggerMode>
-                            <cancelQueued>false</cancelQueued>
+                            <cancelQueued>true</cancelQueued>
                             <abortRunning>false</abortRunning>
                             <skipFirstRun>false</skipFirstRun>
                             <repoProviders>
@@ -142,10 +142,6 @@
             name: GIT_TAG_NAME
             default: ''
             description: 'The Git tag to build.'
-        - string:
-            name: GITHUB_PR_NUMBER
-            default: ''
-            description: 'The GitHub Pull Request number. Only used in Pull Request validation builds.'
         - string:
             name: BUILD_NUMBER
             default: ''
@@ -239,7 +235,15 @@
                         }}
                     }}
                 }}
-                stage('Download Prerequisites') {{
+                stage("Checkout Repository") {{
+                    when {{
+                        expression {{ env.VERIFICATION_RESULT != "2" }}
+                    }}
+                    steps {{
+                        checkout changelog: true, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/{branch_name}']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+                    }}
+                }}
+                stage('Download Boot JDK') {{
                     when {{
                         expression {{ env.VERIFICATION_RESULT != "2" }}
                     }}
@@ -268,6 +272,7 @@
                 stage("Build") {{
                     {docker_agent}
                     when {{
+                        beforeAgent true
                         expression {{ env.VERIFICATION_RESULT != "2" }}
                     }}
                     environment {{
@@ -280,6 +285,7 @@
                 stage("Run GTests") {{
                     {docker_agent}
                     when {{
+                        beforeAgent true
                         expression {{ env.VERIFICATION_RESULT != "2" && params.RUN_GTESTS == true }}
                     }}
                     steps {{
@@ -296,6 +302,7 @@
                 stage('Copy JTREG') {{
                     {docker_agent}
                     when {{
+                        beforeAgent true
                         expression {{ env.VERIFICATION_RESULT != "2" && params.RUN_TESTS == true }}
                     }}
                     steps {{
@@ -311,6 +318,7 @@
                 stage('Run jtreg hotspot') {{
                     {docker_agent}
                     when {{
+                        beforeAgent true
                         expression {{ env.VERIFICATION_RESULT != "2" && params.RUN_TESTS == true && params.hotspot_test_groups }}
                     }}
                     environment {{
@@ -334,6 +342,7 @@
                 stage('Run jtreg jdk') {{
                     {docker_agent}
                     when {{
+                        beforeAgent true
                         expression {{ env.VERIFICATION_RESULT != "2" && params.RUN_TESTS == true && params.jdk_test_groups }}
                     }}
                     environment {{
@@ -357,6 +366,7 @@
                 stage('Run jtreg langtools') {{
                     {docker_agent}
                     when {{
+                        beforeAgent true
                         expression {{ env.VERIFICATION_RESULT != "2" && params.RUN_TESTS == true && params.langtools_test_groups }}
                     }}
                     environment {{
@@ -380,6 +390,7 @@
                 stage('Run Dacapo') {{
                     {docker_agent}
                     when {{
+                        beforeAgent true
                         expression {{ env.VERIFICATION_RESULT != "2" && params.RUN_DACAPO == true }}
                     }}
                     environment {{
