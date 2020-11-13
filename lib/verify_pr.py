@@ -152,7 +152,7 @@ def main(argv=None):
             github_api_request(url=comments_url, data=create_success_comment(pr_author), method='POST')
 
     # check wether the complete validation has to run
-    pull_request_files = github_api_request(str.format('pulls/{0}/files', pull_request_id))
+    pull_request_files = github_api_request(str.format('pulls/{0}/files', args.pull_request))
 
     roots_requiring_verification = ['make', 'src', 'test', 'Makefile', 'configure', '.github']
     requires_verification = False

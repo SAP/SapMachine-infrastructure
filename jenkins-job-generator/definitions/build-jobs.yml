@@ -201,15 +201,50 @@
 
     dsl: |
         pipeline {{
+            environment {{
+                GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
+            }}
             agent {{
                 label "{platform}"
             }}
             stages {{
                 stage("Checkout Infrastructure") {{
                     steps {{
-                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
                         script {{
+                            setGitHubPullRequestStatus context: "validate-pr-{major}-{platform}", state: 'PENDING'
                             env.VERIFICATION_RESULT = "1"
+                        }}
+                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+                    }}
+                }}
+                stage('Verify PR') {{
+                    when {{
+                        expression {{ JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/}}
+                    }}
+                    steps {{
+                        script {{
+                            def platform = "{platform}"
+                            env.COMMENT = ""
+                            if (platform == 'linux_x86_64') {{
+                                env.COMMENT = "-c"
+                            }}
+                            env.VERIFICATION_RESULT = sh(
+                                script: "python3 SapMachine-Infrastructure/lib/verify_pr.py -p ${{env.GITHUB_PR_NUMBER}} ${{env.COMMENT}}",
+                                returnStatus: true
+                            )
+
+                            if (env.VERIFICATION_RESULT == "0") {{
+                                error("Pull Request Verification failed")
+                            }}
+                        }}
+                    }}
+                }}
+                stage('Download Prerequisites') {{
+                    when {{
+                        expression {{ env.VERIFICATION_RESULT != "2" }}
+                    }}
+                    steps {{
+                        script {{
                             def major = "{major}"
 
                             if (BOOT_JDK_MAJOR?.trim()) {{
@@ -227,33 +262,6 @@
                             }}
 
                             sh "python3 SapMachine-Infrastructure/lib/download_boot_jdk.py -m ${{major}} -d `pwd`"
-                        }}
-                    }}
-                }}
-                stage('Verify PR') {{
-                    when {{
-                        expression {{ JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/}}
-                    }}
-                    environment {{
-                        GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
-                        CONTEXT = "validate-pr-{major}-{platform}"
-                    }}
-                    steps {{
-                        script {{
-                            setGitHubPullRequestStatus context: CONTEXT, state: 'PENDING'
-                            def platform = "{platform}"
-                            env.COMMENT = ""
-                            if (platform == 'linux_x86_64') {{
-                                env.COMMENT = "-c"
-                            }}
-                            env.VERIFICATION_RESULT = sh(
-                                script: "python3 SapMachine-Infrastructure/lib/verify_pr.py -p ${{env.GITHUB_PR_NUMBER}} ${{env.COMMENT}}",
-                                returnStatus: true
-                            )
-
-                            if (env.VERIFICATION_RESULT == "0") {{
-                                error("Pull Request Verification failed")
-                            }}
                         }}
                     }}
                 }}
@@ -385,9 +393,9 @@
                 }}
                 stage('Archive') {{
                     steps {{
-                        archive 'test.zip'
-                        archive 'support_gensrc.zip'
-                        archive '*.dmg'
+                        archiveArtifacts allowEmptyArchive: true, artifacts: 'test.zip'
+                        archiveArtifacts allowEmptyArchive: true, artifacts: 'support_gensrc.zip'
+                        archiveArtifacts allowEmptyArchive: true, artifacts: '*.dmg'
 
                         script {{
                             def jdk_bundle_name = readFile "${{env.WORKSPACE}}/jdk_bundle_name.txt"
@@ -403,9 +411,6 @@
                 stage('Build Windows Installer') {{
                     when {{
                         expression {{ env.VERIFICATION_RESULT != "2" && JOB_NAME ==~ /((\S*)(windows_x86_64)(\S*))/ }}
-                    }}
-                    environment {{
-                      GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
                     }}
                     steps {{
                         withCredentials([
@@ -447,9 +452,6 @@
                 stage('Publish Windows Installer') {{
                     when {{
                         expression {{ env.VERIFICATION_RESULT != "2" && params.PUBLISH == true && JOB_NAME ==~ /((\S*)(release-windows_x86_64)(\S*))/ }}
-                    }}
-                    environment {{
-                      GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
                     }}
                     steps {{
                         withCredentials([
@@ -507,35 +509,43 @@
                         build job: 'generate-dockerfiles', propagate: false, wait: true
                     }}
                 }}
-                stage('Set PR status') {{
-                    when {{
-                        expression {{ JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/}}
-                    }}
-                    environment {{
-                        GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
-                        CONTEXT = "validate-pr-{major}-{platform}"
-                    }}
-                    steps {{
-                        script {{
-                            if (job.result == 'SUCCESS') {{
-                                setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS'
-                            }} else if (job.result == 'UNSTABLE') {{
-                                setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'tests failed'
-                            }} else {{
-                                setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'build failed'
-                            }}
+            }}
+            post {{
+                aborted {{
+                    script {{
+                        if (JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/) {{
+                            setGitHubPullRequestStatus context: "validate-pr-{major}-{platform}", state: 'FAILURE', message: 'job aborted'
                         }}
                     }}
                 }}
-            }}
-            post {{
+                failure {{
+                    script {{
+                        if (JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/) {{
+                            setGitHubPullRequestStatus context: "validate-pr-{major}-{platform}", state: 'FAILURE', message: 'build failed'
+                        }}
+                    }}
+                }}
+                unstable {{
+                    script {{
+                        if (JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/) {{
+                            setGitHubPullRequestStatus context: "validate-pr-{major}-{platform}", state: 'FAILURE', message: 'tests failed'
+                        }}
+                    }}
+                }}
+                success {{
+                    script {{
+                        if (JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/) {{
+                            setGitHubPullRequestStatus context: "validate-pr-{major}-{platform}", state: 'SUCCESS'
+                        }}
+                    }}
+                }}
                 unsuccessful {{
-                   script {{
-                       if (!(JOB_NAME ==~ /((\S*)(windows_x86_64)(\S*))/)) {{
-                           sh 'zip -rq workspace.zip .'
-                           archiveArtifacts allowEmptyArchive: true, artifacts: 'workspace.zip'
-                       }}
-                   }}
+                    script {{
+                        if (!(JOB_NAME ==~ /((\S*)(windows_x86_64)(\S*))/)) {{
+                            sh 'zip -rq workspace.zip .'
+                            archiveArtifacts allowEmptyArchive: true, artifacts: 'workspace.zip'
+                        }}
+                    }}
                 }}
                 cleanup {{
                     cleanWs deleteDirs: true, disableDeferredWipeout: true
