@@ -240,7 +240,7 @@
                         expression {{ env.VERIFICATION_RESULT != "2" }}
                     }}
                     steps {{
-                        checkout changelog: true, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/{branch_name}']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+                        checkout changelog: true, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/{branch_name}']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine.git']]]
                     }}
                 }}
                 stage('Download Boot JDK') {{
