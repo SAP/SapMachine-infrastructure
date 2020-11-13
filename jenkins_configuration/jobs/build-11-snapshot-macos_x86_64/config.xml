@@ -9,6 +9,7 @@
             steps {
                 checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
                 script {
+                    env.VERIFICATION_RESULT = "1"
                     def major = "11"
 
                     if (BOOT_JDK_MAJOR?.trim()) {
@@ -29,8 +30,38 @@
                 }
             }
         }
+        stage('Verify PR') {
+            when {
+                expression { JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/}
+            }
+            environment {
+                GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
+                CONTEXT = "validate-pr-11-macos_x86_64"
+            }
+            steps {
+                script {
+                    setGitHubPullRequestStatus context: CONTEXT, state: 'PENDING'
+                    def platform = "macos_x86_64"
+                    env.COMMENT = ""
+                    if (platform == 'linux_x86_64') {
+                        env.COMMENT = "-c"
+                    }
+                    env.VERIFICATION_RESULT = sh(
+                        script: "python3 SapMachine-Infrastructure/lib/verify_pr.py -p ${env.GITHUB_PR_NUMBER} ${env.COMMENT}",
+                        returnStatus: true
+                    )
+
+                    if (env.VERIFICATION_RESULT == "0") {
+                        error("Pull Request Verification failed")
+                    }
+                }
+            }
+        }
         stage("Build") {
             
+            when {
+                expression { env.VERIFICATION_RESULT != "2" }
+            }
             environment {
                 BOOT_JDK = "${WORKSPACE}/boot_jdk"
             }
@@ -41,7 +72,7 @@
         stage("Run GTests") {
             
             when {
-                expression { params.RUN_GTESTS == true }
+                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.RUN_GTESTS == true }
             }
             steps {
                 catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
@@ -57,7 +88,7 @@
         stage('Copy JTREG') {
             
             when {
-                expression { params.RUN_TESTS == true }
+                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.RUN_TESTS == true }
             }
             steps {
                 script {
@@ -72,7 +103,7 @@
         stage('Run jtreg hotspot') {
             
             when {
-                expression { params.RUN_TESTS == true &amp;&amp; params.hotspot_test_groups }
+                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.RUN_TESTS == true &amp;&amp; params.hotspot_test_groups }
             }
             environment {
               SCIMARK_2_CP = '/opt/scimark2/scimark2lib.jar'
@@ -95,7 +126,7 @@
         stage('Run jtreg jdk') {
             
             when {
-                expression { params.RUN_TESTS == true &amp;&amp; params.jdk_test_groups }
+                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.RUN_TESTS == true &amp;&amp; params.jdk_test_groups }
             }
             environment {
               TESTSUITE = 'jdk'
@@ -118,7 +149,7 @@
         stage('Run jtreg langtools') {
             
             when {
-                expression { params.RUN_TESTS == true &amp;&amp; params.langtools_test_groups }
+                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.RUN_TESTS == true &amp;&amp; params.langtools_test_groups }
             }
             environment {
               TESTSUITE = 'langtools'
@@ -141,7 +172,7 @@
         stage('Run Dacapo') {
             
             when {
-                expression { params.RUN_DACAPO == true }
+                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.RUN_DACAPO == true }
             }
             environment {
                 DACAPO_CP='${DACAPO_CLASSPATH}'
@@ -171,7 +202,7 @@
         }
         stage('Build Windows Installer') {
             when {
-                expression { JOB_NAME ==~ /((\S*)(windows_x86_64)(\S*))/ }
+                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; JOB_NAME ==~ /((\S*)(windows_x86_64)(\S*))/ }
             }
             environment {
               GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
@@ -196,7 +227,7 @@
         }
         stage('Publish GitHub') {
             when {
-                expression { params.PUBLISH == true &amp;&amp; JOB_NAME ==~ /((\S*)(release)(\S*))/}
+                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.PUBLISH == true &amp;&amp; JOB_NAME ==~ /((\S*)(release)(\S*))/}
             }
             environment {
               SAPMACHINE_PUBLISH_GITHUB_TOKEN = credentials('SapMachine-Github-Token')
@@ -215,7 +246,7 @@
         }
         stage('Publish Windows Installer') {
             when {
-                expression { params.PUBLISH == true &amp;&amp; JOB_NAME ==~ /((\S*)(release-windows_x86_64)(\S*))/ }
+                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.PUBLISH == true &amp;&amp; JOB_NAME ==~ /((\S*)(release-windows_x86_64)(\S*))/ }
             }
             environment {
               GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
@@ -230,7 +261,7 @@
         }
         stage('Publish Website Data') {
             when {
-                expression { params.PUBLISH == true &amp;&amp; JOB_NAME ==~ /((\S*)(release)(\S*))/}
+                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.PUBLISH == true &amp;&amp; JOB_NAME ==~ /((\S*)(release)(\S*))/}
             }
             steps {
                 build job: 'generate-website-data', propagate: false, wait: false
@@ -238,7 +269,7 @@
         }
         stage('Publish CF Java Buildpack Data') {
             when {
-                expression { params.PUBLISH == true &amp;&amp; params.RELEASE == true &amp;&amp; JOB_NAME ==~ /((\S*)(release-linux_x86_64)(\S*))/ }
+                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.PUBLISH == true &amp;&amp; params.RELEASE == true &amp;&amp; JOB_NAME ==~ /((\S*)(release-linux_x86_64)(\S*))/ }
             }
             steps {
                 build job: 'generate-cf-java-buildpack-data', propagate: false, wait: false
@@ -246,7 +277,7 @@
         }
         stage('Publish Debian Linux Packages') {
             when {
-                expression { params.PUBLISH == true &amp;&amp; params.RELEASE == true &amp;&amp; JOB_NAME ==~ /((\S*)(release-linux_x86_64)(\S*))/ }
+                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.PUBLISH == true &amp;&amp; params.RELEASE == true &amp;&amp; JOB_NAME ==~ /((\S*)(release-linux_x86_64)(\S*))/ }
             }
             steps {
                 build job: 'debian-package', propagate: false, wait: true, parameters:
@@ -258,7 +289,7 @@
         }
         stage('Build and Publish RPM Linux Packages') {
             when {
-                expression { params.PUBLISH == true &amp;&amp; params.RELEASE == true &amp;&amp; JOB_NAME ==~ /((\S*)(release-linux_x86_64)(\S*))/ }
+                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.PUBLISH == true &amp;&amp; params.RELEASE == true &amp;&amp; JOB_NAME ==~ /((\S*)(release-linux_x86_64)(\S*))/ }
             }
             steps {
                 build job: 'rpm-package', propagate: false, wait: true, parameters:
@@ -270,10 +301,30 @@
         }
         stage('Generate Dockerfiles') {
             when {
-                expression { params.PUBLISH == true &amp;&amp; params.RELEASE == true &amp;&amp; JOB_NAME ==~ /((\S*)(release-linux_x86_64)(\S*))/ }
+                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.PUBLISH == true &amp;&amp; params.RELEASE == true &amp;&amp; JOB_NAME ==~ /((\S*)(release-linux_x86_64)(\S*))/ }
             }
             steps {
                 build job: 'generate-dockerfiles', propagate: false, wait: true
+            }
+        }
+        stage('Set PR status') {
+            when {
+                expression { JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/}
+            }
+            environment {
+                GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
+                CONTEXT = "validate-pr-11-macos_x86_64"
+            }
+            steps {
+                script {
+                    if (job.result == 'SUCCESS') {
+                        setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS'
+                    } else if (job.result == 'UNSTABLE') {
+                        setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'tests failed'
+                    } else {
+                        setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'build failed'
+                    }
+                }
             }
         }
     }
@@ -299,6 +350,10 @@
   <keepDependencies>false</keepDependencies>
   <properties>
     <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty />
+    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github">
+      <projectUrl>https://github.com/SAP/SapMachine</projectUrl>
+      <displayName />
+    </com.coravy.hudson.plugins.github.GithubProjectProperty>
     <jenkins.model.BuildDiscarderProperty>
       <strategy class="hudson.tasks.LogRotator">
         <daysToKeep>-1</daysToKeep>
@@ -307,6 +362,9 @@
         <artifactNumToKeep>1</artifactNumToKeep>
       </strategy>
     </jenkins.model.BuildDiscarderProperty>
+    <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+      <triggers />
+    </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
         <hudson.model.StringParameterDefinition>
@@ -335,7 +393,7 @@
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>BUILD_NUMBER</name>
-          <description>Sets the version build number explicitely.</description>
+          <description>Sets the version build number explicitly.</description>
           <defaultValue />
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
