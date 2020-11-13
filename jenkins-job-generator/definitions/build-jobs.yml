@@ -102,15 +102,23 @@
     platform: *platforms
     jobs:
         - build-{major}-{build_type}-{platform}
+
+- project:
+    name: service-builds
+    major: *majors
+    build_type:
+        - snapshot
+        - release
+    platform: *platforms
+    jobs:
         - build-service-{build_type}-{major}
-        # - validate-pr-{major}
 
 - project:
     name: branch-builds
     major:
-        - '':
+        - 'user':
            branch_name: sapmachine
-    build_type: user_branch
+    build_type: branch
     platform: *platforms
     jobs:
         - build-{major}-{build_type}-{platform}
@@ -204,12 +212,15 @@
                 label "{platform}"
             }}
             stages {{
-                stage("Checkout Infrastructure") {{
+                stage("Init") {{
                     steps {{
                         script {{
-                            setGitHubPullRequestStatus context: "validate-pr-{major}-{platform}", state: 'PENDING'
+                            if ((JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/)) {{
+                                setGitHubPullRequestStatus context: "validate-pr-{major}-{platform}", state: 'PENDING'
+                            }}
                             env.VERIFICATION_RESULT = "1"
                         }}
+                        cleanWs deleteDirs: true, disableDeferredWipeout: true
                         checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
                     }}
                 }}
@@ -240,10 +251,10 @@
                         expression {{ env.VERIFICATION_RESULT != "2" }}
                     }}
                     steps {{
-                        checkout changelog: true, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/{branch_name}']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine.git']]]
+                        checkout changelog: true, poll: false, scm: [$class: 'GitSCM', branches: [[name: "*/${{params.SAPMACHINE_GIT_BRANCH}}"]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine.git']]]
                     }}
                 }}
-                stage('Download Boot JDK') {{
+                stage('Download Prerequisites') {{
                     when {{
                         expression {{ env.VERIFICATION_RESULT != "2" }}
                     }}
@@ -266,6 +277,9 @@
                             }}
 
                             sh "python3 SapMachine-Infrastructure/lib/download_boot_jdk.py -m ${{major}} -d `pwd`"
+                            if (params.RUN_GTESTS == true) {{
+                                checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/tags/v1.8.1']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'gtest']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/google/googletest.git']]]
+                            }}
                         }}
                     }}
                 }}
@@ -544,6 +558,7 @@
                     }}
                 }}
                 success {{
+                    cleanWs deleteDirs: true, disableDeferredWipeout: true
                     script {{
                         if (JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/) {{
                             setGitHubPullRequestStatus context: "validate-pr-{major}-{platform}", state: 'SUCCESS'
@@ -558,9 +573,9 @@
                 //         }}
                 //     }}
                 // }}
-                cleanup {{
-                    cleanWs deleteDirs: true, disableDeferredWipeout: true
-                }}
+                // cleanup {{
+                //     cleanWs deleteDirs: true, disableDeferredWipeout: true
+                // }}
             }}
         }}
 
@@ -938,291 +953,6 @@
                                     }}
 
                                     sh "rm -rf ${{WORKSPACE}}/${{MACOS_X86_64_ARTIFACT_DIR}}"
-                                }}
-                            }}
-                        }}
-                    }}
-                }}
-            }}
-        }}
-
-- job-template:
-    name: validate-pr-{major}
-    description: 'This project is generated. Do not modify manually.'
-    project-type: pipeline
-    concurrent: true
-    properties:
-        - github:
-            url: 'https://github.com/SAP/SapMachine'
-        - build-discarder:
-            num-to-keep: 100
-            artifact-num-to-keep: 1
-    triggers:
-        - raw:
-            xml: |
-                <org.jenkinsci.plugins.github.pullrequest.GitHubPRTrigger plugin="github-pullrequest@0.2.4">
-                    <spec>H/1 * * * *</spec>
-                    <triggerMode>HEAVY_HOOKS</triggerMode>
-                    <cancelQueued>false</cancelQueued>
-                    <abortRunning>false</abortRunning>
-                    <skipFirstRun>false</skipFirstRun>
-                    <repoProviders>
-                        <com.github.kostyasha.github.integration.generic.repoprovider.GitHubPluginRepoProvider>
-                        <cacheConnection>true</cacheConnection>
-                        <manageHooks>true</manageHooks>
-                        <repoPermission>ADMIN</repoPermission>
-                        </com.github.kostyasha.github.integration.generic.repoprovider.GitHubPluginRepoProvider>
-                    </repoProviders>
-                    <errorsAction>
-                        <description>GitHub Pull Requests Trigger Errors</description>
-                        <errors class="java.util.Collections$SynchronizedSet" serialization="custom">
-                        <java.util.Collections_-SynchronizedCollection>
-                            <default>
-                            <c class="set"/>
-                            <mutex class="java.util.Collections$SynchronizedSet" reference="../../.."/>
-                            </default>
-                        </java.util.Collections_-SynchronizedCollection>
-                        </errors>
-                    </errorsAction>
-                    <events>
-                        <org.jenkinsci.plugins.github.pullrequest.events.impl.GitHubPRCommitEvent/>
-                        <org.jenkinsci.plugins.github.pullrequest.events.impl.GitHubPRCommentEvent>
-                        <comment>retest this please</comment>
-                        </org.jenkinsci.plugins.github.pullrequest.events.impl.GitHubPRCommentEvent>
-                        <org.jenkinsci.plugins.github.pullrequest.events.impl.GitHubPROpenEvent/>
-                    </events>
-                    <preStatus>false</preStatus>
-                    <branchRestriction>
-                        <targetBranchList>
-                        <string>{branch_name}</string>
-                        </targetBranchList>
-                    </branchRestriction>
-                </org.jenkinsci.plugins.github.pullrequest.GitHubPRTrigger>
-    dsl: |
-        pipeline {{
-            agent {{
-                label 'pr_validation'
-            }}
-            stages {{
-                stage("Checkout Infrastructure") {{
-                    steps {{
-                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
-                    }}
-                }}
-                stage('Verify PR') {{
-                    environment {{
-                    GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
-                    CONTEXT = "validate-pr-{major}-linux_x86_64"
-                    }}
-                    steps {{
-                        script {{
-                            env.VERIFICATION_RESULT = sh(
-                                script: "python3 SapMachine-Infrastructure/lib/verify_pr.py -p ${{env.GITHUB_PR_NUMBER}}",
-                                returnStatus: true
-                            )
-
-                            if (env.VERIFICATION_RESULT == "0") {{
-                                setGitHubPullRequestStatus(context: CONTEXT, state: 'FAILURE', message: 'PR verification failed')
-                                error("Pull Request Validation failed")
-                            }}
-
-                            if (env.VERIFICATION_RESULT == "2") {{
-                                setGitHubPullRequestStatus(context: CONTEXT, state: 'SUCCESS')
-                            }}
-                        }}
-                    }}
-                }}
-                stage('Trigger Builds') {{
-                    parallel {{
-                        stage('Build linux_x86_64') {{
-                            when {{
-                                expression {{
-                                    env.VERIFICATION_RESULT == "1"
-                                }}
-                            }}
-                            environment {{
-                                GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
-                                CONTEXT = "validate-pr-{major}-linux_x86_64"
-                            }}
-                            steps {{
-                                script {{
-                                    setGitHubPullRequestStatus context: CONTEXT, state: 'PENDING'
-
-                                    def job = build job: 'build-{major}-pr-validation-linux_x86_64', propagate: false, wait: true, parameters:
-                                        [
-                                            string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER),
-                                            booleanParam(name: 'PUBLISH', value: false),
-                                            booleanParam(name: 'RUN_GTESTS', value: true),
-                                            booleanParam(name: 'RUN_TESTS', value: true)
-                                        ]
-
-                                    if (job.result == 'SUCCESS') {{
-                                        setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS'
-                                    }} else if (job.result == 'UNSTABLE') {{
-                                        setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'tests failed'
-                                    }} else {{
-                                        setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'build failed'
-                                    }}
-                                }}
-                            }}
-                        }}
-                        stage('Build linux_ppc64le') {{
-                            when {{
-                                expression {{
-                                    env.VERIFICATION_RESULT == "1"
-                                }}
-                            }}
-                            environment {{
-                                GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
-                                CONTEXT = "validate-pr-{major}-linux_ppc64le"
-                            }}
-                            steps {{
-                                script {{
-                                    setGitHubPullRequestStatus context: CONTEXT, state: 'PENDING'
-
-                                    def job = build job: 'build-{major}-pr-validation-linux_ppc64le', propagate: false, wait: true, parameters:
-                                        [
-                                            string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER),
-                                            booleanParam(name: 'PUBLISH', value: false),
-                                            booleanParam(name: 'RUN_GTESTS', value: true),
-                                            booleanParam(name: 'RUN_TESTS', value: true)
-                                        ]
-
-                                    if (job.result == 'SUCCESS') {{
-                                        setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS'
-                                    }} else if (job.result == 'UNSTABLE') {{
-                                        setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'tests failed'
-                                    }} else {{
-                                        setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'build failed'
-                                    }}
-                                }}
-                            }}
-                        }}
-                        stage('Build linux_ppc64') {{
-                            when {{
-                                expression {{
-                                    env.VERIFICATION_RESULT == "1"
-                                }}
-                            }}
-                            environment {{
-                                GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
-                                CONTEXT = "validate-pr-{major}-linux_ppc64"
-                            }}
-                            steps {{
-                                script {{
-                                    setGitHubPullRequestStatus context: CONTEXT, state: 'PENDING'
-
-                                    def job = build job: 'build-{major}-pr-validation-linux_ppc64', propagate: false, wait: true, parameters:
-                                        [
-                                            string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER),
-                                            booleanParam(name: 'PUBLISH', value: false),
-                                            booleanParam(name: 'RUN_GTESTS', value: true),
-                                            booleanParam(name: 'RUN_TESTS', value: true)
-                                        ]
-
-                                    if (job.result == 'SUCCESS') {{
-                                        setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS'
-                                    }} else if (job.result == 'UNSTABLE') {{
-                                        setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'tests failed'
-                                    }} else {{
-                                        setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'build failed'
-                                    }}
-                                }}
-                            }}
-                        }}
-                        stage('Build linux_aarch64') {{
-                            when {{
-                                expression {{
-                                    env.VERIFICATION_RESULT == "1"
-                                }}
-                            }}
-                            environment {{
-                                GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
-                                CONTEXT = "validate-pr-{major}-linux_aarch64"
-                            }}
-                            steps {{
-                                script {{
-                                    setGitHubPullRequestStatus context: CONTEXT, state: 'PENDING'
-
-                                    def job = build job: 'build-{major}-pr-validation-linux_aarch64', propagate: false, wait: true, parameters:
-                                        [
-                                            string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER),
-                                            booleanParam(name: 'PUBLISH', value: false),
-                                            booleanParam(name: 'RUN_GTESTS', value: true),
-                                            booleanParam(name: 'RUN_TESTS', value: true)
-                                        ]
-
-                                    if (job.result == 'SUCCESS') {{
-                                        setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS'
-                                    }} else if (job.result == 'UNSTABLE') {{
-                                        setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'tests failed'
-                                    }} else {{
-                                        setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'build failed'
-                                    }}
-                                }}
-                            }}
-                        }}
-                        stage('Build macos_x86_64') {{
-                            when {{
-                                expression {{
-                                    env.VERIFICATION_RESULT == "1"
-                                }}
-                            }}
-                            environment {{
-                                GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
-                                CONTEXT = "validate-pr-{major}-macos_x86_64"
-                            }}
-                            steps {{
-                                script {{
-                                    setGitHubPullRequestStatus context: CONTEXT, state: 'PENDING'
-
-                                    def job = build job: 'build-{major}-pr-validation-macos_x86_64', propagate: false, wait: true, parameters:
-                                        [
-                                            string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER),
-                                            booleanParam(name: 'PUBLISH', value: false),
-                                            booleanParam(name: 'RUN_GTESTS', value: true),
-                                            booleanParam(name: 'RUN_TESTS', value: true)
-                                        ]
-
-                                    if (job.result == 'SUCCESS') {{
-                                        setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS'
-                                    }} else if (job.result == 'UNSTABLE') {{
-                                        setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'tests failed'
-                                    }} else {{
-                                        setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'build failed'
-                                    }}
-                                }}
-                            }}
-                        }}
-                        stage('Build windows_x86_64') {{
-                            when {{
-                                expression {{
-                                    env.VERIFICATION_RESULT == "1"
-                                }}
-                            }}
-                            environment {{
-                                GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
-                                CONTEXT = "validate-pr-{major}-windows_x86_64"
-                            }}
-                            steps {{
-                                script {{
-                                    setGitHubPullRequestStatus context: CONTEXT, state: 'PENDING'
-
-                                    def job = build job: 'build-{major}-pr-validation-windows_x86_64', propagate: false, wait: true, parameters:
-                                        [
-                                            string(name: 'GITHUB_PR_NUMBER', value: env.GITHUB_PR_NUMBER),
-                                            booleanParam(name: 'PUBLISH', value: false),
-                                            booleanParam(name: 'RUN_GTESTS', value: true),
-                                            booleanParam(name: 'RUN_TESTS', value: true)
-                                        ]
-
-                                    if (job.result == 'SUCCESS') {{
-                                        setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS'
-                                    }} else if (job.result == 'UNSTABLE') {{
-                                        setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'tests failed'
-                                    }} else {{
-                                        setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'build failed'
-                                    }}
                                 }}
                             }}
                         }}
