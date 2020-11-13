@@ -27,6 +27,7 @@ def run_jenkins_jobs(major, tag):
     jenkins_url = 'https://ci.sapmachine.io'
     jenkins_user = os.environ['JENKINS_CREDENTIALS_USR']
     jenkins_password = os.environ['JENKINS_CREDENTIALS_PSW']
+    print(str.format('jenkins user: {0}, pw len: {1}...', jenkins_user, len(jenkins_password)))
 
     server = Jenkins(jenkins_url, username=jenkins_user, password=jenkins_password,
         requester=CrumbRequester(
