@@ -51,7 +51,6 @@ def run_jenkins_jobs(major, tag):
     job_params = {
         'PUBLISH': 'true' ,
         'RELEASE': 'false',
-        'RUN_TESTS': 'true',
         'GIT_TAG_NAME': tag
     }
 
@@ -162,6 +161,9 @@ def main(argv=None):
     os.makedirs(workdir)
     global git_target_dir
     git_target_dir = join(workdir, 'sapmachine')
+
+    #temporary test
+    run_jenkins_jobs(16, "sapmachine-16+24")
 
     # fetch all branches
     sapmachine_branches = utils.get_active_sapmachine_branches()
