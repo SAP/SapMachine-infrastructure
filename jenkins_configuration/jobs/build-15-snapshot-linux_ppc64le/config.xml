@@ -1,23 +1,63 @@
 <flow-definition plugin="workflow-job">
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps">
     <script>pipeline {
+    environment {
+        GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
+    }
     agent {
         label "linux_ppc64le"
     }
     stages {
-        stage("Checkout Infrastructure") {
+        stage("Init") {
             steps {
-                checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
                 script {
+                    if (JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/) {
+                        setGitHubPullRequestStatus context: "validate-pr-15-linux_ppc64le", state: 'PENDING'
+                    }
                     env.VERIFICATION_RESULT = "1"
+                }
+                cleanWs deleteDirs: true, disableDeferredWipeout: true
+                checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+                script {
+                    if (JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/) {
+                        def platform = "linux_ppc64le"
+                        env.COMMENT = ""
+                        if (platform == 'linux_x86_64') {
+                            env.COMMENT = "-c"
+                        }
+                        env.VERIFICATION_RESULT = sh(
+                            script: "python3 SapMachine-Infrastructure/lib/verify_pr.py -p ${env.GITHUB_PR_NUMBER} ${env.COMMENT}",
+                            returnStatus: true
+                        )
+
+                        if (env.VERIFICATION_RESULT == "0") {
+                            error("Pull Request Verification failed")
+                        }
+                    }
+                }
+            }
+        }
+        stage("Checkout Repository") {
+            when {
+                expression { env.VERIFICATION_RESULT != "2" }
+            }
+            steps {
+                checkout changelog: true, poll: false, scm: [$class: 'GitSCM', branches: [[name: "*/${params.SAPMACHINE_GIT_BRANCH}"]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine.git']]]
+            }
+        }
+        stage('Download Prerequisites') {
+            when {
+                expression { env.VERIFICATION_RESULT != "2" }
+            }
+            steps {
+                script {
                     def major = "15"
 
                     if (BOOT_JDK_MAJOR?.trim()) {
                         major = BOOT_JDK_MAJOR
                     } else if (!major?.trim()) {
                         def match = (SAPMACHINE_GIT_BRANCH =~ /sapmachine(\d*)/)
-                        if (match &amp;&amp;
-                            match[0]) {
+                        if (match &amp;&amp; match[0]) {
                             major = match[0][1]
                         }
                     }
@@ -27,32 +67,8 @@
                     }
 
                     sh "python3 SapMachine-Infrastructure/lib/download_boot_jdk.py -m ${major} -d `pwd`"
-                }
-            }
-        }
-        stage('Verify PR') {
-            when {
-                expression { JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/}
-            }
-            environment {
-                GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
-                CONTEXT = "validate-pr-15-linux_ppc64le"
-            }
-            steps {
-                script {
-                    setGitHubPullRequestStatus context: CONTEXT, state: 'PENDING'
-                    def platform = "linux_ppc64le"
-                    env.COMMENT = ""
-                    if (platform == 'linux_x86_64') {
-                        env.COMMENT = "-c"
-                    }
-                    env.VERIFICATION_RESULT = sh(
-                        script: "python3 SapMachine-Infrastructure/lib/verify_pr.py -p ${env.GITHUB_PR_NUMBER} ${env.COMMENT}",
-                        returnStatus: true
-                    )
-
-                    if (env.VERIFICATION_RESULT == "0") {
-                        error("Pull Request Verification failed")
+                    if (params.RUN_GTESTS == true) {
+                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/tags/release-1.8.1']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'gtest']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/google/googletest.git']]]
                     }
                 }
             }
@@ -67,6 +83,7 @@
 }
 
             when {
+                beforeAgent true
                 expression { env.VERIFICATION_RESULT != "2" }
             }
             environment {
@@ -86,6 +103,7 @@
 }
 
             when {
+                beforeAgent true
                 expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.RUN_GTESTS == true }
             }
             steps {
@@ -109,6 +127,7 @@
 }
 
             when {
+                beforeAgent true
                 expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.RUN_TESTS == true }
             }
             steps {
@@ -131,11 +150,12 @@
 }
 
             when {
+                beforeAgent true
                 expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.RUN_TESTS == true &amp;&amp; params.hotspot_test_groups }
             }
             environment {
-              SCIMARK_2_CP = '/opt/scimark2/scimark2lib.jar'
-              TESTSUITE = 'hotspot'
+                SCIMARK_2_CP = '/opt/scimark2/scimark2lib.jar'
+                TESTSUITE = 'hotspot'
             }
             steps {
                 sh "bash SapMachine-Infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${env.TESTSUITE} ${params.hotspot_test_groups} || true"
@@ -161,10 +181,11 @@
 }
 
             when {
+                beforeAgent true
                 expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.RUN_TESTS == true &amp;&amp; params.jdk_test_groups }
             }
             environment {
-              TESTSUITE = 'jdk'
+                TESTSUITE = 'jdk'
             }
             steps {
                 sh "bash SapMachine-Infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${env.TESTSUITE} ${params.jdk_test_groups} || true"
@@ -191,6 +212,7 @@
 }
 
             when {
+                beforeAgent true
                 expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.RUN_TESTS == true &amp;&amp; params.langtools_test_groups }
             }
             environment {
@@ -221,6 +243,7 @@
 }
 
             when {
+                beforeAgent true
                 expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.RUN_DACAPO == true }
             }
             environment {
@@ -234,9 +257,9 @@
         }
         stage('Archive') {
             steps {
-                archive 'test.zip'
-                archive 'support_gensrc.zip'
-                archive '*.dmg'
+                archiveArtifacts allowEmptyArchive: true, artifacts: 'test.zip'
+                archiveArtifacts allowEmptyArchive: true, artifacts: 'support_gensrc.zip'
+                archiveArtifacts allowEmptyArchive: true, artifacts: '*.dmg'
 
                 script {
                     def jdk_bundle_name = readFile "${env.WORKSPACE}/jdk_bundle_name.txt"
@@ -252,9 +275,6 @@
         stage('Build Windows Installer') {
             when {
                 expression { env.VERIFICATION_RESULT != "2" &amp;&amp; JOB_NAME ==~ /((\S*)(windows_x86_64)(\S*))/ }
-            }
-            environment {
-              GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
             }
             steps {
                 withCredentials([
@@ -279,7 +299,7 @@
                 expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.PUBLISH == true &amp;&amp; JOB_NAME ==~ /((\S*)(release)(\S*))/}
             }
             environment {
-              SAPMACHINE_PUBLISH_GITHUB_TOKEN = credentials('SapMachine-Github-Token')
+                SAPMACHINE_PUBLISH_GITHUB_TOKEN = credentials('SapMachine-Github-Token')
             }
             steps {
                 withCredentials([
@@ -296,9 +316,6 @@
         stage('Publish Windows Installer') {
             when {
                 expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.PUBLISH == true &amp;&amp; JOB_NAME ==~ /((\S*)(release-windows_x86_64)(\S*))/ }
-            }
-            environment {
-              GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
             }
             steps {
                 withCredentials([
@@ -356,39 +373,48 @@
                 build job: 'generate-dockerfiles', propagate: false, wait: true
             }
         }
-        stage('Set PR status') {
-            when {
-                expression { JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/}
-            }
-            environment {
-                GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
-                CONTEXT = "validate-pr-15-linux_ppc64le"
-            }
-            steps {
-                script {
-                    if (job.result == 'SUCCESS') {
-                        setGitHubPullRequestStatus context: CONTEXT, state: 'SUCCESS'
-                    } else if (job.result == 'UNSTABLE') {
-                        setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'tests failed'
-                    } else {
-                        setGitHubPullRequestStatus context: CONTEXT, state: 'FAILURE', message: 'build failed'
-                    }
+    }
+    post {
+        aborted {
+            script {
+                if (JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/) {
+                    setGitHubPullRequestStatus context: "validate-pr-15-linux_ppc64le", state: 'FAILURE', message: 'job aborted'
                 }
             }
         }
-    }
-    post {
-        unsuccessful {
-           script {
-               if (!(JOB_NAME ==~ /((\S*)(windows_x86_64)(\S*))/)) {
-                   sh 'zip -rq workspace.zip .'
-                   archiveArtifacts allowEmptyArchive: true, artifacts: 'workspace.zip'
-               }
-           }
+        failure {
+            script {
+                if (JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/) {
+                    setGitHubPullRequestStatus context: "validate-pr-15-linux_ppc64le", state: 'FAILURE', message: 'build failed'
+                }
+            }
         }
-        cleanup {
+        unstable {
+            script {
+                if (JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/) {
+                    setGitHubPullRequestStatus context: "validate-pr-15-linux_ppc64le", state: 'FAILURE', message: 'tests failed'
+                }
+            }
+        }
+        success {
             cleanWs deleteDirs: true, disableDeferredWipeout: true
+            script {
+                if (JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/) {
+                    setGitHubPullRequestStatus context: "validate-pr-15-linux_ppc64le", state: 'SUCCESS'
+                }
+            }
         }
+        // unsuccessful {
+        //     script {
+        //         if (!(JOB_NAME ==~ /((\S*)(windows_x86_64)(\S*))/)) {
+        //             sh 'zip -rq workspace.zip .'
+        //             archiveArtifacts allowEmptyArchive: true, artifacts: 'workspace.zip'
+        //         }
+        //     }
+        // }
+        // cleanup {
+        //     cleanWs deleteDirs: true, disableDeferredWipeout: true
+        // }
     }
 }
 </script>
@@ -431,12 +457,6 @@
         <hudson.model.StringParameterDefinition>
           <name>GIT_TAG_NAME</name>
           <description>The Git tag to build.</description>
-          <defaultValue />
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>GITHUB_PR_NUMBER</name>
-          <description>The GitHub Pull Request number. Only used in Pull Request validation builds.</description>
           <defaultValue />
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>

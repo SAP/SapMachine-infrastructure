@@ -1,7 +1,11 @@
-<hudson.plugins.emailext.ExtendedEmailPublisherDescriptor plugin="email-ext@2.69">
+<hudson.plugins.emailext.ExtendedEmailPublisherDescriptor plugin="email-ext@2.79">
   <defaultSuffix>rene</defaultSuffix>
   <mailAccount>
+    <smtpPort>25</smtpPort>
+    <smtpPassword>{AQAAABAAAAAQNi9HarBP1nrwAK9n3etWef/dTEF896RyfJYZMJ//vpE=}</smtpPassword>
     <useSsl>false</useSsl>
+    <advProperties />
+    <defaultAccount>true</defaultAccount>
   </mailAccount>
   <addAccounts />
   <charset>UTF-8</charset>
@@ -16,12 +20,13 @@ Check console output at $BUILD_URL to view the results.</defaultBody>
   <defaultTriggerIds>
     <string>hudson.plugins.emailext.plugins.trigger.FailureTrigger</string>
   </defaultTriggerIds>
+  <emergencyReroute />
   <maxAttachmentSize>-1</maxAttachmentSize>
   <recipientList />
   <defaultReplyTo />
   <allowedDomains />
   <excludedCommitters />
-  <overrideGlobalSettings>true</overrideGlobalSettings>
+  <listId />
   <precedenceBulk>false</precedenceBulk>
   <debugMode>false</debugMode>
   <requireAdminForTemplateTesting>false</requireAdminForTemplateTesting>

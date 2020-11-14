@@ -482,7 +482,7 @@
         <hudson.views.LastDurationColumn />
         <hudson.views.BuildButtonColumn />
       </columns>
-      <includeRegex>build--user_branch-.*$|build-service-user_branch-$</includeRegex>
+      <includeRegex>build-user-branch-.*$|build-service-branch-user$</includeRegex>
       <recurse>false</recurse>
     </listView>
     <listView>
@@ -509,7 +509,7 @@
       <recurse>false</recurse>
     </listView>
   </views>
-  <primaryView>Linux x86 64 Builds</primaryView>
+  <primaryView>Pull Request Validation Builds </primaryView>
   <slaveAgentPort>50000</slaveAgentPort>
   <label />
   <crumbIssuer class="org.jenkinsci.plugins.strictcrumbissuer.StrictCrumbIssuer" plugin="strict-crumb-issuer@2.1.0">
