@@ -162,9 +162,6 @@ def main(argv=None):
     global git_target_dir
     git_target_dir = join(workdir, 'sapmachine')
 
-    #temporary test
-    run_jenkins_jobs(16, "sapmachine-16+24")
-
     # fetch all branches
     sapmachine_branches = utils.get_active_sapmachine_branches()
     if sapmachine_branches is None or len(sapmachine_branches) == 0:
