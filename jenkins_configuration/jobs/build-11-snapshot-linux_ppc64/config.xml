@@ -177,7 +177,7 @@
               TESTSUITE = 'langtools'
             }
             steps {
-                sh "bash SapMachine-Infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${env.TESTSUITE} ${params.langtools_test_groups}  || true"
+                sh "bash SapMachine-Infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${env.TESTSUITE} ${params.langtools_test_groups} || true"
 
                 publishHTML target: [
                     allowMissing: false,
@@ -348,24 +348,21 @@
             }
         }
         success {
-            cleanWs deleteDirs: true, disableDeferredWipeout: true
             script {
                 if (JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/) {
                     setGitHubPullRequestStatus context: "validate-pr-11-linux_ppc64", state: 'SUCCESS'
                 }
             }
+            cleanWs deleteDirs: true, disableDeferredWipeout: true
         }
-        // unsuccessful {
-        //     script {
-        //         if (!(JOB_NAME ==~ /((\S*)(windows_x86_64)(\S*))/)) {
-        //             sh 'zip -rq workspace.zip .'
-        //             archiveArtifacts allowEmptyArchive: true, artifacts: 'workspace.zip'
-        //         }
-        //     }
-        // }
-        // cleanup {
-        //     cleanWs deleteDirs: true, disableDeferredWipeout: true
-        // }
+        unsuccessful {
+            script {
+                if ((JOB_NAME ==~ /((\S*)(windows_x86_64)(\S*))/) || (JOB_NAME ==~ /((\S*)(linux_x86_64)(\S*))/)) {
+                    sh 'zip -rq workspace.zip .'
+                    archiveArtifacts allowEmptyArchive: true, artifacts: 'workspace.zip'
+                }
+            }
+        }
     }
 }
 </script>
