@@ -256,6 +256,10 @@
             }
         }
         stage('Archive') {
+            when {
+                beforeAgent true
+                expression { env.VERIFICATION_RESULT != "2" }
+            }
             steps {
                 archiveArtifacts allowEmptyArchive: true, artifacts: 'test.zip'
                 archiveArtifacts allowEmptyArchive: true, artifacts: 'support_gensrc.zip'
