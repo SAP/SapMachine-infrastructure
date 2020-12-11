@@ -63,22 +63,16 @@
     description: 'Infrastructure related jobs'
     view-type: list
     job-name:
-        - repository-update
-        - repository-tags
-        - jenkins-job-generator
-        - jenkins-job-generator-trigger
+        - generate-website-data
         - jenkins-configuration-backup
         - jenkins-configuration-restore
-        - generate-website-data
+        - jenkins-job-generator-trigger
+        - jenkins-job-generator
+        - jtreg
         - osx-upload
         - osx-upload-processor
-
-- view:
-    name: 'JTREG'
-    description: 'JTREG jobs'
-    view-type: list
-    job-name:
-        - jtreg
+        - repository-tags
+        - repository-update
 
 - view:
     name: 'Cloud Foundry Java Buildpack'
