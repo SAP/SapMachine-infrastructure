@@ -29,7 +29,7 @@ exception_list = [
     'jdk/jdk14',
     'jdk-updates/jdk14u',
     'jdk-updates/jdk14u-dev',
-    'jdk/jdk15'
+    'jdk/jdk15',
     'openjdk/jdk11',
     'openjdk/jdk12',
     'openjdk/jdk12u',
