@@ -78,6 +78,7 @@ def main(argv=None):
 
     if args.mercurial != True:
         openjdk_repositories.append('openjdk/jdk')
+        openjdk_repositories.extend(test_repositories(openjdk_git_base, 'openjdk/jdk'))
         openjdk_repositories.extend(test_repositories(openjdk_git_base, 'openjdk/jdk', 'u'))
         openjdk_repositories.extend(test_repositories(openjdk_git_base, 'openjdk/jdk', 'u-dev'))
     #else:
