@@ -349,33 +349,11 @@
         <string>jenkins-configuration-restore</string>
         <string>jenkins-job-generator</string>
         <string>jenkins-job-generator-trigger</string>
+        <string>jtreg</string>
         <string>osx-upload</string>
         <string>osx-upload-processor</string>
         <string>repository-tags</string>
         <string>repository-update</string>
-      </jobNames>
-      <jobFilters />
-      <columns>
-        <hudson.views.StatusColumn />
-        <hudson.views.WeatherColumn />
-        <hudson.views.JobColumn />
-        <hudson.views.LastSuccessColumn />
-        <hudson.views.LastFailureColumn />
-        <hudson.views.LastDurationColumn />
-        <hudson.views.BuildButtonColumn />
-      </columns>
-      <recurse>false</recurse>
-    </listView>
-    <listView>
-      <owner class="hudson" reference="../../.." />
-      <name>JTREG</name>
-      <description>JTREG jobs&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
-      <filterExecutors>false</filterExecutors>
-      <filterQueue>false</filterQueue>
-      <properties class="hudson.model.View$PropertyList" />
-      <jobNames>
-        <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator" />
-        <string>jtreg</string>
       </jobNames>
       <jobFilters />
       <columns>

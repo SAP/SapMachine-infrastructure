@@ -216,7 +216,7 @@
                 expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.RUN_TESTS == true &amp;&amp; params.langtools_test_groups }
             }
             environment {
-              TESTSUITE = 'langtools'
+                TESTSUITE = 'langtools'
             }
             steps {
                 sh "bash SapMachine-Infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${env.TESTSUITE} ${params.langtools_test_groups} || true"
