@@ -114,6 +114,7 @@ rm "${WORKSPACE}/test.zip" || true
 zip -rq "${WORKSPACE}/test.zip" test
 zip -rq "${WORKSPACE}/test.zip" make/data/lsrdata
 zip -rq "${WORKSPACE}/test.zip" make/data/blacklistedcertsconverter/blacklisted.certs.pem || true
+zip -rq "${WORKSPACE}/test.zip" make/data/blockedcertsconverter || true
 zip -rq "${WORKSPACE}/test.zip" make/data/unicodedata || true
 zip -rq "${WORKSPACE}/test.zip" make/data/tzdata || true
 zip -rq "${WORKSPACE}/test.zip" src/jdk.incubator.jpackage/*/classes/jdk/incubator/jpackage/internal || true
