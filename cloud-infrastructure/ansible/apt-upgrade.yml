@@ -1,10 +1,10 @@
-# Copyright (c) 2001-2018 by SAP SE, Walldorf, Germany.
+# Copyright (c) 2001-2021 by SAP SE, Walldorf, Germany.
 # All rights reserved. Confidential and proprietary.
 
 # ansible 2.4
 ---
   - name: Update Packages
-    hosts: SapMachineMaster
+    hosts: SapMachineServer
     gather_facts: false
     vars:
       ansible_user: ubuntu

@@ -1,6 +1,6 @@
 # SapMachine Cloud Infrastructure
 
-The SapMachine cloud infrastructure hosts Jenkins Master and Slave instances as well as the hosting of the SapMachine Linux Package server.
+The SapMachine cloud infrastructure hosts Jenkins server and client instances as well as the hosting of the SapMachine Linux Package server.
 The [docker-compose configuration](compose.yml) describes a set of 7 Docker container.
 
 1. **jwilder/nginx-proxy** (https://hub.docker.com/r/jwilder/nginx-proxy/): Starts a nginx reverse proxy and automatically redirects HTTP(S) requests based on the request URL to the corresponding Docker container. This routing is defined by the environment variable *VIRTUAL_HOST* of each Docker container.
@@ -9,11 +9,11 @@ The [docker-compose configuration](compose.yml) describes a set of 7 Docker cont
 	* ci.sapmachine.io
 	* dist.sapmachine.io
 
-3. [jenkins_master](ci/Dockerfile): The Jenkins Master instance
+3. [jenkins_server](ci/Dockerfile): The Jenkins server instance
 4. [dist_server](dist/Dockerfile): The Linux Package server
 5. [redirect_server](redirect/Dockerfile): Redirects requests to sapmachine.io to the Sapmachine GitHup Page.
 6. [redirect_server_www](redirect/Dockerfile): Redirects requests to www.sapmachine.io to the Sapmachine GitHup Page.
-7. [ci_slave_ubuntu](ci-slave-ubuntu/Dockerfile): Jenkins Slave used for building Debian packages.
+7. [ci_client_ubuntu](ci-client-ubuntu/Dockerfile): Jenkins client used for building Debian packages.
 
 The docker-compose configuration uses the [.env](.env) file for defining common environment variables.
 
@@ -115,13 +115,13 @@ This hosts file must contain the IP addresses of the managed machines.
 [local]
 localhost
 
-[SapMachineMaster]
+[SapMachineServer]
 123.100.10.1
 
-[SapMachineSlave-Linux-ppc64le]
+[SapMachineClient-Linux-ppc64le]
 123.100.10.2
 
-[SapMachineSlave-Linux-ppc64]
+[SapMachineClient-Linux-ppc64]
 123.100.10.3
 ```
 
@@ -146,7 +146,7 @@ cd ansible
 ansible-playbook -i hosts provision-aws.yml
 ```
 
-### Setup the SapMachine master instance
+### Setup the SapMachine server instance
 
 Run the following command:
 
@@ -155,30 +155,30 @@ cd ansible
 ansible-playbook -i hosts setup-sapmachine.yml
 ```
 
-The ``` setup-sapmachine.yml``` playbook can also be used to update the SapMachine master instance. All Docker images will be updated to the latest version.
+The ``` setup-sapmachine.yml``` playbook can also be used to update the SapMachine server instance. All Docker images will be updated to the latest version.
 
-There may be situations, where the Jenkins slave fails to start or needs to be restarter. Use the following command to restart the slave:
+There may be situations, where the Jenkins client fails to start or needs to be restarted. Use the following command to restart the client:
 
 ```
-ansible-playbook -i hosts setup-sapmachine.yml --tags "jenkins_slave"
+ansible-playbook -i hosts setup-sapmachine.yml --tags "jenkins_client"
 ```
 
-### Setup the Linux PPC64LE Jenkins Slave
+### Setup the Linux PPC64LE Jenkins client
 
 Run the following command:
 
 ```
 cd ansible
-ansible-playbook -i hosts -u <your user name> jenkins-slave-linux-ppc64le.yml --extra-vars "jenkins_master_url=https://ci.sapmachine.io/computer/agent-linux-ppc64le-1/slave-agent.jnlp jenkins_slave_secret=<place the secret here>"
+ansible-playbook -i hosts -u <your user name> jenkins-client-linux-ppc64le.yml --extra-vars "jenkins_server_url=https://ci.sapmachine.io/computer/agent-linux-ppc64le-1/-agent.jnlp jenkins_client_secret=<place the secret here>"
 ```
 
 
-### Setup the Linux PPC64 Jenkins Slave
+### Setup the Linux PPC64 Jenkins client
 
 Run the following command:
 
 ```
 cd ansible
-ansible-playbook -i hosts -u <your user name> jenkins-slave-linux-ppc64.yml --extra-vars "jenkins_master_url=https://ci.sapmachine.io/computer/agent-linux-ppc64-1/slave-agent.jnlp jenkins_slave_secret=<place the secret here>"
+ansible-playbook -i hosts -u <your user name> jenkins-client-linux-ppc64.yml --extra-vars "jenkins_server_url=https://ci.sapmachine.io/computer/agent-linux-ppc64-1/slave-agent.jnlp jenkins_client_secret=<place the secret here>"
 ```
 

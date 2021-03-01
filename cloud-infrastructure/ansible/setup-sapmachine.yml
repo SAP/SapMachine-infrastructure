@@ -1,10 +1,10 @@
-# Copyright (c) 2001-2018 by SAP SE, Walldorf, Germany.
+# Copyright (c) 2001-2021 by SAP SE, Walldorf, Germany.
 # All rights reserved. Confidential and proprietary.
 
 # ansible 2.9
 ---
-  - name: Setup SapMachine Master server
-    hosts: SapMachineMaster
+  - name: Setup SapMachine server
+    hosts: SapMachineServer
     gather_facts: Yes
     pre_tasks:
       - name: 'install python'
@@ -12,8 +12,8 @@
     vars:
       ansible_user: ubuntu
       ansible_ssh_private_key_file: SapMachine.pem
-      jenkins_master_url: https://ci.sapmachine.io/computer/agent-linux-x86_64-1/slave-agent.jnlp
-      jenkins_slave_name: agent-linux-x86_64-1
+      jenkins_server_url: https://ci.sapmachine.io/computer/agent-linux-x86_64-1/slave-agent.jnlp
+      jenkins_client_name: agent-linux-x86_64-1
 
     tasks:
 
@@ -135,14 +135,14 @@
           - users.create_sapmachine
 
       # create jenkins group and user
-      # used for running the jenkins slave
+      # used for running the jenkins client
       - name: create jenkins group
         group:
           name: jenkins
           state: present
         become: yes
         tags:
-          - jenkins_slave
+          - jenkins_client
           - groups.create_jenkins
 
       - name: create jenkins user
@@ -152,15 +152,15 @@
           groups: jenkins, docker
         become: yes
         tags:
-          - jenkins_slave
+          - jenkins_client
           - users.create_jenkins
 
-      # copy the sapmachine master files, containing the docker container
+      # copy the sapmachine server files, containing the docker container
       # and docker compose configuration
-      - name: copy sapmachine_master files
+      - name: copy sapmachine_server files
         synchronize:
           src: ../../
-          dest: /home/sapmachine/sapmachine_master
+          dest: /home/sapmachine/sapmachine_server
           recursive: yes
           rsync_opts:
             - "--exclude=.git*"
@@ -170,10 +170,10 @@
         tags:
           - sapmachine.copy
 
-      # set the ownership of samachine_master to sapmachine:sapmachine
-      - name: set ownership of sapmachine_master
+      # set the ownership of samachine_server to sapmachine:sapmachine
+      - name: set ownership of sapmachine_server
         file:
-          path: /home/sapmachine/sapmachine_master
+          path: /home/sapmachine/sapmachine_server
           owner: sapmachine
           group: sapmachine
           recurse: yes
@@ -181,27 +181,27 @@
         tags:
           - sapmachine.set_ownership
 
-      # create the jenkins slave home directory
-      - name: create Jenkins Slave home directory
+      # create the jenkins client home directory
+      - name: create Jenkins client home directory
         file:
-          path: /home/jenkins/slave-home
+          path: /home/jenkins/client-home
           state: directory
         become: yes
         become_user: jenkins
         tags:
-          - jenkins_slave
-          - jenkins_slave.create_home
+          - jenkins_client
+          - jenkins_client.create_home
 
-      # copy the script file to start the jenkins slave
-      - name: copy Jenkins Slave files
+      # copy the script file to start the jenkins client
+      - name: copy Jenkins client files
         synchronize:
-          src: ../ci-slave-local/start-slave.sh
-          dest: /home/jenkins/start-slave.sh
+          src: ../ci-client-local/start-client.sh
+          dest: /home/jenkins/start-client.sh
         become: yes
         become_user: jenkins
         tags:
-          - jenkins_slave
-          - jenkins_slave.copy_files
+          - jenkins_client
+          - jenkins_client.copy_files
 
       # in case any docker container is running, stop them
       - name: stop all running docker container
@@ -230,13 +230,13 @@
         tags:
           - docker.config_reload
 
-      # stop all running java processes (jenkins slave)
+      # stop all running java processes (jenkins client)
       - name: stop all Java processes
         command: killall -9 java
         become: yes
         failed_when: false
         tags:
-          - jenkins_slave
+          - jenkins_client
           - java.kill_all
 
       # update docker images
@@ -267,7 +267,7 @@
       - name: run docker-compose
         command: docker-compose -f ./compose.yml up -d --build
         args:
-          chdir: /home/sapmachine/sapmachine_master
+          chdir: /home/sapmachine/sapmachine_server
         become: yes
         become_user: sapmachine
         tags:
@@ -275,24 +275,24 @@
 
       # these files are no longer needed and contain sensitive data
       # remove them
-      - name: remove sapmachine_master
+      - name: remove sapmachine_server
         file:
-          path: /home/sapmachine/sapmachine_master
+          path: /home/sapmachine/sapmachine_server
           state: absent
         become: yes
         become_user: sapmachine
         tags:
-          - sapmachine_master.remove
+          - sapmachine_server.remove
 
-      # wait for the jenkins master server to come up
+      # wait for the jenkins server to come up
       # and read the SapMachine user password
-      - name: wait for Jenkins Master to come up
+      - name: wait for Jenkins server to come up
         command: docker exec ci bash /usr/share/jenkins/read-sapmachine-pw.sh
         become: yes
         become_user: sapmachine
         register: sapmachine_pw
         tags:
-          - jenkins_master.wait_for
+          - jenkins_server.wait_for
 
       - name: "wait for dist.sapmachine.io"
         uri:
@@ -329,17 +329,17 @@
         become: yes
         tags:
           - packages.sapmachine
-          - jenkins_slave
+          - jenkins_client
 
-      # read the jenkins slave secret for the jenkins slave
-      - name: read Jenkins Slave secret
-        command: "docker exec ci bash /usr/share/jenkins/read-slave-secret.sh {{ jenkins_slave_name }}"
+      # read the jenkins client secret for the jenkins client
+      - name: read Jenkins client secret
+        command: "docker exec ci bash /usr/share/jenkins/read-client-secret.sh {{ jenkins_client_name }}"
         become: yes
         become_user: jenkins
-        register: slave_secret
+        register: client_secret
         tags:
-          - jenkins_slave
-          - jenkins_slave.secret
+          - jenkins_client
+          - jenkins_client.secret
 
       - name: "wait for ci.sapmachine.io"
         uri:
@@ -350,30 +350,30 @@
         retries: 60
         delay: 1
         tags:
-          - jenkins_slave
+          - jenkins_client
 
-      # download the jenkins slave jar file
-      - name: download Jenkins Slave jar
+      # download the jenkins client jar file
+      - name: download Jenkins client jar
         get_url:
           url: "http://ci.sapmachine.io/jnlpJars/agent.jar"
-          dest: /home/jenkins/slave.jar
+          dest: /home/jenkins/client.jar
           force: yes
         become: yes
         become_user: jenkins
         tags:
-          - jenkins_slave
-          - jenkins_slave.download_slave_jar
+          - jenkins_client
+          - jenkins_client.download_client_jar
 
-      # start the jenkins slave
-      - name: start Jenkins Slave
-        command: "/home/jenkins/start-slave.sh {{ jenkins_master_url }} {{ slave_secret.stdout }}"
+      # start the jenkins client
+      - name: start Jenkins client
+        command: "/home/jenkins/start-client.sh {{ jenkins_server_url }} {{ client_secret.stdout }}"
         args:
           chdir: /home/jenkins
         become: yes
         become_user: jenkins
         tags:
-          - jenkins_slave
-          - jenkins_slave.start
+          - jenkins_client
+          - jenkins_client.start
 
       # display the jenkins SapMachine password
       - name: show Jenkins SapMachine password
