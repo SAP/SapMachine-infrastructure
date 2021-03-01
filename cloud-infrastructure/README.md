@@ -21,20 +21,20 @@ The docker-compose configuration uses the [.env](.env) file for defining common 
 
 ### Prerequisites
 
-#### Python 2.7 and pip
+#### Python 3 and pip
 
-To install Python 2.7 and pip on Ubuntu, run:
+To install Python and pip on Ubuntu, run:
 
 ```
-sudo apt-get install python2.7 python-pip
+sudo apt-get install python3 python3-pip
 ```
 
 #### Ansible
 
-Ansible 2.4 is requred to run the Ansible playbooks. In your shell, run the following commands:
+Ansible 2.9 is requred to run the Ansible playbooks. In your shell, run the following commands:
 
 ```
-git clone -b stable-2.4 https://github.com/ansible/ansible.git
+git clone -b stable-2.9 https://github.com/ansible/ansible.git
 source ansible/hacking/env-setup
 ```
 
@@ -43,7 +43,7 @@ source ansible/hacking/env-setup
 boto3 is an AWS plugin for Ansible.
 
 ```
-pip install boto3
+pip3 install boto3
 ```
 
 #### Keys for signing the Linux Packages
