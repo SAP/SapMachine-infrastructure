@@ -1,18 +1,18 @@
-# Copyright (c) 2001-2018 by SAP SE, Walldorf, Germany.
+# Copyright (c) 2001-2021 by SAP SE, Walldorf, Germany.
 # All rights reserved. Confidential and proprietary.
 
 # ansible 2.4
 ---
-  - name: Setup SapMachine Linux ppc64 Slave
-    hosts: SapMachineSlave-Linux-ppc64
+  - name: Setup SapMachine Linux ppc64 Client
+    hosts: SapMachineClient-Linux-ppc64
     gather_facts: False
     pre_tasks:
       - name: 'install python2'
         raw: sudo dnf -y install python libselinux-python
     vars:
-      slave_jar_version: 3.21
-      jenkins_master_url: https://ci.sapmachine.io/computer/agent-linux-ppc64-1/slave-agent.jnlp
-      jenkins_slave_name: agent-linux-ppc64-1
+      client_jar_version: 3.21
+      jenkins_server_url: https://ci.sapmachine.io/computer/agent-linux-ppc64-1/slave-agent.jnlp
+      jenkins_client_name: agent-linux-ppc64-1
       boot_jdk_url: https://github.com/SAP/SapMachine/releases/download/sapmachine-11.0.1%2B13-0/sapmachine-jdk-11.0.1.13_linux-ppc64_bin.tar.gz
 
     tasks:
@@ -147,7 +147,7 @@
           - boot_jdk
 
       # create jenkins group and user
-      # used for running the jenkins slave
+      # used for running the jenkins client
       - name: create jenkins group
         group:
           name: jenkins
@@ -165,38 +165,38 @@
         tags:
           - users.create_jenkins
 
-      # create the jenkins slave home directory
-      - name: create Jenkins Slave home directory
+      # create the jenkins client home directory
+      - name: create Jenkins client home directory
         file:
-          path: /home/jenkins/slave-home
+          path: /home/jenkins/client-home
           state: directory
         become: yes
         become_user: jenkins
         tags:
-          - jenkins_slave.create_home
+          - jenkins_client.create_home
 
-      # download the jenkins slave jar file
-      - name: download Jenkins Slave jar
+      # download the jenkins client jar file
+      - name: download Jenkins client jar
         get_url:
-          url: "https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/{{ slave_jar_version }}/remoting-{{ slave_jar_version }}.jar"
-          dest: /home/jenkins/slave.jar
+          url: "https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/{{ client_jar_version }}/remoting-{{ client_jar_version }}.jar"
+          dest: /home/jenkins/client.jar
           force: yes
         become: yes
         become_user: jenkins
         tags:
-          - jenkins_slave.download_slave_jar
+          - client.download_client_jar
 
-      # copy the script file to start the jenkins slave
-      - name: copy Jenkins Slave files
+      # copy the script file to start the jenkins client
+      - name: copy Jenkins client files
         synchronize:
-          src: ../ci-slave-local/start-slave.sh
-          dest: /home/jenkins/start-slave.sh
+          src: ../ci-client-local/start-client.sh
+          dest: /home/jenkins/start-client.sh
         become: yes
         become_user: jenkins
         tags:
-          - jenkins_slave.copy_files
+          - jenkins_client.copy_files
 
-      # stop all running java processes (jenkins slave)
+      # stop all running java processes (jenkins client)
       - name: stop all Java processes
         command: killall -9 java
         become: yes
@@ -205,13 +205,13 @@
         tags:
           - java.kill_all
 
-      # start the jenkins slave
-      - name: start Jenkins Slave
-        command: "/home/jenkins/start-slave.sh {{ jenkins_master_url }} {{ jenkins_slave_secret }}"
+      # start the jenkins client
+      - name: start Jenkins client
+        command: "/home/jenkins/start-client.sh {{ jenkins_server_url }} {{ jenkins_client_secret }}"
         args:
           chdir: /home/jenkins
         become: yes
         become_user: jenkins
         tags:
-          - jenkins_slave.start
+          - jenkins_client.start
 

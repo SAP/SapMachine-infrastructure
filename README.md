@@ -2,7 +2,7 @@
 
 ## Description
 
-This repository contains tools, scripts and infrastructure required to build, test and maintain the [SapMachine project](https://github.com/SAP/SapMachine). 
+This repository contains tools, scripts and infrastructure required to build, test and maintain the [SapMachine project](https://github.com/SAP/SapMachine).
 
 The jobs run on our [Jenkins](https://ci.sapmachine.io/) installation.
 
@@ -19,7 +19,7 @@ The [SapMachine Github Repository](https://github.com/SAP/SapMachine) is organiz
 
 We cherry-pick our changes between sapmachine and sapmachine10.
 We merge **jdk/jdk10** and **jdk/jdk** with new build tags.
-The job *check-tag-pipeline*, polls these branches for new tags, opens pull requests and starts validation jobs. 
+The job *check-tag-pipeline*, polls these branches for new tags, opens pull requests and starts validation jobs.
 Merge is triggered manually, after reviewing test and build results and resolving conflicts if needed.
 
 Build-jobs run in docker containers to have a reproducible build environment.
@@ -29,15 +29,15 @@ Build jobs start test jobs. However, we don't use the result of the tests as ind
 ## Requirements
 
 ### Jenkins Installation
-We run the jobs on a jenkins installation with one master and two slaves.
-As most of the jobs run in docker containers, docker must be installed on the slave machines.
+We run the jobs on a jenkins installation with one server and two clients.
+As most of the jobs run in docker containers, docker must be installed on the client machines.
 
 ### Access to SapMachine Repository
-Some of the jobs need push access to the [SapMachine repository](https://github.com/SAP/SapMachine). It is possible to work with a fork of this repository. The credentials have to be configured in Jenkis. 
- 
+Some of the jobs need push access to the [SapMachine repository](https://github.com/SAP/SapMachine). It is possible to work with a fork of this repository. The credentials have to be configured in Jenkis.
+
 ## Installation
 After installing jenkins, one pipeline job has to be configured that runs the Pipeline [jenkins-restore-pipeline](jenkins-restore-pipeline/Jenkinsfile). This jobs imports the whole jenkins configuration. After running this job, the configuration has to be reloaded.
-To get all the jobs to function, missing credentials have to be added. Depending on the jenkins installation, some missing plugins have to be installed. 
+To get all the jobs to function, missing credentials have to be added. Depending on the jenkins installation, some missing plugins have to be installed.
 If working with a forked SapMachine repository, the repository URL in most of the Jenkinsfiles has to be changed accordingly.
 
 ## Known Issues

@@ -1,5 +1,5 @@
 /**
-Copyright (c) 2001-2018 by SAP SE, Walldorf, Germany.
+Copyright (c) 2001-2021 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 **/
 
@@ -53,7 +53,7 @@ if (0 == getInitLevel()) {
     def domain = Domain.global()
     def store = instance.getExtensionList('com.cloudbees.plugins.credentials.SystemCredentialsProvider')[0].getStore()
     Yaml parser = new Yaml()
-    def credentials = parser.load(("/var/slaves/credentials.yml" as File).text)
+    def credentials = parser.load(("/var/clients/credentials.yml" as File).text)
 
     for (def secretText : credentials["secret_text"]) {
         def secretTextCred = new StringCredentialsImpl(
@@ -74,10 +74,10 @@ if (0 == getInitLevel()) {
         store.addCredentials(domain, userPasswordCred)
     }
 
-    runCmd("rm -rf /var/slaves/credentials.yml")
+    runCmd("rm -rf /var/clients/credentials.yml")
     println "--> importing credentials ... done"
 
-    // enable master slave security
+    // enable server client security
     instance.getInjector().getInstance(AdminWhitelistRule.class).setMasterKillSwitch(false)
 
     Thread.start {
@@ -98,12 +98,12 @@ if (0 == getInitLevel()) {
             jlc.setUrl(jenkins_root_url)
             jlc.save()
 
-            println "--> store slave information"
-            for (slave in hudson.model.Hudson.instance.slaves) {
-                File slaveSecret = new File("/var/slaves/${slave.name}.txt")
-                slaveSecret.write("${slave.getComputer().getJnlpMac()}")
+            println "--> store client information"
+            for (client in hudson.model.Hudson.instance.slaves) {
+                File clientSecret = new File("/var/clients/${client.name}.txt")
+                clientSecret.write("${client.getComputer().getJnlpMac()}")
             }
-            println "--> store slave information ... done"
+            println "--> store client information ... done"
 
             // restart the jenkins instance
             instance.restart()

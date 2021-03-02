@@ -11,10 +11,10 @@ volumes:
   jenkins_home:
   jenkins_log:
   pkg:
-  slaves:
-  ci_slave_ubuntu-jenkins:
-  ci_slave_ubuntu-gpg:
-  ci_slave_ubuntu-agent:
+  clients:
+  ci_client_ubuntu-jenkins:
+  ci_client_ubuntu-gpg:
+  ci_client_ubuntu-agent:
 services:
   # reverse proxy
   nginxproxy:
@@ -56,8 +56,8 @@ services:
   # uncomment this for testing
   #  environment:
   #    - ACME_CA_URI=https://acme-staging.api.letsencrypt.org/directory
-  # jenkins master server
-  jenkins_master:
+  # jenkins server
+  jenkins_server:
     build:
       context: ./ci
       dockerfile: Dockerfile
@@ -73,9 +73,9 @@ services:
       - jenkins_home:/var/jenkins_home
       - jenkins_log:/var/log/jenkins
       - pkg:/var/pkg
-      - slaves:/var/slaves
+      - clients:/var/clients
     ports:
-      # exposed port for jenkins slaves
+      # exposed port for jenkins clients
       - 50000:50000
     environment:
       - VIRTUAL_PORT=8080
@@ -93,7 +93,7 @@ services:
     depends_on:
       - nginxproxy
       - nginxproxy_comp
-      - jenkins_master
+      - jenkins_server
     networks:
       - ext
     volumes:
@@ -140,25 +140,25 @@ services:
       - VIRTUAL_HOST=www.${URL_ROOT}
       - LETSENCRYPT_HOST=www.${URL_ROOT}
       - LETSENCRYPT_EMAIL=${SAPMACHINE_EMAIL}
-  # jenkins ubuntu slave
-  ci_slave_ubuntu:
+  # jenkins ubuntu client
+  ci_client_ubuntu:
       build:
-        context: ./ci-slave-ubuntu
+        context: ./ci-client-ubuntu
         dockerfile: Dockerfile
-      container_name: ci-slave-ubuntu
+      container_name: ci-client-ubuntu
       restart:
         unless-stopped
       depends_on:
-        - jenkins_master
+        - jenkins_server
       networks:
         - ext
       volumes:
-        - ci_slave_ubuntu-jenkins:/home/jenkins/.jenkins
-        - ci_slave_ubuntu-gpg:/home/jenkins/.gnupg
-        - ci_slave_ubuntu-agent:/home/jenkins/agent
+        - ci_client_ubuntu-jenkins:/home/jenkins/.jenkins
+        - ci_client_ubuntu-gpg:/home/jenkins/.gnupg
+        - ci_cliebt_ubuntu-agent:/home/jenkins/agent
         - pkg:/var/pkg
-        - slaves:/var/slaves
+        - clients:/var/clients
       environment:
-        - MASTER_URL=https://ci.${URL_ROOT}/computer/${UBUNTU_SLAVE_NAME}/slave-agent.jnlp
-        - SLAVE_NAME=${UBUNTU_SLAVE_NAME}
-        - SLAVE_NO_CERTIFICATE_CHECK=${SLAVE_NO_CERTIFICATE_CHECK}
+        - SERVER_URL=https://ci.${URL_ROOT}/computer/${UBUNTU_CLIENT_NAME}/slave-agent.jnlp
+        - CLIENT_NAME=${UBUNTU_CLIENT_NAME}
+        - CLIENT_NO_CERTIFICATE_CHECK=${CLIENT_NO_CERTIFICATE_CHECK}

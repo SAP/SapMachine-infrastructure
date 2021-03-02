@@ -31,13 +31,13 @@ ENV HOME /home/jenkins
 RUN groupadd -g ${gid} jenkins \
   && useradd -c "Jenkins user" -d $HOME -u ${uid} -g ${gid} -s /bin/bash -m jenkins
 
-RUN curl --create-dirs -sSLo /usr/share/jenkins/slave.jar https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/${VERSION}/remoting-${VERSION}.jar \
+RUN curl --create-dirs -sSLo /usr/share/jenkins/client.jar https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/${VERSION}/remoting-${VERSION}.jar \
   && chmod 755 /usr/share/jenkins \
-  && chmod 644 /usr/share/jenkins/slave.jar
+  && chmod 644 /usr/share/jenkins/client.jar
 
-COPY start-slave.sh /home/jenkins/start-slave.sh
-RUN chmod +x /home/jenkins/start-slave.sh \
-  && chown jenkins:jenkins /home/jenkins/start-slave.sh
+COPY start-client.sh /home/jenkins/start-client.sh
+RUN chmod +x /home/jenkins/start-client.sh \
+  && chown jenkins:jenkins /home/jenkins/start-client.sh
 
 USER jenkins
 ENV AGENT_WORKDIR=${AGENT_WORKDIR}
@@ -50,4 +50,4 @@ VOLUME /home/jenkins/.gnupg
 VOLUME ${AGENT_WORKDIR}
 WORKDIR /home/jenkins
 
-ENTRYPOINT /home/jenkins/start-slave.sh
+ENTRYPOINT /home/jenkins/start-client.sh

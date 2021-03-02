@@ -1,18 +1,18 @@
-# Copyright (c) 2001-2018 by SAP SE, Walldorf, Germany.
+# Copyright (c) 2001-2021 by SAP SE, Walldorf, Germany.
 # All rights reserved. Confidential and proprietary.
 
 # ansible 2.4
 ---
-  - name: Setup SapMachine Linux PPC64LE Slave
-    hosts: SapMachineSlave-Linux-ppc64le
+  - name: Setup SapMachine Linux PPC64LE Client
+    hosts: SapMachineClient-Linux-ppc64le
     gather_facts: False
     pre_tasks:
       - name: 'install python2'
         raw: sudo apt-get update && sudo apt-get -qq -y --no-install-recommends install python
     vars:
-      slave_jar_version: 3.21
-      jenkins_master_url: https://ci.sapmachine.io/computer/agent-linux-ppc64le-1/slave-agent.jnlp
-      jenkins_slave_name: agent-linux-ppc64le-1
+      client_jar_version: 3.21
+      jenkins_server_url: https://ci.sapmachine.io/computer/agent-linux-ppc64le-1/slave-agent.jnlp
+      jenkins_client_name: agent-linux-ppc64le-1
 
     tasks:
 
@@ -61,7 +61,7 @@
           - packages.openjdk
 
       # create jenkins group and user
-      # used for running the jenkins slave
+      # used for running the jenkins client
       - name: create jenkins group
         group:
           name: jenkins
@@ -79,36 +79,36 @@
         tags:
           - users.create_jenkins
 
-      # create the jenkins slave home directory
-      - name: create Jenkins Slave home directory
+      # create the jenkins client home directory
+      - name: create Jenkins client home directory
         file:
-          path: /home/jenkins/slave-home
+          path: /home/jenkins/client-home
           state: directory
         become: yes
         become_user: jenkins
         tags:
-          - jenkins_slave.create_home
+          - jenkins_client.create_home
 
-      # download the jenkins slave jar file
-      - name: download Jenkins Slave jar
+      # download the jenkins client jar file
+      - name: download Jenkins Client jar
         get_url:
-          url: "https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/{{ slave_jar_version }}/remoting-{{ slave_jar_version }}.jar"
-          dest: /home/jenkins/slave.jar
+          url: "https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/{{ client_jar_version }}/remoting-{{ client_jar_version }}.jar"
+          dest: /home/jenkins/client.jar
           force: yes
         become: yes
         become_user: jenkins
         tags:
-          - jenkins_slave.download_slave_jar
+          - jenkins_client.download_client_jar
 
-      # copy the script file to start the jenkins slave
-      - name: copy Jenkins Slave files
+      # copy the script file to start the jenkins client
+      - name: copy Jenkins client files
         synchronize:
-          src: ../ci-slave-local/start-slave.sh
-          dest: /home/jenkins/start-slave.sh
+          src: ../ci-client-local/start-client.sh
+          dest: /home/jenkins/start-client.sh
         become: yes
         become_user: jenkins
         tags:
-          - jenkins_slave.copy_files
+          - jenkins_client.copy_files
 
       # enable Docker IPv6
       - name: install Docker Daemon configuration
@@ -128,7 +128,7 @@
         tags:
           - docker.config_reload
 
-      # stop all running java processes (jenkins slave)
+      # stop all running java processes (jenkins client)
       - name: stop all Java processes
         command: killall -9 java
         become: yes
@@ -136,12 +136,12 @@
         tags:
           - java.kill_all
 
-      # start the jenkins slave
-      - name: start Jenkins Slave
-        command: "/home/jenkins/start-slave.sh {{ jenkins_master_url }} {{ jenkins_slave_secret }}"
+      # start the jenkins client
+      - name: start Jenkins client
+        command: "/home/jenkins/start-client.sh {{ jenkins_server_url }} {{ jenkins_client_secret }}"
         args:
           chdir: /home/jenkins
         become: yes
         become_user: jenkins
         tags:
-          - jenkins_slave.start
+          - jenkins_client.start

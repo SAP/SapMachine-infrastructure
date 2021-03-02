@@ -10,8 +10,8 @@
 
     vars:
       instance_type: t3a.xlarge
-      instance_name: SapMachine Master
-      security_group: SapMachine Master
+      instance_name: SapMachine Server
+      security_group: SapMachine Server
       image: ami-04b9e92b5572fa0d1 # Ubuntu 18.04
       keypair: SapMachine
       region: us-east-1
@@ -56,22 +56,22 @@
             - proto: tcp
               from_port: 50000
               to_port: 50000
-              # Jenkins local Slave
+              # Jenkins local client
               cidr_ip: "{{ eip.public_ip }}/32"
             - proto: tcp
               from_port: 50000
               to_port: 50000
-              # Jenkins macOS Slave
+              # Jenkins macOS client
               cidr_ip: 193.16.224.0/25
             - proto: tcp
               from_port: 50000
               to_port: 50000
-              # Jenkins Linux Slave
+              # Jenkins Linux client
               group_id: "sg-051529de3f02c1983"
             - proto: tcp
               from_port: 50000
               to_port: 50000
-              # Jenkins Windows Slave
+              # Jenkins Windows client
               group_id: "sg-0d78996f78394c304"
           rules_egress:
             - proto: all
@@ -119,7 +119,7 @@
         local_action: lineinfile
                       dest="./hosts"
                       regexp={{ eip.public_ip }}
-                      insertafter="[SapMachineMaster]" line={{ eip.public_ip }}
+                      insertafter="[SapMachineServer]" line={{ eip.public_ip }}
         with_items: ec2.instances
 
       - name: Wait for SSH to come up
