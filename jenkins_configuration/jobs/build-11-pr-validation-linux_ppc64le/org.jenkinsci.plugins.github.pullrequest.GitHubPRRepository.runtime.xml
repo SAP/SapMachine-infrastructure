@@ -5,39 +5,27 @@
   <sshUrl>git@github.com:SAP/SapMachine.git</sshUrl>
   <pulls class="concurrent-hash-map">
     <entry>
-      <int>828</int>
+      <int>831</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>828</number>
-        <issueUpdatedAt>2021-03-11 01:04:50.0 UTC</issueUpdatedAt>
-        <title>Merge to tag jdk-11.0.11+6</title>
-        <body>please pull</body>
-        <prUpdatedAt>2021-03-11 01:04:50.0 UTC</prUpdatedAt>
-        <headSha>d1db307ad5c6ec18f9ed4d4e61411067b1a9a8be</headSha>
-        <headRef>pr-jdk-11.0.11+6</headRef>
-        <baseRef>sapmachine11</baseRef>
-        <userLogin>SapMachine</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/828</htmlUrl>
+        <number>831</number>
+        <issueUpdatedAt>2021-03-11 16:33:45.0 UTC</issueUpdatedAt>
+        <title>Finalize sapmachine16 release</title>
+        <body>Cherry-Picks of a frew select OpenJDK bugs that haven't made it into JDK16 release but we consider as important.
+
+fixes #830 
+
+</body>
+        <prUpdatedAt>2021-03-11 16:33:45.0 UTC</prUpdatedAt>
+        <headSha>682ac9ad3b7859107a14e0c7f870b48ef5f4bd0f</headSha>
+        <headRef>finalize-sapmachine16-release</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine16</baseRef>
+        <userEmail>christoph.langer@sap.com</userEmail>
+        <userLogin>RealCLanger</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/831</htmlUrl>
         <labels />
-        <sourceRepoOwner>SAP</sourceRepoOwner>
-        <state>OPEN</state>
-        <inBadState>false</inBadState>
-      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-    </entry>
-    <entry>
-      <int>829</int>
-      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>829</number>
-        <issueUpdatedAt>2021-03-11 01:05:08.0 UTC</issueUpdatedAt>
-        <title>Merge to tag jdk-17+13</title>
-        <body>please pull</body>
-        <prUpdatedAt>2021-03-11 01:05:08.0 UTC</prUpdatedAt>
-        <headSha>4b5be40ab90bc721c0bfaefce7440f0ca57f1e73</headSha>
-        <headRef>pr-jdk-17+13</headRef>
-        <baseRef>sapmachine</baseRef>
-        <userLogin>SapMachine</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/829</htmlUrl>
-        <labels />
-        <sourceRepoOwner>SAP</sourceRepoOwner>
+        <lastCommentCreatedAt>2021-03-11 16:20:32.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>RealCLanger</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
       </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
