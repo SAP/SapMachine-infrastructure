@@ -18,11 +18,11 @@ from versions import SapMachineTag
 extra_bootjdks = [
     {
         'prerelease': False,
-        'name': 'sapmachine-11.0.8',
+        'name': 'sapmachine-11.0.10',
         'assets': [
             {
-                'name': 'sapmachine-jdk-11.0.8_linux-aarch64_bin.tar.gz',
-                'browser_download_url': 'https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.8%2B10/OpenJDK11U-jdk_aarch64_linux_hotspot_11.0.8_10.tar.gz'
+                'name': 'sapmachine-jdk-11.0.10_linux-aarch64_bin.tar.gz',
+                'browser_download_url': 'https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.10%2B9/OpenJDK11U-jdk_aarch64_linux_hotspot_11.0.10_9.tar.gz'
             }
         ]
     },
@@ -33,6 +33,16 @@ extra_bootjdks = [
             {
                 'name': 'sapmachine-jdk-14.0.2_linux-aarch64_bin.tar.gz',
                 'browser_download_url': 'https://github.com/AdoptOpenJDK/openjdk14-binaries/releases/download/jdk-14.0.2%2B12/OpenJDK14U-jdk_aarch64_linux_hotspot_14.0.2_12.tar.gz'
+            }
+        ]
+    },
+    {
+        'prerelease': False,
+        'name': 'sapmachine-15.0.2',
+        'assets': [
+            {
+                'name': 'sapmachine-jdk-15.0.2_linux-aarch64_bin.tar.gz',
+                'browser_download_url': 'https://github.com/AdoptOpenJDK/openjdk15-binaries/releases/download/jdk-15.0.2%2B7/OpenJDK15U-jdk_aarch64_linux_hotspot_15.0.2_7.tar.gz'
             }
         ]
     }
