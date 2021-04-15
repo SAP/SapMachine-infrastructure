@@ -1,5 +1,5 @@
 <hudson.model.Queue_-State>
-  <counter>1003</counter>
+  <counter>1022</counter>
   <items>
     <hudson.model.Queue_-BlockedItem>
       <actions>
@@ -362,6 +362,265 @@ Pull Request Opened: state has changed (PR was opened)
       <task class="org.jenkinsci.plugins.workflow.job.WorkflowJob">build-17-release-linux_aarch64</task>
       <inQueueSince>1617930378129</inQueueSince>
       <buildableStartMilliseconds>1617930383663</buildableStartMilliseconds>
+      <outer-class reference="../../hudson.model.Queue_-BlockedItem/outer-class" />
+    </hudson.model.Queue_-BlockedItem>
+    <hudson.model.Queue_-BlockedItem>
+      <actions>
+        <hudson.model.CauseAction>
+          <causeBag class="linked-hash-map">
+            <entry>
+              <org.jenkinsci.plugins.github.pullrequest.GitHubPRCause plugin="github-pullrequest@0.2.8">
+                <skip>false</skip>
+                <reason>PR opened</reason>
+                <htmlUrl>https://github.com/SAP/SapMachine/pull/847</htmlUrl>
+                <title>Merge to tag jdk-17+18</title>
+                <gitUrl>git://github.com/SAP/SapMachine.git</gitUrl>
+                <sshUrl>git@github.com:SAP/SapMachine.git</sshUrl>
+                <pollingLog>Running GitHub Pull Request trigger check for Apr 15, 2021, 1:04:51 AM on SAP/SapMachine
+GitHub rate limit before check: GHRateLimit {core {remaining=4970, limit=5000, resetDate=Thu Apr 15 01:32:00 UTC 2021}, search {remaining=30, limit=30, resetDate=Thu Apr 15 01:05:51 UTC 2021}, graphql {remaining=5000, limit=5000, resetDate=Thu Apr 15 02:04:51 UTC 2021}, integrationManifest {remaining=5000, limit=5000, resetDate=Thu Apr 15 02:04:51 UTC 2021}}
+No matching comments found for 847
+Pull Request Opened: state has changed (PR was opened)
+</pollingLog>
+                <headSha>75b039a43c5beddee21648499df534bdcf7e2fa1</headSha>
+                <number>847</number>
+                <mergeable>false</mergeable>
+                <targetBranch>sapmachine</targetBranch>
+                <sourceBranch>pr-jdk-17+18</sourceBranch>
+                <body>please pull</body>
+                <sourceRepoOwner>SAP</sourceRepoOwner>
+                <triggerSenderName>Github Bot of the SapMachine.</triggerSenderName>
+                <labels />
+                <commitAuthorName />
+                <commitAuthorEmail />
+                <condRef>head</condRef>
+                <state>OPEN</state>
+              </org.jenkinsci.plugins.github.pullrequest.GitHubPRCause>
+              <int>1</int>
+            </entry>
+          </causeBag>
+        </hudson.model.CauseAction>
+        <hudson.model.ParametersAction>
+          <safeParameters class="sorted-set">
+            <string>BOOT_JDK_MAJOR</string>
+            <string>BUILD_NUMBER</string>
+            <string>EXTRA_CONFIGURE_OPTIONS</string>
+            <string>GITHUB_PR_AUTHOR_EMAIL</string>
+            <string>GITHUB_PR_BODY</string>
+            <string>GITHUB_PR_CAUSE_SKIP</string>
+            <string>GITHUB_PR_COMMENT_BODY</string>
+            <string>GITHUB_PR_COMMENT_BODY_MATCH</string>
+            <string>GITHUB_PR_COMMIT_AUTHOR_EMAIL</string>
+            <string>GITHUB_PR_COMMIT_AUTHOR_NAME</string>
+            <string>GITHUB_PR_COND_REF</string>
+            <string>GITHUB_PR_HEAD_SHA</string>
+            <string>GITHUB_PR_LABELS</string>
+            <string>GITHUB_PR_NUMBER</string>
+            <string>GITHUB_PR_SHORT_DESC</string>
+            <string>GITHUB_PR_SOURCE_BRANCH</string>
+            <string>GITHUB_PR_SOURCE_REPO_OWNER</string>
+            <string>GITHUB_PR_STATE</string>
+            <string>GITHUB_PR_TARGET_BRANCH</string>
+            <string>GITHUB_PR_TITLE</string>
+            <string>GITHUB_PR_TRIGGER_SENDER_AUTHOR</string>
+            <string>GITHUB_PR_TRIGGER_SENDER_EMAIL</string>
+            <string>GITHUB_PR_URL</string>
+            <string>GITHUB_REPO_GIT_URL</string>
+            <string>GITHUB_REPO_SSH_URL</string>
+            <string>GIT_TAG_NAME</string>
+            <string>PUBLISH</string>
+            <string>RELEASE</string>
+            <string>RUN_DACAPO</string>
+            <string>RUN_GTESTS</string>
+            <string>RUN_TESTS</string>
+            <string>SAPMACHINE_ARCHIVE_NAME_PREFIX</string>
+            <string>SAPMACHINE_GIT_BRANCH</string>
+            <string>SAPMACHINE_GIT_REPOSITORY</string>
+            <string>_CONFIGURE_SYSROOT</string>
+            <string>hotspot_test_groups</string>
+            <string>jdk_test_groups</string>
+            <string>langtools_test_groups</string>
+          </safeParameters>
+          <parameters>
+            <hudson.model.StringParameterValue>
+              <name>SAPMACHINE_GIT_REPOSITORY</name>
+              <description>The Git repository to use.</description>
+              <value>https://github.com/SAP/SapMachine.git</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>SAPMACHINE_GIT_BRANCH</name>
+              <description>The Git branch to build.</description>
+              <value>sapmachine</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>GIT_TAG_NAME</name>
+              <description>The Git tag to build.</description>
+              <value />
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>BUILD_NUMBER</name>
+              <description>Sets the version build number explicitly.</description>
+              <value />
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>SAPMACHINE_ARCHIVE_NAME_PREFIX</name>
+              <description>The prefix of the bundle archive.</description>
+              <value>sapmachine17-linux_aarch64</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>_CONFIGURE_SYSROOT</name>
+              <description>Sysroot configuration passed to configure script.</description>
+              <value>--disable-warnings-as-errors --with-devkit=/opt/devkits/aarch64-linux-gnu-to-aarch64-linux-gnu-fedora-21-gcc-9.2.0</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>EXTRA_CONFIGURE_OPTIONS</name>
+              <description>Configure options passed directly to configure script.</description>
+              <value />
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>BOOT_JDK_MAJOR</name>
+              <description>Specify the boot JDK major version explicitly.</description>
+              <value />
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>hotspot_test_groups</name>
+              <description>Select the test group for jtreg hotspot tests. Empty means disabled.</description>
+              <value>:tier1</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>jdk_test_groups</name>
+              <description>Select the test group for jtreg jdk tests. Empty means disabled.</description>
+              <value>:tier1</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>langtools_test_groups</name>
+              <description>Select the test group for jtreg langtools tests. Empty means disabled.</description>
+              <value>"jdk tools lib"</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.BooleanParameterValue>
+              <name>RUN_GTESTS</name>
+              <description>enable/disable gtest runs</description>
+              <value>true</value>
+            </hudson.model.BooleanParameterValue>
+            <hudson.model.BooleanParameterValue>
+              <name>RUN_TESTS</name>
+              <description>enable/disable jtreg runs</description>
+              <value>true</value>
+            </hudson.model.BooleanParameterValue>
+            <hudson.model.BooleanParameterValue>
+              <name>RUN_DACAPO</name>
+              <description>enable/disable dacapo run</description>
+              <value>false</value>
+            </hudson.model.BooleanParameterValue>
+            <hudson.model.BooleanParameterValue>
+              <name>PUBLISH</name>
+              <description>When set to true, the resulting bundles will be published to GitHub.</description>
+              <value>false</value>
+            </hudson.model.BooleanParameterValue>
+            <hudson.model.BooleanParameterValue>
+              <name>RELEASE</name>
+              <description>When set to true, marks this build as a release build, otherwise as pre-release.</description>
+              <value>false</value>
+            </hudson.model.BooleanParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>GITHUB_PR_TRIGGER_SENDER_AUTHOR</name>
+              <value>Github Bot of the SapMachine.</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>GITHUB_PR_TRIGGER_SENDER_EMAIL</name>
+              <value />
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>GITHUB_PR_COMMIT_AUTHOR_NAME</name>
+              <value />
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>GITHUB_PR_COMMIT_AUTHOR_EMAIL</name>
+              <value />
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>GITHUB_PR_TARGET_BRANCH</name>
+              <value>sapmachine</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>GITHUB_PR_SOURCE_BRANCH</name>
+              <value>pr-jdk-17+18</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>GITHUB_PR_AUTHOR_EMAIL</name>
+              <value />
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>GITHUB_PR_BODY</name>
+              <value>please pull</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>GITHUB_PR_SHORT_DESC</name>
+              <value>GitHub PR #847: PR opened</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>GITHUB_PR_TITLE</name>
+              <value>Merge to tag jdk-17+18</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>GITHUB_PR_URL</name>
+              <value>https://github.com/SAP/SapMachine/pull/847</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>GITHUB_PR_SOURCE_REPO_OWNER</name>
+              <value>SAP</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>GITHUB_PR_HEAD_SHA</name>
+              <value>75b039a43c5beddee21648499df534bdcf7e2fa1</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>GITHUB_PR_COND_REF</name>
+              <value>head</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.BooleanParameterValue>
+              <name>GITHUB_PR_CAUSE_SKIP</name>
+              <value>false</value>
+            </hudson.model.BooleanParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>GITHUB_PR_NUMBER</name>
+              <value>847</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>GITHUB_PR_STATE</name>
+              <value>OPEN</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>GITHUB_PR_COMMENT_BODY</name>
+              <value />
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>GITHUB_PR_COMMENT_BODY_MATCH</name>
+              <value />
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>GITHUB_PR_LABELS</name>
+              <value />
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>GITHUB_REPO_GIT_URL</name>
+              <value>git://github.com/SAP/SapMachine.git</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>GITHUB_REPO_SSH_URL</name>
+              <value>git@github.com:SAP/SapMachine.git</value>
+            </hudson.model.StringParameterValue>
+          </parameters>
+        </hudson.model.ParametersAction>
+        <org.jenkinsci.plugins.github.pullrequest.GitHubPRBadgeAction plugin="github-pullrequest@0.2.8">
+          <htmlUrl>https://github.com/SAP/SapMachine/pull/847</htmlUrl>
+          <title>Merge to tag jdk-17+18</title>
+          <number>847</number>
+        </org.jenkinsci.plugins.github.pullrequest.GitHubPRBadgeAction>
+      </actions>
+      <id>1016</id>
+      <task class="org.jenkinsci.plugins.workflow.job.WorkflowJob" reference="../../hudson.model.Queue_-BlockedItem/task" />
+      <inQueueSince>1618448694031</inQueueSince>
+      <buildableStartMilliseconds>1618448702098</buildableStartMilliseconds>
       <outer-class reference="../../hudson.model.Queue_-BlockedItem/outer-class" />
     </hudson.model.Queue_-BlockedItem>
     <hudson.model.Queue_-BuildableItem>
