@@ -1,5 +1,5 @@
 <hudson.model.Queue_-State>
-  <counter>1022</counter>
+  <counter>1053</counter>
   <items>
     <hudson.model.Queue_-BlockedItem>
       <actions>
@@ -621,6 +621,110 @@ Pull Request Opened: state has changed (PR was opened)
       <task class="org.jenkinsci.plugins.workflow.job.WorkflowJob" reference="../../hudson.model.Queue_-BlockedItem/task" />
       <inQueueSince>1618448694031</inQueueSince>
       <buildableStartMilliseconds>1618448702098</buildableStartMilliseconds>
+      <outer-class reference="../../hudson.model.Queue_-BlockedItem/outer-class" />
+    </hudson.model.Queue_-BlockedItem>
+    <hudson.model.Queue_-BlockedItem>
+      <actions>
+        <hudson.model.ParametersAction>
+          <safeParameters class="sorted-set" />
+          <parameters>
+            <hudson.model.StringParameterValue>
+              <name>SAPMACHINE_GIT_REPOSITORY</name>
+              <description>The Git repository to use.</description>
+              <value>https://github.com/SAP/SapMachine.git</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>SAPMACHINE_GIT_BRANCH</name>
+              <description>The Git branch to build.</description>
+              <value>sapmachine</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>GIT_TAG_NAME</name>
+              <description>The Git tag to build.</description>
+              <value>sapmachine-17+18</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>BUILD_NUMBER</name>
+              <description>Sets the version build number explicitly.</description>
+              <value />
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>SAPMACHINE_ARCHIVE_NAME_PREFIX</name>
+              <description>The prefix of the bundle archive.</description>
+              <value>sapmachine17-linux_aarch64</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>_CONFIGURE_SYSROOT</name>
+              <description>Sysroot configuration passed to configure script.</description>
+              <value>--disable-warnings-as-errors --with-devkit=/opt/devkits/aarch64-linux-gnu-to-aarch64-linux-gnu-fedora-21-gcc-9.2.0</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>EXTRA_CONFIGURE_OPTIONS</name>
+              <description>Configure options passed directly to configure script.</description>
+              <value />
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>BOOT_JDK_MAJOR</name>
+              <description>Specify the boot JDK major version explicitly.</description>
+              <value />
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>hotspot_test_groups</name>
+              <description>Select the test group for jtreg hotspot tests. Empty means disabled.</description>
+              <value>:tier1</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>jdk_test_groups</name>
+              <description>Select the test group for jtreg jdk tests. Empty means disabled.</description>
+              <value>:tier1</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.StringParameterValue>
+              <name>langtools_test_groups</name>
+              <description>Select the test group for jtreg langtools tests. Empty means disabled.</description>
+              <value>"jdk tools lib"</value>
+            </hudson.model.StringParameterValue>
+            <hudson.model.BooleanParameterValue>
+              <name>RUN_GTESTS</name>
+              <description>enable/disable gtest runs</description>
+              <value>true</value>
+            </hudson.model.BooleanParameterValue>
+            <hudson.model.BooleanParameterValue>
+              <name>RUN_TESTS</name>
+              <description>enable/disable jtreg runs</description>
+              <value>true</value>
+            </hudson.model.BooleanParameterValue>
+            <hudson.model.BooleanParameterValue>
+              <name>RUN_DACAPO</name>
+              <description>enable/disable dacapo run</description>
+              <value>false</value>
+            </hudson.model.BooleanParameterValue>
+            <hudson.model.BooleanParameterValue>
+              <name>PUBLISH</name>
+              <description>When set to true, the resulting bundles will be published to GitHub.</description>
+              <value>true</value>
+            </hudson.model.BooleanParameterValue>
+            <hudson.model.BooleanParameterValue>
+              <name>RELEASE</name>
+              <description>When set to true, marks this build as a release build, otherwise as pre-release.</description>
+              <value>false</value>
+            </hudson.model.BooleanParameterValue>
+          </parameters>
+        </hudson.model.ParametersAction>
+        <hudson.model.CauseAction>
+          <causeBag class="linked-hash-map">
+            <entry>
+              <hudson.model.Cause_-UserIdCause>
+                <userId>sapmachine</userId>
+              </hudson.model.Cause_-UserIdCause>
+              <int>1</int>
+            </entry>
+          </causeBag>
+        </hudson.model.CauseAction>
+      </actions>
+      <id>1030</id>
+      <task class="org.jenkinsci.plugins.workflow.job.WorkflowJob" reference="../../hudson.model.Queue_-BlockedItem[2]/task" />
+      <inQueueSince>1618466930239</inQueueSince>
+      <buildableStartMilliseconds>1618466935763</buildableStartMilliseconds>
       <outer-class reference="../../hudson.model.Queue_-BlockedItem/outer-class" />
     </hudson.model.Queue_-BlockedItem>
     <hudson.model.Queue_-BuildableItem>
