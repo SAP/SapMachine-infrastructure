@@ -26,15 +26,13 @@
   <viewsTabBar class="hudson.views.DefaultViewsTabBar" />
   <myViewsTabBar class="hudson.views.DefaultMyViewsTabBar" />
   <clouds>
-    <hudson.plugins.ec2.EC2Cloud plugin="ec2@1.50.3">
+    <hudson.plugins.ec2.EC2Cloud plugin="ec2@1.57">
       <name>ec2-SapMachine Cloud</name>
       <useInstanceProfileForCredentials>false</useInstanceProfileForCredentials>
       <roleArn />
       <roleSessionName />
       <credentialsId>JekinsAWSKey</credentialsId>
-      <privateKey>
-        <privateKey>REMOVED_BY_BACKUP</privateKey>
-      </privateKey>
+      <sshKeysCredentialsId>d81ef82e-d60d-4d63-98f0-6ff5500ae439</sshKeysCredentialsId>
       <instanceCap>6</instanceCap>
       <templates>
         <hudson.plugins.ec2.SlaveTemplate>
@@ -68,7 +66,6 @@
           <connectionStrategy>PUBLIC_IP</connectionStrategy>
           <hostKeyVerificationStrategy>OFF</hostKeyVerificationStrategy>
           <associatePublicIp>true</associatePublicIp>
-          <useDedicatedTenancy>false</useDedicatedTenancy>
           <amiType class="hudson.plugins.ec2.UnixData">
             <rootCommandPrefix />
             <slaveCommandPrefix />
@@ -80,6 +77,10 @@
           <maxTotalUses>-1</maxTotalUses>
           <nodeProperties />
           <nextSubnet>0</nextSubnet>
+          <tenancy>Default</tenancy>
+          <ebsEncryptRootVolume>DEFAULT</ebsEncryptRootVolume>
+          <amiOwners />
+          <amiUsers />
           <usePrivateDnsName>false</usePrivateDnsName>
           <connectUsingPublicIp>true</connectUsingPublicIp>
         </hudson.plugins.ec2.SlaveTemplate>
@@ -120,7 +121,6 @@
           <connectionStrategy>PUBLIC_IP</connectionStrategy>
           <hostKeyVerificationStrategy>ACCEPT_NEW</hostKeyVerificationStrategy>
           <associatePublicIp>true</associatePublicIp>
-          <useDedicatedTenancy>false</useDedicatedTenancy>
           <amiType class="hudson.plugins.ec2.UnixData">
             <rootCommandPrefix />
             <slaveCommandPrefix />
@@ -132,11 +132,71 @@
           <maxTotalUses>-1</maxTotalUses>
           <nodeProperties />
           <nextSubnet>0</nextSubnet>
+          <tenancy>Default</tenancy>
+          <ebsEncryptRootVolume>DEFAULT</ebsEncryptRootVolume>
+          <amiOwners />
+          <amiUsers />
           <usePrivateDnsName>false</usePrivateDnsName>
           <connectUsingPublicIp>true</connectUsingPublicIp>
         </hudson.plugins.ec2.SlaveTemplate>
+        <hudson.plugins.ec2.SlaveTemplate>
+          <ami>ami-0d9bb43a80c7e2215</ami>
+          <description>Linux aarch64 Client</description>
+          <zone>us-east-1d</zone>
+          <securityGroups>JenkinsLinuxSlave</securityGroups>
+          <remoteFS>/home/ubuntu/client_home</remoteFS>
+          <type>M6g2xlarge</type>
+          <ebsOptimized>true</ebsOptimized>
+          <monitoring>false</monitoring>
+          <t2Unlimited>false</t2Unlimited>
+          <labels>linux_aarch64</labels>
+          <mode>EXCLUSIVE</mode>
+          <initScript />
+          <tmpDir />
+          <userData />
+          <numExecutors>1</numExecutors>
+          <remoteAdmin>ubuntu</remoteAdmin>
+          <jvmopts />
+          <subnetId />
+          <idleTerminationMinutes>30</idleTerminationMinutes>
+          <iamInstanceProfile />
+          <deleteRootOnTermination>false</deleteRootOnTermination>
+          <useEphemeralDevices>false</useEphemeralDevices>
+          <customDeviceMapping />
+          <instanceCap>3</instanceCap>
+          <minimumNumberOfInstances>0</minimumNumberOfInstances>
+          <minimumNumberOfSpareInstances>0</minimumNumberOfSpareInstances>
+          <stopOnTerminate>false</stopOnTerminate>
+          <tags>
+            <hudson.plugins.ec2.EC2Tag>
+              <name>name</name>
+              <value>Jenkins linux aarch64 client autolaunched</value>
+            </hudson.plugins.ec2.EC2Tag>
+          </tags>
+          <connectionStrategy>PRIVATE_IP</connectionStrategy>
+          <hostKeyVerificationStrategy>CHECK_NEW_HARD</hostKeyVerificationStrategy>
+          <associatePublicIp>false</associatePublicIp>
+          <amiType class="hudson.plugins.ec2.UnixData">
+            <rootCommandPrefix />
+            <slaveCommandPrefix />
+            <slaveCommandSuffix />
+            <sshPort>22</sshPort>
+          </amiType>
+          <launchTimeout>2147483647</launchTimeout>
+          <connectBySSHProcess>false</connectBySSHProcess>
+          <maxTotalUses>-1</maxTotalUses>
+          <nodeProperties />
+          <nextSubnet>0</nextSubnet>
+          <tenancy>Default</tenancy>
+          <ebsEncryptRootVolume>DEFAULT</ebsEncryptRootVolume>
+          <amiOwners />
+          <amiUsers />
+          <usePrivateDnsName>false</usePrivateDnsName>
+          <connectUsingPublicIp>false</connectUsingPublicIp>
+        </hudson.plugins.ec2.SlaveTemplate>
       </templates>
       <region>us-east-1</region>
+      <altEC2Endpoint />
       <noDelayProvisioning>true</noDelayProvisioning>
     </hudson.plugins.ec2.EC2Cloud>
   </clouds>
