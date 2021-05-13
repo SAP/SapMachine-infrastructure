@@ -19,7 +19,7 @@ cask 'sapmachine${MAJOR}-${IMAGE_TYPE}' do
   version '${VERSION}'
   sha256 '${SHA256}'
 
-  url "https://github.com/SAP/SapMachine/releases/download/sapmachine-#{version}/sapmachine-${IMAGE_TYPE}-#{version}_osx-x64_bin.dmg"
+  url "https://github.com/SAP/SapMachine/releases/download/sapmachine-#{version}/sapmachine-${IMAGE_TYPE}-#{version}_${OS_NAME}-x64_bin.dmg"
   appcast "https://sap.github.io/SapMachine/latest/#{version.major}"
   name 'SapMachine OpenJDK Development Kit'
   homepage 'https://sapmachine.io/'
@@ -35,7 +35,7 @@ cask 'sapmachine${MAJOR}-ea-${IMAGE_TYPE}' do
   version '${VERSION},${BUILD_NUMBER}'
   sha256 '${SHA256}'
 
-  url "https://github.com/SAP/SapMachine/releases/download/sapmachine-#{version.before_comma}%2B#{version.after_comma}/sapmachine-${IMAGE_TYPE}-#{version.before_comma}-ea.#{version.after_comma}_osx-x64_bin.dmg"
+  url "https://github.com/SAP/SapMachine/releases/download/sapmachine-#{version.before_comma}%2B#{version.after_comma}/sapmachine-${IMAGE_TYPE}-#{version.before_comma}-ea.#{version.after_comma}_${OS_NAME}-x64_bin.dmg"
   appcast "https://sap.github.io/SapMachine/latest/#{version.major}"
   name 'SapMachine OpenJDK Development Kit'
   homepage 'https://sapmachine.io/'
@@ -75,6 +75,7 @@ def main(argv=None):
             VERSION=sapMachineTag.get_version_string_without_build(),
             BUILD_NUMBER=sapMachineTag.get_build_number(),
             IMAGE_TYPE=args.imagetype,
+            OS_NAME='osx' if sapMachineTag.get_major() < 17 or (sapMachineTag.get_major() == 17 and sapMachineTag.get_build_number() < 21) else 'macos',
             SHA256=args.sha256sum
         )
         cask_file_name = str.format('sapmachine{0}-ea-{1}.rb', sapMachineTag.get_major(), args.imagetype)
@@ -83,6 +84,7 @@ def main(argv=None):
             MAJOR=sapMachineTag.get_major(),
             VERSION=sapMachineTag.get_version_string_without_build(),
             IMAGE_TYPE=args.imagetype,
+            OS_NAME='osx' if sapMachineTag.get_major() < 17 else 'macos',
             SHA256=args.sha256sum
         )
         cask_file_name = str.format('sapmachine{0}-{1}.rb', sapMachineTag.get_major(), args.imagetype)
