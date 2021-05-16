@@ -147,7 +147,10 @@ def main(argv=None):
                 if asset_os == 'windows-x64' and file_type == '.msi':
                     asset_os = 'windows-x64-installer'
 
-                if asset_os == 'osx-x64' or asset_os == 'macos-x64':
+                if asset_os == 'macos-x64':
+                    asset_os = 'osx-x64'
+
+                if asset_os == 'osx-x64':
                     if file_type == '.dmg':
                         has_dmg = True
                     elif has_dmg:
