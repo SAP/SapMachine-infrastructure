@@ -3,5 +3,92 @@
   <githubUrl>https://github.com/SAP/SapMachine</githubUrl>
   <gitUrl>git://github.com/SAP/SapMachine.git</gitUrl>
   <sshUrl>git@github.com:SAP/SapMachine.git</sshUrl>
-  <pulls class="concurrent-hash-map" />
+  <pulls class="concurrent-hash-map">
+    <entry>
+      <int>862</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>862</number>
+        <issueUpdatedAt>2021-05-21 15:24:32.0 UTC</issueUpdatedAt>
+        <title>Unify behavior for xxxOnOutOfMemoryError switches</title>
+        <body>Hi, may I please have reviews for this change. Details and motivation see https://github.com/SAP/SapMachine/issues/861.
+
+The patch:
+
+- introduces `ExitVMOnOutOfMemoryError` as an alias to `CrashOnOutOfMemoryError`
+- adds stack dumping to tty for both
+- switches off cores if either one is set, unless cores had been explicitly requested by the user
+- Wires all `xxOnOutOfMemoryError` switches up to thread creation too - all these will fire when we cannot start native threads (note that `OnOutOfMemoryError=command` probably won't work since it requires the ability to fork). Note that I decided to wire this up after resource-exhausted-JVMTI-hook is called; does that make sense or should I do it before? to me its a coin toss, really.)
+- Modified the associated jtreg tests slightly to test the SapMachine specific logic.
+
+---
+
+Testing:
+- ran the jtreg test
+- ran hotspot:tier1 locally
+- tested manually all these switches both with OOM from Metaspace and OOMs from thread creation; the latter with ulimit -u set. Works. We now print thread stack to tty, then assert, but without core:
+
+```
+thomas@starfish$ ulimit -u 3000
+thomas@starfish$ ./images/jdk/bin/java -XX:+CrashOnOutOfMemoryError de.stuefe.repros.MultiThreadTest --num-threads=3000 --wait-time=100
+Will start 3000 threads, wait time 100s...
+&lt;press key&gt;
+ ... continuing.
+Created: 300...
+Created: 600...
+Created: 900...
+Created: 1200...
+Created: 1500...
+Created: 1800...
+Created: 2100...
+[1,119s][warning][os,thread] Failed to start thread - pthread_create failed (EAGAIN) for attributes: stacksize: 1024k, guardsize: 0k, detached.
+Aborting due to java.lang.OutOfMemoryError: unable to create native thread: possibly out of memory or process/resource limits reached
+Java frames: (J=compiled Java code, j=interpreted, Vv=VM code)
+J 372  java.lang.Thread.start0()V java.base@17-internal (0 bytes) @ 0x00007fe389087ac4 [0x00007fe389087a60+0x0000000000000064]
+J 368 c1 java.lang.Thread.start()V java.base@17-internal (71 bytes) @ 0x00007fe381cd0934 [0x00007fe381cd07e0+0x0000000000000154]
+j  de.stuefe.repros.MultiThreadTest.call()Ljava/lang/Integer;+93
+j  de.stuefe.repros.MultiThreadTest.call()Ljava/lang/Object;+1
+j  picocli.CommandLine.executeUserObject(Lpicocli/CommandLine;Ljava/util/List;)Ljava/util/List;+94
+j  picocli.CommandLine.access$900(Lpicocli/CommandLine;Ljava/util/List;)Ljava/util/List;+2
+j  picocli.CommandLine$RunLast.handle(Lpicocli/CommandLine$ParseResult;)Ljava/util/List;+29
+j  picocli.CommandLine$RunLast.handle(Lpicocli/CommandLine$ParseResult;)Ljava/lang/Object;+2
+j  picocli.CommandLine$AbstractParseResultHandler.execute(Lpicocli/CommandLine$ParseResult;)I+16
+j  picocli.CommandLine.execute([Ljava/lang/String;)I+31
+j  de.stuefe.repros.MultiThreadTest.main([Ljava/lang/String;)V+15
+v  ~StubRoutines::call_stub
+# To suppress the following error report, specify this argument
+# after -XX: or in .hotspotrc:  SuppressErrorAt=/debug.cpp:366
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  Internal Error (/shared/projects/openjdk/sapmachine/source/src/hotspot/share/utilities/debug.cpp:366), pid=441918, tid=441919
+#  fatal error: OutOfMemory encountered: unable to create native thread: possibly out of memory or process/resource limits reached
+#
+# JRE version: OpenJDK Runtime Environment (17.0) (fastdebug build 17-internal+0-adhoc.thomas.source)
+# Java VM: OpenJDK 64-Bit Server VM (fastdebug 17-internal+0-adhoc.thomas.source, mixed mode, sharing, tiered, compressed oops, compressed class ptrs, g1 gc, linux-amd64)
+# CreateCoredumpOnCrash turned off, no core file dumped
+#
+# An error report file with more information is saved as:
+# /shared/projects/openjdk/sapmachine/output-fastdebug/hs_err_pid441918.log
+
+```
+
+
+fixes #861
+
+</body>
+        <prUpdatedAt>2021-05-21 15:24:32.0 UTC</prUpdatedAt>
+        <headSha>9ec84c984b1f49cd06e863259988d1d35bc73de5</headSha>
+        <headRef>861-Unify-behavior-for-xxxOnOutOfMemoryError-switches</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine</baseRef>
+        <userLogin>tstuefe</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/862</htmlUrl>
+        <labels />
+        <lastCommentCreatedAt>2021-05-21 14:18:24.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>tstuefe</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+  </pulls>
 </org.jenkinsci.plugins.github.pullrequest.GitHubPRRepository>
