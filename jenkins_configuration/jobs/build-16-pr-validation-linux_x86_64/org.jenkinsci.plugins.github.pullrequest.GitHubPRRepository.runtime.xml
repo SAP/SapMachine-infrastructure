@@ -8,7 +8,7 @@
       <int>862</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>862</number>
-        <issueUpdatedAt>2021-06-08 14:03:32.0 UTC</issueUpdatedAt>
+        <issueUpdatedAt>2021-06-09 16:09:13.0 UTC</issueUpdatedAt>
         <title>Unify behavior for xxxOnOutOfMemoryError switches</title>
         <body>Hi, may I please have reviews for this change. Details and motivation see https://github.com/SAP/SapMachine/issues/861.
 
@@ -18,8 +18,8 @@ The patch:
 - adds stack dumping to tty for both
 - switches off cores if either one is set, unless cores had been explicitly requested by the user
 - Wires all `xxOnOutOfMemoryError` switches up to thread creation too - all these will fire when we cannot start native threads (note that `OnOutOfMemoryError=command` probably won't work since it requires the ability to fork). Note that I decided to wire this up after resource-exhausted-JVMTI-hook is called; does that make sense or should I do it before? to me its a coin toss, really.)
-- Modified the associated jtreg tests slightly to test the SapMachine specific logic.
-
+- Adds a new jtreg test to test SapMachine specific logic
+- Also adds stack dumping to the otherwise unchanged `ExitOnOutOfMemoryError`
 ---
 
 Testing:
@@ -76,15 +76,15 @@ v  ~StubRoutines::call_stub
 fixes #861
 
 </body>
-        <prUpdatedAt>2021-06-08 14:03:32.0 UTC</prUpdatedAt>
-        <headSha>5df451af80dba3338a341edd40888cf7198afcda</headSha>
+        <prUpdatedAt>2021-06-09 16:09:13.0 UTC</prUpdatedAt>
+        <headSha>2bf89edff8f95333c5fea74cd52b40551405e6c8</headSha>
         <headRef>861-Unify-behavior-for-xxxOnOutOfMemoryError-switches</headRef>
         <mergeable>true</mergeable>
         <baseRef>sapmachine</baseRef>
         <userLogin>tstuefe</userLogin>
         <htmlUrl>https://github.com/SAP/SapMachine/pull/862</htmlUrl>
         <labels />
-        <lastCommentCreatedAt>2021-06-08 14:03:32.0 UTC</lastCommentCreatedAt>
+        <lastCommentCreatedAt>2021-06-09 16:09:13.0 UTC</lastCommentCreatedAt>
         <sourceRepoOwner>tstuefe</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
