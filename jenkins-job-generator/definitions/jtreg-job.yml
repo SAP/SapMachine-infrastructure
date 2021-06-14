@@ -53,7 +53,7 @@
                         sh "rm -rf ${env.WORKSPACE}/jtreg"
                         sh "git clone https://github.com/openjdk/jtreg.git ${env.WORKSPACE}/jtreg"
                         sh "cd ${env.WORKSPACE}/jtreg && git checkout ${params.TAG}"
-                        sh "cd ${env.WORKSPACE}/jtreg && bash make/build-all.sh /usr/lib/jvm/java-8-openjdk-*"
+                        sh "cd ${env.WORKSPACE}/jtreg && bash make/build.sh /usr/lib/jvm/java-8-openjdk-*"
                         sh "cp ${env.WORKSPACE}/jtreg/build/images/jtreg.zip ${env.WORKSPACE}/jtreg.zip"
                     }
                     post {
