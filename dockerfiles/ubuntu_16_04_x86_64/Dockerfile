@@ -44,7 +44,7 @@ RUN useradd -ms /bin/bash jenkinsc -u 1002
 RUN mkdir -p /opt/scimark2
 RUN wget https://math.nist.gov/scimark2/scimark2lib.jar -O /opt/scimark2/scimark2lib.jar
 
-ADD ../ubuntu_16_04_x86_64/sysroot-sles11-x86_64.tgz /opt
+ADD sysroot-sles11-x86_64.tgz /opt
 
 WORKDIR /opt
 RUN wget https://mirrors.kernel.org/gnu/gcc/gcc-7.3.0/gcc-7.3.0.tar.gz && \
