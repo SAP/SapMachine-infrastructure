@@ -20,19 +20,19 @@
             }
             steps {
                 script {
-                    if (params.TAG == "tip") {
+                    if (params.TAG == "master") {
                         env.BUILD_NUMBER = params.BUILD_NUMBER
                         env.BUILD_VERSION = params.BUILD_VERSION
                     } else {
-                        def match = params.TAG =~ /jtreg([0-9]+\.[0-9]+)-(b[0-9]*).*/
+                        def match = params.TAG =~ /jtreg([0-9]+(\.[0-9]+)*)-(b[0-9]*).*/
                         env.BUILD_NUMBER = match[0][2]
                         env.BUILD_VERSION = match[0][1]
                     }
                 }
                 sh "rm -rf ${env.WORKSPACE}/jtreg"
-                sh "hg clone http://hg.openjdk.java.net/code-tools/jtreg ${env.WORKSPACE}/jtreg"
-                sh "cd ${env.WORKSPACE}/jtreg &amp;&amp; hg up ${params.TAG}"
-                sh "cd ${env.WORKSPACE}/jtreg &amp;&amp; bash make/build-all.sh /usr/lib/jvm/java-8-openjdk-*"
+                sh "git clone https://github.com/openjdk/jtreg.git ${env.WORKSPACE}/jtreg"
+                sh "cd ${env.WORKSPACE}/jtreg &amp;&amp; git checkout ${params.TAG}"
+                sh "cd ${env.WORKSPACE}/jtreg &amp;&amp; bash make/build.sh /usr/lib/jvm/java-8-openjdk-*"
                 sh "cp ${env.WORKSPACE}/jtreg/build/images/jtreg.zip ${env.WORKSPACE}/jtreg.zip"
             }
             post {
@@ -68,19 +68,19 @@
       <parameterDefinitions>
         <hudson.model.StringParameterDefinition>
           <name>TAG</name>
-          <description>The Mercurial tag to build.</description>
-          <defaultValue>tip</defaultValue>
+          <description>The tag/branch to build.</description>
+          <defaultValue>master</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>BUILD_VERSION</name>
-          <description>Manually set the JTREG version. Only used when TAG parameter is "tip"</description>
+          <description>Manually set the JTREG version. Only used when TAG parameter is "master"</description>
           <defaultValue>1.0</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>BUILD_NUMBER</name>
-          <description>Manually set the JTREG build number. Only used when TAG parameter is "tip"</description>
+          <description>Manually set the JTREG build number. Only used when TAG parameter is "master"</description>
           <defaultValue>0</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
