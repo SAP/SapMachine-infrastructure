@@ -32,7 +32,7 @@ python \
 ant \
 patch \
 mercurial \
-openjdk-7-jdk \
+openjdk-8-jdk \
 libgmp-dev \
 libmpfr-dev \
 libmpc-dev
@@ -61,7 +61,7 @@ RUN /opt/gcc-7.3.0/configure --enable-languages=c,c++ --prefix=/opt/gcc-7.3.0-bi
 
 ENV PATH="/opt/gcc-7.3.0-bin/bin:${PATH}"
 
-RUN mkdir -p /opt/dacapo
-RUN wget https://sourceforge.net/projects/dacapobench/files/9.12-bach-MR1/dacapo-9.12-MR1-bach.jar/download -O /opt/dacapo/dacapo.jar
+#RUN mkdir -p /opt/dacapo
+#RUN wget https://sourceforge.net/projects/dacapobench/files/9.12-bach-MR1/dacapo-9.12-MR1-bach.jar/download -O /opt/dacapo/dacapo.jar
 
 WORKDIR /
