@@ -35,6 +35,16 @@
                         label "{platform}"
                     }}
                 }}
+        - linux_x86_64_new:
+            configure_sysroot_default: '--with-sysroot=/opt/sysroot-sles11-x86_64 --with-stdc++lib=static'
+            docker_agent: |
+                agent {{
+                    dockerfile {{
+                        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_16_04_x86_64"
+                        reuseNode true
+                        label "{platform}"
+                    }}
+                }}
         - macos_x86_64:
             configure_sysroot_default: ''
             docker_agent: ''
