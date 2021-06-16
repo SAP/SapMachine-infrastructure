@@ -41,7 +41,7 @@ extra_bootjdks = [
         'name': 'sapmachine-16.0.2',
         'assets': [
             {
-                'name': 'sapmachine-jdk-16.0.2_macos-aarch64_bin.tar.gz',
+                'name': 'sapmachine-jdk-16.0.2_osx-aarch64_bin.tar.gz',
                 'browser_download_url': 'https://github.com/AdoptOpenJDK/openjdk16-binaries/releases/download/jdk-16.0.1%2B9/OpenJDK16U-jdk_x64_mac_hotspot_16.0.1_9.tar.gz'
             }
         ]
