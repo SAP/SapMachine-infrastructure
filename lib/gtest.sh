@@ -11,7 +11,7 @@ fi
 
 cd "${WORKSPACE}/SapMachine"
 
-make run-test-gtest
+make test TEST="gtest"
 
 cd "build"
 cd "$(ls)"
