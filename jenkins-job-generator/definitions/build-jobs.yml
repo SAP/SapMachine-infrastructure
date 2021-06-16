@@ -20,7 +20,7 @@
             docker_agent: |
                 agent {{
                     dockerfile {{
-                        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_14_04_x86_64"
+                        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_16_04_x86_64"
                         reuseNode true
                         label "{platform}"
                     }}
@@ -31,16 +31,6 @@
                 agent {{
                     dockerfile {{
                         dir "SapMachine-Infrastructure/dockerfiles/ubuntu_14_04_ppc64le"
-                        reuseNode true
-                        label "{platform}"
-                    }}
-                }}
-        - linux_x86_64_new:
-            configure_sysroot_default: '--with-sysroot=/opt/sysroot-sles11-x86_64 --with-stdc++lib=static'
-            docker_agent: |
-                agent {{
-                    dockerfile {{
-                        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_16_04_x86_64"
                         reuseNode true
                         label "{platform}"
                     }}
