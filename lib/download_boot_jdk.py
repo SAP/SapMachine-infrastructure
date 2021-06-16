@@ -71,6 +71,8 @@ def main(argv=None):
     platform = str.format('{0}-{1}_bin', utils.get_system(), utils.get_arch())
     retries = 2
 
+    print(str.format('detected platform "{0}"', platform))
+
     releases = extra_bootjdks + releases
 
     while retries > 0:
