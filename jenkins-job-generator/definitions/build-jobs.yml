@@ -38,6 +38,9 @@
         - macos_x86_64:
             configure_sysroot_default: ''
             docker_agent: ''
+        - macos_aarch64:
+            configure_sysroot_default: ''
+            docker_agent: ''
         - linux_aarch64:
             configure_sysroot_default: '--disable-warnings-as-errors --with-devkit=/opt/devkits/aarch64-linux-gnu-to-aarch64-linux-gnu-fedora-21-gcc-9.2.0'
             docker_agent: ''
