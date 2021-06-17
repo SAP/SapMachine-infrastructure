@@ -293,23 +293,6 @@
                         sh 'SapMachine-Infrastructure/lib/build.sh'
                     }}
                 }}
-                stage("Run GTests") {{
-                    {docker_agent}
-                    when {{
-                        beforeAgent true
-                        expression {{ env.VERIFICATION_RESULT != "2" && params.RUN_GTESTS == true }}
-                    }}
-                    steps {{
-                        catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {{
-                            sh 'SapMachine-Infrastructure/lib/gtest.sh'
-                        }}
-                    }}
-                    post {{
-                        success {{
-                            junit 'gtest.xml'
-                        }}
-                    }}
-                }}
                 stage('Copy JTREG') {{
                     {docker_agent}
                     when {{
