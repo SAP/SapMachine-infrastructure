@@ -61,6 +61,8 @@ export PATH=${TEST_JDK}:$PATH
 export JT_JAVA=${TEST_JDK}
 export JAVA_HOME=${TEST_JDK}
 
+export TEST_VM_FLAGLESS=true
+
 mkdir test_report_${TEST_SUITE}
 
 # Use full concurrency and agentvm to let the tests pass as fast as possible.
