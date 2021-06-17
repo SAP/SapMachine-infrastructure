@@ -41,12 +41,22 @@ RUN useradd -ms /bin/bash jenkinsa -u 1000
 RUN useradd -ms /bin/bash jenkinsb -u 1001
 RUN useradd -ms /bin/bash jenkinsc -u 1002
 
-RUN mkdir -p /opt/scimark2
-RUN wget https://math.nist.gov/scimark2/scimark2lib.jar -O /opt/scimark2/scimark2lib.jar
+#RUN mkdir -p /opt/scimark2
+#RUN wget https://math.nist.gov/scimark2/scimark2lib.jar -O /opt/scimark2/scimark2lib.jar
 
 ADD sysroot-sles11-x86_64.tgz /opt
 
 WORKDIR /opt
+RUN wget https://ftp.gnu.org/gnu/make/make-4.3.tar.gz && \
+    tar xzf make-4.3.tar.gz
+
+WORKDIR /opt/make-4.3
+RUN ./configure && make install
+
+WORKDIR /opt
+RUN cp /usr/local/bin/make /usr/bin/make && \
+    rm -rf /opt/make-4.3
+
 RUN wget https://mirrors.kernel.org/gnu/gcc/gcc-7.3.0/gcc-7.3.0.tar.gz && \
     tar xzf gcc-7.3.0.tar.gz && \
     mkdir /opt/gcc-build && \
