@@ -5,14 +5,14 @@
         GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
     }
     agent {
-        label "linux_x86_64_new"
+        label "macos_aarch64"
     }
     stages {
         stage("Init") {
             steps {
                 script {
                     if (JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/) {
-                        setGitHubPullRequestStatus context: "validate-pr-16-linux_x86_64_new", state: 'PENDING'
+                        setGitHubPullRequestStatus context: "validate-pr-11-macos_aarch64", state: 'PENDING'
                     }
                     env.VERIFICATION_RESULT = "1"
                 }
@@ -20,7 +20,7 @@
                 checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
                 script {
                     if (JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/) {
-                        def platform = "linux_x86_64_new"
+                        def platform = "macos_aarch64"
                         env.COMMENT = ""
                         if (platform == 'linux_x86_64') {
                             env.COMMENT = "-c"
@@ -51,7 +51,7 @@
             }
             steps {
                 script {
-                    def major = "16"
+                    def major = "11"
 
                     if (BOOT_JDK_MAJOR?.trim()) {
                         major = BOOT_JDK_MAJOR
@@ -74,14 +74,7 @@
             }
         }
         stage("Build") {
-            agent {
-    dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_16_04_x86_64"
-        reuseNode true
-        label "linux_x86_64_new"
-    }
-}
-
+            
             when {
                 beforeAgent true
                 expression { env.VERIFICATION_RESULT != "2" }
@@ -94,14 +87,7 @@
             }
         }
         stage("Run GTests") {
-            agent {
-    dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_16_04_x86_64"
-        reuseNode true
-        label "linux_x86_64_new"
-    }
-}
-
+            
             when {
                 beforeAgent true
                 expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.RUN_GTESTS == true }
@@ -118,14 +104,7 @@
             }
         }
         stage('Copy JTREG') {
-            agent {
-    dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_16_04_x86_64"
-        reuseNode true
-        label "linux_x86_64_new"
-    }
-}
-
+            
             when {
                 beforeAgent true
                 expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.RUN_TESTS == true }
@@ -141,14 +120,7 @@
             }
         }
         stage('Run jtreg hotspot') {
-            agent {
-    dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_16_04_x86_64"
-        reuseNode true
-        label "linux_x86_64_new"
-    }
-}
-
+            
             when {
                 beforeAgent true
                 expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.RUN_TESTS == true &amp;&amp; params.hotspot_test_groups }
@@ -172,14 +144,7 @@
             }
         }
         stage('Run jtreg jdk') {
-            agent {
-    dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_16_04_x86_64"
-        reuseNode true
-        label "linux_x86_64_new"
-    }
-}
-
+            
             when {
                 beforeAgent true
                 expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.RUN_TESTS == true &amp;&amp; params.jdk_test_groups }
@@ -203,14 +168,7 @@
             }
         }
         stage('Run jtreg langtools') {
-            agent {
-    dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_16_04_x86_64"
-        reuseNode true
-        label "linux_x86_64_new"
-    }
-}
-
+            
             when {
                 beforeAgent true
                 expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.RUN_TESTS == true &amp;&amp; params.langtools_test_groups }
@@ -234,14 +192,7 @@
             }
         }
         stage('Run Dacapo') {
-            agent {
-    dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_16_04_x86_64"
-        reuseNode true
-        label "linux_x86_64_new"
-    }
-}
-
+            
             when {
                 beforeAgent true
                 expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.RUN_DACAPO == true }
@@ -382,28 +333,28 @@
         aborted {
             script {
                 if (JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/) {
-                    setGitHubPullRequestStatus context: "validate-pr-16-linux_x86_64_new", state: 'FAILURE', message: 'job aborted'
+                    setGitHubPullRequestStatus context: "validate-pr-11-macos_aarch64", state: 'FAILURE', message: 'job aborted'
                 }
             }
         }
         failure {
             script {
                 if (JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/) {
-                    setGitHubPullRequestStatus context: "validate-pr-16-linux_x86_64_new", state: 'FAILURE', message: 'build failed'
+                    setGitHubPullRequestStatus context: "validate-pr-11-macos_aarch64", state: 'FAILURE', message: 'build failed'
                 }
             }
         }
         unstable {
             script {
                 if (JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/) {
-                    setGitHubPullRequestStatus context: "validate-pr-16-linux_x86_64_new", state: 'FAILURE', message: 'tests failed'
+                    setGitHubPullRequestStatus context: "validate-pr-11-macos_aarch64", state: 'FAILURE', message: 'tests failed'
                 }
             }
         }
         success {
             script {
                 if (JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/) {
-                    setGitHubPullRequestStatus context: "validate-pr-16-linux_x86_64_new", state: 'SUCCESS'
+                    setGitHubPullRequestStatus context: "validate-pr-11-macos_aarch64", state: 'SUCCESS'
                 }
             }
             cleanWs deleteDirs: true, disableDeferredWipeout: true
@@ -439,46 +390,7 @@
       </strategy>
     </jenkins.model.BuildDiscarderProperty>
     <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
-      <triggers>
-        <org.jenkinsci.plugins.github.pullrequest.GitHubPRTrigger plugin="github-pullrequest@0.2.4">
-          <spec>H/1 * * * *</spec>
-          <triggerMode>HEAVY_HOOKS</triggerMode>
-          <cancelQueued>true</cancelQueued>
-          <abortRunning>false</abortRunning>
-          <skipFirstRun>false</skipFirstRun>
-          <repoProviders>
-            <com.github.kostyasha.github.integration.generic.repoprovider.GitHubPluginRepoProvider>
-              <cacheConnection>true</cacheConnection>
-              <manageHooks>true</manageHooks>
-              <repoPermission>ADMIN</repoPermission>
-            </com.github.kostyasha.github.integration.generic.repoprovider.GitHubPluginRepoProvider>
-          </repoProviders>
-          <errorsAction>
-            <description>GitHub Pull Requests Trigger Errors</description>
-            <errors class="java.util.Collections$SynchronizedSet" serialization="custom">
-              <java.util.Collections_-SynchronizedCollection>
-                <default>
-                  <c class="set" />
-                  <mutex class="java.util.Collections$SynchronizedSet" reference="../../.." />
-                </default>
-              </java.util.Collections_-SynchronizedCollection>
-            </errors>
-          </errorsAction>
-          <events>
-            <org.jenkinsci.plugins.github.pullrequest.events.impl.GitHubPRCommitEvent />
-            <org.jenkinsci.plugins.github.pullrequest.events.impl.GitHubPRCommentEvent>
-              <comment>retest this please</comment>
-            </org.jenkinsci.plugins.github.pullrequest.events.impl.GitHubPRCommentEvent>
-            <org.jenkinsci.plugins.github.pullrequest.events.impl.GitHubPROpenEvent />
-          </events>
-          <preStatus>false</preStatus>
-          <branchRestriction>
-            <targetBranchList>
-              <string>sapmachine16</string>
-            </targetBranchList>
-          </branchRestriction>
-        </org.jenkinsci.plugins.github.pullrequest.GitHubPRTrigger>
-      </triggers>
+      <triggers />
     </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
@@ -491,7 +403,7 @@
         <hudson.model.StringParameterDefinition>
           <name>SAPMACHINE_GIT_BRANCH</name>
           <description>The Git branch to build.</description>
-          <defaultValue>sapmachine16</defaultValue>
+          <defaultValue>sapmachine11</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
@@ -509,13 +421,13 @@
         <hudson.model.StringParameterDefinition>
           <name>SAPMACHINE_ARCHIVE_NAME_PREFIX</name>
           <description>The prefix of the bundle archive.</description>
-          <defaultValue>sapmachine16-linux_x86_64_new</defaultValue>
+          <defaultValue>sapmachine11-macos_aarch64</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>_CONFIGURE_SYSROOT</name>
           <description>Sysroot configuration passed to configure script.</description>
-          <defaultValue>--with-sysroot=/opt/sysroot-sles11-x86_64 --with-stdc++lib=static</defaultValue>
+          <defaultValue />
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>

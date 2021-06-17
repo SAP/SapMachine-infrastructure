@@ -1,57 +1,13 @@
-<flow-definition plugin="workflow-job">
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps">
-    <script>pipeline {
-    agent {
-        label 'linux_x86_64'
-    }
-    stages {
-      stage("Checkout Infrastructure") {
-              steps {
-                  checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], includedRegions: 'jenkins-job-generator/.*', doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
-              }
-          }
-        stage('Build') {
-            agent {
-                dockerfile {
-                    label 'linux_x86_64'
-                    dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04_x86_64"
-                    reuseNode true
-                }
-            }
-            steps {
-                script {
-                    if (params.TAG == "master") {
-                        env.BUILD_NUMBER = params.BUILD_NUMBER
-                        env.BUILD_VERSION = params.BUILD_VERSION
-                    } else {
-                        def match = params.TAG =~ /jtreg([0-9]+(\.[0-9]+)*)-(b[0-9]*).*/
-                        env.BUILD_NUMBER = match[0][2]
-                        env.BUILD_VERSION = match[0][1]
-                    }
-                }
-                sh "rm -rf ${env.WORKSPACE}/jtreg"
-                sh "git clone https://github.com/openjdk/jtreg.git ${env.WORKSPACE}/jtreg"
-                sh "cd ${env.WORKSPACE}/jtreg &amp;&amp; git checkout ${params.TAG}"
-                sh "cd ${env.WORKSPACE}/jtreg &amp;&amp; bash make/build.sh /usr/lib/jvm/java-8-openjdk-*"
-                sh "cp ${env.WORKSPACE}/jtreg/build/images/jtreg.zip ${env.WORKSPACE}/jtreg.zip"
-            }
-            post {
-                success {
-                    archive 'jtreg.zip'
-                }
-            }
-        }
-    }
-    post {
-        always {
-            cleanWs deleteDirs: true, disableDeferredWipeout: true
-        }
-    }
-}
-</script>
-    <sandbox>false</sandbox>
-  </definition>
-  <actions />
+<flow-definition plugin="workflow-job@2.40">
+  <actions>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.8.4" />
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.8.4">
+      <jobProperties />
+      <triggers />
+      <parameters />
+      <options />
+    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
+  </actions>
   <description>This project is generated. Do not modify manually.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
   <properties>
@@ -87,4 +43,57 @@
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.90">
+    <script>pipeline {
+    agent {
+        label 'linux_x86_64'
+    }
+    stages {
+      stage("Checkout Infrastructure") {
+              steps {
+                  checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], includedRegions: 'jenkins-job-generator/.*', doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+              }
+          }
+        stage('Build') {
+            agent {
+                dockerfile {
+                    label 'linux_x86_64'
+                    dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04_x86_64"
+                    reuseNode true
+                }
+            }
+            steps {
+                script {
+                    if (params.TAG == "master") {
+                        env.BUILD_NUMBER = params.BUILD_NUMBER
+                        env.BUILD_VERSION = params.BUILD_VERSION
+                    } else {
+                        def match = params.TAG =~ /jtreg([0-9]+(\.[0-9]+)*)-(b[0-9]*).*/
+                        env.BUILD_NUMBER = match[0][2]
+                        env.BUILD_VERSION = match[0][1]
+                    }
+                }
+                sh "rm -rf ${env.WORKSPACE}/jtreg"
+                sh "git clone https://github.com/openjdk/jtreg.git ${env.WORKSPACE}/jtreg"
+                sh "cd ${env.WORKSPACE}/jtreg &amp;&amp; git checkout ${params.TAG}"
+                sh "cd ${env.WORKSPACE}/jtreg &amp;&amp; bash make/build.sh --jdk /usr/lib/jvm/java-8-openjdk-*"
+                sh "cp ${env.WORKSPACE}/jtreg/build/images/jtreg.zip ${env.WORKSPACE}/jtreg.zip"
+            }
+            post {
+                success {
+                    archive 'jtreg.zip'
+                }
+            }
+        }
+    }
+    post {
+        always {
+            cleanWs deleteDirs: true, disableDeferredWipeout: true
+        }
+    }
+}
+</script>
+    <sandbox>false</sandbox>
+  </definition>
+  <disabled>false</disabled>
 </flow-definition>
