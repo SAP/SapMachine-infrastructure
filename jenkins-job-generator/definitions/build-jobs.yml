@@ -105,6 +105,11 @@
     major: *majors
     build_type: *build_types
     platform: *platforms
+    exclude:
+        - platform: macos_aarch64
+          major: '11'
+        - platform: macos_aarch64
+          major: '16'
     jobs:
         - build-{major}-{build_type}-{platform}
 
