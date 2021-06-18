@@ -46,6 +46,7 @@ RUN useradd -ms /bin/bash jenkinsc -u 1002
 
 ADD sysroot-sles11-x86_64.tgz /opt
 
+WORKDIR /opt
 RUN wget https://mirrors.kernel.org/gnu/gcc/gcc-7.3.0/gcc-7.3.0.tar.gz && \
     tar xzf gcc-7.3.0.tar.gz && \
     mkdir /opt/gcc-build && \
