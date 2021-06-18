@@ -1,0 +1,20 @@
+<slave>
+  <name>Ubuntu16_4 linux_x86_64</name>
+  <description>Temporary agent for docker warmup.</description>
+  <remoteFS>/home/ubuntu/slave_home</remoteFS>
+  <numExecutors>1</numExecutors>
+  <mode>NORMAL</mode>
+  <retentionStrategy class="hudson.slaves.RetentionStrategy$Always" />
+  <launcher class="hudson.plugins.sshslaves.SSHLauncher" plugin="ssh-slaves@1.31.5">
+    <host>ec2-52-54-139-68.compute-1.amazonaws.com</host>
+    <port>22</port>
+    <credentialsId>LinuxClientAWS</credentialsId>
+    <launchTimeoutSeconds>60</launchTimeoutSeconds>
+    <maxNumRetries>10</maxNumRetries>
+    <retryWaitTime>15</retryWaitTime>
+    <sshHostKeyVerificationStrategy class="hudson.plugins.sshslaves.verifiers.NonVerifyingKeyVerificationStrategy" />
+    <tcpNoDelay>true</tcpNoDelay>
+  </launcher>
+  <label>linux_x86_64</label>
+  <nodeProperties />
+</slave>

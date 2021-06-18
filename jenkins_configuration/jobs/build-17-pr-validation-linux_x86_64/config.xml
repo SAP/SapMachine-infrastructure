@@ -256,30 +256,6 @@
                 sh 'SapMachine-Infrastructure/lib/build.sh'
             }
         }
-        stage("Run GTests") {
-            agent {
-    dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_16_04_x86_64"
-        reuseNode true
-        label "linux_x86_64"
-    }
-}
-
-            when {
-                beforeAgent true
-                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.RUN_GTESTS == true }
-            }
-            steps {
-                catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
-                    sh 'SapMachine-Infrastructure/lib/gtest.sh'
-                }
-            }
-            post {
-                success {
-                    junit 'gtest.xml'
-                }
-            }
-        }
         stage('Copy JTREG') {
             agent {
     dockerfile {
