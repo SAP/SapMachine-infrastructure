@@ -36,8 +36,8 @@
       <instanceCap>6</instanceCap>
       <templates>
         <hudson.plugins.ec2.SlaveTemplate>
-          <ami>ami-0c56ec54e32abff21</ami>
-          <description>Linux Client</description>
+          <ami>ami-05be7abf71c2517c0</ami>
+          <description>Linux x86_64 Client</description>
           <zone>us-east-1d</zone>
           <securityGroups>JenkinsLinuxSlave</securityGroups>
           <remoteFS>/home/ubuntu/slave_home</remoteFS>
@@ -63,6 +63,12 @@
           <minimumNumberOfInstances>0</minimumNumberOfInstances>
           <minimumNumberOfSpareInstances>0</minimumNumberOfSpareInstances>
           <stopOnTerminate>false</stopOnTerminate>
+          <tags>
+            <hudson.plugins.ec2.EC2Tag>
+              <name>Name</name>
+              <value>Dynamic Linux x86_64 Client</value>
+            </hudson.plugins.ec2.EC2Tag>
+          </tags>
           <connectionStrategy>PUBLIC_IP</connectionStrategy>
           <hostKeyVerificationStrategy>OFF</hostKeyVerificationStrategy>
           <associatePublicIp>true</associatePublicIp>
@@ -169,7 +175,7 @@
           <stopOnTerminate>false</stopOnTerminate>
           <tags>
             <hudson.plugins.ec2.EC2Tag>
-              <name>name</name>
+              <name>Name</name>
               <value>Jenkins linux aarch64 client autolaunched</value>
             </hudson.plugins.ec2.EC2Tag>
           </tags>
@@ -543,6 +549,29 @@
         <hudson.views.BuildButtonColumn />
       </columns>
       <includeRegex>build-.*-linux_aarch64$</includeRegex>
+      <recurse>false</recurse>
+    </listView>
+    <listView>
+      <owner class="hudson" reference="../../.." />
+      <name>macOS aarch 64 Builds</name>
+      <description>macOS aarch 64 Builds&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <properties class="hudson.model.View$PropertyList" />
+      <jobNames>
+        <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator" />
+      </jobNames>
+      <jobFilters />
+      <columns>
+        <hudson.views.StatusColumn />
+        <hudson.views.WeatherColumn />
+        <hudson.views.JobColumn />
+        <hudson.views.LastSuccessColumn />
+        <hudson.views.LastFailureColumn />
+        <hudson.views.LastDurationColumn />
+        <hudson.views.BuildButtonColumn />
+      </columns>
+      <includeRegex>build-.*-macos_aarch64$</includeRegex>
       <recurse>false</recurse>
     </listView>
   </views>
