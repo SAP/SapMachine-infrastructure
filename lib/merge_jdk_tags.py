@@ -39,7 +39,6 @@ def main(argv=None):
         # only remember the latest jdk tag (version comparison)
         # filter out jdk update tags with build number "0" like jdk-11.0.3+0
         if ((jdk_tag.get_major() not in jdk_tags or jdk_tag.is_greater_than(jdk_tags[jdk_tag.get_major()])) and
-            jdk_tag.get_build_number() < 2 and
             not (jdk_tag.get_update() > 0 and (jdk_tag.get_build_number() if jdk_tag.get_build_number() is not None else 0) == 0)):
             jdk_tags[jdk_tag.get_major()] = jdk_tag
 
