@@ -46,5 +46,66 @@
         <inBadState>false</inBadState>
       </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
     </entry>
+    <entry>
+      <int>873</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>873</number>
+        <issueUpdatedAt>2021-06-20 10:56:38.0 UTC</issueUpdatedAt>
+        <title>SapMachine #861 (16): Unify behavior for xxxOnOutOfMemoryError</title>
+        <body>(manually cherry picked from commit 6dfb6bd48cebd8cb0d5dd6643f5c594c572fc48b)
+
+Patch for SapMachine 16.
+
+Had to adapt the patch manually a bit since it did not merge automatically (vmError.cpp, vmError.hpp and globals.hpp trivially changed between 16 and 17).
+
+Testing:
+- manual tests with thread starvation
+- ran runtime/ErrorHandling/TestOnOutOfMemoryError.java
+- ran runtime/ErrorHandling/TestSAPSpecificOnOutOfMemoryError.java
+
+fixes #861
+</body>
+        <prUpdatedAt>2021-06-20 10:56:38.0 UTC</prUpdatedAt>
+        <headSha>04b680093ec1547af0e5bba0c1a0bdd90c01c81f</headSha>
+        <headRef>xxxOnOutOfMemoryError-16</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine16</baseRef>
+        <userLogin>tstuefe</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/873</htmlUrl>
+        <labels />
+        <lastCommentCreatedAt>2021-06-20 10:56:38.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>tstuefe</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>874</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>874</number>
+        <issueUpdatedAt>2021-06-20 10:36:32.0 UTC</issueUpdatedAt>
+        <title>SapMachine #861 (11): Unify behavior for xxxOnOutOfMemoryError</title>
+        <body>(manually cherry picked from commit 6dfb6bd48cebd8cb0d5dd6643f5c594c572fc48b)
+
+SapMachine 11 version.
+
+Had to modify the patch somewhat (FLAG_SET_ERGO had a different prototype, and jtreg test needed to be adapted for earlier jtreg versions). Changes are trivial.
+
+fixes #861
+</body>
+        <prUpdatedAt>2021-06-20 10:36:32.0 UTC</prUpdatedAt>
+        <headSha>b59a61acd33b2f114e8ce7c83ea74e1888329e4a</headSha>
+        <headRef>xxxOnOutOfMemoryError-11</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine11</baseRef>
+        <userLogin>tstuefe</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/874</htmlUrl>
+        <labels />
+        <lastCommentCreatedAt>2021-06-20 10:36:32.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>tstuefe</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
   </pulls>
 </org.jenkinsci.plugins.github.pullrequest.GitHubPRRepository>
