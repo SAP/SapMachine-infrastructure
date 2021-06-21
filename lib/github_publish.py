@@ -26,11 +26,13 @@ def main(argv=None):
 
     tag = args.tag
     prerelease = args.prerelease
-    asset_file = args.asset
+    asset = args.asset
     description = '' if args.description is None else args.description
 
-    if asset_file is not None:
-        asset_file = os.path.realpath(asset_file)
+    rc = 0
+
+    if asset is not None:
+        asset_file = os.path.realpath(asset)
         asset_name = os.path.basename(asset_file)
         asset_mime_type = mimetypes.guess_type(asset_file)
 
@@ -62,15 +64,15 @@ def main(argv=None):
         upload_url = response['upload_url']
         print(str.format('created release "{0}"', tag))
 
-    if asset_file is not None:
+    if asset is not None:
         '''
         asset file is specified (-a)
         first check wether the asset already exists
         '''
-        assets = utils.github_api_request(str.format('releases/{0}/assets', release_id), per_page=50)
+        gh_assets = utils.github_api_request(str.format('releases/{0}/assets', release_id), per_page=50)
 
-        for asset in assets:
-            if asset['name'] == asset_name:
+        for gh_asset in gh_assets:
+            if gh_asset['name'] == asset_name:
                 '''
                 asset already exists -> skip
                 '''
