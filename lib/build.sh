@@ -16,27 +16,9 @@ if [[ $UNAME == CYGWIN* ]]; then
   WORKSPACE=$(cygpath -u "${WORKSPACE}")
 fi
 
-#if [[ -z $NO_CHECKOUT ]]; then
-#  if [ -d SapMachine ]; then
-#      rm -rf SapMachine;
-#  fi
-#
-#  if [[ -z $SAPMACHINE_GIT_REPOSITORY ]]; then
-#    SAPMACHINE_GIT_REPOSITORY="https://github.com/SAP/SapMachine.git"
-#  fi
-#
-#  if [[ ! -z $GIT_USER && ! -z GIT_PASSWORD ]]; then
-#    git clone -b $SAPMACHINE_GIT_BRANCH "https://$GIT_USER:$GIT_PASSWORD@$SAPMACHINE_GIT_REPOSITORY" "${WORKSPACE}/SapMachine"
-#  else
-#    git clone -b $SAPMACHINE_GIT_BRANCH $SAPMACHINE_GIT_REPOSITORY "${WORKSPACE}/SapMachine"
-#  fi
-#fi
 
-if [[ $RUN_GTESTS == true ]]; then
-  GTEST_DIR="${WORKSPACE}/gtest"
-  export GTEST_DIR
-#  git clone -b release-1.8.1 https://github.com/google/googletest.git $GTEST_DIR
-fi
+GTEST_DIR="${WORKSPACE}/gtest"
+export GTEST_DIR
 
 cd "${WORKSPACE}/SapMachine"
 
