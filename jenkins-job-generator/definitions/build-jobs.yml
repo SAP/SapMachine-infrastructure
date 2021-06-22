@@ -193,10 +193,6 @@
             default: '"jdk tools lib"'
             description: 'Select the test group for jtreg langtools tests. Empty means disabled.'
         - bool:
-            name: RUN_GTESTS
-            default: true
-            description: 'enable/disable gtest runs'
-        - bool:
             name: RUN_TESTS
             default: true
             description: 'enable/disable jtreg runs'
@@ -281,9 +277,7 @@
                             }}
 
                             sh "python3 SapMachine-Infrastructure/lib/download_boot_jdk.py -m ${{major}} -d `pwd`"
-                            if (params.RUN_GTESTS == true) {{
-                                checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/tags/release-1.8.1']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'gtest']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/google/googletest.git']]]
-                            }}
+                            checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/tags/release-1.8.1']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'gtest']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/google/googletest.git']]]
                         }}
                     }}
                 }}
@@ -307,13 +301,7 @@
                         expression {{ env.VERIFICATION_RESULT != "2" && params.RUN_TESTS == true }}
                     }}
                     steps {{
-                        script {{
-                            step ([$class: 'CopyArtifact',
-                            projectName: 'jtreg',
-                            filter: "jtreg.zip",
-                            target: 'jtreg']);
-                        }}
-                        sh 'cd jtreg && unzip jtreg.zip'
+                        sh "python3 SapMachine-Infrastructure/lib/download_jtreg.py -m ${{major}} -d `pwd`"
                     }}
                 }}
                 stage('Run jtreg hotspot') {{
@@ -621,10 +609,6 @@
             name: BUILD_MACOS_X86_64
             default: true
         - bool:
-            name: RUN_GTESTS
-            default: true
-            description: 'enable/disable gtest runs'
-        - bool:
             name: RUN_TESTS
             default: true
             description: 'enable/disable jtreg runs'
@@ -674,7 +658,6 @@
                                         string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                         string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                         string(name: 'langtools_test_groups', value: params.langtools_test_groups),
-                                        [$class: 'BooleanParameterValue', name: 'RUN_GTESTS', value: params.RUN_GTESTS],
                                         [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
                                         [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
                                         [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
@@ -720,7 +703,6 @@
                                         string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                         string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                         string(name: 'langtools_test_groups', value: params.langtools_test_groups),
-                                        [$class: 'BooleanParameterValue', name: 'RUN_GTESTS', value: params.RUN_GTESTS],
                                         [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
                                         [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
                                         [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
@@ -766,7 +748,6 @@
                                         string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                         string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                         string(name: 'langtools_test_groups', value: params.langtools_test_groups),
-                                        [$class: 'BooleanParameterValue', name: 'RUN_GTESTS', value: params.RUN_GTESTS],
                                         [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
                                         [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
                                         [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
@@ -812,7 +793,6 @@
                                         string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                         string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                         string(name: 'langtools_test_groups', value: params.langtools_test_groups),
-                                        [$class: 'BooleanParameterValue', name: 'RUN_GTESTS', value: params.RUN_GTESTS],
                                         [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
                                         [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
                                         [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
@@ -858,7 +838,6 @@
                                         string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                         string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                         string(name: 'langtools_test_groups', value: params.langtools_test_groups),
-                                        [$class: 'BooleanParameterValue', name: 'RUN_GTESTS', value: params.RUN_GTESTS],
                                         [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
                                         [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
                                         [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
@@ -915,7 +894,6 @@
                                         string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                         string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                         string(name: 'langtools_test_groups', value: params.langtools_test_groups),
-                                        [$class: 'BooleanParameterValue', name: 'RUN_GTESTS', value: params.RUN_GTESTS],
                                         [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
                                         [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
                                         [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
