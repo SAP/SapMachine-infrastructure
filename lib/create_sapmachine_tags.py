@@ -42,11 +42,13 @@ def run_jenkins_jobs(major, tag):
     build_jobs = [
         str.format('build-{0}-release-linux_x86_64', major),
         str.format('build-{0}-release-linux_ppc64le', major),
-        str.format('build-{0}-release-linux_ppc64', major),
         str.format('build-{0}-release-linux_aarch64', major),
         str.format('build-{0}-release-macos_x86_64', major),
         str.format('build-{0}-release-windows_x86_64', major)
     ]
+
+    if major < 17:
+        build_jobs.append(str.format('build-{0}-release-linux_ppc64', major))
 
     if major > 16:
         build_jobs.append(str.format('build-{0}-release-macos_aarch64', major))
