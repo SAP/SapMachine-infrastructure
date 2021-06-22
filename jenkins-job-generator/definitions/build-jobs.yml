@@ -301,7 +301,7 @@
                         expression {{ env.VERIFICATION_RESULT != "2" && params.RUN_TESTS == true }}
                     }}
                     steps {{
-                        sh "python3 SapMachine-Infrastructure/lib/download_jtreg.py -m ${{major}} -d `pwd`"
+                        sh "python3 SapMachine-Infrastructure/lib/download_jtreg.py -m {major} -d `pwd`"
                     }}
                 }}
                 stage('Run jtreg hotspot') {{
