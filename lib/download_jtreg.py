@@ -8,6 +8,7 @@ import sys
 import utils
 import os
 from os.path import join
+from zipfile import ZipFile
 
 def main(argv=None):
     parser = ArgumentParser()
@@ -31,7 +32,10 @@ def main(argv=None):
     path = join(args.dir, 'jtreg')
     utils.remove_if_exists(path)
     os.makedirs(path)
-    utils.extract_archive(archive_path, path)    
+    with ZipFile(archive_path, 'r') as zipObj:
+      zipObj.extractall(path)
+
+    utils.remove_if_exists(archive_path)
 
 
 if __name__ == "__main__":
