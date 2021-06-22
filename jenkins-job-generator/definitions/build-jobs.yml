@@ -110,6 +110,10 @@
           major: '11'
         - platform: macos_aarch64
           major: '16'
+        - platform: linux_ppc64
+          major: '17'
+        - platform: linux_ppc64
+          major: '18'
     jobs:
         - build-{major}-{build_type}-{platform}
 
@@ -196,10 +200,6 @@
             name: RUN_TESTS
             default: true
             description: 'enable/disable jtreg runs'
-        - bool:
-            name: RUN_DACAPO
-            default: false
-            description: 'enable/disable dacapo run'
         - bool:
             name: PUBLISH
             default: '{publish_default}'
@@ -311,7 +311,6 @@
                         expression {{ env.VERIFICATION_RESULT != "2" && params.RUN_TESTS == true && params.hotspot_test_groups }}
                     }}
                     environment {{
-                        SCIMARK_2_CP = '/opt/scimark2/scimark2lib.jar'
                         TESTSUITE = 'hotspot'
                     }}
                     steps {{
@@ -374,21 +373,6 @@
                         ]
                         junit "test_report_${{env.TESTSUITE}}/JTwork/**/*.jtr.xml"
                         archiveArtifacts allowEmptyArchive: true, artifacts: "test_report_${{env.TESTSUITE}}/JTwork/**/hs_err_pid*.log"
-                    }}
-                }}
-                stage('Run Dacapo') {{
-                    {docker_agent}
-                    when {{
-                        beforeAgent true
-                        expression {{ env.VERIFICATION_RESULT != "2" && params.RUN_DACAPO == true }}
-                    }}
-                    environment {{
-                        DACAPO_CP='${{DACAPO_CLASSPATH}}'
-                    }}
-                    steps {{
-                        sh "echo 'run dacapo'"
-                        sh "python3 --version"
-                        sh "python3 SapMachine-Infrastructure/lib/run_dacapo.py ${{env.DACAPO_CP}}"
                     }}
                 }}
                 stage('Archive') {{

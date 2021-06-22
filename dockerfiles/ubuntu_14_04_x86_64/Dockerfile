@@ -41,9 +41,6 @@ RUN useradd -ms /bin/bash jenkinsa -u 1000
 RUN useradd -ms /bin/bash jenkinsb -u 1001
 RUN useradd -ms /bin/bash jenkinsc -u 1002
 
-RUN mkdir -p /opt/scimark2
-RUN wget https://math.nist.gov/scimark2/scimark2lib.jar -O /opt/scimark2/scimark2lib.jar
-
 ADD sysroot-sles11-x86_64.tgz /opt
 
 WORKDIR /opt
@@ -60,8 +57,5 @@ RUN /opt/gcc-7.3.0/configure --enable-languages=c,c++ --prefix=/opt/gcc-7.3.0-bi
     rm -rf /opt/gcc-build
 
 ENV PATH="/opt/gcc-7.3.0-bin/bin:${PATH}"
-
-RUN mkdir -p /opt/dacapo
-RUN wget https://sourceforge.net/projects/dacapobench/files/9.12-bach-MR1/dacapo-9.12-MR1-bach.jar/download -O /opt/dacapo/dacapo.jar
 
 WORKDIR /

@@ -41,9 +41,6 @@ RUN useradd -ms /bin/bash jenkinsa -u 1000
 RUN useradd -ms /bin/bash jenkinsb -u 1001
 RUN useradd -ms /bin/bash jenkinsc -u 1002
 
-RUN mkdir -p /opt/scimark2
-RUN wget https://math.nist.gov/scimark2/scimark2lib.jar -O /opt/scimark2/scimark2lib.jar
-
 ADD sysroot-sles12-ppc64le.tgz /opt
 
 WORKDIR /opt
