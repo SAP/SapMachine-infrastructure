@@ -24,7 +24,6 @@
                                 string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                 string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                 string(name: 'langtools_test_groups', value: params.langtools_test_groups),
-                                [$class: 'BooleanParameterValue', name: 'RUN_GTESTS', value: params.RUN_GTESTS],
                                 [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
                                 [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
                                 [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
@@ -70,7 +69,6 @@
                                 string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                 string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                 string(name: 'langtools_test_groups', value: params.langtools_test_groups),
-                                [$class: 'BooleanParameterValue', name: 'RUN_GTESTS', value: params.RUN_GTESTS],
                                 [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
                                 [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
                                 [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
@@ -116,7 +114,6 @@
                                 string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                 string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                 string(name: 'langtools_test_groups', value: params.langtools_test_groups),
-                                [$class: 'BooleanParameterValue', name: 'RUN_GTESTS', value: params.RUN_GTESTS],
                                 [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
                                 [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
                                 [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
@@ -162,7 +159,6 @@
                                 string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                 string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                 string(name: 'langtools_test_groups', value: params.langtools_test_groups),
-                                [$class: 'BooleanParameterValue', name: 'RUN_GTESTS', value: params.RUN_GTESTS],
                                 [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
                                 [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
                                 [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
@@ -208,7 +204,6 @@
                                 string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                 string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                 string(name: 'langtools_test_groups', value: params.langtools_test_groups),
-                                [$class: 'BooleanParameterValue', name: 'RUN_GTESTS', value: params.RUN_GTESTS],
                                 [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
                                 [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
                                 [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
@@ -265,7 +260,6 @@
                                 string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                 string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                 string(name: 'langtools_test_groups', value: params.langtools_test_groups),
-                                [$class: 'BooleanParameterValue', name: 'RUN_GTESTS', value: params.RUN_GTESTS],
                                 [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
                                 [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
                                 [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
@@ -379,11 +373,6 @@
         <hudson.model.BooleanParameterDefinition>
           <name>BUILD_MACOS_X86_64</name>
           <description />
-          <defaultValue>true</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
-        <hudson.model.BooleanParameterDefinition>
-          <name>RUN_GTESTS</name>
-          <description>enable/disable gtest runs</description>
           <defaultValue>true</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.BooleanParameterDefinition>

@@ -67,9 +67,7 @@
                     }
 
                     sh "python3 SapMachine-Infrastructure/lib/download_boot_jdk.py -m ${major} -d `pwd`"
-                    if (params.RUN_GTESTS == true) {
-                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/tags/release-1.8.1']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'gtest']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/google/googletest.git']]]
-                    }
+                    checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/tags/release-1.8.1']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'gtest']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/google/googletest.git']]]
                 }
             }
         }
@@ -107,13 +105,7 @@
                 expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.RUN_TESTS == true }
             }
             steps {
-                script {
-                    step ([$class: 'CopyArtifact',
-                    projectName: 'jtreg',
-                    filter: "jtreg.zip",
-                    target: 'jtreg']);
-                }
-                sh 'cd jtreg &amp;&amp; unzip jtreg.zip'
+                sh "python3 SapMachine-Infrastructure/lib/download_jtreg.py -m 17 -d `pwd`"
             }
         }
         stage('Run jtreg hotspot') {
@@ -130,7 +122,6 @@
                 expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.RUN_TESTS == true &amp;&amp; params.hotspot_test_groups }
             }
             environment {
-                SCIMARK_2_CP = '/opt/scimark2/scimark2lib.jar'
                 TESTSUITE = 'hotspot'
             }
             steps {
@@ -207,28 +198,6 @@
                 ]
                 junit "test_report_${env.TESTSUITE}/JTwork/**/*.jtr.xml"
                 archiveArtifacts allowEmptyArchive: true, artifacts: "test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log"
-            }
-        }
-        stage('Run Dacapo') {
-            agent {
-    dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_16_04_x86_64"
-        reuseNode true
-        label "linux_x86_64"
-    }
-}
-
-            when {
-                beforeAgent true
-                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.RUN_DACAPO == true }
-            }
-            environment {
-                DACAPO_CP='${DACAPO_CLASSPATH}'
-            }
-            steps {
-                sh "echo 'run dacapo'"
-                sh "python3 --version"
-                sh "python3 SapMachine-Infrastructure/lib/run_dacapo.py ${env.DACAPO_CP}"
             }
         }
         stage('Archive') {
@@ -486,19 +455,9 @@
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
-          <name>RUN_GTESTS</name>
-          <description>enable/disable gtest runs</description>
-          <defaultValue>true</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
-        <hudson.model.BooleanParameterDefinition>
           <name>RUN_TESTS</name>
           <description>enable/disable jtreg runs</description>
           <defaultValue>true</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
-        <hudson.model.BooleanParameterDefinition>
-          <name>RUN_DACAPO</name>
-          <description>enable/disable dacapo run</description>
-          <defaultValue>false</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>PUBLISH</name>
