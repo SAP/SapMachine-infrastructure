@@ -72,7 +72,7 @@ python3 SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${A
 python3 SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${ARCHIVE_SUM_JRE}"
 python3 SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${ARCHIVE_SUM_SYMBOLS}"
 
-if [[ $UNAME == Darwin ]]; then
+if [ $UNAME == Darwin ] && [[ $ARCHIVE_NAME_JDK != *"aarch64"* ]]; then
     DMG_NAME_JDK="$(cat jdk_dmg_name.txt)"
     DMG_NAME_JRE="$(cat jre_dmg_name.txt)"
 
