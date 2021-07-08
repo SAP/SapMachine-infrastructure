@@ -77,7 +77,7 @@
           - packages.docker_repository_focal
         when: ansible_distribution_major_version == '20'
 
-      # install docker, docker-compose, OpenJDK 8 JRE
+      # install docker and docker-compose
       - name: install docker-ce
         apt:
           name: docker-ce
@@ -263,7 +263,7 @@
         tags:
           - docker.images_remove
 
-      # start all docker container
+      # compose and start all docker containers
       - name: run docker-compose
         command: docker-compose -f ./compose.yml up -d --build
         args:
