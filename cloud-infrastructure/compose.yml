@@ -155,7 +155,7 @@ services:
       volumes:
         - ci_client_ubuntu-jenkins:/home/jenkins/.jenkins
         - ci_client_ubuntu-gpg:/home/jenkins/.gnupg
-        - ci_cliebt_ubuntu-agent:/home/jenkins/agent
+        - ci_client_ubuntu-agent:/home/jenkins/agent
         - pkg:/var/pkg
         - clients:/var/clients
       environment:
