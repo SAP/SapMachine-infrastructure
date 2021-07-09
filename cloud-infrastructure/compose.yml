@@ -81,8 +81,8 @@ services:
       - 50000:50000
     environment:
       - VIRTUAL_PORT=8080
-      - VIRTUAL_HOST=ci.${URL_ROOT}
-      - LETSENCRYPT_HOST=ci.${URL_ROOT}
+      - VIRTUAL_HOST=ci.${URL_ROOT},ci2.${URL_ROOT}
+      - LETSENCRYPT_HOST=ci.${URL_ROOT},ci2.${URL_ROOT}
       - LETSENCRYPT_EMAIL=${SAPMACHINE_EMAIL}
   # linux package distribution server
   dist_server:
@@ -102,9 +102,9 @@ services:
       - pkg:/var/pkg
     environment:
       - VIRTUAL_PORT=80
-      - VIRTUAL_HOST=dist.${URL_ROOT}
+      - VIRTUAL_HOST=dist.${URL_ROOT},dist2.${URL_ROOT}
       - HTTPS_METHOD=noredirect
-      - LETSENCRYPT_HOST=dist.${URL_ROOT}
+      - LETSENCRYPT_HOST=dist.${URL_ROOT},dist2.${URL_ROOT}
       - LETSENCRYPT_EMAIL=${SAPMACHINE_EMAIL}
   # redirects to the sapmachine github page
   redirect_server:
