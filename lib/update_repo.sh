@@ -43,4 +43,4 @@ else
   fi
 fi
 
-git push -u SapMachine --follow-tags "$REPO"
+git push -u sapmachine --follow-tags "$REPO"
