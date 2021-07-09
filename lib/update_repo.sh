@@ -16,7 +16,7 @@ else
   REPO_URL="https://github.com/"
 fi
 
-SAPMACHINE_GIT_REPOSITORY="https://github.com/SAP/SapMachine.git"
+SAPMACHINE_GIT_REPOSITORY="https://${GIT_USER}@github.com/SAP/SapMachine.git"
 
 REPO_PATH="$(basename $REPO)"
 
