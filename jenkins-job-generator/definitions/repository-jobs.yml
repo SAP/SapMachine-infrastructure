@@ -21,7 +21,8 @@
                 }
                 stage('Build') {
                     environment {
-                        GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
+                        GIT_USER = SapMachine
+                        GIT_PASSWORD = credentials('SapMachine-Github-Token')
                     }
                     agent {
                         dockerfile {
@@ -97,16 +98,14 @@
                     environment {
                         JENKINS_CREDENTIALS = credentials('sapmachine-jenkins')
                         GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
+                        GIT_USER = SapMachine
+                        GIT_PASSWORD = credentials('SapMachine-Github-Token')
                     }
                     steps {
-                      withCredentials([
-                            [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
-                            ]) {
-                            sh '''
-                            python3 SapMachine-Infrastructure/lib/merge_jdk_tags.py
-                            python3 SapMachine-Infrastructure/lib/create_sapmachine_tags.py
-                            '''
-                        }
+                        sh '''
+                        python3 SapMachine-Infrastructure/lib/merge_jdk_tags.py
+                        python3 SapMachine-Infrastructure/lib/create_sapmachine_tags.py
+                        '''
                     }
                 }
             }

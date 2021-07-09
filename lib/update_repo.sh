@@ -1,8 +1,8 @@
 #!/bin/bash
 set -ex
 
-if [[ -z "$GITHUB_API_ACCESS_TOKEN" ]]; then
-  echo "Missing mandatory environment variable GITHUB_API_ACCESS_TOKEN"
+if  [[ -z "$GIT_USER" ]] | [[ -z "$GIT_PASSWORD" ]]; then
+  echo "Missing mandatory environment variable GIT_USER or GIT_PASSWORD"
   exit 1
 fi
 
@@ -16,7 +16,7 @@ else
   REPO_URL="https://github.com/"
 fi
 
-SAPMACHINE_GIT_REPOSITORY="https://SapMachine:${GITHUB_API_ACCESS_TOKEN}@github.com/SAP/SapMachine.git"
+SAPMACHINE_GIT_REPOSITORY="https://github.com/SAP/SapMachine.git"
 
 REPO_PATH="$(basename $REPO)"
 
