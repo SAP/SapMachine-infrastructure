@@ -21,7 +21,7 @@
                 }
                 stage('Build') {
                     environment {
-                        GIT_USER = SapMachine
+                        GIT_USER = "SapMachine"
                         GIT_PASSWORD = credentials('SapMachine-Github-Token')
                     }
                     agent {
@@ -98,7 +98,7 @@
                     environment {
                         JENKINS_CREDENTIALS = credentials('sapmachine-jenkins')
                         GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
-                        GIT_USER = SapMachine
+                        GIT_USER = "SapMachine"
                         GIT_PASSWORD = credentials('SapMachine-Github-Token')
                     }
                     steps {
