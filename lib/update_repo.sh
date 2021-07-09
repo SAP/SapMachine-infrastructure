@@ -16,7 +16,7 @@ else
   REPO_URL="https://github.com/"
 fi
 
-SAPMACHINE_GIT_REPOSITORY="https://${GIT_USER}@github.com/SAP/SapMachine.git"
+SAPMACHINE_GIT_REPOSITORY="https://${GIT_USER}:${GIT_PASSWORD}@github.com/SAP/SapMachine.git"
 
 REPO_PATH="$(basename $REPO)"
 
@@ -35,7 +35,7 @@ if [ ! -d $REPO_PATH ]; then
 else
   cd $REPO_PATH
   git remote remove sapmachine | true
-  git remote add sapmachine $SAPMACHINE_GIT_REPOSITORY
+  #git remote add sapmachine $SAPMACHINE_GIT_REPOSITORY
   git checkout "$REPO"
   if [[ -z $HG ]]; then
     git fetch origin
@@ -45,4 +45,4 @@ else
   fi
 fi
 
-git push -u sapmachine --follow-tags "$REPO"
+git push -u $SAPMACHINE_GIT_REPOSITORY --follow-tags "$REPO"
