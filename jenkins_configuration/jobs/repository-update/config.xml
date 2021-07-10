@@ -1,54 +1,13 @@
-<flow-definition plugin="workflow-job">
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps">
-    <script>pipeline {
-    agent {
-        label "repository"
-    }
-    stages {
-        stage("Checkout Infrastructure") {
-            steps {
-                checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
-            }
-        }
-        stage('Build') {
-            environment {
-                GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
-            }
-            agent {
-                dockerfile {
-                    dir "SapMachine-Infrastructure/dockerfiles/infrastructure"
-                    reuseNode true
-                    label "repository"
-                }
-            }
-            steps {
-                withCredentials([
-                    [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
-                    ]) {
-                        sh '''
-                        openjdk_repositories=$(python3 SapMachine-Infrastructure/lib/list_openjdk_repositories.py)
-                        for i in ${openjdk_repositories}
-                        do
-                            :
-                            SapMachine-Infrastructure/lib/update_repo.sh $i
-                        done
-
-                        openjdk_repositories=$(python3 SapMachine-Infrastructure/lib/list_openjdk_repositories.py -m)
-                        for i in ${openjdk_repositories}
-                        do
-                            :
-                            SapMachine-Infrastructure/lib/update_repo.sh -m $i
-                        done
-                        '''
-                }
-            }
-        }
-    }
-}
-</script>
-    <sandbox>false</sandbox>
-  </definition>
-  <actions />
+<flow-definition plugin="workflow-job@2.40">
+  <actions>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.8.4" />
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.8.4">
+      <jobProperties />
+      <triggers />
+      <parameters />
+      <options />
+    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
+  </actions>
   <description>This project is generated. Do not modify manually.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
   <properties>
@@ -69,4 +28,51 @@
       </triggers>
     </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
   </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.90">
+    <script>pipeline {
+    agent {
+        label "repository"
+    }
+    stages {
+        stage("Checkout Infrastructure") {
+            steps {
+                checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+            }
+        }
+        stage('Build') {
+            environment {
+                GIT_USER = "SapMachine"
+                GIT_PASSWORD = credentials('SapMachine-Github-Token')
+            }
+            agent {
+                dockerfile {
+                    dir "SapMachine-Infrastructure/dockerfiles/infrastructure"
+                    reuseNode true
+                    label "repository"
+                }
+            }
+            steps {
+                sh '''
+                openjdk_repositories=$(python3 SapMachine-Infrastructure/lib/list_openjdk_repositories.py)
+                for i in ${openjdk_repositories}
+                do
+                    :
+                    SapMachine-Infrastructure/lib/update_repo.sh $i
+                done
+
+                openjdk_repositories=$(python3 SapMachine-Infrastructure/lib/list_openjdk_repositories.py -m)
+                for i in ${openjdk_repositories}
+                do
+                    :
+                    SapMachine-Infrastructure/lib/update_repo.sh -m $i
+                done
+                '''
+            }
+        }
+    }
+}
+</script>
+    <sandbox>false</sandbox>
+  </definition>
+  <disabled>false</disabled>
 </flow-definition>
