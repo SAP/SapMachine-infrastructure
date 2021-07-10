@@ -27,10 +27,6 @@ cd $WORKSPACE
 #  rm -rf $REPO_PATH
 #fi
 
-if [[ $REPO_PATH == "jdk11u" ]]; then
-  rm -rf jdk16
-fi
-
 if [ ! -d $REPO_PATH ]; then
   git $HG clone "$REPO_URL$REPO" $REPO_PATH
   cd $REPO_PATH
