@@ -30,7 +30,7 @@ cd $WORKSPACE
 if [ ! -d $REPO_PATH ]; then
   git $HG clone "$REPO_URL$REPO" $REPO_PATH
   cd $REPO_PATH
-  git remote add sapmachine $SAPMACHINE_GIT_REPOSITORY
+  #git remote add sapmachine $SAPMACHINE_GIT_REPOSITORY
   git checkout -b "$REPO"
 else
   cd $REPO_PATH
@@ -45,4 +45,4 @@ else
   fi
 fi
 
-git push -u $SAPMACHINE_GIT_REPOSITORY --follow-tags "$REPO"
+git push --follow-tags $SAPMACHINE_GIT_REPOSITORY "$REPO"
