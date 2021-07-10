@@ -24,7 +24,7 @@ cd $WORKSPACE
 
 # modify/uncomment to clean up workspace
 #if [[ $REPO_PATH == "jdk11u" ]]; then
-  rm -rf $REPO_PATH
+#  rm -rf $REPO_PATH
 #fi
 
 if [ ! -d $REPO_PATH ]; then
