@@ -24,18 +24,15 @@ cd $WORKSPACE
 
 # modify/uncomment to clean up workspace
 #if [[ $REPO_PATH == "jdk11u" ]]; then
-#  rm -rf jdk11u
+  rm -rf $REPO_PATH
 #fi
 
 if [ ! -d $REPO_PATH ]; then
   git $HG clone "$REPO_URL$REPO" $REPO_PATH
   cd $REPO_PATH
-  #git remote add sapmachine $SAPMACHINE_GIT_REPOSITORY
   git checkout -b "$REPO"
 else
   cd $REPO_PATH
-  git remote remove sapmachine | true
-  #git remote add sapmachine $SAPMACHINE_GIT_REPOSITORY
   git checkout "$REPO"
   if [[ -z $HG ]]; then
     git fetch origin
