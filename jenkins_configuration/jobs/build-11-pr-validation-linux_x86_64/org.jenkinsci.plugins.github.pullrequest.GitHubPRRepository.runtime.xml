@@ -5,45 +5,51 @@
   <sshUrl>git@github.com:SAP/SapMachine.git</sshUrl>
   <pulls class="concurrent-hash-map">
     <entry>
-      <int>880</int>
+      <int>891</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>880</number>
-        <issueUpdatedAt>2021-07-08 06:40:07.0 UTC</issueUpdatedAt>
-        <title>SapMachine #820: Bring Vitals up to date</title>
-        <body>This is a collection of changes to the Vitals. Changes have accumulated, and its time to bring them to the sapmachine. The biggest changes are in vitals/vitals.cpp, formerly services/stathist.cpp. Review-wise it may be easier just to look at that file in its current form (specifically, all classes starting with "Sample") instead of parsing the diff, but I leave this to you.
+        <number>891</number>
+        <issueUpdatedAt>2021-07-12 18:09:52.0 UTC</issueUpdatedAt>
+        <title>SapMachine (17) #820: Bring Vitals up to date</title>
+        <body>Cherry-Pick Vitals update to sapmachine 17
 
-Changes in detail:
-
-- consistently named the Vitals Vitals, removing all traces of the former "stathist" or "StatisticalHistory"
-- moved the code into an own sub directory (/share/vitals)
-- On Linux, added a new column, named "hp" for "process heap", which contains the sum of rss+swap for the process heap (I included swap in case we are swapping and rss is not the full story). The data are read from proc/pid/smaps.
-- "productified" most Vitals options, removing the Diagnostic marker.
--  Added a new option to print vitals to stdout at VM exit (we had already "DumpVitalsAtExit", same thing different sink)
-- now there are some (basic) gtests for vitals
-- and a new jtreg stress test printing vitals in quick succession
-
-vitals.cpp:
-- I now use a Mutex to guard table update and table printing.
-- Where before the downsample tables were cascaded from the first table (so, samples falling out of the first FIFO were fed into the subsequent mid term table, and falling out of that one into the long term table), now the tables are independent and are fed the same samples, just with different periods. So, the short term table gets every sample, the mid term table every nth sample, etc. The effect is that each table can be looked at individually, without having to know the other tables. And that the time range the downsample tables cover starts now, not at now-x.
-- Iterating over the sample tables was streamlined and simplified. Walking the table is done with a closure interface now.
-
-Sorry for the big change. I hope after this change things become reasonably stable.
-
-Testing: I will let the patch cook in our nightlies for a while.
+fixes #820</body>
+        <prUpdatedAt>2021-07-12 18:09:52.0 UTC</prUpdatedAt>
+        <headSha>dc5a0c1ea09ec4ed7d114c2cc61a753203ba271b</headSha>
+        <headRef>vitals17</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine17</baseRef>
+        <userEmail>christoph.langer@sap.com</userEmail>
+        <userLogin>RealCLanger</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/891</htmlUrl>
+        <labels />
+        <lastCommentCreatedAt>2021-07-12 18:09:27.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>RealCLanger</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>892</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>892</number>
+        <issueUpdatedAt>2021-07-12 21:11:14.0 UTC</issueUpdatedAt>
+        <title>SapMachine (16) #820: Bring Vitals up to date</title>
+        <body>Cherry-Pick Vitals update to sapmachine 16
 
 fixes #820
 
 </body>
-        <prUpdatedAt>2021-07-08 06:40:07.0 UTC</prUpdatedAt>
-        <headSha>6ef7e01c899f543e4b8f9620b0410a98c234bc68</headSha>
-        <headRef>sapmachine-vitals</headRef>
+        <prUpdatedAt>2021-07-12 21:11:14.0 UTC</prUpdatedAt>
+        <headSha>6ddfc8d8c1a4b7689b17182f6c83a53cb93f3c17</headSha>
+        <headRef>vitals16</headRef>
         <mergeable>true</mergeable>
-        <baseRef>sapmachine</baseRef>
-        <userLogin>tstuefe</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/880</htmlUrl>
+        <baseRef>sapmachine16</baseRef>
+        <userEmail>christoph.langer@sap.com</userEmail>
+        <userLogin>RealCLanger</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/892</htmlUrl>
         <labels />
-        <lastCommentCreatedAt>2021-07-03 03:48:24.0 UTC</lastCommentCreatedAt>
-        <sourceRepoOwner>tstuefe</sourceRepoOwner>
+        <lastCommentCreatedAt>2021-07-12 21:11:13.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>RealCLanger</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
       </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
