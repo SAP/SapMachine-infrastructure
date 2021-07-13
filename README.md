@@ -33,7 +33,7 @@ We run the jobs on a jenkins installation with one server and two clients.
 As most of the jobs run in docker containers, docker must be installed on the client machines.
 
 ### Access to SapMachine Repository
-Some of the jobs need push access to the [SapMachine repository](https://github.com/SAP/SapMachine). It is possible to work with a fork of this repository. The credentials have to be configured in Jenkis.
+Some of the jobs need push access to the [SapMachine repository](https://github.com/SAP/SapMachine). It is possible to work with a fork of this repository. The credentials have to be configured in Jenkins.
 
 ## Installation
 After installing jenkins, one pipeline job has to be configured that runs the Pipeline [jenkins-restore-pipeline](jenkins-restore-pipeline/Jenkinsfile). This jobs imports the whole jenkins configuration. After running this job, the configuration has to be reloaded.
