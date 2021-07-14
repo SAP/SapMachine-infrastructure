@@ -5,51 +5,35 @@
   <sshUrl>git@github.com:SAP/SapMachine.git</sshUrl>
   <pulls class="concurrent-hash-map">
     <entry>
-      <int>891</int>
+      <int>898</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>891</number>
-        <issueUpdatedAt>2021-07-12 18:09:52.0 UTC</issueUpdatedAt>
-        <title>SapMachine (17) #820: Bring Vitals up to date</title>
-        <body>Cherry-Pick Vitals update to sapmachine 17
+        <number>898</number>
+        <issueUpdatedAt>2021-07-13 15:49:04.0 UTC</issueUpdatedAt>
+        <title>Vitals: SapMachine11: sleep time too long</title>
+        <body>With the integration of the last vitals changes into SapMachine11 (#820, 0aad4b7) an error crept in (SapMachine11 only):
 
-fixes #820</body>
-        <prUpdatedAt>2021-07-12 18:09:52.0 UTC</prUpdatedAt>
-        <headSha>dc5a0c1ea09ec4ed7d114c2cc61a753203ba271b</headSha>
-        <headRef>vitals17</headRef>
-        <mergeable>true</mergeable>
-        <baseRef>sapmachine17</baseRef>
-        <userEmail>christoph.langer@sap.com</userEmail>
-        <userLogin>RealCLanger</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/891</htmlUrl>
-        <labels />
-        <lastCommentCreatedAt>2021-07-12 18:09:27.0 UTC</lastCommentCreatedAt>
-        <sourceRepoOwner>RealCLanger</sourceRepoOwner>
-        <state>OPEN</state>
-        <inBadState>false</inBadState>
-      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-    </entry>
-    <entry>
-      <int>892</int>
-      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>892</number>
-        <issueUpdatedAt>2021-07-12 21:11:14.0 UTC</issueUpdatedAt>
-        <title>SapMachine (16) #820: Bring Vitals up to date</title>
-        <body>Cherry-Pick Vitals update to sapmachine 16
+SapMachine/src/hotspot/share/vitals/vitals.cpp
 
-fixes #820
+Line 934 in ca09513
+
+ os::sleep(this, get_sample_interval_ms() * 1000, false); 
+sleep time is too long. os::sleep() takes ms, not seconds.
+
+Tests: manual tests, Vitals jtreg tests (which obviously need pimping up, but that's for another day)
+
+fixes #896
 
 </body>
-        <prUpdatedAt>2021-07-12 21:11:14.0 UTC</prUpdatedAt>
-        <headSha>6ddfc8d8c1a4b7689b17182f6c83a53cb93f3c17</headSha>
-        <headRef>vitals16</headRef>
+        <prUpdatedAt>2021-07-13 15:49:04.0 UTC</prUpdatedAt>
+        <headSha>0f40a68b74b80e54120e3bac32a0f898aebc1656</headSha>
+        <headRef>896-Vitals-sapmachine-11-sleep-time-too-long</headRef>
         <mergeable>true</mergeable>
-        <baseRef>sapmachine16</baseRef>
-        <userEmail>christoph.langer@sap.com</userEmail>
-        <userLogin>RealCLanger</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/892</htmlUrl>
+        <baseRef>sapmachine11</baseRef>
+        <userLogin>tstuefe</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/898</htmlUrl>
         <labels />
-        <lastCommentCreatedAt>2021-07-12 21:11:13.0 UTC</lastCommentCreatedAt>
-        <sourceRepoOwner>RealCLanger</sourceRepoOwner>
+        <lastCommentCreatedAt>2021-07-13 15:30:52.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>tstuefe</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
       </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
