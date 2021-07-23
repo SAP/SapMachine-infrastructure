@@ -1,7 +1,7 @@
 # SapMachine Cloud Infrastructure
 
-The SapMachine cloud infrastructure hosts Jenkins server and client instances as well as the hosting of the SapMachine Linux Package server.
-The [docker-compose configuration](compose.yml) describes a set of 7 Docker container.
+The SapMachine cloud infrastructure hosts Jenkins server and client instances as well as the SapMachine Linux Package server.
+The [docker-compose configuration](compose.yml) describes a set of 7 Docker containers.
 
 1. **jwilder/nginx-proxy** (https://hub.docker.com/r/jwilder/nginx-proxy/): Starts a nginx reverse proxy and automatically redirects HTTP(S) requests based on the request URL to the corresponding Docker container. This routing is defined by the environment variable *VIRTUAL_HOST* of each Docker container.
 2. **jrcs/letsencrypt-nginx-proxy-companion** (https://hub.docker.com/r/jrcs/letsencrypt-nginx-proxy-companion/): Automatically requests Let's Encrypt SSL certificates for the domains/subdomains which are used by the HTTPS server running in the Docker container:
@@ -11,8 +11,8 @@ The [docker-compose configuration](compose.yml) describes a set of 7 Docker cont
 
 3. [jenkins_server](ci/Dockerfile): The Jenkins server instance
 4. [dist_server](dist/Dockerfile): The Linux Package server
-5. [redirect_server](redirect/Dockerfile): Redirects requests to sapmachine.io to the Sapmachine GitHup Page.
-6. [redirect_server_www](redirect/Dockerfile): Redirects requests to www.sapmachine.io to the Sapmachine GitHup Page.
+5. [redirect_server](redirect/Dockerfile): Redirects requests to sapmachine.io to the Sapmachine GitHub Page.
+6. [redirect_server_www](redirect/Dockerfile): Redirects requests to www.sapmachine.io to the Sapmachine GitHub Page.
 7. [ci_client_ubuntu](ci-client-ubuntu/Dockerfile): Jenkins client used for building Debian packages.
 
 The docker-compose configuration uses the [.env](.env) file for defining common environment variables.
@@ -31,11 +31,17 @@ sudo apt-get install python3 python3-pip
 
 #### Ansible
 
-Ansible 2.9 is requred to run the Ansible playbooks. In your shell, run the following commands:
+Ansible is required to run the Ansible playbooks. At the time this howto was written, the latest stable ansible version was 2.11.
+To install it, run the following commands in your shell:
 
 ```
 git clone -b stable-2.9 https://github.com/ansible/ansible.git
 source ansible/hacking/env-setup
+```
+
+On MacOS you might want to do
+```
+brew install ansible
 ```
 
 #### boto3
@@ -63,6 +69,16 @@ ci
          |_ sapmachine.key
          |_ sapmachine.ownertrust
          |_ sapmachine.secret.key
+         |_ old
+              |_ sapmachine.key
+              |_ sapmachine.ownertrust
+              |_ sapmachine.secret.key
+```
+
+Run these commands:
+```
+cd ci
+unzip <path to key archive>
 ```
 
 #### Jenkins Credentials
@@ -129,7 +145,7 @@ localhost
 
 Place the *SapMachine.pem* private key file inside the [ansible](ansible) directory.
 
-### Provision AWS Ressources
+### Provision AWS Resources
 
 You need an [AWS access key](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html) in order to provision the AWS ressources.
 Export the AWS access key:
