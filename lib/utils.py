@@ -261,7 +261,7 @@ def get_active_sapmachine_branches():
             # found sapmachine branch
             major = int(match.group(1))
             # ignore inactive ones
-            if major < 11 or (major > 11 and major < 15):
+            if major < 11 or (major > 11 and major < 16):
                 continue
             print(str.format('found sapmachine branch "{0}" with major "{1}"', branch['name'], major))
             sapmachine_branches.append([branch['name'], major])
