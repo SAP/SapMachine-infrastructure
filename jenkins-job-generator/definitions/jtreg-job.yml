@@ -48,14 +48,12 @@
                                 jtregBuild = match[0][5]
                                 if (jtregBuild == null) {
                                     jtregBuild = "1"
-                                } else {
-                                    jtregBuild = jtregBuild.toInteger()
                                 }
                             }
                             if (jtregVersion.toFloat() < 6) {
                                 env.BUILD_SCRIPT = "build-all.sh"
                                 env.BUILD_VERSION = jtregVersion
-                                env.BUILD_NUMBER = jtregBuild
+                                env.BUILD_NUMBER = 'b'+jtregBuild
                                 env.VM_OPT = ""
                             } else {
                                 env.BUILD_SCRIPT = "build.sh"

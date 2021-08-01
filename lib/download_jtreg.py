@@ -18,11 +18,11 @@ def main(argv=None):
 
     ver = int(args.major)
     if ver >= 17:
-        url = 'https://ci.sapmachine.io/view/Infrastructure/job/jtreg/lastSuccessfulBuild/artifact/jtreg.zip'
+        url = 'https://github.com/SAP/SapMachine-infrastructure/releases/download/jtreg-6/jtreg.zip'
         name = 'jtreg.zip'
     else:
-        url = 'https://github.com/SAP/SapMachine-infrastructure/releases/download/jtreg5.2/jtreg5.2.zip'
-        name = 'jtreg5.2.zip'
+        url = 'https://github.com/SAP/SapMachine-infrastructure/releases/download/jtreg-5.1/jtreg.zip'
+        name = 'jtreg.zip'
 
     print(str.format('Downloading "{0}" and extracting to "{1}"', url, args.dir ))
 
@@ -36,7 +36,6 @@ def main(argv=None):
       zipObj.extractall(path)
 
     utils.remove_if_exists(archive_path)
-
 
 if __name__ == "__main__":
     sys.exit(main())
