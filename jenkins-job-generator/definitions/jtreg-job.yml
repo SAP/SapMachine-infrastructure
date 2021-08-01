@@ -45,7 +45,7 @@
                             } else {
                                 def match = params.TAG =~ /jtreg-*([0-9]+(\.[0-9]+)*)((\+|-b)([0-9]+))*/
                                 jtregVersion = match[0][1]
-                                jtregBuild = matcher[0][5]
+                                jtregBuild = match[0][5]
                                 if (jtregBuild == null) {
                                     jtregBuild = "1"
                                 } else {
