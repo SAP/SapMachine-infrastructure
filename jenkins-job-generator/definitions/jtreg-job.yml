@@ -14,11 +14,11 @@
           description: 'The tag/branch to build.'
       - string:
           name: BUILD_VERSION
-          default: '1.0'
+          default: '9.9'
           description: 'Manually set the JTREG version. Only used when TAG parameter is "master"'
       - string:
           name: BUILD_NUMBER
-          default: '0'
+          default: '99'
           description: 'Manually set the JTREG build number. Only used when TAG parameter is "master"'
     dsl: |
         pipeline {
@@ -26,11 +26,11 @@
                 label 'linux_x86_64'
             }
             stages {
-              stage("Checkout Infrastructure") {
-                      steps {
-                          checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], includedRegions: 'jenkins-job-generator/.*', doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
-                      }
-                  }
+                stage("Checkout Infrastructure") {
+                    steps {
+                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], includedRegions: 'jenkins-job-generator/.*', doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+                    }
+                }
                 stage('Build') {
                     agent {
                         dockerfile {
@@ -41,19 +41,37 @@
                     }
                     steps {
                         script {
+                            def jtregVersion
+                            def jtregBuild
                             if (params.TAG == "master") {
-                                env.BUILD_NUMBER = params.BUILD_NUMBER
-                                env.BUILD_VERSION = params.BUILD_VERSION
+                                jtregVersion = params.BUILD_VERSION
+                                jtregBuild = params.BUILD_NUMBER
                             } else {
-                                def match = params.TAG =~ /jtreg([0-9]+(\.[0-9]+)*)-(b[0-9]*).*/
-                                env.BUILD_NUMBER = match[0][2]
-                                env.BUILD_VERSION = match[0][1]
+                                def match = params.TAG =~ /jtreg-*([0-9]+(\.[0-9]+)*)((\+|-b)([0-9]+))*/
+                                jtregVersion = match[0][1]
+                                jtregBuild = matcher[0][5]
+                                if (jtregBuild == null) {
+                                    jtregBuild = "1"
+                                } else {
+                                    jtregBuild = jtregBuild.toInteger()
+                                }
+                            }
+                            if (version.toFloat() < 6) {
+                                env.BUILD_VERSION = jtregVersion
+                                env.BUILD_NUMBER = jtregBuild
+                                env.BUILD_SCRIPT = "build-all.sh"
+                                env.VM_OPT = ""
+                            } else {
+                                env.JTREG_VERSION = jtregVersion
+                                env.JTREG_BUILD_NUMBER = jtregBuild
+                                env.BUILD_SCRIPT = "build.sh"
+                                env.VM_OPT = "--jdk"
                             }
                         }
                         sh "rm -rf ${env.WORKSPACE}/jtreg"
                         sh "git clone https://github.com/openjdk/jtreg.git ${env.WORKSPACE}/jtreg"
                         sh "cd ${env.WORKSPACE}/jtreg && git checkout ${params.TAG}"
-                        sh "cd ${env.WORKSPACE}/jtreg && bash make/build.sh --jdk /usr/lib/jvm/java-8-openjdk-*"
+                        sh "cd ${env.WORKSPACE}/jtreg && bash make/${BUILD_SCRIPT} ${VM_OPT} /usr/lib/jvm/java-8-openjdk-*"
                         sh "cp ${env.WORKSPACE}/jtreg/build/images/jtreg.zip ${env.WORKSPACE}/jtreg.zip"
                     }
                     post {
