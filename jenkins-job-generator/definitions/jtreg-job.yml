@@ -56,6 +56,7 @@
                                 env.BUILD_SCRIPT = "build-all.sh"
                                 env.BUILD_VERSION = jtregVersion
                                 env.BUILD_NUMBER = jtregBuild
+                                env.VM_OPT = ""
                             } else {
                                 env.BUILD_SCRIPT = "build.sh"
                                 env.JTREG_BUILD_NUMBER = jtregBuild
