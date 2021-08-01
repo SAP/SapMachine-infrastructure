@@ -13,13 +13,9 @@
           default: 'master'
           description: 'The tag/branch to build.'
       - string:
-          name: BUILD_VERSION
-          default: '9.9'
-          description: 'Manually set the JTREG version. Only used when TAG parameter is "master".'
-      - string:
           name: BUILD_NUMBER
           default: '99'
-          description: 'Manually set the JTREG build number. Only used when TAG parameter is "master".'
+          description: 'Manually set the JTREG build number. Only used when TAG parameter does not contain a build number.'
     dsl: |
         pipeline {
             agent {
@@ -44,7 +40,7 @@
                             def jtregVersion
                             def jtregBuild
                             if (params.TAG == "master") {
-                                jtregVersion = params.BUILD_VERSION
+                                jtregVersion = 99 // just a dummy
                                 jtregBuild = params.BUILD_NUMBER
                             } else {
                                 def match = params.TAG =~ /jtreg-*([0-9]+(\.[0-9]+)*)((\+|-b)([0-9]+))*/
@@ -57,14 +53,12 @@
                                 }
                             }
                             if (jtregVersion.toFloat() < 6) {
+                                env.BUILD_SCRIPT = "build-all.sh"
                                 env.BUILD_VERSION = jtregVersion
                                 env.BUILD_NUMBER = jtregBuild
-                                env.BUILD_SCRIPT = "build-all.sh"
-                                env.VM_OPT = ""
                             } else {
-                                env.JTREG_VERSION = jtregVersion
-                                env.JTREG_BUILD_NUMBER = jtregBuild
                                 env.BUILD_SCRIPT = "build.sh"
+                                env.JTREG_BUILD_NUMBER = jtregBuild
                                 env.VM_OPT = "--jdk"
                             }
                         }
