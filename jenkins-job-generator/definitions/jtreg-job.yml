@@ -15,11 +15,11 @@
       - string:
           name: BUILD_VERSION
           default: '9.9'
-          description: 'Manually set the JTREG version. Only used when TAG parameter is "master"'
+          description: 'Manually set the JTREG version. Only used when TAG parameter is "master".'
       - string:
           name: BUILD_NUMBER
           default: '99'
-          description: 'Manually set the JTREG build number. Only used when TAG parameter is "master"'
+          description: 'Manually set the JTREG build number. Only used when TAG parameter is "master".'
     dsl: |
         pipeline {
             agent {
@@ -56,7 +56,7 @@
                                     jtregBuild = jtregBuild.toInteger()
                                 }
                             }
-                            if (version.toFloat() < 6) {
+                            if (jtregVersion.toFloat() < 6) {
                                 env.BUILD_VERSION = jtregVersion
                                 env.BUILD_NUMBER = jtregBuild
                                 env.BUILD_SCRIPT = "build-all.sh"
