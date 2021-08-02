@@ -11,13 +11,7 @@
   <description>This project is generated. Do not modify manually.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
   <properties>
-    <hudson.plugins.jira.JiraProjectProperty plugin="jira@3.2" />
-    <hudson.plugins.buildblocker.BuildBlockerProperty plugin="build-blocker-plugin@1.7.6">
-      <useBuildBlocker>false</useBuildBlocker>
-      <blockLevel>GLOBAL</blockLevel>
-      <scanQueueFor>DISABLED</scanQueueFor>
-      <blockingJobs />
-    </hudson.plugins.buildblocker.BuildBlockerProperty>
+    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty />
     <jenkins.model.BuildDiscarderProperty>
       <strategy class="hudson.tasks.LogRotator">
         <daysToKeep>-1</daysToKeep>
@@ -26,7 +20,6 @@
         <artifactNumToKeep>10</artifactNumToKeep>
       </strategy>
     </jenkins.model.BuildDiscarderProperty>
-    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty />
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
         <hudson.model.StringParameterDefinition>
@@ -36,15 +29,9 @@
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>BUILD_VERSION</name>
-          <description>Manually set the JTREG version. Only used when TAG parameter is "master"</description>
-          <defaultValue>1.0</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
           <name>BUILD_NUMBER</name>
-          <description>Manually set the JTREG build number. Only used when TAG parameter is "master"</description>
-          <defaultValue>0</defaultValue>
+          <description>Manually set the JTREG build number. Only used when TAG parameter does not contain a build number.</description>
+          <defaultValue>99</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
@@ -56,11 +43,11 @@
         label 'linux_x86_64'
     }
     stages {
-      stage("Checkout Infrastructure") {
-              steps {
-                  checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], includedRegions: 'jenkins-job-generator/.*', doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
-              }
-          }
+        stage("Checkout Infrastructure") {
+            steps {
+                checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], includedRegions: 'jenkins-job-generator/.*', doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+            }
+        }
         stage('Build') {
             agent {
                 dockerfile {
@@ -71,18 +58,34 @@
             }
             steps {
                 script {
+                    def jtregVersion
+                    def jtregBuild
                     if (params.TAG == "master") {
-                        env.BUILD_NUMBER = params.BUILD_NUMBER
-                        env.BUILD_VERSION = params.BUILD_VERSION
+                        jtregVersion = 99 // just a dummy
+                        jtregBuild = params.BUILD_NUMBER
                     } else {
-                        env.BUILD_NUMBER = 6
-                        env.BUILD_VERSION = 1
+                        def match = params.TAG =~ /jtreg-*([0-9]+(\.[0-9]+)*)((\+|-b)([0-9]+))*/
+                        jtregVersion = match[0][1]
+                        jtregBuild = match[0][5]
+                        if (jtregBuild == null) {
+                            jtregBuild = "1"
+                        }
+                    }
+                    if (jtregVersion.toFloat() &lt; 6) {
+                        env.BUILD_SCRIPT = "build-all.sh"
+                        env.BUILD_VERSION = jtregVersion
+                        env.BUILD_NUMBER = 'b'+jtregBuild
+                        env.VM_OPT = ""
+                    } else {
+                        env.BUILD_SCRIPT = "build.sh"
+                        env.JTREG_BUILD_NUMBER = jtregBuild
+                        env.VM_OPT = "--jdk"
                     }
                 }
                 sh "rm -rf ${env.WORKSPACE}/jtreg"
                 sh "git clone https://github.com/openjdk/jtreg.git ${env.WORKSPACE}/jtreg"
                 sh "cd ${env.WORKSPACE}/jtreg &amp;&amp; git checkout ${params.TAG}"
-                sh "cd ${env.WORKSPACE}/jtreg &amp;&amp; bash make/build.sh --jdk /usr/lib/jvm/java-8-openjdk-*"
+                sh "cd ${env.WORKSPACE}/jtreg &amp;&amp; bash make/${BUILD_SCRIPT} ${VM_OPT} /usr/lib/jvm/java-8-openjdk-*"
                 sh "cp ${env.WORKSPACE}/jtreg/build/images/jtreg.zip ${env.WORKSPACE}/jtreg.zip"
             }
             post {
