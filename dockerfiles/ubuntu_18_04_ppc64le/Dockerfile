@@ -33,7 +33,7 @@ bison \
 flex \
 patch \
 mercurial \
-openjdk-8-jdk \
+openjdk-11-jdk \
 libgmp-dev \
 libmpfr-dev \
 libmpc-dev
