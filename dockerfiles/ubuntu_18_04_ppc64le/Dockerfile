@@ -3,8 +3,8 @@ FROM ubuntu:18.04
 RUN apt-get update && apt-get install -qq -y --no-install-recommends \
 cpio \
 make \
-gcc-8 \
-g++-8 \
+gcc \
+g++ \
 autoconf \
 file \
 libx11-dev \
@@ -44,6 +44,7 @@ RUN useradd -ms /bin/bash jenkinsc -u 1002
 
 ADD sysroot-sles12-ppc64le.tgz /opt
 
-# for now avoid to build gcc-8 from sources, we install it directly
+# we cannot use gcc-8 / g++-8 from the package installation, it does not work with our sysroot
+# and using without sysroot creates a JDK that does not work on SLES12 SP1
 
 WORKDIR /
