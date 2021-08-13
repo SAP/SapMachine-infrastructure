@@ -1,5 +1,5 @@
 <hudson.plugins.ec2.EC2Slave plugin="ec2@1.57">
-  <name>EC2 (SapMachine Cloud) - Linux aarch64 Client (i-0a29422750fdaa860)</name>
+  <name>EC2 (SapMachine Cloud) - Linux aarch64 Client (i-0e5acdb3f22adc502)</name>
   <remoteFS>/home/ubuntu/client_home</remoteFS>
   <numExecutors>1</numExecutors>
   <mode>EXCLUSIVE</mode>
@@ -10,7 +10,7 @@
   <launcher class="hudson.plugins.ec2.ssh.EC2UnixLauncher" />
   <label>linux_aarch64</label>
   <nodeProperties />
-  <instanceId>i-0a29422750fdaa860</instanceId>
+  <instanceId>i-0e5acdb3f22adc502</instanceId>
   <initScript />
   <tmpDir />
   <remoteAdmin>ubuntu</remoteAdmin>
@@ -21,12 +21,12 @@
   <isConnected>false</isConnected>
   <tags class="linked-list">
     <hudson.plugins.ec2.EC2Tag>
-      <name>Name</name>
-      <value>Jenkins linux aarch64 client autolaunched</value>
-    </hudson.plugins.ec2.EC2Tag>
-    <hudson.plugins.ec2.EC2Tag>
       <name>jenkins_slave_type</name>
       <value>demand_Linux aarch64 Client</value>
+    </hudson.plugins.ec2.EC2Tag>
+    <hudson.plugins.ec2.EC2Tag>
+      <name>Name</name>
+      <value>Jenkins linux aarch64 client autolaunched</value>
     </hudson.plugins.ec2.EC2Tag>
     <hudson.plugins.ec2.EC2Tag>
       <name>jenkins_server_url</name>
