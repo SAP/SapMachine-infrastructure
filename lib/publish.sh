@@ -87,7 +87,7 @@ if [ $UNAME == Darwin ]; then
     python3 SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${DMG_SUM_JDK}"
     python3 SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${DMG_SUM_JRE}"
 
-    # Don't make the brew casks for the moment, we'll have to find a sound solution for that
+    # Don't call make_casks.py in aarch64 builds for the moment, we'll have to find a sound solution for that
     if [[ $ARCHIVE_NAME_JDK != *"aarch64"* ]]; then
         JDK_SHA256=`shasum -a 256 $DMG_NAME_JDK | awk '{ print $1 }'`
         JRE_SHA256=`shasum -a 256 $DMG_NAME_JRE | awk '{ print $1 }'`
