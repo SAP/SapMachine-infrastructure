@@ -1,4 +1,14 @@
 <org.jenkins.plugins.lockableresources.LockableResourcesManager plugin="lockable-resources@2.10">
-  <resources />
+  <resources>
+    <org.jenkins.plugins.lockableresources.LockableResource>
+      <name>MacBrewCaskGenerationSynchronizer</name>
+      <description>Synchronizer Lock for Brew Cask Generation</description>
+      <labels />
+      <ephemeral>false</ephemeral>
+      <queueItemId>0</queueItemId>
+      <queuingStarted>0</queuingStarted>
+      <queuedContexts />
+    </org.jenkins.plugins.lockableresources.LockableResource>
+  </resources>
   <queuedContexts />
 </org.jenkins.plugins.lockableresources.LockableResourcesManager>
