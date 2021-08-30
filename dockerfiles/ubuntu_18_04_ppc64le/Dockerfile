@@ -47,4 +47,19 @@ ADD sysroot-sles12-ppc64le.tgz /opt
 # we cannot use gcc-8 / g++-8 from the package installation, it does not work with our sysroot
 # and using without sysroot creates a JDK that does not work on SLES12 SP1
 
+WORKDIR /opt
+RUN wget https://mirrors.kernel.org/gnu/gcc/gcc-8.4.0/gcc-8.4.0.tar.gz && \
+    tar xzf gcc-8.4.0.tar.gz && \
+    mkdir /opt/gcc-build && \
+    mkdir /opt/gcc-8.4.0-bin
+
+WORKDIR /opt/gcc-build
+RUN /opt/gcc-8.4.0/configure --enable-languages=c,c++ --prefix=/opt/gcc-8.4.0-bin --disable-multilib --enable-multiarch --with-build-sysroot=/opt/sysroot-sles12-ppc64le.tgz && \
+    make -j$(grep -c ^processor /proc/cpuinfo) && \
+    make install && \
+    rm -rf /opt/gcc-8.4.0 && \
+    rm -rf /opt/gcc-build
+
+ENV PATH="/opt/gcc-8.4.0-bin/bin:${PATH}"
+
 WORKDIR /
