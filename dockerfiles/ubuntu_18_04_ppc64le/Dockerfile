@@ -54,7 +54,7 @@ RUN wget https://mirrors.kernel.org/gnu/gcc/gcc-8.4.0/gcc-8.4.0.tar.gz && \
     mkdir /opt/gcc-8.4.0-bin
 
 WORKDIR /opt/gcc-build
-RUN /opt/gcc-8.4.0/configure --enable-languages=c,c++ --prefix=/opt/gcc-8.4.0-bin --disable-multilib --enable-multiarch --with-build-sysroot=/opt/sysroot-sles12-ppc64le.tgz && \
+RUN /opt/gcc-8.4.0/configure --enable-languages=c,c++ --prefix=/opt/gcc-8.4.0-bin --disable-multilib --enable-multiarch --with-build-sysroot=/opt/sysroot-sles12-ppc64le && \
     make -j$(grep -c ^processor /proc/cpuinfo) && \
     make install && \
     rm -rf /opt/gcc-8.4.0 && \
