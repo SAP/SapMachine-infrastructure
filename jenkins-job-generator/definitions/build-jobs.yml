@@ -443,7 +443,7 @@
                 }}
                 stage('Create Brew Casks') {{
                     when {{
-                        expression {{ env.VERIFICATION_RESULT != "2" && params.PUBLISH == true && JOB_NAME ==~ /((\S*)(release-macos)(\S*))/ }}
+                        expression {{ env.VERIFICATION_RESULT != "2" && params.PUBLISH != true && JOB_NAME ==~ /((\S*)(release-macos)(\S*))/ }}
                     }}
                     environment {{
                         SAPMACHINE_PUBLISH_GITHUB_TOKEN = credentials('SapMachine-Github-Token')
