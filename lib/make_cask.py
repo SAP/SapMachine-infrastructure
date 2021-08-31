@@ -49,7 +49,8 @@ end
 def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('-t', '--tag', help='the SapMachine tag', metavar='TAG', required=True)
-    parser.add_argument('--sha256sum', help='the sha256 sum', metavar='SHA256', required=True)
+    parser.add_argument('--sha256sum', help='the sha256 sum of the x86_64 dmg', metavar='SHA256', required=True)
+    parser.add_argument('--aarchsha256sum', help='the sha256 sum of the aarch64 dmg', metavar='AARCHSHA256', required=False)
     parser.add_argument('-i', '--imagetype', help='The image type', metavar='IMAGETYPE', choices=['jdk', 'jre'])
     parser.add_argument('-p', '--prerelease', help='this is a pre-release', action='store_true', default=False)
     args = parser.parse_args()
