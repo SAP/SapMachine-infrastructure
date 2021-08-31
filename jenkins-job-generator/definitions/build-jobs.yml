@@ -32,7 +32,7 @@
             docker_agent: |
                 agent {{
                     dockerfile {{
-                        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_14_04_ppc64le"
+                        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04_ppc64le"
                         reuseNode true
                         label "{platform}"
                     }}
