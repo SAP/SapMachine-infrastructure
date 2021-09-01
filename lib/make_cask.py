@@ -46,11 +46,55 @@ cask 'sapmachine${MAJOR}-ea-${IMAGE_TYPE}' do
 end
 '''
 
+release_duplex_cask_template = '''
+cask 'sapmachine${MAJOR}-${IMAGE_TYPE}' do
+  version '${VERSION}'
+
+  if Hardware::CPU.intel?
+    url "https://github.com/SAP/SapMachine/releases/download/sapmachine-#{version}/sapmachine-${IMAGE_TYPE}-#{version}_${OS_NAME}-x64_bin.dmg"
+    sha256 '${INTELSHA256}'
+  else
+    url "https://github.com/SAP/SapMachine/releases/download/sapmachine-#{version}/sapmachine-${IMAGE_TYPE}-#{version}_${OS_NAME}-aarch64_bin.dmg"
+    sha256 '${AARCHSHA256}'
+  end
+
+  appcast "https://sap.github.io/SapMachine/latest/#{version.major}"
+  name 'SapMachine OpenJDK Development Kit'
+  homepage 'https://sapmachine.io/'
+
+  artifact "sapmachine-${IMAGE_TYPE}-#{version}.${IMAGE_TYPE}", target: "/Library/Java/JavaVirtualMachines/sapmachine-#{version.major}.${IMAGE_TYPE}"
+
+  uninstall rmdir: '/Library/Java/JavaVirtualMachines'
+end
+'''
+
+pre_release_duplex_cask_template = '''
+cask 'sapmachine${MAJOR}-ea-${IMAGE_TYPE}' do
+  version '${VERSION},${BUILD_NUMBER}'
+
+  if Hardware::CPU.intel?
+    url "https://github.com/SAP/SapMachine/releases/download/sapmachine-#{version.before_comma}%2B#{version.after_comma}/sapmachine-${IMAGE_TYPE}-#{version.before_comma}-ea.#{version.after_comma}_${OS_NAME}-x64_bin.dmg"
+    sha256 '${INTELSHA256}'
+  else
+    url "https://github.com/SAP/SapMachine/releases/download/sapmachine-#{version.before_comma}%2B#{version.after_comma}/sapmachine-${IMAGE_TYPE}-#{version.before_comma}-ea.#{version.after_comma}_${OS_NAME}-aarch64_bin.dmg"
+    sha256 '${AARCHSHA256}'
+  end
+
+  appcast "https://sap.github.io/SapMachine/latest/#{version.major}"
+  name 'SapMachine OpenJDK Development Kit'
+  homepage 'https://sapmachine.io/'
+
+  artifact "sapmachine-${IMAGE_TYPE}-#{version.before_comma}.${IMAGE_TYPE}", target: "/Library/Java/JavaVirtualMachines/sapmachine-#{version.major}-ea.${IMAGE_TYPE}"
+
+  uninstall rmdir: '/Library/Java/JavaVirtualMachines'
+end
+'''
+
 def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('-t', '--tag', help='the SapMachine tag', metavar='TAG', required=True)
     parser.add_argument('--sha256sum', help='the sha256 sum of the x86_64 dmg', metavar='SHA256', required=True)
-    parser.add_argument('--aarchsha256sum', help='the sha256 sum of the aarch64 dmg', metavar='AARCHSHA256', required=False)
+    parser.add_argument('--aarchsha256sum', help='the sha256 sum of the aarch64 dmg', metavar='SHA256', required=False)
     parser.add_argument('-i', '--imagetype', help='The image type', metavar='IMAGETYPE', choices=['jdk', 'jre'])
     parser.add_argument('-p', '--prerelease', help='this is a pre-release', action='store_true', default=False)
     args = parser.parse_args()
@@ -71,23 +115,46 @@ def main(argv=None):
             print('No build number given for pre-release. Aborting ...')
             sys.exit()
 
-        cask_content = Template(pre_release_cask_template).substitute(
-            MAJOR=sapMachineTag.get_major(),
-            VERSION=sapMachineTag.get_version_string_without_build(),
-            BUILD_NUMBER=sapMachineTag.get_build_number(),
-            IMAGE_TYPE=args.imagetype,
-            OS_NAME='osx' if sapMachineTag.get_major() < 17 or (sapMachineTag.get_major() == 17 and sapMachineTag.get_build_number() < 21) else 'macos',
-            SHA256=args.sha256sum
-        )
+        if args.aarchsha256sum is None:
+            cask_content = Template(pre_release_cask_template).substitute(
+                MAJOR=sapMachineTag.get_major(),
+                VERSION=sapMachineTag.get_version_string_without_build(),
+                BUILD_NUMBER=sapMachineTag.get_build_number(),
+                IMAGE_TYPE=args.imagetype,
+                OS_NAME='osx' if sapMachineTag.get_major() < 17 or (sapMachineTag.get_major() == 17 and sapMachineTag.get_build_number() < 21) else 'macos',
+                SHA256=args.sha256sum
+            )
+        else:
+            cask_content = Template(pre_release_duplex_cask_template).substitute(
+                MAJOR=sapMachineTag.get_major(),
+                VERSION=sapMachineTag.get_version_string_without_build(),
+                BUILD_NUMBER=sapMachineTag.get_build_number(),
+                IMAGE_TYPE=args.imagetype,
+                OS_NAME='osx' if sapMachineTag.get_major() < 17 or (sapMachineTag.get_major() == 17 and sapMachineTag.get_build_number() < 21) else 'macos',
+                INTELSHA256=args.sha256sum,
+                AARCHSHA256=args.aarchsha256sum
+            )
+
         cask_file_name = str.format('sapmachine{0}-ea-{1}.rb', sapMachineTag.get_major(), args.imagetype)
     else:
-        cask_content = Template(release_cask_template).substitute(
-            MAJOR=sapMachineTag.get_major(),
-            VERSION=sapMachineTag.get_version_string_without_build(),
-            IMAGE_TYPE=args.imagetype,
-            OS_NAME='osx' if sapMachineTag.get_major() < 17 else 'macos',
-            SHA256=args.sha256sum
-        )
+        if args.aarchsha256sum is None:
+            cask_content = Template(release_cask_template).substitute(
+                MAJOR=sapMachineTag.get_major(),
+                VERSION=sapMachineTag.get_version_string_without_build(),
+                IMAGE_TYPE=args.imagetype,
+                OS_NAME='osx' if sapMachineTag.get_major() < 17 else 'macos',
+                SHA256=args.sha256sum
+            )
+        else:
+            cask_content = Template(release_duplex_cask_template).substitute(
+                MAJOR=sapMachineTag.get_major(),
+                VERSION=sapMachineTag.get_version_string_without_build(),
+                IMAGE_TYPE=args.imagetype,
+                OS_NAME='osx' if sapMachineTag.get_major() < 17 else 'macos',
+                INTELSHA256=args.sha256sum,
+                AARCHSHA256=args.aarchsha256sum
+            )
+
         cask_file_name = str.format('sapmachine{0}-{1}.rb', sapMachineTag.get_major(), args.imagetype)
 
     homebrew_dir = join(work_dir, 'homebrew')

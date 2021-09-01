@@ -47,9 +47,9 @@ check_and_make () {
   fi
 
   if [[ ${ONLY_X64} == true ]]; then
-    echo python3 SapMachine-Infrastructure/lib/make_cask.py -t ${GIT_TAG_NAME} --sha256sum ${X64_SHA} -i ${BUNDLE} ${PRE_RELEASE_OPT}
+    python3 SapMachine-Infrastructure/lib/make_cask.py -t ${GIT_TAG_NAME} --sha256sum ${X64_SHA} -i ${BUNDLE} ${PRE_RELEASE_OPT}
   else
-    echo python3 SapMachine-Infrastructure/lib/make_cask.py -t ${GIT_TAG_NAME} --sha256sum ${X64_SHA} --aarchsha256sum ${AARCH_SHA} -i ${BUNDLE} ${PRE_RELEASE_OPT}
+    python3 SapMachine-Infrastructure/lib/make_cask.py -t ${GIT_TAG_NAME} --sha256sum ${X64_SHA} --aarchsha256sum ${AARCH_SHA} -i ${BUNDLE} ${PRE_RELEASE_OPT}
   fi      
 }
 
