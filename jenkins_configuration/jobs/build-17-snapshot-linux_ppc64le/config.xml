@@ -74,7 +74,7 @@
         stage("Build") {
             agent {
     dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_14_04_ppc64le"
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04_ppc64le"
         reuseNode true
         label "linux_ppc64le"
     }
@@ -94,7 +94,7 @@
         stage('Copy JTREG') {
             agent {
     dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_14_04_ppc64le"
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04_ppc64le"
         reuseNode true
         label "linux_ppc64le"
     }
@@ -111,7 +111,7 @@
         stage('Run jtreg hotspot') {
             agent {
     dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_14_04_ppc64le"
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04_ppc64le"
         reuseNode true
         label "linux_ppc64le"
     }
@@ -141,7 +141,7 @@
         stage('Run jtreg jdk') {
             agent {
     dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_14_04_ppc64le"
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04_ppc64le"
         reuseNode true
         label "linux_ppc64le"
     }
@@ -172,7 +172,7 @@
         stage('Run jtreg langtools') {
             agent {
     dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_14_04_ppc64le"
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04_ppc64le"
         reuseNode true
         label "linux_ppc64le"
     }

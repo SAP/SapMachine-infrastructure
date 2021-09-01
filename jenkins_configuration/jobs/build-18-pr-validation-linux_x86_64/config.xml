@@ -74,7 +74,7 @@
         stage("Build") {
             agent {
     dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_16_04_x86_64"
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04_x86_64"
         reuseNode true
         label "linux_x86_64"
     }
@@ -94,7 +94,7 @@
         stage('Copy JTREG') {
             agent {
     dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_16_04_x86_64"
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04_x86_64"
         reuseNode true
         label "linux_x86_64"
     }
@@ -111,7 +111,7 @@
         stage('Run jtreg hotspot') {
             agent {
     dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_16_04_x86_64"
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04_x86_64"
         reuseNode true
         label "linux_x86_64"
     }
@@ -141,7 +141,7 @@
         stage('Run jtreg jdk') {
             agent {
     dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_16_04_x86_64"
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04_x86_64"
         reuseNode true
         label "linux_x86_64"
     }
@@ -172,7 +172,7 @@
         stage('Run jtreg langtools') {
             agent {
     dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_16_04_x86_64"
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04_x86_64"
         reuseNode true
         label "linux_x86_64"
     }
