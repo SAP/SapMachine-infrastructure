@@ -8,11 +8,11 @@
       <int>938</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>938</number>
-        <issueUpdatedAt>2021-09-02 06:30:26.0 UTC</issueUpdatedAt>
+        <issueUpdatedAt>2021-09-03 20:54:17.0 UTC</issueUpdatedAt>
         <title>Merge to tag jdk-18+13</title>
         <body>please pull</body>
-        <prUpdatedAt>2021-09-02 06:30:26.0 UTC</prUpdatedAt>
-        <headSha>02822e1398d6015f0ed26edd440db8e0d50bf152</headSha>
+        <prUpdatedAt>2021-09-03 20:54:17.0 UTC</prUpdatedAt>
+        <headSha>c109b13d8d67c4e1bea28ace90f7b35fab3a3a53</headSha>
         <headRef>pr-jdk-18+13</headRef>
         <mergeable>true</mergeable>
         <baseRef>sapmachine</baseRef>
@@ -20,6 +20,40 @@
         <htmlUrl>https://github.com/SAP/SapMachine/pull/938</htmlUrl>
         <labels />
         <sourceRepoOwner>SAP</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>940</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>940</number>
+        <issueUpdatedAt>2021-09-03 17:29:58.0 UTC</issueUpdatedAt>
+        <title>939: Add facility to trace uninstrumented malloc calls in VM and third party coding</title>
+        <body>This PR merges the new SapMachine malloc trace facility into the sap machine. 
+
+For details, please see src/hotspot/os/linux/malloctrace/malloc_trace.md  (https://github.com/SAP/SapMachine/blob/6e7d33fd02f116df227da96f4700f180bf0ef80b/src/hotspot/os/linux/malloctrace/malloc_trace.md)
+
+Testing:
+
+- the new facility comes with a number of gtest- and jtreg tests, which I ran manually. 
+- Nightly tests ran with this patch in our openjdk builds since several weeks. I even switched malloc trace on at VM startup (normally its off) to give the tracer a good workout.
+
+Thank you.
+
+fixes #939
+
+</body>
+        <prUpdatedAt>2021-09-03 17:29:58.0 UTC</prUpdatedAt>
+        <headSha>6e7d33fd02f116df227da96f4700f180bf0ef80b</headSha>
+        <headRef>939-malloc-trace-facility</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine</baseRef>
+        <userLogin>tstuefe</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/940</htmlUrl>
+        <labels />
+        <lastCommentCreatedAt>2021-09-03 17:29:58.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>tstuefe</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
       </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
