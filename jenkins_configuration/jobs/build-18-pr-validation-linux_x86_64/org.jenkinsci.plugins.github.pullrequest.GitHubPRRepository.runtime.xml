@@ -5,26 +5,6 @@
   <sshUrl>git@github.com:SAP/SapMachine.git</sshUrl>
   <pulls class="concurrent-hash-map">
     <entry>
-      <int>938</int>
-      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>938</number>
-        <issueUpdatedAt>2021-09-03 20:54:17.0 UTC</issueUpdatedAt>
-        <title>Merge to tag jdk-18+13</title>
-        <body>please pull</body>
-        <prUpdatedAt>2021-09-03 20:54:17.0 UTC</prUpdatedAt>
-        <headSha>c109b13d8d67c4e1bea28ace90f7b35fab3a3a53</headSha>
-        <headRef>pr-jdk-18+13</headRef>
-        <mergeable>true</mergeable>
-        <baseRef>sapmachine</baseRef>
-        <userLogin>SapMachine</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/938</htmlUrl>
-        <labels />
-        <sourceRepoOwner>SAP</sourceRepoOwner>
-        <state>OPEN</state>
-        <inBadState>false</inBadState>
-      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-    </entry>
-    <entry>
       <int>940</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>940</number>
@@ -53,6 +33,56 @@ fixes #939
         <htmlUrl>https://github.com/SAP/SapMachine/pull/940</htmlUrl>
         <labels />
         <lastCommentCreatedAt>2021-09-03 17:29:58.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>tstuefe</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>941</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>941</number>
+        <issueUpdatedAt>2021-09-04 06:59:21.0 UTC</issueUpdatedAt>
+        <title>894: Vitals: printing to err file misses "now" value</title>
+        <body>Trivial change. When crashing, we accidentally omitted the "now" values from the vitals, so we would miss a development (e.g. spikes) in the last seconds before the crash.
+
+fixes #894
+
+</body>
+        <prUpdatedAt>2021-09-04 06:59:21.0 UTC</prUpdatedAt>
+        <headSha>424b3198e016c46c000fd85cfb409038bb34b7cf</headSha>
+        <headRef>894-vitals-printing-to-err-file-misses-now-value</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine</baseRef>
+        <userLogin>tstuefe</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/941</htmlUrl>
+        <labels />
+        <lastCommentCreatedAt>2021-09-04 06:59:20.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>tstuefe</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>942</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>942</number>
+        <issueUpdatedAt>2021-09-04 08:12:29.0 UTC</issueUpdatedAt>
+        <title>895: Vitals: In SapMachine, we never shutdown the Vitals on VM exit</title>
+        <body>Trivial, benign "error", mostly done for parity with SAP JVM.
+
+fixes #895
+
+</body>
+        <prUpdatedAt>2021-09-04 08:12:29.0 UTC</prUpdatedAt>
+        <headSha>a311f274ee7f3a9430555038e638c2f1ed2ac154</headSha>
+        <headRef>895-vitals-shutdown-on-vm-exit</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine</baseRef>
+        <userLogin>tstuefe</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/942</htmlUrl>
+        <labels />
+        <lastCommentCreatedAt>2021-09-04 08:12:29.0 UTC</lastCommentCreatedAt>
         <sourceRepoOwner>tstuefe</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
