@@ -97,3 +97,118 @@
                 }
             }
         }
+
+- job:
+    name: osx-multi-target-upload
+    description: 'This project is generated. Do not modify manually.'
+    project-type: freestyle
+    node: master
+    concurrent: false
+    properties:
+        - build-discarder:
+            num-to-keep: 100
+            artifact-num-to-keep: 10
+    parameters:
+        - string:
+            name: GIT_TAG_NAME
+            default: ''
+            description: 'The Git tag to create a debian package from.'
+        - bool:
+            name: PUBLISH_CASKS
+            default: false
+            description: 'When set to true, update homebrew casks.'
+        - file:
+            name: INTEL_JDK_TGZ
+            description: 'The SapMachine JDK .tar.gz archive.'
+        - file:
+            name: INTEL_JRE_TGZ
+            description: 'The SapMachine JRE .tar.gz archive.'
+        - file:
+            name: INTEL_JDK_DMG
+            description: 'The SapMachine JDK .dmg disk image.'
+        - file:
+            name: INTEL_JRE_DMG
+            description: 'The SapMachine JRE .dmg disk image.'
+        - file:
+            name: INTEL_SYMBOLS
+            description: 'The SapMachine SYMBOLS archive.'
+        - file:
+            name: AARCH_JDK_TGZ
+            description: 'The SapMachine JDK .tar.gz archive.'
+        - file:
+            name: AARCH_JRE_TGZ
+            description: 'The SapMachine JRE .tar.gz archive.'
+        - file:
+            name: AARCH_JDK_DMG
+            description: 'The SapMachine JDK .dmg disk image.'
+        - file:
+            name: AARCH_JRE_DMG
+            description: 'The SapMachine JRE .dmg disk image.'
+        - file:
+            name: AARCH_SYMBOLS
+            description: 'The SapMachine SYMBOLS archive.'
+    publishers:
+      - archive:
+          artifacts: 'INTEL_JDK_TGZ, INTEL_JRE_TGZ, INTEL_JDK_DMG, INTEL_JRE_DMG, INTEL_SYMBOLS, AARCH_JDK_TGZ, AARCH_JRE_TGZ, AARCH_JDK_DMG, AARCH_JRE_DMG, AARCH_SYMBOLS'
+      - trigger-parameterized-builds:
+        - project: osx-multi-target-upload-processor
+          current-parameters: true
+
+- job:
+    name: osx-multi-target-upload-processor
+    description: 'This project is generated. Do not modify manually.'
+    project-type: pipeline
+    concurrent: false
+    properties:
+        - build-discarder:
+            num-to-keep: 100
+            artifact-num-to-keep: 1
+    parameters:
+        - string:
+            name: GIT_TAG_NAME
+            default: ''
+            description: 'The Git tag to create a debian package from.'
+        - bool:
+            name: PUBLISH_CASKS
+            default: false
+            description: 'When set to true, update homebrew casks.'
+    dsl: |
+        pipeline {
+            agent {
+                label 'macos_x86_64'
+            }
+            stages {
+                stage("Checkout Infrastructure") {
+                    steps {
+                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+                    }
+                }
+                stage('Copy Upstream Artifacts') {
+                    steps {
+                        copyArtifacts filter: 'INTEL_JDK_TGZ, INTEL_JRE_TGZ, INTEL_JDK_DMG, INTEL_JRE_DMG, INTEL_SYMBOLS, AARCH_JDK_TGZ, AARCH_JRE_TGZ, AARCH_JDK_DMG, AARCH_JRE_DMG, AARCH_SYMBOLS', projectName: 'osx-multi-target-upload', selector: upstream()
+                    }
+                }
+                stage('Deploy') {
+                    environment {
+                      GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
+                    }
+                    steps {
+                        withCredentials([
+                            [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
+                            ]) {
+                            sh "SapMachine-Infrastructure/lib/publish_multi_target_osx.sh"
+                        }
+                    }
+                }
+                stage('Publish Website Data') {
+                    steps {
+                        build job: 'generate-website-data', propagate: false, wait: false
+                    }
+                }
+            }
+            post {
+                always {
+                    cleanWs deleteDirs: true, disableDeferredWipeout: true
+                }
+            }
+        }
