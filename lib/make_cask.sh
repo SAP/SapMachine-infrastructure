@@ -12,8 +12,8 @@ export GITHUB_API_ACCESS_TOKEN=$SAPMACHINE_PUBLISH_GITHUB_TOKEN
 check_and_make () {
   BUNDLE=$1
     
-  THIS_SHA_URL=https://github.com/SAP/SapMachine/releases/download/${ARTEFACT_DIR}/sapmachine-${BUNDLE}-${ARTEFACT_DESIG}_macos-${THIS_EXT}_bin.sha256.dmg.txt
-  OTHER_SHA_URL=https://github.com/SAP/SapMachine/releases/download/${ARTEFACT_DIR}/sapmachine-${BUNDLE}-${ARTEFACT_DESIG}_macos-${OTHER_EXT}_bin.sha256.dmg.txt
+  THIS_SHA_URL=https://github.com/SAP/SapMachine/releases/download/${ARTEFACT_DIR}/sapmachine-${BUNDLE}-${ARTEFACT_DESIG}_${OS_NAME}-${THIS_EXT}_bin.sha256.dmg.txt
+  OTHER_SHA_URL=https://github.com/SAP/SapMachine/releases/download/${ARTEFACT_DIR}/sapmachine-${BUNDLE}-${ARTEFACT_DESIG}_${OS_NAME}-${OTHER_EXT}_bin.sha256.dmg.txt
 
   OTHER_SHA=`curl -L -H "Authorization: token ${GITHUB_API_ACCESS_TOKEN}" ${OTHER_SHA_URL} | cut -d ' ' -f 1`
 
@@ -59,8 +59,10 @@ VERSION=`echo "${GIT_TAG_NAME:11}" | cut -d '+' -f 1`
 # change this to '[[ $MAJOR < 17 && $MAJOR != 11 ]]' once Apple Silicone is supported in 11
 if [[ $MAJOR < 17 ]]; then
   ONLY_X64=true
+  OS_NAME=osx
 else
   ONLY_X64=false
+  OS_NAME=macos
 fi    
 
 if [[ "${JOB_NAME: -6}" == x86_64 ]]; then
