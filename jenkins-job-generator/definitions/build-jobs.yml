@@ -46,9 +46,6 @@
         - linux_aarch64:
             configure_sysroot_default: '--disable-warnings-as-errors --with-devkit=/opt/devkits/aarch64-linux-gnu-to-aarch64-linux-gnu-fedora-21-gcc-9.2.0'
             docker_agent: ''
-        - linux_ppc64:
-            configure_sysroot_default: '--with-devkit=/opt/devkits/ppc64-linux-gnu-to-ppc64-linux-gnu'
-            docker_agent: ''
         - windows_x86_64:
             configure_sysroot_default: ''
             docker_agent: ''
@@ -110,14 +107,6 @@
           major: '11'
         - platform: macos_aarch64
           major: '16'
-        - platform: linux_ppc64
-          major: '11'
-        - platform: linux_ppc64
-          major: '16'
-        - platform: linux_ppc64
-          major: '17'
-        - platform: linux_ppc64
-          major: '18'
     jobs:
         - build-{major}-{build_type}-{platform}
 
@@ -602,9 +591,6 @@
             name: BUILD_LINUX_PPC64LE
             default: true
         - bool:
-            name: BUILD_LINUX_PPC64
-            default: true
-        - bool:
             name: BUILD_LINUX_AARCH64
             default: true
         - bool:
@@ -733,51 +719,6 @@
                                     }}
 
                                     sh "rm -rf ${{WORKSPACE}}/${{LINUX_PPC64LE_ARTIFACT_DIR}}"
-                                }}
-                            }}
-                        }}
-                        stage('Linux ppc64') {{
-                            when {{
-                                expression {{ params.BUILD_LINUX_PPC64 == true }}
-                            }}
-                            steps {{
-                                script {{
-                                    def job_linux_ppc64 = build job: 'build-{major}-{build_type}-linux_ppc64', propagate: false, wait: true, parameters:
-                                    [
-                                        string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
-                                        string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
-                                        string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
-                                        string(name: 'BUILD_NUMBER', value: params.BUILD_NUMBER),
-                                        string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
-                                        string(name: 'BOOT_JDK_MAJOR', value: params.BOOT_JDK_MAJOR),
-                                        string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
-                                        string(name: 'jdk_test_groups', value: params.jdk_test_groups),
-                                        string(name: 'langtools_test_groups', value: params.langtools_test_groups),
-                                        [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
-                                        [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
-                                        [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
-                                    ]
-
-                                    env.LINUX_PPC64_JOB_ID = Integer.toString(job_linux_ppc64.getNumber())
-                                    env.LINUX_PPC64_ARTIFACT_DIR = 'linux_ppc64_' + env.BUILD_NUMBER
-
-                                    sh "mkdir -p ${{WORKSPACE}}/${{LINUX_PPC64_ARTIFACT_DIR}}"
-                                }}
-                            }}
-                            post {{
-                                success {{
-                                    copyArtifacts filter: 'sapmachine-*.tar.gz', projectName: 'build-{major}-{build_type}-linux_ppc64', target: env.LINUX_PPC64_ARTIFACT_DIR, selector:
-                                    [
-                                        $class: 'SpecificBuildSelector',
-                                        buildNumber: env.LINUX_PPC64_JOB_ID
-                                    ]
-
-                                    script {{
-                                        def artifacts_selector = env.LINUX_PPC64_ARTIFACT_DIR + "/*.tar.gz"
-                                        step ([$class: 'ArtifactArchiver', artifacts: artifacts_selector]);
-                                    }}
-
-                                    sh "rm -rf ${{WORKSPACE}}/${{LINUX_PPC64_ARTIFACT_DIR}}"
                                 }}
                             }}
                         }}
