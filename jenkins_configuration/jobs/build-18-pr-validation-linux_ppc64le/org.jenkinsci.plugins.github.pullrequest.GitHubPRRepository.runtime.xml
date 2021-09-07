@@ -5,6 +5,89 @@
   <sshUrl>git@github.com:SAP/SapMachine.git</sshUrl>
   <pulls class="concurrent-hash-map">
     <entry>
+      <int>945</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>945</number>
+        <issueUpdatedAt>2021-09-06 09:35:47.0 UTC</issueUpdatedAt>
+        <title>943: Cherrypick "8268893 jcmd to trim the glibc heap" (SapMachine 17)</title>
+        <body>This brings the "System.trim_native_heap" jcmd to SapMachine 17.
+
+I will attempt to officially downport "8268893 jcmd to trim the glibc heap" to jdk17u/jdk11u, but that may take some time (especially since CSRs are involved) and I like to see this in our SapMachine sooner.
+
+The patch is super trivial; note however that this is not a 1:1 patch. The function "query_process_memory_info()" in the original patch lives in os_linux.cpp/hpp and is interwoven with other functions; for this patch, I isolated it locally in the new, command-specific trimCHeapDCmd.cpp. I did this to reduce merging trouble if os_linux changes.
+
+fixes #943
+
+</body>
+        <prUpdatedAt>2021-09-06 09:35:47.0 UTC</prUpdatedAt>
+        <headSha>1665d766e674d85b04fdad4f33e0cfbdd54b0ac1</headSha>
+        <headRef>943-Cherrypick-8268893-jcmd-to-trim-the-glibc-heap-17</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine17</baseRef>
+        <userLogin>tstuefe</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/945</htmlUrl>
+        <labels />
+        <lastCommentCreatedAt>2021-09-06 09:35:47.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>tstuefe</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>946</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>946</number>
+        <issueUpdatedAt>2021-09-06 21:41:51.0 UTC</issueUpdatedAt>
+        <title>#895: Vitals: In SapMachine, we never shutdown the Vitals on VM exit (17)</title>
+        <body>(cherry picked from commit e226ab1cab3f3b786d5bbcca7aa80a7b1397fc54)
+
+Downported to 17
+
+fixes #895 
+
+</body>
+        <prUpdatedAt>2021-09-06 21:41:51.0 UTC</prUpdatedAt>
+        <headSha>8dee5f0f9987abb0c4aa724865634288b8b6b08e</headSha>
+        <headRef>SapMachine-895-17</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine17</baseRef>
+        <userLogin>tstuefe</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/946</htmlUrl>
+        <labels />
+        <lastCommentCreatedAt>2021-09-06 12:36:56.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>tstuefe</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>947</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>947</number>
+        <issueUpdatedAt>2021-09-06 21:42:09.0 UTC</issueUpdatedAt>
+        <title>#895: Vitals: In SapMachine, we never shutdown the Vitals on VM exit (11) </title>
+        <body>(cherry picked from commit e226ab1cab3f3b786d5bbcca7aa80a7b1397fc54)
+
+Downported to 11
+
+fixes #895
+
+</body>
+        <prUpdatedAt>2021-09-06 21:42:09.0 UTC</prUpdatedAt>
+        <headSha>29b1699fb0c2472ac17d4725f315d5204b623789</headSha>
+        <headRef>SapMachine-895-11</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine11</baseRef>
+        <userLogin>tstuefe</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/947</htmlUrl>
+        <labels />
+        <lastCommentCreatedAt>2021-09-06 12:41:48.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>tstuefe</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
       <int>940</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>940</number>
@@ -58,31 +141,6 @@ fixes #894
         <htmlUrl>https://github.com/SAP/SapMachine/pull/941</htmlUrl>
         <labels />
         <lastCommentCreatedAt>2021-09-05 07:41:55.0 UTC</lastCommentCreatedAt>
-        <sourceRepoOwner>tstuefe</sourceRepoOwner>
-        <state>OPEN</state>
-        <inBadState>false</inBadState>
-      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-    </entry>
-    <entry>
-      <int>942</int>
-      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>942</number>
-        <issueUpdatedAt>2021-09-05 08:18:18.0 UTC</issueUpdatedAt>
-        <title>895: Vitals: In SapMachine, we never shutdown the Vitals on VM exit</title>
-        <body>Trivial, benign "error", mostly done for parity with SAP JVM.
-
-fixes #895
-
-</body>
-        <prUpdatedAt>2021-09-05 08:18:18.0 UTC</prUpdatedAt>
-        <headSha>86607ee26d0e00f41ff85e725498ee487ee63b10</headSha>
-        <headRef>895-vitals-shutdown-on-vm-exit</headRef>
-        <mergeable>true</mergeable>
-        <baseRef>sapmachine</baseRef>
-        <userLogin>tstuefe</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/942</htmlUrl>
-        <labels />
-        <lastCommentCreatedAt>2021-09-05 08:18:18.0 UTC</lastCommentCreatedAt>
         <sourceRepoOwner>tstuefe</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
