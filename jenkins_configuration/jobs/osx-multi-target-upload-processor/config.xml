@@ -12,7 +12,7 @@
         }
         stage('Copy Upstream Artifacts') {
             steps {
-                copyArtifacts filter: 'JDK_TGZ, JRE_TGZ, JDK_DMG, JRE_DMG, SYMBOLS', projectName: 'osx-upload', selector: upstream()
+                copyArtifacts filter: 'INTEL_JDK_TGZ, INTEL_JRE_TGZ, INTEL_JDK_DMG, INTEL_JRE_DMG, INTEL_SYMBOLS, AARCH_JDK_TGZ, AARCH_JRE_TGZ, AARCH_JDK_DMG, AARCH_JRE_DMG, AARCH_SYMBOLS', projectName: 'osx-multi-target-upload', selector: upstream()
             }
         }
         stage('Deploy') {
@@ -23,7 +23,7 @@
                 withCredentials([
                     [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
                     ]) {
-                    sh "SapMachine-Infrastructure/lib/publish_osx.sh"
+                    sh "SapMachine-Infrastructure/lib/publish_multi_target_osx.sh"
                 }
             }
         }
@@ -38,8 +38,7 @@
             cleanWs deleteDirs: true, disableDeferredWipeout: true
         }
     }
-}
-</script>
+}</script>
     <sandbox>false</sandbox>
   </definition>
   <actions />

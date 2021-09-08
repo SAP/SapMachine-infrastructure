@@ -5,83 +5,80 @@
   <sshUrl>git@github.com:SAP/SapMachine.git</sshUrl>
   <pulls class="concurrent-hash-map">
     <entry>
-      <int>945</int>
+      <int>948</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>945</number>
-        <issueUpdatedAt>2021-09-06 09:35:47.0 UTC</issueUpdatedAt>
-        <title>943: Cherrypick "8268893 jcmd to trim the glibc heap" (SapMachine 17)</title>
-        <body>This brings the "System.trim_native_heap" jcmd to SapMachine 17.
+        <number>948</number>
+        <issueUpdatedAt>2021-09-07 12:28:09.0 UTC</issueUpdatedAt>
+        <title>SapMachine #894: Vitals: printing to err file misses "now" value (17)</title>
+        <body>(cherry picked from commit 034fe69fd5f4c51f3f8e9310c18e2abeed337e66)
 
-I will attempt to officially downport "8268893 jcmd to trim the glibc heap" to jdk17u/jdk11u, but that may take some time (especially since CSRs are involved) and I like to see this in our SapMachine sooner.
 
-The patch is super trivial; note however that this is not a 1:1 patch. The function "query_process_memory_info()" in the original patch lives in os_linux.cpp/hpp and is interwoven with other functions; for this patch, I isolated it locally in the new, command-specific trimCHeapDCmd.cpp. I did this to reduce merging trouble if os_linux changes.
-
-fixes #943
+fixes #894
 
 </body>
-        <prUpdatedAt>2021-09-06 09:35:47.0 UTC</prUpdatedAt>
-        <headSha>1665d766e674d85b04fdad4f33e0cfbdd54b0ac1</headSha>
-        <headRef>943-Cherrypick-8268893-jcmd-to-trim-the-glibc-heap-17</headRef>
+        <prUpdatedAt>2021-09-07 12:28:09.0 UTC</prUpdatedAt>
+        <headSha>f5431a2c75c303ce4bc6b4a5857279ab88afa6cc</headSha>
+        <headRef>SapMachine-894-17</headRef>
         <mergeable>true</mergeable>
         <baseRef>sapmachine17</baseRef>
         <userLogin>tstuefe</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/945</htmlUrl>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/948</htmlUrl>
         <labels />
-        <lastCommentCreatedAt>2021-09-06 09:35:47.0 UTC</lastCommentCreatedAt>
+        <lastCommentCreatedAt>2021-09-07 11:06:11.0 UTC</lastCommentCreatedAt>
         <sourceRepoOwner>tstuefe</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
       </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
     </entry>
     <entry>
-      <int>946</int>
+      <int>949</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>946</number>
-        <issueUpdatedAt>2021-09-06 21:41:51.0 UTC</issueUpdatedAt>
-        <title>#895: Vitals: In SapMachine, we never shutdown the Vitals on VM exit (17)</title>
-        <body>(cherry picked from commit e226ab1cab3f3b786d5bbcca7aa80a7b1397fc54)
+        <number>949</number>
+        <issueUpdatedAt>2021-09-07 12:27:57.0 UTC</issueUpdatedAt>
+        <title>SapMachine #894: Vitals: printing to err file misses "now" value (11)</title>
+        <body>(cherry picked from commit 034fe69fd5f4c51f3f8e9310c18e2abeed337e66)
 
-Downported to 17
-
-fixes #895 
+fixes #894
 
 </body>
-        <prUpdatedAt>2021-09-06 21:41:51.0 UTC</prUpdatedAt>
-        <headSha>8dee5f0f9987abb0c4aa724865634288b8b6b08e</headSha>
-        <headRef>SapMachine-895-17</headRef>
-        <mergeable>true</mergeable>
-        <baseRef>sapmachine17</baseRef>
-        <userLogin>tstuefe</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/946</htmlUrl>
-        <labels />
-        <lastCommentCreatedAt>2021-09-06 12:36:56.0 UTC</lastCommentCreatedAt>
-        <sourceRepoOwner>tstuefe</sourceRepoOwner>
-        <state>OPEN</state>
-        <inBadState>false</inBadState>
-      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-    </entry>
-    <entry>
-      <int>947</int>
-      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>947</number>
-        <issueUpdatedAt>2021-09-06 21:42:09.0 UTC</issueUpdatedAt>
-        <title>#895: Vitals: In SapMachine, we never shutdown the Vitals on VM exit (11) </title>
-        <body>(cherry picked from commit e226ab1cab3f3b786d5bbcca7aa80a7b1397fc54)
-
-Downported to 11
-
-fixes #895
-
-</body>
-        <prUpdatedAt>2021-09-06 21:42:09.0 UTC</prUpdatedAt>
-        <headSha>29b1699fb0c2472ac17d4725f315d5204b623789</headSha>
-        <headRef>SapMachine-895-11</headRef>
+        <prUpdatedAt>2021-09-07 12:27:57.0 UTC</prUpdatedAt>
+        <headSha>7609760140b162ef6266f357babc93b2695ed330</headSha>
+        <headRef>SapMachine-894-11</headRef>
         <mergeable>true</mergeable>
         <baseRef>sapmachine11</baseRef>
         <userLogin>tstuefe</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/947</htmlUrl>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/949</htmlUrl>
         <labels />
-        <lastCommentCreatedAt>2021-09-06 12:41:48.0 UTC</lastCommentCreatedAt>
+        <lastCommentCreatedAt>2021-09-07 11:07:47.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>tstuefe</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>951</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>951</number>
+        <issueUpdatedAt>2021-09-07 12:36:34.0 UTC</issueUpdatedAt>
+        <title>950: Print out all flags in hs-err file</title>
+        <body>Small change:
+- print *all* flags, not just non-default flags, in the hs-err file
+- but omit comments, they just bloat the hs-err file
+
+Changes of doing this upstream are slim since Oracle prefers its hs-err file brief and succinct, while we don't care much for size but want to simplify error analysis as much as possible. It's a matter of taste.
+
+fixes #950
+
+</body>
+        <prUpdatedAt>2021-09-07 12:36:34.0 UTC</prUpdatedAt>
+        <headSha>7ac7a7ca7ef8d6ef937ea92de88d24f7882fd88c</headSha>
+        <headRef>950-print-all-flags-in-hserr-file</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine</baseRef>
+        <userLogin>tstuefe</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/951</htmlUrl>
+        <labels />
+        <lastCommentCreatedAt>2021-09-07 12:36:33.0 UTC</lastCommentCreatedAt>
         <sourceRepoOwner>tstuefe</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
@@ -91,7 +88,7 @@ fixes #895
       <int>940</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>940</number>
-        <issueUpdatedAt>2021-09-05 06:31:35.0 UTC</issueUpdatedAt>
+        <issueUpdatedAt>2021-09-07 05:24:03.0 UTC</issueUpdatedAt>
         <title>939: Add facility to trace uninstrumented malloc calls in VM and third party coding</title>
         <body>This PR merges the new SapMachine malloc trace facility into the sap machine. 
 
@@ -107,40 +104,15 @@ Thank you.
 fixes #939
 
 </body>
-        <prUpdatedAt>2021-09-05 06:31:35.0 UTC</prUpdatedAt>
-        <headSha>b7879ea934c0e083f385e54fa1fe1f0a4ae6dc96</headSha>
+        <prUpdatedAt>2021-09-07 05:24:03.0 UTC</prUpdatedAt>
+        <headSha>c135e05b54d583f0ed38a7b42bc241e01778c186</headSha>
         <headRef>939-malloc-trace-facility</headRef>
         <mergeable>true</mergeable>
         <baseRef>sapmachine</baseRef>
         <userLogin>tstuefe</userLogin>
         <htmlUrl>https://github.com/SAP/SapMachine/pull/940</htmlUrl>
         <labels />
-        <lastCommentCreatedAt>2021-09-05 06:31:35.0 UTC</lastCommentCreatedAt>
-        <sourceRepoOwner>tstuefe</sourceRepoOwner>
-        <state>OPEN</state>
-        <inBadState>false</inBadState>
-      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-    </entry>
-    <entry>
-      <int>941</int>
-      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>941</number>
-        <issueUpdatedAt>2021-09-05 07:41:55.0 UTC</issueUpdatedAt>
-        <title>894: Vitals: printing to err file misses "now" value</title>
-        <body>Trivial change. When crashing, we accidentally omitted the "now" values from the vitals, so we would miss a development (e.g. spikes) in the last seconds before the crash.
-
-fixes #894
-
-</body>
-        <prUpdatedAt>2021-09-05 07:41:55.0 UTC</prUpdatedAt>
-        <headSha>f91d4c75e557ca8c3e5913dbbce131284cfbcbb4</headSha>
-        <headRef>894-vitals-printing-to-err-file-misses-now-value</headRef>
-        <mergeable>true</mergeable>
-        <baseRef>sapmachine</baseRef>
-        <userLogin>tstuefe</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/941</htmlUrl>
-        <labels />
-        <lastCommentCreatedAt>2021-09-05 07:41:55.0 UTC</lastCommentCreatedAt>
+        <lastCommentCreatedAt>2021-09-07 05:24:03.0 UTC</lastCommentCreatedAt>
         <sourceRepoOwner>tstuefe</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
