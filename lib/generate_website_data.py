@@ -20,7 +20,8 @@ os_description = {
     'linux-ppc64':           { 'ordinal': 3, 'name': 'Linux ppc64' },
     'windows-x64':           { 'ordinal': 4, 'name': 'Windows x64'},
     'windows-x64-installer': { 'ordinal': 5, 'name': 'Windows x64 Installer'},
-    'osx-x64':               { 'ordinal': 6, 'name': 'macOS x64'}
+    'osx-x64':               { 'ordinal': 6, 'name': 'macOS x64'},
+    'osx-aarch64':           { 'ordinal': 7, 'name': 'macOS aarch64'}
 }
 
 image_type_description = {
@@ -150,7 +151,10 @@ def main(argv=None):
                 if asset_os == 'macos-x64':
                     asset_os = 'osx-x64'
 
-                if asset_os == 'osx-x64':
+                if asset_os == 'macos-aarch64':
+                    asset_os = 'osx-aarch64'
+
+                if asset_os == 'osx-x64' or asset_os == 'osx-aarch64':
                     if file_type == '.dmg':
                         has_dmg = True
                     elif has_dmg:
