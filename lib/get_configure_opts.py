@@ -58,7 +58,7 @@ def main(argv=None):
         if releases is not None:
             for release in releases:
                 if release['tag_name'] == tag.as_string():
-                    release_date = release['published_at'].split('T')[0]
+                    release_date = release['created_at'].split('T')[0]
                     print(str.format("Set date to release date of {0}: {1}", tag.as_string(), release_date), file=sys.stderr)
                     break
         if release_date is None:
