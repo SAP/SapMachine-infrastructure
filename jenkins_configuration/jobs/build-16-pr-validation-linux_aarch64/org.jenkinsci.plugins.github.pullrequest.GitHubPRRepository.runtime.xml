@@ -5,81 +5,21 @@
   <sshUrl>git@github.com:SAP/SapMachine.git</sshUrl>
   <pulls class="concurrent-hash-map">
     <entry>
-      <int>948</int>
+      <int>952</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>948</number>
-        <issueUpdatedAt>2021-09-08 06:04:15.0 UTC</issueUpdatedAt>
-        <title>SapMachine #894: Vitals: printing to err file misses "now" value (17)</title>
-        <body>(cherry picked from commit 034fe69fd5f4c51f3f8e9310c18e2abeed337e66)
-
-
-fixes #894
-
-</body>
-        <prUpdatedAt>2021-09-08 06:04:15.0 UTC</prUpdatedAt>
-        <headSha>f5431a2c75c303ce4bc6b4a5857279ab88afa6cc</headSha>
-        <headRef>SapMachine-894-17</headRef>
-        <mergeable>true</mergeable>
-        <baseRef>sapmachine17</baseRef>
-        <userLogin>tstuefe</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/948</htmlUrl>
-        <labels />
-        <lastCommentCreatedAt>2021-09-07 11:06:11.0 UTC</lastCommentCreatedAt>
-        <sourceRepoOwner>tstuefe</sourceRepoOwner>
-        <state>OPEN</state>
-        <inBadState>false</inBadState>
-      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-    </entry>
-    <entry>
-      <int>949</int>
-      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>949</number>
-        <issueUpdatedAt>2021-09-08 06:07:12.0 UTC</issueUpdatedAt>
-        <title>SapMachine #894: Vitals: printing to err file misses "now" value (11)</title>
-        <body>(cherry picked from commit 034fe69fd5f4c51f3f8e9310c18e2abeed337e66)
-
-fixes #894
-
-</body>
-        <prUpdatedAt>2021-09-08 06:07:12.0 UTC</prUpdatedAt>
-        <headSha>7609760140b162ef6266f357babc93b2695ed330</headSha>
-        <headRef>SapMachine-894-11</headRef>
-        <mergeable>true</mergeable>
-        <baseRef>sapmachine11</baseRef>
-        <userLogin>tstuefe</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/949</htmlUrl>
-        <labels />
-        <lastCommentCreatedAt>2021-09-07 11:07:47.0 UTC</lastCommentCreatedAt>
-        <sourceRepoOwner>tstuefe</sourceRepoOwner>
-        <state>OPEN</state>
-        <inBadState>false</inBadState>
-      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-    </entry>
-    <entry>
-      <int>951</int>
-      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>951</number>
-        <issueUpdatedAt>2021-09-08 16:19:54.0 UTC</issueUpdatedAt>
-        <title>950: Print out all flags in hs-err file</title>
-        <body>Small change:
-- print *all* flags, not just non-default flags, in the hs-err file
-- but omit comments, they just bloat the hs-err file
-
-Changes of doing this upstream are slim since Oracle prefers its hs-err file brief and succinct, while we don't care much for size but want to simplify error analysis as much as possible. It's a matter of taste.
-
-fixes #950
-
-</body>
-        <prUpdatedAt>2021-09-08 16:19:54.0 UTC</prUpdatedAt>
-        <headSha>7ac7a7ca7ef8d6ef937ea92de88d24f7882fd88c</headSha>
-        <headRef>950-print-all-flags-in-hserr-file</headRef>
+        <number>952</number>
+        <issueUpdatedAt>2021-09-09 08:35:47.0 UTC</issueUpdatedAt>
+        <title>Merge to tag jdk-18+14</title>
+        <body>please pull</body>
+        <prUpdatedAt>2021-09-09 08:35:47.0 UTC</prUpdatedAt>
+        <headSha>e6805032ff328773eafe8b94e9f1b3b196f52196</headSha>
+        <headRef>pr-jdk-18+14</headRef>
         <mergeable>true</mergeable>
         <baseRef>sapmachine</baseRef>
-        <userLogin>tstuefe</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/951</htmlUrl>
+        <userLogin>SapMachine</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/952</htmlUrl>
         <labels />
-        <lastCommentCreatedAt>2021-09-08 16:19:54.0 UTC</lastCommentCreatedAt>
-        <sourceRepoOwner>tstuefe</sourceRepoOwner>
+        <sourceRepoOwner>SAP</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
       </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
