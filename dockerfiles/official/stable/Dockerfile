@@ -13,9 +13,9 @@ RUN export GNUPGHOME="$(mktemp -d)" \
     && gpgconf --kill all && rm -rf "$GNUPGHOME" \
     && echo "deb http://dist.sapmachine.io/debian/amd64/ ./" > /etc/apt/sources.list.d/sapmachine.list \
     && apt-get update \
-    && apt-get -y --no-install-recommends install sapmachine-16-jdk=16.0.2 \
+    && apt-get -y --no-install-recommends install sapmachine-17-jdk=17 \
     && rm -rf /var/lib/apt/lists/*
 
-ENV JAVA_HOME=/usr/lib/jvm/sapmachine-16
+ENV JAVA_HOME=/usr/lib/jvm/sapmachine-17
 
 CMD ["jshell"]
