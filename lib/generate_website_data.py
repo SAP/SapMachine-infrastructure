@@ -178,6 +178,7 @@ def main(argv=None):
 
                 release_dict[major].add_asset(asset['browser_download_url'], asset_image_type, asset_os, tag)
 
+    latest_version = 0
     latest_lts_version = 0
     latest_non_lts_version = 0
 
@@ -186,6 +187,10 @@ def main(argv=None):
             latest_lts_version = int(major)
         if not image_dict[major]['lts'] and not image_dict[major]['ea'] and int(major) > latest_non_lts_version:
             latest_non_lts_version = int(major)
+        if not image_dict[major]['ea'] and int(major) > latest_version:
+            latest_version = int(major)
+
+    _, _, _, latest_version_update, _, _, _ = utils.sapmachine_tag_components(list(release_dict[str(latest_version)].releases)[0])
 
     json_root = {
         'majors':[],
@@ -197,10 +202,11 @@ def main(argv=None):
     for major in sorted(image_dict):
         add = False
         if image_dict[major]['lts']:
-            if int(major) >= latest_lts_version:
-                add = True
+            # keep all lts versions:
+            add = True
         else:
-            if int(major) >= latest_non_lts_version and int(major) >= latest_lts_version:
+            # keep ea versions, latest version and the one before the latests version if the latest version has not been updated
+            if int(major) >= latest_non_lts_version and int(major) >= latest_lts_version or int(major) == (latest_version - 1) and latest_version_update == '0':
                 add = True
 
         if add:
@@ -220,7 +226,7 @@ def main(argv=None):
     for image_type in sorted(image_type_description, key=get_image_type_key):
         json_root['imageTypes'].append({'key': image_type, 'value': image_type_description[image_type]['name'], 'ordinal': image_type_description[image_type]['ordinal']})
 
-    for major in release_dict:
+    for major in sorted(release_dict):
         if major in image_dict:
             json_root['assets'].update(release_dict[major].transform())
 
