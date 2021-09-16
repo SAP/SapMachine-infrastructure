@@ -54,6 +54,16 @@ class Releases:
     def clear_assets(self):
         self.releases.clear()
 
+    def get_highest_update(self):
+        update = 0
+
+        for tag in self.releases:
+            _, _, _, current_ud, _, _, _ = utils.sapmachine_tag_components(tag)
+            if int(current_ud) > update:
+                update = int(current_ud)
+
+        return update
+
     def transform(self):
         json_root = {
             self.major: {
@@ -190,7 +200,7 @@ def main(argv=None):
         if not image_dict[major]['ea'] and int(major) > latest_version:
             latest_version = int(major)
 
-    _, _, _, latest_version_update, _, _, _ = utils.sapmachine_tag_components(list(release_dict[str(latest_version)].releases)[0])
+    latest_version_update = release_dict[str(latest_version)].get_highest_update()
 
     json_root = {
         'majors':[],
@@ -206,7 +216,7 @@ def main(argv=None):
             add = True
         else:
             # keep ea versions, latest version and the one before the latests version if the latest version has not been updated
-            if int(major) >= latest_non_lts_version and int(major) >= latest_lts_version or int(major) == (latest_version - 1) and latest_version_update == '0':
+            if int(major) >= latest_non_lts_version and int(major) >= latest_lts_version or int(major) == (latest_version - 1) and latest_version_update == 0:
                 add = True
 
         if add:
