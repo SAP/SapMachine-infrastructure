@@ -30,6 +30,38 @@ fixes #960
       </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
     </entry>
     <entry>
+      <int>962</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>962</number>
+        <issueUpdatedAt>2021-09-25 06:30:07.0 UTC</issueUpdatedAt>
+        <title>943: Cherrypick "8268893 jcmd to trim the glibc heap" (SapMachine 11)</title>
+        <body>This brings the "System.trim_native_heap" jcmd to SapMachine 11.
+
+For SapMachine 17, we use the official downport process for 17u, but we don't bother attempting that for 11.
+
+The patch is trivial but note that this is not a 1:1 patch: the function "query_process_memory_info()" in the original patch lives in os_linux.cpp/hpp and is interwoven with other functions; for this patch, I isolated it locally in the new, command-specific trimCHeapDCmd.cpp. I did this to reduce merging trouble if os_linux changes.
+
+Tests: 
+- manual tests on x64 Ubuntu 20.4
+
+fixes #943
+
+</body>
+        <prUpdatedAt>2021-09-25 06:30:07.0 UTC</prUpdatedAt>
+        <headSha>f52ae2a4e2f1917869d98312aee878e571828f52</headSha>
+        <headRef>943-Cherrypick-8268893-jcmd-to-trim-the-glibc-heap-SapMachine-11</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine11</baseRef>
+        <userLogin>tstuefe</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/962</htmlUrl>
+        <labels />
+        <lastCommentCreatedAt>2021-09-25 06:29:42.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>tstuefe</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
       <int>940</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>940</number>
