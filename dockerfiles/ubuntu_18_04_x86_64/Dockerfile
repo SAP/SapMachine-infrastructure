@@ -45,7 +45,7 @@ RUN useradd -ms /bin/bash jenkinsc -u 1002
 ADD sysroot-sles11-x86_64.tgz /opt
 
 WORKDIR /opt
-RUN wget --no-check-certificate https://mirrors.kernel.org/gnu/gcc/gcc-8.4.0/gcc-8.4.0.tar.gz && \
+RUN wget https://mirrors.kernel.org/gnu/gcc/gcc-8.4.0/gcc-8.4.0.tar.gz && \
     tar xzf gcc-8.4.0.tar.gz && \
     mkdir /opt/gcc-build && \
     mkdir /opt/gcc-8.4.0-bin
