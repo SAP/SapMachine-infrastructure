@@ -8,22 +8,22 @@
       <int>961</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>961</number>
-        <issueUpdatedAt>2021-09-24 15:07:12.0 UTC</issueUpdatedAt>
+        <issueUpdatedAt>2021-09-28 16:14:07.0 UTC</issueUpdatedAt>
         <title>Add jcmd to jre</title>
         <body>This adds jcmd to the legacy JRE.
 
 fixes #960
 
 </body>
-        <prUpdatedAt>2021-09-24 15:07:12.0 UTC</prUpdatedAt>
-        <headSha>46d613a488940f8d82382cc8b452bde3542d5cf6</headSha>
+        <prUpdatedAt>2021-09-28 16:14:07.0 UTC</prUpdatedAt>
+        <headSha>61a0319861ebe4bab2310ba5758de1760755b947</headSha>
         <headRef>jcmd-in-jre</headRef>
         <mergeable>true</mergeable>
         <baseRef>sapmachine</baseRef>
         <userLogin>MBaesken</userLogin>
         <htmlUrl>https://github.com/SAP/SapMachine/pull/961</htmlUrl>
         <labels />
-        <lastCommentCreatedAt>2021-09-24 11:08:31.0 UTC</lastCommentCreatedAt>
+        <lastCommentCreatedAt>2021-09-28 15:29:56.0 UTC</lastCommentCreatedAt>
         <sourceRepoOwner>SAP</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
@@ -33,7 +33,7 @@ fixes #960
       <int>962</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>962</number>
-        <issueUpdatedAt>2021-09-25 06:30:07.0 UTC</issueUpdatedAt>
+        <issueUpdatedAt>2021-09-28 06:43:12.0 UTC</issueUpdatedAt>
         <title>943: Cherrypick "8268893 jcmd to trim the glibc heap" (SapMachine 11)</title>
         <body>This brings the "System.trim_native_heap" jcmd to SapMachine 11.
 
@@ -47,7 +47,7 @@ Tests:
 fixes #943
 
 </body>
-        <prUpdatedAt>2021-09-25 06:30:07.0 UTC</prUpdatedAt>
+        <prUpdatedAt>2021-09-28 06:43:12.0 UTC</prUpdatedAt>
         <headSha>f52ae2a4e2f1917869d98312aee878e571828f52</headSha>
         <headRef>943-Cherrypick-8268893-jcmd-to-trim-the-glibc-heap-SapMachine-11</headRef>
         <mergeable>true</mergeable>
@@ -55,8 +55,57 @@ fixes #943
         <userLogin>tstuefe</userLogin>
         <htmlUrl>https://github.com/SAP/SapMachine/pull/962</htmlUrl>
         <labels />
-        <lastCommentCreatedAt>2021-09-25 06:29:42.0 UTC</lastCommentCreatedAt>
+        <lastCommentCreatedAt>2021-09-28 06:43:12.0 UTC</lastCommentCreatedAt>
         <sourceRepoOwner>tstuefe</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>965</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>965</number>
+        <issueUpdatedAt>2021-09-28 18:33:43.0 UTC</issueUpdatedAt>
+        <title>Add jcmd to jre17</title>
+        <body>This adds jcmd to the legacy JRE 17.
+
+fixes #960
+
+</body>
+        <prUpdatedAt>2021-09-28 18:33:43.0 UTC</prUpdatedAt>
+        <headSha>019b2643068c0998c58cbfb494076bc48640dbb9</headSha>
+        <headRef>jcmd-in-jre17</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine17</baseRef>
+        <userLogin>MBaesken</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/965</htmlUrl>
+        <labels />
+        <lastCommentCreatedAt>2021-09-28 18:33:43.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>SAP</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>966</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>966</number>
+        <issueUpdatedAt>2021-09-28 17:22:08.0 UTC</issueUpdatedAt>
+        <title>Add jcmd to jre11</title>
+        <body>This adds jcmd to the legacy JRE 11.
+
+fixes #960
+</body>
+        <prUpdatedAt>2021-09-28 17:22:08.0 UTC</prUpdatedAt>
+        <headSha>a811ba6483b677e02519d5d1ee3067fb78059057</headSha>
+        <headRef>jcmd-in-jre11</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine11</baseRef>
+        <userLogin>MBaesken</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/966</htmlUrl>
+        <labels />
+        <lastCommentCreatedAt>2021-09-28 17:22:08.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>SAP</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
       </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
@@ -65,7 +114,7 @@ fixes #943
       <int>940</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>940</number>
-        <issueUpdatedAt>2021-09-13 06:34:10.0 UTC</issueUpdatedAt>
+        <issueUpdatedAt>2021-09-28 19:06:54.0 UTC</issueUpdatedAt>
         <title>939: Add facility to trace uninstrumented malloc calls in VM and third party coding</title>
         <body>This PR merges the new SapMachine malloc trace facility into the sap machine. 
 
@@ -81,7 +130,7 @@ Thank you.
 fixes #939
 
 </body>
-        <prUpdatedAt>2021-09-13 06:34:10.0 UTC</prUpdatedAt>
+        <prUpdatedAt>2021-09-28 19:06:54.0 UTC</prUpdatedAt>
         <headSha>c135e05b54d583f0ed38a7b42bc241e01778c186</headSha>
         <headRef>939-malloc-trace-facility</headRef>
         <mergeable>true</mergeable>
@@ -89,28 +138,8 @@ fixes #939
         <userLogin>tstuefe</userLogin>
         <htmlUrl>https://github.com/SAP/SapMachine/pull/940</htmlUrl>
         <labels />
-        <lastCommentCreatedAt>2021-09-13 06:34:10.0 UTC</lastCommentCreatedAt>
+        <lastCommentCreatedAt>2021-09-28 19:06:54.0 UTC</lastCommentCreatedAt>
         <sourceRepoOwner>tstuefe</sourceRepoOwner>
-        <state>OPEN</state>
-        <inBadState>false</inBadState>
-      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-    </entry>
-    <entry>
-      <int>957</int>
-      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>957</number>
-        <issueUpdatedAt>2021-09-23 05:38:17.0 UTC</issueUpdatedAt>
-        <title>Merge to tag jdk-18+16</title>
-        <body>please pull</body>
-        <prUpdatedAt>2021-09-23 05:38:17.0 UTC</prUpdatedAt>
-        <headSha>8821b0004170e18c8e7d6e5bbe8759344ff769b1</headSha>
-        <headRef>pr-jdk-18+16</headRef>
-        <mergeable>true</mergeable>
-        <baseRef>sapmachine</baseRef>
-        <userLogin>SapMachine</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/957</htmlUrl>
-        <labels />
-        <sourceRepoOwner>SAP</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
       </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
@@ -119,22 +148,22 @@ fixes #939
       <int>959</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>959</number>
-        <issueUpdatedAt>2021-09-24 07:00:07.0 UTC</issueUpdatedAt>
+        <issueUpdatedAt>2021-09-28 16:13:47.0 UTC</issueUpdatedAt>
         <title>Backport 8248476: No helpful NullPointerException message after calling fillInStackTrace</title>
         <body>Should have done this long ago...
 
 fixes #958
 
 </body>
-        <prUpdatedAt>2021-09-24 07:00:07.0 UTC</prUpdatedAt>
-        <headSha>20271dda9e70f5be7b34599ce2b9d0e152614b06</headSha>
+        <prUpdatedAt>2021-09-28 16:13:47.0 UTC</prUpdatedAt>
+        <headSha>335d7219f91b38b7a016bb4e1e38cdb27d1e1910</headSha>
         <headRef>downport_NPE_fix_to_11</headRef>
         <mergeable>true</mergeable>
         <baseRef>sapmachine11</baseRef>
         <userLogin>GoeLin</userLogin>
         <htmlUrl>https://github.com/SAP/SapMachine/pull/959</htmlUrl>
         <labels />
-        <lastCommentCreatedAt>2021-09-24 07:00:06.0 UTC</lastCommentCreatedAt>
+        <lastCommentCreatedAt>2021-09-28 16:13:47.0 UTC</lastCommentCreatedAt>
         <sourceRepoOwner>SAP</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
