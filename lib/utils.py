@@ -476,5 +476,7 @@ def get_arch():
 
     if arch == 'x86_64' or arch == 'amd64':
         return 'x64'
+    elif arch == 'arm64':
+        return 'aarch64'
     else:
         return arch

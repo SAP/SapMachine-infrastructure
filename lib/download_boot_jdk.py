@@ -106,7 +106,7 @@ def main(argv=None):
 
                             utils.remove_if_exists(sapmachine_folder)
 
-                            if system == 'osx':
+                            if system == 'osx' or system == 'macos':
                                 files = os.listdir(join(boot_jdk_exploded, 'Contents', 'Home'))
 
                                 for f in files:
