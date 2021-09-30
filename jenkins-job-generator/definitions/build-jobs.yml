@@ -245,7 +245,7 @@
                         expression {{ env.VERIFICATION_RESULT != "2" }}
                     }}
                     steps {{
-                        checkout changelog: true, poll: false, scm: [$class: 'GitSCM', branches: [[name: "*/${{params.SAPMACHINE_GIT_BRANCH}}"]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: '${{params.SAPMACHINE_GIT_REPOSITORY}}']]]
+                        checkout changelog: true, poll: false, scm: [$class: 'GitSCM', branches: [[name: "*/${{params.SAPMACHINE_GIT_BRANCH}}"]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: "${{params.SAPMACHINE_GIT_REPOSITORY}}"]]]
                     }}
                 }}
                 stage('Download Prerequisites') {{
