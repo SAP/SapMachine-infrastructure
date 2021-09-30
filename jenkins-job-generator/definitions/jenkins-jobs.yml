@@ -99,7 +99,7 @@
         pipeline {
             agent {
                 node {
-                    label 'master'
+                    label 'built-in'
                 }
             }
             stages {
