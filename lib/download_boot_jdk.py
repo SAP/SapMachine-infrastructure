@@ -1,5 +1,5 @@
 '''
-Copyright (c) 2001-2019 by SAP SE, Walldorf, Germany.
+Copyright (c) 2019-2021 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
@@ -58,7 +58,8 @@ def main(argv=None):
     boot_jdk_major_min = boot_jdk_major_max - 1
     destination = os.path.realpath(args.destination)
     releases = utils.get_github_releases()
-    platform = str.format('{0}-{1}_bin', utils.get_system(boot_jdk_major_max), utils.get_arch())
+    system = utils.get_system(boot_jdk_major_max)
+    platform = str.format('{0}-{1}_bin', system, utils.get_arch())
     retries = 2
 
     print(str.format('detected platform "{0}"', platform))
@@ -105,7 +106,7 @@ def main(argv=None):
 
                             utils.remove_if_exists(sapmachine_folder)
 
-                            if utils.get_system() == 'osx':
+                            if system == 'osx':
                                 files = os.listdir(join(boot_jdk_exploded, 'Contents', 'Home'))
 
                                 for f in files:
