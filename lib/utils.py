@@ -458,13 +458,16 @@ def sapmachine_tag_is_release(tag):
 
     return False
 
-def get_system():
+def get_system(major):
     system = platform.system().lower()
 
     if system.startswith('msys') or system.startswith('cygwin') or system.startswith('win'):
         return 'windows'
     elif system == 'darwin':
-        return 'osx'
+        if major >= 17:
+            return 'macos'
+        else:
+            return 'osx'
     else:
         return system
 

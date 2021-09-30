@@ -18,21 +18,11 @@ from versions import SapMachineTag
 extra_bootjdks = [
     {
         'prerelease': False,
-        'name': 'sapmachine-11.0.10',
+        'name': 'sapmachine-11.0.12',
         'assets': [
             {
-                'name': 'sapmachine-jdk-11.0.10_linux-aarch64_bin.tar.gz',
-                'browser_download_url': 'https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.10%2B9/OpenJDK11U-jdk_aarch64_linux_hotspot_11.0.10_9.tar.gz'
-            }
-        ]
-    },
-    {
-        'prerelease': False,
-        'name': 'sapmachine-14.0.2',
-        'assets': [
-            {
-                'name': 'sapmachine-jdk-14.0.2_linux-aarch64_bin.tar.gz',
-                'browser_download_url': 'https://github.com/AdoptOpenJDK/openjdk14-binaries/releases/download/jdk-14.0.2%2B12/OpenJDK14U-jdk_aarch64_linux_hotspot_14.0.2_12.tar.gz'
+                'name': 'sapmachine-jdk-11.0.12_linux-aarch64_bin.tar.gz',
+                'browser_download_url': 'https://github.com/SAP/SapMachine/releases/download/sapmachine-11.0.12/sapmachine-jdk-11.0.12-beta_linux-aarch64_bin.tar.gz'
             }
         ]
     },
@@ -41,18 +31,18 @@ extra_bootjdks = [
         'name': 'sapmachine-16.0.2',
         'assets': [
             {
-                'name': 'sapmachine-jdk-16.0.2_osx-arm64_bin.tar.gz',
-                'browser_download_url': 'https://github.com/AdoptOpenJDK/openjdk16-binaries/releases/download/jdk-16.0.1%2B9/OpenJDK16U-jdk_x64_mac_hotspot_16.0.1_9.tar.gz'
+                'name': 'sapmachine-jdk-16.0.2_linux-aarch64_bin.tar.gz',
+                'browser_download_url': 'https://github.com/SAP/SapMachine/releases/download/sapmachine-16.0.2/sapmachine-jdk-16.0.2-beta_linux-aarch64_bin.tar.gz'
             }
         ]
     },
     {
         'prerelease': False,
-        'name': 'sapmachine-15.0.2',
+        'name': 'sapmachine-17',
         'assets': [
             {
-                'name': 'sapmachine-jdk-15.0.2_linux-aarch64_bin.tar.gz',
-                'browser_download_url': 'https://github.com/AdoptOpenJDK/openjdk15-binaries/releases/download/jdk-15.0.2%2B7/OpenJDK15U-jdk_aarch64_linux_hotspot_15.0.2_7.tar.gz'
+                'name': 'sapmachine-jdk-17_linux-aarch64_bin.tar.gz',
+                'browser_download_url': 'https://github.com/SAP/SapMachine/releases/download/sapmachine-17/sapmachine-jdk-17-beta_linux-aarch64_bin.tar.gz'
             }
         ]
     }
@@ -68,7 +58,7 @@ def main(argv=None):
     boot_jdk_major_min = boot_jdk_major_max - 1
     destination = os.path.realpath(args.destination)
     releases = utils.get_github_releases()
-    platform = str.format('{0}-{1}_bin', utils.get_system(), utils.get_arch())
+    platform = str.format('{0}-{1}_bin', utils.get_system(boot_jdk_major_max), utils.get_arch())
     retries = 2
 
     print(str.format('detected platform "{0}"', platform))
