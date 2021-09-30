@@ -5,106 +5,21 @@
   <sshUrl>git@github.com:SAP/SapMachine.git</sshUrl>
   <pulls class="concurrent-hash-map">
     <entry>
-      <int>961</int>
+      <int>971</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>961</number>
-        <issueUpdatedAt>2021-09-28 16:14:07.0 UTC</issueUpdatedAt>
-        <title>Add jcmd to jre</title>
-        <body>This adds jcmd to the legacy JRE.
-
-fixes #960
-
-</body>
-        <prUpdatedAt>2021-09-28 16:14:07.0 UTC</prUpdatedAt>
-        <headSha>61a0319861ebe4bab2310ba5758de1760755b947</headSha>
-        <headRef>jcmd-in-jre</headRef>
+        <number>971</number>
+        <issueUpdatedAt>2021-09-30 06:36:04.0 UTC</issueUpdatedAt>
+        <title>Merge to tag jdk-18+17</title>
+        <body>please pull</body>
+        <prUpdatedAt>2021-09-30 06:36:04.0 UTC</prUpdatedAt>
+        <headSha>1dc8fa9902cf2cfa3556ccffb15244115f594966</headSha>
+        <headRef>pr-jdk-18+17</headRef>
         <mergeable>true</mergeable>
         <baseRef>sapmachine</baseRef>
-        <userLogin>MBaesken</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/961</htmlUrl>
+        <userLogin>SapMachine</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/971</htmlUrl>
         <labels />
-        <lastCommentCreatedAt>2021-09-28 15:29:56.0 UTC</lastCommentCreatedAt>
-        <sourceRepoOwner>SAP</sourceRepoOwner>
-        <state>OPEN</state>
-        <inBadState>false</inBadState>
-      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-    </entry>
-    <entry>
-      <int>962</int>
-      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>962</number>
-        <issueUpdatedAt>2021-09-28 06:43:12.0 UTC</issueUpdatedAt>
-        <title>943: Cherrypick "8268893 jcmd to trim the glibc heap" (SapMachine 11)</title>
-        <body>This brings the "System.trim_native_heap" jcmd to SapMachine 11.
-
-For SapMachine 17, we use the official downport process for 17u, but we don't bother attempting that for 11.
-
-The patch is trivial but note that this is not a 1:1 patch: the function "query_process_memory_info()" in the original patch lives in os_linux.cpp/hpp and is interwoven with other functions; for this patch, I isolated it locally in the new, command-specific trimCHeapDCmd.cpp. I did this to reduce merging trouble if os_linux changes.
-
-Tests: 
-- manual tests on x64 Ubuntu 20.4
-
-fixes #943
-
-</body>
-        <prUpdatedAt>2021-09-28 06:43:12.0 UTC</prUpdatedAt>
-        <headSha>f52ae2a4e2f1917869d98312aee878e571828f52</headSha>
-        <headRef>943-Cherrypick-8268893-jcmd-to-trim-the-glibc-heap-SapMachine-11</headRef>
-        <mergeable>true</mergeable>
-        <baseRef>sapmachine11</baseRef>
-        <userLogin>tstuefe</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/962</htmlUrl>
-        <labels />
-        <lastCommentCreatedAt>2021-09-28 06:43:12.0 UTC</lastCommentCreatedAt>
-        <sourceRepoOwner>tstuefe</sourceRepoOwner>
-        <state>OPEN</state>
-        <inBadState>false</inBadState>
-      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-    </entry>
-    <entry>
-      <int>965</int>
-      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>965</number>
-        <issueUpdatedAt>2021-09-28 18:33:43.0 UTC</issueUpdatedAt>
-        <title>Add jcmd to jre17</title>
-        <body>This adds jcmd to the legacy JRE 17.
-
-fixes #960
-
-</body>
-        <prUpdatedAt>2021-09-28 18:33:43.0 UTC</prUpdatedAt>
-        <headSha>019b2643068c0998c58cbfb494076bc48640dbb9</headSha>
-        <headRef>jcmd-in-jre17</headRef>
-        <mergeable>true</mergeable>
-        <baseRef>sapmachine17</baseRef>
-        <userLogin>MBaesken</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/965</htmlUrl>
-        <labels />
-        <lastCommentCreatedAt>2021-09-28 18:33:43.0 UTC</lastCommentCreatedAt>
-        <sourceRepoOwner>SAP</sourceRepoOwner>
-        <state>OPEN</state>
-        <inBadState>false</inBadState>
-      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-    </entry>
-    <entry>
-      <int>966</int>
-      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>966</number>
-        <issueUpdatedAt>2021-09-28 17:22:08.0 UTC</issueUpdatedAt>
-        <title>Add jcmd to jre11</title>
-        <body>This adds jcmd to the legacy JRE 11.
-
-fixes #960
-</body>
-        <prUpdatedAt>2021-09-28 17:22:08.0 UTC</prUpdatedAt>
-        <headSha>a811ba6483b677e02519d5d1ee3067fb78059057</headSha>
-        <headRef>jcmd-in-jre11</headRef>
-        <mergeable>true</mergeable>
-        <baseRef>sapmachine11</baseRef>
-        <userLogin>MBaesken</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/966</htmlUrl>
-        <labels />
-        <lastCommentCreatedAt>2021-09-28 17:22:08.0 UTC</lastCommentCreatedAt>
+        <lastCommentCreatedAt>2021-09-30 06:36:04.0 UTC</lastCommentCreatedAt>
         <sourceRepoOwner>SAP</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
@@ -114,7 +29,7 @@ fixes #960
       <int>940</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>940</number>
-        <issueUpdatedAt>2021-09-28 19:06:54.0 UTC</issueUpdatedAt>
+        <issueUpdatedAt>2021-09-30 07:04:37.0 UTC</issueUpdatedAt>
         <title>939: Add facility to trace uninstrumented malloc calls in VM and third party coding</title>
         <body>This PR merges the new SapMachine malloc trace facility into the sap machine. 
 
@@ -130,7 +45,7 @@ Thank you.
 fixes #939
 
 </body>
-        <prUpdatedAt>2021-09-28 19:06:54.0 UTC</prUpdatedAt>
+        <prUpdatedAt>2021-09-30 07:04:37.0 UTC</prUpdatedAt>
         <headSha>c135e05b54d583f0ed38a7b42bc241e01778c186</headSha>
         <headRef>939-malloc-trace-facility</headRef>
         <mergeable>true</mergeable>
@@ -140,31 +55,6 @@ fixes #939
         <labels />
         <lastCommentCreatedAt>2021-09-28 19:06:54.0 UTC</lastCommentCreatedAt>
         <sourceRepoOwner>tstuefe</sourceRepoOwner>
-        <state>OPEN</state>
-        <inBadState>false</inBadState>
-      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-    </entry>
-    <entry>
-      <int>959</int>
-      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>959</number>
-        <issueUpdatedAt>2021-09-28 16:13:47.0 UTC</issueUpdatedAt>
-        <title>Backport 8248476: No helpful NullPointerException message after calling fillInStackTrace</title>
-        <body>Should have done this long ago...
-
-fixes #958
-
-</body>
-        <prUpdatedAt>2021-09-28 16:13:47.0 UTC</prUpdatedAt>
-        <headSha>335d7219f91b38b7a016bb4e1e38cdb27d1e1910</headSha>
-        <headRef>downport_NPE_fix_to_11</headRef>
-        <mergeable>true</mergeable>
-        <baseRef>sapmachine11</baseRef>
-        <userLogin>GoeLin</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/959</htmlUrl>
-        <labels />
-        <lastCommentCreatedAt>2021-09-28 16:13:47.0 UTC</lastCommentCreatedAt>
-        <sourceRepoOwner>SAP</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
       </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
