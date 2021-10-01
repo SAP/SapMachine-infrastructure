@@ -99,7 +99,7 @@ def main(argv=None):
         else:
             version_pre = 'ea'
 
-    if utils.get_arch().startswith('aarch64'):
+    if utils.get_system() == 'linux' and utils.get_arch().startswith('aarch64'):
         if not version_pre:
             version_pre = 'beta'
         else:
