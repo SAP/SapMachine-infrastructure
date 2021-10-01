@@ -212,3 +212,49 @@
                 }
             }
         }
+
+- job:
+    name: update-cask
+    description: 'This project is generated. Do not modify manually.'
+    project-type: freestyle
+    concurrent: false
+    properties:
+        - build-discarder:
+            num-to-keep: 20
+            artifact-num-to-keep: 5
+    parameters:
+        - string:
+            name: GIT_TAG_NAME
+            default: ''
+            description: 'The Git tag to publish casks for.'
+        - bool:
+            name: RELEASE
+            default: false
+            description: 'Is it a release or an ea version.'
+    dsl: |
+        pipeline {
+            agent {
+                label 'macos_x86_64'
+            }
+            stages {
+                stage('Create Brew Casks') {{
+                    environment {{
+                        GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
+                    }}
+                    steps {{
+                        withCredentials([
+                            [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
+                            ]) {{
+                            lock('MacBrewCaskGenerationSynchronizer') {{
+                                sh "SapMachine-Infrastructure/lib/make_cask2.sh"
+                            }}
+                        }}
+                    }}
+                }}
+            }
+            post {
+                always {
+                    cleanWs deleteDirs: true, disableDeferredWipeout: true
+                }
+            }
+        }
