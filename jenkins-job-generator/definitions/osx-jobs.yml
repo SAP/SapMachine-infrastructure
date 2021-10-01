@@ -237,33 +237,20 @@
                 label 'macos_x86_64'
             }
             stages {
-                stage("Checkout Infrastructure") {
-                    steps {
-                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
-                    }
-                }
-                stage('Copy Upstream Artifacts') {
-                    steps {
-                        copyArtifacts filter: 'JDK_TGZ, JRE_TGZ, JDK_DMG, JRE_DMG, SYMBOLS', projectName: 'osx-upload', selector: upstream()
-                    }
-                }
-                stage('Deploy') {
-                    environment {
-                      GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
-                    }
-                    steps {
+                stage('Create Brew Casks') {{
+                    environment {{
+                        GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
+                    }}
+                    steps {{
                         withCredentials([
                             [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
-                            ]) {
-                            sh "SapMachine-Infrastructure/lib/publish_osx.sh"
-                        }
-                    }
-                }
-                stage('Publish Website Data') {
-                    steps {
-                        build job: 'generate-website-data', propagate: false, wait: false
-                    }
-                }
+                            ]) {{
+                            lock('MacBrewCaskGenerationSynchronizer') {{
+                                sh "SapMachine-Infrastructure/lib/make_cask2.sh"
+                            }}
+                        }}
+                    }}
+                }}
             }
             post {
                 always {
