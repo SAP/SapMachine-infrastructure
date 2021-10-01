@@ -237,6 +237,11 @@
                 label 'macos_x86_64'
             }
             stages {
+                stage("Checkout Infrastructure") {
+                    steps {
+                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+                    }
+                }
                 stage('Create Brew Casks') {
                     environment {
                         GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
