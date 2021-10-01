@@ -5,8 +5,6 @@ TIMESTAMP=`date +'%Y%m%d_%H_%M_%S'`
 TIMESTAMP_LONG=`date +'%Y/%m/%d %H:%M:%S'`
 UNAME=`uname`
 
-export GITHUB_API_ACCESS_TOKEN=$SAPMACHINE_PUBLISH_GITHUB_TOKEN
-
 PRE_RELEASE_OPT="-p"
 if [ "$RELEASE" == true ]; then
   PRE_RELEASE_OPT=""

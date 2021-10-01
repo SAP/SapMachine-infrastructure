@@ -401,7 +401,7 @@
                         expression {{ env.VERIFICATION_RESULT != "2" && params.PUBLISH == true && JOB_NAME ==~ /((\S*)(release)(\S*))/}}
                     }}
                     environment {{
-                        SAPMACHINE_PUBLISH_GITHUB_TOKEN = credentials('SapMachine-Github-Token')
+                        GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
                     }}
                     steps {{
                         withCredentials([
@@ -420,7 +420,7 @@
                         expression {{ env.VERIFICATION_RESULT != "2" && params.PUBLISH == true && JOB_NAME ==~ /((\S*)(release-macos)(\S*))/ }}
                     }}
                     environment {{
-                        SAPMACHINE_PUBLISH_GITHUB_TOKEN = credentials('SapMachine-Github-Token')
+                        GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
                     }}
                     steps {{
                         withCredentials([
