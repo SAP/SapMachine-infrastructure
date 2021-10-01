@@ -12,7 +12,7 @@ check_and_make () {
   CASK_URL=https://github.com/SAP/homebrew-SapMachine/raw/master/Casks/sapmachine${MAJOR}${EA_DESIG}-${BUNDLE}.rb
   CASK_VER=`curl -L -H "Authorization: token ${GITHUB_API_ACCESS_TOKEN}" ${CASK_URL} | grep '^ *version *' | sed 's/ *version *//g' | sed "s/'//g"`
 
-  if [[ ${CASK_VER} <= ${TARGET_CASK_VER} ]]; then
+  if [[ ${CASK_VER} < ${TARGET_CASK_VER} || ${CASK_VER} = ${TARGET_CASK_VER} ]]; then
     # Cask already there, or my tag is even smaller. Don't change it.
     return
   fi
