@@ -174,9 +174,9 @@
             default: ''
             description: 'Configure options passed directly to configure script.'
         - string:
-            name: BOOT_JDK_MAJOR
-            default: ''
-            description: 'Specify the boot JDK major version explicitly.'
+            name: JDK_MAJOR
+            default: '{major}'
+            description: 'Specify the JDK major version explicitly. You need to override the default in user branch builds.'
         - string:
             name: hotspot_test_groups
             default: ':tier1'
@@ -254,22 +254,7 @@
                     }}
                     steps {{
                         script {{
-                            def major = "{major}"
-
-                            if (BOOT_JDK_MAJOR?.trim()) {{
-                                major = BOOT_JDK_MAJOR
-                            }} else if (!major?.trim()) {{
-                                def match = (SAPMACHINE_GIT_BRANCH =~ /sapmachine(\d*)/)
-                                if (match && match[0]) {{
-                                    major = match[0][1]
-                                }}
-                            }}
-
-                            if (!major?.trim()) {{
-                                major = "9999"
-                            }}
-
-                            sh "python3 SapMachine-Infrastructure/lib/download_boot_jdk.py -m ${{major}} -d `pwd`"
+                            sh "python3 SapMachine-Infrastructure/lib/download_boot_jdk.py -m ${{params.JDK_MAJOR}} -d `pwd`"
                             checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/tags/release-1.8.1']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'gtest']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/google/googletest.git']]]
                         }}
                     }}
@@ -294,7 +279,7 @@
                         expression {{ env.VERIFICATION_RESULT != "2" && params.RUN_TESTS == true }}
                     }}
                     steps {{
-                        sh "python3 SapMachine-Infrastructure/lib/download_jtreg.py -m {major} -d `pwd`"
+                        sh "python3 SapMachine-Infrastructure/lib/download_jtreg.py -m ${{params.JDK_MAJOR}} -d `pwd`"
                     }}
                 }}
                 stage('Run jtreg hotspot') {{
@@ -581,9 +566,9 @@
             default: ''
             description: 'Configure options passed directly to configure script.'
         - string:
-            name: BOOT_JDK_MAJOR
-            default: ''
-            description: 'Specify the boot JDK major version explicitly.'
+            name: JDK_MAJOR
+            default: '{major}'
+            description: 'Specify the JDK major version explicitly. You need to override the default in user branch builds.'
         - bool:
             name: BUILD_LINUX_X86_64
             default: true
@@ -645,7 +630,7 @@
                                         string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
                                         string(name: 'BUILD_NUMBER', value: params.BUILD_NUMBER),
                                         string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
-                                        string(name: 'BOOT_JDK_MAJOR', value: params.BOOT_JDK_MAJOR),
+                                        string(name: 'JDK_MAJOR', value: params.JDK_MAJOR),
                                         string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                         string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                         string(name: 'langtools_test_groups', value: params.langtools_test_groups),
@@ -690,7 +675,7 @@
                                         string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
                                         string(name: 'BUILD_NUMBER', value: params.BUILD_NUMBER),
                                         string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
-                                        string(name: 'BOOT_JDK_MAJOR', value: params.BOOT_JDK_MAJOR),
+                                        string(name: 'JDK_MAJOR', value: params.JDK_MAJOR),
                                         string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                         string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                         string(name: 'langtools_test_groups', value: params.langtools_test_groups),
@@ -735,7 +720,7 @@
                                         string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
                                         string(name: 'BUILD_NUMBER', value: params.BUILD_NUMBER),
                                         string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
-                                        string(name: 'BOOT_JDK_MAJOR', value: params.BOOT_JDK_MAJOR),
+                                        string(name: 'JDK_MAJOR', value: params.JDK_MAJOR),
                                         string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                         string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                         string(name: 'langtools_test_groups', value: params.langtools_test_groups),
@@ -780,7 +765,7 @@
                                         string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
                                         string(name: 'BUILD_NUMBER', value: params.BUILD_NUMBER),
                                         string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
-                                        string(name: 'BOOT_JDK_MAJOR', value: params.BOOT_JDK_MAJOR),
+                                        string(name: 'JDK_MAJOR', value: params.JDK_MAJOR),
                                         string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                         string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                         string(name: 'langtools_test_groups', value: params.langtools_test_groups),
@@ -836,7 +821,7 @@
                                         string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
                                         string(name: 'BUILD_NUMBER', value: params.BUILD_NUMBER),
                                         string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
-                                        string(name: 'BOOT_JDK_MAJOR', value: params.BOOT_JDK_MAJOR),
+                                        string(name: 'JDK_MAJOR', value: params.JDK_MAJOR),
                                         string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                         string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                         string(name: 'langtools_test_groups', value: params.langtools_test_groups),
