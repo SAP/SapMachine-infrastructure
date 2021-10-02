@@ -1,0 +1,66 @@
+<flow-definition plugin="workflow-job">
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps">
+    <script>pipeline {
+    agent {
+        label 'macos_x86_64'
+    }
+    stages {
+        stage("Checkout Infrastructure") {
+            steps {
+                checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+            }
+        }
+        stage('Create Brew Casks') {
+            environment {
+                GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
+            }
+            steps {
+                withCredentials([
+                    [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
+                    ]) {
+                    lock('MacBrewCaskGenerationSynchronizer') {
+                        sh "SapMachine-Infrastructure/lib/make_cask2.sh"
+                    }
+                }
+            }
+        }
+    }
+    post {
+        always {
+            cleanWs deleteDirs: true, disableDeferredWipeout: true
+        }
+    }
+}
+</script>
+    <sandbox>false</sandbox>
+  </definition>
+  <actions />
+  <description>This project is generated. Do not modify manually.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty />
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>-1</daysToKeep>
+        <numToKeep>20</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>5</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>GIT_TAG_NAME</name>
+          <description>The Git tag to publish casks for.</description>
+          <defaultValue />
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>RELEASE</name>
+          <description>Is it a release or an ea version.</description>
+          <defaultValue>false</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+</flow-definition>

@@ -20,7 +20,7 @@
                                 string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
                                 string(name: 'BUILD_NUMBER', value: params.BUILD_NUMBER),
                                 string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
-                                string(name: 'BOOT_JDK_MAJOR', value: params.BOOT_JDK_MAJOR),
+                                string(name: 'JDK_MAJOR', value: params.JDK_MAJOR),
                                 string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                 string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                 string(name: 'langtools_test_groups', value: params.langtools_test_groups),
@@ -65,7 +65,7 @@
                                 string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
                                 string(name: 'BUILD_NUMBER', value: params.BUILD_NUMBER),
                                 string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
-                                string(name: 'BOOT_JDK_MAJOR', value: params.BOOT_JDK_MAJOR),
+                                string(name: 'JDK_MAJOR', value: params.JDK_MAJOR),
                                 string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                 string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                 string(name: 'langtools_test_groups', value: params.langtools_test_groups),
@@ -110,7 +110,7 @@
                                 string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
                                 string(name: 'BUILD_NUMBER', value: params.BUILD_NUMBER),
                                 string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
-                                string(name: 'BOOT_JDK_MAJOR', value: params.BOOT_JDK_MAJOR),
+                                string(name: 'JDK_MAJOR', value: params.JDK_MAJOR),
                                 string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                 string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                 string(name: 'langtools_test_groups', value: params.langtools_test_groups),
@@ -155,7 +155,7 @@
                                 string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
                                 string(name: 'BUILD_NUMBER', value: params.BUILD_NUMBER),
                                 string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
-                                string(name: 'BOOT_JDK_MAJOR', value: params.BOOT_JDK_MAJOR),
+                                string(name: 'JDK_MAJOR', value: params.JDK_MAJOR),
                                 string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                 string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                 string(name: 'langtools_test_groups', value: params.langtools_test_groups),
@@ -211,7 +211,7 @@
                                 string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
                                 string(name: 'BUILD_NUMBER', value: params.BUILD_NUMBER),
                                 string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
-                                string(name: 'BOOT_JDK_MAJOR', value: params.BOOT_JDK_MAJOR),
+                                string(name: 'JDK_MAJOR', value: params.JDK_MAJOR),
                                 string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                 string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                 string(name: 'langtools_test_groups', value: params.langtools_test_groups),
@@ -295,9 +295,9 @@
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>BOOT_JDK_MAJOR</name>
-          <description>Specify the boot JDK major version explicitly.</description>
-          <defaultValue />
+          <name>JDK_MAJOR</name>
+          <description>Specify the JDK major version explicitly. You need to override the default in user branch builds.</description>
+          <defaultValue>18</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
