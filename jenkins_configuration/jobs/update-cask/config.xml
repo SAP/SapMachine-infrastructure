@@ -19,7 +19,7 @@
                     [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
                     ]) {
                     lock('MacBrewCaskGenerationSynchronizer') {
-                        sh "SapMachine-Infrastructure/lib/make_cask2.sh"
+                        sh "SapMachine-Infrastructure/lib/make_cask.sh"
                     }
                 }
             }
