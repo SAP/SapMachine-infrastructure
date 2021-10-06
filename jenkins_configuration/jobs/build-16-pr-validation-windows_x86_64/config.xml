@@ -195,7 +195,7 @@
         }
         stage('Publish GitHub') {
             when {
-                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.PUBLISH == true &amp;&amp; JOB_NAME ==~ /((\S*)(release)(\S*))/}
+                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.PUBLISH == true &amp;&amp; JOB_NAME ==~ /((\S*)(release)(\S*))/ &amp;&amp; !(JOB_NAME ==~ /((\S*)(release-macos)(\S*))/ &amp;&amp; params.RELEASE == true) }
             }
             environment {
                 GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
@@ -214,7 +214,7 @@
         }
         stage('Create Brew Casks') {
             when {
-                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.PUBLISH == true &amp;&amp; JOB_NAME ==~ /((\S*)(release-macos)(\S*))/ }
+                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.PUBLISH == true &amp;&amp; JOB_NAME ==~ /((\S*)(release-macos)(\S*))/ &amp;&amp; params.RELEASE != true }
             }
             environment {
                 GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
