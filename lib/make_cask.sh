@@ -4,7 +4,6 @@ set -ex
 # expecting:
 # GITHUB_API_ACCESS_TOKEN
 # GIT_TAG_NAME
-# RELEASE
 
 check_and_make () {
   BUNDLE=$1
@@ -44,6 +43,7 @@ check_and_make () {
 # Main
 MAJOR="${GIT_TAG_NAME:11:2}"
 VERSION=`echo "${GIT_TAG_NAME:11}" | cut -d '+' -f 1`
+BUILD_NUMBER=`echo "${GIT_TAG_NAME:11}" | cut -d '+' -f 2 -s`
 
 if [[ $MAJOR < 17 ]]; then
   ONLY_X64=true
@@ -55,13 +55,13 @@ fi
 
 ARTEFACT_DIR=`echo "$GIT_TAG_NAME" | sed 's/+/%2B/g'`
 
-if [[ "$RELEASE" == true ]]; then
+# No build number means release
+if [[ -z $BUILD_NUMBER ]]; then
   ARTEFACT_DESIG="${GIT_TAG_NAME:11}"
   EA_DESIG=''
   TARGET_CASK_VER="${VERSION}"
   PRE_RELEASE_OPT=""
 else
-  BUILD_NUMBER=`echo "${GIT_TAG_NAME:11}" | cut -d '+' -f 2`
   ARTEFACT_DESIG="${VERSION}-ea.${BUILD_NUMBER}"
   EA_DESIG='-ea'
   TARGET_CASK_VER="${VERSION},${BUILD_NUMBER}"

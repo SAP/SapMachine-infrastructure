@@ -227,10 +227,6 @@
             name: GIT_TAG_NAME
             default: ''
             description: 'The Git tag to publish casks for.'
-        - bool:
-            name: RELEASE
-            default: false
-            description: 'Is it a release or an ea version.'
     dsl: |
         pipeline {
             agent {
