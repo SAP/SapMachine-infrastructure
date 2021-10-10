@@ -1,5 +1,5 @@
 '''
-Copyright (c) 2001-2020 by SAP SE, Walldorf, Germany.
+Copyright (c) 2001-2021 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
@@ -26,30 +26,56 @@ GTEST_OPT =                 '--with-gtest={0}'
 def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('-t', '--tag', help='the SapMachine git tag', metavar='TAG')
-    parser.add_argument('-b', '--build', help='the build number to use, overrules any value from tag(s)', metavar='BUILD_NR')
+    parser.add_argument('-m', '--major', help='the SapMachine major version, overrules any value from tag(s)', metavar='MAJOR')
+    parser.add_argument('-b', '--build', help='the build number, overrules any value from tag(s)', metavar='BUILD_NR')
     parser.add_argument('-r', '--release', help='set if this is a release build', action='store_true', default=False)
     parser.add_argument('-g', '--branch', help='the SapMachine git branch', metavar='BRANCH')
     args = parser.parse_args()
 
     configure_opts = []
 
-    # parse tag, if given
+    # initialize major from args
+    major = args.major
+    if major is not None:
+        major = int(major)
+
+    # initialize build number from args
+    build_number = args.build
+    if args.build is not None:
+        print(str.format("Set build number from parameter: {0}", build_number), file=sys.stderr)
+
+    # parse tag, if given, and determine major
     tag = None
     if args.tag:
         tag = SapMachineTag.from_string(args.tag)
         if tag is None:
-            print(str.format("Passed tag {0} not recognized as SapMachine tag, handling as snapshot build", args.tag), file=sys.stderr)
-
-    # parse major from SapMachine branch, if given
-    major_from_branch = 0
-    if args.branch:
-        branch_pattern = re.compile(utils.sapmachine_branch_pattern())
-        match = branch_pattern.match(args.branch)
-        if match is not None:
-            if match.group(1) is not None:
-                major_from_branch = int(match.group(1))
+            print(str.format("Tag {0} not recognized as SapMachine tag", args.tag), file=sys.stderr)
+        else:
+            if (major is not None and tag.get_major() != major):
+                print(str.format("Warning: Using major version {0}, given by parameter. Major version from tag would be {1}.", major, tag.get_major()), file=sys.stderr)
             else:
-                major_from_branch = 9999
+                major = tag.get_major()
+
+            # determine build number from tag
+            if build_number is None:
+                build_number = tag.get_build_number()
+                if build_number is not None:
+                    print(str.format("Set build number from tag: {0}", build_number), file=sys.stderr)
+                else:
+                    latest_non_ga_tag = tag.get_latest_non_ga_tag()
+                    if latest_non_ga_tag is not None:
+                        build_number = latest_non_ga_tag.get_build_number()
+                        if build_number is not None:
+                            print(str.format("Tag seems to be a ga tag, using build number from latest non-ga tag {0}: {1}",
+                                latest_non_ga_tag.as_string(), build_number), file=sys.stderr)
+
+    # if major could not be determined, use default
+    if major is None:
+        major = utils.sapmachine_default_major()
+
+    # set build number
+    if build_number is not None:
+        configure_opts.append(VERSION_BUILD_ARG.format(build_number))
 
     # determine and set version date
     release_date = None
@@ -70,27 +96,6 @@ def main(argv=None):
 
     configure_opts.append(VERSION_DATE_ARG.format(release_date))
 
-    # determine and set build number
-    build_number = None
-    if args.build is not None:
-        build_number = args.build
-        print(str.format("Set build number from parameter: {0}", build_number), file=sys.stderr)
-
-    if build_number is None and tag is not None:
-        build_number = tag.get_build_number()
-        if build_number is not None:
-            print(str.format("Set build number from tag: {0}", build_number), file=sys.stderr)
-        else:
-            latest_non_ga_tag = tag.get_latest_non_ga_tag()
-            if latest_non_ga_tag is not None:
-                build_number = latest_non_ga_tag.get_build_number()
-                if build_number is not None:
-                    print(str.format("Tag seems to be a ga tag, using build number from latest non-ga tag {0}: {1}",
-                        latest_non_ga_tag.as_string(), build_number), file=sys.stderr)
-
-    if build_number is not None:
-        configure_opts.append(VERSION_BUILD_ARG.format(build_number))
-
     # set version pre
     version_pre = ''
     if not args.release:
@@ -99,7 +104,7 @@ def main(argv=None):
         else:
             version_pre = 'ea'
 
-    if utils.get_system(tag.get_major() if tag is not None else 17) == 'linux' and utils.get_arch().startswith('aarch64'):
+    if utils.get_system(major) == 'linux' and utils.get_arch().startswith('aarch64'):
         if not version_pre:
             version_pre = 'beta'
         else:
@@ -111,13 +116,13 @@ def main(argv=None):
     if tag is None:
         configure_opts.append(VERSION_OPT_ARG.format(release_date))
     else:
-        if args.release and utils.sapmachine_is_lts(tag.get_major()):
-            if tag.get_major() < 15:
+        if args.release and utils.sapmachine_is_lts(major):
+            if major < 15:
                 configure_opts.append(VERSION_OPT_ARG.format('LTS-sapmachine'))
             else:
                 configure_opts.append(VERSION_OPT_ARG.format('LTS'))
         else:
-            if tag.get_major() < 15:
+            if major < 15:
                 configure_opts.append(VERSION_OPT_ARG.format('sapmachine'))
             else:
                 configure_opts.append(VERSION_OPT_ARG.format(''))
@@ -128,9 +133,9 @@ def main(argv=None):
 
     # set vendor version string
     if (tag is None or
-        (tag.get_major() > 14) or
-        (tag.get_major() == 14 and tag.get_update() > 1) or
-        (tag.get_major() == 11 and tag.get_update() > 7)):
+        (major > 14) or
+        (major == 14 and tag.get_update() > 1) or
+        (major == 11 and tag.get_update() > 7)):
         configure_opts.append(VENDOR_VERSION_STRING_ARG)
 
     # set other vendor options
@@ -141,7 +146,7 @@ def main(argv=None):
 
     # set getest option
     if 'GTEST_DIR' in os.environ:
-        if (tag is not None and tag.get_major() >= 15) or major_from_branch >= 15:
+        if major >= 15:
             configure_opts.append(GTEST_OPT.format(os.environ['GTEST_DIR']))
 
     print(' '.join(configure_opts))

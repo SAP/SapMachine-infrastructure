@@ -65,6 +65,9 @@ fi
 if [[ ! -z $GIT_TAG_NAME ]]; then
   _GIT_TAG=" -t $GIT_TAG_NAME"
 fi
+if [[ ! -z $JDK_MAJOR ]]; then
+  _JDK_MAJOR="-m $JDK_MAJOR"
+fi
 if [[ ! -z $BUILD_NUMBER ]]; then
   _BUILD_NUMBER="-b $BUILD_NUMBER"
 fi
@@ -75,7 +78,7 @@ if [[ ! -z $SAPMACHINE_GIT_BRANCH ]]; then
   _GIT_BRANCH=" -g $SAPMACHINE_GIT_BRANCH"
 fi
 
-eval _CONFIGURE_OPTS=($(python3 ../SapMachine-Infrastructure/lib/get_configure_opts.py $_GIT_TAG $_RELEASE $_BUILD_NUMBER $_GIT_BRANCH))
+eval _CONFIGURE_OPTS=($(python3 ../SapMachine-Infrastructure/lib/get_configure_opts.py $_GIT_TAG $_JDK_MAJOR $_BUILD_NUMBER $_RELEASE $_GIT_BRANCH))
 
 bash ./configure \
 --with-boot-jdk=$BOOT_JDK \
@@ -138,16 +141,16 @@ if [ "$(ls sapmachine-jdk-*_bin.* | wc -l)" -gt "0" ]; then
 fi
 
 JDK_NAME=$(ls ${SAPMACHINE_BUNDLE_PREFIX}jdk-*_bin.*)
-read JDK_MAJOR JDK_SUFFIX<<< $(echo $JDK_NAME | sed $SEDFLAGS 's/'"${SAPMACHINE_BUNDLE_PREFIX}"'jdk-([0-9]+((\.[0-9]+))*)(.*)/ \1 \4 /p')
-JDK_BUNDLE_NAME="${SAPMACHINE_BUNDLE_PREFIX}jdk-${JDK_MAJOR}${JDK_SUFFIX}"
-JRE_BUNDLE_NAME="${SAPMACHINE_BUNDLE_PREFIX}jre-${JDK_MAJOR}${JDK_SUFFIX}"
+read JDK_VERSION JDK_SUFFIX<<< $(echo $JDK_NAME | sed $SEDFLAGS 's/'"${SAPMACHINE_BUNDLE_PREFIX}"'jdk-([0-9]+((\.[0-9]+))*)(.*)/ \1 \4 /p')
+JDK_BUNDLE_NAME="${SAPMACHINE_BUNDLE_PREFIX}jdk-${JDK_VERSION}${JDK_SUFFIX}"
+JRE_BUNDLE_NAME="${SAPMACHINE_BUNDLE_PREFIX}jre-${JDK_VERSION}${JDK_SUFFIX}"
 SYMBOLS_BUNDLE_NAME=$(ls ${SAPMACHINE_BUNDLE_PREFIX}*_bin-symbols.*)
 
 if [ $legacy_bundles_available -ne 1 ]; then
   HAS_JRE=$(ls ${SAPMACHINE_BUNDLE_PREFIX}jre* | wc -l)
 
   if [ "$HAS_JRE" -lt "1" ]; then
-    JRE_BUNDLE_TOP_DIR="${SAPMACHINE_BUNDLE_PREFIX}jre-$JDK_MAJOR.jre"
+    JRE_BUNDLE_TOP_DIR="${SAPMACHINE_BUNDLE_PREFIX}jre-$JDK_VERSION.jre"
 
     rm -rf $JRE_BUNDLE_NAME
     mkdir $JRE_BUNDLE_TOP_DIR

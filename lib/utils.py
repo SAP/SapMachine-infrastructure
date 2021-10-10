@@ -1,5 +1,5 @@
 '''
-Copyright (c) 2001-2017 by SAP SE, Walldorf, Germany.
+Copyright (c) 2001-2021 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
@@ -163,15 +163,18 @@ def copytree(source, dest):
 
             shutil.copyfile(full_path, dest_path)
 
+def sapmachine_default_major():
+    return 18
+
 def sapmachine_is_lts(major):
     lts_releases = [
-        '11',
-        '17'
+        11,
+        17
     ]
-    major_as_str = major
-    if not isinstance(major, str):
-        major_as_str = str(major)
-    return major_as_str in lts_releases
+    major_as_int = major
+    if not isinstance(major, int):
+        major_as_int = int(major)
+    return major_as_int in lts_releases
 
 def sapmachine_tag_pattern():
     return '(sapmachine)-((((\d+)((\.(\d+))*)?)(\+(\d+))?)(-(\d+))?)(\-((\S)+))?'
@@ -458,13 +461,13 @@ def sapmachine_tag_is_release(tag):
 
     return False
 
-def get_system(major):
+def get_system(major = sapmachine_default_major()):
     system = platform.system().lower()
 
     if system.startswith('msys') or system.startswith('cygwin') or system.startswith('win'):
         return 'windows'
     elif system == 'darwin':
-        if major >= 17:
+        if int(major) >= 17:
             return 'macos'
         else:
             return 'osx'
