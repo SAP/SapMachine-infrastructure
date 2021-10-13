@@ -5,34 +5,28 @@
   <sshUrl>git@github.com:SAP/SapMachine.git</sshUrl>
   <pulls class="concurrent-hash-map">
     <entry>
-      <int>940</int>
+      <int>973</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>940</number>
-        <issueUpdatedAt>2021-10-11 07:44:10.0 UTC</issueUpdatedAt>
-        <title>939: Add facility to trace uninstrumented malloc calls in VM and third party coding</title>
-        <body>This PR merges the new SapMachine malloc trace facility into the sap machine. 
+        <number>973</number>
+        <issueUpdatedAt>2021-10-12 12:32:46.0 UTC</issueUpdatedAt>
+        <title>SapMachine #939: Add facility to trace uninstrumented malloc calls in VM and third party coding (17)</title>
+        <body>(cherry picked from commit bf45d7295c24e2583af047f2a8830a24ca2555ae)
 
-For details, please see src/hotspot/os/linux/malloctrace/malloc_trace.md  (https://github.com/SAP/SapMachine/blob/6e7d33fd02f116df227da96f4700f180bf0ef80b/src/hotspot/os/linux/malloctrace/malloc_trace.md)
-
-Testing:
-
-- the new facility comes with a number of gtest- and jtreg tests, which I ran manually. 
-- Nightly tests ran with this patch in our openjdk builds since several weeks. I even switched malloc trace on at VM startup (normally its off) to give the tracer a good workout.
-
-Thank you.
+Clean downport.
 
 fixes #939
 
+
 </body>
-        <prUpdatedAt>2021-10-11 07:44:10.0 UTC</prUpdatedAt>
-        <headSha>0a53b9718509d41ad6d2cece5769d79bf983d800</headSha>
-        <headRef>939-malloc-trace-facility</headRef>
+        <prUpdatedAt>2021-10-12 12:32:46.0 UTC</prUpdatedAt>
+        <headSha>514af732ab2f1ca7c8a53cee827012bd837205f4</headSha>
+        <headRef>939-malloc-trace-facility-17</headRef>
         <mergeable>true</mergeable>
-        <baseRef>sapmachine</baseRef>
+        <baseRef>sapmachine17</baseRef>
         <userLogin>tstuefe</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/940</htmlUrl>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/973</htmlUrl>
         <labels />
-        <lastCommentCreatedAt>2021-10-11 07:44:10.0 UTC</lastCommentCreatedAt>
+        <lastCommentCreatedAt>2021-10-12 09:38:18.0 UTC</lastCommentCreatedAt>
         <sourceRepoOwner>tstuefe</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
