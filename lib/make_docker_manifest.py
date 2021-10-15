@@ -13,7 +13,7 @@ import argparse
 from os.path import join
 from string import Template
 
-template_manifest = '''Maintainers: The SapMachine Team <sapmachine@sap.com> (@sapmachine)
+template_manifest = '''Rene Schuenemann <sapmachine@sap.com> (@reshnm), Christian Halstrick <sapmachine@sap.com> (@chalstrick)
 GitRepo: https://github.com/SAP/SapMachine-infrastructure.git
 
 ${images}
