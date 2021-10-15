@@ -59,6 +59,8 @@ def main(argv=None):
            version = version_match.group(2)
            retcode, git_commit, err = utils.run_cmd(['git', 'log', '-n', '1', '--pretty=format:%H', '--', join(directory, 'Dockerfile')], std=True)
            tags = major
+           if major != version:
+               tags += str.format(', {}', version)
            if release == latest:
                tags += ', latest'
            if release == latest_lts:
