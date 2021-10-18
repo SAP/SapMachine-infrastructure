@@ -163,18 +163,26 @@ def copytree(source, dest):
 
             shutil.copyfile(full_path, dest_path)
 
+active_releases = None
+def get_active_releases():
+    global active_releases
+    if active_releases == None:
+        dir_name = os.path.abspath(os.path.dirname(sys.argv[0]))
+        path_name = os.path.abspath(os.path.join(dir_name, '..', 'active_releases.json'))
+        with open(path_name, 'r') as file:
+            releases = file.read()
+            active_releases = json.loads(releases)
+
 def sapmachine_default_major():
-    return 18
+    get_active_releases()
+    return active_releases['default_release']
 
 def sapmachine_is_lts(major):
-    lts_releases = [
-        11,
-        17
-    ]
+    get_active_releases()
     major_as_int = major
     if not isinstance(major, int):
         major_as_int = int(major)
-    return major_as_int in lts_releases
+    return major_as_int in active_releases['lts_releases']
 
 def sapmachine_tag_pattern():
     return '(sapmachine)-((((\d+)((\.(\d+))*)?)(\+(\d+))?)(-(\d+))?)(\-((\S)+))?'
