@@ -50,7 +50,6 @@ def main(argv=None):
                     latest_lts = dir
 
     for release in releases:
-       print(release)
        directory = join(root, release)
        with open(join(directory, 'Dockerfile'), 'r') as dockerfile:
            version_match = dockerfile_version_pattern.search(dockerfile.read())
