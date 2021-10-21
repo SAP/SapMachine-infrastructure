@@ -121,7 +121,7 @@ def main(argv=None):
                 VERSION=sapMachineTag.get_version_string_without_build(),
                 BUILD_NUMBER=sapMachineTag.get_build_number(),
                 IMAGE_TYPE=args.imagetype,
-                OS_NAME='osx' if sapMachineTag.get_major() < 17 or (sapMachineTag.get_major() == 17 and sapMachineTag.get_build_number() < 21) else 'macos',
+                OS_NAME='osx' if sapMachineTag.get_major() < 17 or (sapMachineTag.get_major() == 17 and sapMachineTag.get_update() is None and sapMachineTag.get_build_number() < 21) else 'macos',
                 SHA256=args.sha256sum
             )
         else:
@@ -130,7 +130,7 @@ def main(argv=None):
                 VERSION=sapMachineTag.get_version_string_without_build(),
                 BUILD_NUMBER=sapMachineTag.get_build_number(),
                 IMAGE_TYPE=args.imagetype,
-                OS_NAME='osx' if sapMachineTag.get_major() < 17 or (sapMachineTag.get_major() == 17 and sapMachineTag.get_build_number() < 21) else 'macos',
+                OS_NAME='osx' if sapMachineTag.get_major() < 17 or (sapMachineTag.get_major() == 17 and sapMachineTag.get_update() is None and sapMachineTag.get_build_number() < 21) else 'macos',
                 INTELSHA256=args.sha256sum,
                 AARCHSHA256=args.aarchsha256sum
             )
