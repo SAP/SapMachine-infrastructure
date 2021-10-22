@@ -17,11 +17,10 @@ from string import Template
 os_description = {
     'linux-x64':             { 'ordinal': 1, 'name': 'Linux x64' },
     'linux-ppc64le':         { 'ordinal': 2, 'name': 'Linux ppc64le' },
-    'linux-ppc64':           { 'ordinal': 3, 'name': 'Linux ppc64' },
-    'windows-x64':           { 'ordinal': 4, 'name': 'Windows x64'},
-    'windows-x64-installer': { 'ordinal': 5, 'name': 'Windows x64 Installer'},
-    'osx-x64':               { 'ordinal': 6, 'name': 'macOS x64'},
-    'osx-aarch64':           { 'ordinal': 7, 'name': 'macOS aarch64'}
+    'windows-x64':           { 'ordinal': 3, 'name': 'Windows x64'},
+    'windows-x64-installer': { 'ordinal': 4, 'name': 'Windows x64 Installer'},
+    'osx-x64':               { 'ordinal': 5, 'name': 'macOS x64'},
+    'osx-aarch64':           { 'ordinal': 6, 'name': 'macOS aarch64'}
 }
 
 image_type_description = {
