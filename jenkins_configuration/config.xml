@@ -71,7 +71,7 @@
               <value>Dynamic Linux x86_64 Client</value>
             </hudson.plugins.ec2.EC2Tag>
           </tags>
-          <connectionStrategy>PUBLIC_IP</connectionStrategy>
+          <connectionStrategy>PRIVATE_IP</connectionStrategy>
           <hostKeyVerificationStrategy>OFF</hostKeyVerificationStrategy>
           <associatePublicIp>true</associatePublicIp>
           <amiType class="hudson.plugins.ec2.UnixData">
@@ -93,7 +93,7 @@
           <amiOwners />
           <amiUsers />
           <usePrivateDnsName>false</usePrivateDnsName>
-          <connectUsingPublicIp>true</connectUsingPublicIp>
+          <connectUsingPublicIp>false</connectUsingPublicIp>
         </hudson.plugins.ec2.SlaveTemplate>
         <hudson.plugins.ec2.SlaveTemplate>
           <ami>ami-0ec492ac61a1dcd9c</ami>
@@ -129,7 +129,7 @@
               <value>Dynamic Windows Client</value>
             </hudson.plugins.ec2.EC2Tag>
           </tags>
-          <connectionStrategy>PUBLIC_IP</connectionStrategy>
+          <connectionStrategy>PRIVATE_IP</connectionStrategy>
           <hostKeyVerificationStrategy>ACCEPT_NEW</hostKeyVerificationStrategy>
           <associatePublicIp>true</associatePublicIp>
           <amiType class="hudson.plugins.ec2.UnixData">
@@ -151,7 +151,7 @@
           <amiOwners />
           <amiUsers />
           <usePrivateDnsName>false</usePrivateDnsName>
-          <connectUsingPublicIp>true</connectUsingPublicIp>
+          <connectUsingPublicIp>false</connectUsingPublicIp>
         </hudson.plugins.ec2.SlaveTemplate>
         <hudson.plugins.ec2.SlaveTemplate>
           <ami>ami-0d9bb43a80c7e2215</ami>
@@ -189,7 +189,7 @@
           </tags>
           <connectionStrategy>PRIVATE_IP</connectionStrategy>
           <hostKeyVerificationStrategy>OFF</hostKeyVerificationStrategy>
-          <associatePublicIp>false</associatePublicIp>
+          <associatePublicIp>true</associatePublicIp>
           <amiType class="hudson.plugins.ec2.UnixData">
             <rootCommandPrefix />
             <slaveCommandPrefix />
