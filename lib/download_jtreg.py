@@ -18,7 +18,7 @@ def main(argv=None):
 
     ver = int(args.major)
     if ver >= 17:
-        url = 'https://github.com/SAP/SapMachine-infrastructure/releases/download/jtreg-6/jtreg.zip'
+        url = 'https://github.com/SAP/SapMachine-infrastructure/releases/download/jtreg-6.1/jtreg.zip'
     else:
         url = 'https://github.com/SAP/SapMachine-infrastructure/releases/download/jtreg-5.1/jtreg.zip'
 
