@@ -75,7 +75,7 @@ python3 SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${A
 python3 SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${AARCH_DMG_SUM_JDK}"
 python3 SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${AARCH_DMG_SUM_JRE}"
 
-if [ "$PUBLISH_CASKS" == true ] && [[ $ARCHIVE_NAME_JDK != *"aarch64"* ]]; then
+if [ "$PUBLISH_CASKS" == true ]; then
     INTEL_JDK_SHA256=`shasum -a 256 $INTEL_DMG_NAME_JDK | awk '{ print $1 }'`
     INTEL_JRE_SHA256=`shasum -a 256 $INTEL_DMG_NAME_JRE | awk '{ print $1 }'`
     AARCH_JDK_SHA256=`shasum -a 256 $AARCH_DMG_NAME_JDK | awk '{ print $1 }'`
