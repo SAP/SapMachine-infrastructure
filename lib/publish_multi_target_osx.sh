@@ -2,7 +2,7 @@
 set -ex
 
 VERSION=$(python3 ${WORKSPACE}/SapMachine-Infrastructure/lib/get_tag_version_component.py -t $GIT_TAG_NAME)
-MAJOR="${GIT_TAG_NAME:11:2}"
+MAJOR=$(python3 ${WORKSPACE}/SapMachine-Infrastructure/lib/get_tag_major.py -t $GIT_TAG_NAME)
 
 if [[ $MAJOR < 17 ]]; then
   OS_NAME=osx

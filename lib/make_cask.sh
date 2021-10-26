@@ -41,9 +41,9 @@ check_and_make () {
 }
 
 # Main
-MAJOR="${GIT_TAG_NAME:11:2}"
-VERSION=`echo "${GIT_TAG_NAME:11}" | cut -d '+' -f 1`
-BUILD_NUMBER=`echo "${GIT_TAG_NAME:11}" | cut -d '+' -f 2 -s`
+MAJOR=$(python3 ${WORKSPACE}/SapMachine-Infrastructure/lib/get_tag_major.py -t $GIT_TAG_NAME)
+VERSION=$(python3 ${WORKSPACE}/SapMachine-Infrastructure/lib/get_tag_version_component.py -t $GIT_TAG_NAME)
+BUILD_NUMBER=$(python3 ${WORKSPACE}/SapMachine-Infrastructure/lib/get_tag_build_number.py -t $GIT_TAG_NAME)
 
 if [[ $MAJOR < 17 ]]; then
   ONLY_X64=true
@@ -57,7 +57,7 @@ ARTEFACT_DIR=`echo "$GIT_TAG_NAME" | sed 's/+/%2B/g'`
 
 # No build number means release
 if [[ -z $BUILD_NUMBER ]]; then
-  ARTEFACT_DESIG="${GIT_TAG_NAME:11}"
+  ARTEFACT_DESIG="${VERSION}"
   EA_DESIG=''
   TARGET_CASK_VER="${VERSION}"
   PRE_RELEASE_OPT=""
