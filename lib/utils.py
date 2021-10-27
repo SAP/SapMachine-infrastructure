@@ -12,6 +12,7 @@ import re
 import json
 import platform
 import zipfile
+import requests
 from zipfile import ZipFile, ZipInfo
 from urllib.request import urlopen, Request
 from urllib.parse import quote
@@ -418,16 +419,20 @@ def get_github_releases():
         github_releases = github_api_request('releases', per_page=100)
     return github_releases
 
-def sapmachine_asset_pattern():
-    return '[^-]+-([^-]+)-([^_]+)_([^_]+)_bin(\.tar\.gz|\.zip|\.msi|\.dmg)'
+def sapmachine_asset_base_pattern():
+    return '[^-]+-([^-]+)-([^_]+)_([^_]+)_bin'
 
-def get_asset_url(tag, platform):
+def sapmachine_asset_pattern():
+    return sapmachine_asset_base_pattern() + '(\.tar\.gz|\.zip|\.msi|\.dmg)'
+
+def get_asset_url(tag, platform, pattern=None):
     jre_url = None
     jdk_url = None
     error_msg = str.format('failed to fetch assets for tag "{0}" and platform="{1}', tag, platform)
 
     try:
-        asset_pattern = re.compile(sapmachine_asset_pattern())
+        pattern_string = sapmachine_asset_base_pattern() + pattern if pattern else sapmachine_asset_pattern()
+        asset_pattern = re.compile(pattern_string)
         release = github_api_request(str.format('releases/tags/{0}', quote(tag)), per_page=100)
 
         if 'assets' in release:
@@ -491,3 +496,10 @@ def get_arch():
         return 'aarch64'
     else:
         return arch
+
+def download_asset(asset_url):
+    headers = {'Authorization': str.format('token {0}', get_github_api_accesstoken()), }
+
+    response = requests.get(asset_url, headers=headers)
+
+    return response.text, response.status_code
