@@ -42,6 +42,8 @@ RUN useradd -ms /bin/bash jenkinsa -u 1000
 RUN useradd -ms /bin/bash jenkinsb -u 1001
 RUN useradd -ms /bin/bash jenkinsc -u 1002
 
+RUN pip3 install requests
+
 ADD sysroot-sles12-ppc64le.tgz /opt
 
 # we cannot use gcc-8 / g++-8 from the package installation, it does not work with our sysroot
