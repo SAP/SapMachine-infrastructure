@@ -28,6 +28,7 @@ curl \
 pandoc \
 graphviz \
 python3 \
+python3-pip \
 ant \
 bison \
 flex \

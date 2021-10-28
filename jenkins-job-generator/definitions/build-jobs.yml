@@ -249,6 +249,7 @@
                     }}
                 }}
                 stage('Download Prerequisites') {{
+                    {docker_agent}
                     when {{
                         expression {{ env.VERIFICATION_RESULT != "2" }}
                     }}
