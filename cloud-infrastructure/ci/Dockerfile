@@ -6,6 +6,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -qq -y --no-install-recommends \
 git \
 python3 \
+python3-pip \
 ca-certificates \
 wget \
 vim \
@@ -14,6 +15,7 @@ less
 
 USER jenkins
 RUN git clone https://github.com/sap/SapMachine-infrastructure /tmp/SapMachine-infrastructure
+RUN pip3 install requests
 RUN python3 /tmp/SapMachine-infrastructure/lib/jenkins_restore.py -s /tmp/SapMachine-infrastructure -t /var/jenkins_home --install-plugins
 RUN rm -rf /tmp/SapMachine-infrastructure
 
