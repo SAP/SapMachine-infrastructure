@@ -77,7 +77,7 @@
           - packages.docker_repository_focal
         when: ansible_distribution_major_version == '20'
 
-      # install docker and docker-compose
+      # install docker
       - name: install docker-ce
         apt:
           name: docker-ce
@@ -86,7 +86,9 @@
         become: yes
         tags:
           - packages.docker-ce
+          - docker.compose
 
+      # install docker-compose
       - name: install docker-compose
         apt:
           name: docker-compose
@@ -95,6 +97,7 @@
         become: yes
         tags:
           - packages.docker-compose
+          - docker.compose
 
       - name: install zip
         apt:
@@ -114,8 +117,7 @@
         tags:
           - packages.zip
 
-      # create sapmachine group and user
-      # used for running the docker container
+      # create sapmachine group and user used for running the docker container
       - name: create sapmachine group
         group:
           name: sapmachine
@@ -134,8 +136,7 @@
         tags:
           - users.create_sapmachine
 
-      # create jenkins group and user
-      # used for running the jenkins client
+      # create jenkins group and user used for running the jenkins client
       - name: create jenkins group
         group:
           name: jenkins
@@ -155,8 +156,7 @@
           - jenkins_client
           - users.create_jenkins
 
-      # copy the sapmachine server files, containing the docker container
-      # and docker compose configuration
+      # copy the sapmachine server files, containing the docker container and docker compose configuration
       - name: copy sapmachine_server files
         synchronize:
           src: ../../
@@ -169,6 +169,7 @@
         become_user: sapmachine
         tags:
           - sapmachine.copy
+          - docker.compose
 
       # set the ownership of samachine_server to sapmachine:sapmachine
       - name: set ownership of sapmachine_server
@@ -180,6 +181,7 @@
         become: yes
         tags:
           - sapmachine.set_ownership
+          - docker.compose
 
       # create the jenkins client home directory
       - name: create Jenkins client home directory
@@ -211,6 +213,7 @@
         failed_when: false
         tags:
           - docker.container_stop
+          - docker.compose
 
       # enable Docker IPv6
       - name: install Docker Daemon configuration
@@ -223,12 +226,14 @@
         become: yes
         tags:
           - docker.config_install
+          - docker.compose
 
       - name: reload the Docker Daemon configuration
         systemd: state=restarted name=docker
         become: yes
         tags:
           - docker.config_reload
+          - docker.compose
 
       # stop all running java processes (jenkins client)
       - name: stop all Java processes
@@ -247,6 +252,7 @@
         failed_when: false
         tags:
           - docker.container_remove
+          - docker.compose
 
       - name: purge dangling docker images
         command: docker images purge
@@ -254,6 +260,7 @@
         become_user: sapmachine
         tags:
           - docker.images_purge
+          - docker.compose
 
       - name: remove all docker images
         shell: docker rmi $(docker images -a -q)
@@ -262,6 +269,7 @@
         failed_when: false
         tags:
           - docker.images_remove
+          - docker.compose
 
       # compose and start all docker containers
       - name: run docker-compose
@@ -283,9 +291,9 @@
         become_user: sapmachine
         tags:
           - sapmachine_server.remove
+          - docker.compose
 
-      # wait for the jenkins server to come up
-      # and read the SapMachine user password
+      # wait for the jenkins server to come up and read the SapMachine user password
       - name: wait for Jenkins server to come up
         command: docker exec ci bash /usr/share/jenkins/read-sapmachine-pw.sh
         become: yes
