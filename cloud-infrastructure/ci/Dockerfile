@@ -10,12 +10,27 @@ python3-pip \
 ca-certificates \
 wget \
 vim \
-less
+less \
+ca-certificates \
+gnupg2
 
+RUN export GNUPGHOME="$(mktemp -d)" \
+    && wget -q -O - https://dist.sapmachine.io/debian/sapmachine.old.key | gpg --batch --import \
+    && gpg --batch --export --armor 'DA4C 00C1 BDB1 3763 8608 4E20 C7EB 4578 740A EEA2' > /etc/apt/trusted.gpg.d/sapmachine.old.gpg.asc \
+    && wget -q -O - https://dist.sapmachine.io/debian/sapmachine.key | gpg --batch --import \
+    && gpg --batch --export --armor 'CACB 9FE0 9150 307D 1D22 D829 6275 4C3B 3ABC FE23' > /etc/apt/trusted.gpg.d/sapmachine.gpg.asc \
+    && gpgconf --kill all && rm -rf "$GNUPGHOME" \
+    && echo "deb http://dist.sapmachine.io/debian/amd64/ ./" > /etc/apt/sources.list.d/sapmachine.list \
+    && apt-get update \
+    && apt-get -y --no-install-recommends install sapmachine-11-jdk
+
+RUN rm -rf /opt/java/openjdk
+COPY /usr/lib/jvm/sapmachine-11 /opt/java/openjdk
 
 USER jenkins
 RUN git clone https://github.com/sap/SapMachine-infrastructure /tmp/SapMachine-infrastructure
-RUN python3 -m pip install requests && python3 /tmp/SapMachine-infrastructure/lib/jenkins_restore.py -s /tmp/SapMachine-infrastructure -t /var/jenkins_home --install-plugins
+RUN python3 -m pip install requests
+RUN python3 /tmp/SapMachine-infrastructure/lib/jenkins_restore.py -s /tmp/SapMachine-infrastructure -t /var/jenkins_home --install-plugins
 RUN rm -rf /tmp/SapMachine-infrastructure
 
 COPY init-sapmachine.groovy /usr/share/jenkins/ref/init.groovy.d/init-sapmachine.groovy
