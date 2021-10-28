@@ -15,8 +15,7 @@ less
 
 USER jenkins
 RUN git clone https://github.com/sap/SapMachine-infrastructure /tmp/SapMachine-infrastructure
-RUN pip3 install requests
-RUN python3 /tmp/SapMachine-infrastructure/lib/jenkins_restore.py -s /tmp/SapMachine-infrastructure -t /var/jenkins_home --install-plugins
+RUN python3 -m pip install requests && /tmp/SapMachine-infrastructure/lib/jenkins_restore.py -s /tmp/SapMachine-infrastructure -t /var/jenkins_home --install-plugins
 RUN rm -rf /tmp/SapMachine-infrastructure
 
 COPY init-sapmachine.groovy /usr/share/jenkins/ref/init.groovy.d/init-sapmachine.groovy
