@@ -25,12 +25,11 @@ RUN export GNUPGHOME="$(mktemp -d)" \
     && apt-get -y --no-install-recommends install sapmachine-11-jdk
 
 RUN rm -rf /opt/java/openjdk
-COPY /usr/lib/jvm/sapmachine-11 /opt/java/openjdk
+RUN cp -rf /usr/lib/jvm/sapmachine-11 /opt/java/openjdk
 
 USER jenkins
 RUN git clone https://github.com/sap/SapMachine-infrastructure /tmp/SapMachine-infrastructure
-RUN python3 -m pip install requests
-RUN python3 /tmp/SapMachine-infrastructure/lib/jenkins_restore.py -s /tmp/SapMachine-infrastructure -t /var/jenkins_home --install-plugins
+RUN python3 -m pip install requests && python3 /tmp/SapMachine-infrastructure/lib/jenkins_restore.py -s /tmp/SapMachine-infrastructure -t /var/jenkins_home --install-plugins
 RUN rm -rf /tmp/SapMachine-infrastructure
 
 COPY init-sapmachine.groovy /usr/share/jenkins/ref/init.groovy.d/init-sapmachine.groovy
