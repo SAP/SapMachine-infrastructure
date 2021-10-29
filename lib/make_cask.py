@@ -52,7 +52,6 @@ cask 'sapmachine${CASK_TAG}-${IMAGE_TYPE}' do
 end
 '''
 
-
 def replace_cask(cask_file_name, cask_content, sapMachineTag, homebrew_dir):
     cask_version_pattern = re.compile('version \'((\d+\.?)+)(,(\d+))?\'')
     current_cask_version = None
@@ -169,7 +168,7 @@ def main(argv=None):
         try:
             intel_jdk_sha_url, intel_jre_sha_url = utils.get_asset_url(raw_tag, os_name + '-x64', '.sha256.dmg.txt')
         except Exception as e:
-            print('Asset not found3')
+            print('Asset not found')
             sys.exit(1)
 
         intel_jdk_sha, code1 = utils.download_asset(intel_jdk_sha_url)
@@ -182,7 +181,7 @@ def main(argv=None):
         try:
             intel_jdk_url, intel_jre_url = utils.get_asset_url(raw_tag, os_name + '-x64', '.dmg')
         except Exception as e:
-            print('Asset not found4')
+            print('Asset not found')
             sys.exit(1)
 
         jdk_cask_content = Template(cask_template).substitute(
