@@ -28,6 +28,7 @@ curl \
 pandoc \
 graphviz \
 python3 \
+python3-pip \
 ant \
 bison \
 flex \
@@ -41,6 +42,8 @@ libmpc-dev
 RUN useradd -ms /bin/bash jenkinsa -u 1000
 RUN useradd -ms /bin/bash jenkinsb -u 1001
 RUN useradd -ms /bin/bash jenkinsc -u 1002
+
+RUN pip3 install requests
 
 ADD sysroot-sles12-ppc64le.tgz /opt
 

@@ -46,11 +46,20 @@
             }
         }
         stage('Download Prerequisites') {
+            agent {
+    dockerfile {
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04_ppc64le"
+        reuseNode true
+        label "linux_ppc64le"
+    }
+}
+
             when {
                 expression { env.VERIFICATION_RESULT != "2" }
             }
             steps {
                 script {
+                    sh "pip3 install requests | true"
                     sh "python3 SapMachine-Infrastructure/lib/download_boot_jdk.py -m ${params.JDK_MAJOR} -d `pwd`"
                     checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/tags/release-1.8.1']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'gtest']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/google/googletest.git']]]
                 }
