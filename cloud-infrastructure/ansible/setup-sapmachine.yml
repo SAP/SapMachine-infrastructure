@@ -149,7 +149,8 @@
         become: yes
         become_user: sapmachine
         tags:
-          - sapmachine.copy
+          - sapmachine_server.copy
+          - sapmachine_server.prepare
           - docker.compose
 
       # set the ownership of samachine_server to sapmachine:sapmachine
@@ -161,7 +162,8 @@
           recurse: yes
         become: yes
         tags:
-          - sapmachine.set_ownership
+          - sapmachine_server.set_ownership
+          - sapmachine_server.prepare
           - docker.compose
 
       # in case any docker container is running, stop them
