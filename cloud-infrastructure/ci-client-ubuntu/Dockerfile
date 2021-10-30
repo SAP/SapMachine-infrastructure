@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM sapmachine:17
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -6,6 +6,7 @@ RUN apt-get update && apt-get install -qq -y --no-install-recommends \
 dh-make \
 devscripts \
 python3 \
+python3-pip \
 git \
 ca-certificates \
 fakeroot \
@@ -14,12 +15,13 @@ gcc \
 g++ \
 autoconf \
 build-essential \
-openjdk-8-jdk \
 curl \
 zip \
 unzip \
 wget \
 file
+
+RUN pip3 install requests
 
 ARG uid=1000
 ARG gid=1000
@@ -31,7 +33,7 @@ ENV HOME /home/jenkins
 RUN groupadd -g ${gid} jenkins \
   && useradd -c "Jenkins user" -d $HOME -u ${uid} -g ${gid} -s /bin/bash -m jenkins
 
-RUN curl --create-dirs -sSLo /usr/share/jenkins/client.jar https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/${VERSION}/remoting-${VERSION}.jar \
+RUN curl --create-dirs -sSLo /usr/share/jenkins/client.jar https://ci.sapmachine.io/jnlpJars/agent.jar \
   && chmod 755 /usr/share/jenkins \
   && chmod 644 /usr/share/jenkins/client.jar
 

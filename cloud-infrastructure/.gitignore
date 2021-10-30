@@ -1,11 +1,11 @@
-ci/keys/alpine/*.rsa
-ci/keys/alpine/*.rsa.pub
-ci/keys/debian/*.key
-ci/keys/debian/*.ownertrust
-ci/keys/debian/old/*.key
-ci/keys/debian/old/*.ownertrust
+*/keys/alpine/*.rsa
+*/keys/alpine/*.rsa.pub
+*/keys/debian/*.key
+*/keys/debian/*.ownertrust
+*/keys/debian/old/*.key
+*/keys/debian/old/*.ownertrust
 
-ci/credentials.yml
+*/credentials.yml
 
 *.pem
 ansible/*.retry

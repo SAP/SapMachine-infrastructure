@@ -12,7 +12,7 @@
     vars:
       ansible_user: ubuntu
       ansible_ssh_private_key_file: SapMachine.pem
-      jenkins_server_url: https://ci.sapmachine.io/computer/agent-linux-x86_64-1/slave-agent.jnlp
+      jenkins_server_url: https://ci.sapmachine.io/computer/agent-linux-x86_64-1/jenkins-agent.jnlp
       jenkins_client_name: agent-linux-x86_64-1
 
     tasks:
@@ -166,44 +166,74 @@
           - sapmachine_server.prepare
           - docker.compose
 
-      # in case any docker container is running, stop them
-      - name: stop all running docker container
-        shell: docker stop $(docker ps -a -q)
+      # compose and start nginxproxy
+      - name: docker-compose:nginxproxy
+        command: docker-compose -f ./compose.yml up -d --build nginxproxy
+        args:
+          chdir: /home/sapmachine/sapmachine_server
         become: yes
         become_user: sapmachine
-        failed_when: false
         tags:
-          - docker.container_stop
           - docker.compose
 
-      # enable Docker IPv6
-      - name: install Docker Daemon configuration
-        copy:
-          src: daemon.json
-          dest: /etc/docker/daemon.json
-          owner: root
-          group: root
-          mode: 0644
-        become: yes
-        tags:
-          - docker.config_install
-          - docker.compose
-
-      - name: reload the Docker Daemon configuration
-        systemd: state=restarted name=docker
-        become: yes
-        tags:
-          - docker.config_reload
-          - docker.compose
-
-      # update docker images
-      - name: remove all docker container
-        shell: docker rm $(docker ps -a -q)
+      # compose and start nginxproxy_comp
+      - name: docker-compose:nginxproxy_comp
+        command: docker-compose -f ./compose.yml up -d --build nginxproxy_comp
+        args:
+          chdir: /home/sapmachine/sapmachine_server
         become: yes
         become_user: sapmachine
-        failed_when: false
         tags:
-          - docker.container_remove
+          - docker.compose
+
+      # compose and start redirect_server
+      - name: docker-compose:redirect_server
+        command: docker-compose -f ./compose.yml up -d --build redirect_server
+        args:
+          chdir: /home/sapmachine/sapmachine_server
+        become: yes
+        become_user: sapmachine
+        tags:
+          - docker.compose
+
+      # compose and start redirect_server_www
+      - name: docker-compose:redirect_server_www
+        command: docker-compose -f ./compose.yml up -d --build redirect_server_www
+        args:
+          chdir: /home/sapmachine/sapmachine_server
+        become: yes
+        become_user: sapmachine
+        tags:
+          - docker.compose
+
+      # compose and start dist_server
+      - name: docker-compose:dist_server
+        command: docker-compose -f ./compose.yml up -d --build dist_server
+        args:
+          chdir: /home/sapmachine/sapmachine_server
+        become: yes
+        become_user: sapmachine
+        tags:
+          - docker.compose
+
+      # compose and start jenkins_server
+      - name: docker-compose:jenkins_server
+        command: docker-compose -f ./compose.yml up -d --build jenkins_server
+        args:
+          chdir: /home/sapmachine/sapmachine_server
+        become: yes
+        become_user: sapmachine
+        tags:
+          - docker.compose
+
+      # compose and start ci_client_ubuntu
+      - name: docker-compose:ci_client_ubuntu
+        command: docker-compose -f ./compose.yml up -d --build ci_client_ubuntu
+        args:
+          chdir: /home/sapmachine/sapmachine_server
+        become: yes
+        become_user: sapmachine
+        tags:
           - docker.compose
 
       - name: purge dangling docker images
@@ -212,25 +242,6 @@
         become_user: sapmachine
         tags:
           - docker.images_purge
-          - docker.compose
-
-      - name: remove all docker images
-        shell: docker rmi $(docker images -a -q)
-        become: yes
-        become_user: sapmachine
-        failed_when: false
-        tags:
-          - docker.images_remove
-          - docker.compose
-
-      # compose and start all docker containers
-      - name: run docker-compose
-        command: docker-compose -f ./compose.yml up -d --build
-        args:
-          chdir: /home/sapmachine/sapmachine_server
-        become: yes
-        become_user: sapmachine
-        tags:
           - docker.compose
 
       # these files are no longer needed and contain sensitive data

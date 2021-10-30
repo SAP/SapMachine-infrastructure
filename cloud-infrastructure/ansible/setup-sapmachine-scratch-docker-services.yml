@@ -1,0 +1,232 @@
+# Copyright (c) 2001-2021 by SAP SE, Walldorf, Germany.
+# All rights reserved. Confidential and proprietary.
+
+# ansible 2.9
+---
+  - name: Scratch SapMachine Server Docker Services
+    hosts: SapMachineServer
+    gather_facts: Yes
+    pre_tasks:
+      - name: 'install python'
+        raw: sudo rm -rf /etc/apt/sources.list.d/dist_sapmachine_io_debian_amd64.list && sudo apt-get update && sudo apt-get -qq -y --no-install-recommends install python python3
+    vars:
+      ansible_user: ubuntu
+      ansible_ssh_private_key_file: SapMachine.pem
+
+    tasks:
+
+      - name: System details
+        debug: msg="{{ item }}"
+        with_items:
+        - "{{ ansible_distribution }}"
+        - "{{ ansible_distribution_version }}"
+        - "{{ ansible_distribution_major_version }}"
+
+      # install docker
+      - name: install docker-ce
+        apt:
+          name: docker-ce
+          state: latest
+          install_recommends: no
+        become: yes
+        tags:
+          - packages.docker-ce
+          - docker.compose
+
+      # install docker-compose
+      - name: install docker-compose
+        apt:
+          name: docker-compose
+          state: latest
+          install_recommends: no
+        become: yes
+        tags:
+          - packages.docker-compose
+          - docker.compose
+
+      # create sapmachine group used for running the docker container
+      - name: create sapmachine group
+        group:
+          name: sapmachine
+          state: present
+        become: yes
+        tags:
+          - groups.create_sapmachine
+
+      # create sapmachine user used for running the docker container
+      - name: create sapmachine user
+        user:
+          name: sapmachine
+          comment: "SapMachine user"
+          group: sapmachine
+          groups: sapmachine, docker
+        become: yes
+        tags:
+          - users.create_sapmachine
+
+      # copy the sapmachine server files, containing the docker container and docker compose configuration
+      - name: copy sapmachine_server files
+        synchronize:
+          src: ../../
+          dest: /home/sapmachine/sapmachine_server
+          recursive: yes
+          rsync_opts:
+            - "--exclude=.git*"
+            - "--exclude=ansible"
+        become: yes
+        become_user: sapmachine
+        tags:
+          - sapmachine_server.copy
+          - sapmachine_server.prepare
+          - docker.compose
+
+      # set the ownership of samachine_server to sapmachine:sapmachine
+      - name: set ownership of sapmachine_server
+        file:
+          path: /home/sapmachine/sapmachine_server
+          owner: sapmachine
+          group: sapmachine
+          recurse: yes
+        become: yes
+        tags:
+          - sapmachine_server.set_ownership
+          - sapmachine_server.prepare
+          - docker.compose
+
+      # in case any docker container is running, stop them
+      - name: stop all running docker container
+        shell: docker stop $(docker ps -a -q)
+        become: yes
+        become_user: sapmachine
+        failed_when: false
+        tags:
+          - docker.container_stop
+          - docker.compose
+
+      # enable Docker IPv6
+      - name: install Docker Daemon configuration
+        copy:
+          src: daemon.json
+          dest: /etc/docker/daemon.json
+          owner: root
+          group: root
+          mode: 0644
+        become: yes
+        tags:
+          - docker.config_install
+          - docker.compose
+
+      - name: reload the Docker Daemon configuration
+        systemd: state=restarted name=docker
+        become: yes
+        tags:
+          - docker.config_reload
+          - docker.compose
+
+      - name: remove all docker containers
+        shell: docker rm $(docker ps -a -q)
+        become: yes
+        become_user: sapmachine
+        failed_when: false
+        tags:
+          - docker.container_remove
+          - docker.compose
+
+      - name: purge dangling docker images
+        command: docker images purge
+        become: yes
+        become_user: sapmachine
+        tags:
+          - docker.images_purge
+          - docker.compose
+
+      - name: remove all docker images
+        shell: docker rmi $(docker images -a -q)
+        become: yes
+        become_user: sapmachine
+        failed_when: false
+        tags:
+          - docker.images_remove
+          - docker.compose
+
+      # compose and start nginxproxy
+      - name: docker-compose:nginxproxy
+        command: docker-compose -f ./compose.yml up -d --build nginxproxy
+        args:
+          chdir: /home/sapmachine/sapmachine_server
+        become: yes
+        become_user: sapmachine
+        tags:
+          - docker.compose
+
+      # compose and start nginxproxy_comp
+      - name: docker-compose:nginxproxy_comp
+        command: docker-compose -f ./compose.yml up -d --build nginxproxy_comp
+        args:
+          chdir: /home/sapmachine/sapmachine_server
+        become: yes
+        become_user: sapmachine
+        tags:
+          - docker.compose
+
+      # compose and start redirect_server
+      - name: docker-compose:redirect_server
+        command: docker-compose -f ./compose.yml up -d --build redirect_server
+        args:
+          chdir: /home/sapmachine/sapmachine_server
+        become: yes
+        become_user: sapmachine
+        tags:
+          - docker.compose
+
+      # compose and start redirect_server_www
+      - name: docker-compose:redirect_server_www
+        command: docker-compose -f ./compose.yml up -d --build redirect_server_www
+        args:
+          chdir: /home/sapmachine/sapmachine_server
+        become: yes
+        become_user: sapmachine
+        tags:
+          - docker.compose
+
+      # compose and start dist_server
+      - name: docker-compose:dist_server
+        command: docker-compose -f ./compose.yml up -d --build dist_server
+        args:
+          chdir: /home/sapmachine/sapmachine_server
+        become: yes
+        become_user: sapmachine
+        tags:
+          - docker.compose
+
+      # compose and start jenkins_server
+      - name: docker-compose:jenkins_server
+        command: docker-compose -f ./compose.yml up -d --build jenkins_server
+        args:
+          chdir: /home/sapmachine/sapmachine_server
+        become: yes
+        become_user: sapmachine
+        tags:
+          - docker.compose
+
+      # compose and start ci_client_ubuntu
+      - name: docker-compose:ci_client_ubuntu
+        command: docker-compose -f ./compose.yml up -d --build ci_client_ubuntu
+        args:
+          chdir: /home/sapmachine/sapmachine_server
+        become: yes
+        become_user: sapmachine
+        tags:
+          - docker.compose
+
+      # these files are no longer needed and contain sensitive data
+      # remove them
+      - name: remove sapmachine_server
+        file:
+          path: /home/sapmachine/sapmachine_server
+          state: absent
+        become: yes
+        become_user: sapmachine
+        tags:
+          - sapmachine_server.remove
+          - docker.compose

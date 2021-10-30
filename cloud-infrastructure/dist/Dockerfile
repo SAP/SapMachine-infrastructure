@@ -1,5 +1,18 @@
 FROM nginx:latest
 
+RUN mkdir -p /var/pkg/deb/amd64
+RUN mkdir -p /var/pkg/deb/keys
+RUN mkdir -p /var/pkg/apk/3.5/x86_64
+RUN mkdir -p /var/pkg/apk/keys
+
+COPY keys/debian/* /var/pkg/deb/keys/
+COPY keys/alpine/* /var/pkg/apk/keys/
+
+# 1000 is the uid/gid of jenkins in the jenkins container
+RUN chown -R 1000:1000 /var/pkg
+
+VOLUME /var/pkg
+
 RUN mkdir -p /var/www/alpine
 RUN mkdir -p /var/www/debian
 
