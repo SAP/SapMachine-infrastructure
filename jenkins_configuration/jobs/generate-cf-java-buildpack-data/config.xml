@@ -13,7 +13,7 @@
         stage('Generate') {
             agent {
                 dockerfile {
-                    dir "SapMachine-Infrastructure/dockerfiles/ubuntu_14_04_x86_64"
+                    dir 'SapMachine-Infrastructure/dockerfiles/infrastructure'
                     reuseNode true
                     label "cloud_foundry"
                 }
