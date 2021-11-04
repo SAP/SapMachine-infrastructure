@@ -40,7 +40,7 @@
         tags:
           - packages.docker_repository
 
-      # install docker, docker-compose, OpenJDK 8 JRE
+      # install docker
       - name: install docker-ce
         apt:
           name: docker-ce
