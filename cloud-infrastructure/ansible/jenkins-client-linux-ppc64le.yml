@@ -1,17 +1,16 @@
 # Copyright (c) 2001-2021 by SAP SE, Walldorf, Germany.
 # All rights reserved. Confidential and proprietary.
 
-# ansible 2.4
+# ansible 2.11
 ---
-  - name: Setup SapMachine Linux PPC64LE Client
+  - name: Setup SapMachine Linux ppc64_le Client
     hosts: SapMachineClient-Linux-ppc64le
     gather_facts: False
     pre_tasks:
-      - name: 'install python2'
-        raw: sudo apt-get update && sudo apt-get -qq -y --no-install-recommends install python
+      - name: 'install python'
+        raw: sudo apt-get update && sudo apt-get -qq -y --no-install-recommends install python python3
     vars:
-      client_jar_version: 3.21
-      jenkins_server_url: https://ci.sapmachine.io/computer/agent-linux-ppc64le-1/slave-agent.jnlp
+      jenkins_server_url: https://ci.sapmachine.io/computer/agent-linux-ppc64le-1/jenkins-agent.jnlp
       jenkins_client_name: agent-linux-ppc64le-1
 
     tasks:
@@ -90,14 +89,15 @@
           - jenkins_client.create_home
 
       # download the jenkins client jar file
-      - name: download Jenkins Client jar
+      - name: download Jenkins client jar
         get_url:
-          url: "https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/{{ client_jar_version }}/remoting-{{ client_jar_version }}.jar"
+          url: "http://ci.sapmachine.io/jnlpJars/agent.jar"
           dest: /home/jenkins/client.jar
           force: yes
         become: yes
         become_user: jenkins
         tags:
+          - jenkins_client
           - jenkins_client.download_client_jar
 
       # copy the script file to start the jenkins client

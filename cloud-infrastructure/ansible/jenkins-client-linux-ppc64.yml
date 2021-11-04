@@ -1,13 +1,13 @@
 # Copyright (c) 2001-2021 by SAP SE, Walldorf, Germany.
 # All rights reserved. Confidential and proprietary.
 
-# ansible 2.4
+# ansible 2.11
 ---
   - name: Setup SapMachine Linux ppc64 Client
     hosts: SapMachineClient-Linux-ppc64
     gather_facts: False
     pre_tasks:
-      - name: 'install python2'
+      - name: 'install python'
         raw: sudo dnf -y install python libselinux-python
     vars:
       client_jar_version: 3.21
