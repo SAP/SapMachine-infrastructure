@@ -35,12 +35,6 @@ if [[ -z $NO_CHECKOUT ]]; then
   fi
 fi
 
-if [ -z $BOOT_JDK ]; then
-  # error
-  echo "No boot JDK specified!"
-  exit 1
-fi
-
 if [[ $UNAME == Darwin ]]; then
  # in case xcode11 or xcode12 devkit is present, use it
  DEVKIT_DIR_11="/jenkins/devkit/xcode11"
