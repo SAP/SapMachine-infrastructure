@@ -5,36 +5,16 @@
         GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
     }
     agent {
-        label "linux_ppc64le"
+        label "linux_x86_64"
     }
     stages {
         stage("Init") {
             steps {
                 script {
-                    if (JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/) {
-                        setGitHubPullRequestStatus context: "validate-pr-2-linux_ppc64le", state: 'PENDING'
-                    }
                     env.VERIFICATION_RESULT = "1"
                 }
                 cleanWs deleteDirs: true, disableDeferredWipeout: true
                 checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
-                script {
-                    if (JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/) {
-                        def platform = "linux_ppc64le"
-                        env.COMMENT = ""
-                        if (platform == 'linux_x86_64') {
-                            env.COMMENT = "-c"
-                        }
-                        env.VERIFICATION_RESULT = sh(
-                            script: "python3 SapMachine-Infrastructure/lib/verify_pr.py -p ${env.GITHUB_PR_NUMBER} ${env.COMMENT}",
-                            returnStatus: true
-                        )
-
-                        if (env.VERIFICATION_RESULT == "0") {
-                            error("Pull Request Verification failed")
-                        }
-                    }
-                }
             }
         }
         stage("Checkout Repository") {
@@ -48,9 +28,9 @@
         stage('Download Prerequisites') {
             agent {
     dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04_ppc64le"
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04_x86_64"
         reuseNode true
-        label "linux_ppc64le"
+        label "linux_x86_64"
     }
 }
 
@@ -61,17 +41,16 @@
                 script {
                     sh "pip3 install --upgrade pip | true"
                     sh "pip3 install requests | true"
-                    sh "python3 SapMachine-Infrastructure/lib/download_boot_jdk.py -m ${params.JDK_MAJOR} -d `pwd`"
-                    checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/tags/release-1.8.1']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'gtest']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/google/googletest.git']]]
+                    sh "python3 SapMachine-Infrastructure/lib/download_boot_jdk.py -m ${params.BUILD_JDK} -d `pwd`"
                 }
             }
         }
         stage("Build") {
             agent {
     dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04_ppc64le"
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04_x86_64"
         reuseNode true
-        label "linux_ppc64le"
+        label "linux_x86_64"
     }
 }
 
@@ -80,7 +59,7 @@
                 expression { env.VERIFICATION_RESULT != "2" }
             }
             environment {
-                BOOT_JDK = "${WORKSPACE}/boot_jdk"
+                BUILD_JDK = "${WORKSPACE}/boot_jdk"
             }
             steps {
                 sh 'SapMachine-Infrastructure/lib/build_asyncprof.sh'
@@ -127,8 +106,6 @@
             }
         }
     }
-    post {
-    }
 }
 </script>
     <sandbox>false</sandbox>
@@ -164,7 +141,7 @@
         <hudson.model.StringParameterDefinition>
           <name>ASYNCPROF_GIT_BRANCH</name>
           <description>The Git branch to build.</description>
-          <defaultValue>sapmachine16</defaultValue>
+          <defaultValue>master</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
@@ -180,15 +157,21 @@
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
+          <name>BUILD_JDK</name>
+          <description>The JDK used to build the async profiler</description>
+          <defaultValue>17</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
           <name>ASYNCPROF_ARCHIVE_NAME_PREFIX</name>
           <description>The prefix of the bundle archive.</description>
-          <defaultValue>asyncprofiler2-linux_ppc64le</defaultValue>
+          <defaultValue>asyncprofiler2-linux_x86_64</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>_CONFIGURE_SYSROOT</name>
           <description>Sysroot configuration passed to configure script.</description>
-          <defaultValue>--with-sysroot=/opt/sysroot-sles12-ppc64le --with-stdc++lib=static</defaultValue>
+          <defaultValue>--with-sysroot=/opt/sysroot-sles11-x86_64</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
