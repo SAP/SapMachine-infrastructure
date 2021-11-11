@@ -49,6 +49,6 @@ if [[ $UNAME == "Linux" ]]; then
   tar czf ${TARGET_DIR}.tar.gz ${TARGET_DIR}
   echo "async-profiler/${TARGET_DIR}.tar.gz" >artifact.txt
 else
-  zip -r ${TARGET_DIR}.zip ${TARGET_DIR}
+  zip -r -y ${TARGET_DIR}.zip ${TARGET_DIR}
   echo "async-profiler/${TARGET_DIR}.zip" >artifact.txt
 fi
