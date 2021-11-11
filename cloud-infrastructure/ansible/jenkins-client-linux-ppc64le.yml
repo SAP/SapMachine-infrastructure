@@ -3,21 +3,43 @@
 
 # ansible 2.11
 ---
-  - name: Setup SapMachine Linux ppc64_le Client
-    hosts: SapMachineClient-Linux-ppc64le
-    gather_facts: False
+  - name: Setup SapMachine Linux ppc64_le Clients
+    hosts: SapMachineClients-Linux-ppc64le
+    gather_facts: Yes
     pre_tasks:
       - name: 'install python'
         raw: sudo apt-get update && sudo apt-get -qq -y --no-install-recommends install python python3
     vars:
-      jenkins_server_url: https://ci.sapmachine.io/computer/agent-linux-ppc64le-1/jenkins-agent.jnlp
-      jenkins_client_name: agent-linux-ppc64le-1
+      jenkins_client_name: agent-linux-ppc64le-{{ jenkins_client_index }}
+      jenkins_server_url: https://ci.sapmachine.io/computer/{{ jenkins_client_name }}/jenkins-agent.jnlp
+      jenkins_client_secret_var: "jenkins_client_secret_{{ jenkins_client_index }}"
+      sapmachine_version: "17.0.1"
+      sapmachine_tgz: "sapmachine-jre-{{ sapmachine_version }}_linux-ppc64le_bin.tar.gz"
+      sapmachine_url: "https://github.com/SAP/SapMachine/releases/download/sapmachine-{{ sapmachine_version }}/{{ sapmachine_tgz }}"
 
     tasks:
+
+      - name: System details
+        debug: msg="{{ item }}"
+        with_items:
+        - "{{ ansible_distribution }}"
+        - "{{ ansible_distribution_version }}"
+        - "{{ ansible_distribution_major_version }}"
+        tags:
+          - system.details
 
       - name: install apt-transport-https
         apt:
           name: apt-transport-https
+          state: latest
+          install_recommends: no
+        become: yes
+        tags:
+          - packages.apt-transport-https
+
+      - name: install acl
+        apt:
+          name: acl
           state: latest
           install_recommends: no
         become: yes
@@ -32,13 +54,23 @@
         tags:
           - packages.docker_key
 
-      - name: add docker repository
+      - name: add docker repository 16.04 Xenial
         apt_repository:
          repo: deb [arch=ppc64el] https://download.docker.com/linux/ubuntu xenial stable
          state: present
         become: yes
         tags:
-          - packages.docker_repository
+          - packages.docker_repository_xenial
+        when: ansible_distribution_major_version == '16'
+
+      - name: add docker repository 20.04 Focal
+        apt_repository:
+         repo: deb [arch=ppc64el] https://download.docker.com/linux/ubuntu focal stable
+         state: present
+        become: yes
+        tags:
+          - packages.docker_repository_focal
+        when: ansible_distribution_major_version == '20'
 
       # install docker
       - name: install docker-ce
@@ -50,17 +82,7 @@
         tags:
           - packages.docker-ce
 
-      - name: install OpenJDK 8 JRE
-        apt:
-         name: openjdk-8-jre
-         state: latest
-         install_recommends: no
-        become: yes
-        tags:
-          - packages.openjdk
-
-      # create jenkins group and user
-      # used for running the jenkins client
+      # create jenkins group used for running the jenkins client
       - name: create jenkins group
         group:
           name: jenkins
@@ -69,6 +91,7 @@
         tags:
           - groups.create_jenkins
 
+      # create jenkins user used for running the jenkins client
       - name: create jenkins user
         user:
           name: jenkins
@@ -136,9 +159,29 @@
         tags:
           - java.kill_all
 
+      # delete old SapMachine
+      - name: Delete old SapMachine
+        shell: "rm -rf sapmachine-jre*"
+        args:
+          chdir: /home/jenkins
+        become: yes
+        become_user: jenkins
+        tags:
+          - remove.sapmachine
+
+      # download SapMachine 17
+      - name: Download SapMachine 17
+        shell: "wget {{ sapmachine_url }} && tar -xzf {{ sapmachine_tgz }} && rm {{ sapmachine_tgz }} && mv sapmachine-jre* sapmachine-jre"
+        args:
+          chdir: /home/jenkins
+        become: yes
+        become_user: jenkins
+        tags:
+          - download.sapmachine
+
       # start the jenkins client
       - name: start Jenkins client
-        command: "/home/jenkins/start-client.sh {{ jenkins_server_url }} {{ jenkins_client_secret }}"
+        command: "/home/jenkins/start-client.sh {{ jenkins_server_url }} {{ lookup('vars', jenkins_client_secret_var) }}"
         args:
           chdir: /home/jenkins
         become: yes
