@@ -130,7 +130,7 @@ def main(argv=None):
     shutil.copyfile(join(work_dir, 'SourceDir', 'release'), join(work_dir, 'release'))
     utils.remove_if_exists(join(work_dir, 'SourceDir', 'release'))
 
-    utils.run_cmd('heat dir SourceDir -swall -srd -gg -platform x64 -template:module -cg SapMachineGroup -out SapMachineModule.wxs'.split(' '), cwd=work_dir)
+    utils.run_cmd('heat dir SourceDir -sw -srd -gg -platform x64 -template:module -cg SapMachineGroup -out SapMachineModule.wxs'.split(' '), cwd=work_dir)
 
     with open(join(work_dir, 'SapMachineModule.wxs'), 'r+') as sapmachine_module:
         sapmachine_module_content = sapmachine_module.read()
