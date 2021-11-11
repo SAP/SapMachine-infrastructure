@@ -47,7 +47,7 @@ mkdir ${TARGET_DIR}
 cp -r build CHANGELOG.md LICENSE profiler.sh README.md ${TARGET_DIR}
 if [[ $UNAME == "Linux" ]]; then
   tar czf ${TARGET_DIR}.tar.gz ${TARGET_DIR}
-  echo "${TARGET_DIR}.tar.gz" >artifact.txt
+  echo "async-profiler/${TARGET_DIR}.tar.gz" >artifact.txt
 else
   zip -r ${TARGET_DIR}.zip ${TARGET_DIR}
   echo "async-profiler/${TARGET_DIR}.zip" >artifact.txt
