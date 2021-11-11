@@ -7,6 +7,7 @@ import os
 import sys
 import re
 import utils
+# seems this needs module pyyaml
 import yaml
 import uuid
 import glob
@@ -71,6 +72,8 @@ def main(argv=None):
     _, _, version_output = utils.run_cmd([join(work_dir, 'SourceDir', 'bin', 'java.exe'), '-version'], std=True)
 
     version, version_part, major, version_sap, build_number = utils.sapmachine_version_components(version_output, multiline=True)
+    print("version detected:" + version + " major version:" + major)
+
     sapmachine_version = [e for e in version_part.split('.')]
 
     if len(sapmachine_version) < 3:
@@ -87,6 +90,7 @@ def main(argv=None):
 
     sapmachine_version = '.'.join(sapmachine_version)
 
+    print("copying some files from SapMachine git src directory " + sapmachine_git_dir + " to workdir " + work_dir)
     shutil.copyfile(
         join(sapmachine_git_dir, 'src', 'java.base', 'windows', 'native', 'launcher', 'icons', 'awt.ico'),
         join(work_dir, 'sapmachine.ico')
