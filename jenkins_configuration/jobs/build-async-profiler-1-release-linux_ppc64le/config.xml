@@ -65,6 +65,18 @@
                 sh 'SapMachine-Infrastructure/lib/build_asyncprof.sh'
             }
         }
+        stage("Test") {
+            when {
+                beforeAgent true
+                expression { env.VERIFICATION_RESULT != "2" }
+            }
+            environment {
+                BUILD_JDK = "${WORKSPACE}/boot_jdk"
+            }
+            steps {
+                sh 'SapMachine-Infrastructure/lib/test_asyncprof.sh'
+            }
+        }
         stage('Archive') {
             when {
                 beforeAgent true
@@ -116,7 +128,7 @@
   <properties>
     <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty />
     <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github">
-      <projectUrl>https://github.com/jvm-profiling-tools/async-profiler</projectUrl>
+      <projectUrl>https://github.com/SAP/async-profiler</projectUrl>
       <displayName />
     </com.coravy.hudson.plugins.github.GithubProjectProperty>
     <jenkins.model.BuildDiscarderProperty>
@@ -135,7 +147,7 @@
         <hudson.model.StringParameterDefinition>
           <name>ASYNCPROF_GIT_REPOSITORY</name>
           <description>The Git repository to use.</description>
-          <defaultValue>https://github.com/jvm-profiling-tools/async-profiler.git</defaultValue>
+          <defaultValue>https://github.com/SAP/async-profiler.git</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
