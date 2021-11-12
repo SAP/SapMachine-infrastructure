@@ -11,4 +11,7 @@ cd "${WORKSPACE}/async-profiler"
 
 export JAVA_HOME=${BUILD_JDK}
 
-make test
+test/smoke-test.sh
+test/thread-smoke-test.sh
+test/alloc-smoke-test.sh
+test/load-library-test.sh
