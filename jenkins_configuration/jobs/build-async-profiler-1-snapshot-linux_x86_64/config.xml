@@ -66,9 +66,17 @@
             }
         }
         stage("Test") {
+            agent {
+    dockerfile {
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04_x86_64"
+        reuseNode true
+        label "linux_x86_64"
+    }
+}
+
             when {
                 beforeAgent true
-                expression { env.VERIFICATION_RESULT != "2" }
+                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; !(JOB_NAME ==~ /((\S*)(linux)(\S*))/) }
             }
             environment {
                 BUILD_JDK = "${WORKSPACE}/boot_jdk"
@@ -83,18 +91,10 @@
                 expression { env.VERIFICATION_RESULT != "2" }
             }
             steps {
-                archiveArtifacts allowEmptyArchive: true, artifacts: 'test.zip'
-                archiveArtifacts allowEmptyArchive: true, artifacts: 'support_gensrc.zip'
-                archiveArtifacts allowEmptyArchive: true, artifacts: '*.dmg'
-
                 script {
-                    def jdk_bundle_name = readFile "${env.WORKSPACE}/jdk_bundle_name.txt"
-                    def jre_bundle_name = readFile "${env.WORKSPACE}/jre_bundle_name.txt"
-                    def symbols_bundle_name = readFile "${env.WORKSPACE}/symbols_bundle_name.txt"
+                    def artifact_name = readFile "${env.WORKSPACE}/async-profiler/artifact.txt"
 
-                    step ([$class: 'ArtifactArchiver', artifacts: jdk_bundle_name]);
-                    step ([$class: 'ArtifactArchiver', artifacts: jre_bundle_name]);
-                    step ([$class: 'ArtifactArchiver', artifacts: symbols_bundle_name]);
+                    step ([$class: 'ArtifactArchiver', artifacts: artifact_name]);
                 }
             }
         }
