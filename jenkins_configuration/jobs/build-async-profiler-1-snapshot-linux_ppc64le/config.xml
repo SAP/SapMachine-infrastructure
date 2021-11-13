@@ -66,17 +66,9 @@
             }
         }
         stage("Test") {
-            agent {
-    dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04_ppc64le"
-        reuseNode true
-        label "linux_ppc64le"
-    }
-}
-
             when {
                 beforeAgent true
-                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; !(JOB_NAME ==~ /((\S*)(linux)(\S*))/) }
+                expression { env.VERIFICATION_RESULT != "2" }
             }
             environment {
                 BUILD_JDK = "${WORKSPACE}/boot_jdk"
