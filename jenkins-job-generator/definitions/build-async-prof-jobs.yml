@@ -1,0 +1,189 @@
+- defaults:
+    name: 'global'
+    publish_default: false
+    release_default: false
+    allow_concurrent_builds: false
+    trigger: |
+        <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+            <triggers/>
+        </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+    majors: &majors
+        - 'official':
+           branch_name: master
+        - 'sap':
+           branch_name: distinguish_inlined_frames
+    platforms: &platforms
+        - linux_x86_64:
+            docker_agent: |
+                agent {{
+                    dockerfile {{
+                        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04_x86_64"
+                        reuseNode true
+                        label "{platform}"
+                    }}
+                }}
+        - linux_ppc64le:
+            docker_agent: |
+                agent {{
+                    dockerfile {{
+                        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04_ppc64le"
+                        reuseNode true
+                        label "{platform}"
+                    }}
+                }}
+        - macos_x86_64:
+            docker_agent: ''
+        - linux_aarch64:
+            docker_agent: ''
+    build_types: &build_types
+        - snapshot
+        - release
+
+- project:
+    name: builds
+    major: *majors
+    build_type: *build_types
+    platform: *platforms
+    jobs:
+        - build-async-profiler-{major}-{build_type}-{platform}
+
+
+- job-template:
+    name: build-async-profiler-{major}-{build_type}-{platform}
+    description: 'This project is generated. Do not modify manually.'
+    project-type: pipeline
+    concurrent: '{allow_concurrent_builds}'
+    properties:
+        - github:
+            url: 'https://github.com/SAP/async-profiler'
+        - build-discarder:
+            num-to-keep: 100
+            artifact-num-to-keep: 1
+        - raw:
+            xml: '{trigger}'
+    parameters:
+        - string:
+            name: ASYNCPROF_GIT_REPOSITORY
+            default: 'https://github.com/SAP/async-profiler.git'
+            description: 'The Git repository to use.'
+        - string:
+            name: ASYNCPROF_GIT_BRANCH
+            default: '{branch_name}'
+            description: 'The Git branch to build.'
+        - string:
+            name: GIT_TAG_NAME
+            default: ''
+            description: 'The Git tag to build.'
+        - string:
+            name: BUILD_JDK
+            default: '17'
+            description: 'The JDK used to build the async profiler'
+        - string:
+            name: ASYNCPROF_ARCHIVE_NAME_PREFIX
+            default: 'asyncprofiler{major}-{platform}'
+            description: 'The prefix of the bundle archive.'
+        - string:
+            name: EXTRA_CONFIGURE_OPTIONS
+            default: ''
+            description: 'Configure options passed directly to configure script.'
+        - bool:
+            name: RELEASE
+            default: '{release_default}'
+            description: 'When set to true, marks this build as a release build, otherwise as pre-release.'
+
+    dsl: |
+        pipeline {{
+            environment {{
+                GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
+            }}
+            agent {{
+                label "{platform}"
+            }}
+            stages {{
+                stage("Init") {{
+                    steps {{
+                        script {{
+                            env.VERIFICATION_RESULT = "1"
+                        }}
+                        cleanWs deleteDirs: true, disableDeferredWipeout: true
+                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+                    }}
+                }}
+                stage("Checkout Repository") {{
+                    when {{
+                        expression {{ env.VERIFICATION_RESULT != "2" }}
+                    }}
+                    steps {{
+                        checkout changelog: true, poll: false, scm: [$class: 'GitSCM', branches: [[name: "*/${{params.ASYNCPROF_GIT_BRANCH}}"]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'async-profiler']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: "${{params.ASYNCPROF_GIT_REPOSITORY}}"]]]
+                    }}
+                }}
+                stage('Download Prerequisites') {{
+                    {docker_agent}
+                    when {{
+                        expression {{ env.VERIFICATION_RESULT != "2" }}
+                    }}
+                    steps {{
+                        script {{
+                            sh "pip3 install --upgrade pip | true"
+                            sh "pip3 install requests | true"
+                            sh "python3 SapMachine-Infrastructure/lib/download_boot_jdk.py -m ${{params.BUILD_JDK}} -d `pwd`"
+                        }}
+                    }}
+                }}
+                stage("Build") {{
+                    {docker_agent}
+                    when {{
+                        beforeAgent true
+                        expression {{ env.VERIFICATION_RESULT != "2" }}
+                    }}
+                    environment {{
+                        BUILD_JDK = "${{WORKSPACE}}/boot_jdk"
+                    }}
+                    steps {{
+                        sh 'SapMachine-Infrastructure/lib/build_asyncprof.sh'
+                    }}
+                }}
+                stage("Test") {{
+                    when {{
+                        beforeAgent true
+                        expression {{ env.VERIFICATION_RESULT != "2" }}
+                    }}
+                    environment {{
+                        BUILD_JDK = "${{WORKSPACE}}/boot_jdk"
+                    }}
+                    steps {{
+                        sh 'SapMachine-Infrastructure/lib/test_asyncprof.sh'
+                    }}
+                }}
+                stage('Archive') {{
+                    when {{
+                        beforeAgent true
+                        expression {{ env.VERIFICATION_RESULT != "2" }}
+                    }}
+                    steps {{
+                        script {{
+                            def artifact_name = readFile "${{env.WORKSPACE}}/async-profiler/artifact.txt"
+
+                            step ([$class: 'ArtifactArchiver', artifacts: artifact_name]);
+                        }}
+                    }}
+                }}
+                stage('Publish GitHub') {{
+                    when {{
+                        expression {{ env.VERIFICATION_RESULT != "2" && params.PUBLISH == true && JOB_NAME ==~ /((\S*)(release)(\S*))/ }}
+                    }}
+                    environment {{
+                        GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
+                    }}
+                    steps {{
+                        withCredentials([
+                            [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
+                            ]) {{
+                            sh '''
+                            SapMachine-Infrastructure/lib/publish_async_prof.sh
+                            '''
+                        }}
+                    }}
+                }}
+            }}
+        }}
