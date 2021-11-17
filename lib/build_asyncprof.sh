@@ -15,6 +15,7 @@ fi
 
 if [[ $JOB_NAME =~ .*linux_ppc64l.e* ]]; then PLATFORM="linux-ppc64le" ; fi
 if [[ $JOB_NAME =~ .*linux_x86_64.* ]]; then PLATFORM="linux-x64" ; fi
+if [[ $JOB_NAME =~ .*linux_aarch64.* ]]; then PLATFORM="linux-aarch64" ; fi
 if [[ $JOB_NAME =~ .*macos.* ]]; then PLATFORM="macos" ; fi
 
 cd "${WORKSPACE}/async-profiler"
