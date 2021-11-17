@@ -145,7 +145,7 @@
                 stage("Test") {{
                     when {{
                         beforeAgent true
-                        expression {{ env.VERIFICATION_RESULT != "2" }}
+                        expression {{ env.VERIFICATION_RESULT != "2" && !(JOB_NAME ==~ /((\S*)(linux_x86_64)(\S*))/) && !(JOB_NAME ==~ /((\S*)(linux_aarch64)(\S*))/) }}
                     }}
                     environment {{
                         BUILD_JDK = "${{WORKSPACE}}/boot_jdk"
