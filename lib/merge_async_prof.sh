@@ -16,4 +16,4 @@ git remote add upstream https://github.com/jvm-profiling-tools/async-profiler.gi
 git fetch upstream
 git checkout master
 git merge --no-edit upstream/master
-git push --follow-tags origin master 2>../push.out
+git push --follow-tags origin master
