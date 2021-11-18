@@ -12,7 +12,7 @@ git config user.email SAPMACHINE_GIT_EMAIL
 
 git checkout master
 git pull
-git remote -v
+git remote -v  | grep 'upstream\thttps://github.com/jvm-profiling-tools/async-profiler.git
 #REMOTE=$(git remote -v | grep 'upstream\thttps://github.com/jvm-profiling-tools/async-profiler.git')
 if [[ -z $REMOTE ]] ; then
   git remote add upstream https://github.com/jvm-profiling-tools/async-profiler.git
