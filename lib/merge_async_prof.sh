@@ -7,8 +7,8 @@ fi
 
 cd "${WORKSPACE}/async-profiler"
 
-git config user.name $SAPMACHINE_GIT_USER
-git config user.email $SAPMACHINE_GIT_EMAIL
+git config user.name SAPMACHINE_GIT_USER
+git config user.email SAPMACHINE_GIT_EMAIL
 
 git checkout master
 git pull
