@@ -7,9 +7,6 @@ fi
 
 cd "${WORKSPACE}/async-profiler"
 
-git config user.name SAPMACHINE_GIT_USER
-git config user.email SAPMACHINE_GIT_EMAIL
-
 git checkout master
 git pull
 git remote add upstream https://github.com/jvm-profiling-tools/async-profiler.git || true
