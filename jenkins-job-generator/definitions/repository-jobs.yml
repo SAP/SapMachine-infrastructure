@@ -157,10 +157,35 @@
                         withCredentials([
                             [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
                             ]) {
-                            sh '''
-                            SapMachine-Infrastructure/lib/merge_async_prof.sh
-                            '''
+                            script {
+                                env.ASYNC_PROF_BUILD_REQUIRED = sh(
+                                        script: "SapMachine-Infrastructure/lib/merge_async_prof.sh",
+                                        returnStatus: true
+                                )
+                            }
                         }
+                    }
+                }
+                stage ('Trigger Builds') {
+                    when {
+                        expression { env.ASYNC_PROF_BUILD_REQUIRED != "1" }
+                    }
+                    steps {
+                        parallel (
+                            linux_aarch64: {
+                                build job: 'build-async-profiler-official-snapshot-linux_aarch64', parameters: [string(name: 'ASYNCPROF_GIT_BRANCH', value: 'master')]
+                            },
+                            linux_ppc64le: {
+                                build job: 'build-async-profiler-official-snapshot-linux_ppc64le', parameters: [string(name: 'ASYNCPROF_GIT_BRANCH', value: 'master')]
+                            },
+                            linux_x86_64: {
+                                build job: 'build-async-profiler-official-snapshot-linux_x86_64', parameters: [string(name: 'ASYNCPROF_GIT_BRANCH', value: 'master')]
+                            },
+                            macos_x86_64: {
+                                build job: 'build-async-profiler-official-snapshot-macos_x86_64', parameters: [string(name: 'ASYNCPROF_GIT_BRANCH', value: 'master')]
+                            },
+                            failFast: false
+                        )
                     }
                 }
             }
