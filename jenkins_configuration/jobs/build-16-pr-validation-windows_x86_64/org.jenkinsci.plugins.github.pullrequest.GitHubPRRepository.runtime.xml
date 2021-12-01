@@ -5,10 +5,30 @@
   <sshUrl>git@github.com:SAP/SapMachine.git</sshUrl>
   <pulls class="concurrent-hash-map">
     <entry>
+      <int>994</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>994</number>
+        <issueUpdatedAt>2021-12-01 01:05:32.0 UTC</issueUpdatedAt>
+        <title>Merge to tag jdk-11.0.14+5</title>
+        <body>please pull</body>
+        <prUpdatedAt>2021-12-01 01:05:32.0 UTC</prUpdatedAt>
+        <headSha>22186cb1fe22b4b30fc72c67ce9946cd4f03199d</headSha>
+        <headRef>pr-jdk-11.0.14+5</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine11</baseRef>
+        <userLogin>SapMachine</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/994</htmlUrl>
+        <labels />
+        <sourceRepoOwner>SAP</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
       <int>985</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>985</number>
-        <issueUpdatedAt>2021-11-16 15:08:46.0 UTC</issueUpdatedAt>
+        <issueUpdatedAt>2021-11-29 10:50:51.0 UTC</issueUpdatedAt>
         <title>939 malloc trace facility 11</title>
         <body>Backport of malloc tracer to SapMachine 11 (preparation for SAP JVM backport).
 
@@ -36,10 +56,14 @@ More complex changes:
 
 - Needed to provide `MallocTraceDCmd::num_arguments()`	for the jdk11 version of the `MallocTraceDCmd` - in later versions that is not necessary, so this is a bit of a backport trap. Omitting that led to a C heap overwrite in `jmm_GetDiagnosticCommandArgumentsInfo`. A fix has been made independently to prevent such errors in the future, see https://bugs.openjdk.java.net/browse/JDK-8277029.
 
+Test: We ran this a couple of nights as patch in jdk11u, to no adverse affects. The only issue cropping up was on s390, where stack walking is not robust enough to be used from arbitrary sample points. However, this is an s390 specific issue and of no relevance to SapMachine 11, since we don't do s390.
+
+There are a small number of test failures on ppc64le, but they have nothing to do with the malloc tracer, which is not even enabled at that point.
+
 fixes #985
 
 </body>
-        <prUpdatedAt>2021-11-16 15:08:46.0 UTC</prUpdatedAt>
+        <prUpdatedAt>2021-11-29 10:50:51.0 UTC</prUpdatedAt>
         <headSha>ad3cbcf23c1eb5aaca81f91e979f2b3b96337b12</headSha>
         <headRef>939-malloc-trace-facility-11</headRef>
         <mergeable>true</mergeable>
@@ -49,26 +73,6 @@ fixes #985
         <labels />
         <lastCommentCreatedAt>2021-11-16 06:58:53.0 UTC</lastCommentCreatedAt>
         <sourceRepoOwner>tstuefe</sourceRepoOwner>
-        <state>OPEN</state>
-        <inBadState>false</inBadState>
-      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-    </entry>
-    <entry>
-      <int>988</int>
-      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>988</number>
-        <issueUpdatedAt>2021-11-18 01:05:14.0 UTC</issueUpdatedAt>
-        <title>Merge to tag jdk-11.0.14+3</title>
-        <body>please pull</body>
-        <prUpdatedAt>2021-11-18 01:05:14.0 UTC</prUpdatedAt>
-        <headSha>3593e1eac182e7ed25a9c5533fd92d37013a1811</headSha>
-        <headRef>pr-jdk-11.0.14+3</headRef>
-        <mergeable>true</mergeable>
-        <baseRef>sapmachine11</baseRef>
-        <userLogin>SapMachine</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/988</htmlUrl>
-        <labels />
-        <sourceRepoOwner>SAP</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
       </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>

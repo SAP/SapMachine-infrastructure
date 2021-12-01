@@ -1,4 +1,4 @@
-FROM jenkins/jenkins:jdk11
+FROM jenkins/jenkins:lts-jdk11
 
 USER root
 ENV DEBIAN_FRONTEND=noninteractive
