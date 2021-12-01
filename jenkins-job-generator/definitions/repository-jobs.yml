@@ -115,3 +115,53 @@
                 }
             }
         }
+
+- job:
+    name: async-prof-repo-update
+    description: 'This project is generated. Do not modify manually.'
+    project-type: pipeline
+    concurrent: false
+    properties:
+        - build-discarder:
+            num-to-keep: 100
+    triggers:
+        - timed: "@midnight"
+    dsl: |
+        pipeline {
+            agent {
+                label "repository"
+            }
+            stages {
+                stage("Checkout Infrastructure") {
+                    steps {
+                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+                    }
+                }
+                stage("Checkout Repository") {
+                    steps {
+                        checkout changelog: true, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'async-profiler']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/async-profiler.git']]]
+                    }
+                }
+                stage('Merge') {
+                    environment {
+                        GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
+                    }
+                    agent {
+                        dockerfile {
+                            dir "SapMachine-Infrastructure/dockerfiles/infrastructure"
+                            reuseNode true
+                            label "repository"
+                        }
+                    }
+                    steps {
+                        withCredentials([
+                            [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
+                            ]) {
+                            sh '''
+                            SapMachine-Infrastructure/lib/merge_async_prof.sh
+                            '''
+                        }
+                    }
+                }
+            }
+        }
