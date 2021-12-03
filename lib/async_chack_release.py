@@ -46,11 +46,11 @@ def main(argv=None):
                                                 data=data,
                                                 method='POST',
                                                 content_type='application/json')
-            print(tag)
+            print(tag, end='')
             '''
-            print('No new releases')
+            print('No new releases', end='')
             return 0
-    print('No new releases')
+    print('No new releases', end='')
     return 0
 
 if __name__ == "__main__":
