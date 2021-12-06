@@ -38,7 +38,6 @@ def main(argv=None):
         tag = release['tag_name']
         if [x for x in sap_releases if x['tag_name'] == tag] == [] and [x for x in sap_tags if x['name'] == tag] != []:
             data = json.dumps({ "tag_name": tag, "name": release['name'], "body": release['body']})
-            '''
             response = utils.github_api_request(api='releases',
                                                 url=None,
                                                 owner='SAP',
@@ -47,8 +46,6 @@ def main(argv=None):
                                                 method='POST',
                                                 content_type='application/json')
             print(tag, end='')
-            '''
-            print('No new releases', end='')
             return 0
     print('No new releases', end='')
     return 0
