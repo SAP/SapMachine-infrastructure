@@ -169,7 +169,7 @@
                 }}
                 stage('Publish GitHub') {{
                     when {{
-                        expression {{ env.VERIFICATION_RESULT != "2" && params.PUBLISH == true && JOB_NAME ==~ /((\S*)(release)(\S*))/ }}
+                        expression {{ env.VERIFICATION_RESULT != "2" && params.RELEASE == true && JOB_NAME ==~ /((\S*)(release)(\S*))/ }}
                     }}
                     environment {{
                         GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
