@@ -78,7 +78,7 @@
         }
         stage('Publish GitHub') {
             when {
-                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.PUBLISH == true &amp;&amp; JOB_NAME ==~ /((\S*)(release)(\S*))/ }
+                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.RELEASE == true &amp;&amp; JOB_NAME ==~ /((\S*)(release)(\S*))/ }
             }
             environment {
                 GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
