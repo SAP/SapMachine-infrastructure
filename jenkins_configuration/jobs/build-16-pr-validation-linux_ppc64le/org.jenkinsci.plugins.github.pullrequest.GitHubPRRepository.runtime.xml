@@ -29,13 +29,13 @@
       <int>996</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>996</number>
-        <issueUpdatedAt>2021-12-09 01:05:27.0 UTC</issueUpdatedAt>
+        <issueUpdatedAt>2021-12-09 21:20:09.0 UTC</issueUpdatedAt>
         <title>Merge to tag jdk-11.0.14+6</title>
         <body>please pull</body>
-        <prUpdatedAt>2021-12-09 01:05:27.0 UTC</prUpdatedAt>
-        <headSha>f5664eafd58bb779431f1df1e03cd8e9270f24c1</headSha>
+        <prUpdatedAt>2021-12-09 21:20:09.0 UTC</prUpdatedAt>
+        <headSha>e934b20ee2b01fe50058032a306495e6eb4bdd0d</headSha>
         <headRef>pr-jdk-11.0.14+6</headRef>
-        <mergeable>false</mergeable>
+        <mergeable>true</mergeable>
         <baseRef>sapmachine11</baseRef>
         <userLogin>SapMachine</userLogin>
         <htmlUrl>https://github.com/SAP/SapMachine/pull/996</htmlUrl>
@@ -46,54 +46,20 @@
       </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
     </entry>
     <entry>
-      <int>985</int>
+      <int>997</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>985</number>
-        <issueUpdatedAt>2021-12-07 09:09:22.0 UTC</issueUpdatedAt>
-        <title>939 malloc trace facility 11</title>
-        <body>Backport of malloc tracer to SapMachine 11 (preparation for SAP JVM backport).
-
-Unfortunately, not a clean backport. A number of changes were necessary.
-
-1) Trivial mechanical changes:
-
-- header changes
-	- `memory/allStatic.hpp` -&gt; `memory/allocation.hpp`
-	- `jvm_io.h` -&gt; `jvm.h`
-	
-- Prototype of `Atomic::cmpxchg` changed
-
-- Different include order
-
-- C++11 not available, `enum class` -&gt; `enum`
-
-More complex changes:
-
-- `os::print_function_and_library_name()` not available in 11. I copied that one into `siteTable.cpp` as local static helper in an abridged version (does not handle function descriptors, but this does not matter here)
-
-- The gtest suite in 11u misses the whole `ConcurrentTestRunner` framework for running multithread tests. I just removed the associated tracer test which uses this framework.
-
-- In JDK17, when printing out stacks, we also resolve compiled methods in code cache (see `sap::Stack::print_on()`). That coding differs in 11u. To keep matters simple - since this feature is not that useful anyway - I just disabled it for 11u.
-
-- Needed to provide `MallocTraceDCmd::num_arguments()`	for the jdk11 version of the `MallocTraceDCmd` - in later versions that is not necessary, so this is a bit of a backport trap. Omitting that led to a C heap overwrite in `jmm_GetDiagnosticCommandArgumentsInfo`. A fix has been made independently to prevent such errors in the future, see https://bugs.openjdk.java.net/browse/JDK-8277029.
-
-Test: We ran this a couple of nights as patch in jdk11u, to no adverse affects. The only issue cropping up was on s390, where stack walking is not robust enough to be used from arbitrary sample points. However, this is an s390 specific issue and of no relevance to SapMachine 11, since we don't do s390.
-
-There are a small number of test failures on ppc64le, but they have nothing to do with the malloc tracer, which is not even enabled at that point.
-
-fixes #985
-
-</body>
-        <prUpdatedAt>2021-12-07 09:09:22.0 UTC</prUpdatedAt>
-        <headSha>ad3cbcf23c1eb5aaca81f91e979f2b3b96337b12</headSha>
-        <headRef>939-malloc-trace-facility-11</headRef>
-        <mergeable>true</mergeable>
-        <baseRef>sapmachine11</baseRef>
-        <userLogin>tstuefe</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/985</htmlUrl>
+        <number>997</number>
+        <issueUpdatedAt>2021-12-10 01:07:20.0 UTC</issueUpdatedAt>
+        <title>Merge to tag jdk-18+27</title>
+        <body>please pull</body>
+        <prUpdatedAt>2021-12-10 01:07:20.0 UTC</prUpdatedAt>
+        <headSha>37921e30803449c06b4d542fdfeed9928cce8a7d</headSha>
+        <headRef>pr-jdk-18+27</headRef>
+        <baseRef>sapmachine</baseRef>
+        <userLogin>SapMachine</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/997</htmlUrl>
         <labels />
-        <lastCommentCreatedAt>2021-12-03 16:37:27.0 UTC</lastCommentCreatedAt>
-        <sourceRepoOwner>tstuefe</sourceRepoOwner>
+        <sourceRepoOwner>SAP</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
       </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
