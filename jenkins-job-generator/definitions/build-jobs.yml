@@ -10,8 +10,6 @@
     majors: &majors
         - '11':
            branch_name: sapmachine11
-        - '16':
-           branch_name: sapmachine16
         - '17':
            branch_name: sapmachine17
         - '18':
@@ -105,8 +103,6 @@
     exclude:
         - platform: macos_aarch64
           major: '11'
-        - platform: macos_aarch64
-          major: '16'
     jobs:
         - build-{major}-{build_type}-{platform}
 
