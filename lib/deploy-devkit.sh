@@ -15,7 +15,7 @@ fi
 
 mkdir $DEVKIT_PATH_UNRESOLVED
 pushd $DEVKIT_PATH_UNRESOLVED
-curl -u ${ART_USER}:${ART_PASSWORD} ${NEXUS_PATH}/${DEVKIT_VERSION}/${DEVKIT_BASENAME}.tar.tgz --output ${DEVKIT_BASENAME}.tgz
+curl -s -u ${ART_USER}:${ART_PASSWORD} ${NEXUS_PATH}/${DEVKIT_VERSION}/${DEVKIT_BASENAME}.tar.tgz --output ${DEVKIT_BASENAME}.tgz
 tar xzf ${DEVKIT_BASENAME}.tgz
 rm ${DEVKIT_BASENAME}.tgz
 echo extracted devkit to `pwd`
