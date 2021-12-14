@@ -43,7 +43,10 @@ exception_list = [
     'openjdk/jdk15',
     'openjdk/jdk15u',
     'openjdk/jdk15u-dev',
-    'openjdk/jdk16'
+    'openjdk/jdk16',
+    'openjdk/jdk16u',
+    'openjdk/jdk16u-dev',
+    'openjdk/jdk17'
 ]
 
 def test_repositories(scm_base, repository_base, repository_suffix = ''):
