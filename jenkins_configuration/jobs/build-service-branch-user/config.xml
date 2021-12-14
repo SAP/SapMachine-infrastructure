@@ -243,6 +243,51 @@
                         }
                     }
                 }
+                stage('macOS aarch 64') {
+                    when {
+                        expression { params.BUILD_MACOS_ARM_64 == true }
+                    }
+                    steps {
+                        script {
+                            def job_macos_aarch64 = build job: 'build-user-branch-macos_aarch64', propagate: false, wait: true, parameters:
+                            [
+                                string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
+                                string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
+                                string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
+                                string(name: 'BUILD_NUMBER', value: params.BUILD_NUMBER),
+                                string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
+                                string(name: 'JDK_MAJOR', value: params.JDK_MAJOR),
+                                string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
+                                string(name: 'jdk_test_groups', value: params.jdk_test_groups),
+                                string(name: 'langtools_test_groups', value: params.langtools_test_groups),
+                                [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
+                                [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
+                                [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
+                            ]
+
+                            env.MACOS_ARM_64_JOB_ID = Integer.toString(job_macos_aarch64.getNumber())
+                            env.MACOS_ARM_64_ARTIFACT_DIR = 'macos_aarch64_' + env.BUILD_NUMBER
+
+                            sh "mkdir -p ${WORKSPACE}/${MACOS_ARM_64_ARTIFACT_DIR}"
+                        }
+                    }
+                    post {
+                        success {
+                            copyArtifacts filter: 'sapmachine-*.tar.gz', projectName: 'build-user-branch-macos_aarch64', target: env.MACOS_ARM_64_ARTIFACT_DIR, selector:
+                            [
+                                $class: 'SpecificBuildSelector',
+                                buildNumber: env.MACOS_ARM_64_JOB_ID
+                            ]
+
+                            script {
+                                def artifacts_selector = env.MACOS_ARM_64_ARTIFACT_DIR + "/*.tar.gz"
+                                step ([$class: 'ArtifactArchiver', artifacts: artifacts_selector]);
+                            }
+
+                            sh "rm -rf ${WORKSPACE}/${MACOS_ARM_64_ARTIFACT_DIR}"
+                        }
+                    }
+                }
             }
         }
     }
@@ -322,6 +367,11 @@
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>BUILD_MACOS_X86_64</name>
+          <description />
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>BUILD_MACOS_ARM_64</name>
           <description />
           <defaultValue>true</defaultValue>
         </hudson.model.BooleanParameterDefinition>
