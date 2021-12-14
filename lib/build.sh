@@ -46,17 +46,11 @@ if [ -z $BOOT_JDK ]; then
 fi
 
 if [[ $UNAME == Darwin ]]; then
- # in case xcode11 or xcode12 devkit is present, use it
- DEVKIT_DIR_11="/jenkins/devkit/xcode11"
- DEVKIT_DIR_12="/jenkins/devkit/xcode12"
- _CONFIGURE_OS_OPTIONS="--with-macosx-bundle-name-base=SapMachine --with-macosx-bundle-id-base=com.sap.openjdk"
- if [ -d $DEVKIT_DIR_12 ]; then
-   _CONFIGURE_OS_OPTIONS+=" --with-devkit=$DEVKIT_DIR_12"
- else
-  if [ -d $DEVKIT_DIR_11 ]; then
-   _CONFIGURE_OS_OPTIONS+=" --with-devkit=$DEVKIT_DIR_11"
+  _CONFIGURE_OS_OPTIONS="--with-macosx-bundle-name-base=SapMachine --with-macosx-bundle-id-base=com.sap.openjdk"
+  # use a devkit, if set
+  if [ ! -z $DEVKIT_PATH ]; then
+    _CONFIGURE_OS_OPTIONS+=" --with-devkit=$DEVKIT_PATH"
   fi
- fi
 fi
 if [[ $UNAME == CYGWIN* ]]; then
   _CONFIGURE_OS_OPTIONS="--with-jdk-rc-name=SapMachine --with-external-symbols-in-bundles=public"
