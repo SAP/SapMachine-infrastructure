@@ -51,6 +51,21 @@
                 expression { env.VERIFICATION_RESULT != "2" }
             }
             steps {
+                withCredentials([
+                    [$class: 'UsernamePasswordMultiBinding', credentialsId: 'openjdk-artifactory', usernameVariable: 'ART_USER', passwordVariable: 'ART_PASSWORD']
+                    ]) {
+                      script {
+                          // on mac intel, download a devkit when building &gt;= 17
+                          if (new Integer(params.JDK_MAJOR) &gt;= 17 &amp;&amp; JOB_NAME ==~ /((\S*)(macos_x86)(\S*))/) {
+                              sh 'SapMachine-Infrastructure/lib/deploy-devkit.sh devkit-macos-xcode-13.1-osx12.0'
+                              env.DEVKIT_PATH = sh (
+                                  script: 'cd ../devkit-macos-xcode-13.1-osx12.0 &amp;&amp; pwd',
+                                  returnStdout: true
+                              ).trim()
+                              echo "Devkit Path: ${env.DEVKIT_PATH}"
+                          }
+                    }
+                }
                 script {
                     sh "python3 SapMachine-Infrastructure/lib/download_boot_jdk.py -m ${params.JDK_MAJOR} -d `pwd`"
                     checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/tags/release-1.8.1']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'gtest']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/google/googletest.git']]]
@@ -365,7 +380,7 @@
         <hudson.model.StringParameterDefinition>
           <name>SAPMACHINE_GIT_BRANCH</name>
           <description>The Git branch to build.</description>
-          <defaultValue>sapmachine</defaultValue>
+          <defaultValue>sapmachine18</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
