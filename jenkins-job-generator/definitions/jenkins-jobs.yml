@@ -15,6 +15,7 @@
                 - 'jenkins-job-generator/*'
     triggers:
         - github
+        - pollscm
 
 - job:
     name: jenkins-job-generator
