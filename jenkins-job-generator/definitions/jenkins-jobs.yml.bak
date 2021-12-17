@@ -25,8 +25,13 @@
     properties:
         - build-discarder:
             num-to-keep: 50
-        - github:
-            url: 'https://github.com/SAP/SapMachine-Infrastructure.git'
+    scm:
+        - git:
+            url: https://github.com/SAP/SapMachine-Infrastructure.git
+            branches:
+                - master
+            included-regions:
+                - 'jenkins-job-generator/.*'
     triggers:
         - pollscm:
             cron: "H/2 * * * *"
@@ -36,7 +41,6 @@
                 label "repository"
             }
             stages {
-            when { changeset "jenkins-job-generator/*"} {
                 stage("Checkout Infrastructure") {
                     steps {
                         checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
@@ -58,7 +62,6 @@
                         }
                     }
                 }
-            }
             }
             post {
                 cleanup {
