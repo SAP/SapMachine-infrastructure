@@ -1,4 +1,23 @@
 - job:
+    name: jenkins-job-generator-trigger
+    description: 'This project is generated. Do not modify manually.'
+    project-type: freestyle
+    concurrent: false
+    properties:
+        - build-discarder:
+            num-to-keep: 1
+    scm:
+        - git:
+            url: https://github.com/SAP/SapMachine-Infrastructure.git
+            branches:
+                - master
+            included-regions:
+                - 'jenkins-job-generator/.*'
+    triggers:
+        - pollscm:
+            cron: "H/2 * * * *"
+
+- job:
     name: jenkins-job-generator
     description: 'Jenkins Job Generator.'
     project-type: pipeline
