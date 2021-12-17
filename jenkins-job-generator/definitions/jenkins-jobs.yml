@@ -6,13 +6,15 @@
     properties:
         - build-discarder:
             num-to-keep: 20
+        - github:
+            url: 'https://github.com/SAP/SapMachine-Infrastructure.git'
     scm:
         - git:
-            url: https://github.com/SAP/SapMachine-Infrastructure.git
+            url: 'https://github.com/SAP/SapMachine-Infrastructure.git'
             branches:
                 - master
             included-regions:
-                - 'jenkins-job-generator/*'
+                - 'jenkins-job-generator/.*'
     triggers:
         - github
         - pollscm
