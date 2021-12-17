@@ -81,7 +81,7 @@
 
 - job:
     name: jenkins-configuration-backup
-    description: 'This project is generated. Do not modify manually.'
+    description: 'Creates a Jenkins configuration backup.'
     project-type: pipeline
     concurrent: false
     properties:
@@ -126,7 +126,7 @@
 
 - job:
     name: jenkins-configuration-restore
-    description: 'This project is generated. Do not modify manually.'
+    description: 'Restores a Jenkins configuration backup.'
     project-type: pipeline
     concurrent: false
     properties:
