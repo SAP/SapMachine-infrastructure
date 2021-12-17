@@ -1,11 +1,11 @@
 - job:
     name: jenkins-job-generator-trigger
-    description: 'This is a way to produce a build trigger.'
+    description: 'This produces a trigger for running the jenkins job generator.'
     project-type: freestyle
     concurrent: false
     properties:
         - build-discarder:
-            num-to-keep: 1
+            num-to-keep: 20
     scm:
         - git:
             url: https://github.com/SAP/SapMachine-Infrastructure.git
@@ -14,8 +14,7 @@
             included-regions:
                 - 'jenkins-job-generator/.*'
     triggers:
-        - pollscm:
-            cron: "H/2 * * * *"
+        - github
 
 - job:
     name: jenkins-job-generator
@@ -27,9 +26,22 @@
             num-to-keep: 50
         - github:
             url: 'https://github.com/SAP/SapMachine-Infrastructure.git'
-    triggers:
-        - pollscm:
-            cron: "H/2 * * * *"
+        - raw:
+            xml: |
+                <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+                    <triggers>
+                        <jenkins.triggers.ReverseBuildTrigger>
+                        <spec></spec>
+                        <upstreamProjects>jenkins-job-generator-trigger</upstreamProjects>
+                        <threshold>
+                            <name>SUCCESS</name>
+                            <ordinal>0</ordinal>
+                            <color>BLUE</color>
+                            <completeBuild>true</completeBuild>
+                        </threshold>
+                        </jenkins.triggers.ReverseBuildTrigger>
+                    </triggers>
+                </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
     dsl: |
         pipeline {
             agent {
