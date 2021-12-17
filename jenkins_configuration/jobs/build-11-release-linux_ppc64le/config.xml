@@ -66,7 +66,7 @@
                           if (new Integer(params.JDK_MAJOR) &gt;= 17 &amp;&amp; JOB_NAME ==~ /((\S*)(macos_x86)(\S*))/) {
                               sh 'SapMachine-Infrastructure/lib/deploy-devkit.sh devkit-macos-xcode-13.1-osx12.0'
                               env.DEVKIT_PATH = sh (
-                                  script: 'cd ../devkit-macos-xcode-13.1-osx12.0 &amp;&amp; pwd',
+                                  script: 'cd devkit-macos-xcode-13.1-osx12.0 &amp;&amp; pwd',
                                   returnStdout: true
                               ).trim()
                               echo "Devkit Path: ${env.DEVKIT_PATH}"
