@@ -66,10 +66,8 @@
                         }
                     }
                     steps {
-                        withCredentials([
-                                [$class: 'UsernamePasswordMultiBinding', credentialsId: 'sapmachine-jenkins', usernameVariable: 'JENKINS_USER', passwordVariable: 'JENKINS_PASSWORD']
-                                ]) {
-                            sh "cd SapMachine-Infrastructure/jenkins-job-generator && jenkins-jobs --conf jenkins_jobs.ini --user ${JENKINS_USER} --password ${JENKINS_PASSWORD} update --delete-old ./definitions"
+                        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'sapmachine-jenkins', usernameVariable: 'JENKINS_USER', passwordVariable: 'JENKINS_PASSWORD']]) {
+                            sh('cd SapMachine-Infrastructure/jenkins-job-generator && jenkins-jobs --conf jenkins_jobs.ini --user ${JENKINS_USER} --password ${JENKINS_PASSWORD} update --delete-old ./definitions')
                         }
                     }
                 }
