@@ -8,7 +8,7 @@
       <options />
     </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
   </actions>
-  <description>This project is generated. Do not modify manually.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+  <description>Creates a Jenkins configuration backup.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
   <properties>
     <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty>
@@ -17,7 +17,7 @@
     <jenkins.model.BuildDiscarderProperty>
       <strategy class="hudson.tasks.LogRotator">
         <daysToKeep>-1</daysToKeep>
-        <numToKeep>100</numToKeep>
+        <numToKeep>50</numToKeep>
         <artifactDaysToKeep>-1</artifactDaysToKeep>
         <artifactNumToKeep>-1</artifactNumToKeep>
       </strategy>
@@ -44,16 +44,9 @@
             }
         }
         stage('Backup') {
-            environment {
-                GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
-            }
             steps {
-                withCredentials([
-                    [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
-                    ]) {
-                sh '''
-                    python3 SapMachine-Infrastructure/lib/jenkins_backup.py -s /var/jenkins_home
-                    '''
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
+                    sh('python3 SapMachine-Infrastructure/lib/jenkins_backup.py -s /var/jenkins_home')
                 }
             }
         }

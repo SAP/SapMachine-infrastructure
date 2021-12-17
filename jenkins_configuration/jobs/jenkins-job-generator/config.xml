@@ -19,10 +19,8 @@
                 }
             }
             steps {
-                withCredentials([
-                        [$class: 'UsernamePasswordMultiBinding', credentialsId: 'sapmachine-jenkins', usernameVariable: 'JENKINS_USER', passwordVariable: 'JENKINS_PASSWORD']
-                        ]) {
-                    sh "cd SapMachine-Infrastructure/jenkins-job-generator &amp;&amp; jenkins-jobs --conf jenkins_jobs.ini --user ${JENKINS_USER} --password ${JENKINS_PASSWORD} update --delete-old ./definitions"
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'sapmachine-jenkins', usernameVariable: 'JENKINS_USER', passwordVariable: 'JENKINS_PASSWORD']]) {
+                    sh('cd SapMachine-Infrastructure/jenkins-job-generator &amp;&amp; jenkins-jobs --conf jenkins_jobs.ini --user ${JENKINS_USER} --password ${JENKINS_PASSWORD} update --delete-old ./definitions')
                 }
             }
         }
@@ -37,24 +35,22 @@
     <sandbox>false</sandbox>
   </definition>
   <actions />
-  <description>This project is generated. Do not modify manually.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+  <description>Jenkins Job Generator.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
   <properties>
     <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty />
     <jenkins.model.BuildDiscarderProperty>
       <strategy class="hudson.tasks.LogRotator">
         <daysToKeep>-1</daysToKeep>
-        <numToKeep>100</numToKeep>
+        <numToKeep>50</numToKeep>
         <artifactDaysToKeep>-1</artifactDaysToKeep>
         <artifactNumToKeep>-1</artifactNumToKeep>
       </strategy>
     </jenkins.model.BuildDiscarderProperty>
-    <hudson.plugins.buildblocker.BuildBlockerProperty plugin="build-blocker-plugin@1.7.3">
-      <useBuildBlocker>true</useBuildBlocker>
-      <blockLevel>GLOBAL</blockLevel>
-      <scanQueueFor>DISABLED</scanQueueFor>
-      <blockingJobs>.*</blockingJobs>
-    </hudson.plugins.buildblocker.BuildBlockerProperty>
+    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github">
+      <projectUrl>https://github.com/SAP/SapMachine-Infrastructure.git</projectUrl>
+      <displayName />
+    </com.coravy.hudson.plugins.github.GithubProjectProperty>
     <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
       <triggers>
         <jenkins.triggers.ReverseBuildTrigger>
