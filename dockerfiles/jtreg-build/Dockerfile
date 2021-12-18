@@ -10,6 +10,6 @@ ca-certificates \
 curl \
 wget \
 make \
-openjdk-11-jdk
+openjdk-8-jdk
 
 RUN useradd -ms /bin/bash jenkins -u 1002

@@ -68,13 +68,11 @@
                                 env.VM_OPT = "--jdk"
                             }
                         }
-                        sh "cd ${env.WORKSPACE}/jtreg && git checkout ${params.TAG}"
-                        sh "cd ${env.WORKSPACE}/jtreg && bash make/${BUILD_SCRIPT} ${VM_OPT} /usr/lib/jvm/java-11-openjdk-*"
-                        sh "cp ${env.WORKSPACE}/jtreg/build/images/jtreg.zip ${env.WORKSPACE}/jtreg.zip"
+                        sh "cd jtreg && git checkout ${params.TAG} && bash make/${BUILD_SCRIPT} ${VM_OPT} /usr/lib/jvm/java-8-openjdk-*"
                     }
                     post {
                         success {
-                            archive 'jtreg.zip'
+                            archive 'jtreg/build/images/jtreg.zip'
                         }
                     }
                 }
