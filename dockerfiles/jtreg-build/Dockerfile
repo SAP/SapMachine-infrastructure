@@ -1,3 +1,5 @@
+FROM sapmachine:11 AS sapmachine
+
 FROM ubuntu:20.04
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -7,9 +9,9 @@ git \
 zip \
 unzip \
 ca-certificates \
-curl \
 wget \
-make \
-openjdk-8-jdk
+make
+
+COPY --from=sapmachine /usr/lib/jvm/sapmachine-11 /usr/lib/jvm
 
 RUN useradd -ms /bin/bash jenkins -u 1002

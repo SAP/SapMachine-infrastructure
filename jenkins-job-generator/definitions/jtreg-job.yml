@@ -68,7 +68,7 @@
                                 env.VM_OPT = "--jdk"
                             }
                         }
-                        sh "cd jtreg && git checkout ${params.TAG} && bash make/${BUILD_SCRIPT} ${VM_OPT} /usr/lib/jvm/java-8-openjdk-*"
+                        sh "cd jtreg && git checkout ${params.TAG} && bash make/${BUILD_SCRIPT} ${VM_OPT} /usr/lib/jvm"
                     }
                     post {
                         success {
