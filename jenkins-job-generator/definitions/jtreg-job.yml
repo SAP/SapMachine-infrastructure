@@ -7,6 +7,8 @@
         - build-discarder:
             num-to-keep: 50
             artifact-num-to-keep: 10
+        - github:
+            url: 'https://github.com/openjdk/jtreg.git'
     parameters:
       - string:
           name: TAG
@@ -25,6 +27,11 @@
                 stage("Checkout Infrastructure") {
                     steps {
                         checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+                    }
+                }
+                stage("Checkout JTReg") {
+                    steps {
+                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'jtreg']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/openjdk/jtreg.git']]]
                     }
                 }
                 stage('Build') {
@@ -61,10 +68,8 @@
                                 env.VM_OPT = "--jdk"
                             }
                         }
-                        sh "rm -rf ${env.WORKSPACE}/jtreg"
-                        sh "git clone https://github.com/openjdk/jtreg.git ${env.WORKSPACE}/jtreg"
                         sh "cd ${env.WORKSPACE}/jtreg && git checkout ${params.TAG}"
-                        sh "cd ${env.WORKSPACE}/jtreg && bash make/${BUILD_SCRIPT} ${VM_OPT} /usr/lib/jvm/java-8-openjdk-*"
+                        sh "cd ${env.WORKSPACE}/jtreg && bash make/${BUILD_SCRIPT} ${VM_OPT} /usr/lib/jvm/java-11-openjdk-*"
                         sh "cp ${env.WORKSPACE}/jtreg/build/images/jtreg.zip ${env.WORKSPACE}/jtreg.zip"
                     }
                     post {

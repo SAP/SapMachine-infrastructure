@@ -31,8 +31,6 @@ pandoc \
 graphviz \
 python3 \
 ant \
-patch \
-mercurial \
-openjdk-8-jdk
+patch
 
 RUN useradd -ms /bin/bash jenkins -u 1002
