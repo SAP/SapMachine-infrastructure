@@ -1,6 +1,6 @@
 - job:
     name: repository-update
-    description: 'This project is generated. Do not modify manually.'
+    description: 'Update SapMachine repository from OpenJDK.'
     project-type: pipeline
     concurrent: false
     properties:
@@ -20,10 +20,6 @@
                     }
                 }
                 stage('Build') {
-                    environment {
-                        GIT_USER = "SapMachine"
-                        GIT_PASSWORD = credentials('SapMachine-Github-Token')
-                    }
                     agent {
                         dockerfile {
                             dir "SapMachine-Infrastructure/dockerfiles/infrastructure"
@@ -32,21 +28,16 @@
                         }
                     }
                     steps {
-                        sh '''
-                        openjdk_repositories=$(python3 SapMachine-Infrastructure/lib/list_openjdk_repositories.py)
-                        for i in ${openjdk_repositories}
-                        do
-                            :
-                            SapMachine-Infrastructure/lib/update_repo.sh $i
-                        done
-
-                        openjdk_repositories=$(python3 SapMachine-Infrastructure/lib/list_openjdk_repositories.py -m)
-                        for i in ${openjdk_repositories}
-                        do
-                            :
-                            SapMachine-Infrastructure/lib/update_repo.sh -m $i
-                        done
+                        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
+                            sh '''
+                            openjdk_repositories=$(python3 SapMachine-Infrastructure/lib/list_openjdk_repositories.py)
+                            for i in ${openjdk_repositories}
+                            do
+                                :
+                                SapMachine-Infrastructure/lib/update_repo.sh $i
+                            done
                         '''
+                        }
                     }
                 }
             }
@@ -214,7 +205,7 @@
                 }
                 stage ('Trigger Release Builds') {
                     when {
-                                            expression { env.ASYNC_PROF_RELEASE_TAG != "No new releases" }
+                        expression { env.ASYNC_PROF_RELEASE_TAG != "No new releases" }
                     }
                     steps {
                         parallel (
