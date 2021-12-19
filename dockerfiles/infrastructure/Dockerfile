@@ -8,7 +8,6 @@ wget \
 ca-certificates \
 curl \
 git \
-mercurial \
 unzip \
 python3 \
 python3-setuptools \
@@ -18,8 +17,7 @@ libffi-dev \
 openssl \
 libssl-dev \
 gcc \
-g++ \
-openjdk-11-jdk
+g++
 
 RUN useradd -ms /bin/bash jenkins -u 1002
 
