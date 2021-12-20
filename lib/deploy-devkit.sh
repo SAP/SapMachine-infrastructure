@@ -13,9 +13,10 @@ if [ -d ${DEVKIT_BASENAME} ]; then
   exit 0
 fi
 
+rm ../${DEVKIT_ARCHIVE}
 if [ ! -f ../${DEVKIT_ARCHIVE} ]; then
   echo ${DEVKIT_ARCHIVE} does not exist, downloading...
-  curl -s -u ${ART_USER}:${ART_PASSWORD} ${NEXUS_PATH}/${DEVKIT_GROUP}/${DEVKIT_ARTEFACT}/${DEVKIT_VERSION}/${DEVKIT_ARCHIVE} --output ../${DEVKIT_ARCHIVE}
+  curl -L -s -u ${ART_USER}:${ART_PASSWORD} ${NEXUS_PATH}/${DEVKIT_GROUP}/${DEVKIT_ARTEFACT}/${DEVKIT_VERSION}/${DEVKIT_ARCHIVE} --output ../${DEVKIT_ARCHIVE}
 fi
 
 echo extracting devkit ${DEVKIT_BASENAME}...
