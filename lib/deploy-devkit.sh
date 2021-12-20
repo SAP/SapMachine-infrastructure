@@ -18,6 +18,7 @@ if [ ! -f ../${DEVKIT_ARCHIVE} ]; then
   echo ${DEVKIT_ARCHIVE} does not exist, downloading...
   curl -L -s -u ${ART_USER}:${ART_PASSWORD} ${NEXUS_PATH}/${DEVKIT_GROUP}/${DEVKIT_ARTEFACT}/${DEVKIT_VERSION}/${DEVKIT_ARCHIVE} --output ../${DEVKIT_ARCHIVE}
 fi
+ls -la ..
 
 echo extracting devkit ${DEVKIT_BASENAME}...
 mkdir ${DEVKIT_BASENAME}
