@@ -118,7 +118,7 @@
         }
         stage ('Trigger Release Builds') {
             when {
-                                    expression { env.ASYNC_PROF_RELEASE_TAG != "No new releases" }
+                expression { env.ASYNC_PROF_RELEASE_TAG != "No new releases" }
             }
             steps {
                 parallel (
