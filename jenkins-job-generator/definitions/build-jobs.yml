@@ -257,7 +257,7 @@
                                 }} else {{
                                     String[] gav = params.DEVKIT.split(":");
                                     if (gav.length == 3) {{
-                                        echo "Extracting devkit from GAV coordingates: \"${{params.DEVKIT}}\""."
+                                        echo "Extracting devkit from GAV coordingates: \"${{params.DEVKIT}}\"."
                                         sh 'SapMachine-Infrastructure/lib/deploy-devkit.sh ${{gav[0]}} ${{gav[1]}} ${{gav[2]}}'
                                         env.DEVKIT_PATH = sh (
                                             script: 'cd ${{gav[1]}}-${{gav[2]}} && pwd',
