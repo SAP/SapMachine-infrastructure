@@ -18,7 +18,7 @@
            branch_name: sapmachine
     platforms: &platforms
         - linux_x86_64:
-            configure_sysroot_default: '--with-sysroot=/opt/sysroot-sles11-x86_64 --with-stdc++lib=static'
+            extra_configure_options_default: '--with-sysroot=/opt/sysroot-sles11-x86_64 --with-stdc++lib=static'
             docker_agent: |
                 agent {{
                     dockerfile {{
@@ -27,8 +27,9 @@
                         label "{platform}"
                     }}
                 }}
+            devkit_default: ''
         - linux_ppc64le:
-            configure_sysroot_default: '--with-sysroot=/opt/sysroot-sles12-ppc64le --with-stdc++lib=static'
+            extra_configure_options_default: '--with-sysroot=/opt/sysroot-sles12-ppc64le --with-stdc++lib=static'
             docker_agent: |
                 agent {{
                     dockerfile {{
@@ -37,18 +38,23 @@
                         label "{platform}"
                     }}
                 }}
+            devkit_default: ''
         - macos_x86_64:
-            configure_sysroot_default: ''
+            extra_configure_options_default: ''
             docker_agent: ''
+            devkit_default: 'io.sapmachine.build.devkit.macos:devkit-xcode:13.1'
         - macos_aarch64:
-            configure_sysroot_default: ''
+            extra_configure_options_default: ''
             docker_agent: ''
+            devkit_default: 'io.sapmachine.build.devkit.macos:devkit-xcode:13.1'
         - linux_aarch64:
-            configure_sysroot_default: '--disable-warnings-as-errors --with-devkit=/opt/devkits/aarch64-linux-gnu-to-aarch64-linux-gnu-fedora-21-gcc-9.2.0'
+            extra_configure_options_default: '--disable-warnings-as-errors'
             docker_agent: ''
+            devkit_default: '/opt/devkits/aarch64-linux-gnu-to-aarch64-linux-gnu-fedora-21-gcc-9.2.0'
         - windows_x86_64:
-            configure_sysroot_default: ''
+            extra_configure_options_default: ''
             docker_agent: ''
+            devkit_default: ''
     build_types: &build_types
         - snapshot
         - release
@@ -131,7 +137,7 @@
 
 - job-template:
     name: build-{major}-{build_type}-{platform}
-    description: 'This project is generated. Do not modify manually.'
+    description: '{build_type} build for SapMachine {major} on {platform}.'
     project-type: pipeline
     concurrent: '{allow_concurrent_builds}'
     properties:
@@ -164,13 +170,13 @@
             default: 'sapmachine{major}-{platform}'
             description: 'The prefix of the bundle archive.'
         - string:
-            name: _CONFIGURE_SYSROOT
-            default: '{configure_sysroot_default}'
-            description: 'Sysroot configuration passed to configure script.'
+            name: DEVKIT
+            default: '{devkit_default}'
+            description: 'Devkit, could be either a path that locally exists or the GAV coordinates to a tar.gz archive to be downloaded and extracted.'
         - string:
             name: EXTRA_CONFIGURE_OPTIONS
-            default: ''
-            description: 'Configure options passed directly to configure script.'
+            default: '{extra_configure_options_default}'
+            description: 'Extra configure options passed directly to configure script.'
         - string:
             name: JDK_MAJOR
             default: '{major}'
@@ -238,6 +244,36 @@
                         }}
                     }}
                 }}
+                stage('Prepare Devkit') {{
+                    {docker_agent}
+                    when {{
+                        expression {{ env.VERIFICATION_RESULT != "2" }}
+                    }}
+                    steps {{
+                        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'openjdk-artifactory', usernameVariable: 'ART_USER', passwordVariable: 'ART_PASSWORD']]) {{
+                            script {{
+                                if (params.DEVKIT.isEmpty()) {{
+                                    echo "No Devkit specified."
+                                }} else {{
+                                    String[] gav = params.DEVKIT.split(":");
+                                    if (gav.length == 3) {{
+                                        echo "Extracting devkit from GAV coordingates: \"${{params.DEVKIT}}\""."
+                                        sh 'SapMachine-Infrastructure/lib/deploy-devkit.sh ${{gav[0]}} ${{gav[1]}} ${{gav[2]}}'
+                                        env.DEVKIT_PATH = sh (
+                                            script: 'cd ${{gav[1]}}-${{gav[2]}} && pwd',
+                                            returnStdout: true
+                                        ).trim()
+                                    }} else {{
+                                        echo "Devkit not in GAV notation, assuming path."
+                                        env.DEVKIT_PATH = params.DEVKIT;
+                                    }}
+                                    echo "Devkit Path: ${{env.DEVKIT_PATH}}"
+                                }}
+                                error("Thats it then.")
+                            }}
+                        }}
+                    }}
+                }}
                 stage("Checkout Repository") {{
                     when {{
                         expression {{ env.VERIFICATION_RESULT != "2" }}
@@ -252,21 +288,6 @@
                         expression {{ env.VERIFICATION_RESULT != "2" }}
                     }}
                     steps {{
-                        withCredentials([
-                            [$class: 'UsernamePasswordMultiBinding', credentialsId: 'openjdk-artifactory', usernameVariable: 'ART_USER', passwordVariable: 'ART_PASSWORD']
-                            ]) {{
-                              script {{
-                                  // on mac intel, download a devkit when building >= 17
-                                  if (new Integer(params.JDK_MAJOR) >= 17 && JOB_NAME ==~ /((\S*)(macos_x86)(\S*))/) {{
-                                      sh 'SapMachine-Infrastructure/lib/deploy-devkit.sh devkit-macos-xcode-13.1-osx12.0'
-                                      env.DEVKIT_PATH = sh (
-                                          script: 'cd devkit-macos-xcode-13.1-osx12.0 && pwd',
-                                          returnStdout: true
-                                      ).trim()
-                                      echo "Devkit Path: ${{env.DEVKIT_PATH}}"
-                                  }}
-                            }}
-                        }}
                         script {{
                             sh "python3 SapMachine-Infrastructure/lib/download_boot_jdk.py -m ${{params.JDK_MAJOR}} -d `pwd`"
                             checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/tags/release-1.8.1']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'gtest']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/google/googletest.git']]]
@@ -550,7 +571,7 @@
 
 - job-template:
     name: build-service-{build_type}-{major}
-    description: 'This project is generated. Do not modify manually.'
+    description: 'Start {build_type} build for SapMachine {major} on all platorms.'
     project-type: pipeline
     concurrent: true
     properties:
@@ -575,10 +596,6 @@
             name: BUILD_NUMBER
             default: ''
             description: 'Sets the version build number explicitely.'
-        - string:
-            name: EXTRA_CONFIGURE_OPTIONS
-            default: ''
-            description: 'Configure options passed directly to configure script.'
         - string:
             name: JDK_MAJOR
             default: '{major}'
@@ -646,7 +663,6 @@
                                         string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
                                         string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
                                         string(name: 'BUILD_NUMBER', value: params.BUILD_NUMBER),
-                                        string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
                                         string(name: 'JDK_MAJOR', value: params.JDK_MAJOR),
                                         string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                         string(name: 'jdk_test_groups', value: params.jdk_test_groups),
@@ -691,7 +707,6 @@
                                         string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
                                         string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
                                         string(name: 'BUILD_NUMBER', value: params.BUILD_NUMBER),
-                                        string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
                                         string(name: 'JDK_MAJOR', value: params.JDK_MAJOR),
                                         string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                         string(name: 'jdk_test_groups', value: params.jdk_test_groups),
@@ -736,7 +751,6 @@
                                         string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
                                         string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
                                         string(name: 'BUILD_NUMBER', value: params.BUILD_NUMBER),
-                                        string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
                                         string(name: 'JDK_MAJOR', value: params.JDK_MAJOR),
                                         string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                         string(name: 'jdk_test_groups', value: params.jdk_test_groups),
@@ -781,7 +795,6 @@
                                         string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
                                         string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
                                         string(name: 'BUILD_NUMBER', value: params.BUILD_NUMBER),
-                                        string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
                                         string(name: 'JDK_MAJOR', value: params.JDK_MAJOR),
                                         string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                         string(name: 'jdk_test_groups', value: params.jdk_test_groups),
@@ -837,7 +850,6 @@
                                         string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
                                         string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
                                         string(name: 'BUILD_NUMBER', value: params.BUILD_NUMBER),
-                                        string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
                                         string(name: 'JDK_MAJOR', value: params.JDK_MAJOR),
                                         string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                         string(name: 'jdk_test_groups', value: params.jdk_test_groups),
@@ -882,7 +894,6 @@
                                         string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
                                         string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
                                         string(name: 'BUILD_NUMBER', value: params.BUILD_NUMBER),
-                                        string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
                                         string(name: 'JDK_MAJOR', value: params.JDK_MAJOR),
                                         string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                         string(name: 'jdk_test_groups', value: params.jdk_test_groups),

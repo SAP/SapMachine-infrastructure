@@ -81,10 +81,6 @@
             name: ASYNCPROF_ARCHIVE_NAME_PREFIX
             default: 'asyncprofiler{major}-{platform}'
             description: 'The prefix of the bundle archive.'
-        - string:
-            name: EXTRA_CONFIGURE_OPTIONS
-            default: ''
-            description: 'Configure options passed directly to configure script.'
         - bool:
             name: RELEASE
             default: '{release_default}'

@@ -45,12 +45,13 @@ if [ -z $BOOT_JDK ]; then
   exit 1
 fi
 
+# use a devkit, if set
+if [ ! -z $DEVKIT_PATH ]; then
+  _DEVKIT_OPTION="--with-devkit=$DEVKIT_PATH"
+fi
+
 if [[ $UNAME == Darwin ]]; then
   _CONFIGURE_OS_OPTIONS="--with-macosx-bundle-name-base=SapMachine --with-macosx-bundle-id-base=com.sap.openjdk"
-  # use a devkit, if set
-  if [ ! -z $DEVKIT_PATH ]; then
-    _CONFIGURE_OS_OPTIONS+=" --with-devkit=$DEVKIT_PATH"
-  fi
 fi
 if [[ $UNAME == CYGWIN* ]]; then
   _CONFIGURE_OS_OPTIONS="--with-jdk-rc-name=SapMachine --with-external-symbols-in-bundles=public"
@@ -77,9 +78,9 @@ eval _CONFIGURE_OPTS=($(python3 ../SapMachine-Infrastructure/lib/get_configure_o
 bash ./configure \
 --with-boot-jdk=$BOOT_JDK \
 "${_CONFIGURE_OPTS[@]}" \
+$_DEVKIT_OPTION \
 $_CONFIGURE_OS_OPTIONS \
 --with-freetype=bundled \
-$_CONFIGURE_SYSROOT \
 $EXTRA_CONFIGURE_OPTIONS
 
 # Try to build with legacy-bundles in one step.
