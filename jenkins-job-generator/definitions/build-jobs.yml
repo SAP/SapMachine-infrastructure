@@ -223,7 +223,7 @@
                             }}
                             env.VERIFICATION_RESULT = "1"
                         }}
-                        cleanWs deleteDirs: true, disableDeferredWipeout: true
+                        cleanWs
                         checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
                         script {{
                             if (JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/) {{
@@ -257,8 +257,8 @@
                                 }} else {{
                                     String[] gav = params.DEVKIT.split(":");
                                     if (gav.length == 3) {{
-                                        echo "Extracting devkit from GAV coordingates: \"${{params.DEVKIT}}\"."
-                                        sh 'SapMachine-Infrastructure/lib/deploy-devkit.sh ${{gav[0]}} ${{gav[1]}} ${{gav[2]}}'
+                                        echo "Extracting devkit from GAV coordinates: \"${{params.DEVKIT}}\"."
+                                        sh("SapMachine-Infrastructure/lib/deploy-devkit.sh ${{gav[0]}} ${{gav[1]}} ${{gav[2]}}")
                                         env.DEVKIT_PATH = sh (
                                             script: 'cd ${{gav[1]}}-${{gav[2]}} && pwd',
                                             returnStdout: true
@@ -556,7 +556,7 @@
                             setGitHubPullRequestStatus context: "validate-pr-{major}-{platform}", state: 'SUCCESS'
                         }}
                     }}
-                    cleanWs deleteDirs: true, disableDeferredWipeout: true
+                    cleanWs
                 }}
                 unsuccessful {{
                     script {{
