@@ -16,7 +16,7 @@
                     }
                     env.VERIFICATION_RESULT = "1"
                 }
-                cleanWs deleteDirs: true, disableDeferredWipeout: true
+                cleanWs()
                 checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
                 script {
                     if (JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/) {
@@ -37,6 +37,36 @@
                 }
             }
         }
+        stage('Prepare Devkit') {
+            
+            when {
+                expression { env.VERIFICATION_RESULT != "2" }
+            }
+            steps {
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'openjdk-artifactory', usernameVariable: 'ART_USER', passwordVariable: 'ART_PASSWORD']]) {
+                    script {
+                        if (params.DEVKIT.isEmpty()) {
+                            echo "No Devkit specified."
+                        } else {
+                            String[] gav = params.DEVKIT.split(":");
+                            if (gav.length == 3) {
+                                echo "Extracting devkit from GAV coordinates: \"${params.DEVKIT}\"."
+                                sh("SapMachine-Infrastructure/lib/deploy-devkit.sh ${gav[0]} ${gav[1]} ${gav[2]}")
+                                env.DEVKIT_PATH = sh (
+                                    script: 'cd ${gav[1]}-${gav[2]} &amp;&amp; pwd',
+                                    returnStdout: true
+                                ).trim()
+                            } else {
+                                echo "Devkit not in GAV notation, assuming path."
+                                env.DEVKIT_PATH = params.DEVKIT;
+                            }
+                            echo "Devkit Path: ${env.DEVKIT_PATH}"
+                        }
+                        error("Thats it then.")
+                    }
+                }
+            }
+        }
         stage("Checkout Repository") {
             when {
                 expression { env.VERIFICATION_RESULT != "2" }
@@ -51,21 +81,6 @@
                 expression { env.VERIFICATION_RESULT != "2" }
             }
             steps {
-                withCredentials([
-                    [$class: 'UsernamePasswordMultiBinding', credentialsId: 'openjdk-artifactory', usernameVariable: 'ART_USER', passwordVariable: 'ART_PASSWORD']
-                    ]) {
-                      script {
-                          // on mac intel, download a devkit when building &gt;= 17
-                          if (new Integer(params.JDK_MAJOR) &gt;= 17 &amp;&amp; JOB_NAME ==~ /((\S*)(macos_x86)(\S*))/) {
-                              sh 'SapMachine-Infrastructure/lib/deploy-devkit.sh devkit-macos-xcode-13.1-osx12.0'
-                              env.DEVKIT_PATH = sh (
-                                  script: 'cd devkit-macos-xcode-13.1-osx12.0 &amp;&amp; pwd',
-                                  returnStdout: true
-                              ).trim()
-                              echo "Devkit Path: ${env.DEVKIT_PATH}"
-                          }
-                    }
-                }
                 script {
                     sh "python3 SapMachine-Infrastructure/lib/download_boot_jdk.py -m ${params.JDK_MAJOR} -d `pwd`"
                     checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/tags/release-1.8.1']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'gtest']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/google/googletest.git']]]
@@ -334,7 +349,7 @@
                     setGitHubPullRequestStatus context: "validate-pr-11-linux_aarch64", state: 'SUCCESS'
                 }
             }
-            cleanWs deleteDirs: true, disableDeferredWipeout: true
+            cleanWs()
         }
         unsuccessful {
             script {
@@ -350,7 +365,7 @@
     <sandbox>false</sandbox>
   </definition>
   <actions />
-  <description>This project is generated. Do not modify manually.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+  <description>snapshot build for SapMachine 11 on linux_aarch64.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
   <properties>
     <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty />
@@ -402,15 +417,15 @@
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>_CONFIGURE_SYSROOT</name>
-          <description>Sysroot configuration passed to configure script.</description>
-          <defaultValue>--disable-warnings-as-errors --with-devkit=/opt/devkits/aarch64-linux-gnu-to-aarch64-linux-gnu-fedora-21-gcc-9.2.0</defaultValue>
+          <name>DEVKIT</name>
+          <description>Devkit, could be either a path that locally exists or the GAV coordinates to a tar.gz archive to be downloaded and extracted.</description>
+          <defaultValue>/opt/devkits/aarch64-linux-gnu-to-aarch64-linux-gnu-fedora-21-gcc-9.2.0</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>EXTRA_CONFIGURE_OPTIONS</name>
-          <description>Configure options passed directly to configure script.</description>
-          <defaultValue />
+          <description>Extra configure options passed directly to configure script.</description>
+          <defaultValue>--disable-warnings-as-errors</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>

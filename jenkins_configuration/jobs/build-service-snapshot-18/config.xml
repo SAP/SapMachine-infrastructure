@@ -19,7 +19,6 @@
                                 string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
                                 string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
                                 string(name: 'BUILD_NUMBER', value: params.BUILD_NUMBER),
-                                string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
                                 string(name: 'JDK_MAJOR', value: params.JDK_MAJOR),
                                 string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                 string(name: 'jdk_test_groups', value: params.jdk_test_groups),
@@ -64,7 +63,6 @@
                                 string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
                                 string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
                                 string(name: 'BUILD_NUMBER', value: params.BUILD_NUMBER),
-                                string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
                                 string(name: 'JDK_MAJOR', value: params.JDK_MAJOR),
                                 string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                 string(name: 'jdk_test_groups', value: params.jdk_test_groups),
@@ -109,7 +107,6 @@
                                 string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
                                 string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
                                 string(name: 'BUILD_NUMBER', value: params.BUILD_NUMBER),
-                                string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
                                 string(name: 'JDK_MAJOR', value: params.JDK_MAJOR),
                                 string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                 string(name: 'jdk_test_groups', value: params.jdk_test_groups),
@@ -154,7 +151,6 @@
                                 string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
                                 string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
                                 string(name: 'BUILD_NUMBER', value: params.BUILD_NUMBER),
-                                string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
                                 string(name: 'JDK_MAJOR', value: params.JDK_MAJOR),
                                 string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                 string(name: 'jdk_test_groups', value: params.jdk_test_groups),
@@ -210,7 +206,6 @@
                                 string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
                                 string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
                                 string(name: 'BUILD_NUMBER', value: params.BUILD_NUMBER),
-                                string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
                                 string(name: 'JDK_MAJOR', value: params.JDK_MAJOR),
                                 string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                 string(name: 'jdk_test_groups', value: params.jdk_test_groups),
@@ -255,7 +250,6 @@
                                 string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
                                 string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
                                 string(name: 'BUILD_NUMBER', value: params.BUILD_NUMBER),
-                                string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
                                 string(name: 'JDK_MAJOR', value: params.JDK_MAJOR),
                                 string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                 string(name: 'jdk_test_groups', value: params.jdk_test_groups),
@@ -296,7 +290,7 @@
     <sandbox>false</sandbox>
   </definition>
   <actions />
-  <description>This project is generated. Do not modify manually.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+  <description>Start snapshot build for SapMachine 18 on all platorms.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
   <properties>
     <jenkins.model.BuildDiscarderProperty>
@@ -330,12 +324,6 @@
         <hudson.model.StringParameterDefinition>
           <name>BUILD_NUMBER</name>
           <description>Sets the version build number explicitely.</description>
-          <defaultValue />
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>EXTRA_CONFIGURE_OPTIONS</name>
-          <description>Configure options passed directly to configure script.</description>
           <defaultValue />
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
