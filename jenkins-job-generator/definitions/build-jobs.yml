@@ -48,7 +48,7 @@
             docker_agent: ''
             devkit_default: 'io.sapmachine.build.devkit.macos:devkit-xcode:13.1'
         - linux_aarch64:
-            extra_configure_options_default: '--disable-warnings-as-errors'
+            extra_configure_options_default: ''
             docker_agent: ''
             devkit_default: '/opt/devkits/aarch64-linux-gnu-to-aarch64-linux-gnu-fedora-21-gcc-9.2.0'
         - windows_x86_64:
