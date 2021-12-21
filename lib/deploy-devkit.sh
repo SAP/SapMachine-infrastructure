@@ -16,7 +16,14 @@ fi
 rm ../${DEVKIT_ARCHIVE}
 if [ ! -f ../${DEVKIT_ARCHIVE} ]; then
   echo ${DEVKIT_ARCHIVE} does not exist, downloading...
-  curl -L -s -u ${ART_USER}:${ART_PASSWORD} ${NEXUS_PATH}/${DEVKIT_GROUP}/${DEVKIT_ARTEFACT}/${DEVKIT_VERSION}/${DEVKIT_ARCHIVE} --output ../${DEVKIT_ARCHIVE}
+  curl -L -s -o -u ${ART_USER}:${ART_PASSWORD} ${NEXUS_PATH}/${DEVKIT_GROUP}/${DEVKIT_ARTEFACT}/${DEVKIT_VERSION}/${DEVKIT_ARCHIVE} --output ../${DEVKIT_ARCHIVE}
+  CURL_RC=$?
+  if [[ $CURL_RC -eq 0 ]]; then
+    echo curl returned $CURL_RC.
+  else
+    echo error: curl returned $CURL_RC.
+    return -1
+  fi
 fi
 ls -la ..
 
