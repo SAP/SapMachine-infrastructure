@@ -12,7 +12,7 @@
                 label "docker"
             }
             stages {
-                stage("Checkout Infrastructure") {
+                stage("Checkout Infrastructure Repository") {
                     steps {
                         checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
                     }
@@ -52,7 +52,7 @@
                 label "docker"
             }
             stages {
-                stage("Checkout Infrastructure") {
+                stage("Checkout Infrastructure Repository") {
                     steps {
                         checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
                     }
