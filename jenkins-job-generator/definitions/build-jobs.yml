@@ -265,28 +265,24 @@
                     {docker_agent}
                     when {{
                         beforeAgent true
-                        expression {{ env.VERIFICATION_RESULT != "2" }}
+                        expression {{ env.VERIFICATION_RESULT != "2" && !params.DEVKIT.isEmpty() }}
                     }}
                     steps {{
                         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'openjdk-artifactory', usernameVariable: 'ART_USER', passwordVariable: 'ART_PASSWORD']]) {{
                             script {{
-                                if (params.DEVKIT.isEmpty()) {{
-                                    echo "No Devkit specified."
+                                String[] gav = params.DEVKIT.split(":");
+                                if (gav.length == 3) {{
+                                    echo "Extracting devkit from GAV coordinates: \"${{params.DEVKIT}}\"."
+                                    sh("SapMachine-Infrastructure/lib/deploy-devkit.sh ${{gav[0]}} ${{gav[1]}} ${{gav[2]}}")
+                                    env.DEVKIT_PATH = sh (
+                                        script: "cd ${{gav[1]}}-${{gav[2]}} && pwd",
+                                        returnStdout: true
+                                    ).trim()
                                 }} else {{
-                                    String[] gav = params.DEVKIT.split(":");
-                                    if (gav.length == 3) {{
-                                        echo "Extracting devkit from GAV coordinates: \"${{params.DEVKIT}}\"."
-                                        sh("SapMachine-Infrastructure/lib/deploy-devkit.sh ${{gav[0]}} ${{gav[1]}} ${{gav[2]}}")
-                                        env.DEVKIT_PATH = sh (
-                                            script: "cd ${{gav[1]}}-${{gav[2]}} && pwd",
-                                            returnStdout: true
-                                        ).trim()
-                                    }} else {{
-                                        echo "Devkit not in GAV notation, assuming path."
-                                        env.DEVKIT_PATH = params.DEVKIT;
-                                    }}
-                                    echo "Devkit Path: ${{env.DEVKIT_PATH}}"
+                                    echo "Devkit not in GAV notation, assuming path."
+                                    env.DEVKIT_PATH = params.DEVKIT;
                                 }}
+                                echo "Devkit Path: ${{env.DEVKIT_PATH}}"
                             }}
                         }}
                     }}

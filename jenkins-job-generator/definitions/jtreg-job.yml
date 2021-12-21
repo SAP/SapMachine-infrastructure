@@ -72,7 +72,7 @@
                     }
                     post {
                         success {
-                            archive 'jtreg/build/images/jtreg.zip'
+                            archiveArtifacts allowEmptyArchive: true, artifacts: 'jtreg/build/images/jtreg.zip'
                         }
                     }
                 }
