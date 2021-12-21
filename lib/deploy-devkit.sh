@@ -13,7 +13,7 @@ if [ -d ${DEVKIT_BASENAME} ]; then
   exit 0
 fi
 
-rm ../${DEVKIT_ARCHIVE}
+rm ../${DEVKIT_ARCHIVE} | true
 if [ ! -f ../${DEVKIT_ARCHIVE} ]; then
   echo ${DEVKIT_ARCHIVE} does not exist, downloading...
   HTTPRC=`curl -L -s -I -u ${ART_USER}:${ART_PASSWORD} ${NEXUS_PATH}/${DEVKIT_GROUP}/${DEVKIT_ARTEFACT}/${DEVKIT_VERSION}/${DEVKIT_ARCHIVE} | head -n 1 | cut -d$' ' -f2`
