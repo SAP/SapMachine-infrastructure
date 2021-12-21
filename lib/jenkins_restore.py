@@ -17,7 +17,11 @@ def main(argv=None):
     parser.add_argument('-s', '--srcdir', help='the source directory to copy from', metavar='DIR', required=True)
     parser.add_argument('-t', '--targetdir', help='the target directory to copy to', metavar='DIR', required=True)
     parser.add_argument('--install-plugins', help='install the Jenkins plugins', action='store_true', default=False)
+    parser.add_argument('--plugins-only', help='install only the Jenkins plugins (implies --install-plugins)', action='store_true', default=False)
     args = parser.parse_args()
+
+    if args.plugins_only:
+        args.install_plugins = True
 
     source = os.path.realpath(args.srcdir)
     target = os.path.realpath(args.targetdir)
@@ -25,7 +29,8 @@ def main(argv=None):
     if not os.path.exists(target):
         os.mkdir(target)
 
-    utils.copytree(join(source, 'jenkins_configuration'), target)
+    if not args.plugins_only:
+        utils.copytree(join(source, 'jenkins_configuration'), target)
 
     if args.install_plugins:
         with open(join(source, 'jenkins_configuration', 'plugin_list.json'), 'r') as plugin_list_json:
