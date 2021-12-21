@@ -16,7 +16,7 @@ fi
 rm ../${DEVKIT_ARCHIVE}
 if [ ! -f ../${DEVKIT_ARCHIVE} ]; then
   echo ${DEVKIT_ARCHIVE} does not exist, downloading...
-  HTTPRC = `curl -L -s -I -u ${ART_USER}:${ART_PASSWORD} ${NEXUS_PATH}/${DEVKIT_GROUP}/${DEVKIT_ARTEFACT}/${DEVKIT_VERSION}/${DEVKIT_ARCHIVE} | head -n 1 | cut -d$' ' -f2`
+  HTTPRC=`curl -L -s -I -u ${ART_USER}:${ART_PASSWORD} ${NEXUS_PATH}/${DEVKIT_GROUP}/${DEVKIT_ARTEFACT}/${DEVKIT_VERSION}/${DEVKIT_ARCHIVE} | head -n 1 | cut -d$' ' -f2`
   if [[ $HTTPRC -eq 200 ]]; then
     echo File seems to be downloadable, request returned: $HTTPRC.
   else
