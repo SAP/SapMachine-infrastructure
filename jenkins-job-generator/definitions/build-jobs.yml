@@ -244,7 +244,7 @@
                                         echo "Extracting devkit from GAV coordinates: \"${{params.DEVKIT}}\"."
                                         sh("SapMachine-Infrastructure/lib/deploy-devkit.sh ${{gav[0]}} ${{gav[1]}} ${{gav[2]}}")
                                         env.DEVKIT_PATH = sh (
-                                            script: 'cd ${{gav[1]}}-${{gav[2]}} && pwd',
+                                            script: "cd ${{gav[1]}}-${{gav[2]}} && pwd",
                                             returnStdout: true
                                         ).trim()
                                     }} else {{
