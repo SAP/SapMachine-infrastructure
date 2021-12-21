@@ -16,14 +16,14 @@ fi
 rm ../${DEVKIT_ARCHIVE}
 if [ ! -f ../${DEVKIT_ARCHIVE} ]; then
   echo ${DEVKIT_ARCHIVE} does not exist, downloading...
-  curl -L -s -o -u ${ART_USER}:${ART_PASSWORD} ${NEXUS_PATH}/${DEVKIT_GROUP}/${DEVKIT_ARTEFACT}/${DEVKIT_VERSION}/${DEVKIT_ARCHIVE} --output ../${DEVKIT_ARCHIVE}
-  CURL_RC=$?
-  if [[ $CURL_RC -eq 0 ]]; then
-    echo curl returned $CURL_RC.
+  HTTPRC = `curl -L -s -I -u ${ART_USER}:${ART_PASSWORD} ${NEXUS_PATH}/${DEVKIT_GROUP}/${DEVKIT_ARTEFACT}/${DEVKIT_VERSION}/${DEVKIT_ARCHIVE} | head -n 1 | cut -d$' ' -f2`
+  if [[ $HTTPRC -eq 200 ]]; then
+    echo File seems to be downloadable, request returned: $HTTPRC.
   else
-    echo error: curl returned $CURL_RC.
+    echo Error: File not downloadable, request returned: $HTTPRC.
     return -1
   fi
+  curl -L -s -o ../${DEVKIT_ARCHIVE} -u ${ART_USER}:${ART_PASSWORD} ${NEXUS_PATH}/${DEVKIT_GROUP}/${DEVKIT_ARTEFACT}/${DEVKIT_VERSION}/${DEVKIT_ARCHIVE}
 fi
 ls -la ..
 
