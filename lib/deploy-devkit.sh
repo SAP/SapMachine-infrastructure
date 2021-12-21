@@ -10,11 +10,10 @@ DEVKIT_BASENAME=${DEVKIT_ARTEFACT}-${DEVKIT_VERSION}
 DEVKIT_ARCHIVE=${DEVKIT_BASENAME}.tar.gz
 
 if [ -d ${DEVKIT_BASENAME} ]; then
-  echo ${DEVKIT_BASENAME} already exists
+  echo Directory ${DEVKIT_BASENAME} already exists.
   exit 0
 fi
 
-rm ../${DEVKIT_ARCHIVE} | true
 if [ ! -f ../${DEVKIT_ARCHIVE} ]; then
   echo ${DEVKIT_ARCHIVE} does not exist, downloading...
   HTTPRC=`curl -L -s -I -u ${ART_USER}:${ART_PASSWORD} ${NEXUS_PATH}/${DEVKIT_GROUP_SLASH}/${DEVKIT_ARTEFACT}/${DEVKIT_VERSION}/${DEVKIT_ARCHIVE} | head -n 1 | cut -d$' ' -f2`
@@ -26,11 +25,10 @@ if [ ! -f ../${DEVKIT_ARCHIVE} ]; then
   fi
   curl -L -s -o ../${DEVKIT_ARCHIVE} -u ${ART_USER}:${ART_PASSWORD} ${NEXUS_PATH}/${DEVKIT_GROUP_SLASH}/${DEVKIT_ARTEFACT}/${DEVKIT_VERSION}/${DEVKIT_ARCHIVE}
 fi
-ls -la ..
 
-echo extracting devkit ${DEVKIT_BASENAME}...
+echo Extracting ${DEVKIT_ARCHIVE} to ${DEVKIT_BASENAME}...
 mkdir ${DEVKIT_BASENAME}
 pushd ${DEVKIT_BASENAME}
 tar xzf ../../${DEVKIT_ARCHIVE}
 popd
-echo extracted devkit.
+echo Extracted devkit.
