@@ -87,7 +87,7 @@
                         }
                     }
                     steps {
-                        withCredentials([]
+                        withCredentials([
                             usernamePassword(credentialsId: SapMachine-github, usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD'),
                             usernamePassword(credentialsId: sapmachine-jenkins, usernameVariable: 'JENKINS_CREDENTIALS_USR', passwordVariable: 'JENKINS_CREDENTIALS_PSW')
                         ]) {
