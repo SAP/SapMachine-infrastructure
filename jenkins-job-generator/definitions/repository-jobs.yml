@@ -87,10 +87,10 @@
                         }
                     }
                     steps {
-                        withCredentials(
+                        withCredentials([]
                             usernamePassword(credentialsId: SapMachine-github, usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD'),
                             usernamePassword(credentialsId: sapmachine-jenkins, usernameVariable: 'JENKINS_CREDENTIALS_USR', passwordVariable: 'JENKINS_CREDENTIALS_PSW')
-                        ) {
+                        ]) {
                             sh '''
                             python3 SapMachine-Infrastructure/lib/merge_jdk_tags.py
                             python3 SapMachine-Infrastructure/lib/create_sapmachine_tags.py
