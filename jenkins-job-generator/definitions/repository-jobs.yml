@@ -30,13 +30,13 @@
                     steps {
                         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
                             sh '''
-                            openjdk_repositories=$(python3 SapMachine-Infrastructure/lib/list_openjdk_repositories.py)
-                            for i in ${openjdk_repositories}
-                            do
-                                :
-                                SapMachine-Infrastructure/lib/update_repo.sh $i
-                            done
-                        '''
+                                openjdk_repositories=$(python3 SapMachine-Infrastructure/lib/list_openjdk_repositories.py)
+                                for i in ${openjdk_repositories}
+                                do
+                                    :
+                                    SapMachine-Infrastructure/lib/update_repo.sh $i
+                                done
+                            '''
                         }
                     }
                 }
@@ -88,12 +88,12 @@
                     }
                     steps {
                         withCredentials([
-                            usernamePassword(credentialsId: SapMachine-github, usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD'),
-                            usernamePassword(credentialsId: sapmachine-jenkins, usernameVariable: 'JENKINS_CREDENTIALS_USR', passwordVariable: 'JENKINS_CREDENTIALS_PSW')
+                            [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD'],
+                            [$class: 'UsernamePasswordMultiBinding', credentialsId: 'sapmachine-jenkins', usernameVariable: 'JENKINS_CREDENTIALS_USR', passwordVariable: 'JENKINS_CREDENTIALS_PSW']
                         ]) {
                             sh '''
-                            python3 SapMachine-Infrastructure/lib/merge_jdk_tags.py
-                            python3 SapMachine-Infrastructure/lib/create_sapmachine_tags.py
+                                python3 SapMachine-Infrastructure/lib/merge_jdk_tags.py
+                                python3 SapMachine-Infrastructure/lib/create_sapmachine_tags.py
                             '''
                         }
                     }
