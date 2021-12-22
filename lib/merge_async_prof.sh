@@ -12,7 +12,7 @@ git config --global user.email 'sapmachine@sap.com'
 
 git checkout master
 git remote remove origin
-git remote add origin https://${GITHUB_API_ACCESS_TOKEN}@github.com/SAP/async-profiler.git
+git remote add origin https://${GIT_PASSWORD}@github.com/SAP/async-profiler.git
 git pull origin master
 git remote add upstream https://github.com/jvm-profiling-tools/async-profiler.git || true
 git fetch upstream

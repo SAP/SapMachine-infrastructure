@@ -100,9 +100,6 @@ def push_to_git(files):
     utils.remove_if_exists(local_repo)
 
 def main(argv=None):
-    token = utils.get_github_api_accesstoken()
-    org = 'SAP'
-    repository = 'SapMachine'
     asset_pattern = re.compile(utils.sapmachine_asset_pattern())
     major_dict = {}
     release_dict = {}

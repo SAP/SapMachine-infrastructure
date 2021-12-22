@@ -286,9 +286,9 @@ def get_active_sapmachine_branches():
 
 def git_clone(repo, branch, target):
     git_user = os.environ['GIT_USER']
-    github_api_access_token = os.environ['GITHUB_API_ACCESS_TOKEN']
+    git_password = os.environ['GIT_PASSWORD']
     remove_if_exists(target)
-    run_cmd(['git', 'clone', '-b', branch, str.format('https://{0}:{1}@{2}', git_user, github_api_access_token, repo), target])
+    run_cmd(['git', 'clone', '-b', branch, str.format('https://{0}:{1}@{2}', git_user, git_password, repo), target])
 
 def git_commit(dir, message, to_add):
     env = os.environ.copy()
@@ -332,7 +332,7 @@ def git_push_tag(dir, tag_name):
         print('git push tag failed')
 
 def get_github_api_accesstoken():
-    key = 'GITHUB_API_ACCESS_TOKEN'
+    key = 'GIT_PASSWORD'
     if key in os.environ:
         return os.environ[key]
     return None

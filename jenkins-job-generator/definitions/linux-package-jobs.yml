@@ -28,9 +28,6 @@
                     }
                 }
                 stage('Build') {
-                    environment {
-                      GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
-                    }
                     steps {
                         sh 'rm -f *.deb'
                         sh "python3 SapMachine-Infrastructure/lib/make_deb.py --tag=${params.GIT_TAG_NAME} --templates-directory=SapMachine-Infrastructure/debian-templates"
@@ -128,9 +125,6 @@
                             label "linux_x86_64"
                         }
                     }
-                    environment {
-                      GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
-                    }
                     steps {
                         sh 'rm -f *.rpm'
                         sh "/usr/bin/python3 SapMachine-Infrastructure/lib/make_rpm.py --tag=${params.GIT_TAG_NAME}"
@@ -152,13 +146,8 @@
                             label "linux_x86_64"
                         }
                     }
-                    environment {
-                      GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
-                    }
                     steps {
-                        withCredentials([
-                            [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
-                            ]) {
+                        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
                             sh "SapMachine-Infrastructure/lib/publish_rpm.sh"
                         }
                     }

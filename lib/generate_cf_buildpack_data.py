@@ -18,7 +18,6 @@ def write_index_yaml(assets, target):
             index_yaml.write(str.format('{0}: {1}\n', version, assets[version]))
 
 def main(argv=None):
-    token = utils.get_github_api_accesstoken()
     asset_pattern = re.compile(utils.sapmachine_asset_pattern())
     asset_map_jre = {}
     asset_map_jdk = {}

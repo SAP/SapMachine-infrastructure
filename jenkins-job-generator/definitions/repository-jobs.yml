@@ -86,17 +86,16 @@
                             label "repository"
                         }
                     }
-                    environment {
-                        JENKINS_CREDENTIALS = credentials('sapmachine-jenkins')
-                        GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
-                        GIT_USER = "SapMachine"
-                        GIT_PASSWORD = credentials('SapMachine-Github-Token')
-                    }
-                    steps {
-                        sh '''
-                        python3 SapMachine-Infrastructure/lib/merge_jdk_tags.py
-                        python3 SapMachine-Infrastructure/lib/create_sapmachine_tags.py
-                        '''
+                    withCredentials(
+                        usernamePassword(credentialsId: SapMachine-github, usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD'),
+                        usernamePassword(credentialsId: sapmachine-jenkins, usernameVariable: 'JENKINS_CREDENTIALS_USR', passwordVariable: 'JENKINS_CREDENTIALS_PSW')
+                    ) {
+                        steps {
+                            sh '''
+                            python3 SapMachine-Infrastructure/lib/merge_jdk_tags.py
+                            python3 SapMachine-Infrastructure/lib/create_sapmachine_tags.py
+                            '''
+                        }
                     }
                 }
             }
@@ -134,9 +133,6 @@
                     }
                 }
                 stage('Merge') {
-                    environment {
-                        GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
-                    }
                     agent {
                         dockerfile {
                             dir "SapMachine-Infrastructure/dockerfiles/infrastructure"
@@ -145,9 +141,7 @@
                         }
                     }
                     steps {
-                        withCredentials([
-                            [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
-                            ]) {
+                        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
                             script {
                                 env.ASYNC_PROF_BUILD_REQUIRED = sh(
                                         script: "SapMachine-Infrastructure/lib/merge_async_prof.sh",
@@ -158,9 +152,6 @@
                     }
                 }
                 stage('Check Release') {
-                    environment {
-                        GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
-                    }
                     agent {
                         dockerfile {
                             dir "SapMachine-Infrastructure/dockerfiles/infrastructure"
@@ -169,12 +160,10 @@
                         }
                     }
                     steps {
-                        withCredentials([
-                            [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
-                            ]) {
+                        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
                             script {
                                 env.ASYNC_PROF_RELEASE_TAG = sh(
-                                        script: "python3 SapMachine-Infrastructure/lib/async_chack_release.py",
+                                        script: "python3 SapMachine-Infrastructure/lib/async_check_release.py",
                                         returnStdout: true
                                 )
                             }

@@ -65,13 +65,8 @@
                             label "docker"
                         }
                     }
-                    environment {
-                        GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
-                    }
                     steps {
-                        withCredentials([
-                                [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
-                                ]) {
+                        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
                             sh "cd SapMachine-Infrastructure && python3 lib/generate_dockerfiles.py"
                         }
                     }
