@@ -17,7 +17,16 @@
                     env.VERIFICATION_RESULT = "1"
                 }
                 cleanWs()
+            }
+        }
+        stage("Checkout Infrastructure Repository") {
+            steps {
                 checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+            }
+        }
+        stage("Verify PR") {
+            
+            steps {
                 script {
                     if (JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/) {
                         def platform = "windows_x86_64"
@@ -37,37 +46,7 @@
                 }
             }
         }
-        stage('Prepare Devkit') {
-            
-            when {
-                expression { env.VERIFICATION_RESULT != "2" }
-            }
-            steps {
-                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'openjdk-artifactory', usernameVariable: 'ART_USER', passwordVariable: 'ART_PASSWORD']]) {
-                    script {
-                        if (params.DEVKIT.isEmpty()) {
-                            echo "No Devkit specified."
-                        } else {
-                            String[] gav = params.DEVKIT.split(":");
-                            if (gav.length == 3) {
-                                echo "Extracting devkit from GAV coordinates: \"${params.DEVKIT}\"."
-                                sh("SapMachine-Infrastructure/lib/deploy-devkit.sh ${gav[0]} ${gav[1]} ${gav[2]}")
-                                env.DEVKIT_PATH = sh (
-                                    script: 'cd ${gav[1]}-${gav[2]} &amp;&amp; pwd',
-                                    returnStdout: true
-                                ).trim()
-                            } else {
-                                echo "Devkit not in GAV notation, assuming path."
-                                env.DEVKIT_PATH = params.DEVKIT;
-                            }
-                            echo "Devkit Path: ${env.DEVKIT_PATH}"
-                        }
-                        error("Thats it then.")
-                    }
-                }
-            }
-        }
-        stage("Checkout Repository") {
+        stage("Checkout SapMachine Repository") {
             when {
                 expression { env.VERIFICATION_RESULT != "2" }
             }
@@ -75,9 +54,36 @@
                 checkout changelog: true, poll: false, scm: [$class: 'GitSCM', branches: [[name: "*/${params.SAPMACHINE_GIT_BRANCH}"]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: "${params.SAPMACHINE_GIT_REPOSITORY}"]]]
             }
         }
+        stage('Prepare Devkit') {
+            
+            when {
+                beforeAgent true
+                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; !params.DEVKIT.isEmpty() }
+            }
+            steps {
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'openjdk-artifactory', usernameVariable: 'ART_USER', passwordVariable: 'ART_PASSWORD']]) {
+                    script {
+                        String[] gav = params.DEVKIT.split(":");
+                        if (gav.length == 3) {
+                            echo "Extracting devkit from GAV coordinates: \"${params.DEVKIT}\"."
+                            sh("SapMachine-Infrastructure/lib/deploy-devkit.sh ${gav[0]} ${gav[1]} ${gav[2]}")
+                            env.DEVKIT_PATH = sh (
+                                script: "cd ${gav[1]}-${gav[2]} &amp;&amp; pwd",
+                                returnStdout: true
+                            ).trim()
+                        } else {
+                            echo "Devkit not in GAV notation, assuming path."
+                            env.DEVKIT_PATH = params.DEVKIT;
+                        }
+                        echo "Devkit Path: ${env.DEVKIT_PATH}"
+                    }
+                }
+            }
+        }
         stage('Download Prerequisites') {
             
             when {
+                beforeAgent true
                 expression { env.VERIFICATION_RESULT != "2" }
             }
             steps {
