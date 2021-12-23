@@ -1,9 +1,6 @@
 <flow-definition plugin="workflow-job">
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps">
     <script>pipeline {
-    environment {
-        GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
-    }
     agent {
         label "macos_x86_64"
     }
@@ -80,13 +77,8 @@
             when {
                 expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.RELEASE == true &amp;&amp; JOB_NAME ==~ /((\S*)(release)(\S*))/ }
             }
-            environment {
-                GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
-            }
             steps {
-                withCredentials([
-                    [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
-                    ]) {
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
                     sh '''
                     SapMachine-Infrastructure/lib/publish_async_prof.sh
                     '''

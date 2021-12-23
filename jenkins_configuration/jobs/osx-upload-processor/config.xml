@@ -16,13 +16,8 @@
             }
         }
         stage('Deploy') {
-            environment {
-              GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
-            }
             steps {
-                withCredentials([
-                    [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
-                    ]) {
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
                     sh "SapMachine-Infrastructure/lib/publish_osx.sh"
                 }
             }

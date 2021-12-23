@@ -41,7 +41,7 @@
                 checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
             }
         }
-        stage('Build') {
+        stage('Update Repository') {
             agent {
                 dockerfile {
                     dir "SapMachine-Infrastructure/dockerfiles/infrastructure"
@@ -52,13 +52,13 @@
             steps {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
                     sh '''
-                    openjdk_repositories=$(python3 SapMachine-Infrastructure/lib/list_openjdk_repositories.py)
-                    for i in ${openjdk_repositories}
-                    do
-                        :
-                        SapMachine-Infrastructure/lib/update_repo.sh $i
-                    done
-                '''
+                        openjdk_repositories=$(python3 SapMachine-Infrastructure/lib/list_openjdk_repositories.py)
+                        for i in ${openjdk_repositories}
+                        do
+                            :
+                            SapMachine-Infrastructure/lib/update_repo.sh $i
+                        done
+                    '''
                 }
             }
         }

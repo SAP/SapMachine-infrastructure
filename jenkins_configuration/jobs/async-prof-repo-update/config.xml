@@ -47,9 +47,6 @@
             }
         }
         stage('Merge') {
-            environment {
-                GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
-            }
             agent {
                 dockerfile {
                     dir "SapMachine-Infrastructure/dockerfiles/infrastructure"
@@ -58,9 +55,7 @@
                 }
             }
             steps {
-                withCredentials([
-                    [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
-                    ]) {
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
                     script {
                         env.ASYNC_PROF_BUILD_REQUIRED = sh(
                                 script: "SapMachine-Infrastructure/lib/merge_async_prof.sh",
@@ -71,9 +66,6 @@
             }
         }
         stage('Check Release') {
-            environment {
-                GITHUB_API_ACCESS_TOKEN = credentials('SapMachine-Github-Token')
-            }
             agent {
                 dockerfile {
                     dir "SapMachine-Infrastructure/dockerfiles/infrastructure"
@@ -82,12 +74,10 @@
                 }
             }
             steps {
-                withCredentials([
-                    [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
-                    ]) {
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
                     script {
                         env.ASYNC_PROF_RELEASE_TAG = sh(
-                                script: "python3 SapMachine-Infrastructure/lib/async_chack_release.py",
+                                script: "python3 SapMachine-Infrastructure/lib/async_check_release.py",
                                 returnStdout: true
                         )
                     }
