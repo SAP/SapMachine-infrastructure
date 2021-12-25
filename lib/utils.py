@@ -25,7 +25,7 @@ from shutil import move
 def run_cmd(cmdline, throw=True, cwd=None, env=None, std=False, shell=False):
     import subprocess
 
-    print(str.format('calling {0}', cmdline))
+    print(str.format('Calling {0}', cmdline))
     if std:
         subproc = subprocess.Popen(cmdline, cwd=cwd, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=shell)
         out, err = subproc.communicate()
@@ -33,7 +33,7 @@ def run_cmd(cmdline, throw=True, cwd=None, env=None, std=False, shell=False):
         subproc = subprocess.Popen(cmdline, cwd=cwd, env=env, shell=shell)
     retcode = subproc.wait()
     if throw and retcode != 0:
-        raise Exception(str.format('command failed with exit code {0}: {1}', retcode, cmdline))
+        raise Exception(str.format('Command failed with exit code {0}: {1}', retcode, cmdline))
     if std:
         try:
             out = out.decode('utf-8')
