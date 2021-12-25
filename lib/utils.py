@@ -279,8 +279,11 @@ def get_active_sapmachine_branches():
             sapmachine_branches.append([branch['name'], major])
             sapmachine_latest = max(sapmachine_latest, major)
 
-    # also add "sapmachine" branch with up to date major version
-    sapmachine_branches.append(["sapmachine", sapmachine_latest + 1])
+    # sort in descending order, this helps performance in some places
+    sapmachine_branches.sort(reverse=True)
+
+    # also add "sapmachine" branch with latest major version
+    sapmachine_branches.insert(0, ["sapmachine", sapmachine_latest + 1])
 
     return sapmachine_branches
 
