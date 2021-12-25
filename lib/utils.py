@@ -30,6 +30,7 @@ def run_cmd(cmdline, throw=True, cwd=None, env=None, std=False, shell=False):
         subproc = subprocess.Popen(cmdline, cwd=cwd, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=shell)
         out, err = subproc.communicate()
     else:
+        sys.stdout.flush()
         subproc = subprocess.Popen(cmdline, cwd=cwd, env=env, shell=shell)
     retcode = subproc.wait()
     if throw and retcode != 0:
@@ -338,10 +339,7 @@ def git_push_tag(dir, tag_name):
 def get_github_api_accesstoken():
     key = 'GIT_PASSWORD'
     if key in os.environ:
-        print(str.format('Got token of length {0}', len(os.environ[key])))
         return os.environ[key]
-    else:
-        print('got no token')
     return None
 
 def github_api_request(api=None, url=None, owner='SAP', repository='SapMachine', data=None, method='GET', per_page=None, content_type=None, url_parameter=[]):
