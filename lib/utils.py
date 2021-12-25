@@ -275,7 +275,6 @@ def get_active_sapmachine_branches():
             # ignore inactive ones
             if major < 11 or (major > 11 and major < 17):
                 continue
-            print(str.format('found sapmachine branch "{0}" with major "{1}"', branch['name'], major))
             sapmachine_branches.append([branch['name'], major])
             sapmachine_latest = max(sapmachine_latest, major)
 
@@ -284,6 +283,8 @@ def get_active_sapmachine_branches():
 
     # also add "sapmachine" branch with latest major version
     sapmachine_branches.insert(0, ["sapmachine", sapmachine_latest + 1])
+
+    print('Active SapMachine branches: %s' % ', '.join(map(str, sapmachine_branches)))
 
     return sapmachine_branches
 
