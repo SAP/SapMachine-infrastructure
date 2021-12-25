@@ -6,15 +6,8 @@ if  [[ -z "$GIT_USER" ]] | [[ -z "$GIT_PASSWORD" ]]; then
   exit 1
 fi
 
-if [[ $1 == "-m" ]]; then
-  HG=" hg"
-  REPO=$2
-  REPO_URL="http://hg.openjdk.java.net/"
-else
-  HG=""
-  REPO=$1
-  REPO_URL="https://github.com/"
-fi
+REPO=$1
+REPO_URL="https://github.com/"
 
 SAPMACHINE_GIT_REPOSITORY="https://${GIT_USER}:${GIT_PASSWORD}@github.com/SAP/SapMachine.git"
 
@@ -28,18 +21,14 @@ cd $WORKSPACE
 #fi
 
 if [ ! -d $REPO_PATH ]; then
-  git $HG clone "$REPO_URL$REPO" $REPO_PATH
+  git clone "$REPO_URL$REPO" $REPO_PATH
   cd $REPO_PATH
   git checkout -b "$REPO"
 else
   cd $REPO_PATH
   git checkout "$REPO"
-  if [[ -z $HG ]]; then
-    git fetch origin
-    git rebase origin/master
-  else
-    git $HG pull
-  fi
+  git fetch origin
+  git rebase origin/master
 fi
 
 git push --follow-tags $SAPMACHINE_GIT_REPOSITORY "$REPO"
