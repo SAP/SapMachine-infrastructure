@@ -16,6 +16,8 @@ from versions import JDKTag
 # Some global variables
 merge_commit_pattern = re.compile('Merge pull request #\d+ from SAP/pr-jdk-')
 pull_requests = None
+sapMachinePushURL= str.format('https://{0}:{1}@github.com/SAP/SapMachine-infrastructure.git',
+    os.environ['GIT_USER'], os.environ['GIT_PASSWORD'])
 
 def run_jenkins_jobs(major, tag):
     print(str.format('Starting jenkins jobs for {0}: {1}...', major, tag))
@@ -73,13 +75,13 @@ def create_sapmachine_tag(jdk_tag, commit_id):
     sapmachine_tag_str = jdk_tag.as_sapmachine_tag_string()
     print(str.format('Tag {0} as {1}', commit_id, sapmachine_tag_str))
     utils.run_cmd(str.format('git tag -a -m "Tag {0} as {1}" {1} {0}', commit_id, sapmachine_tag_str).split(' '))
-    utils.run_cmd(str.format('git push origin {0}', sapmachine_tag_str).split(' '))
+    utils.run_cmd(str.format('git push {0} {1}', sapMachinePushURL, sapmachine_tag_str).split(' '))
 
 def create_openjdk_pr(tag, branch):
     print(str.format('Creating pull request "pr-{0}" with base branch "{1}"', tag.as_string(), branch))
     utils.run_cmd(str.format('git checkout {0}', tag.as_string()).split(' '))
     utils.run_cmd(str.format('git checkout -b pr-{0}', tag.as_string()).split(' '))
-    utils.run_cmd(str.format('git push origin pr-{0}', tag.as_string()).split(' '))
+    utils.run_cmd(str.format('git push {0} pr-{1}', sapMachinePushURL, tag.as_string()).split(' '))
 
     pull_request = str.format('{{ "title": "Merge to tag {0}", "body": "please pull", "head": "pr-{1}", "base": "{2}" }}',
         tag.as_string(), tag.as_string(), branch)
