@@ -19,28 +19,11 @@ if [[ -z $SAPMACHINE_GIT_REPOSITORY ]]; then
 fi
 
 if [ -z $GIT_TAG_NAME ]; then
-    if [ ! -d SapMachine ]; then
-        git clone -b $SAPMACHINE_GIT_BRANCH $SAPMACHINE_GIT_REPOSITORY SapMachine
-    fi
-
-    pushd SapMachine
-    set +e
-    SNAPSHOT_TAG=$(git tag -l --contains | grep snapshot)
-    set -e
-    if [ ! -z $SNAPSHOT_TAG ]; then
-        echo "Snapshot already published"
-        exit 0
-    fi
-    GIT_TAG_NAME="${SAPMACHINE_ARCHIVE_NAME_PREFIX}_snapshot-${TIMESTAMP}"
-    git tag $GIT_TAG_NAME
-    git push --tags
-    popd
-    GIT_TAG_DESCRIPTION="${SAPMACHINE_ARCHIVE_NAME_PREFIX} Snapshot ${TIMESTAMP_LONG}"
-    python3 SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -d "$GIT_TAG_DESCRIPTION" $PRE_RELEASE_OPT || true
-else
-    GIT_TAG_NAME=$(echo $GIT_TAG_NAME | sed 's/-alpine//')
-    python3 SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME $PRE_RELEASE_OPT || true
+    echo "GIT_TAG_NAME not given"
+    exit 1
 fi
+GIT_TAG_NAME=$(echo $GIT_TAG_NAME | sed 's/-alpine//')
+python3 SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME $PRE_RELEASE_OPT || true
 
 ls -la
 

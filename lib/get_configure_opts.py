@@ -29,7 +29,6 @@ def main(argv=None):
     parser.add_argument('-m', '--major', help='the SapMachine major version, overrules any value from tag(s)', metavar='MAJOR')
     parser.add_argument('-b', '--build', help='the build number, overrules any value from tag(s)', metavar='BUILD_NR')
     parser.add_argument('-r', '--release', help='set if this is a release build', action='store_true', default=False)
-    parser.add_argument('-g', '--branch', help='the SapMachine git branch', metavar='BRANCH')
     args = parser.parse_args()
 
     configure_opts = []

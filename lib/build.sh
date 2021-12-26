@@ -69,11 +69,8 @@ fi
 if [ "$RELEASE" == true ]; then
   _RELEASE=" -r"
 fi
-if [[ ! -z $SAPMACHINE_GIT_BRANCH ]]; then
-  _GIT_BRANCH=" -g $SAPMACHINE_GIT_BRANCH"
-fi
 
-eval _CONFIGURE_OPTS=($(python3 ../SapMachine-Infrastructure/lib/get_configure_opts.py $_GIT_TAG $_JDK_MAJOR $_BUILD_NUMBER $_RELEASE $_GIT_BRANCH))
+eval _CONFIGURE_OPTS=($(python3 ../SapMachine-Infrastructure/lib/get_configure_opts.py $_GIT_TAG $_JDK_MAJOR $_BUILD_NUMBER $_RELEASE))
 
 bash ./configure \
 --with-boot-jdk=$BOOT_JDK \
