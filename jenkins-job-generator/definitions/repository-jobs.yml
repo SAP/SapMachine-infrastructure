@@ -1,4 +1,89 @@
 - job:
+    name: repository-update-and-tag
+    description: 'Update SapMachine repository from OpenJDK, tag and build SapMachine releases and create OpenJDK merge PRs.'
+    project-type: pipeline
+    concurrent: false
+    properties:
+        - build-discarder:
+            num-to-keep: 60
+    parameters:
+        - bool:
+            name: UPDATE_REPOSITORY
+            default: true
+            description: 'Update SapMachine repository from OpenJDK.'
+        - bool:
+            name: TAG_BUILD_AND_MERGE
+            default: true
+            description: 'Tag new SapMachine releases, build them and create OpenJDK merge PRs.'
+    dsl: |
+        pipeline {
+            agent {
+                label "repository"
+            }
+            stages {
+                stage("Checkout Infrastructure Repository") {
+                    steps {
+                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+                    }
+                }
+                stage('Update SapMachine Repository') {
+                    agent {
+                        dockerfile {
+                            dir "SapMachine-Infrastructure/dockerfiles/infrastructure"
+                            reuseNode true
+                            label "repository"
+                        }
+                    }
+                    when {
+                        beforeAgent true
+                        expression { params.UPDATE_REPOSITORY == true }
+                    }
+                    steps {
+                        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
+                            sh '''
+                                openjdk_repositories=$(python3 SapMachine-Infrastructure/lib/list_openjdk_repositories.py)
+                                for i in ${openjdk_repositories}
+                                do
+                                    :
+                                    SapMachine-Infrastructure/lib/update_repo.sh $i
+                                done
+                            '''
+                        }
+                    }
+                }
+                stage("Checkout SapMachine Repository") {
+                    when {
+                        expression { params.TAG_BUILD_AND_MERGE == true }
+                    }
+                    steps {
+                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: "*/sapmachine"]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine']]]
+                    }
+                }
+                stage('Tag, Build and Merge') {
+                    agent {
+                        dockerfile {
+                            dir "SapMachine-Infrastructure/dockerfiles/infrastructure"
+                            reuseNode true
+                            label "repository"
+                        }
+                    }
+                    when {
+                        beforeAgent true
+                        expression { params.TAG_BUILD_AND_MERGE == true }
+                    }
+                    steps {
+                        withCredentials([
+                            [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD'],
+                            [$class: 'UsernamePasswordMultiBinding', credentialsId: 'sapmachine-jenkins', usernameVariable: 'JENKINS_CREDENTIALS_USR', passwordVariable: 'JENKINS_CREDENTIALS_PSW']
+                        ]) {
+                            sh("cd SapMachine && python3 ../SapMachine-Infrastructure/lib/tag_build_and_merge.py")
+                        }
+                    }
+                }
+            }
+        }
+
+- job:
     name: repository-update
     description: 'Update SapMachine repository from OpenJDK.'
     project-type: pipeline
