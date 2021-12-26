@@ -336,16 +336,9 @@ def git_push_tag(dir, tag_name):
     except Exception:
         print('git push tag failed')
 
-def get_github_api_accesstoken():
-    key = 'GIT_PASSWORD'
-    if key in os.environ:
-        return os.environ[key]
-    return None
-
 def github_api_request(api=None, url=None, owner='SAP', repository='SapMachine', data=None, method='GET', per_page=None, content_type=None, url_parameter=[]):
     load_next = True
     result = None
-    token = get_github_api_accesstoken()
     link_pattern = re.compile('(<([^>]*)>; rel=\"prev\",\s*)?(<([^>]*)>; rel=\"next\",\s)?(<([^>]*)>; rel=\"last\"\s*)?')
 
     if api is None and url is None:
@@ -366,8 +359,8 @@ def github_api_request(api=None, url=None, owner='SAP', repository='SapMachine',
         request = Request(url, data=data)
         request.get_method = lambda: method
 
-        if token is not None:
-            request.add_header('Authorization', str.format('token {0}', token))
+        if 'GIT_PASSWORD' in os.environ:
+            request.add_header('Authorization', str.format('token {0}', os.environ['GIT_PASSWORD']))
 
         if content_type is not None:
             request.add_header('Content-Type', content_type)
@@ -503,7 +496,7 @@ def get_arch():
         return arch
 
 def download_asset(asset_url):
-    headers = {'Authorization': str.format('token {0}', get_github_api_accesstoken()), }
+    headers = {'Authorization': str.format('token {0}', os.environ['GIT_PASSWORD']) } if 'GIT_PASSWORD' in os.environ else None
 
     response = requests.get(asset_url, headers=headers)
 
