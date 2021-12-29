@@ -53,7 +53,7 @@
             stages {
                 stage("Checkout Infrastructure Repository") {
                     steps {
-                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
                     }
                 }
                 stage('Generate Jenkins Jobs') {
@@ -65,7 +65,7 @@
                         }
                     }
                     steps {
-                        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'sapmachine-jenkins', usernameVariable: 'JENKINS_USER', passwordVariable: 'JENKINS_PASSWORD']]) {
+                        withCredentials([usernamePassword(credentialsId: 'sapmachine-jenkins', usernameVariable: 'JENKINS_USER', passwordVariable: 'JENKINS_PASSWORD')]) {
                             sh('cd SapMachine-Infrastructure/jenkins-job-generator && jenkins-jobs --conf jenkins_jobs.ini --user ${JENKINS_USER} --password ${JENKINS_PASSWORD} update --delete-old ./definitions')
                         }
                     }
@@ -98,12 +98,12 @@
             stages {
                 stage("Checkout Infrastructure Repository") {
                     steps {
-                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
                     }
                 }
                 stage('Backup') {
                     steps {
-                        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
+                        withCredentials([usernamePassword(credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD')]) {
                             sh('python3 SapMachine-Infrastructure/lib/jenkins_backup.py -s /var/jenkins_home')
                         }
                     }
@@ -134,12 +134,12 @@
             stages {
                 stage("Checkout Infrastructure Repository") {
                     steps {
-                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
                     }
                 }
                 stage('Backup') {
                     steps {
-                        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
+                        withCredentials([usernamePassword(credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD')]) {
                             sh('python3 SapMachine-Infrastructure/lib/jenkins_restore.py -s . -t /var/lib/jenkins')
                         }
                     }
