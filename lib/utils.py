@@ -290,13 +290,20 @@ def get_active_sapmachine_branches():
     return sapmachine_branches
 
 def git_clone(repo, branch, target):
-    remove_if_exists(target)
+    git_command = ['git', 'clone']
+    if branch is not None:
+        git_command.extend(['-b', branch])
     if 'GIT_USER' in os.environ and 'GIT_PASSWORD' in os.environ:
         git_user = os.environ['GIT_USER']
         git_password = os.environ['GIT_PASSWORD']
-        run_cmd(['git', 'clone', '-b', branch, str.format('https://{0}:{1}@{2}', git_user, git_password, repo), target])
+        git_command.append(str.format('https://{0}:{1}@{2}', git_user, git_password, repo))
     else:
-        run_cmd(['git', 'clone', '-b', branch, str.format('https://{0}', repo), target])
+        git_command.append(str.format('https://{0}', repo))
+    if target is not None:
+        git_command.append(target)
+
+    remove_if_exists(target)
+    run_cmd(git_command)
 
 def git_commit(dir, message, to_add):
     env = os.environ.copy()

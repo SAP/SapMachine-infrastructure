@@ -3,15 +3,20 @@ Copyright (c) 2001-2021 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
-import os
 import sys
 import utils
+import argparse
 
 from os.path import join
 
 def main(argv=None):
-    local_repo = join(os.getcwd(), 'SapMachine')
-    utils.git_clone('github.com/SAP/SapMachine.git', 'sapmachine', local_repo)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-r', '--repo', help='the repository to check out')
+    parser.add_argument('-b', '--branch', help='the branch to check out')
+    parser.add_argument('-t', '--target', help='the target directory')
+    args = parser.parse_args()
+
+    utils.git_clone(args.repo, args.branch, args.target)
     return 0
 
 if __name__ == "__main__":
