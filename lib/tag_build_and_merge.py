@@ -74,7 +74,12 @@ def get_merge_commits(numcommits = 20):
 def create_sapmachine_tag(jdk_tag, commit_id):
     sapmachine_tag_str = jdk_tag.as_sapmachine_tag_string()
     print(str.format('Tagging {0} as {1}...', commit_id, sapmachine_tag_str))
-    utils.run_cmd(['git', 'tag', '-a', '-m', str.format('Tag {0} as {1}', commit_id, sapmachine_tag_str), sapmachine_tag_str, commit_id])
+    env = os.environ.copy()
+    env['GIT_AUTHOR_NAME'] = 'SapMachine'
+    env['GIT_AUTHOR_EMAIL'] = 'sapmachine@sap.com'
+    env['GIT_COMMITTER_NAME'] = env['GIT_AUTHOR_NAME']
+    env['GIT_COMMITTER_EMAIL'] = env['GIT_AUTHOR_EMAIL']
+    utils.run_cmd(['git', 'tag', '-a', '-m', str.format('Tag {0} as {1}', commit_id, sapmachine_tag_str), sapmachine_tag_str, commit_id], env=env)
     utils.run_cmd(str.format('git push {0} {1}', sapMachinePushURL, sapmachine_tag_str).split(' '))
 
 def create_openjdk_pr(tag, branch):
