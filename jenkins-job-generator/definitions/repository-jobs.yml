@@ -75,8 +75,8 @@
                     }
                     steps {
                         withCredentials([
-                            usernamePassword(credentialsId: SapMachine-github, usernameVariable: GIT_USER, passwordVariable: GIT_PASSWORD),
-                            usernamePassword(credentialsId: sapmachine-jenkins, usernameVariable: JENKINS_CREDENTIALS_USR, passwordVariable: JENKINS_CREDENTIALS_PSW)
+                            usernamePassword(credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD'),
+                            usernamePassword(credentialsId: 'sapmachine-jenkins', usernameVariable: 'JENKINS_CREDENTIALS_USR', passwordVariable: 'JENKINS_CREDENTIALS_PSW')
                         ]) {
                             sh("cd SapMachine && python3 ../SapMachine-Infrastructure/lib/tag_build_and_merge.py")
                         }
