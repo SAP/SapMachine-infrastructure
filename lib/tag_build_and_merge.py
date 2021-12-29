@@ -73,8 +73,8 @@ def get_merge_commits(numcommits = 20):
 
 def create_sapmachine_tag(jdk_tag, commit_id):
     sapmachine_tag_str = jdk_tag.as_sapmachine_tag_string()
-    print(str.format('Tag {0} as {1}', commit_id, sapmachine_tag_str))
-    utils.run_cmd(str.format('git tag -a -m "Tag {0} as {1}" {1} {0}', commit_id, sapmachine_tag_str).split(' '))
+    print(str.format('Tagging {0} as {1}...', commit_id, sapmachine_tag_str))
+    utils.run_cmd(['git', 'tag', '-a', '-m', str.format('"Tag {0} as {1}" {1} {0}', commit_id, sapmachine_tag_str)])
     utils.run_cmd(str.format('git push {0} {1}', sapMachinePushURL, sapmachine_tag_str).split(' '))
 
 def create_openjdk_pr(tag, branch):
