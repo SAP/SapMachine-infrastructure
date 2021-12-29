@@ -22,7 +22,12 @@ sapMachinePushURL= str.format('https://{0}:{1}@github.com/SAP/SapMachine.git',
 def run_jenkins_jobs(major, tag):
     print(str.format('Starting jenkins jobs for {0}: {1}...', major, tag))
 
-    if 'JENKINS_CREDENTIALS' not in os.environ:
+    if 'JENKINS_CREDENTIALS_USR' not in os.environ:
+        print("JENKINS_CREDENTIALS_USR environment variable not found, can not start jenkins jobs.")
+        return
+
+    if 'JENKINS_CREDENTIALS_PSW' not in os.environ:
+        print("JENKINS_CREDENTIALS_PSW environment variable not found, can not start jenkins jobs.")
         return
 
     jenkins_url = 'https://ci.sapmachine.io'
@@ -211,6 +216,9 @@ def tag_and_run_buildjob(sapmachine_branch):
             print(str.format('Merge commit {0} is already contained in further tags.', merge_commit_id))
             if not jdk_tag.is_ga():
                 check_for_untagged_ga(merge_commit_id, jdk_tag, tags_of_merge_commit.splitlines())
+            # just temporary to test things
+            if jdk_tag.get_major() == 11:
+                run_jenkins_jobs(jdk_tag.get_major(), jdk_tag.as_sapmachine_tag_string())
             # and we are done
             return
 
