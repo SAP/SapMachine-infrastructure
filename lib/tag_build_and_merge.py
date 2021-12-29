@@ -216,9 +216,6 @@ def tag_and_run_buildjob(sapmachine_branch):
             print(str.format('Merge commit {0} is already contained in further tags.', merge_commit_id))
             if not jdk_tag.is_ga():
                 check_for_untagged_ga(merge_commit_id, jdk_tag, tags_of_merge_commit.splitlines())
-            # just temporary to test things
-            if jdk_tag.get_major() == 18 or jdk_tag.get_major() == 19:
-                run_jenkins_jobs(jdk_tag.get_major(), jdk_tag.as_sapmachine_tag_string())
             # and we are done
             return
 
