@@ -225,7 +225,7 @@
                 }}
                 stage("Checkout Infrastructure Repository") {{
                     steps {{
-                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure'], [$class: 'CloneOption', timeout: 60]], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
                     }}
                 }}
                 stage("Verify PR") {{
@@ -255,7 +255,7 @@
                         expression {{ env.VERIFICATION_RESULT != "2" }}
                     }}
                     steps {{
-                        checkout changelog: true, poll: false, scm: [$class: 'GitSCM', branches: [[name: "*/${{params.SAPMACHINE_GIT_BRANCH}}"]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: "${{params.SAPMACHINE_GIT_REPOSITORY}}"]]]
+                        checkout changelog: true, poll: false, scm: [$class: 'GitSCM', branches: [[name: "*/${{params.SAPMACHINE_GIT_BRANCH}}"]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine'], [$class: 'CloneOption', timeout: 60]], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: "${{params.SAPMACHINE_GIT_REPOSITORY}}"]]]
                     }}
                 }}
                 stage('Prepare Devkit') {{
