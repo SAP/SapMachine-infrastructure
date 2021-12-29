@@ -264,8 +264,9 @@ def main(argv=None):
     for sapmachine_branch in sapmachine_branches:
         print(str.format('Processing branch "{0}" ({1})...', sapmachine_branch[0], sapmachine_branch[1]))
 
-        # checkout branch
+        # checkout and update branch
         utils.run_cmd(str.format('git checkout {0}', sapmachine_branch[0]).split(' '))
+        utils.run_cmd(['git', 'pull'])
 
         # find the latest OpenJDK merge commit and make sure it's correctly sapmachine-tagged
         tag_and_run_buildjob(sapmachine_branch)
