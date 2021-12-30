@@ -18,7 +18,7 @@
         }
         stage("Checkout Infrastructure Repository") {
             steps {
-                checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+                checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
             }
         }
         stage("Verify PR") {
@@ -55,7 +55,7 @@
                 expression { env.VERIFICATION_RESULT != "2" }
             }
             steps {
-                checkout changelog: true, poll: false, scm: [$class: 'GitSCM', branches: [[name: "*/${params.SAPMACHINE_GIT_BRANCH}"]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: "${params.SAPMACHINE_GIT_REPOSITORY}"]]]
+                checkout changelog: true, poll: false, scm: [$class: 'GitSCM', branches: [[name: "*/${params.SAPMACHINE_GIT_BRANCH}"]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine'], [$class: 'CheckoutOption', timeout: 60]], userRemoteConfigs: [[url: "${params.SAPMACHINE_GIT_REPOSITORY}"]]]
             }
         }
         stage('Prepare Devkit') {
@@ -72,7 +72,7 @@
                 expression { env.VERIFICATION_RESULT != "2" &amp;&amp; !params.DEVKIT.isEmpty() }
             }
             steps {
-                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'openjdk-artifactory', usernameVariable: 'ART_USER', passwordVariable: 'ART_PASSWORD']]) {
+                withCredentials([usernamePassword(credentialsId: 'openjdk-artifactory', usernameVariable: 'ART_USER', passwordVariable: 'ART_PASSWORD')]) {
                     script {
                         String[] gav = params.DEVKIT.split(":");
                         if (gav.length == 3) {
@@ -107,7 +107,7 @@
             steps {
                 script {
                     sh "python3 SapMachine-Infrastructure/lib/download_boot_jdk.py -m ${params.JDK_MAJOR} -d `pwd`"
-                    checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/tags/release-1.8.1']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'gtest']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/google/googletest.git']]]
+                    checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/tags/release-1.8.1']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'gtest']], userRemoteConfigs: [[url: 'https://github.com/google/googletest.git']]]
                 }
             }
         }
