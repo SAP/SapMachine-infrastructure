@@ -110,6 +110,7 @@ zip -rq "${WORKSPACE}/test.zip" src/jdk.jpackage/*/classes/jdk/jpackage/internal
 zip -rq "${WORKSPACE}/test.zip" src/java.base/share/classes/javax/security/auth/ || true
 zip -rq "${WORKSPACE}/test.zip" src/java.base/share/classes/sun/security/provider/ || true
 zip -rq "${WORKSPACE}/test.zip" src/java.base/share/classes/sun/security/tools/ || true
+zip -rq "${WORKSPACE}/test.zip" src/java.compiler/share/classes/javax/tools/snippet-files/ || true
 zip -rq "${WORKSPACE}/test.zip" src/jdk.crypto.cryptoki/share/classes/sun/security/pkcs11/SunPKCS11.java || true
 zip -rq "${WORKSPACE}/test.zip" src/jdk.jartool/share/classes/sun/security/tools/jarsigner/Main.java || true
 zip -rq "${WORKSPACE}/test.zip" src/jdk.javadoc/share/man || true
