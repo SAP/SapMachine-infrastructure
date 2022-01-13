@@ -17,7 +17,9 @@ libffi-dev \
 openssl \
 libssl-dev \
 gcc \
-g++
+g++ \
+maven \
+gpg
 
 RUN useradd -ms /bin/bash jenkins -u 1002
 
