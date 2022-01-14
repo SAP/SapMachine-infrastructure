@@ -76,24 +76,26 @@ def main(argv=None):
     if build_number is not None:
         configure_opts.append(VERSION_BUILD_ARG.format(build_number))
 
-    # determine and set version date
-    release_date = None
-    if tag is not None:
-        releases = utils.get_github_releases()
-        if releases is not None:
-            for release in releases:
-                if release['tag_name'] == tag.as_string():
-                    release_date = release['created_at'].split('T')[0]
-                    print(str.format("Set date to release date of {0}: {1}", tag.as_string(), release_date), file=sys.stderr)
-                    break
+    # determine and set version date in non-release builds
+    # in release builds we rely on DEFAULT_VERSION_DATE in version-numbers.conf
+    if not args.release:
+        release_date = None
+        if tag is not None:
+            releases = utils.get_github_releases()
+            if releases is not None:
+                for release in releases:
+                    if release['tag_name'] == tag.as_string():
+                        release_date = release['created_at'].split('T')[0]
+                        print(str.format("Set date to release date of {0}: {1}", tag.as_string(), release_date), file=sys.stderr)
+                        break
+            if release_date is None:
+                print(str.format("Tag {0} does not seem to exist or data could not be loaded from GitHub", tag.as_string()), file=sys.stderr)
+
         if release_date is None:
-            print(str.format("Tag {0} does not seem to exist or data could not be loaded from GitHub", tag.as_string()), file=sys.stderr)
+            release_date = date.today().strftime("%Y-%m-%d")
+            print(str.format("Set date to today: {0}", release_date), file=sys.stderr)
 
-    if release_date is None:
-        release_date = date.today().strftime("%Y-%m-%d")
-        print(str.format("Set date to today: {0}", release_date), file=sys.stderr)
-
-    configure_opts.append(VERSION_DATE_ARG.format(release_date))
+        configure_opts.append(VERSION_DATE_ARG.format(release_date))
 
     # set version pre
     version_pre = ''
