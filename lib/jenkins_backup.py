@@ -7,7 +7,6 @@ import os
 import sys
 import shutil
 import argparse
-import tempfile
 import utils
 import xml.etree.ElementTree
 
@@ -28,7 +27,11 @@ def push_sapmachine_infra(local_repo):
     utils.run_cmd(['git', 'commit', '-m', 'Updated Jenkins configuration.'], cwd=local_repo, env=env)
     utils.run_cmd(['git', 'fetch'], cwd=local_repo, env=env)
     utils.run_cmd(['git', 'rebase'], cwd=local_repo, env=env)
-    utils.run_cmd(['git', 'push'], cwd=local_repo, env=env)
+
+    _, giturl, _ = utils.run_cmd(['git', 'config', '--get', 'remote.origin.url'], std=True)
+    urlparts = giturl.split("//")
+    pushURL = str.format('https://{0}:{1}@{2}', os.environ['GIT_USER'], os.environ['GIT_PASSWORD'], urlparts[1])
+    utils.run_cmd(['git', 'push', pushURL], cwd=local_repo, env=env)
 
 def remove_sensitive_data(config_xml, elements):
     config = xml.etree.ElementTree.parse(config_xml)
