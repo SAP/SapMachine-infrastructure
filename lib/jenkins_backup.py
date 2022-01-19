@@ -15,6 +15,9 @@ from os.path import join
 
 jenkins_configuration = 'jenkins_configuration'
 
+def prepare_sapmachine_infra(local_repo):
+    utils.run_cmd(['git', 'checkout', 'master'], cwd=local_repo)
+
 def push_sapmachine_infra(local_repo):
     env = os.environ.copy()
     env['GIT_AUTHOR_NAME'] = 'SapMachine'
@@ -110,6 +113,7 @@ def main(argv=None):
 
     target_dir = join(args.backuprepodir, jenkins_configuration)
 
+    prepare_sapmachine_infra(args.backuprepodir)
     utils.remove_if_exists(target_dir)
     os.mkdir(target_dir)
     copy_configurations(args.srcdir, target_dir)
