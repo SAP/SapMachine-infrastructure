@@ -1,5 +1,5 @@
 '''
-Copyright (c) 2001-2018 by SAP SE, Walldorf, Germany.
+Copyright (c) 2019-2022 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
@@ -13,7 +13,7 @@ import argparse
 from os.path import join
 from string import Template
 
-template_manifest = '''Maintainers: Rene Schuenemann <sapmachine@sap.com> (@reshnm), Christian Halstrick <sapmachine@sap.com> (@chalstrick)
+template_manifest = '''Maintainers: Christoph Langer <sapmachine@sap.com> (@reshnm), Christian Halstrick <sapmachine@sap.com> (@chalstrick)
 GitRepo: https://github.com/SAP/SapMachine-infrastructure.git
 
 ${images}
