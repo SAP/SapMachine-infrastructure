@@ -1,21 +1,22 @@
 '''
-Copyright (c) 2001-2017 by SAP SE, Walldorf, Germany.
+Copyright (c) 2018-2022 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
 import os
 import sys
-import shutil
 import argparse
 import json
 import utils
 
 from os.path import join
 
+jenkins_configuration = 'jenkins_configuration'
+
 def main(argv=None):
     parser = argparse.ArgumentParser()
-    parser.add_argument('-s', '--srcdir', help='the source directory to copy from', metavar='DIR', required=True)
-    parser.add_argument('-t', '--targetdir', help='the target directory to copy to', metavar='DIR', required=True)
+    parser.add_argument('-t', '--targetdir', help='the target directory (Jenkins home directory)', metavar='DIR', required=True)
+    parser.add_argument('-b', '--backuprepodir', help='the backup repository', metavar='DIR', default='SapMachine-Infrastructure')
     parser.add_argument('--install-plugins', help='install the Jenkins plugins', action='store_true', default=False)
     parser.add_argument('--plugins-only', help='install only the Jenkins plugins (implies --install-plugins)', action='store_true', default=False)
     args = parser.parse_args()
@@ -23,17 +24,17 @@ def main(argv=None):
     if args.plugins_only:
         args.install_plugins = True
 
-    source = os.path.realpath(args.srcdir)
+    source = os.path.realpath(args.backuprepodir)
     target = os.path.realpath(args.targetdir)
 
     if not os.path.exists(target):
         os.mkdir(target)
 
     if not args.plugins_only:
-        utils.copytree(join(source, 'jenkins_configuration'), target)
+        utils.copytree(join(source, jenkins_configuration), target)
 
     if args.install_plugins:
-        with open(join(source, 'jenkins_configuration', 'plugin_list.json'), 'r') as plugin_list_json:
+        with open(join(source, jenkins_configuration, 'plugin_list.json'), 'r') as plugin_list_json:
             plugin_list = json.loads(plugin_list_json.read())
 
             install_cmd = ['/usr/local/bin/install-plugins.sh']

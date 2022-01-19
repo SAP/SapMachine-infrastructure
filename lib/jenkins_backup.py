@@ -1,5 +1,5 @@
 '''
-Copyright (c) 2001-2021 by SAP SE, Walldorf, Germany.
+Copyright (c) 2018-2022 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
@@ -13,14 +13,7 @@ import xml.etree.ElementTree
 
 from os.path import join
 
-git_user = os.environ['GIT_USER']
-git_password = os.environ['GIT_PASSWORD']
-repo = str.format('https://{0}:{1}@github.com/SAP/SapMachine-infrastructure.git', git_user, git_password)
-branch = 'master'
 jenkins_configuration = 'jenkins_configuration'
-
-def clone_sapmachine_infra(target):
-    utils.run_cmd(['git', 'clone', '-b', branch, repo, target])
 
 def push_sapmachine_infra(local_repo):
     env = os.environ.copy()
@@ -91,7 +84,6 @@ def create_plugin_list(src_dir, target_dir):
                 with open(join(root, file), 'r') as manifest:
                     _lines = manifest.read().splitlines()
                     lines = []
-                    current_line = None
 
                     for line in _lines:
                         if line.startswith(' '):
@@ -111,27 +103,20 @@ def create_plugin_list(src_dir, target_dir):
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
-    parser.add_argument('-s', '--srcdir', help='the Jenkins home directory', metavar='DIR', required=True)
+    parser.add_argument('-s', '--srcdir', help='the source directory (Jenkins home directory)', metavar='DIR', required=True)
+    parser.add_argument('-b', '--backuprepodir', help='the backup repository', metavar='DIR', default='SapMachine-Infrastructure')
     parser.add_argument('-d', '--dryrun', help='do not push the Jenkins configuration', action='store_true', default=False)
-    parser.add_argument('--keepworkdir', help='do not delete the temporary work directory', action='store_true', default=False)
     args = parser.parse_args()
 
-    src_dir = args.srcdir
-    git_dir = tempfile.mkdtemp(suffix='sapmachine_jenkins_backup')
-    target_dir = join(git_dir, jenkins_configuration)
+    target_dir = join(args.backuprepodir, jenkins_configuration)
 
-    utils.remove_if_exists(git_dir)
-    clone_sapmachine_infra(git_dir)
     utils.remove_if_exists(target_dir)
     os.mkdir(target_dir)
-    copy_configurations(src_dir, target_dir)
-    create_plugin_list(src_dir, target_dir)
+    copy_configurations(args.srcdir, target_dir)
+    create_plugin_list(args.srcdir, target_dir)
 
     if not args.dryrun:
-        push_sapmachine_infra(git_dir)
-
-    if not args.keepworkdir:
-        utils.remove_if_exists(git_dir)
+        push_sapmachine_infra(args.backuprepodir)
 
 if __name__ == "__main__":
     sys.exit(main())
