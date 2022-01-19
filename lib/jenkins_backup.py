@@ -18,20 +18,20 @@ def prepare_sapmachine_infra(local_repo):
     utils.run_cmd(['git', 'checkout', 'master'], cwd=local_repo)
 
 def push_sapmachine_infra(local_repo):
+    _, giturl, _ = utils.run_cmd(['git', 'config', '--get', 'remote.origin.url'], cwd=local_repo, std=True)
+    credurl = str.format('https://{0}:{1}@{2}', os.environ['GIT_USER'], os.environ['GIT_PASSWORD'], giturl.rstrip().split("//")[1])
+
     env = os.environ.copy()
     env['GIT_AUTHOR_NAME'] = 'SapMachine'
     env['GIT_AUTHOR_EMAIL'] = 'sapmachine@sap.com'
     env['GIT_COMMITTER_NAME'] = env['GIT_AUTHOR_NAME']
     env['GIT_COMMITTER_EMAIL'] = env['GIT_AUTHOR_EMAIL']
+
     utils.run_cmd(['git', 'add', jenkins_configuration], cwd=local_repo)
     utils.run_cmd(['git', 'commit', '-m', 'Updated Jenkins configuration.'], cwd=local_repo, env=env)
-    utils.run_cmd(['git', 'fetch'], cwd=local_repo, env=env)
+    utils.run_cmd(['git', 'fetch', credurl], cwd=local_repo, env=env)
     utils.run_cmd(['git', 'rebase'], cwd=local_repo, env=env)
-
-    _, giturl, _ = utils.run_cmd(['git', 'config', '--get', 'remote.origin.url'], cwd=local_repo, std=True)
-    urlparts = giturl.rstrip().split("//")
-    pushURL = str.format('https://{0}:{1}@{2}', os.environ['GIT_USER'], os.environ['GIT_PASSWORD'], urlparts[1])
-    utils.run_cmd(['git', 'push', pushURL], cwd=local_repo, env=env)
+    utils.run_cmd(['git', 'push', credurl], cwd=local_repo, env=env)
 
 def remove_sensitive_data(config_xml, elements):
     config = xml.etree.ElementTree.parse(config_xml)
