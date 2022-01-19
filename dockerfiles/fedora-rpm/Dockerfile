@@ -8,3 +8,5 @@ RUN dnf install -y \
     git
 
 RUN useradd -ms /bin/bash jenkins -u 1002
+
+RUN pip3 install requests
