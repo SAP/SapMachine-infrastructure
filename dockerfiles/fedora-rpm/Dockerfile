@@ -2,7 +2,7 @@ FROM fedora:34
 
 RUN dnf install -y \
     python3 \
-    pip3 \
+    python3-pip \
     ca-certificates \
     fedora-packager \
     rpmdevtools \
