@@ -229,36 +229,13 @@
     </hudson.model.AllView>
     <listView>
       <owner class="hudson" reference="../../.." />
-      <name>Linux ppc64 Builds</name>
-      <description>Linux ppc64 Builds&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
-      <filterExecutors>false</filterExecutors>
-      <filterQueue>false</filterQueue>
-      <properties class="hudson.model.View$PropertyList" />
-      <jobNames>
-        <comparator class="hudson.util.CaseInsensitiveComparator" />
-      </jobNames>
-      <jobFilters />
-      <columns>
-        <hudson.views.StatusColumn />
-        <hudson.views.WeatherColumn />
-        <hudson.views.JobColumn />
-        <hudson.views.LastSuccessColumn />
-        <hudson.views.LastFailureColumn />
-        <hudson.views.LastDurationColumn />
-        <hudson.views.BuildButtonColumn />
-      </columns>
-      <includeRegex>build-.*-linux_ppc64$</includeRegex>
-      <recurse>false</recurse>
-    </listView>
-    <listView>
-      <owner class="hudson" reference="../../.." />
       <name>Linux ppc64le Builds</name>
       <description>Linux ppc64le Builds&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
       <filterExecutors>false</filterExecutors>
       <filterQueue>false</filterQueue>
       <properties class="hudson.model.View$PropertyList" />
       <jobNames>
-        <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator" />
+        <comparator class="hudson.util.CaseInsensitiveComparator" />
       </jobNames>
       <jobFilters />
       <columns>
