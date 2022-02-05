@@ -4,7 +4,20 @@
     <unserializable-parents />
     <java.util.Collections_-SetFromMap>
       <default>
-        <m class="concurrent-hash-map" />
+        <m class="concurrent-hash-map">
+          <entry>
+            <org.jenkinsci.plugins.resourcedisposer.AsyncResourceDisposer_-WorkItem>
+              <disposer reference="../../../../../../.." />
+              <disposable class="hudson.plugins.ws_cleanup.Wipeout$DisposableImpl" plugin="ws-cleanup@0.40">
+                <node>agent-macos-x86_64-1</node>
+                <path>/Users/jvmtests/sapmachine/jenkins/workspace/build-18-release-macos_x86_64_ws-cleanup_1644023991104</path>
+              </disposable>
+              <registered>2022-02-05 01:19:51.310 UTC</registered>
+              <disposableInfo>hudson.plugins.ws_cleanup.Wipeout$DisposableImpl:Workspace agent-macos-x86_64-1:/Users/jvmtests/sapmachine/jenkins/workspace/build-18-release-macos_x86_64_ws-cleanup_1644023991104</disposableInfo>
+            </org.jenkinsci.plugins.resourcedisposer.AsyncResourceDisposer_-WorkItem>
+            <boolean>true</boolean>
+          </entry>
+        </m>
       </default>
     </java.util.Collections_-SetFromMap>
   </backlog>
