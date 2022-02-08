@@ -1,0 +1,58 @@
+<flow-definition plugin="workflow-job@1145.v7f2433caa07f">
+  <actions>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.9.3" />
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.9.3">
+      <jobProperties />
+      <triggers />
+      <parameters />
+      <options />
+    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
+  </actions>
+  <description>This project is generated. Do not modify manually.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty>
+      <abortPrevious>false</abortPrevious>
+    </org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty>
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2648.va9433432b33c">
+    <script>pipeline {
+    agent {
+        label "repository"
+    }
+    stages {
+        stage("Checkout Infrastructure Repository") {
+            steps {
+                checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+            }
+        }
+        stage('Generate') {
+            agent {
+                  dockerfile {
+                      dir "SapMachine-Infrastructure/dockerfiles/infrastructure"
+                      reuseNode true
+                      label "repository"
+                  }
+              }
+              steps {
+                  withCredentials([file(credentialsId: 'SapMachine-secret-gpg-key', variable: 'GPGSEC')]) {
+                      sh "gpg --list-secret-keys"
+                      sh "gpg --import $GPGSEC"
+                      sh "gpg --list-secret-keys"
+                      sh "shasum $GPGSEC"
+                      sh "#mvn -f SapMachine-Infrastructure/lib/ossrh_upload.pom -Dversion=11.0.14 -DmajorVersion=11 -Dtype=jre clean deploy"
+                    }
+              }
+          }
+    }
+    post {
+        always {
+            cleanWs deleteDirs: true, disableDeferredWipeout: true
+        }
+    }
+}
+</script>
+    <sandbox>false</sandbox>
+  </definition>
+  <disabled>false</disabled>
+</flow-definition>
