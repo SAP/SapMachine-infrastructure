@@ -409,7 +409,6 @@
         <string>osx-upload-processor</string>
         <string>repository-update-and-tag</string>
         <string>update-cask</string>
-        <string>upload-ossrh</string>
       </jobNames>
       <jobFilters />
       <columns>
@@ -586,6 +585,29 @@
         <hudson.views.BuildButtonColumn />
       </columns>
       <includeRegex>build-async-profiler-.*</includeRegex>
+      <recurse>false</recurse>
+    </listView>
+    <listView>
+      <owner class="hudson" reference="../../.." />
+      <name>JMC Builds</name>
+      <description>JMC Builds&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <properties class="hudson.model.View$PropertyList" />
+      <jobNames>
+        <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator" />
+      </jobNames>
+      <jobFilters />
+      <columns>
+        <hudson.views.StatusColumn />
+        <hudson.views.WeatherColumn />
+        <hudson.views.JobColumn />
+        <hudson.views.LastSuccessColumn />
+        <hudson.views.LastFailureColumn />
+        <hudson.views.LastDurationColumn />
+        <hudson.views.BuildButtonColumn />
+      </columns>
+      <includeRegex>build-jmc-profiler-.*</includeRegex>
       <recurse>false</recurse>
     </listView>
   </views>
