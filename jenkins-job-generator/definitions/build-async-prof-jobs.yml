@@ -49,6 +49,7 @@
 
 - job-template:
     name: build-async-profiler-{major}-{build_type}-{platform}
+    defaults: 'async_global'
     description: 'This project is generated. Do not modify manually.'
     project-type: pipeline
     concurrent: '{allow_concurrent_builds}'
