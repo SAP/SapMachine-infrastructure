@@ -31,6 +31,7 @@ pandoc \
 graphviz \
 python3 \
 ant \
-patch
+patch \
+maven
 
 RUN useradd -ms /bin/bash jenkins -u 1002
