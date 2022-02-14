@@ -22,20 +22,9 @@
                         label "{platform}"
                     }}
                 }}
-        - linux_ppc64le:
-            docker_agent: |
-                agent {{
-                    dockerfile {{
-                        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04_ppc64le"
-                        reuseNode true
-                        label "{platform}"
-                    }}
-                }}
         - macos_x86_64:
             docker_agent: ''
         - macos_aarch64:
-            docker_agent: ''
-        - linux_aarch64:
             docker_agent: ''
     build_types: &build_types
         - snapshot

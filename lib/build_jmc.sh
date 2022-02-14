@@ -14,14 +14,8 @@ else
   VERSION=snapshot
 fi
 
-if [[ $JOB_NAME =~ .*linux_ppc64l.e* ]]; then PLATFORM="linux-ppc64le" ; fi
-if [[ $JOB_NAME =~ .*linux_x86_64.* ]]; then PLATFORM="linux-x64" ; fi
-if [[ $JOB_NAME =~ .*linux_aarch64.* ]]; then PLATFORM="linux-aarch64" ; fi
-if [[ $JOB_NAME =~ .*macos.* ]]; then PLATFORM="macos" ; fi
 
 cd "${WORKSPACE}/jmc"
-
-TARGET_DIR="jmc-${VERSION}-${PLATFORM}"
 
 git config user.name SAPMACHINE_GIT_USER
 git config user.email SAPMACHINE_GIT_EMAIL
@@ -46,4 +40,9 @@ rm -fr target
 
 ./build.sh --packageJmc
 
-find target/products -maxdepth 1 -not -type d
+if [[ $JOB_NAME =~ .*linux_x86_64.* ]]; then FILE="linux.gtk.x86_64.tar.gz" ; fi
+if [[ $JOB_NAME =~ .*macos_aarch64.* ]]; then FILE="macosx.cocoa.aarch64.tar.gz" ; fi
+if [[ $JOB_NAME =~ .*macos_x86_64.* ]]; then FILE="macosx.cocoa.x86_64.tar.gz" ; fi
+if [[ $JOB_NAME =~ .*win.* ]]; then FILE="win32.win32.x86_64.zip" ; fi
+
+echo "target/products/org.openjdk.jmc-$FILE" > artifact.txt
