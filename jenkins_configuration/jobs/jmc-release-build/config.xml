@@ -34,20 +34,20 @@
                 }
             }
         }
-        stage ('Trigger Snapshot Builds') {
+        stage ('Trigger Release Builds') {
             when {
-                expression { env.JMC_BUILD_REQUIRED != "1" }
+                expression { env.ASYNC_PROF_RELEASE_TAG != "No new releases" }
             }
             steps {
                 parallel (
                     linux_x86_64: {
-                        build job: 'build-jmc-official-snapshot-linux_x86_64', parameters: [string(name: 'JMC_GIT_BRANCH', value: 'sap')]
+                        build job: 'build-jmc-official-release-linux_x86_64', parameters: [string(name: 'JMC_GIT_BRANCH', value: 'sap'), string(name: 'GIT_TAG_NAME', value: params.VERSION), [$class: 'BooleanParameterValue', name: 'RELEASE', value: 'true']]
                     },
                     macos_x86_64: {
-                        build job: 'build-jmc-official-snapshot-macos_x86_64', parameters: [string(name: 'JMC_GIT_BRANCH', value: 'sap')]
+                        build job: 'build-jmc-official-release-macos_x86_64', parameters: [string(name: 'JMC_GIT_BRANCH', value: 'sap'), string(name: 'GIT_TAG_NAME', value: params.VERSION), [$class: 'BooleanParameterValue', name: 'RELEASE', value: 'true']]
                     },
                     macos_aarch64: {
-                        build job: 'build-jmc-official-snapshot-macos_aarch64', parameters: [string(name: 'JMC_GIT_BRANCH', value: 'sap')]
+                        build job: 'build-jmc-official-release-macos_aarch64', parameters: [string(name: 'JMC_GIT_BRANCH', value: 'sap'), string(name: 'GIT_TAG_NAME', value: params.VERSION), [$class: 'BooleanParameterValue', name: 'RELEASE', value: 'true']]
                     },
                     failFast: false
                 )
@@ -71,12 +71,15 @@
         <artifactNumToKeep>-1</artifactNumToKeep>
       </strategy>
     </jenkins.model.BuildDiscarderProperty>
-    <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
-      <triggers>
-        <hudson.triggers.TimerTrigger>
-          <spec>@midnight</spec>
-        </hudson.triggers.TimerTrigger>
-      </triggers>
-    </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>VERSION</name>
+          <description>Version of this release</description>
+          <defaultValue />
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
   </properties>
 </flow-definition>

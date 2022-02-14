@@ -2,7 +2,7 @@
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps">
     <script>pipeline {
     agent {
-        label "linux_ppc64le"
+        label "macos_aarch64"
     }
     stages {
         stage("Init") {
@@ -23,14 +23,7 @@
             }
         }
         stage('Download Prerequisites') {
-            agent {
-    dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04_ppc64le"
-        reuseNode true
-        label "linux_ppc64le"
-    }
-}
-
+            
             when {
                 expression { env.VERIFICATION_RESULT != "2" }
             }
@@ -43,14 +36,7 @@
             }
         }
         stage("Build and Basic Tests") {
-            agent {
-    dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04_ppc64le"
-        reuseNode true
-        label "linux_ppc64le"
-    }
-}
-
+            
             when {
                 beforeAgent true
                 expression { env.VERIFICATION_RESULT != "2" }
@@ -63,9 +49,10 @@
             }
         }
         stage("Test") {
+            
             when {
                 beforeAgent true
-                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; !(JOB_NAME ==~ /((\S*)(linux_x86_64)(\S*))/) &amp;&amp; !(JOB_NAME ==~ /((\S*)(linux_aarch64)(\S*))/) }
+                expression { env.VERIFICATION_RESULT != "2" }
             }
             environment {
                 BUILD_JDK = "${WORKSPACE}/boot_jdk"
@@ -153,7 +140,7 @@
         <hudson.model.StringParameterDefinition>
           <name>JMC_ARCHIVE_NAME_PREFIX</name>
           <description>The prefix of the bundle archive.</description>
-          <defaultValue>jmc-sap-linux_ppc64le</defaultValue>
+          <defaultValue>jmc-sap-macos_aarch64</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.BooleanParameterDefinition>

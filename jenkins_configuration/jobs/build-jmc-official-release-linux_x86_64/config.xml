@@ -25,7 +25,7 @@
         stage('Download Prerequisites') {
             agent {
     dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04_x86_64"
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04_x86_64_jmc"
         reuseNode true
         label "linux_x86_64"
     }
@@ -45,7 +45,7 @@
         stage("Build and Basic Tests") {
             agent {
     dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04_x86_64"
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04_x86_64_jmc"
         reuseNode true
         label "linux_x86_64"
     }
@@ -63,9 +63,17 @@
             }
         }
         stage("Test") {
+            agent {
+    dockerfile {
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04_x86_64_jmc"
+        reuseNode true
+        label "linux_x86_64"
+    }
+}
+
             when {
                 beforeAgent true
-                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; !(JOB_NAME ==~ /((\S*)(linux_x86_64)(\S*))/) &amp;&amp; !(JOB_NAME ==~ /((\S*)(linux_aarch64)(\S*))/) }
+                expression { env.VERIFICATION_RESULT != "2" }
             }
             environment {
                 BUILD_JDK = "${WORKSPACE}/boot_jdk"

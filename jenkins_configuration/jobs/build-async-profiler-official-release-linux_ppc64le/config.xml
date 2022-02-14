@@ -25,7 +25,7 @@
         stage('Download Prerequisites') {
             agent {
     dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04_ppc64le"
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04_ppc64le"
         reuseNode true
         label "linux_ppc64le"
     }
@@ -45,7 +45,7 @@
         stage("Build") {
             agent {
     dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04_ppc64le"
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04_ppc64le"
         reuseNode true
         label "linux_ppc64le"
     }

@@ -49,9 +49,10 @@
             }
         }
         stage("Test") {
+            
             when {
                 beforeAgent true
-                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; !(JOB_NAME ==~ /((\S*)(linux_x86_64)(\S*))/) &amp;&amp; !(JOB_NAME ==~ /((\S*)(linux_aarch64)(\S*))/) }
+                expression { env.VERIFICATION_RESULT != "2" }
             }
             environment {
                 BUILD_JDK = "${WORKSPACE}/boot_jdk"
