@@ -66,7 +66,8 @@
                     }
                     steps {
                         withCredentials([usernamePassword(credentialsId: 'sapmachine-jenkins', usernameVariable: 'JENKINS_USER', passwordVariable: 'JENKINS_PASSWORD')]) {
-                            sh('cd SapMachine-Infrastructure/jenkins-job-generator && jenkins-jobs --conf jenkins_jobs.ini --user ${JENKINS_USER} --password ${JENKINS_PASSWORD} update --delete-old ./definitions')
+                            sh('echo $(if $(test -e jenkins_jobs.ini); then echo jenkins_jobs.ini; else; echo jenkins_jobs.template.ini ;fi)')
+                            sh('cd SapMachine-Infrastructure/jenkins-job-generator && jenkins-jobs --conf $(if $(test -e jenkins_jobs.ini); then echo jenkins_jobs.ini; else; echo jenkins_jobs.template.ini ;fi) --user ${JENKINS_USER} --password ${JENKINS_PASSWORD} update --delete-old ./definitions')
                         }
                     }
                 }
