@@ -45,4 +45,4 @@ if [[ $JOB_NAME =~ .*macos_aarch64.* ]]; then FILE="macosx.cocoa.aarch64.tar.gz"
 if [[ $JOB_NAME =~ .*macos_x86_64.* ]]; then FILE="macosx.cocoa.x86_64.tar.gz" ; fi
 if [[ $JOB_NAME =~ .*win.* ]]; then FILE="win32.win32.x86_64.zip" ; fi
 
-echo "target/products/org.openjdk.jmc-$FILE" > artifact.txt
+echo "jmc/arget/products/org.openjdk.jmc-$FILE" > artifact.txt
