@@ -2,6 +2,7 @@
 set -ex
 
 UNAME=`uname`
+export PATH=$PATH:/usr/bin
 
 if [[ -z $WORKSPACE ]]; then
   WORKSPACE=$PWD

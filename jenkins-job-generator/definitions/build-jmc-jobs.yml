@@ -17,7 +17,7 @@
             docker_agent: |
                 agent {{
                     dockerfile {{
-                        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04_x86_64"
+                        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04_x86_64"
                         reuseNode true
                         label "{platform}"
                     }}
@@ -26,12 +26,14 @@
             docker_agent: |
                 agent {{
                     dockerfile {{
-                        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04_ppc64le"
+                        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04_ppc64le"
                         reuseNode true
                         label "{platform}"
                     }}
                 }}
         - macos_x86_64:
+            docker_agent: ''
+        - macos_aarch64:
             docker_agent: ''
         - linux_aarch64:
             docker_agent: ''
