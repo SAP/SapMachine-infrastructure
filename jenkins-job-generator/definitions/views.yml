@@ -1,14 +1,4 @@
 - view:
-    name: 'Async Profiler Builds'
-    description: 'Async Profiler Builds'
-    view-type: list
-    regex: 'build-async-profiler-.*'
-- view:
-    name: 'JMC Builds'
-    description: 'JMC Builds'
-    view-type: list
-    regex: 'build-jmc-.*'
-- view:
     name: 'Snapshot Builds'
     description: 'Snapshot Builds'
     view-type: list
@@ -73,11 +63,14 @@
     description: 'Infrastructure related jobs'
     view-type: list
     job-name:
+        - async-prof-repo-update
         - generate-website-data
         - jenkins-configuration-backup
         - jenkins-configuration-restore
         - jenkins-job-generator-trigger
         - jenkins-job-generator
+        - jmc-release-build
+        - jmc-repo-update
         - jtreg
         - osx-upload
         - osx-upload-processor
@@ -110,3 +103,15 @@
         - debian-package
         - recreate-debian-repository
         - rpm-package
+
+- view:
+    name: 'Async Profiler Builds'
+    description: 'Async Profiler Builds'
+    view-type: list
+    regex: 'build-async-profiler-.*'
+
+- view:
+    name: 'JMC Builds'
+    description: 'JMC Builds'
+    view-type: list
+    regex: 'build-jmc-.*'
