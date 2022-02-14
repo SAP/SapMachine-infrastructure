@@ -17,7 +17,7 @@
             docker_agent: |
                 agent {{
                     dockerfile {{
-                        dir "SapMachine-Infrastructure/dockerfiles/jmc/x86_64"
+                        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04_x86_64_jmc"
                         reuseNode true
                         label "{platform}"
                     }}
@@ -25,6 +25,8 @@
         - macos_x86_64:
             docker_agent: ''
         - macos_aarch64:
+            docker_agent: ''
+        - windows_x86_64:
             docker_agent: ''
     build_types: &build_types
         - snapshot
@@ -114,11 +116,27 @@
                         }}
                     }}
                 }}
+                stage ('Download Prerequisites Windows'){{
+                    when {{
+                         JOB_NAME ==~ /((\S*)(windows_x86_64)(\S*))/
+                    }}
+                    steps {{
+                        script {{
+                            sh 'wget https://github.com/SAP/SapMachine/releases/download/sapmachine-11.0.14.1/sapmachine-jdk-11.0.14.1_windows-x64_bin.zip'
+                            sh 'unzip sapmachine-jdk-11.0.14.1_windows-x64_bin.zip'
+                            sh 'export JAVA_HOME="`pwd`/sapmachine-jdk-11.0.14.1"'
+                            sh 'export PATH="`pwd`/sapmachine-jdk-11.0.14.1/bin:$PATH"'
+                            sh 'wget https://dlcdn.apache.org/maven/maven-3/3.8.4/binaries/apache-maven-3.8.4-bin.zip'
+                            sh 'unzip apache-maven-3.8.4-bin.zip'
+                            sh 'export PATH="`pwd`/apache-maven-3.8.4/bin:$PATH"''
+                        }}
+                    }}
+                }}
                 stage("Build and Basic Tests") {{
                     {docker_agent}
                     when {{
                         beforeAgent true
-                        expression {{ env.VERIFICATION_RESULT != "2" }}
+                        expression {{ env.VERIFICATION_RESULT != "2" && !(JOB_NAME ==~ /((\S*)(windows_x86_64)(\S*))) }}
                     }}
                     environment {{
                         BUILD_JDK = "${{WORKSPACE}}/boot_jdk"
@@ -127,11 +145,19 @@
                         sh 'SapMachine-Infrastructure/lib/build_jmc.sh'
                     }}
                 }}
+                stage("Build and Basic Tests Windows") {{
+                    when {{
+                         expression {{ JOB_NAME ==~ /((\S*)(windows_x86_64)(\S*))/ }}
+                    }}
+                    steps {{
+                        sh 'SapMachine-Infrastructure/lib/build_jmc_win.sh'
+                    }}
+                }}
                 stage("Test") {{
                     {docker_agent}
                     when {{
                         beforeAgent true
-                        expression {{ env.VERIFICATION_RESULT != "2" }}
+                        expression {{ env.VERIFICATION_RESULT != "2" && !(JOB_NAME ==~ /((\S*)(windows_x86_64)(\S*))) }}
                     }}
                     environment {{
                         BUILD_JDK = "${{WORKSPACE}}/boot_jdk"
