@@ -39,8 +39,7 @@ mercurial \
 openjdk-11-jdk \
 libgmp-dev \
 libmpfr-dev \
-libmpc-dev \
-maven
+libmpc-dev
 
 RUN useradd -ms /bin/bash jenkinsa -u 1000
 RUN useradd -ms /bin/bash jenkinsb -u 1001
