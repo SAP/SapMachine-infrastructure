@@ -17,7 +17,7 @@
             docker_agent: |
                 agent {{
                     dockerfile {{
-                        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04_x86_64_jmc"
+                        dir "SapMachine-Infrastructure/dockerfiles/jmc/x86_64"
                         reuseNode true
                         label "{platform}"
                     }}

@@ -30,15 +30,9 @@ curl \
 pandoc \
 graphviz \
 python3 \
-python3-pip \
 ant \
-patch \
-maven
+patch
 
 RUN useradd -ms /bin/bash jenkinsa -u 1000
 RUN useradd -ms /bin/bash jenkinsb -u 1001
 RUN useradd -ms /bin/bash jenkinsc -u 1002
-
-RUN pip3 install requests
-
-ADD sysroot-sles11-x86_64.tgz /opt
