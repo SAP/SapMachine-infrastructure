@@ -282,7 +282,7 @@
         - build-discarder:
             num-to-keep: 60
     parameters:
-        - bool:
+        - string:
             name: VERSION
             description: 'Version of this release'
     dsl: |
