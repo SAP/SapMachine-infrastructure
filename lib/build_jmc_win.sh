@@ -46,13 +46,13 @@ mvn -f core/pom.xml clean install
 mvn package
 mvn install
 
-mvn verify -P uitests
-mvn verify
+#mvn verify -P uitests
+#mvn verify
 
-echo "check agent"
-cd agent
-mvn verify
-cd ../core
-mvn verify
+#echo "check agent"
+#cd agent
+#mvn verify
+#cd ../core
+#mvn verify
 
 echo "jmc/target/products/org.openjdk.jmc-win32.win32.x86_64.zip" > artifact.txt

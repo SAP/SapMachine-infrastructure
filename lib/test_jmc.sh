@@ -10,7 +10,7 @@ fi
 
 cd "${WORKSPACE}/jmc"
 
-export JAVA_HOME=${BUILD_JDK}
+#export JAVA_HOME=${BUILD_JDK}
 
 ./scripts/checkformatting.sh
 ./scripts/runcoretests.sh

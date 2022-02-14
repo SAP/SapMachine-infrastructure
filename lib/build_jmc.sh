@@ -34,8 +34,6 @@ if [[ -z $NO_CHECKOUT ]]; then
   fi
 fi
 
-export JAVA_HOME=${BUILD_JDK}
-
 rm -fr target
 
 ./build.sh --packageJmc
