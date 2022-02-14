@@ -30,6 +30,7 @@ curl \
 pandoc \
 graphviz \
 python3 \
+python3-pip \
 ant \
 patch \
 maven

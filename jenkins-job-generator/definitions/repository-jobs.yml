@@ -108,7 +108,7 @@
                 }
                 stage("Checkout Repository") {
                     steps {
-                        checkout changelog: true, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'async-profiler']], userRemoteConfigs: [[url: 'https://github.com/SAP/async-profiler.git']]]
+                        checkout changelog: true, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/sap']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'async-profiler']], userRemoteConfigs: [[url: 'https://github.com/SAP/async-profiler.git']]]
                     }
                 }
                 stage('Merge') {
@@ -156,16 +156,19 @@
                     steps {
                         parallel (
                             linux_aarch64: {
-                                build job: 'build-async-profiler-official-snapshot-linux_aarch64', parameters: [string(name: 'ASYNCPROF_GIT_BRANCH', value: 'master')]
+                                build job: 'build-async-profiler-official-snapshot-linux_aarch64', parameters: [string(name: 'ASYNCPROF_GIT_BRANCH', value: 'sap')]
                             },
                             linux_ppc64le: {
-                                build job: 'build-async-profiler-official-snapshot-linux_ppc64le', parameters: [string(name: 'ASYNCPROF_GIT_BRANCH', value: 'master')]
+                                build job: 'build-async-profiler-official-snapshot-linux_ppc64le', parameters: [string(name: 'ASYNCPROF_GIT_BRANCH', value: 'sap')]
                             },
                             linux_x86_64: {
-                                build job: 'build-async-profiler-official-snapshot-linux_x86_64', parameters: [string(name: 'ASYNCPROF_GIT_BRANCH', value: 'master')]
+                                build job: 'build-async-profiler-official-snapshot-linux_x86_64', parameters: [string(name: 'ASYNCPROF_GIT_BRANCH', value: 'sap')]
                             },
                             macos_x86_64: {
-                                build job: 'build-async-profiler-official-snapshot-macos_x86_64', parameters: [string(name: 'ASYNCPROF_GIT_BRANCH', value: 'master')]
+                                build job: 'build-async-profiler-official-snapshot-macos_x86_64', parameters: [string(name: 'ASYNCPROF_GIT_BRANCH', value: 'sap')]
+                            },
+                            macos_aarch64: {
+                                build job: 'build-async-profiler-official-snapshot-macos_aarch64', parameters: [string(name: 'ASYNCPROF_GIT_BRANCH', value: 'sap')]
                             },
                             failFast: false
                         )
@@ -178,16 +181,19 @@
                     steps {
                         parallel (
                             linux_aarch64: {
-                                build job: 'build-async-profiler-official-release-linux_aarch64', parameters: [string(name: 'ASYNCPROF_GIT_BRANCH', value: 'master'), string(name: 'GIT_TAG_NAME', value: env.ASYNC_PROF_RELEASE_TAG), [$class: 'BooleanParameterValue', name: 'RELEASE', value: 'true']]
+                                build job: 'build-async-profiler-official-release-linux_aarch64', parameters: [string(name: 'ASYNCPROF_GIT_BRANCH', value: 'sap'), string(name: 'GIT_TAG_NAME', value: env.ASYNC_PROF_RELEASE_TAG), [$class: 'BooleanParameterValue', name: 'RELEASE', value: 'true']]
                             },
                             linux_ppc64le: {
-                                build job: 'build-async-profiler-official-release-linux_ppc64le', parameters: [string(name: 'ASYNCPROF_GIT_BRANCH', value: 'master'), string(name: 'GIT_TAG_NAME', value: env.ASYNC_PROF_RELEASE_TAG), [$class: 'BooleanParameterValue', name: 'RELEASE', value: 'true']]
+                                build job: 'build-async-profiler-official-release-linux_ppc64le', parameters: [string(name: 'ASYNCPROF_GIT_BRANCH', value: 'sap'), string(name: 'GIT_TAG_NAME', value: env.ASYNC_PROF_RELEASE_TAG), [$class: 'BooleanParameterValue', name: 'RELEASE', value: 'true']]
                             },
                             linux_x86_64: {
-                                build job: 'build-async-profiler-official-release-linux_x86_64', parameters: [string(name: 'ASYNCPROF_GIT_BRANCH', value: 'master'), string(name: 'GIT_TAG_NAME', value: env.ASYNC_PROF_RELEASE_TAG), [$class: 'BooleanParameterValue', name: 'RELEASE', value: 'true']]
+                                build job: 'build-async-profiler-official-release-linux_x86_64', parameters: [string(name: 'ASYNCPROF_GIT_BRANCH', value: 'sap'), string(name: 'GIT_TAG_NAME', value: env.ASYNC_PROF_RELEASE_TAG), [$class: 'BooleanParameterValue', name: 'RELEASE', value: 'true']]
                             },
                             macos_x86_64: {
-                                build job: 'build-async-profiler-official-release-macos_x86_64', parameters: [string(name: 'ASYNCPROF_GIT_BRANCH', value: 'master'), string(name: 'GIT_TAG_NAME', value: env.ASYNC_PROF_RELEASE_TAG), [$class: 'BooleanParameterValue', name: 'RELEASE', value: 'true']]
+                                build job: 'build-async-profiler-official-release-macos_x86_64', parameters: [string(name: 'ASYNCPROF_GIT_BRANCH', value: 'sap'), string(name: 'GIT_TAG_NAME', value: env.ASYNC_PROF_RELEASE_TAG), [$class: 'BooleanParameterValue', name: 'RELEASE', value: 'true']]
+                            },
+                             macos_aarch64: {
+                                build job: 'build-async-profiler-official-release-macos_aarch64', parameters: [string(name: 'ASYNCPROF_GIT_BRANCH', value: 'sap'), string(name: 'GIT_TAG_NAME', value: env.ASYNC_PROF_RELEASE_TAG), [$class: 'BooleanParameterValue', name: 'RELEASE', value: 'true']]
                             },
                             failFast: false
                         )
@@ -218,7 +224,7 @@
                 }
                 stage("Checkout Repository") {
                     steps {
-                        checkout changelog: true, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'jmc']], userRemoteConfigs: [[url: 'https://github.com/SAP/jmc.git']]]
+                        checkout changelog: true, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/sap']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'jmc']], userRemoteConfigs: [[url: 'https://github.com/SAP/jmc.git']]]
                     }
                 }
                 stage('Merge') {
@@ -247,19 +253,93 @@
                     steps {
                         parallel (
                             linux_aarch64: {
-                                build job: 'build-jmc-official-snapshot-linux_aarch64', parameters: [string(name: 'JMC_GIT_BRANCH', value: 'master')]
+                                build job: 'build-jmc-official-snapshot-linux_aarch64', parameters: [string(name: 'JMC_GIT_BRANCH', value: 'sap')]
                             },
                             linux_ppc64le: {
-                                build job: 'build-jmc-official-snapshot-linux_ppc64le', parameters: [string(name: 'JMC_GIT_BRANCH', value: 'master')]
+                                build job: 'build-jmc-official-snapshot-linux_ppc64le', parameters: [string(name: 'JMC_GIT_BRANCH', value: 'sap')]
                             },
                             linux_x86_64: {
-                                build job: 'build-jmc-official-snapshot-linux_x86_64', parameters: [string(name: 'JMC_GIT_BRANCH', value: 'master')]
+                                build job: 'build-jmc-official-snapshot-linux_x86_64', parameters: [string(name: 'JMC_GIT_BRANCH', value: 'sap')]
                             },
                             macos_x86_64: {
-                                build job: 'build-jmc-official-snapshot-macos_x86_64', parameters: [string(name: 'JMC_GIT_BRANCH', value: 'master')]
+                                build job: 'build-jmc-official-snapshot-macos_x86_64', parameters: [string(name: 'JMC_GIT_BRANCH', value: 'sap')]
                             },
                             macos_aarch64: {
-                                build job: 'build-jmc-official-snapshot-macos_aarch64', parameters: [string(name: 'JMC_GIT_BRANCH', value: 'master')]
+                                build job: 'build-jmc-official-snapshot-macos_aarch64', parameters: [string(name: 'JMC_GIT_BRANCH', value: 'sap')]
+                            },
+                            failFast: false
+                        )
+                    }
+                }
+            }
+        }
+- job:
+    name: jmc-release-build
+    description: 'Update JMC repository.'
+    project-type: pipeline
+    concurrent: false
+    properties:
+        - build-discarder:
+            num-to-keep: 60
+    parameters:
+        - bool:
+            name: VERSION
+            description: 'Version of this release'
+    dsl: |
+        pipeline {
+            agent {
+                label "repository"
+            }
+            stages {
+                stage("Checkout Infrastructure Repository") {
+                    steps {
+                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+                    }
+                }
+                stage("Checkout Repository") {
+                    steps {
+                        checkout changelog: true, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/sap']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'jmc']], userRemoteConfigs: [[url: 'https://github.com/SAP/jmc.git']]]
+                    }
+                }
+                stage('Merge') {
+                    agent {
+                        dockerfile {
+                            dir "SapMachine-Infrastructure/dockerfiles/infrastructure"
+                            reuseNode true
+                            label "repository"
+                        }
+                    }
+                    steps {
+                        withCredentials([usernamePassword(credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD')]) {
+                            script {
+                                env.JMC_BUILD_REQUIRED = sh(
+                                        script: "SapMachine-Infrastructure/lib/merge_jmc_prof.sh",
+                                        returnStatus: true
+                                )
+                            }
+                        }
+                    }
+                }
+                stage ('Trigger Release Builds') {
+                    when {
+                        expression { env.ASYNC_PROF_RELEASE_TAG != "No new releases" }
+                    }
+                    steps {
+                        parallel (
+                            linux_aarch64: {
+                                build job: 'build-jmc-official-release-linux_aarch64', parameters: [string(name: 'JMC_GIT_BRANCH', value: 'sap'), string(name: 'GIT_TAG_NAME', value: params.VERSION), [$class: 'BooleanParameterValue', name: 'RELEASE', value: 'true']]
+                            },
+                            linux_ppc64le: {
+                                build job: 'build-jmc-official-release-linux_ppc64le', parameters: [string(name: 'JMC_GIT_BRANCH', value: 'sap'), string(name: 'GIT_TAG_NAME', value: params.VERSION), [$class: 'BooleanParameterValue', name: 'RELEASE', value: 'true']]
+                            },
+                            linux_x86_64: {
+                                build job: 'build-jmc-official-release-linux_x86_64', parameters: [string(name: 'JMC_GIT_BRANCH', value: 'sap'), string(name: 'GIT_TAG_NAME', value: params.VERSION), [$class: 'BooleanParameterValue', name: 'RELEASE', value: 'true']]
+                            },
+                            macos_x86_64: {
+                                build job: 'build-jmc-official-release-macos_x86_64', parameters: [string(name: 'JMC_GIT_BRANCH', value: 'sap'), string(name: 'GIT_TAG_NAME', value: params.VERSION), [$class: 'BooleanParameterValue', name: 'RELEASE', value: 'true']]
+                            },
+                            macos_aarch64: {
+                                build job: 'build-jmc-official-release-macos_aarch64', parameters: [string(name: 'JMC_GIT_BRANCH', value: 'sap'), string(name: 'GIT_TAG_NAME', value: params.VERSION), [$class: 'BooleanParameterValue', name: 'RELEASE', value: 'true']]
                             },
                             failFast: false
                         )
