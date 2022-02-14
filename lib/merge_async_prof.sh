@@ -18,6 +18,8 @@ git remote add upstream https://github.com/jvm-profiling-tools/async-profiler.gi
 git fetch upstream
 git checkout master
 git merge --no-edit upstream/master
+git checkout sap
+git merge --no-edit master
 RESULT=`git push --follow-tags origin master 2>&1`
 echo $RESULT
 if [[ "${RESULT}" == "Everything up-to-date" ]]; then

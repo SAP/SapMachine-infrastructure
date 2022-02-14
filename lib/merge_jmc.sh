@@ -18,6 +18,8 @@ git remote add upstream https://github.com/openjdk/jmc.git || true
 git fetch upstream
 git checkout master
 git merge --no-edit upstream/master
+git checkout sap
+git rebase master
 RESULT=`git push --follow-tags origin master 2>&1`
 echo $RESULT
 if [[ "${RESULT}" == "Everything up-to-date" ]]; then
