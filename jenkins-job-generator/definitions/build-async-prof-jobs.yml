@@ -139,6 +139,7 @@
                     }}
                 }}
                 stage("Test") {{
+                    {docker_agent}
                     when {{
                         beforeAgent true
                         expression {{ env.VERIFICATION_RESULT != "2" }}
