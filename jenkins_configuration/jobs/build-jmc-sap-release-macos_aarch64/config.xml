@@ -7,39 +7,27 @@
     stages {
         stage("Init") {
             steps {
-                script {
-                    env.VERIFICATION_RESULT = "1"
-                }
                 cleanWs deleteDirs: true, disableDeferredWipeout: true
                 checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
             }
         }
         stage("Checkout Repository") {
-            when {
-                expression { env.VERIFICATION_RESULT != "2" }
-            }
             steps {
                 checkout changelog: true, poll: false, scm: [$class: 'GitSCM', branches: [[name: "*/${params.JMC_GIT_BRANCH}"]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'jmc']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: "${params.JMC_GIT_REPOSITORY}"]]]
             }
         }
-        stage('Download Prerequisites') {
-            
+        stage ('Download Prerequisites Windows'){
             when {
-                expression { env.VERIFICATION_RESULT != "2" }
+                 expression { JOB_NAME ==~ /((\S*)(windows_x86_64)(\S*))/ }
             }
             steps {
-                script {
-                    sh "pip3 install --upgrade pip | true"
-                    sh "pip3 install requests | true"
-                    sh "python3 SapMachine-Infrastructure/lib/download_boot_jdk.py -m ${params.BUILD_JDK} -d `pwd`"
-                }
+                sh 'SapMachine-Infrastructure/lib/install-deps-jmc-win.sh'
             }
         }
         stage("Build and Basic Tests") {
             
             when {
-                beforeAgent true
-                expression { env.VERIFICATION_RESULT != "2" }
+                expression { !(JOB_NAME ==~ /((\S*)(windows_x86_64)(\S*))/) }
             }
             environment {
                 BUILD_JDK = "${WORKSPACE}/boot_jdk"
@@ -48,11 +36,18 @@
                 sh 'SapMachine-Infrastructure/lib/build_jmc.sh'
             }
         }
+        stage("Build and Basic Tests Windows") {
+            when {
+                 expression { JOB_NAME ==~ /((\S*)(windows_x86_64)(\S*))/ }
+            }
+            steps {
+                sh 'SapMachine-Infrastructure/lib/build_jmc_win.sh'
+            }
+        }
         stage("Test") {
             
             when {
-                beforeAgent true
-                expression { env.VERIFICATION_RESULT != "2" }
+                expression { !(JOB_NAME ==~ /((\S*)(windows_x86_64)(\S*))/) }
             }
             environment {
                 BUILD_JDK = "${WORKSPACE}/boot_jdk"
@@ -62,10 +57,6 @@
             }
         }
         stage('Archive') {
-            when {
-                beforeAgent true
-                expression { env.VERIFICATION_RESULT != "2" }
-            }
             steps {
                 script {
                     def artifact_name = readFile "${env.WORKSPACE}/jmc/artifact.txt"
@@ -76,7 +67,7 @@
         }
         stage('Publish GitHub') {
             when {
-                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.RELEASE == true &amp;&amp; JOB_NAME ==~ /((\S*)(release)(\S*))/ }
+                expression { params.RELEASE == true &amp;&amp; JOB_NAME ==~ /((\S*)(release)(\S*))/ }
             }
             steps {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
