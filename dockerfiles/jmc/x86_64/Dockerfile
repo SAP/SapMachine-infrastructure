@@ -33,8 +33,7 @@ python3 \
 python3-pip \
 ant \
 patch \
-maven \
-openjdk-11-jdk
+maven
 
 
 
