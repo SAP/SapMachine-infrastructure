@@ -33,7 +33,10 @@ python3 \
 python3-pip \
 ant \
 patch \
-maven
+maven \
+openjdk-11-jdk
+
+
 
 RUN useradd -ms /bin/bash jenkinsa -u 1000
 RUN useradd -ms /bin/bash jenkinsb -u 1001
