@@ -38,11 +38,11 @@
       <instanceCap>6</instanceCap>
       <templates>
         <hudson.plugins.ec2.SlaveTemplate>
-          <ami>ami-05be7abf71c2517c0</ami>
+          <ami>ami-0c39157e6e638998f</ami>
           <description>Linux x86_64 Client</description>
           <zone>us-east-1d</zone>
           <securityGroups>JenkinsLinuxSlave</securityGroups>
-          <remoteFS>/home/ubuntu/slave_home</remoteFS>
+          <remoteFS>/home/ubuntu/client_home</remoteFS>
           <type>M54xlarge</type>
           <ebsOptimized>true</ebsOptimized>
           <monitoring>false</monitoring>
