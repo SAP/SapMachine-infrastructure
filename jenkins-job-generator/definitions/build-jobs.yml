@@ -49,7 +49,14 @@
             devkit_default: 'io.sapmachine.build.devkit.macos:devkit-xcode:13.1'
         - linux_aarch64:
             extra_configure_options_default: ''
-            docker_agent: ''
+            docker_agent: |
+                agent {{
+                    dockerfile {{
+                        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04_arm64"
+                        reuseNode true
+                        label "{platform}"
+                    }}
+                }}
             devkit_default: '/opt/devkits/aarch64-linux-gnu-to-aarch64-linux-gnu-fedora-21-gcc-9.2.0'
         - windows_x86_64:
             extra_configure_options_default: ''
