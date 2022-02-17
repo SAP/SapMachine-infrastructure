@@ -19,7 +19,8 @@ libssl-dev \
 gcc \
 g++ \
 maven \
-gpg
+gpg \
+gpg-agent
 
 RUN useradd -ms /bin/bash jenkins -u 1002
 
