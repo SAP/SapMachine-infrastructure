@@ -4,7 +4,20 @@
     <unserializable-parents />
     <java.util.Collections_-SetFromMap>
       <default>
-        <m class="concurrent-hash-map" />
+        <m class="concurrent-hash-map">
+          <entry>
+            <org.jenkinsci.plugins.resourcedisposer.AsyncResourceDisposer_-WorkItem>
+              <disposer reference="../../../../../../.." />
+              <disposable class="hudson.plugins.ws_cleanup.Wipeout$DisposableImpl" plugin="ws-cleanup@0.40">
+                <node>EC2 (SapMachine Cloud) - Linux aarch64 Client (i-0e99eddee3341d66b)</node>
+                <path>/home/ubuntu/client_home/workspace/build-17-pr-validation-linux_aarch64_ws-cleanup_1645060803605</path>
+              </disposable>
+              <registered>2022-02-17 01:20:03.611 UTC</registered>
+              <disposableInfo>hudson.plugins.ws_cleanup.Wipeout$DisposableImpl:Workspace EC2 (SapMachine Cloud) - Linux aarch64 Client (i-0e99eddee3341d66b):/home/ubuntu/client_home/workspace/build-17-pr-validation-linux_aarch64_ws-cleanup_1645060803605</disposableInfo>
+            </org.jenkinsci.plugins.resourcedisposer.AsyncResourceDisposer_-WorkItem>
+            <boolean>true</boolean>
+          </entry>
+        </m>
       </default>
     </java.util.Collections_-SetFromMap>
   </backlog>

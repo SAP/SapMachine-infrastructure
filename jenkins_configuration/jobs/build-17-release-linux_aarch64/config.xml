@@ -22,7 +22,15 @@
             }
         }
         stage("Verify PR") {
-            
+            agent {
+    dockerfile {
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/arm64"
+        reuseNode true
+        label "linux_aarch64"
+        args "--mount src=/opt/devkits/aarch64-linux-gnu-to-aarch64-linux-gnu-fedora-21-gcc-9.2.0,target=/opt/devkits/aarch64-linux-gnu-to-aarch64-linux-gnu-fedora-21-gcc-9.2.0,type=bind"
+    }
+}
+
             steps {
                 // credentials are needed to avoid rate limit exceedance in verify_pr.py
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
@@ -55,7 +63,15 @@
             }
         }
         stage('Prepare Devkit') {
-            
+            agent {
+    dockerfile {
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/arm64"
+        reuseNode true
+        label "linux_aarch64"
+        args "--mount src=/opt/devkits/aarch64-linux-gnu-to-aarch64-linux-gnu-fedora-21-gcc-9.2.0,target=/opt/devkits/aarch64-linux-gnu-to-aarch64-linux-gnu-fedora-21-gcc-9.2.0,type=bind"
+    }
+}
+
             when {
                 beforeAgent true
                 expression { env.VERIFICATION_RESULT != "2" &amp;&amp; !params.DEVKIT.isEmpty() }
@@ -81,7 +97,15 @@
             }
         }
         stage('Download Prerequisites') {
-            
+            agent {
+    dockerfile {
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/arm64"
+        reuseNode true
+        label "linux_aarch64"
+        args "--mount src=/opt/devkits/aarch64-linux-gnu-to-aarch64-linux-gnu-fedora-21-gcc-9.2.0,target=/opt/devkits/aarch64-linux-gnu-to-aarch64-linux-gnu-fedora-21-gcc-9.2.0,type=bind"
+    }
+}
+
             when {
                 beforeAgent true
                 expression { env.VERIFICATION_RESULT != "2" }
@@ -97,7 +121,15 @@
             }
         }
         stage("Build") {
-            
+            agent {
+    dockerfile {
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/arm64"
+        reuseNode true
+        label "linux_aarch64"
+        args "--mount src=/opt/devkits/aarch64-linux-gnu-to-aarch64-linux-gnu-fedora-21-gcc-9.2.0,target=/opt/devkits/aarch64-linux-gnu-to-aarch64-linux-gnu-fedora-21-gcc-9.2.0,type=bind"
+    }
+}
+
             when {
                 beforeAgent true
                 expression { env.VERIFICATION_RESULT != "2" }
@@ -110,7 +142,15 @@
             }
         }
         stage('Copy JTREG') {
-            
+            agent {
+    dockerfile {
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/arm64"
+        reuseNode true
+        label "linux_aarch64"
+        args "--mount src=/opt/devkits/aarch64-linux-gnu-to-aarch64-linux-gnu-fedora-21-gcc-9.2.0,target=/opt/devkits/aarch64-linux-gnu-to-aarch64-linux-gnu-fedora-21-gcc-9.2.0,type=bind"
+    }
+}
+
             when {
                 beforeAgent true
                 expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.RUN_TESTS == true }
@@ -120,7 +160,15 @@
             }
         }
         stage('Run jtreg hotspot') {
-            
+            agent {
+    dockerfile {
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/arm64"
+        reuseNode true
+        label "linux_aarch64"
+        args "--mount src=/opt/devkits/aarch64-linux-gnu-to-aarch64-linux-gnu-fedora-21-gcc-9.2.0,target=/opt/devkits/aarch64-linux-gnu-to-aarch64-linux-gnu-fedora-21-gcc-9.2.0,type=bind"
+    }
+}
+
             when {
                 beforeAgent true
                 expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.RUN_TESTS == true &amp;&amp; params.hotspot_test_groups }
@@ -143,7 +191,15 @@
             }
         }
         stage('Run jtreg jdk') {
-            
+            agent {
+    dockerfile {
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/arm64"
+        reuseNode true
+        label "linux_aarch64"
+        args "--mount src=/opt/devkits/aarch64-linux-gnu-to-aarch64-linux-gnu-fedora-21-gcc-9.2.0,target=/opt/devkits/aarch64-linux-gnu-to-aarch64-linux-gnu-fedora-21-gcc-9.2.0,type=bind"
+    }
+}
+
             when {
                 beforeAgent true
                 expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.RUN_TESTS == true &amp;&amp; params.jdk_test_groups }
@@ -167,7 +223,15 @@
             }
         }
         stage('Run jtreg langtools') {
-            
+            agent {
+    dockerfile {
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/arm64"
+        reuseNode true
+        label "linux_aarch64"
+        args "--mount src=/opt/devkits/aarch64-linux-gnu-to-aarch64-linux-gnu-fedora-21-gcc-9.2.0,target=/opt/devkits/aarch64-linux-gnu-to-aarch64-linux-gnu-fedora-21-gcc-9.2.0,type=bind"
+    }
+}
+
             when {
                 beforeAgent true
                 expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.RUN_TESTS == true &amp;&amp; params.langtools_test_groups }
