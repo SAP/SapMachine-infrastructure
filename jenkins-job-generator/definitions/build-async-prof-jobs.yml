@@ -119,8 +119,6 @@
                     }}
                     steps {{
                         script {{
-                            sh "pip3 install --upgrade pip | true"
-                            sh "pip3 install requests | true"
                             sh "python3 SapMachine-Infrastructure/lib/download_boot_jdk.py -m ${{params.BUILD_JDK}} -d `pwd`"
                         }}
                     }}
