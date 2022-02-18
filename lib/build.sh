@@ -97,7 +97,10 @@ if [ $legacy_bundles_available -ne 1 ]; then
   fi
 fi
 
-rm "${WORKSPACE}/test.zip" || true
+if [[ -f ${WORKSPACE}/test.zip ]]; then
+  rm "${WORKSPACE}/test.zip"
+fi
+
 zip -rq "${WORKSPACE}/test.zip" test
 zip -rq "${WORKSPACE}/test.zip" make/data/lsrdata
 zip -rq "${WORKSPACE}/test.zip" make/data/blacklistedcertsconverter/blacklisted.certs.pem || true
@@ -186,9 +189,17 @@ else
   ARCHIVE_NAME_SYMBOLS="$(echo $SYMBOLS_BUNDLE_NAME | sed 's/\+/\./')"
 fi
 
-mv "${WORKSPACE}/${JDK_BUNDLE_NAME}" "${WORKSPACE}/${ARCHIVE_NAME_JDK}"
-mv "${WORKSPACE}/${JRE_BUNDLE_NAME}" "${WORKSPACE}/${ARCHIVE_NAME_JRE}"
-mv "${WORKSPACE}/${SYMBOLS_BUNDLE_NAME}" "${WORKSPACE}/${ARCHIVE_NAME_SYMBOLS}"
+if [ "$JDK_BUNDLE_NAME" != "$ARCHIVE_NAME_JDK" ]; then
+  mv "${WORKSPACE}/${JDK_BUNDLE_NAME}" "${WORKSPACE}/${ARCHIVE_NAME_JDK}"
+fi
+
+if [ "$JRE_BUNDLE_NAME" != "$ARCHIVE_NAME_JRE" ]; then
+  mv "${WORKSPACE}/${JRE_BUNDLE_NAME}" "${WORKSPACE}/${ARCHIVE_NAME_JRE}"
+fi
+
+if [ "$SYMBOLS_BUNDLE_NAME" != "$ARCHIVE_NAME_SYMBOLS" ]; then
+  mv "${WORKSPACE}/${SYMBOLS_BUNDLE_NAME}" "${WORKSPACE}/${ARCHIVE_NAME_SYMBOLS}"
+fi
 
 echo "${ARCHIVE_NAME_JDK}" > "${WORKSPACE}/jdk_bundle_name.txt"
 echo "${ARCHIVE_NAME_JRE}" > "${WORKSPACE}/jre_bundle_name.txt"
