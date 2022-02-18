@@ -1,12 +1,9 @@
 - job:
     name: upload-ossrh
-    description: 'This project is generated. Do not modify manually.'
+    description: 'Upload SapMachine artefacts to OSSRH (Maven Central).'
     project-type: pipeline
     concurrent: false
     parameters:
-        - string:
-            name: MAJORVERSION
-            description: "The major version of version to publish. E.g. '11' for a version of '11.0.14'"
         - string:
             name: VERSION
             description: "The version to publish. E.g. '11.0.14'"
@@ -21,7 +18,7 @@
                         checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
                     }
                 }
-                stage('Generate') {
+                stage('Upload') {
                     agent {
                           dockerfile {
                               dir "SapMachine-Infrastructure/dockerfiles/infrastructure"
@@ -32,8 +29,8 @@
                       steps {
                         withCredentials([file(credentialsId: 'SapMachine-secret-gpg-key', variable: 'GPGSEC'),file(credentialsId: 'OSSRH_SETTINGS', variable: 'OSSRH_SETTINGS_XML')]) {
                               sh 'gpg --import $GPGSEC'
-                              sh 'mvn --settings $OSSRH_SETTINGS_XML -f SapMachine-Infrastructure/lib/ossrh_upload.pom -Dversion=$VERSION -DmajorVersion=$MAJORVERSION -Dtype=jre clean deploy'
-                              sh 'mvn --settings $OSSRH_SETTINGS_XML -f SapMachine-Infrastructure/lib/ossrh_upload.pom -Dversion=$VERSION -DmajorVersion=$MAJORVERSION -Dtype=jdk clean deploy'
+                              sh 'mvn --settings $OSSRH_SETTINGS_XML -f SapMachine-Infrastructure/lib/ossrh_upload.pom -Dversion=$VERSION -DmajorVersion=`echo $VERSION | cut -d . -f 1` -Dtype=jre clean deploy'
+                              sh 'mvn --settings $OSSRH_SETTINGS_XML -f SapMachine-Infrastructure/lib/ossrh_upload.pom -Dversion=$VERSION -DmajorVersion=`echo $VERSION | cut -d . -f 1` -Dtype=jdk clean deploy'
                               sh 'rm -fr ~/.gnupg/* $GPGSEC $OSSRH_SETTINGS_XML'
                             }
                       }
