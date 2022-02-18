@@ -70,6 +70,7 @@ def main(argv=None):
     os.rename(sapmachine_folder[0], join(work_dir, 'SourceDir'))
 
     _, _, version_output = utils.run_cmd([join(work_dir, 'SourceDir', 'bin', 'java.exe'), '-version'], std=True)
+    print("Version output:" + version_output)
 
     version, version_part, major, version_sap, build_number = utils.sapmachine_version_components(version_output, multiline=True)
     print("version detected:" + version + " major version:" + major)
