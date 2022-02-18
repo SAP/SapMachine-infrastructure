@@ -8,7 +8,7 @@ import os
 import sys
 import utils
 from os.path import join
-from versions import Tag, SapMachineTag, JDKTag
+from versions import Tag, SapMachineTag
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
@@ -17,6 +17,7 @@ def main(argv=None):
     parser.add_argument('-a', '--test-all-tags', nargs='?', default='not present', const='all', help='List latest tags, value could be sap,jdk,unknown')
     parser.add_argument('-r', '--test-all-releases', default=False, help='List latest releases', action='store_true')
     parser.add_argument('-v', '--jvm', help='Test a VM', metavar='VM Path')
+    parser.add_argument('-s', '--version-string', help='Test a VM version String', metavar='Version String')
     args = parser.parse_args()
 
     if args.tag:
@@ -86,10 +87,19 @@ def main(argv=None):
         print('Stderr')
         print(std_err)
 
-        version, version_part, major, version_sap, build_number = utils.sapmachine_version_components(std_err, multiline=True)
-        version_components = [version, version_part, major, version_sap, build_number]
+        version, major = utils.sapmachine_version_components(std_err)
+        version_components = [version, major]
         print(' '.join([version_component if version_component else 'N/A' for version_component in version_components]))
-        sapmachine_version = [e for e in version_part.split('.')]
+        sapmachine_version = [e for e in version.split('.')]
+        print(sapmachine_version)
+
+    if args.version_string:
+        print(str.format("Version string to test: \"{0}\".", args.version_string))
+
+        version, major = utils.sapmachine_version_components(args.version_string)
+        version_components = [version, major]
+        print(' '.join([version_component if version_component else 'N/A' for version_component in version_components]))
+        sapmachine_version = [e for e in version.split('.')]
         print(sapmachine_version)
 
     return 0

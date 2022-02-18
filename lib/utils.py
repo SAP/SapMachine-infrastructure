@@ -231,30 +231,20 @@ def sapmachine_tag_components(tag, multiline=False):
     return version, version_part, major, update, version_sap, build_number, os_ext
 
 def sapmachine_version_pattern():
-    return '(((\d+)((\.(\d+))*)?)(-ea|-snapshot)?\+(\d+))(-LTS)?'
+    return 'build ((\d+)((\.(\d+))*)?)'
 
-def sapmachine_version_components(version_in, multiline=False):
+def sapmachine_version_components(version_in):
     pattern = re.compile(sapmachine_version_pattern())
 
-    if multiline:
-        match = re.search(pattern, version_in)
-    else:
-        match = pattern.match(version_in)
+    match = re.search(pattern, version_in)
 
     if match is None:
-        return None, None, None, None, None
+        return None, None
 
     version = match.group(1)
-    version_part = match.group(2)
-    major = match.group(3)
-    version_parts = version_part.split('.')
-    if len(version_parts) >= 5:
-        version_sap = version_parts[4]
-    else:
-        version_sap = ''
-    build_number = match.group(8)
+    major = match.group(2)
 
-    return version, version_part, major, version_sap, build_number
+    return version, major
 
 def sapmachine_branch_pattern():
     return 'sapmachine([\d]+)?(-sec)?$'
