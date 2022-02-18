@@ -35,8 +35,11 @@
                   }
               }
               steps {
-                  withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
-                      sh "python3 SapMachine-Infrastructure/lib/generate_website_data.py"
+                withCredentials([file(credentialsId: 'SapMachine-secret-gpg-key', variable: 'GPGSEC'),usernamePassword(credentialsId: 'OSSRH_UPLOAD_USER', usernameVariable: 'OSSRHUSER', passwordVariable: 'OSSRHPWD')]) {
+                      sh "gpg --import $GPGSEC"
+                      sh "gpg --list-secret-keys"
+                      sh "echo \"&lt;settings&gt;&lt;servers&gt;&lt;server&gt;&lt;id&gt;ossrh&lt;/id&gt;&lt;username&gt;$OSSRHUSER&lt;/username&gt;&lt;password&gt;$OSSRHPWD&lt;/password&gt;&lt;/server&gt;&lt;/servers&gt;&lt;/settings&gt;\" &gt;settings.xml"
+                      sh "mvn --settings settings.xml -f SapMachine-Infrastructure/lib/ossrh_upload.pom -Dversion=11.0.14 -DmajorVersion=11 -Dtype=jre clean deploy"
                     }
               }
           }
