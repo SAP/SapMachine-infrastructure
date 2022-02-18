@@ -29,8 +29,8 @@
                     steps {
                         withCredentials([file(credentialsId: 'SapMachine-secret-gpg-key', variable: 'GPGSEC'),file(credentialsId: 'OSSRH_SETTINGS', variable: 'OSSRH_SETTINGS_XML')]) {
                             sh 'gpg --import $GPGSEC'
-                            sh 'mvn --no-transfer-progress --settings $OSSRH_SETTINGS_XML -f SapMachine-Infrastructure/lib/ossrh_upload.pom -Dversion=$VERSION -DmajorVersion=`echo $VERSION | cut -d . -f 1` -Dtype=jre clean deploy'
-                            sh 'mvn --no-transfer-progress --settings $OSSRH_SETTINGS_XML -f SapMachine-Infrastructure/lib/ossrh_upload.pom -Dversion=$VERSION -DmajorVersion=`echo $VERSION | cut -d . -f 1` -Dtype=jdk clean deploy'
+                            sh 'mvn -B --no-transfer-progress --settings $OSSRH_SETTINGS_XML -f SapMachine-Infrastructure/lib/ossrh_upload.pom -Dversion=$VERSION -DmajorVersion=`echo $VERSION | cut -d . -f 1` -Dtype=jre clean deploy'
+                            sh 'mvn -B --no-transfer-progress --settings $OSSRH_SETTINGS_XML -f SapMachine-Infrastructure/lib/ossrh_upload.pom -Dversion=$VERSION -DmajorVersion=`echo $VERSION | cut -d . -f 1` -Dtype=jdk clean deploy'
                             sh 'rm -fr ~/.gnupg/* $GPGSEC $OSSRH_SETTINGS_XML'
                         }
                     }
