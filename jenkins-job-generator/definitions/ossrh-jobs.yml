@@ -20,8 +20,8 @@
                 }
                 stage('Upload') {
                     agent {
-                        dockerfile {
-                            dir "SapMachine-Infrastructure/dockerfiles/ossrh-upload"
+                        docker {
+                            image 'maven:3-sapmachine-11'
                             reuseNode true
                             label "repository"
                         }
