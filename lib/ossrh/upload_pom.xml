@@ -5,8 +5,8 @@
 	<artifactId>sapmachine-${type}</artifactId>
 	<version>${version}</version>
 	<packaging>pom</packaging>
-	<name>${project.groupId}:${project.artifactId}</name>
-	<description>SapMachine</description>
+	<name>${maven.name}</name>
+	<description>${maven.description}</description>
 	<url>https://sapmachine.io/</url>
 
 	<licenses>
@@ -40,6 +40,63 @@
 			<url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2</url>
 		</repository>
 	</distributionManagement>
+
+	<profiles>
+		<profile>
+			<id>JRE</id>
+			<activation>
+				<property>
+					<name>type</name>
+					<value>jre</value>
+				</property>
+			</activation>
+			<properties>
+				<maven.name>SapMachine JRE</maven.name>
+				<maven.description>SapMachine JRE</maven.description>
+			</properties>
+		</profile>
+		<profile>
+			<id>JDK</id>
+			<activation>
+				<property>
+					<name>type</name>
+					<value>jdk</value>
+				</property>
+			</activation>
+			<properties>
+				<maven.name>SapMachine JDK</maven.name>
+				<maven.description>SapMachine JDK</maven.description>
+			</properties>
+		</profile>
+		<!-- Configure default set of artefacts, e.g. SapMachine 17+ -->
+		<profile>
+			<id>default-artefacts</id>
+			<activation>
+				<property>
+					<name>artefactSetVersion</name>
+					<value>!11</value>
+				</property>
+			</activation>
+			<properties>
+				<macosx.platform.name>macos</macosx.platform.name>
+				<skip.macaarch>false</skip.macaarch>
+			</properties>
+		</profile>
+		<!-- Configure SapMachine 11 specific set of artefacts -->
+		<profile>
+			<id>sapmachine11-artefacts</id>
+			<activation>
+				<property>
+					<name>artefactSetVersion</name>
+					<value>11</value>
+				</property>
+			</activation>
+			<properties>
+				<macosx.platform.name>osx</macosx.platform.name>
+				<skip.macaarch>true</skip.macaarch>
+			</properties>
+		</profile>
+	</profiles>
 
 	<build>
 		<plugins>
@@ -96,6 +153,27 @@
 						</configuration>
 					</execution>
 					<execution>
+						<id>https://github.com/SAP/SapMachine/releases/download/sapmachine-${project.version}/${project.artifactId}-${project.version}_${macosx.platform.name}-x64_bin.tar.gz</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>wget</goal>
+						</goals>
+						<configuration>
+							<url>https://github.com/SAP/SapMachine/releases/download/sapmachine-${project.version}/${project.artifactId}-${project.version}_${macosx.platform.name}-x64_bin.tar.gz</url>
+						</configuration>
+					</execution>
+					<execution>
+						<id>https://github.com/SAP/SapMachine/releases/download/sapmachine-${project.version}/${project.artifactId}-${project.version}_${macosx.platform.name}-aarch64_bin.tar.gz</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>wget</goal>
+						</goals>
+						<configuration>
+							<url>https://github.com/SAP/SapMachine/releases/download/sapmachine-${project.version}/${project.artifactId}-${project.version}_${macosx.platform.name}-aarch64_bin.tar.gz</url>
+							<skip>${skip.macaarch}</skip>
+						</configuration>
+					</execution>
+					<execution>
 						<id>https://github.com/SAP/SapMachine/releases/download/sapmachine-${project.version}/${project.artifactId}-${project.version}_windows-x64_bin.zip</id>
 						<phase>process-resources</phase>
 						<goals>
@@ -103,6 +181,61 @@
 						</goals>
 						<configuration>
 							<url>https://github.com/SAP/SapMachine/releases/download/sapmachine-${project.version}/${project.artifactId}-${project.version}_windows-x64_bin.zip</url>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>3.2.0</version>
+				<executions>
+					<execution>
+						<id>attach-artifacts</id>
+						<phase>package</phase>
+						<goals>
+							<goal>attach-artifact</goal>
+						</goals>
+						<configuration>
+							<artifacts>
+								<artifact>
+									<file>${project.build.directory}/${project.artifactId}-${project.version}_linux-ppc64le_bin.tar.gz</file>
+									<classifier>linux-ppc64le</classifier>
+									<type>tar.gz</type>
+								</artifact>
+								<artifact>
+									<file>${project.build.directory}/${project.artifactId}-${project.version}_linux-x64_bin.tar.gz</file>
+									<classifier>linux-x64</classifier>
+									<type>tar.gz</type>
+								</artifact>
+								<artifact>
+									<file>${project.build.directory}/${project.artifactId}-${project.version}_${macosx.platform.name}-x64_bin.tar.gz</file>
+									<classifier>${macosx.platform.name}-x64</classifier>
+									<type>tar.gz</type>
+								</artifact>
+								<artifact>
+									<file>${project.build.directory}/${project.artifactId}-${project.version}_windows-x64_bin.zip</file>
+									<classifier>windows-x64</classifier>
+									<type>zip</type>
+								</artifact>
+							</artifacts>
+						</configuration>
+					</execution>
+					<execution>
+						<id>attach-artifacts</id>
+						<phase>package</phase>
+						<goals>
+							<goal>attach-artifact</goal>
+						</goals>
+						<configuration>
+							<skipAttach>${skip.macaarch}</skipAttach>
+							<artifacts>
+								<artifact>
+									<file>${project.build.directory}/${project.artifactId}-${project.version}_${macosx.platform.name}-aarch64_bin.tar.gz</file>
+									<classifier>${macosx.platform.name}-aarch64</classifier>
+									<type>tar.gz</type>
+								</artifact>
+							</artifacts>
 						</configuration>
 					</execution>
 				</executions>
@@ -134,160 +267,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
-	<profiles>
-		<!-- Profile for handling default set of artefacts, e.g. SapMachine 17+ -->
-		<profile>
-			<id>default-artefacts</id>
-			<activation>
-				<property>
-					<name>artefactSetVersion</name>
-					<value>!11</value>
-				</property>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>com.googlecode.maven-download-plugin</groupId>
-						<artifactId>download-maven-plugin</artifactId>
-						<version>1.6.7</version>
-						<executions>
-							<execution>
-								<id>https://github.com/SAP/SapMachine/releases/download/sapmachine-${project.version}/${project.artifactId}-${project.version}_macos-x64_bin.tar.gz</id>
-								<phase>process-resources</phase>
-								<goals>
-									<goal>wget</goal>
-								</goals>
-								<configuration>
-									<url>https://github.com/SAP/SapMachine/releases/download/sapmachine-${project.version}/${project.artifactId}-${project.version}_macos-x64_bin.tar.gz</url>
-								</configuration>
-							</execution>
-							<execution>
-								<id>https://github.com/SAP/SapMachine/releases/download/sapmachine-${project.version}/${project.artifactId}-${project.version}_macos-aarch64_bin.tar.gz</id>
-								<phase>process-resources</phase>
-								<goals>
-									<goal>wget</goal>
-								</goals>
-								<configuration>
-									<url>https://github.com/SAP/SapMachine/releases/download/sapmachine-${project.version}/${project.artifactId}-${project.version}_macos-aarch64_bin.tar.gz</url>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>build-helper-maven-plugin</artifactId>
-						<version>3.2.0</version>
-						<executions>
-							<execution>
-								<id>attach-artifacts</id>
-								<phase>package</phase>
-								<goals>
-									<goal>attach-artifact</goal>
-								</goals>
-								<configuration>
-									<artifacts>
-										<artifact>
-											<file>${project.build.directory}/${project.artifactId}-${project.version}_linux-ppc64le_bin.tar.gz</file>
-											<classifier>linux-ppc64le</classifier>
-											<type>tar.gz</type>
-										</artifact>
-										<artifact>
-											<file>${project.build.directory}/${project.artifactId}-${project.version}_linux-x64_bin.tar.gz</file>
-											<classifier>linux-x64</classifier>
-											<type>tar.gz</type>
-										</artifact>
-										<artifact>
-											<file>${project.build.directory}/${project.artifactId}-${project.version}_macos-x64_bin.tar.gz</file>
-											<classifier>macos-x64</classifier>
-											<type>tar.gz</type>
-										</artifact>
-										<artifact>
-											<file>${project.build.directory}/${project.artifactId}-${project.version}_macos-aarch64_bin.tar.gz</file>
-											<classifier>macos-aarch64</classifier>
-											<type>tar.gz</type>
-										</artifact>
-										<artifact>
-											<file>${project.build.directory}/${project.artifactId}-${project.version}_windows-x64_bin.zip</file>
-											<classifier>windows-x64</classifier>
-											<type>zip</type>
-										</artifact>
-									</artifacts>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<!-- Profile for handling SapMachine 11 specific set of artefacts -->
-		<profile>
-			<id>sapmachine11-artefacts</id>
-			<activation>
-				<property>
-					<name>artefactSetVersion</name>
-					<value>11</value>
-				</property>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>com.googlecode.maven-download-plugin</groupId>
-						<artifactId>download-maven-plugin</artifactId>
-						<version>1.6.7</version>
-						<executions>
-							<execution>
-								<id>https://github.com/SAP/SapMachine/releases/download/sapmachine-${project.version}/${project.artifactId}-${project.version}_osx-x64_bin.tar.gz</id>
-								<phase>process-resources</phase>
-								<goals>
-									<goal>wget</goal>
-								</goals>
-								<configuration>
-									<url>https://github.com/SAP/SapMachine/releases/download/sapmachine-${project.version}/${project.artifactId}-${project.version}_osx-x64_bin.tar.gz</url>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>build-helper-maven-plugin</artifactId>
-						<version>3.2.0</version>
-						<executions>
-							<execution>
-								<id>attach-artifacts</id>
-								<phase>package</phase>
-								<goals>
-									<goal>attach-artifact</goal>
-								</goals>
-								<configuration>
-									<artifacts>
-										<artifact>
-											<file>${project.build.directory}/${project.artifactId}-${project.version}_linux-ppc64le_bin.tar.gz</file>
-											<classifier>linux-ppc64le</classifier>
-											<type>tar.gz</type>
-										</artifact>
-										<artifact>
-											<file>${project.build.directory}/${project.artifactId}-${project.version}_linux-x64_bin.tar.gz</file>
-											<classifier>linux-x64</classifier>
-											<type>tar.gz</type>
-										</artifact>
-										<artifact>
-											<file>${project.build.directory}/${project.artifactId}-${project.version}_osx-x64_bin.tar.gz</file>
-											<classifier>osx-x64</classifier>
-											<type>tar.gz</type>
-										</artifact>
-										<artifact>
-											<file>${project.build.directory}/${project.artifactId}-${project.version}_windows-x64_bin.zip</file>
-											<classifier>windows-x64</classifier>
-											<type>zip</type>
-										</artifact>
-									</artifacts>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
 </project>
