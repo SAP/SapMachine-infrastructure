@@ -53,7 +53,14 @@
 				<artifactId>flatten-maven-plugin</artifactId>
 				<version>1.2.2</version>
 				<configuration>
-					<flattenMode>ossrh</flattenMode>
+					<!-- <flattenMode>ossrh</flattenMode> -->
+					<pomElements>
+						<name/>
+						<description/>
+						<url/>
+						<developers/>
+						<scm/>
+					</pomElements>
 					<updatePomFile>true</updatePomFile>
 				</configuration>
 				<executions>
