@@ -8,12 +8,22 @@
       <options />
     </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
   </actions>
-  <description>This project is generated. Do not modify manually.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+  <description>Upload SapMachine artefacts to OSSRH (Maven Central).&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
   <properties>
     <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty>
       <abortPrevious>false</abortPrevious>
     </org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>VERSION</name>
+          <description>The version to publish. E.g. '11.0.14'</description>
+          <defaultValue />
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
   </properties>
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2656.vf7a_e7b_75a_457">
     <script>pipeline {
@@ -26,23 +36,23 @@
                 checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
             }
         }
-        stage('Generate') {
+        stage('Upload') {
             agent {
-                  dockerfile {
-                      dir "SapMachine-Infrastructure/dockerfiles/infrastructure"
-                      reuseNode true
-                      label "repository"
-                  }
-              }
-              steps {
-                withCredentials([file(credentialsId: 'SapMachine-secret-gpg-key', variable: 'GPGSEC'),usernamePassword(credentialsId: 'OSSRH_UPLOAD_USER', usernameVariable: 'OSSRHUSER', passwordVariable: 'OSSRHPWD')]) {
-                      sh "gpg --import $GPGSEC"
-                      sh "gpg --list-secret-keys"
-                      sh "echo \"&lt;settings&gt;&lt;servers&gt;&lt;server&gt;&lt;id&gt;ossrh&lt;/id&gt;&lt;username&gt;$OSSRHUSER&lt;/username&gt;&lt;password&gt;$OSSRHPWD&lt;/password&gt;&lt;/server&gt;&lt;/servers&gt;&lt;/settings&gt;\" &gt;settings.xml"
-                      sh "mvn --settings settings.xml -f SapMachine-Infrastructure/lib/ossrh_upload.pom -Dversion=11.0.14 -DmajorVersion=11 -Dtype=jre clean deploy"
-                    }
-              }
-          }
+                dockerfile {
+                    dir "SapMachine-Infrastructure/dockerfiles/infrastructure"
+                    reuseNode true
+                    label "repository"
+                }
+            }
+            steps {
+                withCredentials([file(credentialsId: 'SapMachine-secret-gpg-key', variable: 'GPGSEC'),file(credentialsId: 'OSSRH_SETTINGS', variable: 'OSSRH_SETTINGS_XML')]) {
+                    sh 'gpg --import $GPGSEC'
+                    sh 'mvn -B --no-transfer-progress --settings $OSSRH_SETTINGS_XML -f SapMachine-Infrastructure/lib/ossrh_upload.pom -Dtype=jre -Dversion=$VERSION -DartefactSetVersion=`echo $VERSION | cut -d . -f 1` clean deploy'
+                    sh 'mvn -B --no-transfer-progress --settings $OSSRH_SETTINGS_XML -f SapMachine-Infrastructure/lib/ossrh_upload.pom -Dtype=jdk -Dversion=$VERSION -DartefactSetVersion=`echo $VERSION | cut -d . -f 1` clean deploy'
+                    sh 'rm -fr ~/.gnupg/* $GPGSEC $OSSRH_SETTINGS_XML'
+                }
+            }
+        }
     }
     post {
         always {
