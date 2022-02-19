@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM sapmachine:11
 
 ENV DEBIAN_FRONTEND=noninteractive
 
