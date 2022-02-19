@@ -6,7 +6,7 @@
 	<version>${version}</version>
 	<packaging>pom</packaging>
 	<name>${maven.name}</name>
-	<description>${maven.description}</description>
+	<description>${maven.name}</description>
 	<url>https://sapmachine.io/</url>
 
 	<licenses>
@@ -41,62 +41,10 @@
 		</repository>
 	</distributionManagement>
 
-	<profiles>
-		<profile>
-			<id>JRE</id>
-			<activation>
-				<property>
-					<name>type</name>
-					<value>jre</value>
-				</property>
-			</activation>
-			<properties>
-				<maven.name>SapMachine JRE</maven.name>
-				<maven.description>SapMachine JRE</maven.description>
-			</properties>
-		</profile>
-		<profile>
-			<id>JDK</id>
-			<activation>
-				<property>
-					<name>type</name>
-					<value>jdk</value>
-				</property>
-			</activation>
-			<properties>
-				<maven.name>SapMachine JDK</maven.name>
-				<maven.description>SapMachine JDK</maven.description>
-			</properties>
-		</profile>
-		<!-- Configure default set of artefacts, e.g. SapMachine 17+ -->
-		<profile>
-			<id>default-artefacts</id>
-			<activation>
-				<property>
-					<name>artefactSetVersion</name>
-					<value>!11</value>
-				</property>
-			</activation>
-			<properties>
-				<macosx.platform.name>macos</macosx.platform.name>
-				<skip.macaarch>false</skip.macaarch>
-			</properties>
-		</profile>
-		<!-- Configure SapMachine 11 specific set of artefacts -->
-		<profile>
-			<id>sapmachine11-artefacts</id>
-			<activation>
-				<property>
-					<name>artefactSetVersion</name>
-					<value>11</value>
-				</property>
-			</activation>
-			<properties>
-				<macosx.platform.name>osx</macosx.platform.name>
-				<skip.macaarch>true</skip.macaarch>
-			</properties>
-		</profile>
-	</profiles>
+	<properties>
+		<macosx.platform.name>macos</macosx.platform.name>
+		<skip.macaarch>false</skip.macaarch>
+	</properties>
 
 	<build>
 		<plugins>
