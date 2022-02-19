@@ -1,4 +1,4 @@
-FROM maven:sapmachine
+FROM maven:3-sapmachine-11
 
 ENV DEBIAN_FRONTEND=noninteractive
 
