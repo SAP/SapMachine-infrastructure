@@ -21,24 +21,22 @@
                 stage('Upload') {
                     agent {
                         dockerfile {
-                            dir "SapMachine-Infrastructure/dockerfiles/infrastructure"
+                            dir "SapMachine-Infrastructure/dockerfiles/ossrh-upload"
                             reuseNode true
                             label "repository"
                         }
                     }
                     steps {
-                        withCredentials([file(credentialsId: 'SapMachine-secret-gpg-key', variable: 'GPGSEC'),file(credentialsId: 'OSSRH_SETTINGS', variable: 'OSSRH_SETTINGS_XML')]) {
-                            sh 'gpg --import $GPGSEC'
-                            sh 'mvn -B --no-transfer-progress --settings $OSSRH_SETTINGS_XML -f SapMachine-Infrastructure/lib/ossrh_upload.pom -Dtype=jre -Dversion=$VERSION -DartefactSetVersion=`echo $VERSION | cut -d . -f 1` clean deploy'
-                            sh 'mvn -B --no-transfer-progress --settings $OSSRH_SETTINGS_XML -f SapMachine-Infrastructure/lib/ossrh_upload.pom -Dtype=jdk -Dversion=$VERSION -DartefactSetVersion=`echo $VERSION | cut -d . -f 1` clean deploy'
-                            sh 'rm -fr ~/.gnupg/* $GPGSEC $OSSRH_SETTINGS_XML'
+                        withCredentials([file(credentialsId: 'SapMachine-secret-gpg-key', variable: 'GPGSEC'),
+                                         file(credentialsId: 'OSSRH_SETTINGS', variable: 'OSSRH_SETTINGS_XML')]) {
+                            sh 'SapMachine-Infrastructure/lib/ossrh/upload.sh'
                         }
                     }
                 }
             }
             post {
                 always {
-                    cleanWs deleteDirs: true, disableDeferredWipeout: true
+                    cleanWs()
                 }
             }
         }
