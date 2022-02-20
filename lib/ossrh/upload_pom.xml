@@ -46,6 +46,20 @@
 		<skip.macaarch>false</skip.macaarch>
 	</properties>
 
+	<pluginManagement>
+		<plugin>
+			<groupId>org.sonatype.plugins</groupId>
+			<artifactId>nexus-staging-maven-plugin</artifactId>
+			<version>1.6.7</version>
+			<extensions>true</extensions>
+			<configuration>
+				<serverId>ossrh</serverId>
+				<nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
+				<autoReleaseAfterClose>false</autoReleaseAfterClose>
+			</configuration>
+		</plugin>
+	</pluginManagement>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -53,14 +67,7 @@
 				<artifactId>flatten-maven-plugin</artifactId>
 				<version>1.2.2</version>
 				<configuration>
-					<!-- <flattenMode>ossrh</flattenMode> -->
-					<pomElements>
-						<name/>
-						<description/>
-						<url/>
-						<developers/>
-						<scm/>
-					</pomElements>
+					<flattenMode>ossrh</flattenMode>
 					<updatePomFile>true</updatePomFile>
 				</configuration>
 				<executions>
@@ -212,13 +219,6 @@
 			<plugin>
 				<groupId>org.sonatype.plugins</groupId>
 				<artifactId>nexus-staging-maven-plugin</artifactId>
-				<version>1.6.7</version>
-				<extensions>true</extensions>
-				<configuration>
-					<serverId>ossrh</serverId>
-					<nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
-					<autoReleaseAfterClose>false</autoReleaseAfterClose>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>
