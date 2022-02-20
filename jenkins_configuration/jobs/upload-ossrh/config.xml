@@ -25,7 +25,7 @@
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2656.vf7a_e7b_75a_457">
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2659.v52d3de6044d0">
     <script>pipeline {
     agent {
         label "repository"
@@ -33,30 +33,28 @@
     stages {
         stage("Checkout Infrastructure Repository") {
             steps {
-                checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+                checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
             }
         }
         stage('Upload') {
             agent {
                 dockerfile {
-                    dir "SapMachine-Infrastructure/dockerfiles/infrastructure"
+                    dir "SapMachine-Infrastructure/dockerfiles/ossrh-upload"
                     reuseNode true
                     label "repository"
                 }
             }
             steps {
-                withCredentials([file(credentialsId: 'SapMachine-secret-gpg-key', variable: 'GPGSEC'),file(credentialsId: 'OSSRH_SETTINGS', variable: 'OSSRH_SETTINGS_XML')]) {
-                    sh 'gpg --import $GPGSEC'
-                    sh 'mvn -B --no-transfer-progress --settings $OSSRH_SETTINGS_XML -f SapMachine-Infrastructure/lib/ossrh_upload.pom -Dtype=jre -Dversion=$VERSION -DartefactSetVersion=`echo $VERSION | cut -d . -f 1` clean deploy'
-                    sh 'mvn -B --no-transfer-progress --settings $OSSRH_SETTINGS_XML -f SapMachine-Infrastructure/lib/ossrh_upload.pom -Dtype=jdk -Dversion=$VERSION -DartefactSetVersion=`echo $VERSION | cut -d . -f 1` clean deploy'
-                    sh 'rm -fr ~/.gnupg/* $GPGSEC $OSSRH_SETTINGS_XML'
+                withCredentials([file(credentialsId: 'SapMachine-secret-gpg-key', variable: 'GPGSEC'),
+                                 file(credentialsId: 'OSSRH_SETTINGS', variable: 'OSSRH_SETTINGS_XML')]) {
+                    sh 'SapMachine-Infrastructure/lib/ossrh/upload.sh'
                 }
             }
         }
     }
     post {
         always {
-            cleanWs deleteDirs: true, disableDeferredWipeout: true
+            cleanWs()
         }
     }
 }
