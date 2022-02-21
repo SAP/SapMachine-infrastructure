@@ -124,6 +124,7 @@ def push_to_git(files):
 
 def main(argv=None):
     print("Querying GitHub for SapMachine releases...")
+    sys.stdout.flush()
     releases = utils.get_github_releases()
     print("Done.")
 
