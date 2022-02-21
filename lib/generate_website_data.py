@@ -123,7 +123,9 @@ def push_to_git(files):
         utils.run_cmd(str.format('git push {0}', sapMachinePushURL).split(' '), cwd=local_repo)
 
 def main(argv=None):
+    print("Querying GitHub for SapMachine releases...")
     releases = utils.get_github_releases()
+    print("Done.")
 
     asset_pattern = re.compile(utils.sapmachine_asset_pattern())
     release_dict = {}
