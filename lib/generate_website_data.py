@@ -1,26 +1,26 @@
 '''
-Copyright (c) 2001-2018 by SAP SE, Walldorf, Germany.
+Copyright (c) 2018-2022 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
-import os
-import sys
 import json
+import os
 import re
+import sys
 import utils
-from urllib.request import urlopen, Request
-from urllib.parse import quote
 from os.path import join
 from string import Template
+from versions import SapMachineTag
 
-#'linux-x64-musl': 'Linux x64 musl',
 os_description = {
-    'linux-x64':             { 'ordinal': 1, 'name': 'Linux x64' },
-    'linux-ppc64le':         { 'ordinal': 2, 'name': 'Linux ppc64le' },
-    'windows-x64':           { 'ordinal': 3, 'name': 'Windows x64'},
-    'windows-x64-installer': { 'ordinal': 4, 'name': 'Windows x64 Installer'},
-    'osx-x64':               { 'ordinal': 5, 'name': 'macOS x64'},
-    'osx-aarch64':           { 'ordinal': 6, 'name': 'macOS aarch64'}
+    'linux-ppc64le':           { 'ordinal': 1, 'name': 'Linux ppc64le' },
+    'linux-x64':               { 'ordinal': 2, 'name': 'Linux x64' },
+    'macos-x64':               { 'ordinal': 3, 'name': 'MacOS x64'},
+    'macos-x64-installer':     { 'ordinal': 4, 'name': 'MacOS x64 Installer'},
+    'macos-aarch64':           { 'ordinal': 5, 'name': 'MacOS aarch64'},
+    'macos-aarch64-installer': { 'ordinal': 6, 'name': 'MacOS aarch64 Installer'},
+    'windows-x64':             { 'ordinal': 7, 'name': 'Windows x64'},
+    'windows-x64-installer':   { 'ordinal': 8, 'name': 'Windows x64 Installer'}
 }
 
 image_type_description = {
@@ -36,57 +36,67 @@ redirect_to:
 ---
 '''
 
-class Releases:
+class SapMachineMajorVersion:
     def __init__(self, major):
         self.major = major
-        self.releases = {}
+        self.lts = utils.sapmachine_is_lts(major)
+        self.release = None
+        self.prerelease = None
 
-    def add_asset(self, asset_url, image_type, os, tag):
-        if tag not in self.releases:
-            self.releases[tag] = {}
+    def is_released(self):
+        return self.release is not None
 
-        if image_type not in self.releases[tag]:
-            self.releases[tag][image_type] = {}
+    def is_lts(self):
+        return self.lts
 
-        self.releases[tag][image_type][os] = asset_url
+    def get_release_object_to_update_if_tag_is_newer(self, tag, prerelease, url):
+        if (prerelease):
+            if self.prerelease is None or tag.is_greater_than(self.prerelease.tag):
+                self.prerelease = Release(tag, url)
+                return self.prerelease
+        else:
+            if self.release is None or tag.is_greater_than(self.release.tag):
+                self.release = Release(tag, url)
+                return self.release
 
-    def clear_assets(self):
-        self.releases.clear()
+        return None
 
-    def get_highest_update(self):
-        update = 0
+    def add_to_release_json(self, json_root):
+        if self.release is not None:
+            json_root['majors'].append({'id': str(self.major), 'label': str.format('SapMachine {0}', self.major), 'lts': self.lts, 'ea': False})
+            json_root['assets'][self.major] = self.release.to_release_json()
 
-        for tag in self.releases:
-            _, _, _, current_ud, _, _, _ = utils.sapmachine_tag_components(tag)
-            if int(current_ud) > update:
-                update = int(current_ud)
+        if self.prerelease is not None:
+            id = str(self.major) + "-ea"
+            json_root['majors'].append({'id': id, 'label': str.format('SapMachine {0}', self.major), 'lts': self.lts, 'ea': True})
+            json_root['assets'][id] = self.prerelease.to_release_json()
 
-        return update
+class Release:
+    def __init__(self, tag, url):
+        self.tag = tag
+        self.url = url
+        self.assets = {}
 
-    def transform(self):
-        json_root = {
-            self.major: {
-                'releases': []
-            }
+    def add_asset(self, image_type, os, asset_url):
+        if image_type not in self.assets:
+            self.assets[image_type] = {}
+
+        self.assets[image_type][os] = asset_url
+
+    def to_release_json(self):
+        release_json = {
+            'tag': self.tag.as_string()
         }
-
-        for tag in sorted(self.releases, reverse=True):
-            release = {
-                'tag': tag
-            }
-
-            for image_type in self.releases[tag]:
-                release[image_type] = {}
-                for os in self.releases[tag][image_type]:
-                    release[image_type][os] = self.releases[tag][image_type][os]
-
-            json_root[self.major]['releases'].append(release)
-
-        return json_root
+        for image_type in self.assets:
+            release_json[image_type] = {}
+            for os in self.assets[image_type]:
+                release_json[image_type][os] = self.assets[image_type][os]
+        return {'releases': release_json}
 
 def push_to_git(files):
     local_repo = join(os.getcwd(), 'gh-pages')
-    utils.git_clone('github.com/SAP/SapMachine.git', 'gh-pages', local_repo)
+    if not os.path.exists(local_repo):
+        raise Exception("Repository \'gh-pages\' is missing.")
 
     for _file in files:
         location = join(local_repo, _file['location'])
@@ -97,106 +107,70 @@ def push_to_git(files):
         utils.git_commit(local_repo, _file['commit_message'], [location])
 
     utils.git_push(local_repo)
-    utils.remove_if_exists(local_repo)
 
 def main(argv=None):
-    asset_pattern = re.compile(utils.sapmachine_asset_pattern())
-    major_dict = {}
-    release_dict = {}
-    image_dict = {}
-    latest_link_dict = {}
-
     releases = utils.get_github_releases()
 
+    asset_pattern = re.compile(utils.sapmachine_asset_pattern())
+    release_dict = {}
     for release in releases:
-        version, version_part, major, update, version_sap, build_number, os_ext = utils.sapmachine_tag_components(release['name'])
+        sapMachineTag = SapMachineTag.from_string(release['name'])
 
-        is_prerelease = release['prerelease']
-
-        if version is None or os_ext:
+        if sapMachineTag is None:
+            print(str.format("{0} is no SapMachine release, dropping", release['name']))
             continue
 
-        if major in major_dict:
-            if not is_prerelease and major_dict[major]:
-                # this is not a pre-release but the release before this was a pre-release
-                # remove all assets
-                if major in release_dict:
-                    release_dict[major].clear_assets()
+        major = sapMachineTag.get_major()
+        if not major in release_dict:
+            sapMachineVersion = SapMachineMajorVersion(major)
+            release_dict[major] = sapMachineVersion
+        else:
+            sapMachineVersion = release_dict[major]
 
-                # remove entry in the image dictionary
-                if major in image_dict:
-                    del image_dict[major]
-            else:
-                if not major_dict[major]:
-                    # the release before this was a release
-                    # skip, we only keep the latest release version
-                    continue
+        sapMachineRelease = sapMachineVersion.get_release_object_to_update_if_tag_is_newer(sapMachineTag, release['prerelease'], release['html_url'])
 
-        major_dict[major] = is_prerelease
-        assets = release['assets']
+        if sapMachineRelease is None:
+            continue
 
-        if is_prerelease is not True and major not in latest_link_dict:
-            latest_link_dict[major] = Template(latest_template).substitute(
-                major=major,
-                url = release['html_url']
-            )
-
-        has_dmg = False
-
-        for asset in assets:
+        for asset in release['assets']:
             match = asset_pattern.match(asset['name'])
 
-            if match is not None:
-                asset_image_type = match.group(1)
-                asset_os = match.group(3)
-                file_type = match.group(4)
+            if match is None:
+                continue
 
-                if asset_os == 'windows-x64' and file_type == '.msi':
-                    asset_os = 'windows-x64-installer'
+            image_type = match.group(1)
+            os = match.group(3)
+            file_type = match.group(4)
 
-                if asset_os == 'macos-x64':
-                    asset_os = 'osx-x64'
+            if os == 'windows-x64' and file_type == '.msi':
+                os = 'windows-x64-installer'
 
-                if asset_os == 'macos-aarch64':
-                    asset_os = 'osx-aarch64'
-
-                if asset_os == 'osx-x64' or asset_os == 'osx-aarch64':
-                    if file_type == '.dmg':
-                        has_dmg = True
-                    elif has_dmg:
-                        continue
-
-                tag = release['name']
-                image_is_lts = utils.sapmachine_is_lts(major) and not release['prerelease']
-
-                if major not in image_dict:
-                    image_dict[major] = {
-                        'label': str.format('SapMachine {0}', major),
-                        'lts': image_is_lts,
-                        'ea': release['prerelease']
-                    }
-
-                if major in release_dict:
-                    releases_for_major = release_dict[major]
+            if os == 'macos-x64' or os == 'osx-x64':
+                if file_type == '.dmg':
+                    os = 'macos-x64-installer'
                 else:
-                    releases_for_major = Releases(major)
-                    release_dict[major] = releases_for_major
+                    os = 'macos-x64'
 
-                release_dict[major].add_asset(asset['browser_download_url'], asset_image_type, asset_os, tag)
+            if os == 'macos-aarch64' or os == 'osx-aarch64':
+                if file_type == '.dmg':
+                    os = 'macos-aarch64-installer'
+                else:
+                    os = 'macos-aarch64'
 
-    latest_version = 0
-    latest_lts_version = 0
-    latest_non_lts_version = 0
+            sapMachineRelease.add_asset(image_type, os, asset['browser_download_url'])
 
-    for major in image_dict:
-        if image_dict[major]['lts'] and int(major) > latest_lts_version:
-            latest_lts_version = int(major)
-        if not image_dict[major]['lts'] and not image_dict[major]['ea'] and int(major) > latest_non_lts_version:
-            latest_non_lts_version = int(major)
-        if not image_dict[major]['ea'] and int(major) > latest_version:
-            latest_version = int(major)
-
-    latest_version_update = release_dict[str(latest_version)].get_highest_update()
+    # reduce releases dictionary by removing obsolete versions
+    # Keep LTS versions, latest release and the release that is currently in development
+    latest_released_version = 0
+    for major in list(release_dict.keys()):
+        if not release_dict[major].is_released():
+            continue
+        if major > latest_released_version:
+            if latest_released_version > 0 and not release_dict[latest_released_version].is_lts():
+                del release_dict[latest_released_version]
+            latest_released_version = major
+        elif not release_dict[major].is_lts():
+            del release_dict[major]
 
     json_root = {
         'majors':[],
@@ -205,56 +179,35 @@ def main(argv=None):
         'assets':{}
     }
 
-    for major in sorted(image_dict):
-        add = False
-        if image_dict[major]['lts']:
-            # keep all lts versions:
-            add = True
-        else:
-            # keep ea versions, latest version and the one before the latests version if the latest version has not been updated
-            if int(major) >= latest_non_lts_version and int(major) >= latest_lts_version or int(major) == (latest_version - 1) and latest_version_update == 0:
-                add = True
+    for major in release_dict:
+        release_dict[major].add_to_release_json(json_root)
 
-        if add:
-            json_root['majors'].append({'id': major, 'label': image_dict[major]['label'], 'lts': image_dict[major]['lts'], 'ea': image_dict[major]['ea']})
-        else:
-            del image_dict[major]
-
-    def get_os_key(os):
-        return os_description[os]['ordinal']
-
-    def get_image_type_key(image_type):
-        return image_type_description[image_type]['ordinal']
-
-    for os in sorted(os_description, key=get_os_key):
-        json_root['os'].append({'key': os, 'value': os_description[os]['name'], 'ordinal': os_description[os]['ordinal']})
-
-    for image_type in sorted(image_type_description, key=get_image_type_key):
+    for image_type in image_type_description:
         json_root['imageTypes'].append({'key': image_type, 'value': image_type_description[image_type]['name'], 'ordinal': image_type_description[image_type]['ordinal']})
 
-    for major in sorted(release_dict):
-        if major in image_dict:
-            json_root['assets'].update(release_dict[major].transform())
+    for os in os_description:
+        json_root['os'].append({'key': os, 'value': os_description[os]['name'], 'ordinal': os_description[os]['ordinal']})
 
-    files = [
-        {
-            'location': join('assets', 'data', 'sapmachine_releases.json'),
-            'data': json.dumps(json_root, indent=4),
-            'commit_message': 'Updated release data.'
-        }
-    ]
+    files = [{
+        'location': join('assets', 'data', 'sapmachine_releases.json'),
+        'data': json.dumps(json_root, indent=4),
+        'commit_message': 'Updated release data.'
+    }]
 
-    for major in latest_link_dict:
+    for major in release_dict:
+        if not release_dict[major].is_released():
+            continue
+
         files.append({
-            'location': join('latest', major, 'index.md'),
-            'data': latest_link_dict[major],
+            'location': join('latest', str(major), 'index.md'),
+            'data': Template(latest_template).substitute(
+                major = major,
+                url = release_dict[major].release.url
+            ),
             'commit_message': str.format('Updated latest link for SapMachine {0}', major)
         })
 
     push_to_git(files)
-
-    #with open('website_data.json', 'w') as website_data_json:
-    #    website_data_json.write(json.dumps(json_root, indent=4))
 
     return 0
 
