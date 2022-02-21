@@ -87,6 +87,9 @@ class Release:
         self.assets[image_type][os] = asset_url
 
     def to_release_json(self):
+        json_root = {
+            'releases': []
+        }
         release_json = {
             'tag': self.tag.as_string()
         }
@@ -94,7 +97,8 @@ class Release:
             release_json[image_type] = {}
             for os in self.assets[image_type]:
                 release_json[image_type][os] = self.assets[image_type][os]
-        return {'releases': release_json}
+        json_root['releases'].append(release_json)
+        return json_root
 
 def push_to_git(files):
     local_repo = join(os.getcwd(), 'gh-pages')
