@@ -1,7 +1,7 @@
 #!/bin/bash
 set -ex
 
-MAJOR_VERSION=`echo $VERSION | cut -d . -f 1`
+MAJOR_VERSION=$(echo $VERSION | cut -d . -f 1)
 
 gpg --import $GPGSEC
 
