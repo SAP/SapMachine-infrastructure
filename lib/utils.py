@@ -310,6 +310,12 @@ def git_commit(dir, message, to_add):
     except Exception:
         print('git commit failed')
 
+def git_checkout(dir, branch):
+    try:
+        run_cmd(['git', 'checkout', branch], cwd=dir)
+    except Exception:
+        print('git checkout failed')
+
 def git_tag(dir, tag_name):
     try:
         run_cmd(['git', 'tag', tag_name], cwd=dir)

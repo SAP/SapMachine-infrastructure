@@ -94,9 +94,11 @@ class Release:
         return {'releases': release_json}
 
 def push_to_git(files):
+    print("debug2")
     local_repo = join(os.getcwd(), 'gh-pages')
     if not os.path.exists(local_repo):
         raise Exception("Repository \'gh-pages\' is missing.")
+    utils.git_checkout(local_repo, "gh-pages")
 
     for _file in files:
         location = join(local_repo, _file['location'])
@@ -109,7 +111,9 @@ def push_to_git(files):
     utils.git_push(local_repo)
 
 def main(argv=None):
+    print("debug")
     releases = utils.get_github_releases()
+    print("debug1")
 
     asset_pattern = re.compile(utils.sapmachine_asset_pattern())
     release_dict = {}
