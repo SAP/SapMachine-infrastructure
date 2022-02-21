@@ -12,6 +12,9 @@ from os.path import join
 from string import Template
 from versions import SapMachineTag
 
+sapMachinePushURL= str.format('https://{0}:{1}@github.com/SAP/SapMachine.git',
+    os.environ['GIT_USER'], os.environ['GIT_PASSWORD'])
+
 os_description = {
     'linux-ppc64le':           { 'ordinal': 1, 'name': 'Linux ppc64le' },
     'linux-x64':               { 'ordinal': 2, 'name': 'Linux x64' },
@@ -94,11 +97,10 @@ class Release:
         return {'releases': release_json}
 
 def push_to_git(files):
-    print("debug2")
     local_repo = join(os.getcwd(), 'gh-pages')
     if not os.path.exists(local_repo):
         raise Exception("Repository \'gh-pages\' is missing.")
-    utils.git_checkout(local_repo, "gh-pages")
+    utils.run_cmd("git checkout gh-pages".split(' '), cwd=local_repo)
 
     for _file in files:
         location = join(local_repo, _file['location'])
@@ -108,12 +110,10 @@ def push_to_git(files):
             out.write(_file['data'])
         utils.git_commit(local_repo, _file['commit_message'], [location])
 
-    utils.git_push(local_repo)
+    utils.run_cmd(str.format('git push {0}', sapMachinePushURL).split(' '), cwd=local_repo)
 
 def main(argv=None):
-    print("debug")
     releases = utils.get_github_releases()
-    print("debug1")
 
     asset_pattern = re.compile(utils.sapmachine_asset_pattern())
     release_dict = {}
