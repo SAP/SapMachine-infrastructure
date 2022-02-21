@@ -103,18 +103,24 @@ class Release:
 def push_to_git(files):
     local_repo = join(os.getcwd(), 'gh-pages')
     if not os.path.exists(local_repo):
-        raise Exception("Repository \'gh-pages\' is missing.")
-    utils.run_cmd("git checkout gh-pages".split(' '), cwd=local_repo)
+        utils.run_cmd("git clone --branch gh-pages --single-branch https://github.com/SAP/SapMachine.git gh-pages".split(' '))
+    else:
+        utils.run_cmd("git pull origin gh-pages".split(' '), cwd=local_repo)
 
+    commits = False
     for _file in files:
         location = join(local_repo, _file['location'])
         if not os.path.exists(os.path.dirname(location)):
             os.makedirs(os.path.dirname(location))
         with open(location, 'w+') as out:
             out.write(_file['data'])
-        utils.git_commit(local_repo, _file['commit_message'], [location])
+        _, diff, _  = utils.run_cmd("git diff".split(' '), cwd=local_repo, std=True)
+        if diff.strip():
+            utils.git_commit(local_repo, _file['commit_message'], [location])
+            commits = True
 
-    utils.run_cmd(str.format('git push {0}', sapMachinePushURL).split(' '), cwd=local_repo)
+    if commits:
+        utils.run_cmd(str.format('git push {0}', sapMachinePushURL).split(' '), cwd=local_repo)
 
 def main(argv=None):
     releases = utils.get_github_releases()
