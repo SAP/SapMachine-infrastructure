@@ -102,7 +102,7 @@ class Tag:
 
         self_build_number = self.build_number if self.build_number is not None else -1
         other_build_number = other.build_number if other.build_number is not None else -1
-        if other_build_number > other_build_number:
+        if self_build_number > other_build_number:
             return True
         else:
             return False
