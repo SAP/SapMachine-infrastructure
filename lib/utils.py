@@ -368,7 +368,7 @@ def github_api_request(api=None, url=None, owner='SAP', repository='SapMachine',
         if 'GIT_PASSWORD' in os.environ:
             request.add_header('Authorization', str.format('token {0}', os.environ['GIT_PASSWORD']))
         else:
-            print("Warning: No GitHub credentials provided. This could quickly lead to exceeding the GitHub API rate limit.")
+            print("Warning: No GitHub credentials provided. This could quickly lead to exceeding the GitHub API rate limit.", file=sys.stderr)
 
         if content_type is not None:
             request.add_header('Content-Type', content_type)
