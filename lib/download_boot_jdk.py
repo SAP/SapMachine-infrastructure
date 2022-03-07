@@ -23,6 +23,10 @@ extra_bootjdks = [
             {
                 'name': 'sapmachine-jdk-11.0.12_linux-aarch64_bin.tar.gz',
                 'browser_download_url': 'https://github.com/SAP/SapMachine/releases/download/sapmachine-11.0.12/sapmachine-jdk-11.0.12-beta_linux-aarch64_bin.tar.gz'
+            },
+            {
+                'name': 'jdk-11.0.14_macos-aarch64_bin.tar.gz',
+                'browser_download_url': 'https://cdn.azul.com/zulu/bin/zulu11.54.25-ca-jdk11.0.14.1-macosx_aarch64.tar.gz'
             }
         ]
     },

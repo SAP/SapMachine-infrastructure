@@ -90,6 +90,9 @@
                     steps {{
                         cleanWs deleteDirs: true, disableDeferredWipeout: true
                         checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+                        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
+                            sh "python3 SapMachine-Infrastructure/lib/download_boot_jdk.py -m ${{params.BUILD_JDK}} -d ${{WORKSPACE}}"
+                        }}
                     }}
                 }}
                 stage("Checkout Repository") {{
@@ -112,8 +115,10 @@
                     }}
                     environment {{
                         BUILD_JDK = "${{WORKSPACE}}/boot_jdk"
+                        JAVA_HOME = "${{WORKSPACE}}/boot_jdk"
                     }}
                     steps {{
+                        sh 'ls ${{WORKSPACE}}/boot_jdk'
                         sh 'SapMachine-Infrastructure/lib/build_jmc.sh'
                     }}
                 }}
@@ -128,7 +133,7 @@
                 stage("Test") {{
                     {docker_agent}
                     when {{
-                        expression {{ !(JOB_NAME ==~ /((\S*)(windows_x86_64)(\S*))/) }}
+                        expression {{ !(JOB_NAME ==~ /((\S*)(windows_x86_64)(\S*))/) && false }}
                     }}
                     environment {{
                         BUILD_JDK = "${{WORKSPACE}}/boot_jdk"
@@ -141,7 +146,6 @@
                     steps {{
                         script {{
                             def artifact_name = readFile "${{env.WORKSPACE}}/jmc/artifact.txt"
-
                             step ([$class: 'ArtifactArchiver', artifacts: artifact_name]);
                         }}
                     }}
