@@ -17,10 +17,10 @@ fi
 
 cd "${WORKSPACE}"
 
-test -e sapmachine-jdk-11.0.14.1_windows-x64_bin.zip || wget https://github.com/SAP/SapMachine/releases/download/sapmachine-11.0.14.1/sapmachine-jdk-11.0.14.1_windows-x64_bin.zip
+wget https://github.com/SAP/SapMachine/releases/download/sapmachine-11.0.14.1/sapmachine-jdk-11.0.14.1_windows-x64_bin.zip
 unzip sapmachine-jdk-11.0.14.1_windows-x64_bin.zip
 export JAVA_HOME="`pwd`/sapmachine-jdk-11.0.14.1"
 export PATH="`pwd`/sapmachine-jdk-11.0.14.1/bin:$PATH"
-test -e apache-maven-3.8.4-bin.zip || wget https://dlcdn.apache.org/maven/maven-3/3.8.4/binaries/apache-maven-3.8.4-bin.zip
+wget https://dlcdn.apache.org/maven/maven-3/3.8.4/binaries/apache-maven-3.8.4-bin.zip
 unzip apache-maven-3.8.4-bin.zip
 export PATH="`pwd`/apache-maven-3.8.4/bin:$PATH"
