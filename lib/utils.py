@@ -3,24 +3,24 @@ Copyright (c) 2001-2021 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
+import gzip
+import json
 import os
+import platform
+import re
+import requests
 import sys
 import shutil
 import tarfile
-import gzip
-import re
-import json
-import platform
 import zipfile
-import requests
-from zipfile import ZipFile, ZipInfo
-from urllib.request import urlopen, Request
-from urllib.parse import quote
 from os import remove
-from os.path import join
 from os.path import exists
-from shutil import rmtree
+from os.path import join
 from shutil import move
+from shutil import rmtree
+from urllib.parse import quote
+from urllib.request import urlopen, Request
+from zipfile import ZipFile, ZipInfo
 
 def run_cmd(cmdline, throw=True, cwd=None, env=None, std=False, shell=False):
     import subprocess
@@ -185,50 +185,6 @@ def sapmachine_is_lts(major):
     if not isinstance(major, int):
         major_as_int = int(major)
     return major_as_int in active_releases['lts_releases']
-
-def sapmachine_tag_pattern():
-    return '(sapmachine)-((((\d+)((\.(\d+))*)?)(\+(\d+))?)(-(\d+))?)(\-((\S)+))?'
-
-def sapmachine_tag_components(tag, multiline=False):
-    pattern = re.compile(sapmachine_tag_pattern())
-
-    if multiline:
-        match = re.search(pattern, tag)
-    else:
-        match = pattern.match(tag)
-
-    if match is None:
-        return None, None, None, None, None, None, None
-
-    version = match.group(2)
-    version_part = match.group(4)
-    major = match.group(5)
-
-    if len(match.groups()) >= 10:
-        build_number = match.group(10)
-    else:
-        build_number = ''
-
-    if len(match.groups()) >= 13:
-        os_ext = match.group(13)
-    else:
-        os_ext = ''
-
-    version_parts = version_part.split('.')
-    if len(version_parts) >= 3:
-        update = version_parts[2]
-    else:
-        update = '0'
-
-    if len(match.groups()) >= 12:
-        version_sap = match.group(12)
-    else:
-        if len(version_parts) >= 5:
-            version_sap = version_parts[4]
-        else:
-            version_sap = ''
-
-    return version, version_part, major, update, version_sap, build_number, os_ext
 
 def sapmachine_version_pattern():
     return 'build ((\d+)((\.(\d+))*)?)'
@@ -431,45 +387,34 @@ def sapmachine_asset_base_pattern():
 def sapmachine_asset_pattern():
     return sapmachine_asset_base_pattern() + '(\.tar\.gz|\.zip|\.msi|\.dmg)'
 
-def get_asset_url(tag, platform, pattern=None):
-    jre_url = None
-    jdk_url = None
-    error_msg = str.format('failed to fetch assets for tag "{0}" and platform="{1}', tag, platform)
+def get_asset_urls(tag, platform, asset_types=["jdk", "jre"], pattern=None):
+    asset_urls = {}
 
     try:
-        pattern_string = sapmachine_asset_base_pattern() + pattern if pattern else sapmachine_asset_pattern()
-        asset_pattern = re.compile(pattern_string)
-        release = github_api_request(str.format('releases/tags/{0}', quote(tag)), per_page=100)
+        release = github_api_request(str.format('releases/tags/{0}', quote(tag.as_string())), per_page=100)
 
         if 'assets' in release:
+            asset_pattern = re.compile(sapmachine_asset_base_pattern() + pattern if pattern else sapmachine_asset_pattern())
+
             assets = release['assets']
             for asset in assets:
                 name = asset['name']
-                download_url = asset['browser_download_url']
                 match = asset_pattern.match(name)
 
                 if match is not None:
-                    asset_image_type = match.group(1)
+                    asset_type = match.group(1)
                     asset_version = match.group(2)
                     asset_platform = match.group(3)
 
-                    print((str.format('found {0} image with version={1} and platform={2}',
-                        asset_image_type,
-                        asset_version,
-                        asset_platform)))
+                    print((str.format('Found {0} image with version={1} and platform={2}', asset_type, asset_version, asset_platform)))
+                    if (asset_platform == platform and asset_type in asset_types):
+                        asset_urls[asset_type] = asset['browser_download_url']
 
-                    if asset_image_type == 'jdk' and asset_platform == platform:
-                        jdk_url = download_url
-                    elif asset_image_type == 'jre' and asset_platform == platform:
-                        jre_url = download_url
     except Exception as e:
         print(e)
-        raise Exception(error_msg)
+        raise Exception(str.format('Failed to fetch assets for tag "{0}" and platform="{1}"', tag.as_string(), platform))
 
-    if jdk_url is None or jre_url is None:
-        raise Exception(error_msg)
-
-    return jdk_url, jre_url
+    return asset_urls
 
 def sapmachine_tag_is_release(tag):
     response = github_api_request('releases')

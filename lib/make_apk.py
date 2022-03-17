@@ -1,28 +1,22 @@
 '''
-Copyright (c) 2001-2018 by SAP SE, Walldorf, Germany.
+Copyright (c) 2017-2022 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
-import os
-import sys
-import shutil
 import argparse
 import glob
+import os
+import sys
 import utils
 
-from string import Template
-
 from os import mkdir
-
+from os.path import expanduser
 from os.path import join
 from os.path import realpath
-from os.path import exists
-from os.path import expanduser
-
-from shutil import rmtree
-from shutil import copytree
-from shutil import move
 from shutil import copy
+from shutil import rmtree
+from string import Template
+from versions import SapMachineTag
 
 def generate_configuration(templates_dir, target_dir, package_name, version, package_release, description, archive_url):
     archive_name = archive_url.rsplit('/', 1)[-1]
@@ -44,19 +38,15 @@ def main(argv=None):
     args = parser.parse_args()
 
     templates_dir = realpath(args.templates_directory)
-    tag = args.tag
 
-    if tag.endswith('-alpine'):
-        # the "-alpine" tags do not contain any assets
-        tag = tag[:-len('-alpine')]
+    tag = SapMachineTag.from_string(args.tag)
 
     cwd = os.getcwd()
     home = expanduser("~")
     work_dir = join(cwd, 'apk_work')
-    version, version_part, major, update, version_sap, build_number, os_ext = utils.sapmachine_tag_components(tag)
-    jdk_url, jre_url = utils.get_asset_url(tag, 'linux-x64-musl')
-    jdk_name = str.format('sapmachine-{0}-jdk', major)
-    jre_name = str.format('sapmachine-{0}-jre', major)
+    urls = utils.get_asset_urls(tag, 'linux-x64-musl')
+    jdk_name = str.format('sapmachine-{0}-jdk', tag.get_major())
+    jre_name = str.format('sapmachine-{0}-jre', tag.get_major())
     jdk_dir = join(work_dir, jdk_name)
     jre_dir = join(work_dir, jre_name)
 
@@ -66,8 +56,8 @@ def main(argv=None):
     mkdir(jdk_dir)
     mkdir(jre_dir)
 
-    generate_configuration(templates_dir, jdk_dir, jdk_name, version, '0', 'The SapMachine Java Development Kit', jdk_url)
-    generate_configuration(templates_dir, jre_dir, jre_name, version, '0', 'The SapMachine Java Runtime Environment', jre_url)
+    generate_configuration(templates_dir, jdk_dir, jdk_name, tag.get_version_string(), '0', 'The SapMachine Java Development Kit', urls["jdk"])
+    generate_configuration(templates_dir, jre_dir, jre_name, tag.get_version_string(), '0', 'The SapMachine Java Runtime Environment', urls["jre"])
 
     utils.run_cmd(['abuild', 'checksum'], cwd=jdk_dir)
     utils.run_cmd(['abuild', 'checksum'], cwd=jre_dir)
@@ -81,6 +71,8 @@ def main(argv=None):
 
     for apk_file in apk_files:
         copy(apk_file, cwd)
+
+    return 0
 
 if __name__ == "__main__":
     sys.exit(main())

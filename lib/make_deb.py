@@ -1,45 +1,31 @@
 '''
-Copyright (c) 2001-2017 by SAP SE, Walldorf, Germany.
+Copyright (c) 2017-2022 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
-import os
-import sys
-import shutil
-import zipfile
-import tarfile
-import urllib.request, urllib.parse, urllib.error
-import re
-import datetime
 import argparse
 import codecs
+import datetime
 import glob
-
-from string import Template
+import os
+import sys
+import utils
 
 from os import remove
 from os import mkdir
-from os import chdir
 from os import listdir
-
 from os.path import join
 from os.path import realpath
-from os.path import dirname
 from os.path import basename
-from os.path import exists
 from os.path import isfile
-
-from shutil import rmtree
-from shutil import copytree
-from shutil import move
 from shutil import copy
-
-import utils
+from string import Template
+from versions import SapMachineTag
 
 def clone_sapmachine(target):
     sapmachine_repo = 'https://github.com/SAP/SapMachine.git'
     sapmachine_branch = 'sapmachine'
-    utils.run_cmd(['git', 'clone', '-b', sapmachine_branch, '--depth', '1', sapmachine_repo, target])
+    utils.run_cmd(['git', 'clone', '-b', sapmachine_branch, '--single-branch', '--depth', '1', sapmachine_repo, target])
 
 def gather_licenses(src_dir):
     licenses = []
@@ -100,15 +86,13 @@ def main(argv=None):
     args = parser.parse_args()
 
     templates_dir = realpath(args.templates_directory)
-    tag = args.tag
 
     cwd = os.getcwd()
     work_dir = join(cwd, 'deb_work')
-    version, version_part, major, update, version_sap, build_number, os_ext = utils.sapmachine_tag_components(tag)
-    version = version.replace('-', '.')
-    jdk_name = str.format('sapmachine-{0}-jdk-{1}', major, version)
-
-    jdk_url, jre_url = utils.get_asset_url(tag, 'linux-x64')
+    tag = SapMachineTag.from_string(args.tag)
+    version = tag.get_version_string().replace('-', '.')
+    jdk_name = str.format('sapmachine-{0}-jdk-{1}', tag.get_major(), version)
+    jdk_url= utils.get_asset_urls(tag, 'linux-x64', ["jdk"])['jdk']
 
     utils.remove_if_exists(work_dir)
     mkdir(work_dir)
@@ -133,7 +117,7 @@ def main(argv=None):
 
     generate_configuration(
         templates_dir=join(templates_dir, 'jdk'),
-        major=major,
+        major=str(tag.get_major()),
         target_dir=join(jdk_dir, 'debian'),
         exploded_image=jdk_exploded_image,
         src_dir=src_dir,
@@ -147,7 +131,7 @@ def main(argv=None):
         copy(deb_file, cwd)
         remove(deb_file)
 
-    #rmtree(work_dir)
+    return 0
 
 if __name__ == "__main__":
     sys.exit(main())

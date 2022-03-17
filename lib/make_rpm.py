@@ -1,33 +1,22 @@
 '''
-Copyright (c) 2001-2019 by SAP SE, Walldorf, Germany.
+Copyright (c) 2017-2022 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
+import argparse
+import glob
 import os
 import sys
-import argparse
 import utils
-import glob
-import shutil
 
-from os import remove
-from os import mkdir
-from os import chdir
 from os import listdir
-
-from os.path import join
-from os.path import realpath
-from os.path import dirname
-from os.path import basename
-from os.path import exists
+from os import mkdir
+from os import remove
 from os.path import isfile
-
-from shutil import rmtree
-from shutil import copytree
-from shutil import move
+from os.path import join
 from shutil import copy
-
 from string import Template
+from versions import SapMachineTag
 
 spec_template = '''
 Name:       sapmachine-jdk
@@ -72,22 +61,19 @@ def main(argv=None):
     parser.add_argument('-t', '--tag', help='the tag to create the debian packages from', metavar='TAG', required=True)
     args = parser.parse_args()
 
-    tag = args.tag
-
     cwd = os.getcwd()
     work_dir = join(cwd, 'rpm_work')
-    version, version_part, major, update, version_sap, build_number, os_ext = utils.sapmachine_tag_components(tag)
-    version = version.replace('-', '.')
+    tag = SapMachineTag.from_string(args.tag)
+    version = tag.get_version_string().replace('-', '.')
     jdk_name = str.format('sapmachine-jdk-{0}', version)
-
-    jdk_url, jre_url = utils.get_asset_url(tag, 'linux-x64')
+    urls = utils.get_asset_urls(tag, 'linux-x64', ["jdk"])
 
     utils.remove_if_exists(work_dir)
     mkdir(work_dir)
 
-    jdk_archive = join(work_dir, jdk_url.rsplit('/', 1)[-1])
+    jdk_archive = join(work_dir, urls["jdk"].rsplit('/', 1)[-1])
 
-    utils.download_artifact(jdk_url, jdk_archive)
+    utils.download_artifact(urls["jdk"], jdk_archive)
     utils.extract_archive(jdk_archive, work_dir)
 
     bin_dir = join(work_dir, jdk_name, 'bin')
@@ -96,14 +82,14 @@ def main(argv=None):
     alternatives_t = Template(alternatives_template)
 
     for tool in tools:
-        alternatives.append(alternatives_t.substitute(tool=tool, major=major))
+        alternatives.append(alternatives_t.substitute(tool=tool, major=tag.get_major()))
 
     alternatives = '\n'.join(alternatives)
 
     specfile_t = Template(spec_template)
     specfile_content = specfile_t.substitute(
         version=version,
-        major=major,
+        major=tag.get_major(),
         alternatives=alternatives,
         workdir=work_dir
     )

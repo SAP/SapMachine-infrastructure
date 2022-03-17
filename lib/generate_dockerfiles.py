@@ -1,18 +1,17 @@
 '''
-Copyright (c) 2001-2018 by SAP SE, Walldorf, Germany.
+Copyright (c) 2017-2022 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
+import argparse
 import os
 import sys
-import json
-import re
 import utils
-import argparse
 
 from os.path import join
 from string import Template
 from utils import github_api_request
+from versions import SapMachineTag
 
 dockerfile_template = '''
 FROM ubuntu:20.04
@@ -74,15 +73,16 @@ docker run -it --rm myapp
 ```
 '''
 
-def process_release(release, tags, git_dir):
-    version, version_part, major, update, version_sap, build_number, os_ext = utils.sapmachine_tag_components(release['name'])
-    tag_name = version_part
+def process_release(release, infrastructure_tags, git_dir):
+    tag = SapMachineTag.from_string(release['name'])
+    version_string = tag.get_version_string()
+    major = str(tag.get_major())
     skip_tag = False
     dockerfile_dir = join(git_dir, 'dockerfiles', 'official', major)
 
-    for tag in tags:
-        if tag['name'] == tag_name:
-            print(str.format('tag "{0}" already exists for release "{1}"', tag_name, release['name']))
+    for infrastructure_tag in infrastructure_tags:
+        if infrastructure_tag['name'] == version_string:
+            print(str.format('tag "{0}" already exists for release "{1}"', version_string, release['name']))
             skip_tag = True
             break
 
@@ -93,7 +93,7 @@ def process_release(release, tags, git_dir):
         dockerfile_path = join(dockerfile_dir, 'Dockerfile')
         with open(dockerfile_path, 'w+') as dockerfile:
             dockerfile.write(Template(dockerfile_template).substitute(
-                version=str.format('sapmachine-{0}-jdk={1}', major, version_part),
+                version=str.format('sapmachine-{0}-jdk={1}', major, version_string),
                 major=major
             ))
 
@@ -109,18 +109,17 @@ def process_release(release, tags, git_dir):
                 docker_tag=docker_tag,
                 what=what,
                 major=major,
-                version=version_part
+                version=version_string
             ))
 
         utils.git_commit(git_dir, 'updated Dockerfile', [dockerfile_path, readme_path])
-        utils.git_tag(git_dir, tag_name)
+        utils.git_tag(git_dir, version_string)
         utils.git_push(git_dir)
-        utils.git_push_tag(git_dir, tag_name)
-
+        utils.git_push_tag(git_dir, version_string)
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
-    parser.add_argument('--workdir', help='specify the working directory', metavar='DIR', default='docker_work' ,required=False)
+    parser.add_argument('--workdir', help='specify the working directory', metavar='DIR', default='docker_work', required=False)
     args = parser.parse_args()
 
     workdir = os.path.realpath(args.workdir)
@@ -138,12 +137,13 @@ def main(argv=None):
         if release['prerelease']:
             continue
 
-        version, version_part, major, update, version_sap, build_number, os_ext = utils.sapmachine_tag_components(release['name'])
+        tag = SapMachineTag.from_string(release['name'])
+        major = tag.get_major()
+        update = tag.get_update()
 
         if utils.sapmachine_is_lts(major):
             if major in docker_releases:
-                _, _, _, lts_update, _, _, _ = utils.sapmachine_tag_components(docker_releases[major]['name'])
-                if int(lts_update) < int(update):
+                if SapMachineTag.from_string(docker_releases[major]['name']).get_update() < update:
                     docker_releases[major] = release
             else:
                 docker_releases[major] = release
@@ -151,18 +151,19 @@ def main(argv=None):
         if stable_release == None:
             stable_release = release
         else:
-            _, _, stable_major, stable_update, _, _, _ = utils.sapmachine_tag_components(stable_release['name'])
-            if int(major) > int(stable_major) or (int(major) == int(stable_major) and int(update) > int(stable_update)):
+            stable_tag = SapMachineTag.from_string(stable_release['name'])
+            if major > stable_tag.get_major() or (major == stable_tag.get_major() and update > stable_tag.get_update()):
                 stable_release = release
 
     print('Determined the following versions for processing:')
     for release in docker_releases:
-        version, _, _, _, _, _, _ = utils.sapmachine_tag_components(docker_releases[release]['name'])
-        print(str.format('LTS {1}: {0}', version, release))
-    stable_version, _, stable_major, _, _, _, _ = utils.sapmachine_tag_components(stable_release['name'])
-    print(str.format('stable: {0}', stable_version))
+        print(str.format('LTS {1}: {0}', SapMachineTag.from_string(docker_releases[release]['name']).get_version_string(), release))
+    stable_tag = SapMachineTag.from_string(stable_release['name'])
+    print(str.format('STABLE: {0}', stable_tag.get_version_string()))
 
-    if not (stable_version in docker_releases):
+    stable_major = stable_tag.get_major()
+    if not (stable_major in docker_releases):
+        print("Adding stable release to docker_releases")
         docker_releases[stable_major] = stable_release
 
     utils.git_clone('github.com/SAP/SapMachine-infrastructure', 'master', git_dir)
@@ -170,9 +171,9 @@ def main(argv=None):
     versions_dir = join(git_dir, 'dockerfiles', 'official')
     removed = []
     for f in os.listdir(versions_dir):
-        if not f in docker_releases:
+        if not int(f) in docker_releases:
             utils.remove_if_exists(join(versions_dir, f))
-            removed.append(join(versions_dir, f));
+            removed.append(join(versions_dir, f))
     if removed != []:
         utils.git_commit(git_dir, 'remove discontinued versions', removed)
 

@@ -1,17 +1,13 @@
 '''
-Copyright (c) 2001-2018 by SAP SE, Walldorf, Germany.
+Copyright (c) 2018-2022 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
-import os
-import sys
-import json
-import re
-import utils
 import argparse
+import sys
 
 from utils import github_api_request
-from os.path import join
+from versions import SapMachineTag
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
@@ -25,20 +21,27 @@ def main(argv=None):
     include_prereleases = args.include_prereleases
     tag_list = []
 
-    releases = github_api_request('releases')
+    releases = github_api_request('releases', per_page=300)
 
     for release in releases:
         if release['prerelease'] is True and not include_prereleases:
             continue
 
-        version, version_part, major, update, version_sap, build_number, os_ext = utils.sapmachine_tag_components(release['name'])
+        tag = SapMachineTag.from_string(release['name'])
 
-        if major is None or major != requested_major or os_ext:
+        if tag is None:
+            continue
+
+        major = tag.get_major()
+
+        if major is None or str(major) != requested_major:
             continue
 
         tag_list.append(release['name'])
 
     print(separator.join([tag for tag in tag_list]))
+
+    return 0
 
 if __name__ == "__main__":
     sys.exit(main())
