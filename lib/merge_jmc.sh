@@ -20,6 +20,9 @@ git checkout master
 git merge --no-edit upstream/master
 git checkout sap
 git rebase master
+git checkout sap application/org.openjdk.jmc.rcp.application/splash.bmp
+git add application/org.openjdk.jmc.rcp.application/splash.bmp
+git -c core.editor=true" rebase continue
 RESULT=`git push --follow-tags origin master 2>&1`
 echo $RESULT
 if [[ "${RESULT}" == "Everything up-to-date" ]]; then
