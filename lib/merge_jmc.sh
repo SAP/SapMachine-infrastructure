@@ -23,7 +23,7 @@ git checkout sap
 git rebase master
 git checkout sap application/org.openjdk.jmc.rcp.application/splash.bmp
 git add application/org.openjdk.jmc.rcp.application/splash.bmp
-git -c core.editor=true rebase --continue
+git -c core.editor=true rebase --continue || true 
 git push -f origin sap
 git checkout master
 RESULT=`git push --follow-tags origin master 2>&1`
