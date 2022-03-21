@@ -14,6 +14,7 @@ git checkout master
 git remote remove origin
 git remote add origin https://${GIT_PASSWORD}@github.com/SAP/jmc.git
 git pull origin master
+git pull origin sap
 git remote add upstream https://github.com/openjdk/jmc.git || true
 git fetch upstream
 git checkout master
