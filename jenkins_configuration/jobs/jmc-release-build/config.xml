@@ -27,7 +27,7 @@
                 withCredentials([usernamePassword(credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD')]) {
                     script {
                         env.JMC_BUILD_REQUIRED = sh(
-                                script: "SapMachine-Infrastructure/lib/merge_jmc_prof.sh",
+                                script: "SapMachine-Infrastructure/lib/merge_jmc.sh",
                                 returnStatus: true
                         )
                     }
