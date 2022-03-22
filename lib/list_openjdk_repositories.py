@@ -1,19 +1,13 @@
 '''
-Copyright (c) 2001-2019 by SAP SE, Walldorf, Germany.
+Copyright (c) 2019-2022 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
-import os
-import sys
-import json
-import re
-import utils
 import argparse
-from urllib.request import urlopen, Request
-from urllib.parse import quote
+import sys
 from urllib.error import HTTPError
+from urllib.request import urlopen, Request
 
-openjdk_hg_base = 'http://hg.openjdk.java.net/'
 openjdk_git_base = 'https://github.com/'
 
 jdk_major_start = 11
@@ -77,20 +71,14 @@ def test_repositories(scm_base, repository_base, repository_suffix = ''):
 def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('-s', '--separator', help='the separator char', metavar='SEPARATOR', required=False, default=' ')
-    parser.add_argument('-m', '--mercurial', help='enumerate mercurial repositories, instead of git', action='store_true', default=False)
     args = parser.parse_args()
 
     openjdk_repositories = []
 
-    if args.mercurial != True:
-        openjdk_repositories.append('openjdk/jdk')
-        openjdk_repositories.extend(test_repositories(openjdk_git_base, 'openjdk/jdk'))
-        openjdk_repositories.extend(test_repositories(openjdk_git_base, 'openjdk/jdk', 'u'))
-        openjdk_repositories.extend(test_repositories(openjdk_git_base, 'openjdk/jdk', 'u-dev'))
-    #else:
-        #openjdk_repositories.extend(test_repositories(openjdk_hg_base, 'jdk/jdk'))
-        #openjdk_repositories.extend(test_repositories(openjdk_hg_base, 'jdk-updates/jdk', 'u'))
-        #openjdk_repositories.extend(test_repositories(openjdk_hg_base, 'jdk-updates/jdk', 'u-dev'))
+    openjdk_repositories.append('openjdk/jdk')
+    openjdk_repositories.extend(test_repositories(openjdk_git_base, 'openjdk/jdk'))
+    openjdk_repositories.extend(test_repositories(openjdk_git_base, 'openjdk/jdk', 'u'))
+    openjdk_repositories.extend(test_repositories(openjdk_git_base, 'openjdk/jdk', 'u-dev'))
 
     print(args.separator.join(openjdk_repositories))
     return 0
