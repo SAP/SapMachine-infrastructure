@@ -181,6 +181,65 @@
         }}
 
 - job:
+    name: jmc-repository-update-and-tag
+    description: 'Update JMC repository from OpenJDK, tag and build JMC releases and create JMC merge PRs.'
+    project-type: pipeline
+    concurrent: false
+    properties:
+        - build-discarder:
+            num-to-keep: 60
+    parameters:
+        - bool:
+            name: UPDATE_REPOSITORY
+            default: true
+            description: 'Update JMC repository from OpenJDK.'
+        - bool:
+            name: TAG_BUILD_AND_MERGE
+            default: true
+            description: 'Tag new JMC releases, build them and create JMC merge PRs.'
+    triggers:
+        - timed: "@midnight"
+    dsl: |
+        pipeline {
+            agent {
+                label "repository"
+            }
+            stages {
+                stage("Checkout Infrastructure Repository") {
+                    steps {
+                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+                    }
+                }
+                stage('Update SapMachine JMC Repository') {
+                    agent {
+                        dockerfile {
+                            dir "SapMachine-Infrastructure/dockerfiles/infrastructure"
+                            reuseNode true
+                            label "repository"
+                        }
+                    }
+                    when {
+                        beforeAgent true
+                        expression { params.UPDATE_REPOSITORY == true }
+                    }
+                    steps {
+                        withCredentials([usernamePassword(credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD')]) {
+                            sh("SapMachine-Infrastructure/lib/jmc/update_repo.sh")
+                        }
+                    }
+                }
+                stage("Checkout SapMachine JMC Repository") {
+                    when {
+                        expression { params.TAG_BUILD_AND_MERGE == true }
+                    }
+                    steps {
+                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: "*/sap"]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'sapjmc']], userRemoteConfigs: [[url: 'https://github.com/SAP/jmc.git"']]]
+                    }
+                }
+            }
+        }
+
+- job:
     name: jmc-repo-update
     description: 'Update JMC repository.'
     project-type: pipeline
