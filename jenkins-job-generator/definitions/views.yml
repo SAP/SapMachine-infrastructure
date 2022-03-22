@@ -69,8 +69,6 @@
         - jenkins-configuration-restore
         - jenkins-job-generator-trigger
         - jenkins-job-generator
-        - jmc-release-build
-        - jmc-repo-update
         - jtreg
         - osx-upload
         - osx-upload-processor
@@ -112,7 +110,7 @@
     regex: 'build-async-profiler-.*'
 
 - view:
-    name: 'JMC Builds'
-    description: 'JMC Builds'
+    name: 'JMC Jobs'
+    description: 'JMC Builds and other JMC related jobs'
     view-type: list
-    regex: 'build-jmc-.*'
+    regex: '*jmc-.*'
