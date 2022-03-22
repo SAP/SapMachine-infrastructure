@@ -98,15 +98,14 @@ def main(argv=None):
     mkdir(work_dir)
 
     jdk_archive = join(work_dir, jdk_url.rsplit('/', 1)[-1])
-
     utils.download_artifact(jdk_url, jdk_archive)
-
-    clone_sapmachine(join(work_dir, 'sapmachine_master'))
-    src_dir = join(work_dir, 'sapmachine_master')
 
     jdk_dir = join(work_dir, jdk_name)
     mkdir(jdk_dir)
     utils.extract_archive(jdk_archive, jdk_dir)
+
+    clone_sapmachine(join(work_dir, 'sapmachine_master'))
+    src_dir = join(work_dir, 'sapmachine_master')
 
     env = os.environ.copy()
     env['DEBFULLNAME'] = 'SapMachine'
