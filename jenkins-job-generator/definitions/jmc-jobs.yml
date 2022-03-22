@@ -233,7 +233,7 @@
                         expression { params.TAG_BUILD_AND_MERGE == true }
                     }
                     steps {
-                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: "*/sap"]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'sapjmc']], userRemoteConfigs: [[url: 'https://github.com/SAP/jmc.git"']]]
+                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: "*/sap"]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'sapjmc']], userRemoteConfigs: [[url: 'https://github.com/SAP/jmc.git']]]
                     }
                 }
             }
