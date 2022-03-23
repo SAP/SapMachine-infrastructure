@@ -403,8 +403,6 @@
         <string>jenkins-configuration-restore</string>
         <string>jenkins-job-generator</string>
         <string>jenkins-job-generator-trigger</string>
-        <string>jmc-release-build</string>
-        <string>jmc-repo-update</string>
         <string>jtreg</string>
         <string>osx-multi-target-upload</string>
         <string>osx-multi-target-upload-processor</string>
@@ -593,8 +591,8 @@
     </listView>
     <listView>
       <owner class="hudson" reference="../../.." />
-      <name>JMC Builds</name>
-      <description>JMC Builds&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+      <name>JMC Jobs</name>
+      <description>JMC Builds and other JMC related jobs&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
       <filterExecutors>false</filterExecutors>
       <filterQueue>false</filterQueue>
       <properties class="hudson.model.View$PropertyList" />
@@ -611,7 +609,7 @@
         <hudson.views.LastDurationColumn />
         <hudson.views.BuildButtonColumn />
       </columns>
-      <includeRegex>build-jmc-.*</includeRegex>
+      <includeRegex>.*jmc-.*</includeRegex>
       <recurse>false</recurse>
     </listView>
   </views>

@@ -1,0 +1,79 @@
+<flow-definition plugin="workflow-job">
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps">
+    <script>pipeline {
+    agent {
+        label "repository"
+    }
+    stages {
+        stage("Checkout Infrastructure Repository") {
+            steps {
+                checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+            }
+        }
+        stage('Update SapMachine JMC Repository') {
+            agent {
+                dockerfile {
+                    dir "SapMachine-Infrastructure/dockerfiles/infrastructure"
+                    reuseNode true
+                    label "repository"
+                }
+            }
+            when {
+                beforeAgent true
+                expression { params.UPDATE_REPOSITORY == true }
+            }
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD')]) {
+                    sh("SapMachine-Infrastructure/lib/jmc/update_repo.sh")
+                }
+            }
+        }
+        stage("Checkout SapMachine JMC Repository") {
+            when {
+                expression { params.TAG_BUILD_AND_MERGE == true }
+            }
+            steps {
+                checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: "*/sap"]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'sapjmc']], userRemoteConfigs: [[url: 'https://github.com/SAP/jmc.git']]]
+            }
+        }
+    }
+}
+</script>
+    <sandbox>false</sandbox>
+  </definition>
+  <actions />
+  <description>Update JMC repository from OpenJDK, tag and build JMC releases and create JMC merge PRs.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty />
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>-1</daysToKeep>
+        <numToKeep>60</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>-1</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.BooleanParameterDefinition>
+          <name>UPDATE_REPOSITORY</name>
+          <description>Update JMC repository from OpenJDK.</description>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>TAG_BUILD_AND_MERGE</name>
+          <description>Tag new JMC releases, build them and create JMC merge PRs.</description>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+    <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+      <triggers>
+        <hudson.triggers.TimerTrigger>
+          <spec>@midnight</spec>
+        </hudson.triggers.TimerTrigger>
+      </triggers>
+    </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+  </properties>
+</flow-definition>
