@@ -120,8 +120,8 @@ def main(argv=None):
 
     if args.dual:
         try:
-            aarch_urls = utils.get_asset_urls(tag, os_name + '-aarch64', '.sha256.dmg.txt')
-            intel_urls = utils.get_asset_urls(tag, os_name + '-x64', '.sha256.dmg.txt')
+            aarch_urls = utils.get_asset_urls(tag, os_name + '-aarch64', pattern='.sha256.dmg.txt')
+            intel_urls = utils.get_asset_urls(tag, os_name + '-x64', pattern='.sha256.dmg.txt')
         except Exception as e:
             print('Not both platforms ready yet')
             sys.exit(0)
