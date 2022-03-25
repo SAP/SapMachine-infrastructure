@@ -111,31 +111,23 @@
                         JAVA_HOME = "${{WORKSPACE}}/boot_jdk"
                     }}
                     steps {{
-                        sh 'SapMachine-Infrastructure/lib/build_jmc.sh'
-                    }}
-                }}
-                stage("Build and Basic Tests Windows") {{
-                    steps {{
-                        error("Es reicht jetzt")
+                        sh 'SapMachine-Infrastructure/lib/jmc/build.sh'
                     }}
                 }}
                 stage("Test") {{
                     {docker_agent}
-                    when {{
-                        expression {{ !(JOB_NAME ==~ /((\S*)(windows_x86_64)(\S*))/) && false }}
-                    }}
                     environment {{
                         BUILD_JDK = "${{WORKSPACE}}/boot_jdk"
                     }}
                     steps {{
-                        sh 'SapMachine-Infrastructure/lib/test_jmc.sh'
+                        sh 'SapMachine-Infrastructure/lib/jmc/test.sh'
                     }}
                 }}
                 stage('Archive') {{
                     steps {{
                         script {{
-                            def artifact_name = readFile "${{env.WORKSPACE}}/jmc/artifact.txt"
-                            step ([$class: 'ArtifactArchiver', artifacts: artifact_name]);
+                            archiveArtifacts allowEmptyArchive: true, artifacts: 'target/products/*.gz'
+                            archiveArtifacts allowEmptyArchive: true, artifacts: 'target/products/*.zip'
                         }}
                     }}
                 }}
@@ -146,7 +138,7 @@
                     steps {{
                         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
                             sh '''
-                            SapMachine-Infrastructure/lib/publish_jmc.sh
+                            SapMachine-Infrastructure/lib/jmc/publish.sh
                             '''
                         }}
                     }}
