@@ -3,11 +3,11 @@ Copyright (c) 2001-2021 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
+import argparse
 import os
 import sys
 import utils
-import argparse
-import re
+
 from datetime import date
 from versions import SapMachineTag
 

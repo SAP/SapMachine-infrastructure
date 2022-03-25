@@ -3,15 +3,13 @@ Copyright (c) 2001-2018 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
-import os
-import sys
 import argparse
+import sys
 import utils
 
-from os.path import join
-from os.path import realpath
-from os.path import dirname
 from os.path import basename
+from os.path import dirname
+from os.path import realpath
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
@@ -33,6 +31,8 @@ def main(argv=None):
         keyfile,
         repository)
     utils.run_cmd(cmd, shell=True)
+
+    return 0
 
 if __name__ == "__main__":
     sys.exit(main())

@@ -10,7 +10,6 @@ import utils
 
 from jenkinsapi.jenkins import Jenkins
 from jenkinsapi.utils.crumb_requester import CrumbRequester
-from os.path import join
 from versions import JDKTag
 
 # Some global variables

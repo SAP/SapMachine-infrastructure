@@ -4,9 +4,9 @@ All rights reserved. Confidential and proprietary.
 '''
 
 import argparse
-import os
 import sys
 import utils
+
 from os.path import join
 from versions import Tag, SapMachineTag
 

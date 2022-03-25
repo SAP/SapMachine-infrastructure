@@ -3,15 +3,16 @@ Copyright (c) 2001-2021 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
-from argparse import ArgumentParser
+import argparse
+import os
 import sys
 import utils
-import os
+
 from os.path import join
 from zipfile import ZipFile
 
 def main(argv=None):
-    parser = ArgumentParser()
+    parser = argparse.ArgumentParser()
     parser.add_argument('-m', '--major', help='The SapMachine major version to build', metavar='MAJOR', required=True)
     parser.add_argument('-d', '--dir', help='The dir to extract jtreg to', metavar='DIR', required=True)
     args = parser.parse_args()
@@ -34,6 +35,8 @@ def main(argv=None):
       zipObj.extractall(path)
 
     utils.remove_if_exists(archive_path)
+
+    return 0
 
 if __name__ == "__main__":
     sys.exit(main())

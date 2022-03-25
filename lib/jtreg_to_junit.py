@@ -3,7 +3,6 @@ Copyright (c) 2001-2017 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
-import os
 import sys
 import re
 
@@ -73,6 +72,8 @@ def main(argv=None):
             o.write(str.format('<testsuite name="{0}" tests="{1}">\n', test_suite_name, num_tests))
             o.write('\n'.join([line for line in lines_out]) )
             o.write('\n</testsuite>\n')
+
+    return 0
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv[1:]))

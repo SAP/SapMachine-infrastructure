@@ -5,6 +5,7 @@ All rights reserved. Confidential and proprietary.
 
 import argparse
 import sys
+
 from urllib.error import HTTPError
 from urllib.request import urlopen, Request
 
@@ -81,6 +82,7 @@ def main(argv=None):
     openjdk_repositories.extend(test_repositories(openjdk_git_base, 'openjdk/jdk', 'u-dev'))
 
     print(args.separator.join(openjdk_repositories))
+
     return 0
 
 if __name__ == "__main__":

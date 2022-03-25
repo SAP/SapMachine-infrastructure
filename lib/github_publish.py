@@ -6,15 +6,12 @@ All rights reserved. Confidential and proprietary.
 import os
 import sys
 import json
-import re
 import utils
 import argparse
 import mimetypes
-import traceback
 
 from urllib.parse import quote
 from urllib.error import URLError
-from os.path import join
 
 def main(argv=None):
     parser = argparse.ArgumentParser()

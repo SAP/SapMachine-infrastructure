@@ -5,6 +5,7 @@ All rights reserved. Confidential and proprietary.
 
 import argparse
 import sys
+
 from versions import SapMachineTag
 
 def main(argv=None):

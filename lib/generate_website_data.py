@@ -8,6 +8,7 @@ import os
 import re
 import sys
 import utils
+
 from os.path import join
 from string import Template
 from versions import SapMachineTag

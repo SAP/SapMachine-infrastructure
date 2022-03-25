@@ -3,12 +3,11 @@ Copyright (c) 2019-2022 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
-import os
-import sys
-import json
-import re
-import utils
 import argparse
+import os
+import re
+import sys
+import utils
 
 from os.path import join
 from string import Template
@@ -73,6 +72,7 @@ def main(argv=None):
     with open(manifest, 'w') as manifest_file:
         manifest_file.write(Template(template_manifest).substitute(images=images))
 
+    return 0
+
 if __name__ == "__main__":
     sys.exit(main())
-

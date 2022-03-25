@@ -3,16 +3,15 @@ Copyright (c) 2001-2019 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
+import argparse
+import glob
 import os
+import shutil
 import sys
-import re
 import utils
+import uuid
 # seems this needs module pyyaml
 import yaml
-import uuid
-import glob
-import shutil
-import argparse
 
 from os.path import join
 from string import Template

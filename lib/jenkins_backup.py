@@ -3,10 +3,10 @@ Copyright (c) 2018-2022 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
-import os
-import sys
-import shutil
 import argparse
+import os
+import shutil
+import sys
 import utils
 import xml.etree.ElementTree
 
@@ -124,6 +124,8 @@ def main(argv=None):
 
     if not args.dryrun:
         push_sapmachine_infra(args.backuprepodir)
+
+    return 0
 
 if __name__ == "__main__":
     sys.exit(main())

@@ -3,10 +3,10 @@ Copyright (c) 2018-2022 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
-import os
-import sys
 import argparse
 import json
+import os
+import sys
 import utils
 
 from os.path import join
@@ -43,6 +43,8 @@ def main(argv=None):
                 install_cmd.append(str.format('{0}:{1}', plugin['Extension-Name'], plugin['Plugin-Version']))
 
             utils.run_cmd(install_cmd)
+
+    return 0
 
 if __name__ == "__main__":
     sys.exit(main())

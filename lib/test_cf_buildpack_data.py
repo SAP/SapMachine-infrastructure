@@ -3,13 +3,10 @@ Copyright (c) 2001-2018 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
-import os
-import sys
 import re
-import utils
+import sys
 import yaml
 from urllib.request import urlopen, Request
-from urllib.parse import quote
 from urllib.error import HTTPError
 
 cf_yml_url = 'https://sap.github.io/SapMachine/assets/cf/jre/linux/x86_64/index.yml'

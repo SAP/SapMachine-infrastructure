@@ -3,16 +3,13 @@ Copyright (c) 2001-2017 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
-import os
-import sys
 import argparse
 import datetime
+import os
+import sys
 import utils
 
-from os import remove
 from os.path import join
-from os.path import exists
-
 
 pgp_default_key = '3ABCFE23'
 
@@ -85,6 +82,8 @@ def main(argv=None):
     if pgp_sign is True:
         utils.run_cmd(['gpg', '--default-key', key, '--clearsign', '--digest-algo', 'SHA512', '--no-tty', '-o', 'InRelease', 'Release'], cwd=repository)
         utils.run_cmd(['gpg', '--default-key', key, '-abs',        '--digest-algo', 'SHA512', '--no-tty', '-o', 'Release.gpg', 'Release'], cwd=repository)
+
+    return 0
 
 if __name__ == "__main__":
     sys.exit(main())
