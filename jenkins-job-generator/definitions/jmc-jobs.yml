@@ -116,8 +116,8 @@
                 stage('Archive') {{
                     steps {{
                         script {{
-                            archiveArtifacts allowEmptyArchive: true, artifacts: 'target/products/*.gz'
-                            archiveArtifacts allowEmptyArchive: true, artifacts: 'target/products/*.zip'
+                            archiveArtifacts allowEmptyArchive: true, artifacts: 'jmc/target/products/*.gz'
+                            archiveArtifacts allowEmptyArchive: true, artifacts: 'jmc/target/products/*.zip'
                         }}
                     }}
                 }}
