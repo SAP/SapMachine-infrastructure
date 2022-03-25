@@ -1,5 +1,5 @@
 '''
-Copyright (c) 2001-2021 by SAP SE, Walldorf, Germany.
+Copyright (c) 2017-2022 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
@@ -13,6 +13,7 @@ import sys
 import shutil
 import tarfile
 import zipfile
+
 from os import remove
 from os.path import exists
 from os.path import join
@@ -94,14 +95,12 @@ def extract_archive(archive, target, remove_archive=True):
         move(archive, target)
 
 def download_artifact(url, target):
-    import urllib.request, urllib.parse, urllib.error
-
     if exists(target):
         remove(target)
 
-    with open(target,'wb') as file:
+    with open(target, 'wb') as file:
         print((str.format('Downloading {0} ...', url)))
-        file.write(urllib.request.urlopen(url).read())
+        file.write(urlopen(url).read())
 
 def make_tgz_archive(src, dest, arcname=None):
     if exists(dest):
