@@ -14,7 +14,6 @@ else
   VERSION=snapshot
 fi
 
-
 cd "${WORKSPACE}/jmc"
 
 git config user.name SAPMACHINE_GIT_USER
@@ -34,9 +33,25 @@ if [[ -z $NO_CHECKOUT ]]; then
   fi
 fi
 
-rm -fr target
+if [[ $UNAME == CYGWIN* ]]; then
+  mvn -f releng/third-party/pom.xml p2:site
+  mvn -f releng/third-party/pom.xml jetty:run &
+  sleep 5
 
-./build.sh --packageJmc
+  mvn -f core/pom.xml clean package
+else
+  rm -fr target
+  ./build.sh --packageJmc
+fi
+
+#mvn verify -P uitests
+#mvn verify
+
+#echo "check agent"
+#cd agent
+#mvn verify
+#cd ../core
+#mvn verify
 
 if [[ $JOB_NAME =~ .*linux_x86_64.* ]]; then FILE="linux.gtk.x86_64.tar.gz" ; fi
 if [[ $JOB_NAME =~ .*macos_aarch64.* ]]; then FILE="macosx.cocoa.aarch64.tar.gz" ; fi

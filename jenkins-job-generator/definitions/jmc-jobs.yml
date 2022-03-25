@@ -98,51 +98,25 @@
                     }}
                 }}
                 stage ('Download Prerequisites'){{
-                    when {{
-                         expression {{ !(JOB_NAME ==~ /((\S*)(macos_aarch64)(\S*))/) && !(JOB_NAME ==~ /((\S*)(windows_x86_64)(\S*))/) }}
-                    }}
                     steps {{
-                        ccache -C -zwithCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
+                        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
                             sh "python3 SapMachine-Infrastructure/lib/download_boot_jdk.py -m ${{params.BUILD_JDK}} -d ${{WORKSPACE}}"
                         }}
                     }}
                 }}
-                stage ('Download Prerequisites Windows'){{
-                    when {{
-                         expression {{ JOB_NAME ==~ /((\S*)(windows_x86_64)(\S*))/ }}
-                    }}
-                    steps {{
-                        sh 'SapMachine-Infrastructure/lib/install-deps-jmc-win.sh'
-                    }}
-                }}
-                stage ('Download Prerequisites Mac OS aarch64'){{
-                    when {{
-                         expression {{ JOB_NAME ==~ /((\S*)(macos_aarch64)(\S*))/ }}
-                    }}
-                    steps {{
-                        sh 'SapMachine-Infrastructure/lib/install-deps-jmc-macos-aarch64.sh'
-                    }}
-                }}
                 stage("Build and Basic Tests") {{
                     {docker_agent}
-                    when {{
-                        expression {{ !(JOB_NAME ==~ /((\S*)(windows_x86_64)(\S*))/) }}
-                    }}
                     environment {{
                         BUILD_JDK = "${{WORKSPACE}}/boot_jdk"
                         JAVA_HOME = "${{WORKSPACE}}/boot_jdk"
                     }}
                     steps {{
-                        sh 'ls ${{WORKSPACE}}/boot_jdk'
                         sh 'SapMachine-Infrastructure/lib/build_jmc.sh'
                     }}
                 }}
                 stage("Build and Basic Tests Windows") {{
-                    when {{
-                         expression {{ JOB_NAME ==~ /((\S*)(windows_x86_64)(\S*))/ }}
-                    }}
                     steps {{
-                        sh 'SapMachine-Infrastructure/lib/build_jmc_win.sh'
+                        error("Es reicht jetzt")
                     }}
                 }}
                 stage("Test") {{
