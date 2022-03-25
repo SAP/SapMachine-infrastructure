@@ -1,5 +1,5 @@
 - defaults:
-    name: 'global'
+    name: 'sapmachine_global'
     publish_default: false
     release_default: false
     allow_concurrent_builds: false
@@ -145,6 +145,7 @@
 
 - job-template:
     name: build-{major}-{build_type}-{platform}
+    defaults: 'sapmachine_global'
     description: '{build_type} build for SapMachine {major} on {platform}.'
     project-type: pipeline
     concurrent: '{allow_concurrent_builds}'
@@ -576,6 +577,7 @@
 
 - job-template:
     name: build-service-{build_type}-{major}
+    defaults: 'sapmachine_global'
     description: 'Start {build_type} build for SapMachine {major} on all platorms.'
     project-type: pipeline
     concurrent: true
