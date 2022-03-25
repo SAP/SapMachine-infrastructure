@@ -2,16 +2,12 @@
     name: 'jmc_global'
     publish_default: false
     release_default: false
+    test_default: false
     allow_concurrent_builds: false
     trigger: |
         <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
             <triggers/>
         </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
-    majors: &majors
-        - 'official':
-           branch_name: master
-        - 'sap':
-           branch_name: sap
     platforms: &platforms
         - linux_x86_64:
             docker_agent: |
@@ -28,22 +24,17 @@
             docker_agent: ''
         - windows_x86_64:
             docker_agent: ''
-    build_types: &build_types
-        - snapshot
-        - release
 
 - project:
     name: jmc_builds
-    major: *majors
-    build_type: *build_types
     platform: *platforms
     jobs:
-        - build-jmc-{major}-{build_type}-{platform}
+        - build-jmc-{platform}
 
 - job-template:
-    name: build-jmc-{major}-{build_type}-{platform}
+    name: build-jmc-{platform}
     defaults: 'jmc_global'
-    description: 'This project is generated. Do not modify manually.'
+    description: 'JMC build on {platform}.'
     project-type: pipeline
     concurrent: '{allow_concurrent_builds}'
     properties:
@@ -60,21 +51,17 @@
             default: 'https://github.com/SAP/jmc'
             description: 'The Git repository to use.'
         - string:
-            name: JMC_GIT_BRANCH
-            default: '{branch_name}'
-            description: 'The Git branch to build.'
-        - string:
-            name: GIT_TAG_NAME
-            default: ''
-            description: 'The Git tag to build.'
+            name: GIT_BRANCH_OR_TAG
+            default: 'master'
+            description: 'The Git branch or tag to build.'
         - string:
             name: BUILD_JDK
             default: '11'
             description: 'The JDK used to build the JMC'
-        - string:
-            name: JMC_ARCHIVE_NAME_PREFIX
-            default: 'jmc-{major}-{platform}'
-            description: 'The prefix of the bundle archive.'
+        - bool:
+            name: TEST
+            default: '{test_default}'
+            description: 'Run tests.'
         - bool:
             name: RELEASE
             default: '{release_default}'
@@ -94,7 +81,7 @@
                 }}
                 stage("Checkout Repository") {{
                     steps {{
-                        checkout changelog: true, poll: false, scm: [$class: 'GitSCM', branches: [[name: "*/${{params.JMC_GIT_BRANCH}}"]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'jmc']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: "${{params.JMC_GIT_REPOSITORY}}"]]]
+                        checkout changelog: true, poll: false, scm: [$class: 'GitSCM', branches: [[name: "*/${{params.GIT_BRANCH_OR_TAG}}"]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'jmc']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: "${{params.JMC_GIT_REPOSITORY}}"]]]
                     }}
                 }}
                 stage ('Download Prerequisites'){{
@@ -116,6 +103,9 @@
                 }}
                 stage("Test") {{
                     {docker_agent}
+                    when {{
+                        expression {{ params.TEST == true }}
+                    }}
                     environment {{
                         BUILD_JDK = "${{WORKSPACE}}/boot_jdk"
                     }}
@@ -255,13 +245,13 @@
                     steps {
                         parallel (
                             linux_x86_64: {
-                                build job: 'build-jmc-official-snapshot-linux_x86_64', parameters: [string(name: 'JMC_GIT_BRANCH', value: 'sap')]
+                                build job: 'build-jmc-official-snapshot-linux_x86_64', parameters: [string(name: 'GIT_BRANCH_OR_TAG', value: 'sap')]
                             },
                             macos_x86_64: {
-                                build job: 'build-jmc-official-snapshot-macos_x86_64', parameters: [string(name: 'JMC_GIT_BRANCH', value: 'sap')]
+                                build job: 'build-jmc-official-snapshot-macos_x86_64', parameters: [string(name: 'GIT_BRANCH_OR_TAG', value: 'sap')]
                             },
                             macos_aarch64: {
-                                build job: 'build-jmc-official-snapshot-macos_aarch64', parameters: [string(name: 'JMC_GIT_BRANCH', value: 'sap')]
+                                build job: 'build-jmc-official-snapshot-macos_aarch64', parameters: [string(name: 'GIT_BRANCH_OR_TAG', value: 'sap')]
                             },
                             failFast: false
                         )
@@ -324,13 +314,13 @@
                     steps {
                         parallel (
                             linux_x86_64: {
-                                build job: 'build-jmc-official-release-linux_x86_64', parameters: [string(name: 'JMC_GIT_BRANCH', value: 'sap'), string(name: 'GIT_TAG_NAME', value: params.VERSION), [$class: 'BooleanParameterValue', name: 'RELEASE', value: 'true']]
+                                build job: 'build-jmc-official-release-linux_x86_64', parameters: [string(name: 'GIT_BRANCH_OR_TAG', value: 'sap'), string(name: 'GIT_TAG_NAME', value: params.VERSION), [$class: 'BooleanParameterValue', name: 'RELEASE', value: 'true']]
                             },
                             macos_x86_64: {
-                                build job: 'build-jmc-official-release-macos_x86_64', parameters: [string(name: 'JMC_GIT_BRANCH', value: 'sap'), string(name: 'GIT_TAG_NAME', value: params.VERSION), [$class: 'BooleanParameterValue', name: 'RELEASE', value: 'true']]
+                                build job: 'build-jmc-official-release-macos_x86_64', parameters: [string(name: 'GIT_BRANCH_OR_TAG', value: 'sap'), string(name: 'GIT_TAG_NAME', value: params.VERSION), [$class: 'BooleanParameterValue', name: 'RELEASE', value: 'true']]
                             },
                             macos_aarch64: {
-                                build job: 'build-jmc-official-release-macos_aarch64', parameters: [string(name: 'JMC_GIT_BRANCH', value: 'sap'), string(name: 'GIT_TAG_NAME', value: params.VERSION), [$class: 'BooleanParameterValue', name: 'RELEASE', value: 'true']]
+                                build job: 'build-jmc-official-release-macos_aarch64', parameters: [string(name: 'GIT_BRANCH_OR_TAG', value: 'sap'), string(name: 'GIT_TAG_NAME', value: params.VERSION), [$class: 'BooleanParameterValue', name: 'RELEASE', value: 'true']]
                             },
                             failFast: false
                         )
