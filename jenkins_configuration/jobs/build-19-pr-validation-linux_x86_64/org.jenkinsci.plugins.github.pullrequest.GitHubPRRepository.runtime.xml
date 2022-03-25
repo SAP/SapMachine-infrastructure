@@ -8,14 +8,14 @@
       <int>1063</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>1063</number>
-        <issueUpdatedAt>2022-03-23 18:22:56.0 UTC</issueUpdatedAt>
+        <issueUpdatedAt>2022-03-24 05:53:13.0 UTC</issueUpdatedAt>
         <title>Sapmachine #1058: Vitals: Integrate March 2022 updates (18)</title>
         <body>Downport Vitals march 22 updates to 18
 
 Applies cleanly
 
 fixes #1058</body>
-        <prUpdatedAt>2022-03-23 18:22:56.0 UTC</prUpdatedAt>
+        <prUpdatedAt>2022-03-24 05:53:13.0 UTC</prUpdatedAt>
         <headSha>52694a74c403bae46ed679b65944543b15ab40fc</headSha>
         <headRef>1058-vitals-march2022-18</headRef>
         <mergeable>true</mergeable>
@@ -33,14 +33,14 @@ fixes #1058</body>
       <int>1064</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>1064</number>
-        <issueUpdatedAt>2022-03-23 12:02:50.0 UTC</issueUpdatedAt>
+        <issueUpdatedAt>2022-03-24 05:53:34.0 UTC</issueUpdatedAt>
         <title>Sapmachine #1058: Vitals: Integrate March 2022 updates (17)</title>
         <body>Backport of #1058 to SapMachine 17. Mostly unexciting, but I needed to integrate #975 first, which I had not done for 17 and 11. For simplicity, I kept these two in this one PR.
 
 fixes #1058
 
 </body>
-        <prUpdatedAt>2022-03-23 12:02:50.0 UTC</prUpdatedAt>
+        <prUpdatedAt>2022-03-24 05:53:34.0 UTC</prUpdatedAt>
         <headSha>0d894ed00231f0d2a7db4cc920646f1128a45f63</headSha>
         <headRef>1058-vitals-march2022-17</headRef>
         <mergeable>true</mergeable>
@@ -58,7 +58,7 @@ fixes #1058
       <int>1065</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>1065</number>
-        <issueUpdatedAt>2022-03-23 18:28:29.0 UTC</issueUpdatedAt>
+        <issueUpdatedAt>2022-03-24 05:52:40.0 UTC</issueUpdatedAt>
         <title>Sapmachine #1058: Vitals: Integrate March 2022 updates (11)</title>
         <body>Backport of https://github.com/SAP/SapMachine/issues/1058 to SapMachine 11.
 
@@ -69,7 +69,7 @@ I needed to change the initialization of the pthread-mutex-based Locker class (v
 fixes #1058 
 
 </body>
-        <prUpdatedAt>2022-03-23 18:28:29.0 UTC</prUpdatedAt>
+        <prUpdatedAt>2022-03-24 05:52:40.0 UTC</prUpdatedAt>
         <headSha>3d473a0a458549f4628b375656574ca913c19c6f</headSha>
         <headRef>1058-vitals-march2022-11</headRef>
         <mergeable>true</mergeable>
@@ -77,7 +77,7 @@ fixes #1058
         <userLogin>tstuefe</userLogin>
         <htmlUrl>https://github.com/SAP/SapMachine/pull/1065</htmlUrl>
         <labels />
-        <lastCommentCreatedAt>2022-03-23 18:28:29.0 UTC</lastCommentCreatedAt>
+        <lastCommentCreatedAt>2022-03-24 05:52:09.0 UTC</lastCommentCreatedAt>
         <sourceRepoOwner>tstuefe</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
@@ -93,6 +93,7 @@ fixes #1058
         <prUpdatedAt>2022-03-24 00:31:17.0 UTC</prUpdatedAt>
         <headSha>c3ea7ca00afc14c87082a7c798156a44e6d47af1</headSha>
         <headRef>pr-jdk-17.0.3+5</headRef>
+        <mergeable>true</mergeable>
         <baseRef>sapmachine17</baseRef>
         <userLogin>SapMachine</userLogin>
         <htmlUrl>https://github.com/SAP/SapMachine/pull/1066</htmlUrl>
@@ -112,9 +113,30 @@ fixes #1058
         <prUpdatedAt>2022-03-24 00:31:33.0 UTC</prUpdatedAt>
         <headSha>9a7bd43d277135ac2bbb9c8289430b9f8dd5af3d</headSha>
         <headRef>pr-jdk-11.0.15+7</headRef>
+        <mergeable>true</mergeable>
         <baseRef>sapmachine11</baseRef>
         <userLogin>SapMachine</userLogin>
         <htmlUrl>https://github.com/SAP/SapMachine/pull/1067</htmlUrl>
+        <labels />
+        <sourceRepoOwner>SAP</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>1068</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>1068</number>
+        <issueUpdatedAt>2022-03-25 00:30:24.0 UTC</issueUpdatedAt>
+        <title>Merge to tag jdk-19+15</title>
+        <body>please pull</body>
+        <prUpdatedAt>2022-03-25 00:30:24.0 UTC</prUpdatedAt>
+        <headSha>78ef2fdef68c5161c8875296e9479026ac89743a</headSha>
+        <headRef>pr-jdk-19+15</headRef>
+        <mergeable>false</mergeable>
+        <baseRef>sapmachine</baseRef>
+        <userLogin>SapMachine</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1068</htmlUrl>
         <labels />
         <sourceRepoOwner>SAP</sourceRepoOwner>
         <state>OPEN</state>
