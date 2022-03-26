@@ -102,7 +102,7 @@ if [[ -f ${WORKSPACE}/test.zip ]]; then
 fi
 
 zip -rq "${WORKSPACE}/test.zip" test
-zip -rq "${WORKSPACE}/test.zip" make/data/lsrdata
+zip -rq "${WORKSPACE}/test.zip" make/data/lsrdata || true
 zip -rq "${WORKSPACE}/test.zip" make/data/blacklistedcertsconverter/blacklisted.certs.pem || true
 zip -rq "${WORKSPACE}/test.zip" make/data/blockedcertsconverter || true
 zip -rq "${WORKSPACE}/test.zip" make/data/unicodedata || true
