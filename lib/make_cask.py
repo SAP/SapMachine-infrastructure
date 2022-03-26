@@ -165,7 +165,7 @@ def main(argv=None):
         )
     else:
         try:
-            intel_urls = utils.get_asset_urls(tag, os_name + '-x64', '.sha256.dmg.txt')
+            intel_urls = utils.get_asset_urls(tag, os_name + '-x64', pattern='.sha256.dmg.txt')
         except Exception as e:
             print('Asset not found')
             sys.exit(1)
