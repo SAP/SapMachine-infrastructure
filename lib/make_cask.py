@@ -183,7 +183,15 @@ def main(argv=None):
         try:
             intel_urls = utils.get_asset_urls(tag, os_name + '-x64', pattern='.sha256.dmg.txt')
         except Exception as e:
-            print('Asset not found')
+            print(str.format('No assets found for tag {0}', tag.as_string()))
+            sys.exit(1)
+
+        if not "jdk" in intel_urls:
+            print(str.format('No jdk assets found for tag {0}', tag.as_string()))
+            sys.exit(1)
+
+        if not "jre" in intel_urls:
+            print(str.format('No jre assets found for tag {0}', tag.as_string()))
             sys.exit(1)
 
         intel_jdk_sha, code1 = utils.download_asset(intel_urls["jdk"])
