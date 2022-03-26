@@ -111,6 +111,7 @@
                     }}
                     environment {{
                         BUILD_JDK = "${{WORKSPACE}}/boot_jdk"
+                        JAVA_HOME = "${{WORKSPACE}}/boot_jdk"
                     }}
                     steps {{
                         catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {{
