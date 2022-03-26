@@ -123,7 +123,23 @@ def main(argv=None):
             aarch_urls = utils.get_asset_urls(tag, os_name + '-aarch64', pattern='.sha256.dmg.txt')
             intel_urls = utils.get_asset_urls(tag, os_name + '-x64', pattern='.sha256.dmg.txt')
         except Exception as e:
-            print('Not both platforms ready yet')
+            print('Asset not found')
+            sys.exit(1)
+
+        if not "jdk" in aarch_urls and not "jdk" in intel_urls:
+            print('No jdk assets found')
+            sys.exit(1)
+
+        if not "jdk" in aarch_urls or not "jdk" in intel_urls:
+            print('Not all platforms ready yet, jdk missing')
+            sys.exit(0)
+
+        if not "jre" in aarch_urls and not "jre" in intel_urls:
+            print('No jre assets found')
+            sys.exit(1)
+
+        if not "jre" in aarch_urls or not "jre" in intel_urls:
+            print('Not all platforms ready yet, jre missing')
             sys.exit(0)
 
         aarch_jdk_sha, code1 = utils.download_asset(aarch_urls["jdk"])
