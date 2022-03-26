@@ -18,31 +18,41 @@ from versions import SapMachineTag
 extra_bootjdks = [
     {
         'prerelease': False,
-        'name': 'sapmachine-11.0.12',
+        'name': 'sapmachine-11.0.14.1',
         'assets': [
             {
-                'name': 'sapmachine-jdk-11.0.12_linux-aarch64_bin.tar.gz',
-                'browser_download_url': 'https://github.com/SAP/SapMachine/releases/download/sapmachine-11.0.12/sapmachine-jdk-11.0.12-beta_linux-aarch64_bin.tar.gz'
+                'name': 'sapmachine-jdk-11.0.14.1_osx-aarch64_bin.tar.gz',
+                'browser_download_url': 'https://github.com/SAP/SapMachine/releases/download/sapmachine-11.0.14.1/sapmachine-jdk-11.0.14.1_osx-x64_bin.tar.gz'
             }
         ]
     },
     {
         'prerelease': False,
-        'name': 'sapmachine-16.0.2',
+        'name': 'sapmachine-11.0.14.1',
         'assets': [
             {
-                'name': 'sapmachine-jdk-16.0.2_linux-aarch64_bin.tar.gz',
-                'browser_download_url': 'https://github.com/SAP/SapMachine/releases/download/sapmachine-16.0.2/sapmachine-jdk-16.0.2-beta_linux-aarch64_bin.tar.gz'
+                'name': 'sapmachine-jdk-11.0.14.1_linux-aarch64_bin.tar.gz',
+                'browser_download_url': 'https://github.com/SAP/SapMachine/releases/download/sapmachine-11.0.14.1/sapmachine-jdk-11.0.14.1-beta_linux-aarch64_bin.tar.gz'
             }
         ]
     },
     {
         'prerelease': False,
-        'name': 'sapmachine-17',
+        'name': 'sapmachine-17.0.2',
         'assets': [
             {
-                'name': 'sapmachine-jdk-17_linux-aarch64_bin.tar.gz',
-                'browser_download_url': 'https://github.com/SAP/SapMachine/releases/download/sapmachine-17/sapmachine-jdk-17-beta_linux-aarch64_bin.tar.gz'
+                'name': 'sapmachine-jdk-17.0.2_linux-aarch64_bin.tar.gz',
+                'browser_download_url': 'https://github.com/SAP/SapMachine/releases/download/sapmachine-17.0.2/sapmachine-jdk-17.0.2-beta_linux-aarch64_bin.tar.gz'
+            }
+        ]
+    },
+    {
+        'prerelease': False,
+        'name': 'sapmachine-18',
+        'assets': [
+            {
+                'name': 'sapmachine-jdk-18_linux-aarch64_bin.tar.gz',
+                'browser_download_url': 'https://github.com/SAP/SapMachine/releases/download/sapmachine-18/sapmachine-jdk-18-beta_linux-aarch64_bin.tar.gz'
             }
         ]
     }
