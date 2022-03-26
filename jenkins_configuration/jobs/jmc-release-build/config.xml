@@ -41,13 +41,13 @@
             steps {
                 parallel (
                     linux_x86_64: {
-                        build job: 'build-jmc-official-release-linux_x86_64', parameters: [string(name: 'JMC_GIT_BRANCH', value: 'sap'), string(name: 'GIT_TAG_NAME', value: params.VERSION), [$class: 'BooleanParameterValue', name: 'RELEASE', value: 'true']]
+                        build job: 'build-jmc-official-release-linux_x86_64', parameters: [string(name: 'GIT_BRANCH_OR_TAG', value: 'sap'), string(name: 'GIT_TAG_NAME', value: params.VERSION), [$class: 'BooleanParameterValue', name: 'RELEASE', value: 'true']]
                     },
                     macos_x86_64: {
-                        build job: 'build-jmc-official-release-macos_x86_64', parameters: [string(name: 'JMC_GIT_BRANCH', value: 'sap'), string(name: 'GIT_TAG_NAME', value: params.VERSION), [$class: 'BooleanParameterValue', name: 'RELEASE', value: 'true']]
+                        build job: 'build-jmc-official-release-macos_x86_64', parameters: [string(name: 'GIT_BRANCH_OR_TAG', value: 'sap'), string(name: 'GIT_TAG_NAME', value: params.VERSION), [$class: 'BooleanParameterValue', name: 'RELEASE', value: 'true']]
                     },
                     macos_aarch64: {
-                        build job: 'build-jmc-official-release-macos_aarch64', parameters: [string(name: 'JMC_GIT_BRANCH', value: 'sap'), string(name: 'GIT_TAG_NAME', value: params.VERSION), [$class: 'BooleanParameterValue', name: 'RELEASE', value: 'true']]
+                        build job: 'build-jmc-official-release-macos_aarch64', parameters: [string(name: 'GIT_BRANCH_OR_TAG', value: 'sap'), string(name: 'GIT_TAG_NAME', value: params.VERSION), [$class: 'BooleanParameterValue', name: 'RELEASE', value: 'true']]
                     },
                     failFast: false
                 )

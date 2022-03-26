@@ -41,13 +41,13 @@
             steps {
                 parallel (
                     linux_x86_64: {
-                        build job: 'build-jmc-official-snapshot-linux_x86_64', parameters: [string(name: 'JMC_GIT_BRANCH', value: 'sap')]
+                        build job: 'build-jmc-official-snapshot-linux_x86_64', parameters: [string(name: 'GIT_BRANCH_OR_TAG', value: 'sap')]
                     },
                     macos_x86_64: {
-                        build job: 'build-jmc-official-snapshot-macos_x86_64', parameters: [string(name: 'JMC_GIT_BRANCH', value: 'sap')]
+                        build job: 'build-jmc-official-snapshot-macos_x86_64', parameters: [string(name: 'GIT_BRANCH_OR_TAG', value: 'sap')]
                     },
                     macos_aarch64: {
-                        build job: 'build-jmc-official-snapshot-macos_aarch64', parameters: [string(name: 'JMC_GIT_BRANCH', value: 'sap')]
+                        build job: 'build-jmc-official-snapshot-macos_aarch64', parameters: [string(name: 'GIT_BRANCH_OR_TAG', value: 'sap')]
                     },
                     failFast: false
                 )

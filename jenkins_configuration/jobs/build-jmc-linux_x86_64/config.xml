@@ -2,7 +2,7 @@
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps">
     <script>pipeline {
     agent {
-        label "macos_x86_64"
+        label "linux_x86_64"
     }
     stages {
         stage("Init") {
@@ -13,74 +13,57 @@
         }
         stage("Checkout Repository") {
             steps {
-                checkout changelog: true, poll: false, scm: [$class: 'GitSCM', branches: [[name: "*/${params.JMC_GIT_BRANCH}"]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'jmc']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: "${params.JMC_GIT_REPOSITORY}"]]]
+                checkout changelog: true, poll: false, scm: [$class: 'GitSCM', branches: [[name: "*/${params.GIT_BRANCH_OR_TAG}"]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'jmc']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: "${params.JMC_GIT_REPOSITORY}"]]]
             }
         }
         stage ('Download Prerequisites'){
-            when {
-                 expression { !(JOB_NAME ==~ /((\S*)(macos_aarch64)(\S*))/) &amp;&amp; !(JOB_NAME ==~ /((\S*)(windows_x86_64)(\S*))/) }
-            }
             steps {
-                ccache -C -zwithCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
-                    sh "python3 SapMachine-Infrastructure/lib/download_boot_jdk.py -m ${params.BUILD_JDK} -d ${WORKSPACE}"
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
+                    sh "python3 SapMachine-Infrastructure/lib/download_boot_jdk.py -m ${params.BUILD_JDK} -d `pwd`"
                 }
             }
         }
-        stage ('Download Prerequisites Windows'){
-            when {
-                 expression { JOB_NAME ==~ /((\S*)(windows_x86_64)(\S*))/ }
-            }
-            steps {
-                sh 'SapMachine-Infrastructure/lib/install-deps-jmc-win.sh'
-            }
-        }
-        stage ('Download Prerequisites Mac OS aarch64'){
-            when {
-                 expression { JOB_NAME ==~ /((\S*)(macos_aarch64)(\S*))/ }
-            }
-            steps {
-                sh 'SapMachine-Infrastructure/lib/install-deps-jmc-macos-aarch64.sh'
-            }
-        }
         stage("Build and Basic Tests") {
-            
-            when {
-                expression { !(JOB_NAME ==~ /((\S*)(windows_x86_64)(\S*))/) }
-            }
+            agent {
+    dockerfile {
+        dir "SapMachine-Infrastructure/dockerfiles/jmc/x86_64"
+        reuseNode true
+        label "linux_x86_64"
+    }
+}
+
             environment {
                 BUILD_JDK = "${WORKSPACE}/boot_jdk"
                 JAVA_HOME = "${WORKSPACE}/boot_jdk"
             }
             steps {
-                sh 'ls ${WORKSPACE}/boot_jdk'
-                sh 'SapMachine-Infrastructure/lib/build_jmc.sh'
-            }
-        }
-        stage("Build and Basic Tests Windows") {
-            when {
-                 expression { JOB_NAME ==~ /((\S*)(windows_x86_64)(\S*))/ }
-            }
-            steps {
-                sh 'SapMachine-Infrastructure/lib/build_jmc_win.sh'
+                sh 'SapMachine-Infrastructure/lib/jmc/build.sh'
             }
         }
         stage("Test") {
-            
+            agent {
+    dockerfile {
+        dir "SapMachine-Infrastructure/dockerfiles/jmc/x86_64"
+        reuseNode true
+        label "linux_x86_64"
+    }
+}
+
             when {
-                expression { !(JOB_NAME ==~ /((\S*)(windows_x86_64)(\S*))/) &amp;&amp; false }
+                expression { params.TEST == true }
             }
             environment {
                 BUILD_JDK = "${WORKSPACE}/boot_jdk"
             }
             steps {
-                sh 'SapMachine-Infrastructure/lib/test_jmc.sh'
+                sh 'SapMachine-Infrastructure/lib/jmc/test.sh'
             }
         }
         stage('Archive') {
             steps {
                 script {
-                    def artifact_name = readFile "${env.WORKSPACE}/jmc/artifact.txt"
-                    step ([$class: 'ArtifactArchiver', artifacts: artifact_name]);
+                    archiveArtifacts allowEmptyArchive: true, artifacts: 'jmc/target/products/*.gz'
+                    archiveArtifacts allowEmptyArchive: true, artifacts: 'jmc/target/products/*.zip'
                 }
             }
         }
@@ -91,7 +74,7 @@
             steps {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
                     sh '''
-                    SapMachine-Infrastructure/lib/publish_jmc.sh
+                    SapMachine-Infrastructure/lib/jmc/publish.sh
                     '''
                 }
             }
@@ -102,7 +85,7 @@
     <sandbox>false</sandbox>
   </definition>
   <actions />
-  <description>This project is generated. Do not modify manually.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+  <description>JMC build on linux_x86_64.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
   <properties>
     <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty />
@@ -130,15 +113,9 @@
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>JMC_GIT_BRANCH</name>
-          <description>The Git branch to build.</description>
+          <name>GIT_BRANCH_OR_TAG</name>
+          <description>The Git branch or tag to build.</description>
           <defaultValue>master</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>GIT_TAG_NAME</name>
-          <description>The Git tag to build.</description>
-          <defaultValue />
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
@@ -147,12 +124,11 @@
           <defaultValue>11</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>JMC_ARCHIVE_NAME_PREFIX</name>
-          <description>The prefix of the bundle archive.</description>
-          <defaultValue>jmc-official-macos_x86_64</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>TEST</name>
+          <description>Run tests.</description>
+          <defaultValue>false</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>RELEASE</name>
           <description>When set to true, marks this build as a release build, otherwise as pre-release.</description>

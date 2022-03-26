@@ -79,6 +79,7 @@
             <slaveCommandPrefix />
             <slaveCommandSuffix />
             <sshPort>22</sshPort>
+            <bootDelay />
           </amiType>
           <launchTimeout>2147483647</launchTimeout>
           <connectBySSHProcess>false</connectBySSHProcess>
@@ -96,7 +97,7 @@
           <connectUsingPublicIp>false</connectUsingPublicIp>
         </hudson.plugins.ec2.SlaveTemplate>
         <hudson.plugins.ec2.SlaveTemplate>
-          <ami>ami-0dae10471ccc1631e</ami>
+          <ami>ami-0dd200eeca20a1713</ami>
           <description>Windows Client</description>
           <zone>us-east-1d</zone>
           <securityGroups>JenkinsWindowsClient</securityGroups>
@@ -137,6 +138,7 @@
             <slaveCommandPrefix />
             <slaveCommandSuffix />
             <sshPort>22</sshPort>
+            <bootDelay />
           </amiType>
           <launchTimeout>600</launchTimeout>
           <connectBySSHProcess>false</connectBySSHProcess>
@@ -195,6 +197,7 @@
             <slaveCommandPrefix />
             <slaveCommandSuffix />
             <sshPort>22</sshPort>
+            <bootDelay />
           </amiType>
           <launchTimeout>2147483647</launchTimeout>
           <connectBySSHProcess>false</connectBySSHProcess>
