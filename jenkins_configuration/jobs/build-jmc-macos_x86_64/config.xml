@@ -1,81 +1,20 @@
-<flow-definition plugin="workflow-job">
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps">
-    <script>pipeline {
-    agent {
-        label "macos_x86_64"
-    }
-    stages {
-        stage("Init") {
-            steps {
-                cleanWs deleteDirs: true, disableDeferredWipeout: true
-                checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
-            }
-        }
-        stage("Checkout Repository") {
-            steps {
-                checkout changelog: true, poll: false, scm: [$class: 'GitSCM', branches: [[name: "*/${params.GIT_BRANCH_OR_TAG}"]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'jmc']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: "${params.JMC_GIT_REPOSITORY}"]]]
-            }
-        }
-        stage ('Download Prerequisites'){
-            steps {
-                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
-                    sh "python3 SapMachine-Infrastructure/lib/download_boot_jdk.py -m ${params.BUILD_JDK} -d `pwd`"
-                }
-            }
-        }
-        stage("Build and Basic Tests") {
-            
-            environment {
-                BUILD_JDK = "${WORKSPACE}/boot_jdk"
-                JAVA_HOME = "${WORKSPACE}/boot_jdk"
-            }
-            steps {
-                sh 'SapMachine-Infrastructure/lib/jmc/build.sh'
-            }
-        }
-        stage("Test") {
-            
-            when {
-                expression { params.TEST == true }
-            }
-            environment {
-                BUILD_JDK = "${WORKSPACE}/boot_jdk"
-            }
-            steps {
-                sh 'SapMachine-Infrastructure/lib/jmc/test.sh'
-            }
-        }
-        stage('Archive') {
-            steps {
-                script {
-                    archiveArtifacts allowEmptyArchive: true, artifacts: 'jmc/target/products/*.gz'
-                    archiveArtifacts allowEmptyArchive: true, artifacts: 'jmc/target/products/*.zip'
-                }
-            }
-        }
-        stage('Publish GitHub') {
-            when {
-                expression { params.RELEASE == true &amp;&amp; JOB_NAME ==~ /((\S*)(release)(\S*))/ }
-            }
-            steps {
-                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
-                    sh '''
-                    SapMachine-Infrastructure/lib/jmc/publish.sh
-                    '''
-                }
-            }
-        }
-    }
-}
-</script>
-    <sandbox>false</sandbox>
-  </definition>
-  <actions />
+<flow-definition plugin="workflow-job@1174.vdcb_d054cf74a_">
+  <actions>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@2.2064.v5eef7d0982b_e" />
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@2.2064.v5eef7d0982b_e">
+      <jobProperties />
+      <triggers />
+      <parameters />
+      <options />
+    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
+  </actions>
   <description>JMC build on macos_x86_64.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
   <properties>
-    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty />
-    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github">
+    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty>
+      <abortPrevious>false</abortPrevious>
+    </org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty>
+    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.34.3">
       <projectUrl>https://github.com/SAP/jmc</projectUrl>
       <displayName />
     </com.coravy.hudson.plugins.github.GithubProjectProperty>
@@ -117,10 +56,94 @@
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>RELEASE</name>
-          <description>When set to true, marks this build as a release build, otherwise as pre-release.</description>
+          <description>When set to true, this build is considered a release build and will be published.</description>
           <defaultValue>false</defaultValue>
         </hudson.model.BooleanParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2660.vb_c0412dc4e6d">
+    <script>pipeline {
+    agent {
+        label "macos_x86_64"
+    }
+    stages {
+        stage("Init") {
+            steps {
+                cleanWs()
+            }
+        }
+        stage("Checkout Infrastructure Repository") {
+            steps {
+                checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+            }
+        }
+        stage("Checkout JMC Repository") {
+            steps {
+                checkout changelog: true, poll: false, scm: [$class: 'GitSCM', branches: [[name: "*/${params.GIT_BRANCH_OR_TAG}"]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'jmc']], userRemoteConfigs: [[url: "${params.JMC_GIT_REPOSITORY}"]]]
+            }
+        }
+        stage ('Download Prerequisites'){
+            steps {
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
+                    sh "python3 SapMachine-Infrastructure/lib/download_boot_jdk.py -m ${params.BUILD_JDK} -d `pwd`"
+                }
+            }
+        }
+        stage("Build and Basic Tests") {
+            
+            environment {
+                BUILD_JDK = "${WORKSPACE}/boot_jdk"
+                JAVA_HOME = "${WORKSPACE}/boot_jdk"
+            }
+            steps {
+                sh 'SapMachine-Infrastructure/lib/jmc/build.sh'
+            }
+        }
+        stage("Test") {
+            
+            when {
+                expression { params.TEST == true }
+            }
+            environment {
+                BUILD_JDK = "${WORKSPACE}/boot_jdk"
+                JAVA_HOME = "${WORKSPACE}/boot_jdk"
+            }
+            steps {
+                catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
+                    sh 'SapMachine-Infrastructure/lib/jmc/test.sh'
+                }
+            }
+        }
+        stage('Archive') {
+            steps {
+                script {
+                    archiveArtifacts allowEmptyArchive: true, artifacts: 'jmc/target/products/*.gz'
+                    archiveArtifacts allowEmptyArchive: true, artifacts: 'jmc/target/products/*.zip'
+                }
+            }
+        }
+        stage('Publish GitHub') {
+            when {
+                expression { params.RELEASE == true &amp;&amp; JOB_NAME ==~ /((\S*)(release)(\S*))/ }
+            }
+            steps {
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
+                    sh '''
+                    SapMachine-Infrastructure/lib/jmc/publish.sh
+                    '''
+                }
+            }
+        }
+    }
+    post {
+        success {
+            cleanWs()
+        }
+    }
+}
+</script>
+    <sandbox>false</sandbox>
+  </definition>
+  <disabled>false</disabled>
 </flow-definition>

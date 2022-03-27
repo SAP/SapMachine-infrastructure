@@ -56,7 +56,7 @@
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>RELEASE</name>
-          <description>When set to true, marks this build as a release build, otherwise as pre-release.</description>
+          <description>When set to true, this build is considered a release build and will be published.</description>
           <defaultValue>false</defaultValue>
         </hudson.model.BooleanParameterDefinition>
       </parameterDefinitions>
@@ -70,13 +70,17 @@
     stages {
         stage("Init") {
             steps {
-                cleanWs deleteDirs: true, disableDeferredWipeout: true
-                checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+                cleanWs()
             }
         }
-        stage("Checkout Repository") {
+        stage("Checkout Infrastructure Repository") {
             steps {
-                checkout changelog: true, poll: false, scm: [$class: 'GitSCM', branches: [[name: "*/${params.GIT_BRANCH_OR_TAG}"]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'jmc']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: "${params.JMC_GIT_REPOSITORY}"]]]
+                checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+            }
+        }
+        stage("Checkout JMC Repository") {
+            steps {
+                checkout changelog: true, poll: false, scm: [$class: 'GitSCM', branches: [[name: "*/${params.GIT_BRANCH_OR_TAG}"]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'jmc']], userRemoteConfigs: [[url: "${params.JMC_GIT_REPOSITORY}"]]]
             }
         }
         stage ('Download Prerequisites'){
@@ -103,9 +107,12 @@
             }
             environment {
                 BUILD_JDK = "${WORKSPACE}/boot_jdk"
+                JAVA_HOME = "${WORKSPACE}/boot_jdk"
             }
             steps {
-                sh 'SapMachine-Infrastructure/lib/jmc/test.sh'
+                catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
+                    sh 'SapMachine-Infrastructure/lib/jmc/test.sh'
+                }
             }
         }
         stage('Archive') {
@@ -127,6 +134,11 @@
                     '''
                 }
             }
+        }
+    }
+    post {
+        success {
+            cleanWs()
         }
     }
 }
