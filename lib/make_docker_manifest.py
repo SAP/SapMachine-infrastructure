@@ -48,6 +48,8 @@ def main(argv=None):
                 if utils.sapmachine_is_lts(dir) and int(dir) > int(latest_lts):
                     latest_lts = dir
 
+    releases.sort()
+
     for release in releases:
        directory = join(root, release)
        with open(join(directory, 'Dockerfile'), 'r') as dockerfile:
