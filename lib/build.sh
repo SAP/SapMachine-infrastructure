@@ -124,6 +124,16 @@ zip -rq "${WORKSPACE}/test.zip" src/*/*/legal/ || true
 zip -rq "${WORKSPACE}/test.zip" make/data/publicsuffixlist/VERSION || true
 zip -rq "${WORKSPACE}/test.zip" src/java.smartcardio/unix/native/libj2pcsc/MUSCLE/pcsclite.h || true
 
+zip -rq "${WORKSPACE}/test.zip" src/java.base/share/data/publicsuffixlist/VERSION || true
+zip -rq "${WORKSPACE}/test.zip" src/java.base/share/data/currency/CurrencyData.properties || true
+zip -rq "${WORKSPACE}/test.zip" src/java.base/share/data/lsrdata/language-subtag-registry.txt || true
+zip -rq "${WORKSPACE}/test.zip" src/java.base/share/data/unicodedata || true
+zip -rq "${WORKSPACE}/test.zip" src/java.base/share/data/charsetmapping || true
+zip -rq "${WORKSPACE}/test.zip" src/java.base/share/data/blockedcertsconverter/blocked.certs.pem || true
+zip -rq "${WORKSPACE}/test.zip" src/java.base/share/data/tzdata || true
+zip -rq "${WORKSPACE}/test.zip" src/jdk.compiler/share/data/symbols/include.list || true
+
+
 cd "${WORKSPACE}/SapMachine/build"
 cd "$(ls)"
 zip -rq ${WORKSPACE}/support_gensrc.zip support/gensrc
