@@ -197,6 +197,8 @@ def main(argv=None):
         'assets':{}
     }
 
+    release_dict = dict(sorted(release_dict.items(), key = lambda x:x[0], reverse = True))
+
     for major in release_dict:
         release_dict[major].add_to_release_json(json_root)
 
@@ -208,7 +210,7 @@ def main(argv=None):
 
     files = [{
         'location': join('assets', 'data', 'sapmachine_releases.json'),
-        'data': json.dumps(json_root, indent=4),
+        'data': json.dumps(json_root, indent=4) + '\n',
         'commit_message': 'Updated release data.'
     }]
 
