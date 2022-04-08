@@ -30,24 +30,47 @@ fixes #1073
       </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
     </entry>
     <entry>
-      <int>1075</int>
+      <int>1076</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>1075</number>
-        <issueUpdatedAt>2022-04-06 22:37:16.0 UTC</issueUpdatedAt>
-        <title>SapMachine 18: Merge public jdk 18.0.1</title>
-        <body>fixes #1074
-
-</body>
-        <prUpdatedAt>2022-04-06 22:37:16.0 UTC</prUpdatedAt>
-        <headSha>f40193f4ff349bd0b9d3eb6bb02e26b3a72445cd</headSha>
-        <headRef>merge-public-jdk-18-0-1</headRef>
+        <number>1076</number>
+        <issueUpdatedAt>2022-04-07 10:11:22.0 UTC</issueUpdatedAt>
+        <title>Merge to tag jdk-19+17</title>
+        <body>please pull</body>
+        <prUpdatedAt>2022-04-07 10:11:22.0 UTC</prUpdatedAt>
+        <headSha>dd4a1bba91d69b1dc56c8f5b72275b3994cd82f9</headSha>
+        <headRef>pr-jdk-19+17</headRef>
         <mergeable>true</mergeable>
-        <baseRef>sapmachine18</baseRef>
+        <baseRef>sapmachine</baseRef>
+        <userLogin>SapMachine</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1076</htmlUrl>
+        <labels />
+        <sourceRepoOwner>SAP</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>1078</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>1078</number>
+        <issueUpdatedAt>2022-04-07 12:51:41.0 UTC</issueUpdatedAt>
+        <title>SapMachine 17 #1077: Cherry-Pick JDK-8283347</title>
+        <body>[JDK-8283347](https://bugs.openjdk.java.net/browse/JDK-8283347) _[macos] Bad JNI lookup accessibilityHitTest is shown when Screen magnifier is enabled_
+
+should be cherry-picked to SapMachine 17.0.3.
+
+fixes #1077
+</body>
+        <prUpdatedAt>2022-04-07 12:51:41.0 UTC</prUpdatedAt>
+        <headSha>bdd78d2fb24df43b97d8f5b550c84d78aa9d9cca</headSha>
+        <headRef>cherry-pick-8283347</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine17</baseRef>
         <userEmail>christoph.langer@sap.com</userEmail>
         <userLogin>RealCLanger</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/1075</htmlUrl>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1078</htmlUrl>
         <labels />
-        <lastCommentCreatedAt>2022-04-06 22:37:16.0 UTC</lastCommentCreatedAt>
+        <lastCommentCreatedAt>2022-04-07 10:24:03.0 UTC</lastCommentCreatedAt>
         <sourceRepoOwner>RealCLanger</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
