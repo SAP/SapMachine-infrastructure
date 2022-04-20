@@ -1,3 +1,4 @@
+
 FROM ubuntu:20.04
 
 RUN apt-get update \
@@ -10,7 +11,7 @@ RUN export GNUPGHOME="$(mktemp -d)" \
     && gpgconf --kill all && rm -rf "$GNUPGHOME" \
     && echo "deb http://dist.sapmachine.io/debian/amd64/ ./" > /etc/apt/sources.list.d/sapmachine.list \
     && apt-get update \
-    && apt-get -y --no-install-recommends install sapmachine-18-jdk=18 \
+    && apt-get -y --no-install-recommends install sapmachine-18-jdk=18.0.1 \
     && rm -rf /var/lib/apt/lists/*
 
 ENV JAVA_HOME=/usr/lib/jvm/sapmachine-18
