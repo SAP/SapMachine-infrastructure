@@ -13,7 +13,7 @@ import utils
 from os.path import join
 from versions import SapMachineTag
 
-# this list is a temporary solution until we have aarch64 release available
+# this list is a temporary solution until we have aarch64 and Linux Alpine release available
 # remove this list once they are available
 extra_bootjdks = [
     {
@@ -38,11 +38,31 @@ extra_bootjdks = [
     },
     {
         'prerelease': False,
+        'name': 'sapmachine-11.0.14.1',
+        'assets': [
+            {
+                'name': 'sapmachine-jdk-11.0.14.1_linux-x64_alpine_bin.tar.gz',
+                'browser_download_url': 'https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.14.1%2B1/OpenJDK11U-jdk_x64_alpine-linux_hotspot_11.0.14.1_1.tar.gz'
+            }
+        ]
+    },
+    {
+        'prerelease': False,
         'name': 'sapmachine-17.0.2',
         'assets': [
             {
                 'name': 'sapmachine-jdk-17.0.2_linux-aarch64_bin.tar.gz',
                 'browser_download_url': 'https://github.com/SAP/SapMachine/releases/download/sapmachine-17.0.2/sapmachine-jdk-17.0.2-beta_linux-aarch64_bin.tar.gz'
+            }
+        ]
+    },
+    {
+        'prerelease': False,
+        'name': 'sapmachine-17.0.2',
+        'assets': [
+            {
+                'name': 'sapmachine-jdk-17.0.2_linux-x64_alpine_bin.tar.gz',
+                'browser_download_url': 'https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.2%2B8/OpenJDK17U-jdk_x64_alpine-linux_hotspot_17.0.2_8.tar.gz'
             }
         ]
     },
@@ -55,7 +75,17 @@ extra_bootjdks = [
                 'browser_download_url': 'https://github.com/SAP/SapMachine/releases/download/sapmachine-18/sapmachine-jdk-18-beta_linux-aarch64_bin.tar.gz'
             }
         ]
-    }
+    },
+    {
+        'prerelease': False,
+        'name': 'sapmachine-18',
+        'assets': [
+            {
+                'name': 'sapmachine-jdk-18_linux-x64_alpine_bin.tar.gz',
+                'browser_download_url': 'https://github.com/adoptium/temurin18-binaries/releases/download/jdk-18%2B36/OpenJDK18U-jdk_x64_alpine-linux_hotspot_18_36.tar.gz'
+            }
+        ]
+    }    
 ]
 
 def main(argv=None):
