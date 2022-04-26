@@ -100,6 +100,10 @@ def main(argv=None):
     releases = utils.get_github_releases()
     system = utils.get_system(boot_jdk_major_max)
     platform = str.format('{0}-{1}_bin', system, utils.get_arch())
+    # adjust platform name for Alpine Linux
+    if os.path.isfile('/etc/alpine-release'):
+        platform = str.format('{0}-{1}_alpine_bin', system, utils.get_arch())
+    
     retries = 2
 
     print(str.format('detected platform "{0}"', platform))
