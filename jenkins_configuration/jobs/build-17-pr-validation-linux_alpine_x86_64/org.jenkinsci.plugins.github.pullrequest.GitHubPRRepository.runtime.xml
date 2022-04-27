@@ -8,10 +8,10 @@
       <int>1089</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>1089</number>
-        <issueUpdatedAt>2022-04-25 10:17:49.0 UTC</issueUpdatedAt>
+        <issueUpdatedAt>2022-04-26 18:58:18.0 UTC</issueUpdatedAt>
         <title>Merge to tag jdk-19+19</title>
         <body>please pull</body>
-        <prUpdatedAt>2022-04-25 10:17:49.0 UTC</prUpdatedAt>
+        <prUpdatedAt>2022-04-26 18:58:18.0 UTC</prUpdatedAt>
         <headSha>5b4b44fac599b7c9ac2da45a1b6ca40c28eb0061</headSha>
         <headRef>pr-jdk-19+19</headRef>
         <mergeable>true</mergeable>
@@ -20,6 +20,54 @@
         <htmlUrl>https://github.com/SAP/SapMachine/pull/1089</htmlUrl>
         <labels />
         <sourceRepoOwner>SAP</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>1090</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>1090</number>
+        <issueUpdatedAt>2022-04-26 19:06:48.0 UTC</issueUpdatedAt>
+        <title>#1085: Vitals: glibc: add C-Heap information</title>
+        <body>This adds C-heap usage information from mallinfo2(), or - if that is not available (older glibc) - mallinfo().
+
+Example output:
+
+```
+-----------process------------
+...
+       cheap-usd: C-Heap, in-use allocations
+        cheap-fr: C-Heap, bytes in free blocks
+
+Last 60 minutes:
+                      -------------------------system------------------------- ----------------------------process----------------------------- --------------------------------------jvm---------------------------------------
+                                                            -------cpu--------       -------rss--------          -cheap-- -cpu- ----io-----     --heap--- ----------meta----------           ----jthr----- --cldg-- ----cls-----
+                      avail comm  crt swap si so p t  pr pb us sy id  wa st gu virt  all  anon file shm swdo brk usd  fr  us sy of rd   wr  thr comm used comm used csc  csu  gctr code mlc  num nd cr st  num anon num  ld  uld
+2022-04-26 10:25:18   44.4g 23.5g  70   0k  0  0 2 40  2  0  3  0  96  0  0  0 27.2g 7.5g 7.5g  36m  0k   0k 96k 7.0g 10m  2  0  4  25k 10k  39 1.0g 531m   3m   3m 320k 233k  21m      3.5g  13  2  0 38m  35   32 1347   0   0
+2022-04-26 10:25:08   46.3g 23.6g  70   0k  0  0 2 40  2  0  3  0  97  0  0  0 25.2g 5.6g 5.6g  36m  0k   0k 96k 5.0g 10m  2  0  4  25k  5k  39 1.0g 531m   3m   3m 320k 233k  21m      2.5g  13  2  0 38m  35   32 1347   0   0
+2022-04-26 10:24:58   48.3g 23.6g  70   0k  0  0 2 40  1  0  1  0  99  0  0  0 23.3g 3.6g 3.6g  36m  0k   0k 96k 3.0g  9m  0  0  4  25k  5k  39 1.0g 531m   3m   3m 320k 233k  21m      1.5g  13  2  1 38m  35   32 1347   0   0
+2022-04-26 10:24:48   48.3g 23.9g  71   0k  0  0 2 39  2  0  1  0  99  0  0  0 23.3g 3.6g 3.6g  36m  0k   0k 96k 3.0g  9m  0  0  3  25k  0k  38 1.0g 530m   3m   3m 320k 233k  21m      1.5g  12  2  0 37m  35   32 1347   0   0
+2022-04-26 10:24:38   48.2g 23.7g  70   0k  0  0 2 39  2  0  0  0 100  0  0  0 23.3g 3.6g 3.6g  36m  0k   0k 96k 3.0g  9m  0  0  3  25k  0k  38 1.0g 530m   3m   3m 320k 233k  21m      1.5g  12  2  0 37m  35   32 1347   0   0
+2022-04-26 10:24:28   48.2g 23.8g  71   0k  0  0 2 39  1  0  0  0  99  0  0  0 23.3g 3.6g 3.6g  36m  0k   0k 96k 3.0g  9m  0  0  3  25k  0k  38 1.0g 530m   3m   3m 320k 233k  21m      1.5g  12  2  0 37m  35   32 1347   0   0
+2022-04-26 10:24:18   48.2g 23.6g  70   0k  0  0 2 39  2  0  2  0  97  0  0  0 23.3g 3.6g 3.6g  36m  0k   0k 96k 3.0g  9m  2  0  3  25k &lt;1k  38 1.0g 530m   3m   3m 320k 233k  21m      1.5g  12  2  0 37m  35   32 1347   0   0
+2022-04-26 10:24:08   49.9g 23.3g  69   0k  0  0 2 41  2  0  2  0  97  0  0  0 21.6g 2.0g 2.0g  36m  0k   0k 96k 1.4g  8m  2  0  3 991k &lt;1k  40 1.0g 530m   3m   3m 320k 233k  21m      742m  14  2  7 39m  35   32 1347 888   0
+2022-04-26 10:23:58   51.8g 23.3g  69   0k       2 20  3  0                    18.9g  94m  65m  30m  0k   0k 96k  42m  2m        2           18 1.0g  10m 128k  52k  64k  &lt;1k  21m       42m   9  1    16m   3    0  459
+
+```
+fixes #1085 
+
+</body>
+        <prUpdatedAt>2022-04-26 19:06:48.0 UTC</prUpdatedAt>
+        <headSha>76f6195fda85aab81bb726b8cd1f0b8fd831dd77</headSha>
+        <headRef>vitals-cheap-used-free</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine</baseRef>
+        <userLogin>tstuefe</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1090</htmlUrl>
+        <labels />
+        <lastCommentCreatedAt>2022-04-26 10:37:09.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>tstuefe</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
       </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
