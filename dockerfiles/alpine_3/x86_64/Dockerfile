@@ -21,6 +21,7 @@ zip \
 wget \
 git \
 unzip \
+sed \
 tar \
 fontconfig-dev \
 ca-certificates \
