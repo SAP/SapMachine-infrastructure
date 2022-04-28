@@ -110,6 +110,12 @@ def main(argv=None):
             version_pre = 'beta'
         else:
             version_pre += '-beta'
+    
+    if utils.get_system(major) == 'linux' and os.path.isfile('/etc/alpine-release'):
+        if not version_pre:
+            version_pre = 'beta'
+        else:
+            version_pre += '-beta'
 
     configure_opts.append(VERSION_PRE_ARG.format(version_pre))
 
