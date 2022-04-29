@@ -47,7 +47,7 @@
           <ebsOptimized>true</ebsOptimized>
           <monitoring>false</monitoring>
           <t2Unlimited>false</t2Unlimited>
-          <labels>linux_x86_64 linux_alpine_x86_64</labels>
+          <labels>linux_x86_64</labels>
           <mode>EXCLUSIVE</mode>
           <initScript />
           <tmpDir />
@@ -187,6 +187,65 @@
             <hudson.plugins.ec2.EC2Tag>
               <name>Name</name>
               <value>Jenkins linux aarch64 client autolaunched</value>
+            </hudson.plugins.ec2.EC2Tag>
+          </tags>
+          <connectionStrategy>PRIVATE_IP</connectionStrategy>
+          <hostKeyVerificationStrategy>OFF</hostKeyVerificationStrategy>
+          <associatePublicIp>true</associatePublicIp>
+          <amiType class="hudson.plugins.ec2.UnixData">
+            <rootCommandPrefix />
+            <slaveCommandPrefix />
+            <slaveCommandSuffix />
+            <sshPort>22</sshPort>
+            <bootDelay />
+          </amiType>
+          <launchTimeout>2147483647</launchTimeout>
+          <connectBySSHProcess>false</connectBySSHProcess>
+          <maxTotalUses>-1</maxTotalUses>
+          <nodeProperties />
+          <nextSubnet>0</nextSubnet>
+          <tenancy>Default</tenancy>
+          <ebsEncryptRootVolume>DEFAULT</ebsEncryptRootVolume>
+          <metadataEndpointEnabled>true</metadataEndpointEnabled>
+          <metadataTokensRequired>false</metadataTokensRequired>
+          <metadataHopsLimit>1</metadataHopsLimit>
+          <amiOwners />
+          <amiUsers />
+          <usePrivateDnsName>false</usePrivateDnsName>
+          <connectUsingPublicIp>false</connectUsingPublicIp>
+        </hudson.plugins.ec2.SlaveTemplate>
+        <hudson.plugins.ec2.SlaveTemplate>
+          <ami>ami-03159fc154008f989</ami>
+          <description>Linux Alpine X86 Client</description>
+          <zone>us-east-1d</zone>
+          <securityGroups>JenkinsLinuxSlave</securityGroups>
+          <remoteFS>/home/ubuntu/client_home</remoteFS>
+          <type>M54xlarge</type>
+          <ebsOptimized>true</ebsOptimized>
+          <monitoring>false</monitoring>
+          <t2Unlimited>false</t2Unlimited>
+          <labels> linux_alpine_x86_64</labels>
+          <mode>EXCLUSIVE</mode>
+          <initScript />
+          <tmpDir />
+          <userData />
+          <numExecutors>1</numExecutors>
+          <remoteAdmin>ubuntu</remoteAdmin>
+          <jvmopts />
+          <subnetId />
+          <idleTerminationMinutes>10</idleTerminationMinutes>
+          <iamInstanceProfile />
+          <deleteRootOnTermination>false</deleteRootOnTermination>
+          <useEphemeralDevices>false</useEphemeralDevices>
+          <customDeviceMapping />
+          <instanceCap>3</instanceCap>
+          <minimumNumberOfInstances>0</minimumNumberOfInstances>
+          <minimumNumberOfSpareInstances>0</minimumNumberOfSpareInstances>
+          <stopOnTerminate>false</stopOnTerminate>
+          <tags>
+            <hudson.plugins.ec2.EC2Tag>
+              <name>Name</name>
+              <value>Dynamic Ubuntu 20.04 x86_64 Client</value>
             </hudson.plugins.ec2.EC2Tag>
           </tags>
           <connectionStrategy>PRIVATE_IP</connectionStrategy>
