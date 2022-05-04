@@ -40,7 +40,13 @@ def main(argv=None):
             install_cmd = ['/usr/local/bin/install-plugins.sh']
 
             for plugin in plugin_list:
-                install_cmd.append(str.format('{0}:{1}', plugin['Extension-Name'], plugin['Plugin-Version']))
+                if 'Short-Name' not in plugin:
+                    # In case the key is missing, print some more information before bail out
+                    print("Short-Name missing for:")
+                    for key in plugin:
+                        print(str.format("{0}:{1}", key, plugin[key]))
+                    print("")
+                install_cmd.append(str.format('{0}:{1}', plugin['Short-Name'], plugin['Plugin-Version']))
 
             utils.run_cmd(install_cmd)
 
