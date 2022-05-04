@@ -3,5 +3,55 @@
   <githubUrl>https://github.com/SAP/SapMachine</githubUrl>
   <gitUrl>git://github.com/SAP/SapMachine.git</gitUrl>
   <sshUrl>git@github.com:SAP/SapMachine.git</sshUrl>
-  <pulls class="concurrent-hash-map" />
+  <pulls class="concurrent-hash-map">
+    <entry>
+      <int>1098</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>1098</number>
+        <issueUpdatedAt>2022-05-03 14:27:52.0 UTC</issueUpdatedAt>
+        <title>#1097: Vitals: April 22 Update</title>
+        <body>A collection of patches for the Vitals subsystem.
+
+For easy review, broken down into individual topics:
+
+### [Linux: print cheap used, free](https://github.com/SAP/SapMachine/commit/680ee8e46de25cfaca77f4503b3294d455a496ad)
+
+Adds two new columns, process-cheap-used and process-cheap-free, displaying the current C-heap usage according to the glibc itself. Only available in Linux+glibc platforms
+
+### [Vitals: lock codecache while sampling](https://github.com/SAP/SapMachine/commit/d70f38faf0afff0e0fca84ea2293248f890bf03a)
+
+Codecache needs to be locked when we sample, since getting its size involves walking the segment chain
+
+### [add column for nmt mmapped total](https://github.com/SAP/SapMachine/commit/ce1695f250189a518939a9677dcbd5557298eb7e)
+
+We already had a column for NMT-malloced. Now, add a second column for NMT-mmaped memory. That way we see both sides of whatever NMT thinks is going on
+
+### [Remove SAPJVM malloc stat integration](https://github.com/SAP/SapMachine/commit/cb890fce7bec92545bb6a4cc6e927436e9f487ba)
+
+I removed the SAPJVM malloc stat integration stub since its not needed in SapMachine and not really useful either
+
+### [VitalsSampleInterval=0 crashes VM](https://github.com/SAP/SapMachine/commit/5cc1597a9127e9b04cfd21815ef8c9cd4fdd52f9)
+
+Fixes a small possible SIGFPE if vitals sample interval had been set to zero; also regression test.
+
+
+
+fixes #1097
+
+</body>
+        <prUpdatedAt>2022-05-03 14:27:52.0 UTC</prUpdatedAt>
+        <headSha>5cc1597a9127e9b04cfd21815ef8c9cd4fdd52f9</headSha>
+        <headRef>Vitals-april22-update</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine</baseRef>
+        <userLogin>tstuefe</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1098</htmlUrl>
+        <labels />
+        <lastCommentCreatedAt>2022-05-03 14:26:09.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>tstuefe</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+  </pulls>
 </org.jenkinsci.plugins.github.pullrequest.GitHubPRRepository>
