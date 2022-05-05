@@ -55,6 +55,9 @@ def run_jenkins_jobs(major, tag):
     if major > 16:
         build_jobs.append(str.format('build-{0}-release-macos_aarch64', major))
 
+    if major > 18:
+        build_jobs.append(str.format('build-{0}-release-linux_alpine_x86_64', major))
+
     job_params = {
         'PUBLISH': 'true' ,
         'RELEASE': 'false',

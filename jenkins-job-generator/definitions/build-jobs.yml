@@ -128,14 +128,8 @@
     build_type: *build_types
     platform: *platforms
     exclude:
-        - platform: macos_aarch64
-          major: '11'
         - platform: linux_alpine_x86_64
           major: '11'
-        - platform: linux_alpine_x86_64
-          major: '17'
-        - platform: linux_alpine_x86_64
-          major: '18'
     jobs:
         - build-{major}-{build_type}-{platform}
 
