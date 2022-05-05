@@ -65,4 +65,9 @@ RUN /opt/gcc-8.4.0/configure --enable-languages=c,c++ --prefix=/opt/gcc-8.4.0-bi
 
 ENV PATH="/opt/gcc-8.4.0-bin/bin:${PATH}"
 
+ADD https://raw.githubusercontent.com/tstuefe/tinyreaper/master/tinyreaper.c /tmp
+RUN gcc /tmp/tinyreaper.c -o /opt/tinyreaper && \
+    chmod +x /opt/tinyreaper && \
+    rm /tmp/tinyreaper.c
+
 WORKDIR /

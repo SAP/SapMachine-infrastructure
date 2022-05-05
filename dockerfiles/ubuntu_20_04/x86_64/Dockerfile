@@ -39,3 +39,8 @@ RUN useradd -ms /bin/bash jenkinsb -u 1001
 RUN useradd -ms /bin/bash jenkinsc -u 1002
 
 RUN pip3 install requests
+
+ADD https://raw.githubusercontent.com/tstuefe/tinyreaper/master/tinyreaper.c /tmp
+RUN gcc /tmp/tinyreaper.c -o /opt/tinyreaper && \
+    chmod +x /opt/tinyreaper && \
+    rm /tmp/tinyreaper.c

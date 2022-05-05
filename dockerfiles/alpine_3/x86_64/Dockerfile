@@ -38,9 +38,8 @@ RUN adduser --shell /bin/bash --uid 1002 --disabled-password jenkinsc
 
 RUN pip3 install requests
 
-RUN mkdir /tmp/tinyreaper
-ADD https://raw.githubusercontent.com/tstuefe/tinyreaper/master/tinyreaper.c /tmp/tinyreaper
-RUN gcc /tmp/tinyreaper/tinyreaper.c -o /opt/tinyreaper
-RUN chmod +x /opt/tinyreaper
+ADD https://raw.githubusercontent.com/tstuefe/tinyreaper/master/tinyreaper.c /tmp
+RUN gcc /tmp/tinyreaper.c -o /opt/tinyreaper && \
+    chmod +x /opt/tinyreaper && \
+    rm /tmp/tinyreaper.c
 
-ENV PATH=${PATH}:/opt
