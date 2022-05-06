@@ -5,50 +5,163 @@
   <sshUrl>git@github.com:SAP/SapMachine.git</sshUrl>
   <pulls class="concurrent-hash-map">
     <entry>
-      <int>1098</int>
+      <int>1104</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>1098</number>
-        <issueUpdatedAt>2022-05-04 18:06:18.0 UTC</issueUpdatedAt>
-        <title>#1097: Vitals: April 22 Update</title>
-        <body>A collection of patches for the Vitals subsystem.
+        <number>1104</number>
+        <issueUpdatedAt>2022-05-05 14:01:41.0 UTC</issueUpdatedAt>
+        <title>SapMachine #1097: Vitals: April 22 Update (11)</title>
+        <body>(Downport 11, not clean, a small addition was needed since MutexLocker changed)
 
-For easy review, broken down into individual topics:
+Linux: print cheap used, free (from mallinfo/mallinfo2)
+(cherry picked from commit 6b235a9f02a3b3c6928dd647d6549ff92e38cac1)
 
-### [Linux: print cheap used, free](https://github.com/SAP/SapMachine/commit/680ee8e46de25cfaca77f4503b3294d455a496ad)
+Vitals: lock codecache while sampling
+(cherry picked from commit 8d29ee59ae42860e671e4b9889c9f40241ae7065)
 
-Adds two new columns, process-cheap-used and process-cheap-free, displaying the current C-heap usage according to the glibc itself. Only available in Linux+glibc platforms
+add column for nmt mmapped total
+(cherry picked from commit 13d7b2817585d4be85451effcee29fe6cf5f02d0)
 
-### [Vitals: lock codecache while sampling](https://github.com/SAP/SapMachine/commit/d70f38faf0afff0e0fca84ea2293248f890bf03a)
+Remove SAPJVM malloc stat integration
+(cherry picked from commit c9fdf259d36a70145ae590ad8e7b0d57a01b10e2)
 
-Codecache needs to be locked when we sample, since getting its size involves walking the segment chain
+VitalsSampleInterval=0 crashes VM
+(cherry picked from commit 6d6621a851243e5c995e41343df7ff7fdc7d5d45)
 
-### [add column for nmt mmapped total](https://github.com/SAP/SapMachine/commit/ce1695f250189a518939a9677dcbd5557298eb7e)
-
-We already had a column for NMT-malloced. Now, add a second column for NMT-mmaped memory. That way we see both sides of whatever NMT thinks is going on
-
-### [Remove SAPJVM malloc stat integration](https://github.com/SAP/SapMachine/commit/cb890fce7bec92545bb6a4cc6e927436e9f487ba)
-
-I removed the SAPJVM malloc stat integration stub since its not needed in SapMachine and not really useful either
-
-### [VitalsSampleInterval=0 crashes VM](https://github.com/SAP/SapMachine/commit/5cc1597a9127e9b04cfd21815ef8c9cd4fdd52f9)
-
-Fixes a small possible SIGFPE if vitals sample interval had been set to zero; also regression test.
-
-
+remove unused variable
+(cherry picked from commit https://github.com/SAP/SapMachine/commit/4c14014f77625f18a5012581f51dd7901da33a9c)
 
 fixes #1097
 
 </body>
-        <prUpdatedAt>2022-05-04 18:06:18.0 UTC</prUpdatedAt>
-        <headSha>7b052b36be27cee52f5661fb9bdc1ce5e9ec8b52</headSha>
-        <headRef>Vitals-april22-update</headRef>
+        <prUpdatedAt>2022-05-05 14:01:41.0 UTC</prUpdatedAt>
+        <headSha>9d29e3f4d56019e5a278dba82e5f5e6043e8acc8</headSha>
+        <headRef>1097-vitals-april-22-update-11</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine11</baseRef>
+        <userLogin>tstuefe</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1104</htmlUrl>
+        <labels />
+        <lastCommentCreatedAt>2022-05-05 09:51:10.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>tstuefe</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>1105</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>1105</number>
+        <issueUpdatedAt>2022-05-05 19:06:08.0 UTC</issueUpdatedAt>
+        <title>#1095: runtime/malloctrace/MallocTraceDcmdTest.java fails on Alpine (18)</title>
+        <body>Downport to 18. Clean.
+
+* fix alpine
+
+* use SkippedException
+
+(cherry picked from commit 250d014522b04b6d19a6fab8ef3aa055ef48720b)
+
+The description of this pull request goes here.
+
+fixes #1095
+
+</body>
+        <prUpdatedAt>2022-05-05 19:06:08.0 UTC</prUpdatedAt>
+        <headSha>6ab3891200a6d52971996d99e8caf62e7136933b</headSha>
+        <headRef>1095-MallocTraceDcmdTest-Alpine-18</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine18</baseRef>
+        <userLogin>tstuefe</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1105</htmlUrl>
+        <labels />
+        <lastCommentCreatedAt>2022-05-05 19:06:08.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>tstuefe</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>1106</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>1106</number>
+        <issueUpdatedAt>2022-05-05 18:56:52.0 UTC</issueUpdatedAt>
+        <title>#1095: runtime/malloctrace/MallocTraceDcmdTest.java fails on Alpine (17)</title>
+        <body>Downport to 17 (clean)
+
+* fix alpine
+
+* use SkippedException
+
+(cherry picked from commit 250d014522b04b6d19a6fab8ef3aa055ef48720b)
+
+The description of this pull request goes here.
+
+fixes #1095
+
+</body>
+        <prUpdatedAt>2022-05-05 18:56:52.0 UTC</prUpdatedAt>
+        <headSha>b55fff19ce6f4cd87ca5e817a675d3962ef67175</headSha>
+        <headRef>1095-MallocTraceDcmdTest-Alpine-17</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine17</baseRef>
+        <userLogin>tstuefe</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1106</htmlUrl>
+        <labels />
+        <lastCommentCreatedAt>2022-05-05 11:32:40.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>tstuefe</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>1107</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>1107</number>
+        <issueUpdatedAt>2022-05-05 19:01:29.0 UTC</issueUpdatedAt>
+        <title>#1095: runtime/malloctrace/MallocTraceDcmdTest.java fails on Alpine (11)</title>
+        <body>Downport to 11. Clean.
+
+* fix alpine
+
+* use SkippedException
+
+(cherry picked from commit 250d014522b04b6d19a6fab8ef3aa055ef48720b)
+
+The description of this pull request goes here.
+
+fixes #1095
+
+</body>
+        <prUpdatedAt>2022-05-05 19:01:29.0 UTC</prUpdatedAt>
+        <headSha>e401c7ad03edc23c1d032a40be9e77a94a008ce0</headSha>
+        <headRef>1095-MallocTraceDcmdTest-Alpine-11</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine11</baseRef>
+        <userLogin>tstuefe</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1107</htmlUrl>
+        <labels />
+        <lastCommentCreatedAt>2022-05-05 12:09:04.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>tstuefe</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>1108</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>1108</number>
+        <issueUpdatedAt>2022-05-05 12:28:43.0 UTC</issueUpdatedAt>
+        <title>Merge to tag jdk-19+21</title>
+        <body>please pull</body>
+        <prUpdatedAt>2022-05-05 12:28:43.0 UTC</prUpdatedAt>
+        <headSha>bb022b24cfdad9d6826140c6b26c46f480e7457d</headSha>
+        <headRef>pr-jdk-19+21</headRef>
         <mergeable>true</mergeable>
         <baseRef>sapmachine</baseRef>
-        <userLogin>tstuefe</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/1098</htmlUrl>
+        <userLogin>SapMachine</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1108</htmlUrl>
         <labels />
-        <lastCommentCreatedAt>2022-05-04 18:06:18.0 UTC</lastCommentCreatedAt>
-        <sourceRepoOwner>tstuefe</sourceRepoOwner>
+        <sourceRepoOwner>SAP</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
       </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
@@ -57,10 +170,10 @@ fixes #1097
       <int>1099</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>1099</number>
-        <issueUpdatedAt>2022-05-04 21:44:32.0 UTC</issueUpdatedAt>
+        <issueUpdatedAt>2022-05-05 19:05:24.0 UTC</issueUpdatedAt>
         <title>Merge to tag jdk-17.0.4+1</title>
         <body>please pull</body>
-        <prUpdatedAt>2022-05-04 21:44:32.0 UTC</prUpdatedAt>
+        <prUpdatedAt>2022-05-05 19:05:24.0 UTC</prUpdatedAt>
         <headSha>7e110f3c91b954c661ae1143633738df2089a696</headSha>
         <headRef>pr-jdk-17.0.4+1</headRef>
         <mergeable>true</mergeable>
@@ -89,6 +202,108 @@ fixes #1097
         <htmlUrl>https://github.com/SAP/SapMachine/pull/1100</htmlUrl>
         <labels />
         <sourceRepoOwner>SAP</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>1102</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>1102</number>
+        <issueUpdatedAt>2022-05-05 14:02:11.0 UTC</issueUpdatedAt>
+        <title>SapMachine #1097: Vitals: April 22 Update (18)</title>
+        <body>(Downport 18, clean)
+
+* Linux: print cheap used, free (from mallinfo/mallinfo2)
+
+(cherry picked from commit 6b235a9f02a3b3c6928dd647d6549ff92e38cac1)
+
+* Vitals: lock codecache while sampling
+
+(cherry picked from commit 8d29ee59ae42860e671e4b9889c9f40241ae7065)
+
+* add column for nmt mmapped total
+
+(cherry picked from commit 13d7b2817585d4be85451effcee29fe6cf5f02d0)
+
+* Remove SAPJVM malloc stat integration
+
+(cherry picked from commit c9fdf259d36a70145ae590ad8e7b0d57a01b10e2)
+
+* VitalsSampleInterval=0 crashes VM
+
+(cherry picked from commit 6d6621a851243e5c995e41343df7ff7fdc7d5d45)
+
+* remove unused variable
+
+(cherry picked from commit 4c14014f77625f18a5012581f51dd7901da33a9c)
+
+The description of this pull request goes here.
+
+fixes #1097
+
+</body>
+        <prUpdatedAt>2022-05-05 14:02:11.0 UTC</prUpdatedAt>
+        <headSha>f0bad61fb4cd6fee9da07d686a49ba1c03db1e2d</headSha>
+        <headRef>1097-vitals-april-22-update-18</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine18</baseRef>
+        <userLogin>tstuefe</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1102</htmlUrl>
+        <labels />
+        <lastCommentCreatedAt>2022-05-05 08:58:17.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>tstuefe</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>1103</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>1103</number>
+        <issueUpdatedAt>2022-05-05 14:01:58.0 UTC</issueUpdatedAt>
+        <title>SapMachine #1097: Vitals: April 22 Update (17)</title>
+        <body>(Downport 17, clean)
+
+* Linux: print cheap used, free (from mallinfo/mallinfo2)
+
+(cherry picked from commit 6b235a9f02a3b3c6928dd647d6549ff92e38cac1)
+
+* Vitals: lock codecache while sampling
+
+(cherry picked from commit 8d29ee59ae42860e671e4b9889c9f40241ae7065)
+
+* add column for nmt mmapped total
+
+(cherry picked from commit 13d7b2817585d4be85451effcee29fe6cf5f02d0)
+
+* Remove SAPJVM malloc stat integration
+
+(cherry picked from commit c9fdf259d36a70145ae590ad8e7b0d57a01b10e2)
+
+* VitalsSampleInterval=0 crashes VM
+
+(cherry picked from commit 6d6621a851243e5c995e41343df7ff7fdc7d5d45)
+
+* remove unused variable
+
+(cherry picked from commit 4c14014f77625f18a5012581f51dd7901da33a9c)
+
+The description of this pull request goes here.
+
+fixes #1097
+
+</body>
+        <prUpdatedAt>2022-05-05 14:01:58.0 UTC</prUpdatedAt>
+        <headSha>7b51119b45f11449a1334ee99bb99954bada3d3c</headSha>
+        <headRef>1097-vitals-april-22-update-17</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine17</baseRef>
+        <userLogin>tstuefe</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1103</htmlUrl>
+        <labels />
+        <lastCommentCreatedAt>2022-05-05 09:38:07.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>tstuefe</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
       </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>

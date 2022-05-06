@@ -8,7 +8,7 @@
       <options />
     </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
   </actions>
-  <description>pr-validation build for SapMachine 18 on linux_aarch64.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+  <description>pr-validation build for SapMachine 11 on macos_aarch64.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
   <properties>
     <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty>
@@ -62,7 +62,7 @@
           <preStatus>false</preStatus>
           <branchRestriction>
             <targetBranchList>
-              <string>sapmachine18</string>
+              <string>sapmachine11</string>
             </targetBranchList>
           </branchRestriction>
         </org.jenkinsci.plugins.github.pullrequest.GitHubPRTrigger>
@@ -79,7 +79,7 @@
         <hudson.model.StringParameterDefinition>
           <name>SAPMACHINE_GIT_BRANCH</name>
           <description>The Git branch to build.</description>
-          <defaultValue>sapmachine18</defaultValue>
+          <defaultValue>sapmachine11</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
@@ -97,13 +97,13 @@
         <hudson.model.StringParameterDefinition>
           <name>SAPMACHINE_ARCHIVE_NAME_PREFIX</name>
           <description>The prefix of the bundle archive.</description>
-          <defaultValue>sapmachine18-linux_aarch64</defaultValue>
+          <defaultValue>sapmachine11-macos_aarch64</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>DEVKIT</name>
           <description>Devkit, could be either a path that locally exists or the GAV coordinates to a tar.gz archive to be downloaded and extracted.</description>
-          <defaultValue>/opt/devkits/aarch64-linux-gnu-to-aarch64-linux-gnu-fedora-21-gcc-9.2.0</defaultValue>
+          <defaultValue>io.sapmachine.build.devkit.macos:devkit-xcode:13.1</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
@@ -115,7 +115,7 @@
         <hudson.model.StringParameterDefinition>
           <name>JDK_MAJOR</name>
           <description>Specify the JDK major version explicitly. You need to override the default in user branch builds.</description>
-          <defaultValue>18</defaultValue>
+          <defaultValue>11</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
@@ -157,14 +157,14 @@
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2689.v434009a_31b_f1">
     <script>pipeline {
     agent {
-        label "linux_aarch64"
+        label "macos_aarch64"
     }
     stages {
         stage("Init") {
             steps {
                 script {
                     if (JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/) {
-                        setGitHubPullRequestStatus context: "validate-pr-18-linux_aarch64", state: 'PENDING'
+                        setGitHubPullRequestStatus context: "validate-pr-11-macos_aarch64", state: 'PENDING'
                     }
                     env.VERIFICATION_RESULT = "1"
                 }
@@ -177,21 +177,13 @@
             }
         }
         stage("Verify PR") {
-            agent {
-    dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/arm64"
-        reuseNode true
-        label "linux_aarch64"
-        args "--mount src=/opt/devkits/aarch64-linux-gnu-to-aarch64-linux-gnu-fedora-21-gcc-9.2.0,target=/opt/devkits/aarch64-linux-gnu-to-aarch64-linux-gnu-fedora-21-gcc-9.2.0,type=bind"
-    }
-}
-
+            
             steps {
                 // credentials are needed to avoid rate limit exceedance in verify_pr.py
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
                     script {
                         if (JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/) {
-                            def platform = "linux_aarch64"
+                            def platform = "macos_aarch64"
                             env.COMMENT = ""
                             if (platform == 'linux_x86_64') {
                                 env.COMMENT = "-c"
@@ -218,15 +210,7 @@
             }
         }
         stage('Prepare Devkit') {
-            agent {
-    dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/arm64"
-        reuseNode true
-        label "linux_aarch64"
-        args "--mount src=/opt/devkits/aarch64-linux-gnu-to-aarch64-linux-gnu-fedora-21-gcc-9.2.0,target=/opt/devkits/aarch64-linux-gnu-to-aarch64-linux-gnu-fedora-21-gcc-9.2.0,type=bind"
-    }
-}
-
+            
             when {
                 beforeAgent true
                 expression { env.VERIFICATION_RESULT != "2" &amp;&amp; !params.DEVKIT.isEmpty() }
@@ -252,15 +236,7 @@
             }
         }
         stage('Download Prerequisites') {
-            agent {
-    dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/arm64"
-        reuseNode true
-        label "linux_aarch64"
-        args "--mount src=/opt/devkits/aarch64-linux-gnu-to-aarch64-linux-gnu-fedora-21-gcc-9.2.0,target=/opt/devkits/aarch64-linux-gnu-to-aarch64-linux-gnu-fedora-21-gcc-9.2.0,type=bind"
-    }
-}
-
+            
             when {
                 beforeAgent true
                 expression { env.VERIFICATION_RESULT != "2" }
@@ -276,15 +252,7 @@
             }
         }
         stage("Build") {
-            agent {
-    dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/arm64"
-        reuseNode true
-        label "linux_aarch64"
-        args "--mount src=/opt/devkits/aarch64-linux-gnu-to-aarch64-linux-gnu-fedora-21-gcc-9.2.0,target=/opt/devkits/aarch64-linux-gnu-to-aarch64-linux-gnu-fedora-21-gcc-9.2.0,type=bind"
-    }
-}
-
+            
             when {
                 beforeAgent true
                 expression { env.VERIFICATION_RESULT != "2" }
@@ -297,15 +265,7 @@
             }
         }
         stage('Copy JTREG') {
-            agent {
-    dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/arm64"
-        reuseNode true
-        label "linux_aarch64"
-        args "--mount src=/opt/devkits/aarch64-linux-gnu-to-aarch64-linux-gnu-fedora-21-gcc-9.2.0,target=/opt/devkits/aarch64-linux-gnu-to-aarch64-linux-gnu-fedora-21-gcc-9.2.0,type=bind"
-    }
-}
-
+            
             when {
                 beforeAgent true
                 expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.RUN_TESTS == true }
@@ -315,15 +275,7 @@
             }
         }
         stage('Run jtreg hotspot') {
-            agent {
-    dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/arm64"
-        reuseNode true
-        label "linux_aarch64"
-        args "--mount src=/opt/devkits/aarch64-linux-gnu-to-aarch64-linux-gnu-fedora-21-gcc-9.2.0,target=/opt/devkits/aarch64-linux-gnu-to-aarch64-linux-gnu-fedora-21-gcc-9.2.0,type=bind"
-    }
-}
-
+            
             when {
                 beforeAgent true
                 expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.RUN_TESTS == true &amp;&amp; params.hotspot_test_groups }
@@ -346,15 +298,7 @@
             }
         }
         stage('Run jtreg jdk') {
-            agent {
-    dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/arm64"
-        reuseNode true
-        label "linux_aarch64"
-        args "--mount src=/opt/devkits/aarch64-linux-gnu-to-aarch64-linux-gnu-fedora-21-gcc-9.2.0,target=/opt/devkits/aarch64-linux-gnu-to-aarch64-linux-gnu-fedora-21-gcc-9.2.0,type=bind"
-    }
-}
-
+            
             when {
                 beforeAgent true
                 expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.RUN_TESTS == true &amp;&amp; params.jdk_test_groups }
@@ -378,15 +322,7 @@
             }
         }
         stage('Run jtreg langtools') {
-            agent {
-    dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/arm64"
-        reuseNode true
-        label "linux_aarch64"
-        args "--mount src=/opt/devkits/aarch64-linux-gnu-to-aarch64-linux-gnu-fedora-21-gcc-9.2.0,target=/opt/devkits/aarch64-linux-gnu-to-aarch64-linux-gnu-fedora-21-gcc-9.2.0,type=bind"
-    }
-}
-
+            
             when {
                 beforeAgent true
                 expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.RUN_TESTS == true &amp;&amp; params.langtools_test_groups }
@@ -541,28 +477,28 @@
         aborted {
             script {
                 if (JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/) {
-                    setGitHubPullRequestStatus context: "validate-pr-18-linux_aarch64", state: 'FAILURE', message: 'job aborted'
+                    setGitHubPullRequestStatus context: "validate-pr-11-macos_aarch64", state: 'FAILURE', message: 'job aborted'
                 }
             }
         }
         failure {
             script {
                 if (JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/) {
-                    setGitHubPullRequestStatus context: "validate-pr-18-linux_aarch64", state: 'FAILURE', message: 'build failed'
+                    setGitHubPullRequestStatus context: "validate-pr-11-macos_aarch64", state: 'FAILURE', message: 'build failed'
                 }
             }
         }
         unstable {
             script {
                 if (JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/) {
-                    setGitHubPullRequestStatus context: "validate-pr-18-linux_aarch64", state: 'FAILURE', message: 'tests failed'
+                    setGitHubPullRequestStatus context: "validate-pr-11-macos_aarch64", state: 'FAILURE', message: 'tests failed'
                 }
             }
         }
         success {
             script {
                 if (JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/) {
-                    setGitHubPullRequestStatus context: "validate-pr-18-linux_aarch64", state: 'SUCCESS'
+                    setGitHubPullRequestStatus context: "validate-pr-11-macos_aarch64", state: 'SUCCESS'
                 }
             }
             cleanWs()

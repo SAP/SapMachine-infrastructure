@@ -1,7 +1,7 @@
-<flow-definition plugin="workflow-job@1174.vdcb_d054cf74a_">
+<flow-definition plugin="workflow-job@1180.v04c4e75dce43">
   <actions>
-    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@2.2075.vce74e77b_ce40" />
-    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@2.2075.vce74e77b_ce40">
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@2.2077.vc78ec45162f1" />
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@2.2077.vc78ec45162f1">
       <jobProperties />
       <triggers />
       <parameters />
@@ -30,7 +30,7 @@
       </triggers>
     </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
   </properties>
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2686.v7c37e0578401">
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2689.v434009a_31b_f1">
     <script>pipeline {
     agent {
         node {
