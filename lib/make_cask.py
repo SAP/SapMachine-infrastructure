@@ -97,7 +97,11 @@ def main(argv=None):
         print(str.format("Tag {0} seems to be invalid. Aborting...", args.tag))
         sys.exit(1)
 
-    os_name = 'osx' if tag.get_major() < 17 or (tag.get_major() == 17 and tag.get_update() is None and tag.get_build_number() < 21) else 'macos'
+    os_name = 'osx' if (
+        tag.get_major() < 11 or
+        (tag.get_major() == 11 and tag.get_update() < 16) or
+        (tag.get_major() > 11 and tag.get_major() < 17) or
+        (tag.get_major() == 17 and tag.get_update() is None and tag.get_build_number() < 21)) else 'macos'
     prerelease = not tag.is_ga()
     if prerelease:
         jdk_cask_file_name = str.format('sapmachine{0}-ea-jdk.rb', tag.get_major())
