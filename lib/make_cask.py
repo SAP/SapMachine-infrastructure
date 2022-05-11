@@ -71,15 +71,20 @@ def replace_cask(cask_file_name, cask_content, tag, homebrew_dir):
 
     current_cask_version = versions.version_to_tuple(current_cask_version, current_cask_build_number)
 
-    if current_cask_version is None or tag.get_version_tuple() > current_cask_version:
+    if current_cask_version is None or tag.get_version_tuple() >= current_cask_version:
         print(str.format("Creating/updating cask for version {0}...", tag.get_version_tuple()))
         with open(cask_file_path, 'w') as cask_file:
             cask_file.write(cask_content)
 
-        utils.git_commit(homebrew_dir, str.format('Update {0} ({1}).', cask_file_name, tag.get_version_string()), [join('Casks', cask_file_name)])
-        return True
+        _, diff, _  = utils.run_cmd("git diff".split(' '), cwd=homebrew_dir, std=True)
+        if diff.strip():
+            utils.git_commit(homebrew_dir, str.format('Update {0} ({1}).', cask_file_name, tag.get_version_string()), [join('Casks', cask_file_name)])
+            return True
+        else:
+            print("No changes.")
+            return False
     else:
-        print(str.format("Current cask has version {0} which is not lower than {1}, no update.", current_cask_version, tag.get_version_tuple()))
+        print(str.format("Current cask has version {0} which is higher than {1}, no update.", current_cask_version, tag.get_version_tuple()))
         return False
 
 def main(argv=None):
