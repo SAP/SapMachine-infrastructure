@@ -63,6 +63,13 @@ class Tag:
     def get_update(self):
         return self.version[2]
 
+    # returns the patch part of the version as int, e.g. the fourth value. Could be None.
+    def get_patch(self):
+        if self.version[3] > 0 or self.version[4] > 0:
+            return self.version[3]
+        else:
+            return None
+
     # returns the vendor(SAP) specific part of the version, e.g. the fifth value. Could be None.
     def get_version_sap(self):
         if self.version[4] > 0:
@@ -84,6 +91,7 @@ class Tag:
         print(str.format('{0}  version string: {1}', indent, self.get_version_string()))
         print(str.format('{0}  major         : {1}', indent, self.get_major()))
         print(str.format('{0}  update        : {1}', indent, self.get_update()))
+        print(str.format('{0}  patch         : {1}', indent, self.get_patch()))
         print(str.format('{0}  version_sap   : {1}', indent, self.get_version_sap()))
         print(str.format('{0}  build number  : {1}', indent, self.get_build_number()))
         print(str.format('{0}  ga            : {1}', indent, self.is_ga()))
