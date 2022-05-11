@@ -136,6 +136,10 @@ def main(argv=None):
             continue
 
         tag = SapMachineTag.from_string(release['name'])
+        if tag is None:
+            print(str.format("{0} is no SapMachine release, dropping", release['name']))
+            continue
+
         major = tag.get_major()
         update = tag.get_update()
 
