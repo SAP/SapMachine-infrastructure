@@ -5,6 +5,57 @@
   <sshUrl>git@github.com:SAP/SapMachine.git</sshUrl>
   <pulls class="concurrent-hash-map">
     <entry>
+      <int>1120</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>1120</number>
+        <issueUpdatedAt>2022-05-14 14:20:22.0 UTC</issueUpdatedAt>
+        <title>SapMachine #1119: Vitals: Housekeeping May 22</title>
+        <body>These are some tiny issues and cleanups which came up during recent Vitals development and reviews.
+
+Split into individual commits for easier review.
+
+--------------
+
+- [Fix bug where for jcmd VM.info the Vitals report settings were ignored and default was used instead](https://github.com/SAP/SapMachine/commit/20806d9eefaa879f2f402975f70eda0e317b8ce9)
+
+Forgot to pass in the prepared options into the report function which causes the report function to use default values instead.
+
+- [CPU times can overflow on long running machines](https://github.com/SAP/SapMachine/commit/f9622e589c1fb16e395f3731e05fdf5ecb89fcb2)
+
+CPU times are read from /proc/stat/cpu and those numbers can get larger than 32-bit irregardless the bitness of the OS. Use 64-bit ints to prevent that.
+
+- [Remove CPU-waiting column since it turns out to be unreliable](https://github.com/SAP/SapMachine/commit/515ea096d3d4e99e48e743129a1a373072dc97ae)
+
+Cleanup change. Don't read iowait from /proc/stat/cpu since it makes not much sense with modern CPUs. The values were usually confusing, most of the time 0.
+
+- [Remove BRK column; it was of questionable use and for that quite expensive to get](https://github.com/SAP/SapMachine/commit/a92bba37cfc13f338d44a75c7c91427b0319cb5f)
+
+Cleanup change. I decided to remove the BRK column that shows the size of the traditional Unix heap. Even though this sometimes (with MALLOC_ARENA_MAX=1 and a bit of luck) was useful to determine the size of the C-heap, we have a better mechanism now (see the "cheap" columns introduced with #1097). And since the value is difficult to get (parsing the maps file) I got rid of it.
+
+- [Remove code for older Linux kernels &lt; 3.14](https://github.com/SAP/SapMachine/commit/a413d7f56be5f82c1935e67066ed39bf7ac2c959)
+
+This removes coding needed for kernels &lt; 3.14; not really needed anymore. 
+
+--------------
+
+fixes #1119
+
+</body>
+        <prUpdatedAt>2022-05-14 14:20:22.0 UTC</prUpdatedAt>
+        <headSha>a413d7f56be5f82c1935e67066ed39bf7ac2c959</headSha>
+        <headRef>vitals-housekeeping</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine</baseRef>
+        <userLogin>tstuefe</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1120</htmlUrl>
+        <labels />
+        <lastCommentCreatedAt>2022-05-14 14:16:10.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>tstuefe</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
       <int>1111</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>1111</number>
