@@ -76,14 +76,14 @@ if [ "${TEST_SUITE}" == "hotspot" ]; then
     ${JTREG_CMD} -dir:${JDK_LOCATION}/test/${TEST_SUITE}/jtreg -xml -verbose:summary -nativepath:${TEST_NATIVE_LIB} \
      -exclude:${JDK_LOCATION}/test/${TEST_SUITE}/jtreg/ProblemList.txt -exclude:${JDK_LOCATION}/test/${TEST_SUITE}/jtreg/ProblemList-SapMachine.txt \
      -conc:${NUM_CPUS} -vmoption:-Xmx384m -w:test_report_${TEST_SUITE}/JTwork -r:test_report_${TEST_SUITE}/JTreport \
-     -a -ignore:quiet -timeoutFactor:5 -agentvm -javaoption:-Djava.awt.headless=true "-k:(!ignore)&(!stress)&(!headful)" "-e:ProgramFiles(x86)" -testjdk:${TEST_JDK} ${TEST_GROUPS}
+     -a -ignore:quiet -timeoutFactor:5 -agentvm -javaoption:-Djava.awt.headless=true "-k:(!ignore)&(!stress)&(!headful)&(!intermittent)" "-e:ProgramFiles(x86)" -testjdk:${TEST_JDK} ${TEST_GROUPS}
 fi
 
 if [ "${TEST_SUITE}" == "jdk" ]; then
     ${JTREG_CMD} -dir:${JDK_LOCATION}/test/${TEST_SUITE} -xml -verbose:summary -nativepath:${TEST_NATIVE_LIB} \
     -exclude:${JDK_LOCATION}/test/${TEST_SUITE}/ProblemList.txt -exclude:${JDK_LOCATION}/test/${TEST_SUITE}/ProblemList-SapMachine.txt  \
     -conc:${NUM_CPUS} -vmoption:-Xmx384m -w:test_report_${TEST_SUITE}/JTwork -r:test_report_${TEST_SUITE}/JTreport \
-    -a -ignore:quiet -timeoutFactor:5 -agentvm -javaoption:-Djava.awt.headless=true "-k:(!headful)&(!printer)" -testjdk:${TEST_JDK} ${TEST_GROUPS}
+    -a -ignore:quiet -timeoutFactor:5 -agentvm -javaoption:-Djava.awt.headless=true "-k:(!headful)&(!printer)&(!intermittent)" -testjdk:${TEST_JDK} ${TEST_GROUPS}
 fi
 
 # Only use half number of CPUs because http://openjdk.java.net/jtreg/concurrency.html states the concurrency should be half the number of available CPUs.
@@ -91,5 +91,5 @@ if [ "${TEST_SUITE}" == "langtools" ]; then
     ${JTREG_CMD} -dir:${JDK_LOCATION}/test/${TEST_SUITE} -xml -verbose:summary \
     -exclude:${JDK_LOCATION}/test/${TEST_SUITE}/ProblemList.txt -exclude:${JDK_LOCATION}/test/${TEST_SUITE}/ProblemList-SapMachine.txt \
     -conc:${CONCURRENCY} -vmoption:-Xmx768m -w:test_report_${TEST_SUITE}/JTwork -r:test_report_${TEST_SUITE}/JTreport \
-    -a -ignore:quiet -timeoutFactor:5 -agentvm -testjdk:${TEST_JDK} ${TEST_GROUPS}
+    -a -ignore:quiet -timeoutFactor:5 -agentvm "-k:(!headful)&(!intermittent)" -testjdk:${TEST_JDK} ${TEST_GROUPS}
 fi
