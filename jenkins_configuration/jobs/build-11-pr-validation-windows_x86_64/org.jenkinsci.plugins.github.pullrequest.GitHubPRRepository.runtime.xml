@@ -5,77 +5,176 @@
   <sshUrl>git@github.com:SAP/SapMachine.git</sshUrl>
   <pulls class="concurrent-hash-map">
     <entry>
-      <int>1120</int>
+      <int>1121</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>1120</number>
-        <issueUpdatedAt>2022-05-14 14:20:22.0 UTC</issueUpdatedAt>
-        <title>SapMachine #1119: Vitals: Housekeeping May 22</title>
-        <body>These are some tiny issues and cleanups which came up during recent Vitals development and reviews.
+        <number>1121</number>
+        <issueUpdatedAt>2022-05-16 21:28:59.0 UTC</issueUpdatedAt>
+        <title>SapMachine #1119: Vitals: Housekeeping May 22 (18)</title>
+        <body>Clean downport to SapMachine 18
 
-Split into individual commits for easier review.
+(cherry picked from commit beecee77cabc6abecb7d4acaac80ec13a992f86f)
 
---------------
+* Fix bug where for jcmd VM.info the Vitals report settings were ignored and default was used instead
 
-- [Fix bug where for jcmd VM.info the Vitals report settings were ignored and default was used instead](https://github.com/SAP/SapMachine/commit/20806d9eefaa879f2f402975f70eda0e317b8ce9)
+* CPU times can overflow on long running machines
 
-Forgot to pass in the prepared options into the report function which causes the report function to use default values instead.
+* Remove CPU-waiting column since it turns out to be unreliable
 
-- [CPU times can overflow on long running machines](https://github.com/SAP/SapMachine/commit/f9622e589c1fb16e395f3731e05fdf5ecb89fcb2)
+* Remove BRK column; it was of questionable use and for that quite expensive to get
 
-CPU times are read from /proc/stat/cpu and those numbers can get larger than 32-bit irregardless the bitness of the OS. Use 64-bit ints to prevent that.
+* Remove code for older Linux kernels &lt; 3.14
 
-- [Remove CPU-waiting column since it turns out to be unreliable](https://github.com/SAP/SapMachine/commit/515ea096d3d4e99e48e743129a1a373072dc97ae)
+(cherry picked from commit 1af292ea6626d87361ae777ed7b84b0cbabdb9a4)
 
-Cleanup change. Don't read iowait from /proc/stat/cpu since it makes not much sense with modern CPUs. The values were usually confusing, most of the time 0.
-
-- [Remove BRK column; it was of questionable use and for that quite expensive to get](https://github.com/SAP/SapMachine/commit/a92bba37cfc13f338d44a75c7c91427b0319cb5f)
-
-Cleanup change. I decided to remove the BRK column that shows the size of the traditional Unix heap. Even though this sometimes (with MALLOC_ARENA_MAX=1 and a bit of luck) was useful to determine the size of the C-heap, we have a better mechanism now (see the "cheap" columns introduced with #1097). And since the value is difficult to get (parsing the maps file) I got rid of it.
-
-- [Remove code for older Linux kernels &lt; 3.14](https://github.com/SAP/SapMachine/commit/a413d7f56be5f82c1935e67066ed39bf7ac2c959)
-
-This removes coding needed for kernels &lt; 3.14; not really needed anymore. 
-
---------------
+The description of this pull request goes here.
 
 fixes #1119
 
 </body>
-        <prUpdatedAt>2022-05-14 14:20:22.0 UTC</prUpdatedAt>
-        <headSha>a413d7f56be5f82c1935e67066ed39bf7ac2c959</headSha>
-        <headRef>vitals-housekeeping</headRef>
+        <prUpdatedAt>2022-05-16 21:28:59.0 UTC</prUpdatedAt>
+        <headSha>748bc5dc2b76e8d471a954275094254e6af0bcbf</headSha>
+        <headRef>1119-vitals-housekeeping-18</headRef>
         <mergeable>true</mergeable>
-        <baseRef>sapmachine</baseRef>
+        <baseRef>sapmachine18</baseRef>
         <userLogin>tstuefe</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/1120</htmlUrl>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1121</htmlUrl>
         <labels />
-        <lastCommentCreatedAt>2022-05-14 14:16:10.0 UTC</lastCommentCreatedAt>
+        <lastCommentCreatedAt>2022-05-16 17:01:58.0 UTC</lastCommentCreatedAt>
         <sourceRepoOwner>tstuefe</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
       </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
     </entry>
     <entry>
-      <int>1111</int>
+      <int>1122</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>1111</number>
-        <issueUpdatedAt>2022-05-11 04:42:05.0 UTC</issueUpdatedAt>
-        <title>SapMachine #1112: Vitals: Add HighMemoryThreshold </title>
-        <body>The description of this pull request goes here.
+        <number>1122</number>
+        <issueUpdatedAt>2022-05-16 21:29:24.0 UTC</issueUpdatedAt>
+        <title>SapMachine #1119: Vitals: Housekeeping May 22 (17)</title>
+        <body>Clean downport to SapMachine17 
 
-fixes #1112
+(cherry picked from commit beecee77cabc6abecb7d4acaac80ec13a992f86f)
+
+* Fix bug where for jcmd VM.info the Vitals report settings were ignored and default was used instead
+
+* CPU times can overflow on long running machines
+
+* Remove CPU-waiting column since it turns out to be unreliable
+
+* Remove BRK column; it was of questionable use and for that quite expensive to get
+
+* Remove code for older Linux kernels &lt; 3.14
+
+(cherry picked from commit 1af292ea6626d87361ae777ed7b84b0cbabdb9a4)
+
+The description of this pull request goes here.
+
+fixes #1119
+
 </body>
-        <prUpdatedAt>2022-05-11 04:42:05.0 UTC</prUpdatedAt>
-        <headSha>d92cea9844b45625bdac9b78cc6fd9947ade677c</headSha>
-        <headRef>vitals-highmemorythreshold</headRef>
+        <prUpdatedAt>2022-05-16 21:29:24.0 UTC</prUpdatedAt>
+        <headSha>4e14226f8ea78af216a60959dccc781fe0d5f814</headSha>
+        <headRef>1119-vitals-housekeeping-17</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine17</baseRef>
+        <userLogin>tstuefe</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1122</htmlUrl>
+        <labels />
+        <lastCommentCreatedAt>2022-05-16 17:00:42.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>tstuefe</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>1123</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>1123</number>
+        <issueUpdatedAt>2022-05-16 21:30:12.0 UTC</issueUpdatedAt>
+        <title>SapMachine #1119: Vitals: Housekeeping May 22 (11)</title>
+        <body>Clean downport to SapMachine11
+
+(cherry picked from commit beecee77cabc6abecb7d4acaac80ec13a992f86f)
+
+* Fix bug where for jcmd VM.info the Vitals report settings were ignored and default was used instead
+
+* CPU times can overflow on long running machines
+
+* Remove CPU-waiting column since it turns out to be unreliable
+
+* Remove BRK column; it was of questionable use and for that quite expensive to get
+
+* Remove code for older Linux kernels &lt; 3.14
+
+(cherry picked from commit 1af292ea6626d87361ae777ed7b84b0cbabdb9a4)
+
+The description of this pull request goes here.
+
+fixes #1119
+
+</body>
+        <prUpdatedAt>2022-05-16 21:30:12.0 UTC</prUpdatedAt>
+        <headSha>190d6472adb5dcfec34942fe3d2759c998b5b504</headSha>
+        <headRef>1119-vitals-housekeeping-11</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine11</baseRef>
+        <userLogin>tstuefe</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1123</htmlUrl>
+        <labels />
+        <lastCommentCreatedAt>2022-05-16 16:58:31.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>tstuefe</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>1126</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>1126</number>
+        <issueUpdatedAt>2022-05-16 17:53:12.0 UTC</issueUpdatedAt>
+        <title>SapMachine #1124: Vitals: Add Container information</title>
+        <body>This patch adds cgroup information to the SapMachine Vitals.
+
+We now print limits (memory, mem+swap, kernel mem) and usage (user space, kernel usage).
+
+Looks like this (in this example, docker was run with -m 8G, and it establishes a memory limit of 8g and - apparently - a mem+swap limit of 16g):
+
+```
+     cgroup-lim: cgroup memory limit
+     cgroup-limsw: cgroup memory+swap limit
+     cgroup-slim: cgroup memory soft limit
+     cgroup-usg: cgroup memory usage
+     cgroup-usgsw: cgroup memory+swap usage
+     cgroup-kusg: cgroup kernel memory usage
+```
+
+```
+------------cgroup------------
+lim  limsw slim usg usgsw kusg
+8.0g 16.0g      67m   67m   2m
+8.0g 16.0g      67m   67m   2m
+8.0g 16.0g      32m   32m   2m
+8.0g 16.0g      19m   19m   2m
+```
+
+Patch notes:
+
+
+- we almost always print out this information. Only if the VM runs inside a root memory controller (which cannot be limited) we omit the information since it would be mostly redundant with whatever is in /proc/meminfo. Note that for now I also print out cgroup information when running in a systemd mem controller; we may skip the information in the future when running in systemd.
+- in the legend, we now point out `[*]` values that are host specific
+- patch contains a large test addition to test the new feature.
+
+fixes #1124
+</body>
+        <prUpdatedAt>2022-05-16 17:53:12.0 UTC</prUpdatedAt>
+        <headSha>3f86e5c5b149fa3a976787f195aa2eacd54ae379</headSha>
+        <headRef>1124-Vitals-add-container-info</headRef>
         <mergeable>true</mergeable>
         <baseRef>sapmachine</baseRef>
         <userLogin>tstuefe</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/1111</htmlUrl>
-        <labels>
-          <string>sapmachineonly</string>
-        </labels>
-        <lastCommentCreatedAt>2022-05-10 13:39:51.0 UTC</lastCommentCreatedAt>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1126</htmlUrl>
+        <labels />
+        <lastCommentCreatedAt>2022-05-16 17:53:12.0 UTC</lastCommentCreatedAt>
         <sourceRepoOwner>tstuefe</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
@@ -95,46 +194,6 @@ fixes #1112
         <baseRef>sapmachine</baseRef>
         <userLogin>SapMachine</userLogin>
         <htmlUrl>https://github.com/SAP/SapMachine/pull/1115</htmlUrl>
-        <labels />
-        <sourceRepoOwner>SAP</sourceRepoOwner>
-        <state>OPEN</state>
-        <inBadState>false</inBadState>
-      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-    </entry>
-    <entry>
-      <int>1116</int>
-      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>1116</number>
-        <issueUpdatedAt>2022-05-13 17:36:19.0 UTC</issueUpdatedAt>
-        <title>Merge to tag jdk-17.0.4+2</title>
-        <body>please pull</body>
-        <prUpdatedAt>2022-05-13 17:36:19.0 UTC</prUpdatedAt>
-        <headSha>1b1500a0511c1ae95c5221709dd1ed2dc5bc6bd7</headSha>
-        <headRef>pr-jdk-17.0.4+2</headRef>
-        <mergeable>true</mergeable>
-        <baseRef>sapmachine17</baseRef>
-        <userLogin>SapMachine</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/1116</htmlUrl>
-        <labels />
-        <sourceRepoOwner>SAP</sourceRepoOwner>
-        <state>OPEN</state>
-        <inBadState>false</inBadState>
-      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-    </entry>
-    <entry>
-      <int>1117</int>
-      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>1117</number>
-        <issueUpdatedAt>2022-05-13 17:26:39.0 UTC</issueUpdatedAt>
-        <title>Merge to tag jdk-11.0.16+2</title>
-        <body>please pull</body>
-        <prUpdatedAt>2022-05-13 17:26:39.0 UTC</prUpdatedAt>
-        <headSha>c95c7967bbd1004f23250f8898c7246420da9e83</headSha>
-        <headRef>pr-jdk-11.0.16+2</headRef>
-        <mergeable>true</mergeable>
-        <baseRef>sapmachine11</baseRef>
-        <userLogin>SapMachine</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/1117</htmlUrl>
         <labels />
         <sourceRepoOwner>SAP</sourceRepoOwner>
         <state>OPEN</state>
