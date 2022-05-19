@@ -105,12 +105,6 @@ def main(argv=None):
         else:
             version_pre = 'ea'
 
-    if utils.get_system(major) == 'linux' and utils.get_arch().startswith('aarch64'):
-        if not version_pre:
-            version_pre = 'beta'
-        else:
-            version_pre += '-beta'
-    
     if utils.get_system(major) == 'linux' and os.path.isfile('/etc/alpine-release'):
         if not version_pre:
             version_pre = 'beta'
