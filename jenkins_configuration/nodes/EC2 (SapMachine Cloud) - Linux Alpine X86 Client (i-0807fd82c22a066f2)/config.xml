@@ -1,5 +1,5 @@
 <hudson.plugins.ec2.EC2Slave plugin="ec2@1.68">
-  <name>EC2 (SapMachine Cloud) - Linux aarch64 Client (i-011af18dce0391960)</name>
+  <name>EC2 (SapMachine Cloud) - Linux Alpine X86 Client (i-0807fd82c22a066f2)</name>
   <remoteFS>/home/ubuntu/client_home</remoteFS>
   <numExecutors>1</numExecutors>
   <mode>EXCLUSIVE</mode>
@@ -8,29 +8,29 @@
     <idleTerminationMinutes>10</idleTerminationMinutes>
   </retentionStrategy>
   <launcher class="hudson.plugins.ec2.ssh.EC2UnixLauncher" />
-  <label>linux_aarch64</label>
+  <label>linux_alpine_x86_64</label>
   <nodeProperties />
-  <instanceId>i-011af18dce0391960</instanceId>
+  <instanceId>i-0807fd82c22a066f2</instanceId>
   <initScript />
   <tmpDir />
   <remoteAdmin>ubuntu</remoteAdmin>
-  <templateDescription>Linux aarch64 Client</templateDescription>
+  <templateDescription>Linux Alpine X86 Client</templateDescription>
   <jvmopts />
   <stopOnTerminate>false</stopOnTerminate>
   <idleTerminationMinutes>10</idleTerminationMinutes>
   <isConnected>false</isConnected>
   <tags class="linked-list">
     <hudson.plugins.ec2.EC2Tag>
-      <name>Name</name>
-      <value>Jenkins linux aarch64 client autolaunched</value>
+      <name>jenkins_server_url</name>
+      <value>https://ci.sapmachine.io/</value>
     </hudson.plugins.ec2.EC2Tag>
     <hudson.plugins.ec2.EC2Tag>
       <name>jenkins_slave_type</name>
-      <value>demand_Linux aarch64 Client</value>
+      <value>demand_Linux Alpine X86 Client</value>
     </hudson.plugins.ec2.EC2Tag>
     <hudson.plugins.ec2.EC2Tag>
-      <name>jenkins_server_url</name>
-      <value>https://ci.sapmachine.io/</value>
+      <name>Name</name>
+      <value>Dynamic Ubuntu 20.04 x86_64 Client</value>
     </hudson.plugins.ec2.EC2Tag>
   </tags>
   <cloudName>ec2-SapMachine Cloud</cloudName>
