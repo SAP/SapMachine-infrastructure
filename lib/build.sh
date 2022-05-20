@@ -133,26 +133,30 @@ zip -rq "${WORKSPACE}/test.zip" src/java.base/share/data/blockedcertsconverter/b
 zip -rq "${WORKSPACE}/test.zip" src/java.base/share/data/tzdata || true
 zip -rq "${WORKSPACE}/test.zip" src/jdk.compiler/share/data/symbols/include.list || true
 
-
 cd "${WORKSPACE}/SapMachine/build"
 cd "$(ls)"
-zip -rq ${WORKSPACE}/support_gensrc.zip support/gensrc
-zip -rq ${WORKSPACE}/test.zip spec.gmk
-zip -rq ${WORKSPACE}/test.zip bundles/*jdk-*_bin.* bundles/*jdk-*_bin-debug.*
+
+zip -rq "${WORKSPACE}/support_gensrc.zip" support/gensrc
+zip -rq "${WORKSPACE}/test.zip" spec.gmk
+zip -rq "${WORKSPACE}/test.zip" bundles/*jdk-*_bin.* bundles/*jdk-*_bin-debug.*
+
 cd images
-zip -rq ${WORKSPACE}/test.zip test
+
+zip -rq "${WORKSPACE}/test.zip" test
 
 cd ../bundles
 
-if [ "$(ls sapmachine-jdk-*_bin.* | wc -l)" -gt "0" ]; then
+JDK_NAME=$(ls *jdk-*_bin.*) || true
+if [ -z $JDK_NAME ]; then
+  JDK_NAME=$(ls *jdk-*_bin-debug.*)
+fi
+if [[ $JDK_NAME = sapmachine-* ]]; then
   SAPMACHINE_BUNDLE_PREFIX="sapmachine-"
 fi
-
-JDK_NAME=$(ls ${SAPMACHINE_BUNDLE_PREFIX}jdk-*_bin.*)
 read JDK_VERSION JDK_SUFFIX<<< $(echo $JDK_NAME | sed $SEDFLAGS 's/'"${SAPMACHINE_BUNDLE_PREFIX}"'jdk-([0-9]+((\.[0-9]+))*)(.*)/ \1 \4 /p')
 JDK_BUNDLE_NAME="${SAPMACHINE_BUNDLE_PREFIX}jdk-${JDK_VERSION}${JDK_SUFFIX}"
 JRE_BUNDLE_NAME="${SAPMACHINE_BUNDLE_PREFIX}jre-${JDK_VERSION}${JDK_SUFFIX}"
-SYMBOLS_BUNDLE_NAME=$(ls ${SAPMACHINE_BUNDLE_PREFIX}*_bin-symbols.*)
+SYMBOLS_BUNDLE_NAME=$(ls *_bin-*symbols.*)
 
 if [ $legacy_bundles_available -ne 1 ]; then
   HAS_JRE=$(ls ${SAPMACHINE_BUNDLE_PREFIX}jre* | wc -l)
