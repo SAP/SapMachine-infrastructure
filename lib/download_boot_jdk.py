@@ -94,11 +94,11 @@ def main(argv=None):
     parser.add_argument('-d', '--destination', help='the download destination', metavar='DIR')
     args = parser.parse_args()
 
-    major = utils.calc_major(filter(None, [os.environ['SAPMACHINE_VERSION'], os.environ['GIT_REF']])) if args.major is None else int(args.major)
-    if major is None:
+    boot_jdk_major_max = utils.calc_major(filter(None, [os.environ['SAPMACHINE_VERSION'], os.environ['GIT_REF']])) if args.major is None else int(args.major)
+    if boot_jdk_major_max is None:
+        print("Could not detect major version")
         return -1
 
-    boot_jdk_major_max = major
     boot_jdk_major_min = boot_jdk_major_max - 1
     destination = os.path.realpath(os.getcwd() if args.destination is None else args.destination)
     releases = utils.get_github_releases()
