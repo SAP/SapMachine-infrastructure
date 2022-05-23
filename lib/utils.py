@@ -21,6 +21,7 @@ from shutil import move
 from shutil import rmtree
 from urllib.parse import quote
 from urllib.request import urlopen, Request
+from versions import SapMachineTag
 from zipfile import ZipFile, ZipInfo
 
 def run_cmd(cmdline, throw=True, cwd=None, env=None, std=False, shell=False):
@@ -453,3 +454,24 @@ def download_asset(asset_url):
     response = requests.get(asset_url, headers=headers)
 
     return response.text, response.status_code
+
+# Tries to calculate a value for major release from a set of strings that could be a digit, a SapMachine release tag or a sapmachine branch
+# If it can't be figured out from the inputs, the result is None
+def calc_major(values):
+    branch_pattern = re.compile('sapmachine([\d]+)?(-sec)?$')
+    for val in values:
+        if val is None:
+            continue
+
+        if val.isdigit():
+            return int(val)
+
+        tag = SapMachineTag.from_string(val)
+        if not tag is None:
+            return tag.get_major()
+
+        match = branch_pattern.match(val)
+        if match is not None and match.group(1) is not None and match.group(1).isdigit():
+            return int(match.group(1))
+
+    return None

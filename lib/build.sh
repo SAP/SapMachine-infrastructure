@@ -25,18 +25,11 @@ cd "${WORKSPACE}/SapMachine"
 git config user.name SAPMACHINE_GIT_USER
 git config user.email SAPMACHINE_GIT_EMAIL
 
-GIT_REVISION=$(git rev-parse HEAD)
-echo "Git Revision=${GIT_REVISION}"
+echo "Git Revision=$(git rev-parse HEAD)"
 
-if [[ -z $NO_CHECKOUT ]]; then
-  if [ "$GITHUB_PR_NUMBER" ]; then
-    git fetch origin "pull/$GITHUB_PR_NUMBER/head"
-    git merge FETCH_HEAD
-  fi
-
-  if [[ ! -z $GIT_TAG_NAME ]]; then
-    git checkout $GIT_TAG_NAME
-  fi
+if [ "$GITHUB_PR_NUMBER" ]; then
+  git fetch origin "pull/$GITHUB_PR_NUMBER/head"
+  git merge FETCH_HEAD
 fi
 
 if [ -z $BOOT_JDK ]; then
@@ -57,11 +50,8 @@ if [[ $UNAME == CYGWIN* ]]; then
   _CONFIGURE_OS_OPTIONS="--with-jdk-rc-name=SapMachine --with-external-symbols-in-bundles=public"
 fi
 
-if [[ ! -z $GIT_TAG_NAME ]]; then
-  _GIT_TAG=" -t $GIT_TAG_NAME"
-fi
-if [[ ! -z $JDK_MAJOR ]]; then
-  _JDK_MAJOR="-m $JDK_MAJOR"
+if [[ ! -z $SAPMACHINE_VERSION ]]; then
+  _GIT_TAG=" -t $SAPMACHINE_VERSION"
 fi
 if [[ ! -z $BUILD_NUMBER ]]; then
   _BUILD_NUMBER="-b $BUILD_NUMBER"
@@ -70,7 +60,7 @@ if [ "$RELEASE" == true ]; then
   _RELEASE=" -r"
 fi
 
-eval _CONFIGURE_OPTS=($(python3 ../SapMachine-Infrastructure/lib/get_configure_opts.py $_GIT_TAG $_JDK_MAJOR $_BUILD_NUMBER $_RELEASE))
+eval _CONFIGURE_OPTS=($(python3 ../SapMachine-Infrastructure/lib/get_configure_opts.py $_GIT_TAG $_BUILD_NUMBER $_RELEASE))
 
 bash ./configure \
 --with-boot-jdk=$BOOT_JDK \

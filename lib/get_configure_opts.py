@@ -1,5 +1,5 @@
 '''
-Copyright (c) 2001-2021 by SAP SE, Walldorf, Germany.
+Copyright (c) 2019-2022 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
@@ -26,34 +26,28 @@ GTEST_OPT =                 '--with-gtest={0}'
 def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('-t', '--tag', help='the SapMachine git tag', metavar='TAG')
-    parser.add_argument('-m', '--major', help='the SapMachine major version, overrules any value from tag(s)', metavar='MAJOR')
     parser.add_argument('-b', '--build', help='the build number, overrules any value from tag(s)', metavar='BUILD_NR')
     parser.add_argument('-r', '--release', help='set if this is a release build', action='store_true', default=False)
     args = parser.parse_args()
 
     configure_opts = []
 
-    # initialize major from args
-    major = args.major
-    if major is not None:
-        major = int(major)
+    # initialize major
+    major = None
 
     # initialize build number from args
     build_number = args.build
     if args.build is not None:
         print(str.format("Set build number from parameter: {0}", build_number), file=sys.stderr)
 
-    # parse tag, if given, and determine major
+    # parse tag, if given
     tag = None
     if args.tag:
         tag = SapMachineTag.from_string(args.tag)
         if tag is None:
             print(str.format("Tag {0} not recognized as SapMachine tag", args.tag), file=sys.stderr)
         else:
-            if (major is not None and tag.get_major() != major):
-                print(str.format("Warning: Using major version {0}, given by parameter. Major version from tag would be {1}.", major, tag.get_major()), file=sys.stderr)
-            else:
-                major = tag.get_major()
+            major = tag.get_major()
 
             # determine build number from tag
             if build_number is None:
@@ -68,6 +62,10 @@ def main(argv=None):
                             print(str.format("Tag seems to be a ga tag, using build number from latest non-ga tag {0}: {1}",
                                 latest_non_ga_tag.as_string(), build_number), file=sys.stderr)
 
+    # if major is still None, try to get it from GIT_REF
+    if major is None:
+        utils.calc_major(filter(None, [os.environ['GIT_REF']]))
+
     # if major could not be determined, use default
     if major is None:
         major = utils.sapmachine_default_major()
@@ -76,25 +74,10 @@ def main(argv=None):
     if build_number is not None:
         configure_opts.append(VERSION_BUILD_ARG.format(build_number))
 
-    # determine and set version date in non-release builds
-    # in release builds we rely on DEFAULT_VERSION_DATE in version-numbers.conf
-    if not args.release:
-        release_date = None
-        if tag is not None:
-            releases = utils.get_github_releases()
-            if releases is not None:
-                for release in releases:
-                    if release['tag_name'] == tag.as_string():
-                        release_date = release['created_at'].split('T')[0]
-                        print(str.format("Set date to release date of {0}: {1}", tag.as_string(), release_date), file=sys.stderr)
-                        break
-            if release_date is None:
-                print(str.format("Tag {0} does not seem to exist or data could not be loaded from GitHub", tag.as_string()), file=sys.stderr)
-
-        if release_date is None:
-            release_date = date.today().strftime("%Y-%m-%d")
-            print(str.format("Set date to today: {0}", release_date), file=sys.stderr)
-
+    # set version date in snapshot builds. In release builds or builds of a certain tag, we rely on DEFAULT_VERSION_DATE in version-numbers.conf
+    if not args.release and tag is None:
+        release_date = date.today().strftime("%Y-%m-%d")
+        print(str.format("Set release date to today: {0}", release_date), file=sys.stderr)
         configure_opts.append(VERSION_DATE_ARG.format(release_date))
 
     # set version pre
@@ -145,10 +128,9 @@ def main(argv=None):
     configure_opts.append(VENDOR_BUG_URL_ARG)
     configure_opts.append(VENDOR_VM_BUG_URL_ARG)
 
-    # set getest option
-    if 'GTEST_DIR' in os.environ:
-        if major >= 15:
-            configure_opts.append(GTEST_OPT.format(os.environ['GTEST_DIR']))
+    # set gtest option
+    if 'GTEST_DIR' in os.environ and major >= 15:
+        configure_opts.append(GTEST_OPT.format(os.environ['GTEST_DIR']))
 
     print(' '.join(configure_opts))
 

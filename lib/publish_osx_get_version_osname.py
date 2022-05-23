@@ -1,5 +1,5 @@
 '''
-Copyright (c) 2001-2018 by SAP SE, Walldorf, Germany.
+Copyright (c) 2018-2022 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
@@ -17,7 +17,7 @@ def main(argv=None):
     if tag is None:
         return -1
 
-    print(tag.get_major())
+    print(str.format('{0} {1}', tag.get_version_string(), "macos" if tag.get_major() >= 17 or (tag.get_major() == 11 and tag.get_update() > 15) else "osx"))
 
     return 0
 

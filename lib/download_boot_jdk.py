@@ -1,5 +1,5 @@
 '''
-Copyright (c) 2019-2021 by SAP SE, Walldorf, Germany.
+Copyright (c) 2019-2022 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
@@ -90,13 +90,17 @@ extra_bootjdks = [
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
-    parser.add_argument('-m', '--major', help='the SapMachine major version to build', metavar='MAJOR', required=True)
-    parser.add_argument('-d', '--destination', help='the download destination', metavar='DIR', required=True)
+    parser.add_argument('-m', '--major', help='the SapMachine major version to build', metavar='MAJOR')
+    parser.add_argument('-d', '--destination', help='the download destination', metavar='DIR')
     args = parser.parse_args()
 
-    boot_jdk_major_max = int(args.major)
+    major = utils.calc_major(filter(None, [os.environ['SAPMACHINE_VERSION'], os.environ['GIT_REF']])) if args.major is None else int(args.major)
+    if major is None:
+        return -1
+
+    boot_jdk_major_max = major
     boot_jdk_major_min = boot_jdk_major_max - 1
-    destination = os.path.realpath(args.destination)
+    destination = os.path.realpath(os.getcwd() if args.destination is None else args.destination)
     releases = utils.get_github_releases()
     system = utils.get_system(boot_jdk_major_max)
     platform = str.format('{0}-{1}_bin', system, utils.get_arch())

@@ -1,6 +1,6 @@
 - job:
     name: osx-upload
-    description: 'This project is generated. Do not modify manually.'
+    description: 'Upload MacOS artifacts.'
     project-type: freestyle
     node: built-in
     concurrent: false
@@ -10,104 +10,9 @@
             artifact-num-to-keep: 10
     parameters:
         - string:
-            name: GIT_TAG_NAME
+            name: SAPMACHINE_VERSION
             default: ''
-            description: 'The Git tag to create a debian package from.'
-        - bool:
-            name: PUBLISH_CASKS
-            default: false
-            description: 'When set to true, update homebrew casks.'
-        - file:
-            name: JDK_TGZ
-            description: 'The SapMachine JDK .tar.gz archive.'
-        - file:
-            name: JRE_TGZ
-            description: 'The SapMachine JRE .tar.gz archive.'
-        - file:
-            name: JDK_DMG
-            description: 'The SapMachine JDK .dmg disk image.'
-        - file:
-            name: JRE_DMG
-            description: 'The SapMachine JRE .dmg disk image.'
-        - file:
-            name: SYMBOLS
-            description: 'The SapMachine SYMBOLS archive.'
-    publishers:
-      - archive:
-          artifacts: 'JDK_TGZ, JRE_TGZ, JDK_DMG, JRE_DMG, SYMBOLS'
-      - trigger-parameterized-builds:
-        - project: osx-upload-processor
-          current-parameters: true
-
-- job:
-    name: osx-upload-processor
-    description: 'This project is generated. Do not modify manually.'
-    project-type: pipeline
-    concurrent: false
-    properties:
-        - build-discarder:
-            num-to-keep: 100
-            artifact-num-to-keep: 1
-    parameters:
-        - string:
-            name: GIT_TAG_NAME
-            default: ''
-            description: 'The Git tag to create a debian package from.'
-        - bool:
-            name: PUBLISH_CASKS
-            default: false
-            description: 'When set to true, update homebrew casks.'
-    dsl: |
-        pipeline {
-            agent {
-                label 'macos_x86_64'
-            }
-            stages {
-                stage("Checkout Infrastructure Repository") {
-                    steps {
-                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
-                    }
-                }
-                stage('Copy Upstream Artifacts') {
-                    steps {
-                        copyArtifacts filter: 'JDK_TGZ, JRE_TGZ, JDK_DMG, JRE_DMG, SYMBOLS', projectName: 'osx-upload', selector: upstream()
-                    }
-                }
-                stage('Deploy') {
-                    steps {
-                        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
-                            sh "SapMachine-Infrastructure/lib/publish_osx.sh"
-                        }
-                    }
-                }
-                stage('Publish Website Data') {
-                    steps {
-                        build job: 'generate-website-data', propagate: false, wait: false
-                    }
-                }
-            }
-            post {
-                always {
-                    cleanWs deleteDirs: true, disableDeferredWipeout: true
-                }
-            }
-        }
-
-- job:
-    name: osx-multi-target-upload
-    description: 'This project is generated. Do not modify manually.'
-    project-type: freestyle
-    node: built-in
-    concurrent: false
-    properties:
-        - build-discarder:
-            num-to-keep: 100
-            artifact-num-to-keep: 10
-    parameters:
-        - string:
-            name: GIT_TAG_NAME
-            default: ''
-            description: 'The Git tag to create a debian package from.'
+            description: 'The SapMachine Release Tag to upload MacOS artifacts for.'
         - bool:
             name: PUBLISH_CASKS
             default: false
@@ -146,12 +51,12 @@
       - archive:
           artifacts: 'INTEL_JDK_TGZ, INTEL_JRE_TGZ, INTEL_JDK_DMG, INTEL_JRE_DMG, INTEL_SYMBOLS, AARCH_JDK_TGZ, AARCH_JRE_TGZ, AARCH_JDK_DMG, AARCH_JRE_DMG, AARCH_SYMBOLS'
       - trigger-parameterized-builds:
-        - project: osx-multi-target-upload-processor
+        - project: osx-upload-processor
           current-parameters: true
 
 - job:
-    name: osx-multi-target-upload-processor
-    description: 'This project is generated. Do not modify manually.'
+    name: osx-upload-processor
+    description: 'Process upload of MacOS artifacts.'
     project-type: pipeline
     concurrent: false
     properties:
@@ -160,9 +65,9 @@
             artifact-num-to-keep: 1
     parameters:
         - string:
-            name: GIT_TAG_NAME
+            name: SAPMACHINE_VERSION
             default: ''
-            description: 'The Git tag to create a debian package from.'
+            description: 'The SapMachine Release Tag to upload MacOS artifacts for.'
         - bool:
             name: PUBLISH_CASKS
             default: false
@@ -214,9 +119,9 @@
             artifact-num-to-keep: 5
     parameters:
         - string:
-            name: GIT_TAG_NAME
+            name: SAPMACHINE_VERSION
             default: ''
-            description: 'The Git tag to publish casks for.'
+            description: 'The SapMachine Release Tag to publish casks for.'
     dsl: |
         pipeline {
             agent {
@@ -232,7 +137,7 @@
                     steps {
                         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
                             lock('MacBrewCaskGenerationSynchronizer') {
-                                sh "SapMachine-Infrastructure/lib/make_cask.sh"
+                                sh "python3 SapMachine-Infrastructure/lib/make_cask.py -t ${params.SAPMACHINE_VERSION}"
                             }
                         }
                     }

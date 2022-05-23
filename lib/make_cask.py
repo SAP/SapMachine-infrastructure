@@ -90,7 +90,6 @@ def replace_cask(cask_file_name, cask_content, tag, homebrew_dir):
 def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('-t', '--tag', help='the SapMachine tag', metavar='TAG', required=True)
-    parser.add_argument('-d', '--dual', help='this is going to be a dual architecture cask (x64 and aarch64)', action='store_true', default=False)
     args = parser.parse_args()
 
     work_dir = join(os.getcwd(), 'cask_work')
@@ -101,6 +100,9 @@ def main(argv=None):
     if tag is None:
         print(str.format("Tag {0} seems to be invalid. Aborting...", args.tag))
         sys.exit(1)
+
+    # create a dual architecture cask (x64 and aarch64) for newer SapMachine versions
+    dual = True if tag.get_major() >= 17 or (tag.get_major() == 11 and tag.get_update() >= 16) else False
 
     os_name = 'osx' if (
         tag.get_major() < 11 or
@@ -127,7 +129,7 @@ def main(argv=None):
         url_version1 = '#{version}'
         url_version2 = '#{version}'
 
-    if args.dual:
+    if dual:
         try:
             aarch_urls = utils.get_asset_urls(tag, os_name + '-aarch64', pattern='.sha256.dmg.txt')
             intel_urls = utils.get_asset_urls(tag, os_name + '-x64', pattern='.sha256.dmg.txt')
