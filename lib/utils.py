@@ -460,7 +460,7 @@ def download_asset(asset_url):
 def calc_major(values):
     branch_pattern = re.compile('sapmachine([\d]+)?(-sec)?$')
     for val in values:
-        print("calc_major: checking " + val)
+        print("calc_major: checking " + val, file=sys.stderr)
         if val is None:
             continue
 
