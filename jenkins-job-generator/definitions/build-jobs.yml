@@ -274,7 +274,9 @@
                         expression {{ env.VERIFICATION_RESULT != "2" }}
                     }}
                     steps {{
-                        checkout changelog: true, poll: false, scm: [$class: 'GitSCM', branches: [[name: "*/${{params.GIT_REF}}"]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine'], [$class: 'CheckoutOption', timeout: 60]], userRemoteConfigs: [[url: "${{params.SAPMACHINE_GIT_REPOSITORY}}"]]]
+                        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
+                            sh 'SapMachine-Infrastructure/lib/checkout_repo.sh'
+                        }}
                     }}
                 }}
                 stage('Prepare Devkit') {{
