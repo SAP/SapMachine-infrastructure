@@ -475,4 +475,7 @@ def calc_major(values):
         if match is not None and match.group(1) is not None and match.group(1).isdigit():
             return int(match.group(1))
 
+        if val == "sapmachine":
+            return sapmachine_default_major()
+
     return None
