@@ -59,7 +59,9 @@
                 expression { env.VERIFICATION_RESULT != "2" }
             }
             steps {
-                checkout changelog: true, poll: false, scm: [$class: 'GitSCM', branches: [[name: "*/${params.SAPMACHINE_GIT_BRANCH}"]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine'], [$class: 'CheckoutOption', timeout: 60]], userRemoteConfigs: [[url: "${params.SAPMACHINE_GIT_REPOSITORY}"]]]
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
+                    sh 'SapMachine-Infrastructure/lib/checkout_repo.sh'
+                }
             }
         }
         stage('Prepare Devkit') {
@@ -113,7 +115,7 @@
             steps {
                 // credentials are needed to avoid rate limit exceedance
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
-                    sh "python3 SapMachine-Infrastructure/lib/download_boot_jdk.py -m ${params.JDK_MAJOR} -d `pwd`"
+                    sh "python3 SapMachine-Infrastructure/lib/download_boot_jdk.py -d `pwd`"
                 }
                 script {
                     checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/tags/release-1.8.1']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'gtest']], userRemoteConfigs: [[url: 'https://github.com/google/googletest.git']]]
@@ -156,7 +158,7 @@
                 expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.RUN_TESTS == true }
             }
             steps {
-                sh "python3 SapMachine-Infrastructure/lib/download_jtreg.py -m ${params.JDK_MAJOR} -d `pwd`"
+                sh "python3 SapMachine-Infrastructure/lib/download_jtreg.py"
             }
         }
         stage('Run jtreg hotspot') {
@@ -318,7 +320,7 @@
             steps {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
                     lock('MacBrewCaskGenerationSynchronizer') {
-                        sh "SapMachine-Infrastructure/lib/make_cask.sh"
+                        sh "python3 SapMachine-Infrastructure/lib/make_cask.py -t ${params.SAPMACHINE_VERSION}"
                     }
                 }
             }
@@ -356,7 +358,7 @@
             steps {
                 build job: 'debian-package', propagate: false, wait: true, parameters:
                     [
-                        string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
+                        string(name: 'GIT_TAG_NAME', value: params.SAPMACHINE_VERSION),
                         [$class: 'BooleanParameterValue', name: 'DEPLOY', value: true]
                     ]
             }
@@ -368,7 +370,7 @@
             steps {
                 build job: 'rpm-package', propagate: false, wait: true, parameters:
                     [
-                        string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
+                        string(name: 'GIT_TAG_NAME', value: params.SAPMACHINE_VERSION),
                         [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
                     ]
             }
@@ -454,14 +456,14 @@
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>SAPMACHINE_GIT_BRANCH</name>
-          <description>The Git branch to build.</description>
+          <name>GIT_REF</name>
+          <description>The Git tag, branch or commit to build.</description>
           <defaultValue>sapmachine18</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>GIT_TAG_NAME</name>
-          <description>The Git tag to build.</description>
+          <name>SAPMACHINE_VERSION</name>
+          <description>Either a SapMachine Release Tag or a JDK Major version. If empty, the scripts will try to figure it out from GIT_REF or fail.</description>
           <defaultValue />
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
@@ -487,12 +489,6 @@
           <name>EXTRA_CONFIGURE_OPTIONS</name>
           <description>Extra configure options passed directly to configure script.</description>
           <defaultValue />
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>JDK_MAJOR</name>
-          <description>Specify the JDK major version explicitly. You need to override the default in user branch builds.</description>
-          <defaultValue>18</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>

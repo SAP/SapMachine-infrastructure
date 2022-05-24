@@ -16,10 +16,9 @@
                             def job_linux_x86_64 = build job: 'build-17-snapshot-linux_x86_64', propagate: false, wait: true, parameters:
                             [
                                 string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
-                                string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
-                                string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
+                                string(name: 'GIT_REF', value: params.GIT_REF),
+                                string(name: 'SAPMACHINE_VERSION', value: params.SAPMACHINE_VERSION),
                                 string(name: 'BUILD_NUMBER', value: params.BUILD_NUMBER),
-                                string(name: 'JDK_MAJOR', value: params.JDK_MAJOR),
                                 string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                 string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                 string(name: 'langtools_test_groups', value: params.langtools_test_groups),
@@ -60,10 +59,9 @@
                             def job_linux_ppc64le = build job: 'build-17-snapshot-linux_ppc64le', propagate: false, wait: true, parameters:
                             [
                                 string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
-                                string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
-                                string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
+                                string(name: 'GIT_REF', value: params.GIT_REF),
+                                string(name: 'SAPMACHINE_VERSION', value: params.SAPMACHINE_VERSION),
                                 string(name: 'BUILD_NUMBER', value: params.BUILD_NUMBER),
-                                string(name: 'JDK_MAJOR', value: params.JDK_MAJOR),
                                 string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                 string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                 string(name: 'langtools_test_groups', value: params.langtools_test_groups),
@@ -104,10 +102,9 @@
                             def job_linux_aarch64 = build job: 'build-17-snapshot-linux_aarch64', propagate: false, wait: true, parameters:
                             [
                                 string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
-                                string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
-                                string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
+                                string(name: 'GIT_REF', value: params.GIT_REF),
+                                string(name: 'SAPMACHINE_VERSION', value: params.SAPMACHINE_VERSION),
                                 string(name: 'BUILD_NUMBER', value: params.BUILD_NUMBER),
-                                string(name: 'JDK_MAJOR', value: params.JDK_MAJOR),
                                 string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                 string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                 string(name: 'langtools_test_groups', value: params.langtools_test_groups),
@@ -148,10 +145,9 @@
                             def job_linux_alpine_x86_64 = build job: 'build-17-snapshot-linux_alpine_x86_64', propagate: false, wait: true, parameters:
                             [
                                 string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
-                                string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
-                                string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
+                                string(name: 'GIT_REF', value: params.GIT_REF),
+                                string(name: 'SAPMACHINE_VERSION', value: params.SAPMACHINE_VERSION),
                                 string(name: 'BUILD_NUMBER', value: params.BUILD_NUMBER),
-                                string(name: 'JDK_MAJOR', value: params.JDK_MAJOR),
                                 string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                 string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                 string(name: 'langtools_test_groups', value: params.langtools_test_groups),
@@ -192,10 +188,9 @@
                             def job_windows_x86_64 = build job: 'build-17-snapshot-windows_x86_64', propagate: false, wait: true, parameters:
                             [
                                 string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
-                                string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
-                                string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
+                                string(name: 'GIT_REF', value: params.GIT_REF),
+                                string(name: 'SAPMACHINE_VERSION', value: params.SAPMACHINE_VERSION),
                                 string(name: 'BUILD_NUMBER', value: params.BUILD_NUMBER),
-                                string(name: 'JDK_MAJOR', value: params.JDK_MAJOR),
                                 string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                 string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                 string(name: 'langtools_test_groups', value: params.langtools_test_groups),
@@ -247,10 +242,9 @@
                             def job_macos_x86_64 = build job: 'build-17-snapshot-macos_x86_64', propagate: false, wait: true, parameters:
                             [
                                 string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
-                                string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
-                                string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
+                                string(name: 'GIT_REF', value: params.GIT_REF),
+                                string(name: 'SAPMACHINE_VERSION', value: params.SAPMACHINE_VERSION),
                                 string(name: 'BUILD_NUMBER', value: params.BUILD_NUMBER),
-                                string(name: 'JDK_MAJOR', value: params.JDK_MAJOR),
                                 string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                 string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                 string(name: 'langtools_test_groups', value: params.langtools_test_groups),
@@ -291,10 +285,9 @@
                             def job_macos_aarch64 = build job: 'build-17-snapshot-macos_aarch64', propagate: false, wait: true, parameters:
                             [
                                 string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
-                                string(name: 'SAPMACHINE_GIT_BRANCH', value: params.SAPMACHINE_GIT_BRANCH),
-                                string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
+                                string(name: 'GIT_REF', value: params.GIT_REF),
+                                string(name: 'SAPMACHINE_VERSION', value: params.SAPMACHINE_VERSION),
                                 string(name: 'BUILD_NUMBER', value: params.BUILD_NUMBER),
-                                string(name: 'JDK_MAJOR', value: params.JDK_MAJOR),
                                 string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                 string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                 string(name: 'langtools_test_groups', value: params.langtools_test_groups),
@@ -354,14 +347,14 @@
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>SAPMACHINE_GIT_BRANCH</name>
-          <description>The Git branch to build.</description>
+          <name>GIT_REF</name>
+          <description>The Git tag, branch or commit to build.</description>
           <defaultValue>sapmachine17</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>GIT_TAG_NAME</name>
-          <description>The Git tag to build.</description>
+          <name>SAPMACHINE_VERSION</name>
+          <description>Either a SapMachine Release Tag or a JDK Major version. If empty, the scripts will try to figure it out from GIT_REF or fail.</description>
           <defaultValue />
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
@@ -369,12 +362,6 @@
           <name>BUILD_NUMBER</name>
           <description>Sets the version build number explicitely.</description>
           <defaultValue />
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>JDK_MAJOR</name>
-          <description>Specify the JDK major version explicitly. You need to override the default in user branch builds.</description>
-          <defaultValue>17</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.BooleanParameterDefinition>

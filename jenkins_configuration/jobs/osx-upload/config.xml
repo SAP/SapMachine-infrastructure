@@ -1,7 +1,12 @@
 <project>
   <actions />
-  <description>This project is generated. Do not modify manually.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+  <description>Upload MacOS artifacts.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <concurrentBuild>false</concurrentBuild>
+  <assignedNode>built-in</assignedNode>
+  <canRoam>false</canRoam>
   <properties>
     <jenkins.model.BuildDiscarderProperty>
       <strategy class="hudson.tasks.LogRotator">
@@ -14,8 +19,8 @@
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
         <hudson.model.StringParameterDefinition>
-          <name>GIT_TAG_NAME</name>
-          <description>The Git tag to create a debian package from.</description>
+          <name>SAPMACHINE_VERSION</name>
+          <description>The SapMachine Release Tag to upload MacOS artifacts for.</description>
           <defaultValue />
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
@@ -25,48 +30,61 @@
           <defaultValue>false</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.FileParameterDefinition>
-          <name>JDK_TGZ</name>
+          <name>INTEL_JDK_TGZ</name>
           <description>The SapMachine JDK .tar.gz archive.</description>
         </hudson.model.FileParameterDefinition>
         <hudson.model.FileParameterDefinition>
-          <name>JRE_TGZ</name>
+          <name>INTEL_JRE_TGZ</name>
           <description>The SapMachine JRE .tar.gz archive.</description>
         </hudson.model.FileParameterDefinition>
         <hudson.model.FileParameterDefinition>
-          <name>JDK_DMG</name>
+          <name>INTEL_JDK_DMG</name>
           <description>The SapMachine JDK .dmg disk image.</description>
         </hudson.model.FileParameterDefinition>
         <hudson.model.FileParameterDefinition>
-          <name>JRE_DMG</name>
+          <name>INTEL_JRE_DMG</name>
           <description>The SapMachine JRE .dmg disk image.</description>
         </hudson.model.FileParameterDefinition>
         <hudson.model.FileParameterDefinition>
-          <name>SYMBOLS</name>
+          <name>INTEL_SYMBOLS</name>
+          <description>The SapMachine SYMBOLS archive.</description>
+        </hudson.model.FileParameterDefinition>
+        <hudson.model.FileParameterDefinition>
+          <name>AARCH_JDK_TGZ</name>
+          <description>The SapMachine JDK .tar.gz archive.</description>
+        </hudson.model.FileParameterDefinition>
+        <hudson.model.FileParameterDefinition>
+          <name>AARCH_JRE_TGZ</name>
+          <description>The SapMachine JRE .tar.gz archive.</description>
+        </hudson.model.FileParameterDefinition>
+        <hudson.model.FileParameterDefinition>
+          <name>AARCH_JDK_DMG</name>
+          <description>The SapMachine JDK .dmg disk image.</description>
+        </hudson.model.FileParameterDefinition>
+        <hudson.model.FileParameterDefinition>
+          <name>AARCH_JRE_DMG</name>
+          <description>The SapMachine JRE .dmg disk image.</description>
+        </hudson.model.FileParameterDefinition>
+        <hudson.model.FileParameterDefinition>
+          <name>AARCH_SYMBOLS</name>
           <description>The SapMachine SYMBOLS archive.</description>
         </hudson.model.FileParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>
   <scm class="hudson.scm.NullSCM" />
-  <assignedNode>built-in</assignedNode>
-  <canRoam>false</canRoam>
-  <disabled>false</disabled>
-  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
-  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
-  <triggers />
-  <concurrentBuild>false</concurrentBuild>
   <builders />
   <publishers>
     <hudson.tasks.ArtifactArchiver>
-      <artifacts>JDK_TGZ, JRE_TGZ, JDK_DMG, JRE_DMG, SYMBOLS</artifacts>
+      <artifacts>INTEL_JDK_TGZ, INTEL_JRE_TGZ, INTEL_JDK_DMG, INTEL_JRE_DMG, INTEL_SYMBOLS, AARCH_JDK_TGZ, AARCH_JRE_TGZ, AARCH_JDK_DMG, AARCH_JRE_DMG, AARCH_SYMBOLS</artifacts>
       <allowEmptyArchive>false</allowEmptyArchive>
       <onlyIfSuccessful>false</onlyIfSuccessful>
       <fingerprint>false</fingerprint>
       <defaultExcludes>true</defaultExcludes>
       <caseSensitive>true</caseSensitive>
-      <followSymlinks>true</followSymlinks>
+      <latestOnly>false</latestOnly>
     </hudson.tasks.ArtifactArchiver>
-    <hudson.plugins.parameterizedtrigger.BuildTrigger plugin="parameterized-trigger@2.44">
+    <hudson.plugins.parameterizedtrigger.BuildTrigger>
       <configs>
         <hudson.plugins.parameterizedtrigger.BuildTriggerConfig>
           <configs>
@@ -74,8 +92,8 @@
           </configs>
           <projects>osx-upload-processor</projects>
           <condition>ALWAYS</condition>
-          <triggerWithNoParameters>false</triggerWithNoParameters>
           <triggerFromChildProjects>false</triggerFromChildProjects>
+          <triggerWithNoParameters>false</triggerWithNoParameters>
         </hudson.plugins.parameterizedtrigger.BuildTriggerConfig>
       </configs>
     </hudson.plugins.parameterizedtrigger.BuildTrigger>
