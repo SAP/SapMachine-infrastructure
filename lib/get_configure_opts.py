@@ -64,7 +64,7 @@ def main(argv=None):
 
     # if major is still None, try to get it from GIT_REF
     if major is None:
-        utils.calc_major(filter(None, [os.environ['GIT_REF']]))
+        major = utils.calc_major(filter(None, [os.environ['GIT_REF']]))
 
     # if major could not be determined, use default
     if major is None:

@@ -465,26 +465,17 @@ def calc_major(values):
             continue
 
         if val.isdigit():
-            print(str.format("calc_major: {0} is a digit, returning it.", val), file=sys.stderr)
             return int(val)
 
         tag = SapMachineTag.from_string(val)
         if not tag is None:
-            print(str.format("calc_major: {0} is a tag, returning its major.", val), file=sys.stderr)
             return tag.get_major()
 
         match = branch_pattern.match(val)
-        if match is not None:
-            print(str.format("calc_major: {0} is a well known branch.", val), file=sys.stderr)
-            if match.group(1) is not None:
-                print(str.format("calc_major: {0} is not none.", match.group(1)), file=sys.stderr)
-                if match.group(1).isdigit():
-                    print(str.format("calc_major: And {0} is even a digit.", match.group(1)), file=sys.stderr)
-                    return int(match.group(1))
+        if match is not None and match.group(1) is not None and match.group(1).isdigit():
+            return int(match.group(1))
 
         if val == "sapmachine":
-            print(str.format("calc_major: {0} is the sapmachine master branch.", val), file=sys.stderr)
             return sapmachine_default_major()
 
-    print("calc_major: Returning None.", file=sys.stderr)
     return None
