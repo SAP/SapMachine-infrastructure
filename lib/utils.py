@@ -169,15 +169,13 @@ active_releases = None
 def get_active_releases():
     global active_releases
     if active_releases == None:
-        dir_name = os.path.abspath(os.path.dirname(sys.argv[0]))
-        path_name = os.path.abspath(os.path.join(dir_name, '..', 'active_releases.json'))
-        with open(path_name, 'r') as file:
-            releases = file.read()
-            active_releases = json.loads(releases)
+        releases_file = os.path.abspath(os.path.join(os.path.dirname(sys.argv[0]), '..', 'active_releases.json'))
+        with open(releases_file, 'r') as file:
+            active_releases = json.loads(file.read())
 
 def sapmachine_default_major():
     get_active_releases()
-    return active_releases['default_release']
+    return active_releases['head_release']
 
 def sapmachine_is_lts(major):
     get_active_releases()
