@@ -17,7 +17,12 @@ def main(argv=None):
     parser.add_argument('-d', '--dir', help='The dir to extract jtreg to', metavar='DIR')
     args = parser.parse_args()
 
-    major = utils.calc_major(filter(None, [os.environ['SAPMACHINE_VERSION'], os.environ['GIT_REF']])) if args.major is None else int(args.major)
+    version_input = []
+    if 'SAPMACHINE_VERSION' in os.environ:
+        version_input.append(os.environ['SAPMACHINE_VERSION'])
+    if 'GIT_REF' in os.environ:
+        version_input.append(os.environ['GIT_REF'])
+    major = utils.calc_major(filter(None, version_input)) if args.major is None else int(args.major)
     if major is None:
         return -1
 

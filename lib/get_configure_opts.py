@@ -63,7 +63,7 @@ def main(argv=None):
                                 latest_non_ga_tag.as_string(), build_number), file=sys.stderr)
 
     # if major is still None, try to get it from GIT_REF
-    if major is None:
+    if major is None and 'GIT_REF' in os.environ:
         major = utils.calc_major(filter(None, [os.environ['GIT_REF']]))
 
     # if major could not be determined, use default
