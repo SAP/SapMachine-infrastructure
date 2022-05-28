@@ -18,12 +18,11 @@ if [[ -z $SAPMACHINE_GIT_REPOSITORY ]]; then
   SAPMACHINE_GIT_REPOSITORY="http://github.com/SAP/SapMachine.git"
 fi
 
-if [ -z $GIT_TAG_NAME ]; then
-    echo "GIT_TAG_NAME not given"
+if [ -z $SAPMACHINE_VERSION ]; then
+    echo "SAPMACHINE_VERSION not given"
     exit 1
 fi
-GIT_TAG_NAME=$(echo $GIT_TAG_NAME | sed 's/-alpine//')
-python3 SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME $PRE_RELEASE_OPT || true
+python3 SapMachine-Infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION $PRE_RELEASE_OPT || true
 
 ls -la
 
@@ -46,12 +45,12 @@ shasum -a 256 $ARCHIVE_NAME_JDK > $ARCHIVE_SUM_JDK
 shasum -a 256 $ARCHIVE_NAME_JRE > $ARCHIVE_SUM_JRE
 shasum -a 256 $ARCHIVE_NAME_SYMBOLS > $ARCHIVE_SUM_SYMBOLS
 
-python3 SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${ARCHIVE_NAME_JDK}"
-python3 SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${ARCHIVE_NAME_JRE}"
-python3 SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${ARCHIVE_NAME_SYMBOLS}"
-python3 SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${ARCHIVE_SUM_JDK}"
-python3 SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${ARCHIVE_SUM_JRE}"
-python3 SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${ARCHIVE_SUM_SYMBOLS}"
+python3 SapMachine-Infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${ARCHIVE_NAME_JDK}"
+python3 SapMachine-Infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${ARCHIVE_NAME_JRE}"
+python3 SapMachine-Infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${ARCHIVE_NAME_SYMBOLS}"
+python3 SapMachine-Infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${ARCHIVE_SUM_JDK}"
+python3 SapMachine-Infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${ARCHIVE_SUM_JRE}"
+python3 SapMachine-Infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${ARCHIVE_SUM_SYMBOLS}"
 
 if [ $UNAME == Darwin ]; then
     DMG_NAME_JDK="$(cat jdk_dmg_name.txt)"
@@ -63,8 +62,8 @@ if [ $UNAME == Darwin ]; then
     shasum -a 256 $DMG_NAME_JDK > $DMG_SUM_JDK
     shasum -a 256 $DMG_NAME_JRE > $DMG_SUM_JRE
 
-    python3 SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${DMG_NAME_JDK}"
-    python3 SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${DMG_NAME_JRE}"
-    python3 SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${DMG_SUM_JDK}"
-    python3 SapMachine-Infrastructure/lib/github_publish.py -t $GIT_TAG_NAME -a "${DMG_SUM_JRE}"
+    python3 SapMachine-Infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${DMG_NAME_JDK}"
+    python3 SapMachine-Infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${DMG_NAME_JRE}"
+    python3 SapMachine-Infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${DMG_SUM_JDK}"
+    python3 SapMachine-Infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${DMG_SUM_JRE}"
 fi
