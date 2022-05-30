@@ -49,11 +49,9 @@ def run_jenkins_jobs(major, tag):
         str.format('build-{0}-release-linux_ppc64le', major),
         str.format('build-{0}-release-linux_aarch64', major),
         str.format('build-{0}-release-macos_x86_64', major),
+        str.format('build-{0}-release-macos_aarch64', major),
         str.format('build-{0}-release-windows_x86_64', major)
     ]
-
-    if major > 16:
-        build_jobs.append(str.format('build-{0}-release-macos_aarch64', major))
 
     if major > 18:
         build_jobs.append(str.format('build-{0}-release-linux_alpine_x86_64', major))
@@ -61,7 +59,7 @@ def run_jenkins_jobs(major, tag):
     job_params = {
         'PUBLISH': 'true' ,
         'RELEASE': 'false',
-        'GIT_TAG_NAME': tag
+        'SAPMACHINE_VERSION': tag
     }
 
     for job in build_jobs:
