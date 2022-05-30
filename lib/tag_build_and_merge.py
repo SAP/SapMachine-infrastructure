@@ -59,7 +59,7 @@ def run_jenkins_jobs(major, tag):
     job_params = {
         'PUBLISH': 'true' ,
         'RELEASE': 'false',
-        'SAPMACHINE_VERSION': tag
+        'GIT_REF': tag
     }
 
     for job in build_jobs:

@@ -18,11 +18,15 @@ if [[ -z $SAPMACHINE_GIT_REPOSITORY ]]; then
   SAPMACHINE_GIT_REPOSITORY="http://github.com/SAP/SapMachine.git"
 fi
 
-if [ -z $SAPMACHINE_VERSION ]; then
-    echo "SAPMACHINE_VERSION not given"
+if [ "$SAPMACHINE_VERSION" != "" ]; then
+    VERSION_TAG=$SAPMACHINE_VERSION
+elif [ "$GIT_REF" != "" ]; then
+    VERSION_TAG=$GIT_REF
+else
+    echo "Neither SAPMACHINE_VERSION nor GIT_REF were set"
     exit 1
 fi
-python3 SapMachine-Infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION $PRE_RELEASE_OPT || true
+python3 SapMachine-Infrastructure/lib/github_publish.py -t $VERSION_TAG $PRE_RELEASE_OPT || true
 
 ls -la
 
