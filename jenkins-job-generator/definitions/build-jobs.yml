@@ -159,6 +159,7 @@
     defaults: 'sapmachine_global'
     description: '{build_type} build for SapMachine {major} on {platform}.'
     project-type: pipeline
+    sandbox: true
     concurrent: '{allow_concurrent_builds}'
     properties:
         - github:
@@ -594,6 +595,7 @@
     defaults: 'sapmachine_global'
     description: 'Start {build_type} build for SapMachine {major} on all platorms.'
     project-type: pipeline
+    sandbox: true
     concurrent: true
     properties:
         - build-discarder:
