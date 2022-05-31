@@ -46,6 +46,7 @@ def main(argv=None):
         tag = SapMachineTag.from_string(args.tag)
         if tag is None:
             print(str.format("Tag {0} not recognized as SapMachine tag", args.tag), file=sys.stderr)
+            major = utils.calc_major([args.tag])
         else:
             major = tag.get_major()
 

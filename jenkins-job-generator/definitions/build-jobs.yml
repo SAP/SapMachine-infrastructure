@@ -180,7 +180,7 @@
         - string:
             name: SAPMACHINE_VERSION
             default: ''
-            description: 'Either a SapMachine Release Tag or a JDK Major version. If empty, the scripts will try to figure it out from GIT_REF or fail.'
+            description: 'Either a SapMachine Release Tag or a JDK Major version. If empty, GIT_REF is used.'
         - string:
             name: BUILD_NUMBER
             default: ''
@@ -235,6 +235,11 @@
                                 setGitHubPullRequestStatus context: "validate-pr-{major}-{platform}", state: 'PENDING'
                             }}
                             env.VERIFICATION_RESULT = "1"
+                            if (params.SAPMACHINE_VERSION.isEmpty()) {{
+                                env.SAPMACHINE_VERSION = params.GIT_REF
+                            }} else {{
+                                env.SAPMACHINE_VERSION = params.SAPMACHINE_VERSION
+                            }}
                         }}
                         cleanWs()
                     }}
@@ -479,7 +484,7 @@
                     steps {{
                         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
                             lock('MacBrewCaskGenerationSynchronizer') {{
-                                sh "SapMachine-Infrastructure/lib/make_cask.sh"
+                                sh "python3 SapMachine-Infrastructure/lib/make_cask.py -t $SAPMACHINE_VERSION"
                             }}
                         }}
                     }}
@@ -517,7 +522,7 @@
                     steps {{
                         build job: 'debian-package', propagate: false, wait: true, parameters:
                             [
-                                string(name: 'GIT_TAG_NAME', value: params.SAPMACHINE_VERSION),
+                                string(name: 'GIT_TAG_NAME', value: env.SAPMACHINE_VERSION),
                                 [$class: 'BooleanParameterValue', name: 'DEPLOY', value: true]
                             ]
                     }}
@@ -529,7 +534,7 @@
                     steps {{
                         build job: 'rpm-package', propagate: false, wait: true, parameters:
                             [
-                                string(name: 'GIT_TAG_NAME', value: params.SAPMACHINE_VERSION),
+                                string(name: 'GIT_TAG_NAME', value: env.SAPMACHINE_VERSION),
                                 [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
                             ]
                     }}
@@ -607,7 +612,7 @@
         - string:
             name: SAPMACHINE_VERSION
             default: ''
-            description: 'Either a SapMachine Release Tag or a JDK Major version. If empty, the scripts will try to figure it out from GIT_REF or fail.'
+            description: 'Either a SapMachine Release Tag or a JDK Major version. If empty, GIT_REF is used.'
         - string:
             name: BUILD_NUMBER
             default: ''
