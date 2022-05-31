@@ -15,40 +15,45 @@ from string import Template
 from versions import SapMachineTag
 
 duplex_cask_template = '''
-cask 'sapmachine${CASK_TAG}-${IMAGE_TYPE}' do
-  version '${CASK_VERSION}'
+cask "sapmachine${CASK_TAG}-${IMAGE_TYPE}" do
+  version "${CASK_VERSION}"
 
   if Hardware::CPU.intel?
-    url "https://github.com/SAP/SapMachine/releases/download/sapmachine-${URL_VERSION1}/sapmachine-${IMAGE_TYPE}-${URL_VERSION2}_${OS_NAME}-x64_bin.dmg"
-    sha256 '${INTELSHA256}'
+    url "https://github.com/SAP/SapMachine/releases/download/sapmachine-${URL_VERSION1}/sapmachine-${IMAGE_TYPE}-${URL_VERSION2}_${OS_NAME}-x64_bin.dmg,
+         verified: "https://github.com/SAP/SapMachine"
+    sha256 "${INTELSHA256}"
   else
-    url "https://github.com/SAP/SapMachine/releases/download/sapmachine-${URL_VERSION1}/sapmachine-${IMAGE_TYPE}-${URL_VERSION2}_${OS_NAME}-aarch64_bin.dmg"
-    sha256 '${AARCHSHA256}'
+    url "https://github.com/SAP/SapMachine/releases/download/sapmachine-${URL_VERSION1}/sapmachine-${IMAGE_TYPE}-${URL_VERSION2}_${OS_NAME}-aarch64_bin.dmg,
+         verified: "https://github.com/SAP/SapMachine"
+    sha256 "${AARCHSHA256}"
   end
 
   appcast "https://sap.github.io/SapMachine/latest/#{version.major}"
-  name 'SapMachine OpenJDK Development Kit'
-  homepage 'https://sapmachine.io/'
+  name "SapMachine OpenJDK Development Kit"
+  desc "OpenJDK build from SAP"
+  homepage "https://sapmachine.io/"
 
   artifact "sapmachine-${IMAGE_TYPE}-#{${RUBY_VERSION}}.${IMAGE_TYPE}", target: "/Library/Java/JavaVirtualMachines/sapmachine-#{version.major}${EA_EXT}${IMAGE_TYPE}"
 
-  uninstall rmdir: '/Library/Java/JavaVirtualMachines'
+  uninstall rmdir: "/Library/Java/JavaVirtualMachines"
 end
 '''
 
 cask_template = '''
-cask 'sapmachine${CASK_TAG}-${IMAGE_TYPE}' do
-  version '${CASK_VERSION}'
-  sha256 '${SHA256}'
+cask "sapmachine${CASK_TAG}-${IMAGE_TYPE}" do
+  version "${CASK_VERSION}"
+  sha256 "${SHA256}"
 
-  url "https://github.com/SAP/SapMachine/releases/download/sapmachine-${URL_VERSION1}/sapmachine-${IMAGE_TYPE}-${URL_VERSION2}_${OS_NAME}-x64_bin.dmg"
+  url "https://github.com/SAP/SapMachine/releases/download/sapmachine-${URL_VERSION1}/sapmachine-${IMAGE_TYPE}-${URL_VERSION2}_${OS_NAME}-x64_bin.dmg,
+       verified: "https://github.com/SAP/SapMachine"
   appcast "https://sap.github.io/SapMachine/latest/#{version.major}"
-  name 'SapMachine OpenJDK Development Kit'
-  homepage 'https://sapmachine.io/'
+  name "SapMachine OpenJDK Development Kit"
+  desc "OpenJDK build from SAP"
+  homepage "https://sapmachine.io/"
 
   artifact "sapmachine-${IMAGE_TYPE}-#{${RUBY_VERSION}}.${IMAGE_TYPE}", target: "/Library/Java/JavaVirtualMachines/sapmachine-#{version.major}${EA_EXT}${IMAGE_TYPE}"
 
-  uninstall rmdir: '/Library/Java/JavaVirtualMachines'
+  uninstall rmdir: "/Library/Java/JavaVirtualMachines"
 end
 '''
 
