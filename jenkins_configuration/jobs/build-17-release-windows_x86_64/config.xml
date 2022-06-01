@@ -1,7 +1,7 @@
 <flow-definition plugin="workflow-job@1182.v60a_e6279b_579">
   <actions>
-    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@2.2081.v3919681ffc1e" />
-    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@2.2081.v3919681ffc1e">
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@2.2086.v12b_420f036e5" />
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@2.2086.v12b_420f036e5">
       <jobProperties />
       <triggers />
       <parameters />
@@ -45,7 +45,7 @@
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>SAPMACHINE_VERSION</name>
-          <description>Either a SapMachine Release Tag or a JDK Major version. If empty, the scripts will try to figure it out from GIT_REF or fail.</description>
+          <description>Either a SapMachine Release Tag or a JDK Major version. If empty, GIT_REF is used.</description>
           <defaultValue />
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
@@ -109,7 +109,7 @@
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2705.v0449852ee36f">
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2706.v71dd22b_c5a_a_2">
     <script>pipeline {
     agent {
         label "windows_x86_64"
@@ -122,6 +122,11 @@
                         setGitHubPullRequestStatus context: "validate-pr-17-windows_x86_64", state: 'PENDING'
                     }
                     env.VERIFICATION_RESULT = "1"
+                    if (params.SAPMACHINE_VERSION.isEmpty()) {
+                        env.SAPMACHINE_VERSION = params.GIT_REF
+                    } else {
+                        env.SAPMACHINE_VERSION = params.SAPMACHINE_VERSION
+                    }
                 }
                 cleanWs()
             }
@@ -366,7 +371,7 @@
             steps {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
                     lock('MacBrewCaskGenerationSynchronizer') {
-                        sh "SapMachine-Infrastructure/lib/make_cask.sh"
+                        sh "python3 SapMachine-Infrastructure/lib/make_cask.py -t $SAPMACHINE_VERSION"
                     }
                 }
             }
@@ -404,7 +409,7 @@
             steps {
                 build job: 'debian-package', propagate: false, wait: true, parameters:
                     [
-                        string(name: 'GIT_TAG_NAME', value: params.SAPMACHINE_VERSION),
+                        string(name: 'GIT_TAG_NAME', value: env.SAPMACHINE_VERSION),
                         [$class: 'BooleanParameterValue', name: 'DEPLOY', value: true]
                     ]
             }
@@ -416,7 +421,7 @@
             steps {
                 build job: 'rpm-package', propagate: false, wait: true, parameters:
                     [
-                        string(name: 'GIT_TAG_NAME', value: params.SAPMACHINE_VERSION),
+                        string(name: 'GIT_TAG_NAME', value: env.SAPMACHINE_VERSION),
                         [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
                     ]
             }
@@ -471,7 +476,7 @@
     }
 }
 </script>
-    <sandbox>false</sandbox>
+    <sandbox>true</sandbox>
   </definition>
   <disabled>false</disabled>
 </flow-definition>

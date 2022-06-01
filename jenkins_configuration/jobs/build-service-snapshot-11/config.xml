@@ -324,7 +324,7 @@
     }
 }
 </script>
-    <sandbox>false</sandbox>
+    <sandbox>true</sandbox>
   </definition>
   <actions />
   <description>Start snapshot build for SapMachine 11 on all platorms.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
@@ -354,7 +354,7 @@
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>SAPMACHINE_VERSION</name>
-          <description>Either a SapMachine Release Tag or a JDK Major version. If empty, the scripts will try to figure it out from GIT_REF or fail.</description>
+          <description>Either a SapMachine Release Tag or a JDK Major version. If empty, GIT_REF is used.</description>
           <defaultValue />
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
