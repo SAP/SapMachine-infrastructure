@@ -23,10 +23,7 @@ if [ ! -f ../${DEVKIT_ARCHIVE} ]; then
     echo Error: File not downloadable, request returned $HTTPRC.
     return -1
   fi
-  set +e
-  curl -L -o ../${DEVKIT_ARCHIVE} -u ${ART_USER}:${ART_PASSWORD} ${NEXUS_PATH}/${DEVKIT_GROUP_SLASH}/${DEVKIT_ARTEFACT}/${DEVKIT_VERSION}/${DEVKIT_ARCHIVE}
-  echo $?
-  exit -1
+  curl -L -s -o ../${DEVKIT_ARCHIVE} -u ${ART_USER}:${ART_PASSWORD} ${NEXUS_PATH}/${DEVKIT_GROUP_SLASH}/${DEVKIT_ARTEFACT}/${DEVKIT_VERSION}/${DEVKIT_ARCHIVE}
 fi
 
 echo Extracting ${DEVKIT_ARCHIVE} to ${DEVKIT_BASENAME}...
