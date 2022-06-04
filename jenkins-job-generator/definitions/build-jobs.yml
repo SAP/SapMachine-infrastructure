@@ -58,7 +58,7 @@
                         args "--mount src=/opt/devkits/aarch64-linux-gnu-to-aarch64-linux-gnu-fedora-21-gcc-9.2.0,target=/opt/devkits/aarch64-linux-gnu-to-aarch64-linux-gnu-fedora-21-gcc-9.2.0,type=bind"
                     }}
                 }}
-            devkit_default: '/opt/devkits/aarch64-linux-gnu-to-aarch64-linux-gnu-fedora-21-gcc-9.2.0'
+            devkit_default: 'io.sapmachine.build.devkit.linux-aarch64:devkit-fedora-gcc:21-8.3.0'
         - linux_alpine_x86_64:
             extra_configure_options_default: ''
             docker_agent: |
