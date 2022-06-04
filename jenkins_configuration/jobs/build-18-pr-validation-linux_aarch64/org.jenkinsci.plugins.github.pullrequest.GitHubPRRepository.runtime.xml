@@ -25,53 +25,24 @@
       </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
     </entry>
     <entry>
-      <int>1126</int>
+      <int>1140</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>1126</number>
-        <issueUpdatedAt>2022-05-23 14:47:15.0 UTC</issueUpdatedAt>
-        <title>SapMachine #1124: Vitals: Add Container information</title>
-        <body>This patch adds cgroup information to the SapMachine Vitals.
-
-We now print limits (memory, mem+swap, kernel mem) and usage (user space, kernel usage).
-
-Looks like this (in this example, docker was run with -m 8G, and it establishes a memory limit of 8g and - apparently - a mem+swap limit of 16g):
-
-```
-     cgroup-lim: cgroup memory limit
-     cgroup-limsw: cgroup memory+swap limit
-     cgroup-slim: cgroup memory soft limit
-     cgroup-usg: cgroup memory usage
-     cgroup-usgsw: cgroup memory+swap usage
-     cgroup-kusg: cgroup kernel memory usage
-```
-
-```
-------------cgroup------------
-lim  limsw slim usg usgsw kusg
-8.0g 16.0g      67m   67m   2m
-8.0g 16.0g      67m   67m   2m
-8.0g 16.0g      32m   32m   2m
-8.0g 16.0g      19m   19m   2m
-```
-
-Patch notes:
-
-
-- we almost always print out this information. Only if the VM runs inside a root memory controller (which cannot be limited) we omit the information since it would be mostly redundant with whatever is in /proc/meminfo. Note that for now I also print out cgroup information when running in a systemd mem controller; we may skip the information in the future when running in systemd.
-- in the legend, we now point out `[*]` values that are host specific
-- patch contains a large test addition to test the new feature.
+        <number>1140</number>
+        <issueUpdatedAt>2022-06-03 14:14:17.0 UTC</issueUpdatedAt>
+        <title>SapMachine #1124: Vitals v3</title>
+        <body>Please ignore, still Draft state
 
 fixes #1124
 </body>
-        <prUpdatedAt>2022-05-23 14:47:15.0 UTC</prUpdatedAt>
-        <headSha>3f86e5c5b149fa3a976787f195aa2eacd54ae379</headSha>
-        <headRef>1124-Vitals-add-container-info</headRef>
+        <prUpdatedAt>2022-06-03 14:14:17.0 UTC</prUpdatedAt>
+        <headSha>472f4622e6ed80ecda09a251c0859d6776a2ff9e</headSha>
+        <headRef>Vitals-V3</headRef>
         <mergeable>true</mergeable>
         <baseRef>sapmachine</baseRef>
         <userLogin>tstuefe</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/1126</htmlUrl>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1140</htmlUrl>
         <labels />
-        <lastCommentCreatedAt>2022-05-23 14:47:15.0 UTC</lastCommentCreatedAt>
+        <lastCommentCreatedAt>2022-06-03 14:14:17.0 UTC</lastCommentCreatedAt>
         <sourceRepoOwner>tstuefe</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
