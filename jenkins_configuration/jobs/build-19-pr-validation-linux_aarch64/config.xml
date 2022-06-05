@@ -103,7 +103,7 @@
         <hudson.model.StringParameterDefinition>
           <name>DEVKIT</name>
           <description>Devkit, could be either a path that locally exists or the GAV coordinates to a tar.gz archive to be downloaded and extracted.</description>
-          <defaultValue>/opt/devkits/aarch64-linux-gnu-to-aarch64-linux-gnu-fedora-21-gcc-9.2.0</defaultValue>
+          <defaultValue>io.sapmachine.build.devkit.linux-aarch64:devkit-fedora-gcc:21-8.3.0</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
