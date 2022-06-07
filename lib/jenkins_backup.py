@@ -15,7 +15,7 @@ from os.path import join
 jenkins_configuration = 'jenkins_configuration'
 
 def prepare_sapmachine_infra(local_repo):
-    utils.run_cmd(['git', 'checkout', 'master'], cwd=local_repo)
+    utils.run_cmd(['git', 'checkout', 'backupJenkins'], cwd=local_repo)
 
 def push_sapmachine_infra(local_repo):
     _, giturl, _ = utils.run_cmd(['git', 'config', '--get', 'remote.origin.url'], cwd=local_repo, std=True)
