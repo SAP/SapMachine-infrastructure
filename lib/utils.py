@@ -235,14 +235,21 @@ def get_active_sapmachine_branches():
 
 def git_clone(repo, branch, target):
     git_command = ['git', 'clone', '--single-branch']
+    git_fix_remote_command = None
     if branch is not None:
         git_command.extend(['-b', branch])
-    git_command.append(str.format('https://{0}', repo))
+    if 'GIT_USER' in os.environ and 'GIT_PASSWORD' in os.environ:
+        git_command.append(str.format('https://{0}:{1}@{2}', os.environ['GIT_USER'], os.environ['GIT_PASSWORD'], repo))
+        git_fix_remote_command = ['git', 'remote', 'set-url', 'origin', str.format('https://{0}', repo)]
+    else:
+        git_command.append(str.format('https://{0}', repo))
     if target is not None:
         git_command.append(target)
 
     remove_if_exists(target)
-    run_cmd(git_command, env=os.environ.copy())
+    run_cmd(git_command)
+    if git_fix_remote_command is not None:
+        run_cmd(git_fix_remote_command)
 
 def git_commit(dir, message, to_add):
     env = os.environ.copy()
