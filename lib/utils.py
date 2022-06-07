@@ -242,7 +242,7 @@ def git_clone(repo, branch, target):
         git_command.append(target)
 
     remove_if_exists(target)
-    run_cmd(git_command)
+    run_cmd(git_command, env=os.environ.copy())
 
 def git_commit(dir, message, to_add):
     env = os.environ.copy()
