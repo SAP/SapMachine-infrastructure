@@ -14,10 +14,10 @@ from os.path import join
 
 jenkins_configuration = 'jenkins_configuration'
 
-def prepare_sapmachine_infra(local_repo):
+def checkout_backup_branch(local_repo):
     utils.run_cmd(['git', 'checkout', 'backupJenkins'], cwd=local_repo)
 
-def push_sapmachine_infra(local_repo):
+def push_backup(local_repo):
     _, giturl, _ = utils.run_cmd(['git', 'config', '--get', 'remote.origin.url'], cwd=local_repo, std=True)
     credurl = str.format('https://{0}:{1}@{2}', os.environ['GIT_USER'], os.environ['GIT_PASSWORD'], giturl.rstrip().split("//")[1])
 
@@ -116,14 +116,14 @@ def main(argv=None):
 
     target_dir = join(args.backuprepodir, jenkins_configuration)
 
-    prepare_sapmachine_infra(args.backuprepodir)
+    checkout_backup_branch(args.backuprepodir)
     utils.remove_if_exists(target_dir)
     os.mkdir(target_dir)
     copy_configurations(args.srcdir, target_dir)
     create_plugin_list(args.srcdir, target_dir)
 
     if not args.dryrun:
-        push_sapmachine_infra(args.backuprepodir)
+        push_backup(args.backuprepodir)
 
     return 0
 
