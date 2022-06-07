@@ -10,12 +10,10 @@ import sys
 import utils
 import xml.etree.ElementTree
 
+from lib.utils import git_clone
 from os.path import join
 
 jenkins_configuration = 'jenkins_configuration'
-
-def checkout_backup_branch(local_repo):
-    utils.run_cmd(['git', 'checkout', 'backupJenkins'], cwd=local_repo)
 
 def push_backup(local_repo):
     _, giturl, _ = utils.run_cmd(['git', 'config', '--get', 'remote.origin.url'], cwd=local_repo, std=True)
@@ -29,8 +27,7 @@ def push_backup(local_repo):
 
     utils.run_cmd(['git', 'add', jenkins_configuration], cwd=local_repo)
     utils.run_cmd(['git', 'commit', '-m', 'Updated Jenkins configuration.'], cwd=local_repo, env=env)
-    utils.run_cmd(['git', 'fetch', credurl], cwd=local_repo, env=env)
-    utils.run_cmd(['git', 'rebase'], cwd=local_repo, env=env)
+    utils.run_cmd(['git', 'pull', '--rebase'], cwd=local_repo, env=env)
     utils.run_cmd(['git', 'push', credurl], cwd=local_repo, env=env)
 
 def remove_sensitive_data(config_xml, elements):
@@ -110,13 +107,12 @@ def create_plugin_list(src_dir, target_dir):
 def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('-s', '--srcdir', help='the source directory (Jenkins home directory)', metavar='DIR', required=True)
-    parser.add_argument('-b', '--backuprepodir', help='the backup repository', metavar='DIR', default='SapMachine-Infrastructure')
     parser.add_argument('-d', '--dryrun', help='do not push the Jenkins configuration', action='store_true', default=False)
     args = parser.parse_args()
 
-    target_dir = join(args.backuprepodir, jenkins_configuration)
+    git_clone("https://github.com/SAP/SapMachine-infrastructure.git", "backupJenkins", "SapMachine-Backup")
+    target_dir = join("SapMachine-Backup", jenkins_configuration)
 
-    checkout_backup_branch(args.backuprepodir)
     utils.remove_if_exists(target_dir)
     os.mkdir(target_dir)
     copy_configurations(args.srcdir, target_dir)
