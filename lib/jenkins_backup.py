@@ -27,7 +27,7 @@ def push_backup(local_repo):
 
     utils.run_cmd(['git', 'add', jenkins_configuration], cwd=local_repo)
     utils.run_cmd(['git', 'commit', '-m', 'Updated Jenkins configuration.'], cwd=local_repo, env=env)
-    utils.run_cmd(['git', 'pull', '--rebase'], cwd=local_repo, env=env)
+    utils.run_cmd(['git', 'pull', credurl, '--rebase'], cwd=local_repo, env=env)
     utils.run_cmd(['git', 'push', credurl], cwd=local_repo, env=env)
 
 def remove_sensitive_data(config_xml, elements):
