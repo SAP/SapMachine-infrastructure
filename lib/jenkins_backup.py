@@ -110,7 +110,7 @@ def main(argv=None):
     parser.add_argument('-d', '--dryrun', help='do not push the Jenkins configuration', action='store_true', default=False)
     args = parser.parse_args()
 
-    git_clone("https://github.com/SAP/SapMachine-infrastructure.git", "backupJenkins", "SapMachine-Backup")
+    git_clone("github.com/SAP/SapMachine-infrastructure.git", "backupJenkins", "SapMachine-Backup")
     target_dir = join("SapMachine-Backup", jenkins_configuration)
 
     utils.remove_if_exists(target_dir)

@@ -82,6 +82,7 @@
     name: jenkins-configuration-backup
     description: 'Creates a Jenkins configuration backup.'
     project-type: pipeline
+    sandbox: true
     concurrent: false
     properties:
         - build-discarder:
