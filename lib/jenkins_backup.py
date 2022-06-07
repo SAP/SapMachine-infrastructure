@@ -10,7 +10,7 @@ import sys
 import utils
 import xml.etree.ElementTree
 
-from lib.utils import git_clone
+from utils import git_clone
 from os.path import join
 
 jenkins_configuration = 'jenkins_configuration'
