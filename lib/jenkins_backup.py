@@ -119,7 +119,7 @@ def main(argv=None):
     create_plugin_list(args.srcdir, target_dir)
 
     if not args.dryrun:
-        push_backup(args.backuprepodir)
+        push_backup("SapMachine-Backup")
 
     return 0
 
