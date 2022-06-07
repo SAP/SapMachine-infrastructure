@@ -18,6 +18,8 @@ jenkins_configuration = 'jenkins_configuration'
 def push_backup(local_repo):
     _, giturl, _ = utils.run_cmd(['git', 'config', '--get', 'remote.origin.url'], cwd=local_repo, std=True)
     credurl = str.format('https://{0}:{1}@{2}', os.environ['GIT_USER'], os.environ['GIT_PASSWORD'], giturl.rstrip().split("//")[1])
+    _, branch, _ = utils.run_cmd(['git', 'branch', '--show-current'], cwd=local_repo, std=True)
+    branch = branch.rstrip()
 
     env = os.environ.copy()
     env['GIT_AUTHOR_NAME'] = 'SapMachine'
@@ -27,7 +29,7 @@ def push_backup(local_repo):
 
     utils.run_cmd(['git', 'add', jenkins_configuration], cwd=local_repo)
     utils.run_cmd(['git', 'commit', '-m', 'Updated Jenkins configuration.'], cwd=local_repo, env=env)
-    utils.run_cmd(['git', 'pull', credurl, '--rebase'], cwd=local_repo, env=env)
+    utils.run_cmd(['git', 'pull', credurl, branch, '--rebase'], cwd=local_repo, env=env)
     utils.run_cmd(['git', 'push', credurl], cwd=local_repo, env=env)
 
 def remove_sensitive_data(config_xml, elements):
