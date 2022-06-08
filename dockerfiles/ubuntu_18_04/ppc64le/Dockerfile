@@ -4,6 +4,8 @@ ARG ARTIFACTORY_CREDS
 ARG DEVKIT_NAME=devkit-fedora-gcc
 ARG DEVKIT_VERSION=21-8.3.0
 
+ENV DEBIAN_FRONTEND=noninteractive
+
 RUN apt-get update && apt-get install -qq -y --no-install-recommends \
 autoconf \
 ca-certificates \
@@ -46,6 +48,9 @@ WORKDIR /opt/devkits
 ADD https://$ARTIFACTORY_CREDS@common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build/devkit/linux-ppc64le/${DEVKIT_NAME}/${DEVKIT_VERSION}/${DEVKIT_NAME}-${DEVKIT_VERSION}.tar.gz /opt/devkits/
 WORKDIR /opt/devkits/${DEVKIT_NAME}-${DEVKIT_VERSION}
 RUN tar xvzf ../${DEVKIT_NAME}-${DEVKIT_VERSION}.tar.gz
+
+WORKDIR /usr/include
+RUN find . -name clock_t.h
 
 WORKDIR /tmp
 ADD https://raw.githubusercontent.com/tstuefe/tinyreaper/master/tinyreaper.c /tmp/
