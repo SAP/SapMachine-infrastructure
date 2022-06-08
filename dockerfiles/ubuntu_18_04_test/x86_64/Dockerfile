@@ -1,7 +1,6 @@
 FROM ubuntu:18.04
 
-ARG ARTIFACTORY_USER
-ARG ARTIFACTORY_PASSWORD
+ARG ARTIFACTORY_CREDS
 ARG DEVKIT_NAME=devkit-fedora-gcc
 ARG DEVKIT_VERSION=12-8.3.0
 
@@ -51,7 +50,7 @@ RUN useradd -ms /bin/bash jenkinsc -u 1002
 RUN pip3 install requests
 
 WORKDIR /opt/devkits
-ADD https://$ARTIFACTORY_USER:$ARTIFACTORY_PASSWORD@common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build/devkit/linux-x64/${DEVKIT_NAME}/${DEVKIT_VERSION}/${DEVKIT_NAME}-${DEVKIT_VERSION}.tar.gz /opt/devkits/
+ADD https://$ARTIFACTORY_CREDS@common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build/devkit/linux-x64/${DEVKIT_NAME}/${DEVKIT_VERSION}/${DEVKIT_NAME}-${DEVKIT_VERSION}.tar.gz /opt/devkits/
 WORKDIR /opt/devkits/${DEVKIT_NAME}-${DEVKIT_VERSION}
 RUN tar xvzf ../${DEVKIT_NAME}-${DEVKIT_VERSION}.tar.gz
 

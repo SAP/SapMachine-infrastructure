@@ -25,7 +25,7 @@
                         dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04_test/x86_64"
                         reuseNode true
                         label "{platform}"
-                        additionalBuildArgs "--build-arg ARTIFACTORY_USER=$ART_USER --build-arg ARTIFACTORY_PASSWORD=$ART_PASSWORD"
+                        additionalBuildArgs "--build-arg ARTIFACTORY_CREDS=""$ARTIFACTORY_CREDS"""
                     }}
                 }}
             devkit_default: 'io.sapmachine.build.devkit.linux-x64:devkit-fedora-gcc:12-8.3.0'
@@ -229,6 +229,9 @@
             agent {{
                 label "{platform}"
             }}
+            environment {{
+                ARTIFACTORY_CREDS = credentials('openjdk-artifactory')
+            }}
             stages {{
                 stage("Init") {{
                     steps {{
@@ -252,7 +255,6 @@
                     }}
                 }}
                 stage("Verify PR") {{
-                    withCredentials([usernamePassword(credentialsId: 'openjdk-artifactory', usernameVariable: 'ART_USER', passwordVariable: 'ART_PASSWORD')]) {{
                     {docker_agent}
                     steps {{
                         // credentials are needed to avoid rate limit exceedance in verify_pr.py
@@ -275,7 +277,6 @@
                                 }}
                             }}
                         }}
-                    }}
                     }}
                 }}
                 stage("Checkout SapMachine Repository") {{
