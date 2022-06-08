@@ -11,6 +11,7 @@ autoconf \
 ca-certificates \
 cpio \
 curl \
+file \
 git \
 libasound2-dev \
 libcups2-dev \
