@@ -30,16 +30,17 @@
                 }}
             devkit_default: 'io.sapmachine.build.devkit.linux-x64:devkit-fedora-gcc:12-8.3.0'
         - linux_ppc64le:
-            extra_configure_options_default: '--with-sysroot=/opt/sysroot-sles12-ppc64le --with-stdc++lib=static'
+            extra_configure_options_default: '--with-stdc++lib=static'
             docker_agent: |
                 agent {{
                     dockerfile {{
                         dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04/ppc64le"
                         reuseNode true
                         label "{platform}"
+                        additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
                     }}
                 }}
-            devkit_default: ''
+            devkit_default: 'io.sapmachine.build.devkit.linux-ppc64le:devkit-fedora-gcc:21-8.3.0'
         - macos_x86_64:
             extra_configure_options_default: ''
             docker_agent: ''
