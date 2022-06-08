@@ -22,7 +22,7 @@
             docker_agent: |
                 agent {{
                     dockerfile {{
-                        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04_test/x86_64"
+                        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04/x86_64"
                         reuseNode true
                         label "{platform}"
                         additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
