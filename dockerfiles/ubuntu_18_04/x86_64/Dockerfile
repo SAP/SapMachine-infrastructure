@@ -9,20 +9,14 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -qq -y --no-install-recommends \
 autoconf \
 ca-certificates \
-ccache \
 cpio \
 curl \
-file \
 git \
-graphviz \
 libasound2-dev \
 libcups2-dev \
 libelf-dev \
 libfontconfig1-dev \
 libfreetype6-dev \
-libgmp-dev \
-libmpc-dev \
-libmpfr-dev \
 libx11-dev \
 libxext-dev \
 libxrandr-dev \
@@ -30,8 +24,6 @@ libxrender-dev \
 libxt-dev \
 libxtst-dev \
 make \
-pandoc \
-patch \
 python3 \
 python3-pip \
 unzip \

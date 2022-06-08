@@ -9,20 +9,14 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -qq -y --no-install-recommends \
 autoconf \
 ca-certificates \
-ccache \
 cpio \
 curl \
-file \
 git \
-graphviz \
 libasound2-dev \
 libcups2-dev \
 libelf-dev \
 libfontconfig1-dev \
 libfreetype6-dev \
-libgmp-dev \
-libmpc-dev \
-libmpfr-dev \
 libx11-dev \
 libxext-dev \
 libxrandr-dev \
@@ -30,8 +24,6 @@ libxrender-dev \
 libxt-dev \
 libxtst-dev \
 make \
-pandoc \
-patch \
 python3 \
 python3-pip \
 unzip \
@@ -49,11 +41,8 @@ ADD https://$ARTIFACTORY_CREDS@common.repositories.cloud.sap/artifactory/sapmach
 WORKDIR /opt/devkits/${DEVKIT_NAME}-${DEVKIT_VERSION}
 RUN tar xvzf ../${DEVKIT_NAME}-${DEVKIT_VERSION}.tar.gz
 
-WORKDIR /usr/include
-RUN find . -name clock_t.h
-
 WORKDIR /tmp
 ADD https://raw.githubusercontent.com/tstuefe/tinyreaper/master/tinyreaper.c /tmp/
-RUN /opt/devkits/${DEVKIT_NAME}-${DEVKIT_VERSION}/bin/gcc -I/usr/include -I/usr/include/ppc64le-linux-gnu /tmp/tinyreaper.c -o /opt/tinyreaper && \
+RUN /opt/devkits/${DEVKIT_NAME}-${DEVKIT_VERSION}/bin/gcc -I/usr/include -I/usr/include/powerpc64le-linux-gnu /tmp/tinyreaper.c -o /opt/tinyreaper && \
     chmod +x /opt/tinyreaper && \
     rm /tmp/tinyreaper.c
