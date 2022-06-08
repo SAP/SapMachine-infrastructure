@@ -18,16 +18,19 @@
            branch_name: sapmachine
     platforms: &platforms
         - linux_x86_64:
-            extra_configure_options_default: '--with-sysroot=/opt/sysroot-sles11-x86_64 --with-stdc++lib=static'
+            extra_configure_options_default: '--with-stdc++lib=static'
             docker_agent: |
                 agent {{
-                    dockerfile {{
-                        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04/x86_64"
-                        reuseNode true
-                        label "{platform}"
+                    withCredentials([usernamePassword(credentialsId: 'openjdk-artifactory', usernameVariable: 'ART_USER', passwordVariable: 'ART_PASSWORD')]) {{
+                        dockerfile {{
+                            dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04_test/x86_64"
+                            reuseNode true
+                            label "{platform}"
+                            additionalBuildArgs "--build-arg ARTIFACTORY_USER=$ART_USER --build-arg ARTIFACTORY_PASSWORD=$ART_PASSWORD"
+                        }}
                     }}
                 }}
-            devkit_default: ''
+            devkit_default: 'io.sapmachine.build.devkit.linux-x64:devkit-fedora-gcc:12-8.3.0'
         - linux_ppc64le:
             extra_configure_options_default: '--with-sysroot=/opt/sysroot-sles12-ppc64le --with-stdc++lib=static'
             docker_agent: |
