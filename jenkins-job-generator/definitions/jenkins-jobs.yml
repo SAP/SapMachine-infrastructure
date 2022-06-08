@@ -56,7 +56,7 @@
                     steps {
                         sh '''#!/bin/bash
                             set -ex
-                            git init --initial-branch=master SapMachine-Infrastructure && cd SapMachine-Infrastructure
+                            git init SapMachine-Infrastructure && cd SapMachine-Infrastructure
                             git fetch --depth 1 https://github.com/SAP/SapMachine-infrastructure.git master
                             git checkout --detach FETCH_HEAD
                         '''
