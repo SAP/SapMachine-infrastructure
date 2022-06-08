@@ -25,7 +25,7 @@
                         dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04_test/x86_64"
                         reuseNode true
                         label "{platform}"
-                        additionalBuildArgs "--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\""
+                        additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
                     }}
                 }}
             devkit_default: 'io.sapmachine.build.devkit.linux-x64:devkit-fedora-gcc:12-8.3.0'
@@ -296,22 +296,20 @@
                         expression {{ env.VERIFICATION_RESULT != "2" && !params.DEVKIT.isEmpty() }}
                     }}
                     steps {{
-                        withCredentials([usernamePassword(credentialsId: 'openjdk-artifactory', usernameVariable: 'ART_USER', passwordVariable: 'ART_PASSWORD')]) {{
-                            script {{
-                                String[] gav = params.DEVKIT.split(":");
-                                if (gav.length == 3) {{
-                                    echo "Extracting devkit from GAV coordinates: \"${{params.DEVKIT}}\"."
-                                    sh("SapMachine-Infrastructure/lib/deploy-devkit.sh ${{gav[0]}} ${{gav[1]}} ${{gav[2]}}")
-                                    env.DEVKIT_PATH = sh (
-                                        script: "cd ${{gav[1]}}-${{gav[2]}} && pwd",
-                                        returnStdout: true
-                                    ).trim()
-                                }} else {{
-                                    echo "Devkit not in GAV notation, assuming path."
-                                    env.DEVKIT_PATH = params.DEVKIT;
-                                }}
-                                echo "Devkit Path: ${{env.DEVKIT_PATH}}"
+                        script {{
+                            String[] gav = params.DEVKIT.split(":");
+                            if (gav.length == 3) {{
+                                echo "Extracting devkit from GAV coordinates: \"${{params.DEVKIT}}\"."
+                                sh("SapMachine-Infrastructure/lib/deploy-devkit.sh ${{gav[0]}} ${{gav[1]}} ${{gav[2]}}")
+                                env.DEVKIT_PATH = sh (
+                                    script: "cd ${{gav[1]}}-${{gav[2]}} && pwd",
+                                    returnStdout: true
+                                ).trim()
+                            }} else {{
+                                echo "Devkit not in GAV notation, assuming path."
+                                env.DEVKIT_PATH = params.DEVKIT;
                             }}
+                            echo "Devkit Path: ${{env.DEVKIT_PATH}}"
                         }}
                     }}
                 }}
