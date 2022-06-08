@@ -49,6 +49,6 @@ RUN tar xvzf ../${DEVKIT_NAME}-${DEVKIT_VERSION}.tar.gz
 
 WORKDIR /tmp
 ADD https://raw.githubusercontent.com/tstuefe/tinyreaper/master/tinyreaper.c /tmp/
-RUN /opt/devkits/${DEVKIT_NAME}-${DEVKIT_VERSION}/bin/gcc /tmp/tinyreaper.c -o /opt/tinyreaper && \
+RUN /opt/devkits/${DEVKIT_NAME}-${DEVKIT_VERSION}/bin/gcc -I/opt/devkits/${DEVKIT_NAME}-${DEVKIT_VERSION}/usr/include /tmp/tinyreaper.c -o /opt/tinyreaper && \
     chmod +x /opt/tinyreaper && \
     rm /tmp/tinyreaper.c
