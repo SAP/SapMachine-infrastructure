@@ -57,7 +57,7 @@
                         dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/arm64"
                         reuseNode true
                         label "{platform}"
-                        args "--mount src=/opt/devkits/aarch64-linux-gnu-to-aarch64-linux-gnu-fedora-21-gcc-9.2.0,target=/opt/devkits/aarch64-linux-gnu-to-aarch64-linux-gnu-fedora-21-gcc-9.2.0,type=bind"
+                        additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
                     }}
                 }}
             devkit_default: 'io.sapmachine.build.devkit.linux-aarch64:devkit-fedora-gcc:21-8.3.0'

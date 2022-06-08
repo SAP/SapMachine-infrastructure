@@ -4,6 +4,8 @@ ARG ARTIFACTORY_CREDS
 ARG DEVKIT_NAME=devkit-fedora-gcc
 ARG DEVKIT_VERSION=12-8.3.0
 
+ENV DEBIAN_FRONTEND=noninteractive
+
 RUN apt-get update && apt-get install -qq -y --no-install-recommends \
 autoconf \
 ca-certificates \
