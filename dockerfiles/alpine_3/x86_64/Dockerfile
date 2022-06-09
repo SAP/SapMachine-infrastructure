@@ -1,36 +1,33 @@
 FROM alpine:3.15
 
 RUN apk update && apk upgrade && apk add \
-bash \
-cpio \
-make \
-gcc \
-g++ \
+alsa-lib-dev \
 autoconf \
+bash \
+ca-certificates \
+cpio \
+cups-dev \
+curl \
 file \
+fontconfig-dev \
+g++ \
+gcc \
+git \
 libx11-dev \
 libxext-dev \
-libxrender-dev \
-libxtst-dev \
-libxt-dev \
 libxrandr-dev \
-cups-dev \
-alsa-lib-dev \
+libxrender-dev \
+libxt-dev \
+libxtst-dev \
 linux-headers \
-zip \
-wget \
-git \
-unzip \
-sed \
-tar \
-fontconfig-dev \
-ca-certificates \
-curl \
-graphviz \
+make \
 python3 \
 py3-pip \
-apache-ant \
-patch
+sed \
+tar \
+unzip \
+wget \
+zip
 
 RUN adduser --shell /bin/bash --uid 1000 --disabled-password jenkinsa
 RUN adduser --shell /bin/bash --uid 1001 --disabled-password jenkinsb
@@ -42,4 +39,3 @@ ADD https://raw.githubusercontent.com/tstuefe/tinyreaper/master/tinyreaper.c /tm
 RUN gcc /tmp/tinyreaper.c -o /opt/tinyreaper && \
     chmod +x /opt/tinyreaper && \
     rm /tmp/tinyreaper.c
-

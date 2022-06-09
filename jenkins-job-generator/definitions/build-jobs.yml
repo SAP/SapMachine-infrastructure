@@ -68,7 +68,7 @@
                     dockerfile {{
                         dir "SapMachine-Infrastructure/dockerfiles/alpine_3/x86_64"
                         reuseNode true
-                        label "{platform}"                       
+                        label "{platform}"
                     }}
                 }}
             devkit_default: ''
