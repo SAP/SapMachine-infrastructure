@@ -292,7 +292,7 @@
                     steps {{
                         sh '''#!/bin/bash
                             set -ex
-                            git init --initial-branch=master SapMachine && cd SapMachine
+                            git init SapMachine && cd SapMachine
                             git remote add origin $SAPMACHINE_GIT_REPOSITORY
                             git fetch origin $GIT_REF
                             git checkout --detach FETCH_HEAD
