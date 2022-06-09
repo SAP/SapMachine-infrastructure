@@ -18,7 +18,7 @@
            branch_name: sapmachine
     platforms: &platforms
         - linux_x86_64:
-            extra_configure_options_default: '--with-stdc++lib=static'
+            extra_configure_options_default: ''
             docker_agent: |
                 agent {{
                     dockerfile {{
@@ -30,7 +30,7 @@
                 }}
             devkit_default: 'io.sapmachine.build.devkit.linux-x64:devkit-fedora-gcc:12-8.3.0'
         - linux_ppc64le:
-            extra_configure_options_default: '--with-stdc++lib=static'
+            extra_configure_options_default: ''
             docker_agent: |
                 agent {{
                     dockerfile {{
