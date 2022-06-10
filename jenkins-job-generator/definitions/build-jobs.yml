@@ -334,9 +334,12 @@
                         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
                             sh "python3 SapMachine-Infrastructure/lib/download_boot_jdk.py -d `pwd`"
                         }}
-                        script {{
-                            checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/tags/release-1.8.1']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'gtest']], userRemoteConfigs: [[url: 'https://github.com/google/googletest.git']]]
-                        }}
+                        sh '''#!/bin/bash
+                            set -ex
+                            git init gtest && cd gtest
+                            git fetch --depth 1 https://github.com/google/googletest.git refs/tags/release-1.8.1
+                            git checkout --detach FETCH_HEAD
+                        '''
                     }}
                 }}
                 stage("Build") {{
