@@ -32,7 +32,7 @@ fi
 # OK, the devkit directory is not there. Do we already have the archive?
 DEVKIT_PATH="${DEVKIT_BASENAME}"
 
-if [[ $(uname) == Darwin ]]; then
+if [[ $UNAME == Darwin ]]; then
   DEVKIT_ARCHIVE_PATH="../${DEVKIT_ARCHIVE}"
 elif [[ $UNAME == CYGWIN* ]]; then
   DEVKIT_ARCHIVE_PATH="/cygdrive/c/devkits/${DEVKIT_ARCHIVE}"
@@ -42,7 +42,7 @@ fi
 
 if [ ! -f ${DEVKIT_ARCHIVE_PATH} ]; then
   echo Devkit archive ${DEVKIT_ARCHIVE_PATH} does not exist, need to download it.
-  if [[ $(uname) != Darwin ]]; then
+  if [[ $UNAME != Darwin ]]; then
     DEVKIT_ARCHIVE_PATH="${DEVKIT_ARCHIVE}"
   fi
 fi
@@ -53,7 +53,7 @@ if [[ $HTTPRC -ne 200 ]]; then
   echo Error: ${DOWNLOAD_URL} is not downloadable, request returned $HTTPRC.
   return -1
 fi
-echo Downloading ${DOWNLOAD_URL} to ...
+echo Downloading ${DOWNLOAD_URL} to ${DEVKIT_ARCHIVE} ...
 curl -L -s -o ${DEVKIT_ARCHIVE_PATH} -u ${ARTIFACTORY_CREDS} ${DOWNLOAD_URL}
 
 echo Extracting ${DEVKIT_ARCHIVE} to ${DEVKIT_PATH}...
