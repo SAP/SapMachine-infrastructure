@@ -33,7 +33,7 @@ fi
 DEVKIT_PATH="${DEVKIT_BASENAME}"
 
 if [[ $UNAME == Darwin ]]; then
-  DEVKIT_ARCHIVE_PATH="../${DEVKIT_ARCHIVE}"
+  DEVKIT_ARCHIVE_PATH=$(realpath "../${DEVKIT_ARCHIVE}")
 elif [[ $UNAME == CYGWIN* ]]; then
   DEVKIT_ARCHIVE_PATH="/cygdrive/c/devkits/${DEVKIT_ARCHIVE}"
 else
@@ -43,7 +43,7 @@ fi
 if [ ! -f ${DEVKIT_ARCHIVE_PATH} ]; then
   echo Devkit archive ${DEVKIT_ARCHIVE_PATH} does not exist, need to download it.
   if [[ $UNAME != Darwin ]]; then
-    DEVKIT_ARCHIVE_PATH="${DEVKIT_ARCHIVE}"
+    DEVKIT_ARCHIVE_PATH=$(realpath "${DEVKIT_ARCHIVE}")
   fi
 
   DOWNLOAD_URL=${NEXUS_PATH}/${DEVKIT_GROUP_SLASH}/${DEVKIT_ARTEFACT}/${DEVKIT_VERSION}/${DEVKIT_ARCHIVE}
@@ -59,7 +59,7 @@ fi
 echo Extracting ${DEVKIT_ARCHIVE_PATH} to ${DEVKIT_PATH}...
 mkdir ${DEVKIT_PATH}
 pushd ${DEVKIT_PATH}
-tar xzf ../${DEVKIT_ARCHIVE_PATH}
+tar xzf ${DEVKIT_ARCHIVE_PATH}
 popd
 echo Extracted devkit.
 
