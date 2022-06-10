@@ -45,18 +45,18 @@ if [ ! -f ${DEVKIT_ARCHIVE_PATH} ]; then
   if [[ $UNAME != Darwin ]]; then
     DEVKIT_ARCHIVE_PATH="${DEVKIT_ARCHIVE}"
   fi
+
+  DOWNLOAD_URL=${NEXUS_PATH}/${DEVKIT_GROUP_SLASH}/${DEVKIT_ARTEFACT}/${DEVKIT_VERSION}/${DEVKIT_ARCHIVE}
+  HTTPRC=`curl -L -s -I -u ${ARTIFACTORY_CREDS} ${DOWNLOAD_URL} | head -n 1 | cut -d$' ' -f2`
+  if [[ $HTTPRC -ne 200 ]]; then
+    echo Error: ${DOWNLOAD_URL} is not downloadable, request returned $HTTPRC.
+    return -1
+  fi
+  echo Downloading ${DOWNLOAD_URL} to ${DEVKIT_ARCHIVE_PATH} ...
+  curl -L -s -o ${DEVKIT_ARCHIVE_PATH} -u ${ARTIFACTORY_CREDS} ${DOWNLOAD_URL}
 fi
 
-DOWNLOAD_URL=${NEXUS_PATH}/${DEVKIT_GROUP_SLASH}/${DEVKIT_ARTEFACT}/${DEVKIT_VERSION}/${DEVKIT_ARCHIVE}
-HTTPRC=`curl -L -s -I -u ${ARTIFACTORY_CREDS} ${DOWNLOAD_URL} | head -n 1 | cut -d$' ' -f2`
-if [[ $HTTPRC -ne 200 ]]; then
-  echo Error: ${DOWNLOAD_URL} is not downloadable, request returned $HTTPRC.
-  return -1
-fi
-echo Downloading ${DOWNLOAD_URL} to ${DEVKIT_ARCHIVE} ...
-curl -L -s -o ${DEVKIT_ARCHIVE_PATH} -u ${ARTIFACTORY_CREDS} ${DOWNLOAD_URL}
-
-echo Extracting ${DEVKIT_ARCHIVE} to ${DEVKIT_PATH}...
+echo Extracting ${DEVKIT_ARCHIVE_PATH} to ${DEVKIT_PATH}...
 mkdir ${DEVKIT_PATH}
 pushd ${DEVKIT_PATH}
 tar xzf ../${DEVKIT_ARCHIVE_PATH}
