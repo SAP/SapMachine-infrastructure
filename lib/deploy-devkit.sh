@@ -1,6 +1,7 @@
 #!/bin/bash
 set -ex
 
+UNAME=$(uname)
 NEXUS_PATH=https://common.repositories.cloud.sap/artifactory/sapmachine-mvn
 DEVKIT_GROUP=$1
 DEVKIT_GROUP_SLASH=`echo $DEVKIT_GROUP | tr . /`
@@ -14,7 +15,7 @@ DEVKIT_ARCHIVE=${DEVKIT_BASENAME}.tar.gz
 
 # Here we check if the extracted devkit is present.
 # On our Mac runners we had issues that an already extracted devkit folder went stale, so we don't do this for mac atm.
-if [[ $(uname) != Darwin ]]; then
+if [[ $UNAME != Darwin ]]; then
   if [[ $UNAME == CYGWIN* ]]; then
     DEVKIT_PATH="/cygdrive/c/devkits/${DEVKIT_BASENAME}"
   else
