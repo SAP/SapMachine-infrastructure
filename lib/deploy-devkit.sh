@@ -1,5 +1,5 @@
 #!/bin/bash
-set -ex
+#set -ex
 
 UNAME=$(uname)
 NEXUS_PATH=https://common.repositories.cloud.sap/artifactory/sapmachine-mvn
