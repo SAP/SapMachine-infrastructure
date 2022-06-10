@@ -75,7 +75,7 @@
         - windows_x86_64:
             extra_configure_options_default: ''
             docker_agent: ''
-            devkit_default: ''
+            devkit_default: 'io.sapmachine.build.devkit.windows-x64:devkit-vs2017:15.9.3'
     build_types: &build_types
         - snapshot
         - release
@@ -312,7 +312,7 @@
                                 echo "Extracting devkit from GAV coordinates: \"${{params.DEVKIT}}\"."
                                 sh("SapMachine-Infrastructure/lib/deploy-devkit.sh ${{gav[0]}} ${{gav[1]}} ${{gav[2]}}")
                                 env.DEVKIT_PATH = sh (
-                                    script: "cd ${{gav[1]}}-${{gav[2]}} && pwd",
+                                    script: "cat devkitlocation.txt",
                                     returnStdout: true
                                 ).trim()
                             }} else {{
