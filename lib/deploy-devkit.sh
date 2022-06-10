@@ -30,7 +30,7 @@ if [[ $UNAME != Darwin ]]; then
 fi
 
 # OK, the devkit directory is not there. Do we already have the archive?
-DEVKIT_PATH="${DEVKIT_BASENAME}"
+DEVKIT_PATH=$(pwd)"/${DEVKIT_BASENAME}"
 
 if [[ $UNAME == Darwin ]]; then
   DEVKIT_ARCHIVE_PATH=$(cd .. && pwd)"/${DEVKIT_ARCHIVE}"
