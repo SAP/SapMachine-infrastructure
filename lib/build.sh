@@ -1,5 +1,5 @@
 #!/bin/bash
-set -ex
+#set -ex
 
 if [[ -z $WORKSPACE ]]; then
   WORKSPACE=$PWD
