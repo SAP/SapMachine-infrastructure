@@ -464,9 +464,7 @@
                         expression {{ env.VERIFICATION_RESULT != "2" && JOB_NAME ==~ /((\S*)(windows_x86_64)(\S*))/ }}
                     }}
                     steps {{
-                        withCredentials([
-                            [$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']
-                            ]) {{
+                        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
                             script {{
                                 def jdk_bundle_name = readFile "${{env.WORKSPACE}}/jdk_bundle_name.txt"
                                 def jre_bundle_name = readFile "${{env.WORKSPACE}}/jre_bundle_name.txt"

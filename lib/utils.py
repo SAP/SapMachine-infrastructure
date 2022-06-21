@@ -285,7 +285,13 @@ def git_push(dir):
     try:
         run_cmd(['git', 'fetch'], cwd=dir)
         run_cmd(['git', 'rebase'], cwd=dir, env=env)
-        run_cmd(['git', 'push'], cwd=dir, env=env)
+
+        if 'GIT_USER' in os.environ and 'GIT_PASSWORD' in os.environ:
+            _, giturl, _ = run_cmd(['git', 'config', '--get', 'remote.origin.url'], cwd=dir, std=True)
+            pushurl = str.format('https://{0}:{1}@{2}', os.environ['GIT_USER'], os.environ['GIT_PASSWORD'], giturl.rstrip().split("//")[1])
+            run_cmd(['git', 'push', pushurl], cwd=dir, env=env)
+        else:
+            run_cmd(['git', 'push'], cwd=dir, env=env)
     except Exception:
         print('git push failed')
 

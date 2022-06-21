@@ -15,7 +15,7 @@ from versions import JDKTag
 # Some global variables
 merge_commit_pattern = re.compile('Merge pull request #\d+ from SAP/pr-jdk-')
 pull_requests = None
-sapMachinePushURL= str.format('https://{0}:{1}@github.com/SAP/SapMachine.git',
+sapMachinePushURL = str.format('https://{0}:{1}@github.com/SAP/SapMachine.git',
     os.environ['GIT_USER'], os.environ['GIT_PASSWORD'])
 
 def run_jenkins_jobs(major, tag):
