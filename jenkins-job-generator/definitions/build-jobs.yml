@@ -73,11 +73,11 @@
                         label "{platform}"
                     }}
                 }}
-            devkit_default: 'io.sapmachine.build.devkit.windows-x64:devkit-vs2017:15.9.49'
+            devkit_default: ''
         - windows_x86_64:
             extra_configure_options_default: ''
             docker_agent: ''
-            devkit_default: ''
+            devkit_default: 'io.sapmachine.build.devkit.windows-x64:devkit-vs2017:15.9.49'
     build_types: &build_types
         - snapshot
         - release
