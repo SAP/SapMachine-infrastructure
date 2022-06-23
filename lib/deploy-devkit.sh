@@ -47,6 +47,11 @@ if [ ! -f ${DEVKIT_ARCHIVE_PATH} ]; then
     DEVKIT_FOLDER=$(pwd)
   fi
 
+  ls -la $DEVKIT_FOLDER
+  rm ${DEVKIT_ARCHIVE_PATH} || true
+  touch ${DEVKIT_ARCHIVE_PATH}
+  rm ${DEVKIT_ARCHIVE_PATH}
+
   DOWNLOAD_URL=${NEXUS_PATH}/${DEVKIT_GROUP_SLASH}/${DEVKIT_ARTEFACT}/${DEVKIT_VERSION}/${DEVKIT_ARCHIVE}
   HTTPRC=`curl -L -s -I -u ${ARTIFACTORY_CREDS} ${DOWNLOAD_URL} | head -n 1 | cut -d$' ' -f2`
   if [[ $HTTPRC -ne 200 ]]; then
