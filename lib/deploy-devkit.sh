@@ -54,7 +54,7 @@ if [ ! -f ${DEVKIT_ARCHIVE_PATH} ]; then
     return -1
   fi
   echo Downloading ${DOWNLOAD_URL} to ${DEVKIT_ARCHIVE_PATH} ...
-  curl -L -s -o ${DEVKIT_ARCHIVE_PATH} -u ${ARTIFACTORY_CREDS} ${DOWNLOAD_URL}
+  curl -L -o ${DEVKIT_ARCHIVE_PATH} -u ${ARTIFACTORY_CREDS} ${DOWNLOAD_URL}
 fi
 
 echo Extracting ${DEVKIT_ARCHIVE_PATH} to ${DEVKIT_PATH}...
