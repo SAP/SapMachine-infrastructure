@@ -1,5 +1,5 @@
 #!/bin/bash
-#set -ex
+set -ex
 
 UNAME=$(uname)
 NEXUS_PATH=https://common.repositories.cloud.sap/artifactory/sapmachine-mvn
@@ -44,6 +44,7 @@ if [ ! -f ${DEVKIT_ARCHIVE_PATH} ]; then
   echo Devkit archive ${DEVKIT_ARCHIVE_PATH} does not exist, need to download it.
   if [[ $UNAME != Darwin ]]; then
     DEVKIT_ARCHIVE_PATH=$(pwd)"/${DEVKIT_ARCHIVE}"
+    DEVKIT_FOLDER=$(pwd)
   fi
 
   DOWNLOAD_URL=${NEXUS_PATH}/${DEVKIT_GROUP_SLASH}/${DEVKIT_ARTEFACT}/${DEVKIT_VERSION}/${DEVKIT_ARCHIVE}
@@ -57,6 +58,7 @@ if [ ! -f ${DEVKIT_ARCHIVE_PATH} ]; then
 fi
 
 echo Extracting ${DEVKIT_ARCHIVE_PATH} to ${DEVKIT_PATH}...
+ls -la $DEVKIT_FOLDER
 mkdir ${DEVKIT_PATH}
 pushd ${DEVKIT_PATH}
 tar xzf ${DEVKIT_ARCHIVE_PATH}
