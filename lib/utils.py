@@ -234,6 +234,11 @@ def get_active_sapmachine_branches():
     return sapmachine_branches
 
 def git_clone(repo, branch, target):
+    # try credential store = cache on windows
+    system = platform.system().lower()
+    if system.startswith('msys') or system.startswith('cygwin') or system.startswith('win'):
+        run_cmd(['git', 'config', '--global', 'credential.credentialStore', 'cache'])
+
     git_command = ['git', 'clone', '--single-branch', '-b', branch]
     if 'GIT_USER' in os.environ and 'GIT_PASSWORD' in os.environ:
         git_command.append(str.format('https://{0}:{1}@{2}', os.environ['GIT_USER'], os.environ['GIT_PASSWORD'], repo))
