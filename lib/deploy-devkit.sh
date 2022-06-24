@@ -1,5 +1,5 @@
 #!/bin/bash
-set -ex
+set -e
 
 UNAME=$(uname)
 NEXUS_PATH=https://common.repositories.cloud.sap/artifactory/sapmachine-mvn
@@ -44,13 +44,7 @@ if [ ! -f ${DEVKIT_ARCHIVE_PATH} ]; then
   echo Devkit archive ${DEVKIT_ARCHIVE_PATH} does not exist, need to download it.
   if [[ $UNAME != Darwin ]]; then
     DEVKIT_ARCHIVE_PATH=$(pwd)"/${DEVKIT_ARCHIVE}"
-    DEVKIT_FOLDER=$(pwd)
   fi
-
-  ls -la $DEVKIT_FOLDER
-  rm ${DEVKIT_ARCHIVE_PATH} || true
-  touch ${DEVKIT_ARCHIVE_PATH}
-  rm ${DEVKIT_ARCHIVE_PATH}
 
   DOWNLOAD_URL=${NEXUS_PATH}/${DEVKIT_GROUP_SLASH}/${DEVKIT_ARTEFACT}/${DEVKIT_VERSION}/${DEVKIT_ARCHIVE}
   HTTPRC=`curl -L -s -I -u ${ARTIFACTORY_CREDS} ${DOWNLOAD_URL} | head -n 1 | cut -d$' ' -f2`
@@ -59,11 +53,10 @@ if [ ! -f ${DEVKIT_ARCHIVE_PATH} ]; then
     return -1
   fi
   echo Downloading ${DOWNLOAD_URL} to ${DEVKIT_ARCHIVE_PATH} ...
-  curl -L -o ${DEVKIT_ARCHIVE_PATH} -u ${ARTIFACTORY_CREDS} ${DOWNLOAD_URL}
+  curl -L -s -o ${DEVKIT_ARCHIVE_PATH} -u ${ARTIFACTORY_CREDS} ${DOWNLOAD_URL}
 fi
 
 echo Extracting ${DEVKIT_ARCHIVE_PATH} to ${DEVKIT_PATH}...
-ls -la $DEVKIT_FOLDER
 mkdir ${DEVKIT_PATH}
 pushd ${DEVKIT_PATH}
 tar xzf ${DEVKIT_ARCHIVE_PATH}
