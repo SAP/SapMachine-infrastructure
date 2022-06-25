@@ -64,8 +64,6 @@ def replace_cask(cask_file_name, cask_content, tag, homebrew_dir):
     cask_dir = join(homebrew_dir, 'Casks')
     cask_file_path = join(cask_dir, cask_file_name)
 
-    print(str.format("Cask file path: {0}", cask_file_path))
-
     if os.path.exists(cask_file_path):
         with open(cask_file_path, 'r') as cask_file:
             cask_version_match = cask_version_pattern.search(cask_file.read())
