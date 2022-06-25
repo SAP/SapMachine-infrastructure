@@ -83,7 +83,8 @@ def replace_cask(cask_file_name, cask_content, tag, homebrew_dir):
         with open(cask_file_path, 'w') as cask_file:
             cask_file.write(cask_content)
 
-        _, diff, _  = utils.run_cmd("git diff".split(' '), cwd=homebrew_dir, std=True)
+        utils.run_cmd("git add .".split(' '), cwd=homebrew_dir)
+        _, diff, _  = utils.run_cmd("git diff HEAD".split(' '), cwd=homebrew_dir, std=True)
         if diff.strip():
             utils.git_commit(homebrew_dir, str.format('Update {0} ({1}).', cask_file_name, tag.get_version_string()), [join('Casks', cask_file_name)])
             return True
