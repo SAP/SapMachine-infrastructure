@@ -1,5 +1,5 @@
 - job:
-    name: debian-package
+    name: build-debian-package
     description: 'Create a debian package.'
     project-type: pipeline
     concurrent: false
@@ -8,6 +8,10 @@
             num-to-keep: 100
             artifact-num-to-keep: 1
     parameters:
+        - string:
+            name: JOB_NAME
+            default: ''
+            description: 'The name of the job creating the package.'
         - string:
             name: GIT_TAG_NAME
             default: ''
@@ -38,6 +42,41 @@
                         }
                     }
                 }
+            }
+            post {
+                always {
+                    cleanWs deleteDirs: true, disableDeferredWipeout: true
+                }
+            }
+        }
+- job:
+    name: publish-debian-package
+    description: 'Publish a debian package.'
+    project-type: pipeline
+    concurrent: false
+    properties:
+        - build-discarder:
+            num-to-keep: 100
+            artifact-num-to-keep: 1
+    parameters:
+        - string:
+            name: JOB_NAME
+            default: ''
+            description: 'The name of the job creating the package.'
+        - string:
+            name: GIT_TAG_NAME
+            default: ''
+            description: 'The Git tag to create a debian package from.'
+        - bool:
+            name: DEPLOY
+            default: false
+            description: 'When set to true, the resulting debian package will be deployed to dist.sapmachine.io.'
+    dsl: |
+        pipeline {
+            agent {
+                label 'agent-ubuntu-local'
+            }
+            stages {
                 stage('Deploy') {
                     when {
                         expression { params.DEPLOY == true }
