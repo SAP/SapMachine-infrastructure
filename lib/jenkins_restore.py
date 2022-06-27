@@ -37,7 +37,7 @@ def main(argv=None):
         with open(join(source, jenkins_configuration, 'plugin_list.json'), 'r') as plugin_list_json:
             plugin_list = json.loads(plugin_list_json.read())
 
-            install_cmd = ['/usr/local/bin/install-plugins.sh']
+            install_cmd = ['/bin/jenkins-plugin-cli', '--plugins']
 
             for plugin in plugin_list:
                 if 'Short-Name' not in plugin:
