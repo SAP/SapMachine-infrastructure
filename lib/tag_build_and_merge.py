@@ -1,8 +1,7 @@
 '''
-Copyright (c) 2001-2021 by SAP SE, Walldorf, Germany.
+Copyright (c) 2018-2022 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
-import argparse
 import os
 import re
 import sys
@@ -238,9 +237,6 @@ def tag_and_run_buildjob(sapmachine_branch):
 
 # This script is supposed to be run in a SapMachine repository directory
 def main(argv=None):
-    parser = argparse.ArgumentParser()
-    args = parser.parse_args()
-
     # fetch all branches
     sapmachine_branches = utils.get_active_sapmachine_branches()
     if sapmachine_branches is None or len(sapmachine_branches) == 0:
