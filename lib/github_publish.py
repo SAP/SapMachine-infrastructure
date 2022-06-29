@@ -1,17 +1,16 @@
 '''
-Copyright (c) 2001-2018 by SAP SE, Walldorf, Germany.
+Copyright (c) 2018-2022 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
+import argparse
+import json
+import mimetypes
 import os
 import sys
-import json
 import utils
-import argparse
-import mimetypes
 
 from urllib.parse import quote
-from urllib.error import URLError
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
@@ -100,9 +99,6 @@ def main(argv=None):
             except IOError as e:
                 # _type, value, _traceback = sys.exc_info()
                 # traceback.print_exception(_type, value, _traceback)
-                print(str.format('Error uploading asset "{0}": {1}', asset_name, e))
-                retry -= 1
-            except URLError as e:
                 print(str.format('Error uploading asset "{0}": {1}', asset_name, e))
                 retry -= 1
 

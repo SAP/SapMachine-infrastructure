@@ -1,8 +1,6 @@
 #!/bin/bash
 set -ex
 
-TIMESTAMP=`date +'%Y%m%d_%H_%M_%S'`
-TIMESTAMP_LONG=`date +'%Y/%m/%d %H:%M:%S'`
 UNAME=`uname`
 
 PRE_RELEASE_OPT="-p"
