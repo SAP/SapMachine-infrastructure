@@ -169,7 +169,7 @@ active_releases = None
 def get_active_releases():
     global active_releases
     if active_releases == None:
-        releases_file = os.path.abspath(os.path.join(os.path.dirname(sys.argv[0]), '..', 'active_releases.json'))
+        releases_file = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'active_releases.json'))
         with open(releases_file, 'r') as file:
             active_releases = json.loads(file.read())
 
@@ -363,19 +363,12 @@ def github_api_request(api=None, url=None, owner='SAP', repository='SapMachine',
 
     return result
 
-github_tags = None
-def get_github_tags():
+github_tags = {}
+def get_github_tags(repository='SapMachine'):
     global github_tags
-    if github_tags is None:
-        github_tags = github_api_request('tags', per_page=300)
-    return github_tags
-
-github_infrastructure_tags = None
-def get_github_infrastructure_tags():
-    global github_infrastructure_tags
-    if github_infrastructure_tags is None:
-        github_infrastructure_tags = github_api_request('tags', repository='SapMachine-infrastructure', per_page=100)
-    return github_infrastructure_tags
+    if repository not in github_tags.keys() or github_tags[repository] is None:
+        github_tags[repository] = github_api_request('tags', repository=repository, per_page=300)
+    return github_tags[repository]
 
 github_releases = None
 def get_github_releases():

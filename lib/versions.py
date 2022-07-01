@@ -51,10 +51,6 @@ class Tag:
     def get_version(self):
         return self.version
 
-    # returns the version as tuple
-    def get_version_tuple(self):
-        return version_to_tuple(self.version_string_without_build, self.build_number)
-
     # returns the major part of the version as int, e.g. the first value.
     def get_major(self):
         return self.version[0]
@@ -129,7 +125,7 @@ class Tag:
         if not self.is_ga():
             return self
 
-         # fetch all tags
+        # fetch all tags
         tags = utils.get_github_tags()
         if tags is None:
             print(str.format("get latest non ga tag for {0}: no tags found", self.as_string()), file=sys.stderr)
@@ -229,13 +225,3 @@ class SapMachineTag(Tag):
                 self.version_string = ".".join(list(map(str, self.version)))
                 if self.build_number is not None:
                     self.version_string += "+" + str(self.build_number)
-
-def version_to_tuple(version_without_build_number, build_number):
-    if version_without_build_number is not None:
-        version = list(map(int, version_without_build_number.split('.')))
-        version.extend([0 for i in range(5 - len(version))])
-        version = tuple(version)
-        version += (int(build_number),) if build_number is not None else (99999,)
-        return version
-
-    return None

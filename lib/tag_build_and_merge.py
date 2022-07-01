@@ -177,7 +177,7 @@ def check_for_untagged_ga(merge_commit_id, jdk_tag, tags_of_merge_commit):
     # make sure the last tag before the GA tag has been built
     make_sure_last_non_ga_is_tagged(ga_tag, merge_commit_id)
 
-def tag_and_run_buildjob(sapmachine_branch):
+def tag_and_run_buildjob():
         print(str.format('Check if new SapMachine tag needs to be set...'))
 
         # get last merge commits
@@ -275,7 +275,7 @@ def main(argv=None):
         utils.run_cmd(['git', 'pull'])
 
         # find the latest OpenJDK merge commit and make sure it's correctly sapmachine-tagged
-        tag_and_run_buildjob(sapmachine_branch)
+        tag_and_run_buildjob()
 
         print('Checking if a new OpenJDK tag needs to be merged...')
 

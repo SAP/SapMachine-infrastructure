@@ -127,7 +127,7 @@ def main(argv=None):
     os.makedirs(workdir)
 
     releases = github_api_request('releases', per_page=100)
-    infrastructure_tags = utils.get_github_infrastructure_tags()
+    infrastructure_tags = utils.get_github_tags(repository='SapMachine-infrastructure')
     docker_releases = {}
     stable_release = None
 

@@ -57,6 +57,16 @@ cask "sapmachine${CASK_TAG}-${IMAGE_TYPE}" do
 end
 '''
 
+def version_to_tuple(version_without_build_number, build_number):
+    if version_without_build_number is not None:
+        version = list(map(int, version_without_build_number.split('.')))
+        version.extend([0 for i in range(5 - len(version))])
+        version = tuple(version)
+        version += (int(build_number),) if build_number is not None else (99999,)
+        return version
+
+    return None
+
 def replace_cask(cask_file_name, cask_content, tag, homebrew_dir):
     cask_version_pattern = re.compile('version \'((\d+\.?)+)(,(\d+))?\'')
     current_cask_version = None
@@ -74,10 +84,11 @@ def replace_cask(cask_file_name, cask_content, tag, homebrew_dir):
                 if len(cask_version_match.groups()) >= 4:
                     current_cask_build_number = cask_version_match.group(4)
 
-    current_cask_version = versions.version_to_tuple(current_cask_version, current_cask_build_number)
+    current_cask_version = version_to_tuple(current_cask_version, current_cask_build_number)
+    current_tag_version = version_to_tuple(tag.get_version_string_without_build(), tag.get_build_number())
 
-    if current_cask_version is None or tag.get_version_tuple() >= current_cask_version:
-        print(str.format("Creating/updating cask for version {0}...", tag.get_version_tuple()))
+    if current_cask_version is None or current_tag_version >= current_cask_version:
+        print(str.format("Creating/updating cask for version {0}...", current_tag_version))
         with open(cask_file_path, 'w') as cask_file:
             cask_file.write(cask_content)
 
@@ -90,7 +101,7 @@ def replace_cask(cask_file_name, cask_content, tag, homebrew_dir):
             print("No changes.")
             return False
     else:
-        print(str.format("Current cask has version {0} which is higher than {1}, no update.", current_cask_version, tag.get_version_tuple()))
+        print(str.format("Current cask has version {0} which is higher than {1}, no update.", current_cask_version, current_tag_version))
         return False
 
 def main(argv=None):
