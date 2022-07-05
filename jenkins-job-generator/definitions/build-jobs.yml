@@ -42,7 +42,7 @@
                         additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
                     }}
                 }}
-            devkit_default: 'io.sapmachine.build.devkit.linux-ppc64le:devkit-fedora-gcc:21-8.3.0'
+            devkit_default: 'io.sapmachine.build.devkit.linux-ppc64le:devkit-rhel-gcc:7-8.3.0'
         - macos_x86_64:
             extra_configure_options_default: ''
             docker_agent: ''
