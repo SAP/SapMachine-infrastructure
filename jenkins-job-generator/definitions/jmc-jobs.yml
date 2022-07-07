@@ -1,7 +1,6 @@
 - defaults:
     name: 'jmc_global'
-    release_default: false
-    test_default: false
+    test_default: true
     allow_concurrent_builds: false
     trigger: |
         <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
@@ -50,9 +49,9 @@
             default: 'https://github.com/SAP/jmc'
             description: 'The Git repository to use.'
         - string:
-            name: GIT_BRANCH_OR_TAG
+            name: GIT_REF
             default: 'sap'
-            description: 'The Git branch or tag to build.'
+            description: 'The Git tag, branch or commit to build.'
         - string:
             name: BUILD_JDK
             default: '11'
@@ -61,10 +60,6 @@
             name: TEST
             default: '{test_default}'
             description: 'Run tests.'
-        - bool:
-            name: RELEASE
-            default: '{release_default}'
-            description: 'When set to true, this build is considered a release build and will be published.'
 
     dsl: |
         pipeline {{
@@ -79,16 +74,29 @@
                 }}
                 stage("Checkout Infrastructure Repository") {{
                     steps {{
-                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+                        sh '''#!/bin/bash
+                            set -ex
+                            git init SapMachine-Infrastructure && cd SapMachine-Infrastructure
+                            git fetch --depth 1 https://github.com/SAP/SapMachine-infrastructure.git master
+                            git checkout --detach FETCH_HEAD
+                        '''
                     }}
                 }}
-                stage("Checkout JMC Repository") {{
+                stage("Checkout SapMachine Repository") {{
                     steps {{
-                        checkout changelog: true, poll: false, scm: [$class: 'GitSCM', branches: [[name: "*/${{params.GIT_BRANCH_OR_TAG}}"]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'jmc']], userRemoteConfigs: [[url: "${{params.JMC_GIT_REPOSITORY}}"]]]
+                        sh '''#!/bin/bash
+                            set -ex
+                            git init jmc && cd jmc
+                            git remote add origin $JMC_GIT_REPOSITORY
+                            git fetch origin $GIT_REF
+                            git checkout --detach FETCH_HEAD
+                        '''
                     }}
                 }}
                 stage ('Download Prerequisites'){{
+                    {docker_agent}
                     steps {{
+                        // credentials are needed to avoid rate limit exceedance
                         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
                             sh "python3 SapMachine-Infrastructure/lib/download_boot_jdk.py -m ${{params.BUILD_JDK}} -d `pwd`"
                         }}
