@@ -3,6 +3,8 @@
     publish_default: false
     release_default: false
     allow_concurrent_builds: false
+    extra_configure_options: ''
+    extra_configure_options_pr: ''
     trigger: |
         <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
             <triggers/>
@@ -20,7 +22,6 @@
            branch_name: sapmachine
     platforms: &platforms
         - linux_x86_64:
-            extra_configure_options_default: ''
             docker_agent: |
                 agent {{
                     dockerfile {{
@@ -32,7 +33,6 @@
                 }}
             devkit_default: 'io.sapmachine.build.devkit.linux-x64:devkit-fedora-gcc:12-8.3.0'
         - linux_ppc64le:
-            extra_configure_options_default: ''
             docker_agent: |
                 agent {{
                     dockerfile {{
@@ -44,15 +44,12 @@
                 }}
             devkit_default: 'io.sapmachine.build.devkit.linux-ppc64le:devkit-rhel-gcc:7-8.3.0'
         - macos_x86_64:
-            extra_configure_options_default: ''
             docker_agent: ''
             devkit_default: 'io.sapmachine.build.devkit.macos:devkit-xcode:13.1'
         - macos_aarch64:
-            extra_configure_options_default: ''
             docker_agent: ''
             devkit_default: 'io.sapmachine.build.devkit.macos:devkit-xcode:13.1'
         - linux_aarch64:
-            extra_configure_options_default: ''
             docker_agent: |
                 agent {{
                     dockerfile {{
@@ -64,7 +61,6 @@
                 }}
             devkit_default: 'io.sapmachine.build.devkit.linux-aarch64:devkit-fedora-gcc:21-8.3.0'
         - linux_alpine_x86_64:
-            extra_configure_options_default: ''
             docker_agent: |
                 agent {{
                     dockerfile {{
@@ -75,13 +71,13 @@
                 }}
             devkit_default: ''
         - windows_x86_64:
-            extra_configure_options_default: ''
             docker_agent: ''
             devkit_default: 'io.sapmachine.build.devkit.windows-x64:devkit-vs2017:15.9.49'
     build_types: &build_types
         - snapshot
         - release
         - pr-validation:
+            extra_configure_options_pr: '--with-debug-level=fastdebug'
             trigger: |
                 <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
                     <triggers>
@@ -200,7 +196,7 @@
             description: 'Devkit, could be either a path that locally exists or the GAV coordinates to a tar.gz archive to be downloaded and extracted.'
         - string:
             name: EXTRA_CONFIGURE_OPTIONS
-            default: '{extra_configure_options_default}'
+            default: '{extra_configure_options} {extra_configure_options_pr}'
             description: 'Extra configure options passed directly to configure script.'
         - string:
             name: hotspot_test_groups
