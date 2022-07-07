@@ -40,7 +40,7 @@
         - github:
             url: 'https://github.com/SAP/jmc'
         - build-discarder:
-            num-to-keep: 100
+            num-to-keep: 50
             artifact-num-to-keep: 1
         - raw:
             xml: '{trigger}'
@@ -51,7 +51,7 @@
             description: 'The Git repository to use.'
         - string:
             name: GIT_BRANCH_OR_TAG
-            default: 'master'
+            default: 'sap'
             description: 'The Git branch or tag to build.'
         - string:
             name: BUILD_JDK
@@ -127,18 +127,6 @@
                         }}
                     }}
                 }}
-                stage('Publish GitHub') {{
-                    when {{
-                        expression {{ params.RELEASE == true && JOB_NAME ==~ /((\S*)(release)(\S*))/ }}
-                    }}
-                    steps {{
-                        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
-                            sh '''
-                            SapMachine-Infrastructure/lib/jmc/publish.sh
-                            '''
-                        }}
-                    }}
-                }}
             }}
             post {{
                 success {{
@@ -201,140 +189,6 @@
                     }
                     steps {
                         checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: "*/sap"]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'sapjmc']], userRemoteConfigs: [[url: 'https://github.com/SAP/jmc.git']]]
-                    }
-                }
-            }
-        }
-
-- job:
-    name: jmc-repo-update
-    description: 'Update JMC repository.'
-    project-type: pipeline
-    concurrent: false
-    properties:
-        - build-discarder:
-            num-to-keep: 60
-    dsl: |
-        pipeline {
-            agent {
-                label "repository"
-            }
-            stages {
-                stage("Checkout Infrastructure Repository") {
-                    steps {
-                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
-                    }
-                }
-                stage("Checkout Repository") {
-                    steps {
-                        checkout changelog: true, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/sap']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'jmc']], userRemoteConfigs: [[url: 'https://github.com/SAP/jmc.git']]]
-                    }
-                }
-                stage('Merge') {
-                    agent {
-                        dockerfile {
-                            dir "SapMachine-Infrastructure/dockerfiles/infrastructure"
-                            reuseNode true
-                            label "repository"
-                        }
-                    }
-                    steps {
-                        withCredentials([usernamePassword(credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD')]) {
-                            script {
-                                env.JMC_BUILD_REQUIRED = sh(
-                                        script: "SapMachine-Infrastructure/lib/merge_jmc.sh",
-                                        returnStatus: true
-                                )
-                            }
-                        }
-                    }
-                }
-                stage ('Trigger Snapshot Builds') {
-                    when {
-                        expression { env.JMC_BUILD_REQUIRED != "1" }
-                    }
-                    steps {
-                        parallel (
-                            linux_x86_64: {
-                                build job: 'build-jmc-official-snapshot-linux_x86_64', parameters: [string(name: 'GIT_BRANCH_OR_TAG', value: 'sap')]
-                            },
-                            macos_x86_64: {
-                                build job: 'build-jmc-official-snapshot-macos_x86_64', parameters: [string(name: 'GIT_BRANCH_OR_TAG', value: 'sap')]
-                            },
-                            macos_aarch64: {
-                                build job: 'build-jmc-official-snapshot-macos_aarch64', parameters: [string(name: 'GIT_BRANCH_OR_TAG', value: 'sap')]
-                            },
-                            failFast: false
-                        )
-                    }
-                }
-            }
-        }
-
-- job:
-    name: jmc-release-build
-    description: 'Build JMC release.'
-    project-type: pipeline
-    concurrent: false
-    properties:
-        - build-discarder:
-            num-to-keep: 60
-    parameters:
-        - string:
-            name: VERSION
-            description: 'Version of this release'
-    dsl: |
-        pipeline {
-            agent {
-                label "repository"
-            }
-            stages {
-                stage("Checkout Infrastructure Repository") {
-                    steps {
-                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
-                    }
-                }
-                stage("Checkout Repository") {
-                    steps {
-                        checkout changelog: true, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/sap']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'jmc']], userRemoteConfigs: [[url: 'https://github.com/SAP/jmc.git']]]
-                    }
-                }
-                stage('Merge') {
-                    agent {
-                        dockerfile {
-                            dir "SapMachine-Infrastructure/dockerfiles/infrastructure"
-                            reuseNode true
-                            label "repository"
-                        }
-                    }
-                    steps {
-                        withCredentials([usernamePassword(credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD')]) {
-                            script {
-                                env.JMC_BUILD_REQUIRED = sh(
-                                        script: "SapMachine-Infrastructure/lib/merge_jmc.sh",
-                                        returnStatus: true
-                                )
-                            }
-                        }
-                    }
-                }
-                stage ('Trigger Release Builds') {
-                    when {
-                        expression { env.ASYNC_PROF_RELEASE_TAG != "No new releases" }
-                    }
-                    steps {
-                        parallel (
-                            linux_x86_64: {
-                                build job: 'build-jmc-official-release-linux_x86_64', parameters: [string(name: 'GIT_BRANCH_OR_TAG', value: 'sap'), string(name: 'GIT_TAG_NAME', value: params.VERSION), [$class: 'BooleanParameterValue', name: 'RELEASE', value: 'true']]
-                            },
-                            macos_x86_64: {
-                                build job: 'build-jmc-official-release-macos_x86_64', parameters: [string(name: 'GIT_BRANCH_OR_TAG', value: 'sap'), string(name: 'GIT_TAG_NAME', value: params.VERSION), [$class: 'BooleanParameterValue', name: 'RELEASE', value: 'true']]
-                            },
-                            macos_aarch64: {
-                                build job: 'build-jmc-official-release-macos_aarch64', parameters: [string(name: 'GIT_BRANCH_OR_TAG', value: 'sap'), string(name: 'GIT_TAG_NAME', value: params.VERSION), [$class: 'BooleanParameterValue', name: 'RELEASE', value: 'true']]
-                            },
-                            failFast: false
-                        )
                     }
                 }
             }
