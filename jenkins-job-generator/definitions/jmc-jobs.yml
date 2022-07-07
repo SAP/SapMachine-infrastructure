@@ -34,6 +34,7 @@
     defaults: 'jmc_global'
     description: 'JMC build on {platform}.'
     project-type: pipeline
+    sandbox: true
     concurrent: '{allow_concurrent_builds}'
     properties:
         - github:
