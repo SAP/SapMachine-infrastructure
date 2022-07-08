@@ -1,5 +1,5 @@
 '''
-Copyright (c) 2001-2019 by SAP SE, Walldorf, Germany.
+Copyright (c) 2018-2022 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
@@ -66,7 +66,12 @@ def main(argv=None):
 
     utils.extract_archive(asset, work_dir, remove_archive=False)
     sapmachine_folder = glob.glob(join(work_dir, 'sapmachine*'))
-    os.rename(sapmachine_folder[0], join(work_dir, 'SourceDir'))
+    fastdebugpath = join(sapmachine_folder[0], 'fastdebug')
+    if os.path.isdir(fastdebugpath):
+      os.rename(fastdebugpath, join(work_dir, 'SourceDir'))
+      os.rmdir(sapmachine_folder[0])
+    else:
+      os.rename(sapmachine_folder[0], join(work_dir, 'SourceDir'))
 
     _, _, version_output = utils.run_cmd([join(work_dir, 'SourceDir', 'bin', 'java.exe'), '-version'], std=True)
     print("version output:" + version_output)
