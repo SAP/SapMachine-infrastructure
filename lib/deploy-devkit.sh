@@ -50,7 +50,7 @@ if [ ! -f ${DEVKIT_ARCHIVE_PATH} ]; then
   HTTPRC=`curl -L -s -I -u ${ARTIFACTORY_CREDS} ${DOWNLOAD_URL} | head -n 1 | cut -d$' ' -f2`
   if [[ $HTTPRC -ne 200 ]]; then
     echo Error: ${DOWNLOAD_URL} is not downloadable, request returned $HTTPRC.
-    return -1
+    exit -1
   fi
   echo Downloading ${DOWNLOAD_URL} to ${DEVKIT_ARCHIVE_PATH} ...
   curl -L -s -o ${DEVKIT_ARCHIVE_PATH} -u ${ARTIFACTORY_CREDS} ${DOWNLOAD_URL}
