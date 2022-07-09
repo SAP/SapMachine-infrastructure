@@ -139,6 +139,7 @@
     build_type:
         - snapshot
         - release
+    platform: *platforms
     jobs:
         - build-service-{build_type}-{major}
 
@@ -221,6 +222,7 @@
             name: RELEASE
             default: '{release_default}'
             description: 'When set to true, marks this build as a release build, otherwise as pre-release.'
+
     dsl: |
         pipeline {{
             agent {{
@@ -610,6 +612,7 @@
         - build-discarder:
             days-to-keep: 14
             artifact-days-to-keep: 7
+
     parameters:
         - string:
             name: SAPMACHINE_GIT_REPOSITORY
@@ -672,6 +675,7 @@
             name: langtools_test_groups
             default: '"jdk tools lib"'
             description: 'Select the test group for jtreg langtools tests. Empty means disabled.'
+
     dsl: |
         pipeline {{
             agent {{
