@@ -264,6 +264,7 @@
     name: jmc-repository-update
     description: 'Update JMC repository from OpenJDK upstream and create merge PRs.'
     project-type: pipeline
+    sandbox: true
     concurrent: false
     properties:
         - build-discarder:
