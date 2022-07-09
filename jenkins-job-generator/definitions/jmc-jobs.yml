@@ -286,16 +286,16 @@
                 label "repository"
             }
             stages {
-                stage("Checkout Infrastructure Repository") {{
-                    steps {{
+                stage("Checkout Infrastructure Repository") {
+                    steps {
                         sh '''#!/bin/bash
                             set -ex
                             git init SapMachine-Infrastructure && cd SapMachine-Infrastructure
                             git fetch --depth 1 https://github.com/SAP/SapMachine-infrastructure.git master
                             git checkout --detach FETCH_HEAD
                         '''
-                    }}
-                }}
+                    }
+                }
                 stage('Update SapMachine JMC Repository') {
                     agent {
                         dockerfile {
@@ -310,7 +310,7 @@
                     }
                     steps {
                         withCredentials([usernamePassword(credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD')]) {
-                            sh("SapMachine-Infrastructure/lib/jmc/update_repo.sh")
+                            sh "SapMachine-Infrastructure/lib/jmc/update_repo.sh"
                         }
                     }
                 }
