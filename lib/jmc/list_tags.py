@@ -3,8 +3,10 @@ Copyright (c) 2021-2022 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 import os
-import re
 import sys
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
 import utils
 
 from jmc_versions import JMCTag

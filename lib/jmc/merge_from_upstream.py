@@ -5,6 +5,9 @@ All rights reserved. Confidential and proprietary.
 import os
 import re
 import sys
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
 import utils
 
 # Some global variables
