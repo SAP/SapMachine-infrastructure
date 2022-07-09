@@ -233,6 +233,36 @@ def get_active_sapmachine_branches():
 
     return sapmachine_branches
 
+def jmc_branch_pattern():
+    return 'sap([\d]+)?$'
+
+def get_active_jmc_branches():
+    jmc_latest = 0
+    jmc_branches = []
+
+    # fetch all branches
+    branches = github_api_request('branches', repository='JMC', per_page=100)
+
+    # iterate all branches of the JMC repository and filter for sap<nn>
+    branch_pattern = re.compile(jmc_branch_pattern())
+    for branch in branches:
+        match = branch_pattern.match(branch['name'])
+        if match is not None and match.group(1) is not None:
+            # found JMC branch
+            major = int(match.group(1))
+            jmc_branches.append([branch['name'], major])
+            jmc_latest = max(jmc_latest, major)
+
+    # sort in descending order, this helps performance in some places
+    jmc_branches.sort(reverse=True)
+
+    # also add "jmc" branch with latest major version
+    jmc_branches.insert(0, ["sap", jmc_latest + 1])
+
+    print('Active JMC branches: %s' % ', '.join(map(str, jmc_branches)))
+
+    return jmc_branches
+
 def git_clone(repo, branch, target):
     git_command = ['git', 'clone', '--single-branch', '-b', branch]
     if 'GIT_USER' in os.environ and 'GIT_PASSWORD' in os.environ:

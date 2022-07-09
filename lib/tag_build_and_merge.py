@@ -88,13 +88,9 @@ def create_sapmachine_tag(jdk_tag, commit_id):
 
 def create_openjdk_pr(tag, branch):
     print(str.format('Creating pull request "pr-{0}" with base branch "{1}"', tag.as_string(), branch))
-    utils.run_cmd(str.format('git checkout {0}', tag.as_string()).split(' '))
-    utils.run_cmd(str.format('git checkout -b pr-{0}', tag.as_string()).split(' '))
+    utils.run_cmd(str.format('git checkout -b pr-{0} {0}', tag.as_string()).split(' '))
     utils.run_cmd(str.format('git push {0} pr-{1}', sapMachinePushURL, tag.as_string()).split(' '))
-
-    pull_request = str.format('{{ "title": "Merge to tag {0}", "body": "please pull", "head": "pr-{1}", "base": "{2}" }}',
-        tag.as_string(), tag.as_string(), branch)
-
+    pull_request = str.format('{{ "title": "Merge to tag {0}", "body": "please pull", "head": "pr-{1}", "base": "{2}" }}', tag.as_string(), tag.as_string(), branch)
     utils.github_api_request('pulls', data=pull_request, method='POST')
 
 def exists_tag(tag):
