@@ -32,6 +32,6 @@ git checkout master
 git pull
 git push --follow-tags $SAPMACHINE_JMC_REPOSITORY_PUSH master:master
 
-git checkout upstream/jmc8
+git checkout jmc8
 git pull
 git push --follow-tags $SAPMACHINE_JMC_REPOSITORY_PUSH jmc8:jmc8
