@@ -288,6 +288,7 @@
             stages {
                 stage("Checkout Infrastructure Repository") {
                     steps {
+                        cleanWs()
                         sh '''#!/bin/bash
                             set -ex
                             git init SapMachine-Infrastructure && cd SapMachine-Infrastructure
@@ -319,7 +320,21 @@
                         expression { params.MERGE_UPSTREAM == true }
                     }
                     steps {
-                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: "*/sap"]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'sapjmc']], userRemoteConfigs: [[url: 'https://github.com/SAP/jmc.git']]]
+                        sh '''#!/bin/bash
+                            set -ex
+                            if [ ! -d jmc ]; then
+                              git clone -b sap https://github.com/SAP/jmc.git jmc
+                              cd jmc
+                              git remote add upstream https://github.com/openjdk/jmc.git
+                              git fetch upstream
+                              git checkout -b master upstream/master
+                              git checkout -b jmc8 upstream/jmc8
+                            else
+                              cd jmc
+                            fi
+                            git checkout sap
+                            git pull
+                        '''
                     }
                 }
                 stage("Merge from Upstream") {
@@ -328,7 +343,7 @@
                     }
                     steps {
                         withCredentials([usernamePassword(credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD')]) {
-                            sh "cd sapjmc && python3 ../SapMachine-Infrastructure/lib/jmc/merge_from_upstream.py"
+                            sh "cd jmc && python3 ../SapMachine-Infrastructure/lib/jmc/merge_from_upstream.py"
                         }
                     }
                 }
