@@ -328,7 +328,7 @@
                     }
                     steps {
                         withCredentials([usernamePassword(credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD')]) {
-                            sh "cd jmc && python3 ../SapMachine-Infrastructure/lib/jmc/merge_from_upstream.py"
+                            sh "cd sapjmc && python3 ../SapMachine-Infrastructure/lib/jmc/merge_from_upstream.py"
                         }
                     }
                 }
