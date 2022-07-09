@@ -261,8 +261,8 @@
         }}
 
 - job:
-    name: jmc-repository-update-and-tag
-    description: 'Update JMC repository from OpenJDK, tag and build JMC releases and create JMC merge PRs.'
+    name: jmc-repository-update
+    description: 'Update JMC repository from OpenJDK upstream and create merge PRs.'
     project-type: pipeline
     concurrent: false
     properties:
@@ -276,7 +276,7 @@
         - bool:
             name: MERGE_UPSTREAM
             default: true
-            description: 'Tag new JMC releases, build them and create JMC merge PRs.'
+            description: 'Create merge PRs.'
     triggers:
         - timed: "@midnight"
     dsl: |
