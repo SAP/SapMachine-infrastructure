@@ -222,7 +222,6 @@
             name: RELEASE
             default: '{release_default}'
             description: 'When set to true, marks this build as a release build, otherwise as pre-release.'
-
     dsl: |
         pipeline {{
             agent {{
@@ -674,7 +673,6 @@
             name: langtools_test_groups
             default: '"jdk tools lib"'
             description: 'Select the test group for jtreg langtools tests. Empty means disabled.'
-
     dsl: |
         pipeline {{
             agent {{
