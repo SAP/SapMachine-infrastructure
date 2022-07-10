@@ -7,31 +7,17 @@ if  [[ -z "$GIT_USER" ]] | [[ -z "$GIT_PASSWORD" ]]; then
 fi
 
 OPENJDK_JMC_REPOSITORY="https://github.com/openjdk/jmc.git"
-SAPMACHINE_JMC_REPOSITORY="https://github.com/SAP/jmc.git"
-SAPMACHINE_JMC_REPOSITORY_PUSH="https://${GIT_USER}:${GIT_PASSWORD}@github.com/SAP/jmc.git"
+SAPMACHINE_JMC_REPOSITORY_PUSH_URL="https://${GIT_USER}:${GIT_PASSWORD}@github.com/SAP/jmc.git"
 
-REPO_PATH=jmc
+# add upstream jmc repository and fetch it
+cd jmc
+git remote add upstream $OPENJDK_JMC_REPOSITORY
+git fetch upstream
 
-cd $WORKSPACE
-
-# first checkout jmc repository, branch master and pull
-if [ ! -d $REPO_PATH ]; then
-  git clone -b sap "$SAPMACHINE_JMC_REPOSITORY" $REPO_PATH
-  cd $REPO_PATH
-  git remote add upstream $OPENJDK_JMC_REPOSITORY
-  git fetch upstream
-  git checkout -b master upstream/master
-  git checkout -b jmc8 upstream/jmc8
-else
-  cd $REPO_PATH
-  git fetch origin
-  git fetch upstream
-fi
-
-git checkout master
+git checkout -b master upstream/master
 git pull
-git push --follow-tags $SAPMACHINE_JMC_REPOSITORY_PUSH master:master
+git push --follow-tags $SAPMACHINE_JMC_REPOSITORY_PUSH_URL master:master
 
-git checkout jmc8
+git checkout -b jmc8 upstream/jmc8
 git pull
-git push --follow-tags $SAPMACHINE_JMC_REPOSITORY_PUSH jmc8:jmc8
+git push --follow-tags $SAPMACHINE_JMC_REPOSITORY_PUSH_URL jmc8:jmc8

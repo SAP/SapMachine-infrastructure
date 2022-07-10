@@ -286,6 +286,11 @@
                 label "repository"
             }
             stages {
+                stage("Init") {
+                    steps {
+                        cleanWs()
+                    }
+                }
                 stage("Checkout Infrastructure Repository") {
                     steps {
                         sh '''#!/bin/bash
@@ -296,44 +301,19 @@
                         '''
                     }
                 }
-                stage('Update SapMachine JMC Repository') {
-                    agent {
-                        dockerfile {
-                            dir "SapMachine-Infrastructure/dockerfiles/infrastructure"
-                            reuseNode true
-                            label "repository"
-                        }
+                stage("Checkout SapMachine JMC Repository") {
+                    steps {
+                        sh "git clone https://github.com/SAP/jmc.git jmc"
                     }
+                }
+                stage('Update SapMachine JMC Repository') {
                     when {
-                        beforeAgent true
                         expression { params.UPDATE_REPOSITORY == true }
                     }
                     steps {
                         withCredentials([usernamePassword(credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD')]) {
                             sh "SapMachine-Infrastructure/lib/jmc/update_repo.sh"
                         }
-                    }
-                }
-                stage("Checkout SapMachine JMC Repository") {
-                    when {
-                        expression { params.MERGE_UPSTREAM == true }
-                    }
-                    steps {
-                        sh '''#!/bin/bash
-                            set -ex
-                            if [ ! -d jmc ]; then
-                              git clone -b sap https://github.com/SAP/jmc.git jmc
-                              cd jmc
-                              git remote add upstream https://github.com/openjdk/jmc.git
-                              git fetch upstream
-                              git checkout -b master upstream/master
-                              git checkout -b jmc8 upstream/jmc8
-                            else
-                              cd jmc
-                            fi
-                            git checkout sap
-                            git pull
-                        '''
                     }
                 }
                 stage("Merge from Upstream") {
