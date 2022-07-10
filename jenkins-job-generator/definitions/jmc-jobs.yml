@@ -184,19 +184,19 @@
             default: '{test_default}'
             description: 'Run tests.'
     dsl: |
-        pipeline {{
-            agent {{
+        pipeline {
+            agent {
                 label 'build_service'
-            }}
-            stages {{
-                stage('Trigger Builds') {{
-                    parallel {{
-                        stage('Linux x86 64') {{
-                            when {{
-                                expression {{ params.BUILD_LINUX_X86_64 == true }}
-                            }}
-                            steps {{
-                                script {{
+            }
+            stages {
+                stage('Trigger Builds') {
+                    parallel {
+                        stage('Linux x86 64') {
+                            when {
+                                expression { params.BUILD_LINUX_X86_64 == true }
+                            }
+                            steps {
+                                script {
                                     def job_linux_x86_64 = build job: 'build-jmc-linux_x86_64', propagate: false, wait: true, parameters:
                                     [
                                         string(name: 'JMC_GIT_REPOSITORY', value: params.JMC_GIT_REPOSITORY),
@@ -204,15 +204,15 @@
                                         string(name: 'BUILD_JDK', value: params.BUILD_JDK),
                                         [$class: 'BooleanParameterValue', name: 'TEST', value: params.TEST]
                                     ]
-                                }}
-                            }}
-                        }}
-                        stage('macOS aarch 64') {{
-                            when {{
-                                expression {{ params.BUILD_MACOS_ARM_64 == true }}
-                            }}
-                            steps {{
-                                script {{
+                                }
+                            }
+                        }
+                        stage('macOS aarch 64') {
+                            when {
+                                expression { params.BUILD_MACOS_ARM_64 == true }
+                            }
+                            steps {
+                                script {
                                     def job_macos_aarch64 = build job: 'build-{major}-{build_type}-macos_aarch64', propagate: false, wait: true, parameters:
                                     [
                                         string(name: 'JMC_GIT_REPOSITORY', value: params.JMC_GIT_REPOSITORY),
@@ -220,15 +220,15 @@
                                         string(name: 'BUILD_JDK', value: params.BUILD_JDK),
                                         [$class: 'BooleanParameterValue', name: 'TEST', value: params.TEST]
                                     ]
-                                }}
-                            }}
-                        }}
-                        stage('macOS x86 64') {{
-                            when {{
-                                expression {{ params.BUILD_MACOS_X86_64 == true }}
-                            }}
-                            steps {{
-                                script {{
+                                }
+                            }
+                        }
+                        stage('macOS x86 64') {
+                            when {
+                                expression { params.BUILD_MACOS_X86_64 == true }
+                            }
+                            steps {
+                                script {
                                     def job_macos_x86_64 = build job: 'build-{major}-{build_type}-macos_x86_64', propagate: false, wait: true, parameters:
                                     [
                                         string(name: 'JMC_GIT_REPOSITORY', value: params.JMC_GIT_REPOSITORY),
@@ -236,15 +236,15 @@
                                         string(name: 'BUILD_JDK', value: params.BUILD_JDK),
                                         [$class: 'BooleanParameterValue', name: 'TEST', value: params.TEST]
                                     ]
-                                }}
-                            }}
-                        }}
-                        stage('Windows x86 64') {{
-                            when {{
-                                expression {{ params.BUILD_WINDOWS_X86_64 == true }}
-                            }}
-                            steps {{
-                                script {{
+                                }
+                            }
+                        }
+                        stage('Windows x86 64') {
+                            when {
+                                expression { params.BUILD_WINDOWS_X86_64 == true }
+                            }
+                            steps {
+                                script {
                                     def job_windows_x86_64 = build job: 'build-{major}-{build_type}-windows_x86_64', propagate: false, wait: true, parameters:
                                     [
                                         string(name: 'JMC_GIT_REPOSITORY', value: params.JMC_GIT_REPOSITORY),
@@ -252,13 +252,13 @@
                                         string(name: 'BUILD_JDK', value: params.BUILD_JDK),
                                         [$class: 'BooleanParameterValue', name: 'TEST', value: params.TEST]
                                     ]
-                                }}
-                            }}
-                        }}
-                    }}
-                }}
-            }}
-        }}
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
 - job:
     name: jmc-repository-update
