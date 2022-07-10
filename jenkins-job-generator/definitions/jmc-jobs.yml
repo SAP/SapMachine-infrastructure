@@ -145,7 +145,6 @@
 
 - job:
     name: build-service-jmc
-    defaults: 'jmc_global'
     description: 'Start JMC build on all platorms.'
     project-type: pipeline
     sandbox: true
@@ -181,7 +180,7 @@
             description: 'The JDK used to build the JMC'
         - bool:
             name: TEST
-            default: '{test_default}'
+            default: true
             description: 'Run tests.'
     dsl: |
         pipeline {
@@ -213,7 +212,7 @@
                             }
                             steps {
                                 script {
-                                    def job_macos_aarch64 = build job: 'build-{major}-{build_type}-macos_aarch64', propagate: false, wait: true, parameters:
+                                    def job_macos_aarch64 = build job: 'build-jmc-macos_aarch64', propagate: false, wait: true, parameters:
                                     [
                                         string(name: 'JMC_GIT_REPOSITORY', value: params.JMC_GIT_REPOSITORY),
                                         string(name: 'GIT_REF', value: params.GIT_REF),
@@ -229,7 +228,7 @@
                             }
                             steps {
                                 script {
-                                    def job_macos_x86_64 = build job: 'build-{major}-{build_type}-macos_x86_64', propagate: false, wait: true, parameters:
+                                    def job_macos_x86_64 = build job: 'build-jmc-macos_x86_64', propagate: false, wait: true, parameters:
                                     [
                                         string(name: 'JMC_GIT_REPOSITORY', value: params.JMC_GIT_REPOSITORY),
                                         string(name: 'GIT_REF', value: params.GIT_REF),
@@ -245,7 +244,7 @@
                             }
                             steps {
                                 script {
-                                    def job_windows_x86_64 = build job: 'build-{major}-{build_type}-windows_x86_64', propagate: false, wait: true, parameters:
+                                    def job_windows_x86_64 = build job: 'build-jmc-windows_x86_64', propagate: false, wait: true, parameters:
                                     [
                                         string(name: 'JMC_GIT_REPOSITORY', value: params.JMC_GIT_REPOSITORY),
                                         string(name: 'GIT_REF', value: params.GIT_REF),
