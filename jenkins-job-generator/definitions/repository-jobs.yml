@@ -72,7 +72,15 @@
                     }
                 }
                 stage('Tag, Build and Merge') {
+                    agent {
+                        dockerfile {
+                            dir "SapMachine-Infrastructure/dockerfiles/infrastructure"
+                            reuseNode true
+                            label "repository"
+                        }
+                    }
                     when {
+                        beforeAgent true
                         expression { params.TAG_BUILD_AND_MERGE == true }
                     }
                     steps {
