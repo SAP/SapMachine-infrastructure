@@ -27,22 +27,17 @@
                     steps {
                         sh '''#!/bin/bash
                             set -ex
-                            git init SapMachine-Infrastructure && cd SapMachine-Infrastructure
+                            if [ ! -d SapMachine-Infrastructure ]; then
+                              git init SapMachine-Infrastructure
+                            fi
+                            cd SapMachine-Infrastructure
                             git fetch --depth 1 https://github.com/SAP/SapMachine-infrastructure.git master
                             git checkout --detach FETCH_HEAD
                         '''
                     }
                 }
                 stage('Update SapMachine Repository') {
-                    agent {
-                        dockerfile {
-                            dir "SapMachine-Infrastructure/dockerfiles/infrastructure"
-                            reuseNode true
-                            label "repository"
-                        }
-                    }
                     when {
-                        beforeAgent true
                         expression { params.UPDATE_REPOSITORY == true }
                     }
                     steps {
@@ -63,19 +58,21 @@
                         expression { params.TAG_BUILD_AND_MERGE == true }
                     }
                     steps {
-                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: "*/sapmachine"]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine']], userRemoteConfigs: [[url: 'https://github.com/SAP/SapMachine']]]
+                        sh '''#!/bin/bash
+                            set -ex
+                            if [ ! -d SapMachine ]; then
+                              git init SapMachine && cd SapMachine
+                              git remote add origin https://github.com/SAP/SapMachine.git
+                            else
+                              cd SapMachine
+                            fi
+                            git fetch origin
+                            git checkout sapmachine
+                        '''
                     }
                 }
                 stage('Tag, Build and Merge') {
-                    agent {
-                        dockerfile {
-                            dir "SapMachine-Infrastructure/dockerfiles/infrastructure"
-                            reuseNode true
-                            label "repository"
-                        }
-                    }
                     when {
-                        beforeAgent true
                         expression { params.TAG_BUILD_AND_MERGE == true }
                     }
                     steps {
