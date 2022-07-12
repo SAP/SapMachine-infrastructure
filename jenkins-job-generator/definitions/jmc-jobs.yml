@@ -278,7 +278,7 @@
             default: true
             description: 'Create merge PRs.'
     triggers:
-        - timed: "@midnight"
+        - timed: "H 23 * * 3"
     dsl: |
         pipeline {
             agent {
