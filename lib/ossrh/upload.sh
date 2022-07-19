@@ -2,6 +2,8 @@
 set -ex
 
 MAJOR_VERSION=$(echo $VERSION | cut -d . -f 1)
+MINOR_VERSION=$(echo $VERSION | cut -d . -f 2)
+INC_VERSION=$(echo $VERSION | cut -d . -f 3)
 
 gpg --import $GPGSEC
 
@@ -14,7 +16,7 @@ cp ../SapMachine-Infrastructure/lib/ossrh/upload_pom.xml .
 sed -i "s/\${type}/jre/g" upload_pom.xml
 sed -i "s/\${version}/$VERSION/g" upload_pom.xml
 sed -i "s/\${maven.name}/SapMachine JRE/g" upload_pom.xml
-if [[ $MAJOR_VERSION == 11 ]]; then
+if [[ $MAJOR_VERSION == 11 && $MINOR_VERSION == 0 && $INC_VERSION -lt 16 ]]; then
     sed -i "s/\${macosx.platform.name}/osx/g" upload_pom.xml
     sed -i "s/\${skip.macaarch}/true/g" upload_pom.xml
 else
@@ -27,7 +29,7 @@ cp -f ../SapMachine-Infrastructure/lib/ossrh/upload_pom.xml .
 sed -i "s/\${type}/jdk/g" upload_pom.xml
 sed -i "s/\${version}/$VERSION/g" upload_pom.xml
 sed -i "s/\${maven.name}/SapMachine JDK/g" upload_pom.xml
-if [[ $MAJOR_VERSION == 11 ]]; then
+if [[ $MAJOR_VERSION == 11 && $MINOR_VERSION == 0 && $INC_VERSION -lt 16 ]]; then
     sed -i "s/\${macosx.platform.name}/osx/g" upload_pom.xml
     sed -i "s/\${skip.macaarch}/true/g" upload_pom.xml
 else
