@@ -91,7 +91,7 @@
                 stage('Deploy') {
                     steps {
                         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
-                            sh "SapMachine-Infrastructure/lib/publish_multi_target_osx.sh"
+                            sh "SapMachine-Infrastructure/lib/publish_osx.sh"
                         }
                     }
                 }
