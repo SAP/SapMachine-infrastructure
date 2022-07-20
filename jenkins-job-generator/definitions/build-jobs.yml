@@ -701,7 +701,8 @@
                                         [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
                                     ]
 
-                                    env.LINUX_X86_64_JOB_ID = Integer.toString(job_linux_x86_64.getNumber())
+                                    Integer jobnum = job_linux_x86_64.getNumber()
+                                    env.LINUX_X86_64_JOB_ID = jobnum.toString()
                                     env.LINUX_X86_64_ARTIFACT_DIR = 'linux_x86_64_' + env.BUILD_NUMBER
 
                                     sh "mkdir -p ${{WORKSPACE}}/${{LINUX_X86_64_ARTIFACT_DIR}}"
@@ -744,7 +745,8 @@
                                         [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
                                     ]
 
-                                    env.LINUX_PPC64LE_JOB_ID = Integer.toString(job_linux_ppc64le.getNumber())
+                                    Integer jobnum = job_linux_ppc64le.getNumber()
+                                    env.LINUX_PPC64LE_JOB_ID = jobnum.toString()
                                     env.LINUX_PPC64LE_ARTIFACT_DIR = 'linux_ppc64le_' + env.BUILD_NUMBER
 
                                     sh "mkdir -p ${{WORKSPACE}}/${{LINUX_PPC64LE_ARTIFACT_DIR}}"
@@ -787,7 +789,8 @@
                                         [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
                                     ]
 
-                                    env.LINUX_AARCH64_JOB_ID = Integer.toString(job_linux_aarch64.getNumber())
+                                    Integer jobnum = job_linux_aarch64.getNumber()
+                                    env.LINUX_AARCH64_JOB_ID = jobnum.toString()
                                     env.LINUX_AARCH64_ARTIFACT_DIR = 'linux_aarch64_' + env.BUILD_NUMBER
 
                                     sh "mkdir -p ${{WORKSPACE}}/${{LINUX_AARCH64_ARTIFACT_DIR}}"
@@ -830,7 +833,8 @@
                                         [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
                                     ]
 
-                                    env.LINUX_ALPINE_X86_64_JOB_ID = Integer.toString(job_linux_alpine_x86_64.getNumber())
+                                    Integer jobnum = job_linux_alpine_x86_64.getNumber()
+                                    env.LINUX_ALPINE_X86_64_JOB_ID = jobnum.toString()
                                     env.LINUX_ALPINE_X86_64_ARTIFACT_DIR = 'linux_alpine_x86_64_' + env.BUILD_NUMBER
 
                                     sh "mkdir -p ${{WORKSPACE}}/${{LINUX_ALPINE_X86_64_ARTIFACT_DIR}}"
@@ -873,7 +877,8 @@
                                         [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
                                     ]
 
-                                    env.WINDOWS_X86_64_JOB_ID = Integer.toString(job_windows_x86_64.getNumber())
+                                    Integer jobnum = job_windows_x86_64.getNumber()
+                                    env.WINDOWS_X86_64_JOB_ID = jobnum.toString()
                                     env.WINDOWS_X86_64_ARTIFACT_DIR = 'windows_x86_64_' + env.BUILD_NUMBER
 
                                     sh "mkdir -p ${{WORKSPACE}}/${{WINDOWS_X86_64_ARTIFACT_DIR}}"
@@ -927,7 +932,8 @@
                                         [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
                                     ]
 
-                                    env.MACOS_X86_64_JOB_ID = Integer.toString(job_macos_x86_64.getNumber())
+                                    Integer jobnum = job_macos_x86_64.getNumber()
+                                    env.MACOS_X86_64_JOB_ID = jobnum.toString()
                                     env.MACOS_X86_64_ARTIFACT_DIR = 'macos_x86_64_' + env.BUILD_NUMBER
 
                                     sh "mkdir -p ${{WORKSPACE}}/${{MACOS_X86_64_ARTIFACT_DIR}}"
@@ -970,7 +976,8 @@
                                         [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
                                     ]
 
-                                    env.MACOS_ARM_64_JOB_ID = Integer.toString(job_macos_aarch64.getNumber())
+                                    Integer jobnum = job_macos_aarch64.getNumber()
+                                    env.MACOS_ARM_64_JOB_ID = jobnum.toString()
                                     env.MACOS_ARM_64_ARTIFACT_DIR = 'macos_aarch64_' + env.BUILD_NUMBER
 
                                     sh "mkdir -p ${{WORKSPACE}}/${{MACOS_ARM_64_ARTIFACT_DIR}}"
