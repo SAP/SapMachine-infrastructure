@@ -5,6 +5,8 @@ All rights reserved. Confidential and proprietary.
 
 import argparse
 import sys
+#quick hack: import utils. Otherwise there is a circularity when importing SapMachineTag from versions.
+import utils
 
 from versions import SapMachineTag
 
