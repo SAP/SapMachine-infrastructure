@@ -19,12 +19,13 @@ sapMachinePushURL= str.format('https://{0}:{1}@github.com/SAP/SapMachine.git',
 os_description = {
     'linux-ppc64le':           { 'ordinal': 1, 'name': 'Linux ppc64le' },
     'linux-x64':               { 'ordinal': 2, 'name': 'Linux x64' },
-    'macos-x64':               { 'ordinal': 3, 'name': 'MacOS x64'},
-    'macos-x64-installer':     { 'ordinal': 4, 'name': 'MacOS x64 Installer'},
-    'macos-aarch64':           { 'ordinal': 5, 'name': 'MacOS aarch64'},
-    'macos-aarch64-installer': { 'ordinal': 6, 'name': 'MacOS aarch64 Installer'},
-    'windows-x64':             { 'ordinal': 7, 'name': 'Windows x64'},
-    'windows-x64-installer':   { 'ordinal': 8, 'name': 'Windows x64 Installer'}
+    'linux-aarch64':           { 'ordinal': 3, 'name': 'Linux aarch64' },
+    'macos-x64':               { 'ordinal': 4, 'name': 'MacOS x64'},
+    'macos-x64-installer':     { 'ordinal': 5, 'name': 'MacOS x64 Installer'},
+    'macos-aarch64':           { 'ordinal': 6, 'name': 'MacOS aarch64'},
+    'macos-aarch64-installer': { 'ordinal': 7, 'name': 'MacOS aarch64 Installer'},
+    'windows-x64':             { 'ordinal': 8, 'name': 'Windows x64'},
+    'windows-x64-installer':   { 'ordinal': 9, 'name': 'Windows x64 Installer'}
 }
 
 image_type_description = {
