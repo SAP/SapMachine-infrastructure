@@ -28,13 +28,13 @@ mv AARCH_JRE_DMG $AARCH_DMG_NAME_JRE
 INTEL_ARCHIVE_SUM_JDK="$(echo $INTEL_ARCHIVE_NAME_JDK | sed 's/tar\.gz/sha256\.txt/')"
 INTEL_ARCHIVE_SUM_JRE="$(echo $INTEL_ARCHIVE_NAME_JRE | sed 's/tar\.gz/sha256\.txt/')"
 INTEL_ARCHIVE_SUM_SYMBOLS="$(echo $INTEL_ARCHIVE_NAME_SYMBOLS | sed 's/tar\.gz/sha256\.txt/')"
-INTEL_DMG_SUM_JDK="$(echo $INTEL_DMG_NAME_JDK | sed 's/dmg/sha256\.dmg\.txt/')"
-INTEL_DMG_SUM_JRE="$(echo $INTEL_DMG_NAME_JRE | sed 's/dmg/sha256\.dmg\.txt/')"
+INTEL_DMG_SUM_JDK="$(echo $INTEL_DMG_NAME_JDK | sed 's/dmg/dmg\.sha256\.txt/')"
+INTEL_DMG_SUM_JRE="$(echo $INTEL_DMG_NAME_JRE | sed 's/dmg/dmg\.sha256\.txt/')"
 AARCH_ARCHIVE_SUM_JDK="$(echo $AARCH_ARCHIVE_NAME_JDK | sed 's/tar\.gz/sha256\.txt/')"
 AARCH_ARCHIVE_SUM_JRE="$(echo $AARCH_ARCHIVE_NAME_JRE | sed 's/tar\.gz/sha256\.txt/')"
 AARCH_ARCHIVE_SUM_SYMBOLS="$(echo $AARCH_ARCHIVE_NAME_SYMBOLS | sed 's/tar\.gz/sha256\.txt/')"
-AARCH_DMG_SUM_JDK="$(echo $AARCH_DMG_NAME_JDK | sed 's/dmg/sha256\.dmg\.txt/')"
-AARCH_DMG_SUM_JRE="$(echo $AARCH_DMG_NAME_JRE | sed 's/dmg/sha256\.dmg\.txt/')"
+AARCH_DMG_SUM_JDK="$(echo $AARCH_DMG_NAME_JDK | sed 's/dmg/dmg\.sha256\.txt/')"
+AARCH_DMG_SUM_JRE="$(echo $AARCH_DMG_NAME_JRE | sed 's/dmg/dmg\.sha256\.txt/')"
 
 shasum -a 256 $INTEL_ARCHIVE_NAME_JDK > $INTEL_ARCHIVE_SUM_JDK
 shasum -a 256 $INTEL_ARCHIVE_NAME_JRE > $INTEL_ARCHIVE_SUM_JRE
