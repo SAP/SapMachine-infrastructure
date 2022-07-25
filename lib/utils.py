@@ -411,7 +411,7 @@ def sapmachine_asset_base_pattern():
     return '[^-]+-([^-]+)-([^_]+)_([^_]+)_bin'
 
 def sapmachine_asset_pattern():
-    return sapmachine_asset_base_pattern() + '(\.tar\.gz|\.zip|\.msi|\.dmg)'
+    return sapmachine_asset_base_pattern() + '(\.tar\.gz|\.zip|\.msi|\.dmg)$'
 
 def get_asset_urls(tag, platform, asset_types=["jdk", "jre"], pattern=None):
     asset_urls = {}
