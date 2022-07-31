@@ -332,12 +332,12 @@ def git_push_tag(dir, tag_name):
         print('git push tag failed')
 
 def github_api_request(api=None, url=None, owner='SAP', repository='SapMachine', data=None, method='GET', per_page=None, content_type=None, url_parameter=[]):
-    load_next = True
-    result = None
-    link_pattern = re.compile('(<([^>]*)>; rel=\"prev\",\s*)?(<([^>]*)>; rel=\"next\",\s)?(<([^>]*)>; rel=\"last\"\s*)?')
-
     if api is None and url is None:
         return None
+
+    load_next = True
+    result = None
+    link_pattern = re.compile('(<([^>]*)>; rel=\"prev\",\s*)?(<([^>]*)>; rel=\"next\",\s)?')
 
     while load_next:
         if url is None:
@@ -378,18 +378,17 @@ def github_api_request(api=None, url=None, owner='SAP', repository='SapMachine',
         else:
             result.extend(json.loads(response))
 
-        load_next = False
-
         if link is not None and method == 'GET':
             match = re.search(link_pattern, link)
 
             if match is not None:
                 next_url = match.group(4)
-                last_url = match.group(6)
 
-                if next_url != last_url:
+                if next_url is not None:
                     url = next_url
-                    load_next = True
+                    continue
+
+        load_next = False
 
     return result
 
