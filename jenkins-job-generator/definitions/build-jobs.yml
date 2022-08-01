@@ -519,11 +519,15 @@
                     }}
                 }}
                 stage('Publish CF Java Buildpack Data') {{
+                    {docker_agent}
                     when {{
+                        beforeAgent true
                         expression {{ env.VERIFICATION_RESULT != "2" && params.PUBLISH == true && params.RELEASE == true && JOB_NAME ==~ /((\S*)(release-linux_x86_64)(\S*))/ }}
                     }}
                     steps {{
-                        build job: 'generate-cf-java-buildpack-data', propagate: false, wait: false
+                        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
+                            sh "python3 SapMachine-Infrastructure/lib/generate_cf_buildpack_data.py"
+                        }}
                     }}
                 }}
                 stage('Publish Debian Linux Packages') {{
