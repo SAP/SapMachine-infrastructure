@@ -1,5 +1,5 @@
 '''
-Copyright (c) 2001-2018 by SAP SE, Walldorf, Germany.
+Copyright (c) 2018-2022 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
@@ -73,12 +73,19 @@ def main(argv=None):
         if releases is None:
             print("Could not get releases from GitHub")
             sys.exit(-1)
+
+        count, release_count = 0, 0
         for release in releases:
+            count += 1
+            if release['prerelease'] is not True:
+                release_count += 1
             t = SapMachineTag.from_string(release['name'])
             if t is None:
                 print(str.format("Release {0} is unknown.", release['name']))
             else:
                 t.print_details()
+
+        print(str.format("Counted {0} releases, {1} of them are marked GA.", count, release_count))
 
     if args.jvm:
         _, std_out, std_err = utils.run_cmd([join(args.jvm, 'bin', 'java.exe'), '-version'], std=True)
