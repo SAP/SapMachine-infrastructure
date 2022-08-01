@@ -1,29 +1,46 @@
 '''
-Copyright (c) 2001-2018 by SAP SE, Walldorf, Germany.
+Copyright (c) 2018-2022 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
 import os
 import re
+import requests
 import sys
 import utils
 
 from os.path import join
 from versions import SapMachineTag
 
+cf_18_lines = []
+
+def download_cf_yaml():
+    global cf_18_lines
+    response = requests.get("https://java-buildpack.cloudfoundry.org/openjdk/bionic/x86_64/index.yml")
+    lines = response.text.splitlines()
+    for line in lines:
+        if line.startswith("1.8."):
+            cf_18_lines.append(line)
+
 def write_index_yaml(assets, target):
-    with open(join(target, 'index.yml'), 'w+') as index_yaml:
-        index_yaml.write('---\n')
+    with open(join(target, "index.yml"), "w+") as index_yaml:
+        index_yaml.write("---\n")
+        for line in cf_18_lines:
+            index_yaml.write(str.format("{0}\n", line))
         for version in sorted(assets):
-            index_yaml.write(str.format('{0}: {1}\n', version, assets[version]))
+            index_yaml.write(str.format("{0}: {1}\n", version, assets[version]))
 
 def main(argv=None):
-    asset_pattern = re.compile(utils.sapmachine_asset_pattern())
-    asset_map_jre = {}
-    asset_map_jdk = {}
+    # Since SapMachine has no release 8, we add the OpenJDK 8 versions from CF to our index.yml
+    download_cf_yaml()
 
     releases = utils.get_github_releases()
+    if releases is None:
+        print("Could not get releases from GitHub")
+        sys.exit(-1)
 
+    asset_pattern = re.compile(utils.sapmachine_asset_pattern())
+    asset_map_jdk, asset_map_jre = {}, {}
     for release in releases:
         if release['prerelease'] is True:
             continue
