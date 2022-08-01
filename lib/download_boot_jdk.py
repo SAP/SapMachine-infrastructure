@@ -28,11 +28,11 @@ extra_bootjdks = [
     },
     {
         'prerelease': False,
-        'name': 'sapmachine-17.0.2',
+        'name': 'sapmachine-17.0.4',
         'assets': [
             {
-                'name': 'sapmachine-jdk-17.0.2_linux-x64_alpine_bin.tar.gz',
-                'browser_download_url': 'https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.2%2B8/OpenJDK17U-jdk_x64_alpine-linux_hotspot_17.0.2_8.tar.gz'
+                'name': 'sapmachine-jdk-17.0.4_linux-x64_alpine_bin.tar.gz',
+                'browser_download_url': 'https://github.com/SAP/SapMachine/releases/download/sapmachine-17.0.4/sapmachine-jdk-17.0.4-beta_linux-x64-musl_bin.tar.gz'
             }
         ]
     },
@@ -42,7 +42,7 @@ extra_bootjdks = [
         'assets': [
             {
                 'name': 'sapmachine-jdk-18_linux-x64_alpine_bin.tar.gz',
-                'browser_download_url': 'https://github.com/adoptium/temurin18-binaries/releases/download/jdk-18%2B36/OpenJDK18U-jdk_x64_alpine-linux_hotspot_18_36.tar.gz'
+                'browser_download_url': 'https://github.com/SAP/SapMachine/releases/download/sapmachine-18.0.2/sapmachine-jdk-18.0.2-beta_linux-x64-musl_bin.tar.gz'
             }
         ]
     }    
