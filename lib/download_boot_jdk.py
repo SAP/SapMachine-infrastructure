@@ -13,16 +13,16 @@ import utils
 from os.path import join
 from versions import SapMachineTag
 
-# this list is a temporary solution until we have Linux Alpine release available
-# remove this list once they are available
+# This list is a temporary solution for platforms that we have not yet delivered with SapMachine
+# Currently: Linux Alpine
 extra_bootjdks = [
     {
         'prerelease': False,
-        'name': 'sapmachine-11.0.14.1',
+        'name': 'sapmachine-11.0.16',
         'assets': [
             {
-                'name': 'sapmachine-jdk-11.0.14.1_linux-x64_alpine_bin.tar.gz',
-                'browser_download_url': 'https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.14.1%2B1/OpenJDK11U-jdk_x64_alpine-linux_hotspot_11.0.14.1_1.tar.gz'
+                'name': 'sapmachine-jdk-11.0.16_linux-x64_alpine_bin.tar.gz',
+                'browser_download_url': 'https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.16%2B8/OpenJDK11U-jdk_x64_alpine-linux_hotspot_11.0.16_8.tar.gz'
             }
         ]
     },
@@ -41,7 +41,7 @@ extra_bootjdks = [
         'name': 'sapmachine-18',
         'assets': [
             {
-                'name': 'sapmachine-jdk-18_linux-x64_alpine_bin.tar.gz',
+                'name': 'sapmachine-jdk-18.0.2_linux-x64_alpine_bin.tar.gz',
                 'browser_download_url': 'https://github.com/SAP/SapMachine/releases/download/sapmachine-18.0.2/sapmachine-jdk-18.0.2-beta_linux-x64-musl_bin.tar.gz'
             }
         ]
