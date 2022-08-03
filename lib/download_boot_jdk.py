@@ -132,7 +132,9 @@ def main(argv=None):
         if retries == 1:
             boot_jdk_major_min = boot_jdk_major_max - 2
 
-    return 0
+    # if we return here, we couldn't download a suitable Boot JDK
+    print("Returning without finding suitable Boot JDK.")
+    return -1
 
 if __name__ == "__main__":
     sys.exit(main())
