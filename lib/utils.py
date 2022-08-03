@@ -456,10 +456,7 @@ def get_system(major = sapmachine_default_major()):
     if system.startswith('msys') or system.startswith('cygwin') or system.startswith('win'):
         return 'windows'
     elif system == 'darwin':
-        if int(major) >= 17:
-            return 'macos'
-        else:
-            return 'osx'
+        return 'macos'
     else:
         return system
 
