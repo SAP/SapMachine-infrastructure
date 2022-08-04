@@ -89,8 +89,8 @@
                     steps {
                         sh 'echo WIP: stage Build'
                         sh 'uname -a'
-                        // sh 'rm -f *.deb'
-                        // sh "python3 SapMachine-Infrastructure/lib/make_deb.py --tag=${params.GIT_TAG_NAME} --templates-directory=SapMachine-Infrastructure/debian-templates"
+                        sh 'rm -f *.deb'
+                        sh "python3 SapMachine-Infrastructure/lib/make_deb.py --tag=${params.GIT_TAG_NAME} --templates-directory=SapMachine-Infrastructure/debian-templates"
                     }
                     post {
                           success {
