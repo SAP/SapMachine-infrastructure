@@ -83,6 +83,8 @@ def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('-t', '--tag', help='the tag to create the debian packages from', metavar='TAG', required=True)
     parser.add_argument('-d', '--templates-directory', help='specify the templates directory', metavar='DIR', required=True)
+    parser.add_argument('-a', '--architecture', help='specifies the architecture (aarch64, linux-x64)',
+                        metavar='DIR', required=false, default='linux-x64')
     args = parser.parse_args()
 
     templates_dir = realpath(args.templates_directory)
@@ -92,7 +94,7 @@ def main(argv=None):
     tag = SapMachineTag.from_string(args.tag)
     version = tag.get_version_string().replace('-', '.')
     jdk_name = str.format('sapmachine-{0}-jdk-{1}', tag.get_major(), version)
-    jdk_url= utils.get_asset_urls(tag, 'linux-x64', ["jdk"])['jdk']
+    jdk_url = utils.get_asset_urls(tag, args.architecture, ["jdk"])['jdk']
 
     utils.remove_if_exists(work_dir)
     mkdir(work_dir)
