@@ -11,6 +11,7 @@ autoconf \
 ca-certificates \
 cpio \
 curl \
+dh-make \
 file \
 git \
 libasound2-dev \
