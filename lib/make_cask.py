@@ -50,7 +50,7 @@ def version_to_tuple(version_without_build_number, build_number):
     return None
 
 def replace_cask(cask_file_name, cask_content, tag, homebrew_dir):
-    cask_version_pattern = re.compile('version \'((\d+\.?)+)(,(\d+))?\'')
+    cask_version_pattern = re.compile('version \"((\d+\.?)+)(,(\d+))?\"')
     current_cask_version = None
     current_cask_build_number = None
     cask_dir = join(homebrew_dir, 'Casks')
