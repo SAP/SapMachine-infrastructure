@@ -39,24 +39,6 @@ cask "sapmachine${CASK_TAG}-${IMAGE_TYPE}" do
 end
 '''
 
-cask_template = '''
-cask "sapmachine${CASK_TAG}-${IMAGE_TYPE}" do
-  version "${CASK_VERSION}"
-  sha256 "${SHA256}"
-
-  url "https://github.com/SAP/SapMachine/releases/download/sapmachine-${URL_VERSION1}/sapmachine-${IMAGE_TYPE}-${URL_VERSION2}_${OS_NAME}-x64_bin.dmg",
-       verified: "https://github.com/SAP/SapMachine"
-  appcast "https://sap.github.io/SapMachine/latest/#{version.major}"
-  name "SapMachine OpenJDK Development Kit"
-  desc "OpenJDK build from SAP"
-  homepage "https://sapmachine.io/"
-
-  artifact "sapmachine-${IMAGE_TYPE}-#{${RUBY_VERSION}}.${IMAGE_TYPE}", target: "/Library/Java/JavaVirtualMachines/sapmachine-#{version.major}${EA_EXT}${IMAGE_TYPE}"
-
-  uninstall rmdir: "/Library/Java/JavaVirtualMachines"
-end
-'''
-
 def version_to_tuple(version_without_build_number, build_number):
     if version_without_build_number is not None:
         version = list(map(int, version_without_build_number.split('.')))
@@ -88,7 +70,7 @@ def replace_cask(cask_file_name, cask_content, tag, homebrew_dir):
     current_tag_version = version_to_tuple(tag.get_version_string_without_build(), tag.get_build_number())
 
     if current_cask_version is None or current_tag_version >= current_cask_version:
-        print(str.format("Creating/updating cask for version {0}...", current_tag_version))
+        print(str.format("Creating/updating cask with version {0}, old version was {1}...", current_tag_version, current_cask_version))
         with open(cask_file_path, 'w') as cask_file:
             cask_file.write(cask_content)
 
@@ -118,14 +100,6 @@ def main(argv=None):
         print(str.format("Tag {0} seems to be invalid. Aborting...", args.tag))
         sys.exit(1)
 
-    # create a dual architecture cask (x64 and aarch64) for newer SapMachine versions
-    dual = True if tag.get_major() >= 17 or (tag.get_major() == 11 and tag.get_update() >= 16) else False
-
-    os_name = 'osx' if (
-        tag.get_major() < 11 or
-        (tag.get_major() == 11 and tag.get_update() < 16) or
-        (tag.get_major() > 11 and tag.get_major() < 17) or
-        (tag.get_major() == 17 and tag.get_update() is None and tag.get_build_number() < 21)) else 'macos'
     prerelease = not tag.is_ga()
     if prerelease:
         jdk_cask_file_name = str.format('sapmachine{0}-ea-jdk.rb', tag.get_major())
@@ -146,113 +120,66 @@ def main(argv=None):
         url_version1 = '#{version}'
         url_version2 = '#{version}'
 
-    if dual:
-        try:
-            aarch_urls = utils.get_asset_urls(tag, os_name + '-aarch64', pattern='.sha256.dmg.txt')
-            intel_urls = utils.get_asset_urls(tag, os_name + '-x64', pattern='.sha256.dmg.txt')
-        except Exception as e:
-            print(str.format('No assets found for tag {0}', tag.as_string()))
-            sys.exit(1)
+    try:
+        aarch_urls = utils.get_asset_urls(tag, 'macos-aarch64', pattern='.sha256.dmg.txt')
+        intel_urls = utils.get_asset_urls(tag, 'macos-x64', pattern='.sha256.dmg.txt')
+    except Exception as e:
+        print(str.format('No assets found for tag {0}', tag.as_string()))
+        sys.exit(1)
 
-        if not "jdk" in aarch_urls and not "jdk" in intel_urls:
-            print(str.format('No jdk assets found for tag {0}', tag.as_string()))
-            sys.exit(1)
+    if not "jdk" in aarch_urls and not "jdk" in intel_urls:
+        print(str.format('No jdk assets found for tag {0}', tag.as_string()))
+        sys.exit(1)
 
-        if not "jdk" in aarch_urls or not "jdk" in intel_urls:
-            print(str.format('Not all platforms ready yet, jdk missing for tag {0}', tag.as_string()))
-            sys.exit(0)
+    if not "jdk" in aarch_urls or not "jdk" in intel_urls:
+        print(str.format('Not all platforms ready yet, jdk missing for tag {0}', tag.as_string()))
+        sys.exit(0)
 
-        if not "jre" in aarch_urls and not "jre" in intel_urls:
-            print(str.format('No jre assets found for tag {0}', tag.as_string()))
-            sys.exit(1)
+    if not "jre" in aarch_urls and not "jre" in intel_urls:
+        print(str.format('No jre assets found for tag {0}', tag.as_string()))
+        sys.exit(1)
 
-        if not "jre" in aarch_urls or not "jre" in intel_urls:
-            print(str.format('Not all platforms ready yet, jre missing for tag {0}', tag.as_string()))
-            sys.exit(0)
+    if not "jre" in aarch_urls or not "jre" in intel_urls:
+        print(str.format('Not all platforms ready yet, jre missing for tag {0}', tag.as_string()))
+        sys.exit(0)
 
-        aarch_jdk_sha, code1 = utils.download_asset(aarch_urls["jdk"])
-        aarch_jre_sha, code2 = utils.download_asset(aarch_urls["jre"])
-        intel_jdk_sha, code3 = utils.download_asset(intel_urls["jdk"])
-        intel_jre_sha, code4 = utils.download_asset(intel_urls["jre"])
-        if code1 != 200 or code2 != 200 or code3 != 200 or code4 != 200:
-            print('Download failed')
-            sys.exit(1)
-        aarch_jdk_sha = aarch_jdk_sha.split(' ')[0]
-        aarch_jre_sha = aarch_jre_sha.split(' ')[0]
-        intel_jdk_sha = intel_jdk_sha.split(' ')[0]
-        intel_jre_sha = intel_jre_sha.split(' ')[0]
+    aarch_jdk_sha, code1 = utils.download_asset(aarch_urls["jdk"])
+    aarch_jre_sha, code2 = utils.download_asset(aarch_urls["jre"])
+    intel_jdk_sha, code3 = utils.download_asset(intel_urls["jdk"])
+    intel_jre_sha, code4 = utils.download_asset(intel_urls["jre"])
+    if code1 != 200 or code2 != 200 or code3 != 200 or code4 != 200:
+        print('Download failed')
+        sys.exit(1)
+    aarch_jdk_sha = aarch_jdk_sha.split(' ')[0]
+    aarch_jre_sha = aarch_jre_sha.split(' ')[0]
+    intel_jdk_sha = intel_jdk_sha.split(' ')[0]
+    intel_jre_sha = intel_jre_sha.split(' ')[0]
 
-        jdk_cask_content = Template(duplex_cask_template).substitute(
-                CASK_TAG=cask_tag,
-                IMAGE_TYPE='jdk',
-                CASK_VERSION=cask_version,
-                URL_VERSION1=url_version1,
-                URL_VERSION2=url_version2,
-                OS_NAME = os_name,
-                INTELSHA256=intel_jdk_sha,
-                AARCHSHA256=aarch_jdk_sha,
-                RUBY_VERSION=ruby_version,
-                EA_EXT=ea_ext
-        )
+    jdk_cask_content = Template(duplex_cask_template).substitute(
+            CASK_TAG = cask_tag,
+            IMAGE_TYPE = 'jdk',
+            CASK_VERSION = cask_version,
+            URL_VERSION1 = url_version1,
+            URL_VERSION2 = url_version2,
+            OS_NAME = 'macos',
+            INTELSHA256 = intel_jdk_sha,
+            AARCHSHA256 = aarch_jdk_sha,
+            RUBY_VERSION = ruby_version,
+            EA_EXT = ea_ext
+    )
 
-        jre_cask_content = Template(duplex_cask_template).substitute(
-                CASK_TAG=cask_tag,
-                IMAGE_TYPE='jre',
-                CASK_VERSION=cask_version,
-                URL_VERSION1=url_version1,
-                URL_VERSION2=url_version2,
-                OS_NAME = os_name,
-                INTELSHA256=intel_jre_sha,
-                AARCHSHA256=aarch_jre_sha,
-                RUBY_VERSION=ruby_version,
-                EA_EXT=ea_ext
-        )
-    else:
-        try:
-            intel_urls = utils.get_asset_urls(tag, os_name + '-x64', pattern='.sha256.dmg.txt')
-        except Exception as e:
-            print(str.format('No assets found for tag {0}', tag.as_string()))
-            sys.exit(1)
-
-        if not "jdk" in intel_urls:
-            print(str.format('No jdk assets found for tag {0}', tag.as_string()))
-            sys.exit(1)
-
-        if not "jre" in intel_urls:
-            print(str.format('No jre assets found for tag {0}', tag.as_string()))
-            sys.exit(1)
-
-        intel_jdk_sha, code1 = utils.download_asset(intel_urls["jdk"])
-        intel_jre_sha, code2 = utils.download_asset(intel_urls["jre"])
-        if code1 != 200 or code2 != 200:
-            print('Download failed')
-            sys.exit(1)
-        intel_jdk_sha = intel_jdk_sha.split(' ')[0]
-        intel_jre_sha = intel_jre_sha.split(' ')[0]
-
-        jdk_cask_content = Template(cask_template).substitute(
-                CASK_TAG=cask_tag,
-                IMAGE_TYPE='jdk',
-                CASK_VERSION=cask_version,
-                SHA256=intel_jdk_sha,
-                URL_VERSION1=url_version1,
-                URL_VERSION2=url_version2,
-                OS_NAME = os_name,
-                RUBY_VERSION=ruby_version,
-                EA_EXT=ea_ext
-        )
-
-        jre_cask_content = Template(cask_template).substitute(
-                CASK_TAG=cask_tag,
-                IMAGE_TYPE='jre',
-                CASK_VERSION=cask_version,
-                SHA256=intel_jre_sha,
-                URL_VERSION1=url_version1,
-                URL_VERSION2=url_version2,
-                OS_NAME = os_name,
-                RUBY_VERSION=ruby_version,
-                EA_EXT=ea_ext
-        )
+    jre_cask_content = Template(duplex_cask_template).substitute(
+            CASK_TAG = cask_tag,
+            IMAGE_TYPE = 'jre',
+            CASK_VERSION = cask_version,
+            URL_VERSION1 = url_version1,
+            URL_VERSION2 = url_version2,
+            OS_NAME = 'macos',
+            INTELSHA256 = intel_jre_sha,
+            AARCHSHA256 = aarch_jre_sha,
+            RUBY_VERSION = ruby_version,
+            EA_EXT = ea_ext
+    )
 
     homebrew_dir = join(work_dir, 'homebrew')
     utils.git_clone('github.com/SAP/homebrew-SapMachine', 'master', homebrew_dir)
