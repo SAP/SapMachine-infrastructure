@@ -121,8 +121,8 @@ def main(argv=None):
         url_version2 = '#{version}'
 
     try:
-        aarch_urls = utils.get_asset_urls(tag, 'macos-aarch64', pattern='.sha256.dmg.txt')
-        intel_urls = utils.get_asset_urls(tag, 'macos-x64', pattern='.sha256.dmg.txt')
+        aarch_urls = utils.get_asset_urls(tag, 'macos-aarch64', pattern='.dmg.sha256.txt')
+        intel_urls = utils.get_asset_urls(tag, 'macos-x64', pattern='.dmg.sha256.txt')
     except Exception as e:
         print(str.format('No assets found for tag {0}', tag.as_string()))
         sys.exit(1)
