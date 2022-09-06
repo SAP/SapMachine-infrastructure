@@ -5,6 +5,7 @@
     allow_concurrent_builds: false
     extra_configure_options: ''
     extra_configure_options_pr: ''
+    windows_devkit: ''
     trigger: |
         <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
             <triggers/>
