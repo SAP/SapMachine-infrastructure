@@ -26,7 +26,10 @@ def main(argv=None):
     if major is None:
         return -1
 
-    url = 'https://github.com/SAP/SapMachine-infrastructure/releases/download/jtreg-6.1/jtreg.zip'
+    if major > 19:
+        url = 'https://github.com/SAP/SapMachine-infrastructure/releases/download/jtreg-7.1/jtreg.zip'
+    else:
+        url = 'https://github.com/SAP/SapMachine-infrastructure/releases/download/jtreg-6.1/jtreg.zip'
 
     dir = os.getcwd() if args.dir is None else args.dir
 
