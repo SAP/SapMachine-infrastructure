@@ -56,8 +56,8 @@
         }
 
 - job:
-    name: debian-package-aarch
-    description: 'WORK IN PROGRESS: packaging of aarch debian packages'
+    name: build-debian-package
+    description: 'Create a debian package.'
     project-type: pipeline
     concurrent: false
     properties:
@@ -68,15 +68,18 @@
         - string:
             name: GIT_TAG_NAME
             default: ''
-            description: 'The Git tag to create a debian aarch package from.'
+            description: 'The Git tag to create a debian package from.'
         - bool:
             name: DEPLOY
             default: false
             description: 'When set to true, the resulting debian package will be deployed to dist.sapmachine.io.'
+        - string:
+            name: JOB_NAME
+            default: ''
+            description: 'The Job for which we should build. Used to differentiate between x86 and aarch.'
     dsl: |
         pipeline {
             agent {
-                // will be changed to aarch
                 label 'agent-ubuntu-local'
             }
             stages {
@@ -87,15 +90,54 @@
                 }
                 stage('Build') {
                     steps {
-                        sh 'echo WIP: stage Build'
-                        sh 'uname -a'
                         sh 'rm -f *.deb'
                         sh "python3 SapMachine-Infrastructure/lib/make_deb.py --tag=${params.GIT_TAG_NAME} --templates-directory=SapMachine-Infrastructure/debian-templates"
                     }
                     post {
-                          success {
-                            // archiveArtifacts allowEmptyArchive: true, artifacts: "*.deb"
+                        success {
+                            archiveArtifacts allowEmptyArchive: true, artifacts: "*.deb"
                         }
+                    }
+                }
+            }
+            post {
+                always {
+                    cleanWs deleteDirs: true, disableDeferredWipeout: true
+                }
+            }
+        }
+
+- job:
+    name: deploy-debian-package
+    description: 'Deploy the debian package.'
+    project-type: pipeline
+    concurrent: false
+    properties:
+        - build-discarder:
+            num-to-keep: 100
+            artifact-num-to-keep: 1
+    parameters:
+        - string:
+            name: GIT_TAG_NAME
+            default: ''
+            description: 'The Git tag to create a debian package from.'
+        - bool:
+            name: DEPLOY
+            default: false
+            description: 'When set to true, the resulting debian package will be deployed to dist.sapmachine.io.'
+        - string:
+            name: JOB_NAME
+            default: ''
+            description: 'The Job for which we should deploy. Used to differentiate between x86 and aarch.'
+    dsl: |
+        pipeline {
+            agent {
+                label 'agent-ubuntu-local'
+            }
+            stages {
+                stage("Checkout Infrastructure Repository") {
+                    steps {
+                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
                     }
                 }
                 stage('Deploy') {
@@ -103,10 +145,8 @@
                         expression { params.DEPLOY == true }
                     }
                     steps {
-                            sh 'echo WIP: stage Deploy'
-                            sh 'uname -a'
-                            // sh "cp -n *.deb /var/pkg/deb/amd64 || true"
-                            // sh "python3 SapMachine-Infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/amd64"
+                            sh "cp -n *.deb /var/pkg/deb/amd64 || true"
+                            sh "python3 SapMachine-Infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/amd64"
                     }
                 }
             }

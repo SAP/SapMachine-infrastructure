@@ -548,6 +548,32 @@
                             ]
                     }}
                 }}
+                stage('Build Debian Linux Packages') {{
+                    when {{
+                        expression {{ env.VERIFICATION_RESULT != "2" && params.PUBLISH == true && params.RELEASE == true && JOB_NAME ==~ /((\S*)(release-linux_x86_64)(\S*))/ }}
+                    }}
+                    steps {{
+                        build job: 'build-debian-package', propagate: false, wait: true, parameters:
+                            [
+                                string(name: 'GIT_TAG_NAME', value: env.SAPMACHINE_VERSION),
+                                [$class: 'BooleanParameterValue', name: 'DEPLOY', value: true],
+                                string(name: 'JOB_NAME', value: JOB_NAME)
+                            ]
+                    }}
+                }}
+                stage('Publish Debian Linux Packages') {{
+                    when {{
+                        expression {{ env.VERIFICATION_RESULT != "2" && params.PUBLISH == true && params.RELEASE == true && JOB_NAME ==~ /((\S*)(release-linux_x86_64)(\S*))/ }}
+                    }}
+                    steps {{
+                        build job: 'publish-debian-package', propagate: false, wait: true, parameters:
+                            [
+                                string(name: 'GIT_TAG_NAME', value: env.SAPMACHINE_VERSION),
+                                [$class: 'BooleanParameterValue', name: 'DEPLOY', value: true],
+                                string(name: 'JOB_NAME', value: JOB_NAME)
+                            ]
+                    }}
+                }}
                 stage('Build and Publish RPM Linux Packages') {{
                     when {{
                         expression {{ env.VERIFICATION_RESULT != "2" && params.PUBLISH == true && params.RELEASE == true && JOB_NAME ==~ /((\S*)(release-linux_x86_64)(\S*))/ }}
