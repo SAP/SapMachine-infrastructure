@@ -327,7 +327,12 @@ def git_push(dir):
 
 def git_push_tag(dir, tag_name):
     try:
-        run_cmd(['git', 'push', 'origin', tag_name], cwd=dir)
+        if 'GIT_USER' in os.environ and 'GIT_PASSWORD' in os.environ:
+            _, giturl, _ = run_cmd(['git', 'config', '--get', 'remote.origin.url'], cwd=dir, std=True)
+            pushurl = str.format('https://{0}:{1}@{2}', os.environ['GIT_USER'], os.environ['GIT_PASSWORD'], giturl.rstrip().split("//")[1])
+            run_cmd(['git', 'push', pushurl, 'origin', tag_name], cwd=dir)
+        else:
+            run_cmd(['git', 'push', 'origin', tag_name], cwd=dir)
     except Exception:
         print('git push tag failed')
 
