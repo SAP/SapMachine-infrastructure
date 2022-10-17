@@ -18,31 +18,31 @@ from versions import SapMachineTag
 extra_bootjdks = [
     {
         'prerelease': False,
-        'name': 'sapmachine-11.0.16',
+        'name': 'sapmachine-11.0.16.1',
         'assets': [
             {
-                'name': 'sapmachine-jdk-11.0.16_linux-x64_alpine_bin.tar.gz',
-                'browser_download_url': 'https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.16%2B8/OpenJDK11U-jdk_x64_alpine-linux_hotspot_11.0.16_8.tar.gz'
+                'name': 'sapmachine-jdk-11.0.16.1_linux-x64_alpine_bin.tar.gz',
+                'browser_download_url': 'https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.16.1%2B1/OpenJDK11U-jdk_x64_alpine-linux_hotspot_11.0.16.1_1.tar.gz'
             }
         ]
     },
     {
         'prerelease': False,
-        'name': 'sapmachine-17.0.4',
+        'name': 'sapmachine-17.0.4.1',
         'assets': [
             {
-                'name': 'sapmachine-jdk-17.0.4_linux-x64_alpine_bin.tar.gz',
-                'browser_download_url': 'https://github.com/SAP/SapMachine/releases/download/sapmachine-17.0.4/sapmachine-jdk-17.0.4-beta_linux-x64-musl_bin.tar.gz'
+                'name': 'sapmachine-jdk-17.0.4.1_linux-x64_alpine_bin.tar.gz',
+                'browser_download_url': 'https://github.com/SAP/SapMachine/releases/download/sapmachine-17.0.4.1/sapmachine-jdk-17.0.4.1-beta_linux-x64-musl_bin.tar.gz'
             }
         ]
     },
     {
         'prerelease': False,
-        'name': 'sapmachine-18',
+        'name': 'sapmachine-19',
         'assets': [
             {
-                'name': 'sapmachine-jdk-18.0.2_linux-x64_alpine_bin.tar.gz',
-                'browser_download_url': 'https://github.com/SAP/SapMachine/releases/download/sapmachine-18.0.2/sapmachine-jdk-18.0.2-beta_linux-x64-musl_bin.tar.gz'
+                'name': 'sapmachine-jdk-19_linux-x64_alpine_bin.tar.gz',
+                'browser_download_url': 'https://github.com/SAP/SapMachine/releases/download/sapmachine-19/sapmachine-jdk-19-beta_linux-x64-musl_bin.tar.gz'
             }
         ]
     }    
