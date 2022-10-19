@@ -1,5 +1,6 @@
 - defaults:
     name: 'sapmachine_global'
+    build_alpine: true
     publish_default: false
     release_default: false
     allow_concurrent_builds: false
@@ -13,6 +14,7 @@
     majors: &majors
         - '11':
            branch_name: sapmachine11
+           build_alpine: false
            windows_devkit: 'io.sapmachine.build.devkit.windows-x64:devkit-vs2017:15.9.49'
         - '17':
            branch_name: sapmachine17
