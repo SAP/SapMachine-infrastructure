@@ -146,18 +146,6 @@
     jobs:
         - build-service-{build_type}-{major}
 
-- project:
-    name: branch-builds
-    major:
-        - 'user':
-           branch_name: sapmachine
-           windows_devkit: ''
-    build_type: branch
-    platform: *platforms
-    jobs:
-        - build-{major}-{build_type}-{platform}
-        - build-service-{build_type}-{major}
-
 - job-template:
     name: build-{major}-{build_type}-{platform}
     defaults: 'sapmachine_global'
