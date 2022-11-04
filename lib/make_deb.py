@@ -83,8 +83,8 @@ def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('-t', '--tag', help='the tag to create the debian packages from', metavar='TAG', required=True)
     parser.add_argument('-d', '--templates-directory', help='specify the templates directory', metavar='DIR', required=True)
-    parser.add_argument('-a', '--architecture', help='specifies the architecture (aarch64, linux-x64)',
-                        metavar='DIR', required=False, default='linux-x64')
+    parser.add_argument('-a', '--architecture', help='specifies the architecture (linux-aarch64, linux-x64)',
+                        metavar='ARCH', required=False, default='linux-x64')
     args = parser.parse_args()
 
     templates_dir = realpath(args.templates_directory)

@@ -72,7 +72,12 @@
     dsl: |
         pipeline {
             agent {
-                label 'linux_x86_64'
+                dockerfile {
+                    dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04/x86_64"
+                    reuseNode true
+                    label "linux_x86_64"
+                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
+                }
             }
             stages {
                 stage("Checkout Infrastructure Repository") {
@@ -82,7 +87,7 @@
                 }
                 stage('Build') {
                     steps {
-                        sh "python3 SapMachine-Infrastructure/lib/make_deb.py --tag=${params.GIT_TAG_NAME} --templates-directory=SapMachine-Infrastructure/debian-templates"
+                        sh "python3 SapMachine-Infrastructure/lib/make_deb.py --tag=${params.GIT_TAG_NAME} --architecture=linux-x64 --templates-directory=SapMachine-Infrastructure/debian-templates"
                     }
                     post {
                         success {
@@ -115,7 +120,12 @@
     dsl: |
         pipeline {
             agent {
-                label 'linux_aarch64'
+                dockerfile {
+                    dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/arm64"
+                    reuseNode true
+                    label "linux_aarch64"
+                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
+                }
             }
             stages {
                 stage("Checkout Infrastructure Repository") {
@@ -125,7 +135,7 @@
                 }
                 stage('Build') {
                     steps {
-                        sh "python3 SapMachine-Infrastructure/lib/make_deb.py --tag=${params.GIT_TAG_NAME} --templates-directory=SapMachine-Infrastructure/debian-templates"
+                        sh "python3 SapMachine-Infrastructure/lib/make_deb.py --tag=${params.GIT_TAG_NAME} --architecture=linux-arm64 --templates-directory=SapMachine-Infrastructure/debian-templates"
                     }
                     post {
                         success {
