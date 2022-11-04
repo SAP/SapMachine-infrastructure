@@ -12,6 +12,7 @@ ca-certificates \
 cpio \
 curl \
 dh-make \
+devscripts \
 file \
 git \
 libasound2-dev \
