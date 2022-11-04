@@ -22,11 +22,6 @@ from shutil import copy
 from string import Template
 from versions import SapMachineTag
 
-def clone_sapmachine(target):
-    sapmachine_repo = 'https://github.com/SAP/SapMachine.git'
-    sapmachine_branch = 'sapmachine'
-    utils.run_cmd(['git', 'clone', '-b', sapmachine_branch, '--single-branch', '--depth', '1', sapmachine_repo, target])
-
 def gather_licenses(src_dir):
     licenses = []
     separator = '------------------------------------------------------------------------------'
@@ -83,7 +78,7 @@ def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('-t', '--tag', help='the tag to create the debian packages from', metavar='TAG', required=True)
     parser.add_argument('-d', '--templates-directory', help='specify the templates directory', metavar='DIR', required=True)
-    parser.add_argument('-a', '--architecture', help='specifies the architecture (linux-aarch64, linux-x64)',
+    parser.add_argument('-a', '--architecture', help='specifies the architecture (linux-aarch64, linux-ppc64le, linux-x64)',
                         metavar='ARCH', required=False, default='linux-x64')
     args = parser.parse_args()
 
@@ -106,8 +101,8 @@ def main(argv=None):
     mkdir(jdk_dir)
     utils.extract_archive(jdk_archive, jdk_dir)
 
-    clone_sapmachine(join(work_dir, 'sapmachine_master'))
     src_dir = join(work_dir, 'sapmachine_master')
+    utils.git_clone('https://github.com/SAP/SapMachine.git', args.tag, src_dir)
 
     env = os.environ.copy()
     env['DEBFULLNAME'] = 'SapMachine'
@@ -119,7 +114,7 @@ def main(argv=None):
     generate_configuration(
         templates_dir=join(templates_dir, 'jdk'),
         major=str(tag.get_major()),
-        arch = "arm64" if args.architecture == "linux-aarch64" else "amd64",
+        arch = "arm64" if args.architecture == "linux-aarch64" else ("ppc64el" if args.architecture == "linux-ppc64le" else "amd64"),
         target_dir=join(jdk_dir, 'debian'),
         exploded_image=jdk_exploded_image,
         src_dir=src_dir,

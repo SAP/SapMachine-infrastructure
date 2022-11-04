@@ -8,9 +8,13 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -qq -y --no-install-recommends \
 autoconf \
+build-essential \
 ca-certificates \
 cpio \
 curl \
+dh-make \
+devscripts \
+fakeroot \
 file \
 git \
 libasound2-dev \

@@ -419,7 +419,6 @@ def sapmachine_asset_pattern():
 
 def get_asset_urls(tag, platform, asset_types=["jdk", "jre"], pattern=None):
     asset_urls = {}
-
     try:
         release = github_api_request(str.format('releases/tags/{0}', quote(tag.as_string())), per_page=100)
 
