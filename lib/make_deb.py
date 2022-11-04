@@ -102,7 +102,7 @@ def main(argv=None):
     utils.extract_archive(jdk_archive, jdk_dir)
 
     src_dir = join(work_dir, 'sapmachine_master')
-    utils.git_clone('https://github.com/SAP/SapMachine.git', args.tag, src_dir)
+    utils.git_clone('github.com/SAP/SapMachine', args.tag, src_dir)
 
     env = os.environ.copy()
     env['DEBFULLNAME'] = 'SapMachine'
