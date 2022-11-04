@@ -56,31 +56,23 @@
         }
 
 - job:
-    name: build-debian-package
-    description: 'Create a debian package.'
+    name: build-debian-package-x64
+    description: 'Create a debian package on linux x64.'
     project-type: pipeline
     concurrent: false
     properties:
         - build-discarder:
-            num-to-keep: 100
+            num-to-keep: 20
             artifact-num-to-keep: 1
     parameters:
         - string:
             name: GIT_TAG_NAME
             default: ''
             description: 'The Git tag to create a debian package from.'
-        - bool:
-            name: DEPLOY
-            default: false
-            description: 'When set to true, the resulting debian package will be deployed to dist.sapmachine.io.'
-        - string:
-            name: JOB_NAME
-            default: ''
-            description: 'The Job for which we should build. Used to differentiate between x86 and aarch.'
     dsl: |
         pipeline {
             agent {
-                label 'agent-ubuntu-local'
+                label 'linux_x86_64'
             }
             stages {
                 stage("Checkout Infrastructure Repository") {
@@ -90,7 +82,49 @@
                 }
                 stage('Build') {
                     steps {
-                        sh 'rm -f *.deb'
+                        sh "python3 SapMachine-Infrastructure/lib/make_deb.py --tag=${params.GIT_TAG_NAME} --templates-directory=SapMachine-Infrastructure/debian-templates"
+                    }
+                    post {
+                        success {
+                            archiveArtifacts allowEmptyArchive: true, artifacts: "*.deb"
+                        }
+                    }
+                }
+            }
+            post {
+                always {
+                    cleanWs deleteDirs: true, disableDeferredWipeout: true
+                }
+            }
+        }
+
+- job:
+    name: build-debian-package-aarch64
+    description: 'Create a debian package on linux aarch64.'
+    project-type: pipeline
+    concurrent: false
+    properties:
+        - build-discarder:
+            num-to-keep: 20
+            artifact-num-to-keep: 1
+    parameters:
+        - string:
+            name: GIT_TAG_NAME
+            default: ''
+            description: 'The Git tag to create a debian package from.'
+    dsl: |
+        pipeline {
+            agent {
+                label 'linux_aarch64'
+            }
+            stages {
+                stage("Checkout Infrastructure Repository") {
+                    steps {
+                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+                    }
+                }
+                stage('Build') {
+                    steps {
                         sh "python3 SapMachine-Infrastructure/lib/make_deb.py --tag=${params.GIT_TAG_NAME} --templates-directory=SapMachine-Infrastructure/debian-templates"
                     }
                     post {
