@@ -74,6 +74,9 @@
             agent {
                 label "linux_x86_64"
             }
+            environment {
+                ARTIFACTORY_CREDS = credentials('openjdk-artifactory')
+            }
             stages {
                 stage("Checkout Infrastructure Repository") {
                     steps {
@@ -124,6 +127,9 @@
         pipeline {
             agent {
                 label "linux_aarch64"
+            }
+            environment {
+                ARTIFACTORY_CREDS = credentials('openjdk-artifactory')
             }
             stages {
                 stage("Checkout Infrastructure Repository") {

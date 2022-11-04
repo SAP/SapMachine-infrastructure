@@ -50,14 +50,14 @@ def gather_licenses(src_dir):
 
     return '\n'.join([license for license in licenses])
 
-def generate_configuration(templates_dir, major, target_dir, exploded_image, src_dir, download_url):
+def generate_configuration(templates_dir, major, arch, target_dir, exploded_image, src_dir, download_url):
     bin_dir = join(exploded_image, 'bin')
     tools = [f for f in listdir(bin_dir) if isfile(join(bin_dir, f))]
     now = datetime.datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S +0000')
 
     with open(join(templates_dir, 'control'), 'r') as control_template:
         with open(join(target_dir, 'control'), 'w+') as control_out:
-            control_out.write(Template(control_template.read()).substitute(major=major))
+            control_out.write(Template(control_template.read()).substitute(major=major, arch=arch))
 
     with open(join(templates_dir, 'install'), 'r') as install_template:
         with open(join(target_dir, 'install'), 'w+') as install_out:
@@ -119,6 +119,7 @@ def main(argv=None):
     generate_configuration(
         templates_dir=join(templates_dir, 'jdk'),
         major=str(tag.get_major()),
+        arch = "arm64" if args.architecture == "linux-aarch64" else "amd64",
         target_dir=join(jdk_dir, 'debian'),
         exploded_image=jdk_exploded_image,
         src_dir=src_dir,
