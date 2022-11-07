@@ -60,6 +60,7 @@
     platforms: &platforms
         - linux_aarch64:
             architecture: linux-aarch64
+            debarch: arm64
             docker_agent: |
                 agent {{
                     dockerfile {{
@@ -71,6 +72,7 @@
                 }}
         - linux_ppc64le:
             architecture: linux-ppc64le
+            debarch: ppc64el
             docker_agent: |
                 agent {{
                     dockerfile {{
@@ -82,6 +84,7 @@
                 }}
         - linux_x86_64:
             architecture: linux-x64
+            debarch: amd64
             docker_agent: |
                 agent {{
                     dockerfile {{
@@ -136,6 +139,7 @@
                             sh "python3 SapMachine-Infrastructure/lib/make_deb.py --tag=${{params.GIT_TAG_NAME}} --architecture={architecture} --templates-directory=SapMachine-Infrastructure/debian-templates"
                         }}
                         stash includes: '*.deb', name: 'debPackage'
+                        stash includes: 'SapMachine-Infrastructure/**', name: 'infra'
                     }}
                     post {{
                         success {{
@@ -148,11 +152,11 @@
                         label 'agent-ubuntu-local'
                     }}
                     steps {{
-                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+                        unstash 'infra'
                         unstash 'debPackage'
                         sh "ls -la"
-                        sh "cp -n *.deb /var/pkg/deb/{platform} || true"
-                        sh "python3 SapMachine-Infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/{platform}"
+                        sh "cp -n *.deb /var/pkg/deb/{debarch} || true"
+                        sh "python3 SapMachine-Infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/{debarch}"
                     }}
                 }}
             }}
