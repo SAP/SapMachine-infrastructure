@@ -91,12 +91,7 @@
     description: 'Linux Package jobs'
     view-type: list
     job-name:
-        - debian-package
-        - build-deploy-debian-package-linux_aarch64
-        - build-deploy-debian-package-linux_ppc64le
-        - build-deploy-debian-package-linux_x86_64
-        - recreate-debian-repository
-        - rpm-package
+    regex: '(resign-debian-repository-*|build-deploy-debian-package-*|debian-package|rpm-package)'
 
 - view:
     name: 'Async Profiler Builds'
