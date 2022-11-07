@@ -148,6 +148,7 @@
                         label 'agent-ubuntu-local'
                     }}
                     steps {{
+                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
                         unstash 'debPackage'
                         sh "ls -la"
                         sh "cp -n *.deb /var/pkg/deb/{platform} || true"
