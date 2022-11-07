@@ -96,10 +96,10 @@
     name: debian-builds
     platform: *platforms
     jobs:
-        - build-debian-package-{platform}
+        - build-deploy-debian-package-{platform}
 
 - job-template:
-    name: build-debian-package-{platform}
+    name: build-deploy-debian-package-{platform}
     defaults: 'linux_package_global'
     description: 'Build a debian package for SapMachine on {platform}.'
     project-type: pipeline
@@ -143,13 +143,15 @@
                         }}
                     }}
                 }}
-                stage('Test') {{
+                stage('Deploy') {{
                     agent {{
                         label 'agent-ubuntu-local'
                     }}
                     steps {{
                         unstash 'debPackage'
                         sh "ls -la"
+                        sh "cp -n *.deb /var/pkg/deb/{platform} || true"
+                        sh "python3 SapMachine-Infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/{platform}"
                     }}
                 }}
             }}
@@ -159,45 +161,6 @@
                 }}
             }}
         }}
-
-- job:
-    name: deploy-debian-package
-    description: 'This job should deploy a debian package to our package repository. Still WIP.'
-    project-type: pipeline
-    concurrent: false
-    properties:
-        - build-discarder:
-            num-to-keep: 20
-            artifact-num-to-keep: 1
-    parameters:
-        - string:
-            name: GIT_TAG_NAME
-            default: ''
-            description: 'The Git tag to create a debian package from.'
-    dsl: |
-        pipeline {
-            agent {
-                label 'agent-ubuntu-local'
-            }
-            stages {
-                stage("Checkout Infrastructure Repository") {
-                    steps {
-                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
-                    }
-                }
-                stage('Deploy') {
-                    steps {
-                            sh "cp -n *.deb /var/pkg/deb/amd64 || true"
-                            sh "python3 SapMachine-Infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/amd64"
-                    }
-                }
-            }
-            post {
-                always {
-                    cleanWs deleteDirs: true, disableDeferredWipeout: true
-                }
-            }
-        }
 
 - job:
     name: recreate-debian-repository
