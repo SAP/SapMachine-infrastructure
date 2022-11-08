@@ -154,7 +154,6 @@
                     steps {{
                         unstash 'infra'
                         unstash 'debPackage'
-                        sh "ls -la"
                         sh "cp -n *.deb /var/pkg/deb/{debarch} || true"
                         sh "python3 SapMachine-Infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/{debarch}"
                     }}
@@ -167,9 +166,17 @@
             }}
         }}
 
-- job:
-    name: recreate-debian-repository
-    description: 'Recreate debian repository.'
+- project:
+    name: resign-debian-repository
+    platform: *platforms
+    jobs:
+        - resign-debian-repository-{platform}
+
+- job-template:
+    name: resign-debian-repository-{platform}
+    description: 'Resign debian repository on {platform}.'
+    defaults: 'linux_package_global'
+    sandbox: true
     project-type: pipeline
     concurrent: false
     properties:
@@ -177,28 +184,28 @@
             num-to-keep: 20
             artifact-num-to-keep: 1
     dsl: |
-        pipeline {
-            agent {
+        pipeline {{
+            agent {{
                 label 'agent-ubuntu-local'
-            }
-            stages {
-                stage("Checkout Infrastructure Repository") {
-                    steps {
+            }}
+            stages {{
+                stage("Checkout Infrastructure Repository") {{
+                    steps {{
                         checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
-                    }
-                }
-                stage('Recreate') {
-                    steps {
-                            sh "python3 SapMachine-Infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/amd64"
-                    }
-                }
-            }
-            post {
-                always {
+                    }}
+                }}
+                stage('Recreate') {{
+                    steps {{
+                            sh "python3 SapMachine-Infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/{debarch}"
+                    }}
+                }}
+            }}
+            post {{
+                always {{
                     cleanWs deleteDirs: true, disableDeferredWipeout: true
-                }
-            }
-        }
+                }}
+            }}
+        }}
 
 - job:
     name: rpm-package
