@@ -43,8 +43,10 @@
                         expression { params.DEPLOY == true }
                     }
                     steps {
-                            sh "cp -n *.deb /var/pkg/deb/amd64 || true"
+                        sh "cp -n *.deb /var/pkg/deb/amd64 || true"
+                        lock('RecreateDebRepoLock') {
                             sh "python3 SapMachine-Infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/amd64"
+                        }
                     }
                 }
             }
@@ -155,7 +157,9 @@
                         unstash 'infra'
                         unstash 'debPackage'
                         sh "cp -n *.deb /var/pkg/deb/{debarch} || true"
-                        sh "python3 SapMachine-Infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/{debarch}"
+                        lock('RecreateDebRepoLock') {{
+                            sh "python3 SapMachine-Infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/{debarch}"
+                        }}
                     }}
                 }}
             }}
@@ -196,7 +200,9 @@
                 }}
                 stage('Recreate') {{
                     steps {{
+                        lock('RecreateDebRepoLock') {{
                             sh "python3 SapMachine-Infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/{debarch}"
+                        }}
                     }}
                 }}
             }}
