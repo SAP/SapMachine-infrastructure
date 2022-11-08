@@ -91,7 +91,7 @@
     description: 'Linux Package jobs'
     view-type: list
     job-name:
-    regex: '(resign-debian-repository-*|build-deploy-debian-package-*|debian-package|rpm-package)'
+    regex: '(resign-debian-repository-.*|build-deploy-debian-package-.*|debian-package|rpm-package)'
 
 - view:
     name: 'Async Profiler Builds'
