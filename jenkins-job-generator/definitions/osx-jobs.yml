@@ -2,12 +2,12 @@
     name: osx-upload
     description: 'Upload MacOS artifacts.'
     project-type: freestyle
-    node: built-in
+    node: osxupload
     concurrent: false
     properties:
         - build-discarder:
-            num-to-keep: 100
-            artifact-num-to-keep: 10
+            num-to-keep: 30
+            artifact-num-to-keep: 5
     parameters:
         - string:
             name: SAPMACHINE_VERSION
