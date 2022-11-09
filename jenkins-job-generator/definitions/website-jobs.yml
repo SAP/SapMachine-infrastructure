@@ -2,11 +2,15 @@
     name: generate-website-data
     description: 'Update dynamic website data.'
     project-type: pipeline
+    sandbox: true
     concurrent: false
+    properties:
+        - build-discarder:
+            num-to-keep: 40
     dsl: |
         pipeline {
             agent {
-                label "repository"
+                label "website"
             }
             stages {
                 stage("Checkout Infrastructure Repository") {
@@ -19,13 +23,13 @@
                           dockerfile {
                               dir "SapMachine-Infrastructure/dockerfiles/infrastructure"
                               reuseNode true
-                              label "repository"
+                              label "website"
                           }
                       }
                       steps {
                           withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
                               sh "python3 SapMachine-Infrastructure/lib/generate_website_data.py"
-                            }
+                          }
                       }
                   }
             }
