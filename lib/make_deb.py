@@ -77,7 +77,7 @@ def generate_configuration(templates_dir, major, arch, target_dir, exploded_imag
 def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('-t', '--tag', help='SapMachine version tag to create the debian packages for', metavar='TAG', required=True)
-    parser.add_argument('-d', '--download', help='Does artifact and git repo need to be downloaded', metavar='DOWNLOAD', action='store_true')
+    parser.add_argument('-d', '--download', help='Does artifact and git repo need to be downloaded', action='store_true')
     parser.add_argument('-a', '--architecture', help='specifies the architecture (linux-aarch64, linux-ppc64le, linux-x64)', metavar='ARCH', default='linux-x64')
     args = parser.parse_args()
 
