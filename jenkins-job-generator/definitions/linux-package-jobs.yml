@@ -1,62 +1,3 @@
-- job:
-    name: debian-package
-    description: 'The old debian package job - should be obsolete soon.'
-    project-type: pipeline
-    concurrent: false
-    properties:
-        - build-discarder:
-            num-to-keep: 20
-            artifact-num-to-keep: 1
-    parameters:
-        - string:
-            name: GIT_TAG_NAME
-            default: ''
-            description: 'The Git tag to create a debian package from.'
-        - bool:
-            name: DEPLOY
-            default: false
-            description: 'When set to true, the resulting debian package will be deployed to dist.sapmachine.io.'
-    dsl: |
-        pipeline {
-            agent {
-                label 'agent-local-docker-ubuntu'
-            }
-            stages {
-                stage("Checkout Infrastructure Repository") {
-                    steps {
-                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
-                    }
-                }
-                stage('Build') {
-                    steps {
-                        sh 'rm -f *.deb'
-                        sh "python3 SapMachine-Infrastructure/lib/make_deb.py --tag=${params.GIT_TAG_NAME} --templates-directory=SapMachine-Infrastructure/debian-templates"
-                    }
-                    post {
-                        success {
-                            archiveArtifacts allowEmptyArchive: true, artifacts: "*.deb"
-                        }
-                    }
-                }
-                stage('Deploy') {
-                    when {
-                        expression { params.DEPLOY == true }
-                    }
-                    steps {
-                        sh "cp -n *.deb /var/pkg/deb/amd64 || true"
-                        lock('RecreateDebRepoLock') {
-                            sh "python3 SapMachine-Infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/amd64"
-                        }
-                    }
-                }
-            }
-            post {
-                always {
-                    cleanWs deleteDirs: true, disableDeferredWipeout: true
-                }
-            }
-        }
-
 - defaults:
     name: 'linux_package_global'
     platforms: &platforms
@@ -101,10 +42,10 @@
     name: debian-builds
     platform: *platforms
     jobs:
-        - build-deploy-debian-package-{platform}
+        - build-debian-package-{platform}
 
 - job-template:
-    name: build-deploy-debian-package-{platform}
+    name: build-debian-package-{platform}
     defaults: 'linux_package_global'
     description: 'Build a debian package for SapMachine on {platform}.'
     project-type: pipeline
@@ -138,18 +79,18 @@
                     steps {{
                         // credentials are needed to avoid rate limit exceedance
                         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
-                            sh "python3 SapMachine-Infrastructure/lib/make_deb.py --tag=${{params.GIT_TAG_NAME}} --architecture={architecture} --templates-directory=SapMachine-Infrastructure/debian-templates"
+                            sh "python3 SapMachine-Infrastructure/lib/make_deb.py --tag=${{params.GIT_TAG_NAME}} --download --architecture={architecture}"
                         }}
-                        stash includes: '*.deb', name: 'debPackage'
-                        stash includes: 'SapMachine-Infrastructure/**', name: 'infra'
                     }}
                     post {{
                         success {{
                             archiveArtifacts allowEmptyArchive: true, artifacts: "*.deb"
+                            stash includes: '*.deb', name: 'debPackage'
+                            stash includes: 'SapMachine-Infrastructure/**', name: 'infra'
                         }}
                     }}
                 }}
-                stage('Deploy') {{
+                stage('Publish') {{
                     agent {{
                         label 'agent-local-docker-ubuntu'
                     }}
@@ -157,9 +98,7 @@
                         unstash 'infra'
                         unstash 'debPackage'
                         sh "cp -n *.deb /var/pkg/deb/{debarch} || true"
-                        lock('RecreateDebRepoLock') {{
-                            sh "python3 SapMachine-Infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/{debarch}"
-                        }}
+                        sh "python3 SapMachine-Infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/{debarch}"
                     }}
                 }}
             }}
@@ -200,9 +139,7 @@
                 }}
                 stage('Recreate') {{
                     steps {{
-                        lock('RecreateDebRepoLock') {{
-                            sh "python3 SapMachine-Infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/{debarch}"
-                        }}
+                        sh "python3 SapMachine-Infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/{debarch}"
                     }}
                 }}
             }}

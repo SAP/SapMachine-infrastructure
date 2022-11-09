@@ -3,7 +3,9 @@
     build_alpine: true
     publish_default: false
     release_default: false
-    allow_concurrent_builds: false
+    docker_agent: ''
+    architecture: ''
+    debarch: ''
     extra_configure_options: ''
     extra_configure_options_pr: ''
     windows_devkit: ''
@@ -26,35 +28,9 @@
            branch_name: sapmachine
            windows_devkit: 'io.sapmachine.build.devkit.windows-x64:devkit-vs2019:16.11.13'
     platforms: &platforms
-        - linux_x86_64:
-            docker_agent: |
-                agent {{
-                    dockerfile {{
-                        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04/x86_64"
-                        reuseNode true
-                        label "{platform}"
-                        additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
-                    }}
-                }}
-            devkit_default: 'io.sapmachine.build.devkit.linux-x64:devkit-fedora-gcc:12-8.3.0.1'
-        - linux_ppc64le:
-            docker_agent: |
-                agent {{
-                    dockerfile {{
-                        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04/ppc64le"
-                        reuseNode true
-                        label "{platform}"
-                        additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
-                    }}
-                }}
-            devkit_default: 'io.sapmachine.build.devkit.linux-ppc64le:devkit-rhel-gcc:7-8.3.0'
-        - macos_x86_64:
-            docker_agent: ''
-            devkit_default: 'io.sapmachine.build.devkit.macos:devkit-xcode:13.1'
-        - macos_aarch64:
-            docker_agent: ''
-            devkit_default: 'io.sapmachine.build.devkit.macos:devkit-xcode:13.1'
         - linux_aarch64:
+            architecture: linux-aarch64
+            debarch: arm64
             docker_agent: |
                 agent {{
                     dockerfile {{
@@ -75,8 +51,37 @@
                     }}
                 }}
             devkit_default: ''
+        - linux_ppc64le:
+            architecture: linux-ppc64le
+            debarch: ppc64el
+            docker_agent: |
+                agent {{
+                    dockerfile {{
+                        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04/ppc64le"
+                        reuseNode true
+                        label "{platform}"
+                        additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
+                    }}
+                }}
+            devkit_default: 'io.sapmachine.build.devkit.linux-ppc64le:devkit-rhel-gcc:7-8.3.0'
+        - linux_x86_64:
+            architecture: linux-x64
+            debarch: amd64
+            docker_agent: |
+                agent {{
+                    dockerfile {{
+                        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04/x86_64"
+                        reuseNode true
+                        label "{platform}"
+                        additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
+                    }}
+                }}
+            devkit_default: 'io.sapmachine.build.devkit.linux-x64:devkit-fedora-gcc:12-8.3.0.1'
+        - macos_x86_64:
+            devkit_default: 'io.sapmachine.build.devkit.macos:devkit-xcode:13.1'
+        - macos_aarch64:
+            devkit_default: 'io.sapmachine.build.devkit.macos:devkit-xcode:13.1'
         - windows_x86_64:
-            docker_agent: ''
             devkit_default: '{windows_devkit}'
     build_types: &build_types
         - snapshot
@@ -154,7 +159,7 @@
     description: '{build_type} build for SapMachine {major} on {platform}.'
     project-type: pipeline
     sandbox: true
-    concurrent: '{allow_concurrent_builds}'
+    concurrent: false
     properties:
         - github:
             url: 'https://github.com/SAP/SapMachine'
@@ -521,16 +526,38 @@
                         }}
                     }}
                 }}
-                stage('Publish Debian Linux Packages') {{
+                stage('Build Debian Package') {{
+                    {docker_agent}
                     when {{
-                        expression {{ env.VERIFICATION_RESULT != "2" && params.PUBLISH == true && params.RELEASE == true && JOB_NAME ==~ /((\S*)(release-linux_x86_64)(\S*))/ }}
+                        beforeAgent true
+                        expression {{ env.VERIFICATION_RESULT != "2" && params.PUBLISH == true && params.RELEASE == true && JOB_NAME ==~ /((\S*)(release-linux)(\S*))/ }}
                     }}
                     steps {{
-                        build job: 'debian-package', propagate: false, wait: true, parameters:
-                            [
-                                string(name: 'GIT_TAG_NAME', value: env.SAPMACHINE_VERSION),
-                                [$class: 'BooleanParameterValue', name: 'DEPLOY', value: true]
-                            ]
+                        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
+                            sh "python3 SapMachine-Infrastructure/lib/make_deb.py --tag=${{env.SAPMACHINE_VERSION}} --architecture={architecture}"
+                        }}
+                    }}
+                    post {{
+                        success {{
+                            archiveArtifacts allowEmptyArchive: true, artifacts: "*.deb"
+                            stash includes: '*.deb', name: 'debPackage'
+                            stash includes: 'SapMachine-Infrastructure/**', name: 'infra'
+                        }}
+                    }}
+                }}
+                stage('Publish Debian Package') {{
+                    agent {{
+                        label 'agent-local-docker-ubuntu'
+                    }}
+                    when {{
+                        beforeAgent true
+                        expression {{ env.VERIFICATION_RESULT != "2" && params.PUBLISH == true && params.RELEASE == true && JOB_NAME ==~ /((\S*)(release-linux)(\S*))/ }}
+                    }}
+                    steps {{
+                        unstash 'infra'
+                        unstash 'debPackage'
+                        sh "cp -n *.deb /var/pkg/deb/{debarch} || true"
+                        sh "python3 SapMachine-Infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/{debarch}"
                     }}
                 }}
                 stage('Build and Publish RPM Linux Packages') {{

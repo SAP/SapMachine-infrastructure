@@ -76,13 +76,10 @@ def generate_configuration(templates_dir, major, arch, target_dir, exploded_imag
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
-    parser.add_argument('-t', '--tag', help='the tag to create the debian packages from', metavar='TAG', required=True)
-    parser.add_argument('-d', '--templates-directory', help='specify the templates directory', metavar='DIR', required=True)
-    parser.add_argument('-a', '--architecture', help='specifies the architecture (linux-aarch64, linux-ppc64le, linux-x64)',
-                        metavar='ARCH', required=False, default='linux-x64')
+    parser.add_argument('-t', '--tag', help='SapMachine version tag to create the debian packages for', metavar='TAG', required=True)
+    parser.add_argument('-d', '--download', help='Does artifact and git repo need to be downloaded', metavar='DOWNLOAD', action='store_true')
+    parser.add_argument('-a', '--architecture', help='specifies the architecture (linux-aarch64, linux-ppc64le, linux-x64)', metavar='ARCH', default='linux-x64')
     args = parser.parse_args()
-
-    templates_dir = realpath(args.templates_directory)
 
     cwd = os.getcwd()
     work_dir = join(cwd, 'deb_work')
@@ -95,14 +92,19 @@ def main(argv=None):
     mkdir(work_dir)
 
     jdk_archive = join(work_dir, jdk_url.rsplit('/', 1)[-1])
-    utils.download_artifact(jdk_url, jdk_archive)
+
+    if args.download:
+        utils.download_artifact(jdk_url, jdk_archive)
 
     jdk_dir = join(work_dir, jdk_name)
     mkdir(jdk_dir)
     utils.extract_archive(jdk_archive, jdk_dir)
 
-    src_dir = join(work_dir, 'sapmachine_master')
-    utils.git_clone('github.com/SAP/SapMachine', args.tag, src_dir)
+    if args.download:
+        src_dir = join(work_dir, 'sapmachine_master')
+        utils.git_clone('github.com/SAP/SapMachine', args.tag, src_dir)
+    else:
+        src_dir = join(cwd, 'SapMachine')
 
     env = os.environ.copy()
     env['DEBFULLNAME'] = 'SapMachine'
@@ -112,7 +114,7 @@ def main(argv=None):
     jdk_exploded_image = glob.glob(join(jdk_dir, 'sapmachine-*'))[0]
 
     generate_configuration(
-        templates_dir=join(templates_dir, 'jdk'),
+        templates_dir=join(realpath("SapMachine-Infrastructure/debian-templates"), 'jdk'),
         major=str(tag.get_major()),
         arch = "arm64" if args.architecture == "linux-aarch64" else ("ppc64el" if args.architecture == "linux-ppc64le" else "amd64"),
         target_dir=join(jdk_dir, 'debian'),

@@ -27,7 +27,7 @@ def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('-t', '--tag', help='the SapMachine git tag', metavar='TAG')
     parser.add_argument('-b', '--build', help='the build number, overrules any value from tag(s)', metavar='BUILD_NR')
-    parser.add_argument('-r', '--release', help='set if this is a release build', action='store_true', default=False)
+    parser.add_argument('-r', '--release', help='set if this is a release build', action='store_true')
     args = parser.parse_args()
 
     configure_opts = []
