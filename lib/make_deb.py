@@ -91,10 +91,11 @@ def main(argv=None):
     utils.remove_if_exists(work_dir)
     mkdir(work_dir)
 
-    jdk_archive = join(work_dir, jdk_url.rsplit('/', 1)[-1])
-
     if args.download:
+        jdk_archive = join(work_dir, jdk_url.rsplit('/', 1)[-1])
         utils.download_artifact(jdk_url, jdk_archive)
+    else:
+        jdk_archive = join(cwd, jdk_url.rsplit('/', 1)[-1])
 
     jdk_dir = join(work_dir, jdk_name)
     mkdir(jdk_dir)

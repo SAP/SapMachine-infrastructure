@@ -16,7 +16,6 @@ if [[ $UNAME == CYGWIN* ]]; then
   WORKSPACE=$(cygpath -u "${WORKSPACE}")
 fi
 
-
 GTEST_DIR="${WORKSPACE}/gtest"
 export GTEST_DIR
 
@@ -62,6 +61,7 @@ fi
 
 eval _CONFIGURE_OPTS=($(python3 ../SapMachine-Infrastructure/lib/get_configure_opts.py $_GIT_TAG $_BUILD_NUMBER $_RELEASE))
 
+set -x
 bash ./configure \
 --with-boot-jdk=$BOOT_JDK \
 "${_CONFIGURE_OPTS[@]}" \
@@ -69,6 +69,7 @@ $_DEVKIT_OPTION \
 $_CONFIGURE_OS_OPTIONS \
 --with-freetype=bundled \
 $EXTRA_CONFIGURE_OPTIONS
+{ set +x; } 2>/dev/null
 
 # Try to build with legacy-bundles in one step.
 # In case there is an error, we give it another try without legacy bundles and try to create the legacy bundle manually afterwards.
@@ -76,14 +77,14 @@ $EXTRA_CONFIGURE_OPTIONS
 # Drawback: If there is a real build error, we'll restart the build and run into it again.
 
 legacy_bundles_available=1
-make JOBS=12 product-bundles legacy-bundles test-image || legacy_bundles_available=0
+(set -x && make JOBS=12 product-bundles legacy-bundles test-image || legacy_bundles_available=0)
 
 if [ $legacy_bundles_available -ne 1 ]; then
-  make JOBS=12 product-bundles test-image
+  (set -x && make JOBS=12 product-bundles test-image)
   if [[ $UNAME == Darwin ]]; then
-    make JOBS=12 mac-legacy-jre-bundle || true
+    (set -x && make JOBS=12 mac-legacy-jre-bundle || true)
   else
-    make JOBS=12 legacy-jre-image || true
+    (set -x && make JOBS=12 legacy-jre-image || true)
   fi
 fi
 
