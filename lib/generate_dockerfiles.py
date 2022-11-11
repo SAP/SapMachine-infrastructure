@@ -24,7 +24,7 @@ RUN export GNUPGHOME="$$(mktemp -d)" \\
     && gpg --batch --keyserver hkps://keys.openpgp.org --recv-keys CACB9FE09150307D1D22D82962754C3B3ABCFE23 \\
     && gpg --batch --export --armor 'CACB 9FE0 9150 307D 1D22 D829 6275 4C3B 3ABC FE23' > /etc/apt/trusted.gpg.d/sapmachine.gpg.asc \\
     && gpgconf --kill all && rm -rf "$$GNUPGHOME" \\
-    && echo "deb http://dist.sapmachine.io/debian/amd64/ ./" > /etc/apt/sources.list.d/sapmachine.list \\
+    && echo "deb http://dist.sapmachine.io/debian/${architecture}/ ./" > /etc/apt/sources.list.d/sapmachine.list \\
     && apt-get update \\
     && apt-get -y --no-install-recommends install ${version} \\
     && rm -rf /var/lib/apt/lists/*
@@ -41,7 +41,7 @@ The image in this repository contains the ${what} releases ${major} (version: ${
 
 For more information see the [SapMachine website](https://sapmachine.io).
 
-The SapMachine image supports the x86/64 architecture.
+The SapMachine image supports the x86/64, aarch64 and ppc64le architectures.
 
 Java and all Java-based trademarks and logos are trademarks or registered trademarks of Oracle and/or its affiliates.
 
@@ -71,53 +71,63 @@ docker run -it --rm myapp
 ```
 '''
 
-def process_release(release, infrastructure_tags, git_dir):
+architectures = ["amd64", "arm64", "ppc64el"]
+
+def process_release(release, infrastructure_tags, git_dir, args):
     tag = SapMachineTag.from_string(release['name'])
     version_string = tag.get_version_string()
     major = str(tag.get_major())
     skip_tag = False
-    dockerfile_dir = join(git_dir, 'dockerfiles', 'official', major)
+    dockerfile_base_dir = join(git_dir, 'dockerfiles', 'official', major)
 
     for infrastructure_tag in infrastructure_tags:
         if infrastructure_tag['name'] == version_string:
             print(str.format('tag "{0}" already exists for release "{1}"', version_string, release['name']))
-            skip_tag = True
-            break
+            if not args.force:
+              skip_tag = True
+              break
 
     if not skip_tag:
-        utils.remove_if_exists(dockerfile_dir)
-        os.makedirs(dockerfile_dir)
+        utils.remove_if_exists(dockerfile_base_dir)
+        os.makedirs(dockerfile_base_dir)
 
-        dockerfile_path = join(dockerfile_dir, 'Dockerfile')
-        with open(dockerfile_path, 'w+') as dockerfile:
-            dockerfile.write(Template(dockerfile_template).substitute(
-                version=str.format('sapmachine-{0}-jdk={1}', major, version_string),
-                major=major
-            ))
+        for architecture in architectures:
+            os.makedirs(join(dockerfile_base_dir, architecture))
+            dockerfile_path = join(dockerfile_base_dir, architecture, 'Dockerfile')
+            with open(dockerfile_path, 'w+') as dockerfile:
+                dockerfile.write(Template(dockerfile_template).substitute(
+                    architecture=architecture,
+                    version=str.format('sapmachine-{0}-jdk={1}', major, version_string),
+                    major=major
+                ))
 
-        if utils.sapmachine_is_lts(major):
-            what = 'long term support'
-            docker_tag = major
-        else:
-            what = 'stable'
-            docker_tag = 'stable'
-        readme_path = join(dockerfile_dir, 'README.md')
-        with open(readme_path, 'w+') as readmefile:
-            readmefile.write(Template(readmefile_template).substitute(
-                docker_tag=docker_tag,
-                what=what,
-                major=major,
-                version=version_string
-            ))
+            if utils.sapmachine_is_lts(major):
+                what = 'long term support'
+                docker_tag = major
+            else:
+                what = 'stable'
+                docker_tag = 'stable'
+            readme_path = join(dockerfile_base_dir, architecture, 'README.md')
+            with open(readme_path, 'w+') as readmefile:
+                readmefile.write(Template(readmefile_template).substitute(
+                    docker_tag=docker_tag,
+                    what=what,
+                    major=major,
+                    version=version_string
+                ))
 
         utils.git_commit(git_dir, 'updated Dockerfile', [dockerfile_path, readme_path])
-        utils.git_tag(git_dir, version_string)
-        utils.git_push(git_dir)
-        utils.git_push_tag(git_dir, version_string)
+        if not args.dry:
+            utils.git_tag(git_dir, version_string)
+            utils.git_push(git_dir)
+            utils.git_push_tag(git_dir, version_string)
+
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('--workdir', help='specify the working directory', metavar='DIR', default='docker_work', required=False)
+    parser.add_argument('--force', help='upload new content even if the the release tags already exist', action='store_true', required=False)
+    parser.add_argument('--dry', help='only test execution but don\'t upload any new content. Also don\'t delete the work_dir before exiting', action='store_true', required=False)
     args = parser.parse_args()
 
     workdir = os.path.realpath(args.workdir)
@@ -180,9 +190,10 @@ def main(argv=None):
         utils.git_commit(git_dir, 'remove discontinued versions', removed)
 
     for release in docker_releases:
-        process_release(docker_releases[release], infrastructure_tags, git_dir)
+        process_release(docker_releases[release], infrastructure_tags, git_dir, args)
 
-    utils.remove_if_exists(workdir)
+    if not args.dry:
+        utils.remove_if_exists(workdir)
 
     return 0
 
