@@ -78,9 +78,9 @@
                 }}
             devkit_default: 'io.sapmachine.build.devkit.linux-x64:devkit-fedora-gcc:12-8.3.0.1'
         - macos_x86_64:
-            devkit_default: 'io.sapmachine.build.devkit.macos:devkit-xcode:13.1'
+            devkit_default: 'io.sapmachine.build.devkit.macos:devkit-xcode:14.1'
         - macos_aarch64:
-            devkit_default: 'io.sapmachine.build.devkit.macos:devkit-xcode:13.1'
+            devkit_default: 'io.sapmachine.build.devkit.macos:devkit-xcode:14.1'
         - windows_x86_64:
             devkit_default: '{windows_devkit}'
     build_types: &build_types
