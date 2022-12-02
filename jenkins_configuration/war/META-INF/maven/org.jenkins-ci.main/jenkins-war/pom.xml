@@ -2,7 +2,7 @@
   <ns0:modelVersion>4.0.0</ns0:modelVersion>
   <ns0:groupId>org.jenkins-ci.main</ns0:groupId>
   <ns0:artifactId>jenkins-war</ns0:artifactId>
-  <ns0:version>2.361.4</ns0:version>
+  <ns0:version>2.375.1</ns0:version>
   <ns0:packaging>war</ns0:packaging>
   <ns0:name>Jenkins war</ns0:name>
   <ns0:description>Creates a war file. Also includes additional static web resources, such as images, CSS, JavaScript, and some HTML files.</ns0:description>
@@ -20,44 +20,34 @@
       <ns0:name>Jenkins advisories list</ns0:name>
       <ns0:subscribe>jenkinsci-advisories+subscribe@googlegroups.com</ns0:subscribe>
       <ns0:unsubscribe>jenkinsci-advisories+unsubscribe@googlegroups.com</ns0:unsubscribe>
+      <ns0:archive>https://groups.google.com/g/jenkinsci-advisories</ns0:archive>
     </ns0:mailingList>
     <ns0:mailingList>
       <ns0:name>Jenkins developer discussion list</ns0:name>
       <ns0:subscribe>jenkinsci-dev+subscribe@googlegroups.com</ns0:subscribe>
       <ns0:unsubscribe>jenkinsci-dev+unsubscribe@googlegroups.com</ns0:unsubscribe>
       <ns0:post>jenkinsci-dev@googlegroups.com</ns0:post>
-      <ns0:archive>http://jenkins.361315.n4.nabble.com/Jenkins-dev-f387835.html</ns0:archive>
-      <ns0:otherArchives>
-        <ns0:otherArchive>http://hudson.361315.n4.nabble.com/Hudson-dev-f387835.html</ns0:otherArchive>
-      </ns0:otherArchives>
-    </ns0:mailingList>
-    <ns0:mailingList>
-      <ns0:name>Jenkins issues list</ns0:name>
-      <ns0:subscribe>jenkinsci-issues+subscribe@googlegroups.com</ns0:subscribe>
-      <ns0:unsubscribe>jenkinsci-issues+unsubscribe@googlegroups.com</ns0:unsubscribe>
+      <ns0:archive>https://groups.google.com/g/jenkinsci-dev</ns0:archive>
     </ns0:mailingList>
     <ns0:mailingList>
       <ns0:name>Jenkins user discussion list</ns0:name>
       <ns0:subscribe>jenkinsci-users+subscribe@googlegroups.com</ns0:subscribe>
       <ns0:unsubscribe>jenkinsci-users+unsubscribe@googlegroups.com</ns0:unsubscribe>
       <ns0:post>jenkinsci-users@googlegroups.com</ns0:post>
-      <ns0:archive>http://jenkins.361315.n4.nabble.com/Jenkins-users-f361316.html</ns0:archive>
-      <ns0:otherArchives>
-        <ns0:otherArchive>http://hudson.361315.n4.nabble.com/Hudson-users-f361316.html</ns0:otherArchive>
-      </ns0:otherArchives>
+      <ns0:archive>https://groups.google.com/g/jenkinsci-users</ns0:archive>
     </ns0:mailingList>
     <ns0:mailingList>
       <ns0:name>Jenkins Japanese user discussion list</ns0:name>
       <ns0:subscribe>jenkinsci-ja+subscribe@googlegroups.com</ns0:subscribe>
       <ns0:unsubscribe>jenkinsci-ja+unsubscribe@googlegroups.com</ns0:unsubscribe>
       <ns0:post>jenkinsci-ja@googlegroups.com</ns0:post>
-      <ns0:archive>http://jenkinsci.361315.n4.nabble.com/Jenkins-ja-f361157.html</ns0:archive>
+      <ns0:archive>https://groups.google.com/g/jenkinsci-ja</ns0:archive>
     </ns0:mailingList>
   </ns0:mailingLists>
   <ns0:scm child.scm.connection.inherit.append.path="false" child.scm.developerConnection.inherit.append.path="false" child.scm.url.inherit.append.path="false">
     <ns0:connection>scm:git:https://github.com/jenkinsci/jenkins.git</ns0:connection>
     <ns0:developerConnection>scm:git:git@github.com:jenkinsci/jenkins.git</ns0:developerConnection>
-    <ns0:tag>jenkins-2.361.4</ns0:tag>
+    <ns0:tag>jenkins-2.375.1</ns0:tag>
     <ns0:url>https://github.com/jenkinsci/jenkins</ns0:url>
   </ns0:scm>
   <ns0:issueManagement>
@@ -82,19 +72,19 @@
     <ns0:dependency>
       <ns0:groupId>org.jenkins-ci.main</ns0:groupId>
       <ns0:artifactId>cli</ns0:artifactId>
-      <ns0:version>2.361.4</ns0:version>
+      <ns0:version>2.375.1</ns0:version>
       <ns0:scope>compile</ns0:scope>
     </ns0:dependency>
     <ns0:dependency>
       <ns0:groupId>org.jenkins-ci.main</ns0:groupId>
       <ns0:artifactId>remoting</ns0:artifactId>
-      <ns0:version>3044.vb_940a_a_e4f72e</ns0:version>
+      <ns0:version>3071.v7e9b_0dc08466</ns0:version>
       <ns0:scope>compile</ns0:scope>
     </ns0:dependency>
     <ns0:dependency>
       <ns0:groupId>org.jenkins-ci.main</ns0:groupId>
       <ns0:artifactId>jenkins-core</ns0:artifactId>
-      <ns0:version>2.361.4</ns0:version>
+      <ns0:version>2.375.1</ns0:version>
       <ns0:scope>compile</ns0:scope>
       <ns0:exclusions>
         <ns0:exclusion>
@@ -114,19 +104,19 @@
     <ns0:dependency>
       <ns0:groupId>org.jenkins-ci.main</ns0:groupId>
       <ns0:artifactId>websocket-jetty10</ns0:artifactId>
-      <ns0:version>2.361.4</ns0:version>
+      <ns0:version>2.375.1</ns0:version>
       <ns0:scope>compile</ns0:scope>
     </ns0:dependency>
     <ns0:dependency>
       <ns0:groupId>org.jenkins-ci.main</ns0:groupId>
       <ns0:artifactId>websocket-jetty9</ns0:artifactId>
-      <ns0:version>2.361.4</ns0:version>
+      <ns0:version>2.375.1</ns0:version>
       <ns0:scope>compile</ns0:scope>
     </ns0:dependency>
     <ns0:dependency>
       <ns0:groupId>org.slf4j</ns0:groupId>
       <ns0:artifactId>slf4j-jdk14</ns0:artifactId>
-      <ns0:version>1.7.36</ns0:version>
+      <ns0:version>2.0.3</ns0:version>
       <ns0:scope>compile</ns0:scope>
     </ns0:dependency>
     <ns0:dependency>
