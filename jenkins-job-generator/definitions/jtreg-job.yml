@@ -51,13 +51,6 @@
                                 jtregBuild = params.BUILD_NUMBER
                             } else {
                                 def match = params.TAG =~ /jtreg-*(([0-9]+)(\.[0-9]+)*)((\+|-b)([0-9]+))*/
-                                println "match0 " + match[0][0]
-                                println "match1 " + match[0][1]
-                                println "match2 " + match[0][2]
-                                println "match3 " + match[0][3]
-                                println "match4 " + match[0][4]
-                                println "match5 " + match[0][5]
-                                println "match6 " + match[0][6]
                                 jtregVersion = match[0][1]
                                 jtregMajor = match[0][2]
                                 jtregBuild = match[0][6]
