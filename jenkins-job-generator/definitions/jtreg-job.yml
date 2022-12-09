@@ -5,7 +5,7 @@
     concurrent: false
     properties:
         - build-discarder:
-            num-to-keep: 50
+            num-to-keep: 30
             artifact-num-to-keep: 10
         - github:
             url: 'https://github.com/openjdk/jtreg.git'
@@ -58,13 +58,14 @@
                                 println "match4 " + match[0][4]
                                 println "match5 " + match[0][5]
                                 println "match6 " + match[0][6]
-                                jtregVersion = match[0][2]
+                                jtregVersion = match[0][1]
+                                jtregMajor = match[0][2]
                                 jtregBuild = match[0][6]
                                 if (jtregBuild == null) {
                                     jtregBuild = "1"
                                 }
                             }
-                            if (jtregVersion.toFloat() < 6) {
+                            if (jtregMajor.toFloat() < 6) {
                                 env.BUILD_SCRIPT = "build-all.sh"
                                 env.BUILD_VERSION = jtregVersion
                                 env.BUILD_NUMBER = 'b'+jtregBuild
