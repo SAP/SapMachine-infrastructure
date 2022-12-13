@@ -5,21 +5,27 @@
   <sshUrl>git@github.com:SAP/SapMachine.git</sshUrl>
   <pulls class="concurrent-hash-map">
     <entry>
-      <int>1293</int>
+      <int>1295</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>1293</number>
-        <issueUpdatedAt>2022-12-11 09:26:05.0 UTC</issueUpdatedAt>
-        <title>Merge to tag jdk-21+1</title>
-        <body>please pull</body>
-        <prUpdatedAt>2022-12-11 09:26:05.0 UTC</prUpdatedAt>
-        <headSha>175e3d3ff332be25cca9822c58c46f1e012953c2</headSha>
-        <headRef>pr-jdk-21+1</headRef>
+        <number>1295</number>
+        <issueUpdatedAt>2022-12-12 20:38:39.0 UTC</issueUpdatedAt>
+        <title>SapMachine #1294: Undo JDK-8226608 for SapMachine</title>
+        <body>Show VM.start_java_debugging and onjcmd=y|n in SapMachine help/usage output.
+
+fixes #1294
+
+</body>
+        <prUpdatedAt>2022-12-12 20:38:39.0 UTC</prUpdatedAt>
+        <headSha>694b62cecab46f8d041992db6acb3ef1851505e2</headSha>
+        <headRef>onjcmd</headRef>
         <mergeable>true</mergeable>
         <baseRef>sapmachine</baseRef>
-        <userLogin>SapMachine</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/1293</htmlUrl>
+        <userEmail>christoph.langer@sap.com</userEmail>
+        <userLogin>RealCLanger</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1295</htmlUrl>
         <labels />
-        <sourceRepoOwner>SAP</sourceRepoOwner>
+        <lastCommentCreatedAt>2022-12-12 16:59:32.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>RealCLanger</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
       </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
