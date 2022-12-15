@@ -73,7 +73,14 @@ fi
 
 # Use full concurrency and agentvm to let the tests pass as fast as possible.
 if [ "${TEST_SUITE}" == "hotspot" ]; then
-    ${JTREG_CMD} -dir:${JDK_LOCATION}/test/${TEST_SUITE}/jtreg -xml -verbose:summary -nativepath:${TEST_NATIVE_LIB} \
+    # For JDK11 hotspot tests on x86, change PATH to prefer ld from devkit. Hopefully this fixes our aot issues.
+    if [ "${MAJOR}" == "11" ] && [[ $UNAME == Darwin ]] && [ $(uname -m) == "x86_64" ] && [ "x${DEVKIT_PATH}" != "x" ]; then
+        JTREG_CMD_HS="PATH=${DEVKIT_PATH}/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin:${PATH} ${JTREG_CMD}"
+    else
+        JTREG_CMD_HS=${JTREG_CMD}
+    fi
+
+    ${JTREG_CMD_HS} -dir:${JDK_LOCATION}/test/${TEST_SUITE}/jtreg -xml -verbose:summary -nativepath:${TEST_NATIVE_LIB} \
      -exclude:${JDK_LOCATION}/test/${TEST_SUITE}/jtreg/ProblemList.txt -exclude:${JDK_LOCATION}/test/${TEST_SUITE}/jtreg/ProblemList-SapMachine.txt \
      -conc:${NUM_CPUS} -vmoption:-Xmx384m -w:test_report_${TEST_SUITE}/JTwork -r:test_report_${TEST_SUITE}/JTreport \
      -a -ignore:quiet -timeoutFactor:5 -agentvm -javaoption:-Djava.awt.headless=true "-k:(!ignore)&(!stress)&(!headful)&(!intermittent)" "-e:ProgramFiles(x86)" -testjdk:${TEST_JDK} ${TEST_GROUPS}
