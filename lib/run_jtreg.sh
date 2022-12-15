@@ -75,7 +75,7 @@ fi
 if [ "${TEST_SUITE}" == "hotspot" ]; then
     # For JDK11 hotspot tests on x86, change PATH to prefer ld from devkit. Hopefully this fixes our aot issues.
     if [ "${MAJOR}" == "11" ] && [[ $UNAME == Darwin ]] && [ $(uname -m) == "x86_64" ] && [ "x${DEVKIT_PATH}" != "x" ]; then
-        JTREG_CMD_HS="PATH=${DEVKIT_PATH}/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin:${PATH} ${JTREG_CMD}"
+        JTREG_CMD_HS="PATH=${DEVKIT_PATH}/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin:${PATH} && ${JTREG_CMD}"
     else
         JTREG_CMD_HS=${JTREG_CMD}
     fi
