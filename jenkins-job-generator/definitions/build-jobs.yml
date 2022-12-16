@@ -372,7 +372,6 @@
                     }}
                     environment {{
                         TESTSUITE = 'hotspot'
-                        MAJOR = {major}
                     }}
                     steps {{
                         sh "bash SapMachine-Infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${{env.TESTSUITE}} ${{params.hotspot_test_groups}} || true"
