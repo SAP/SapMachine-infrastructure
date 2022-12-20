@@ -8,11 +8,11 @@
       <int>1296</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>1296</number>
-        <issueUpdatedAt>2022-12-15 00:30:44.0 UTC</issueUpdatedAt>
+        <issueUpdatedAt>2022-12-19 21:19:58.0 UTC</issueUpdatedAt>
         <title>Merge to tag jdk-17.0.6+7</title>
         <body>please pull</body>
-        <prUpdatedAt>2022-12-15 00:30:44.0 UTC</prUpdatedAt>
-        <headSha>d2fdea71f7e2d7862ff7742d7997a229b794c02d</headSha>
+        <prUpdatedAt>2022-12-19 21:19:58.0 UTC</prUpdatedAt>
+        <headSha>3d656220bc4e9093814f769e44064ed0a4ea0085</headSha>
         <headRef>pr-jdk-17.0.6+7</headRef>
         <mergeable>true</mergeable>
         <baseRef>sapmachine17</baseRef>
@@ -28,10 +28,10 @@
       <int>1297</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>1297</number>
-        <issueUpdatedAt>2022-12-15 00:31:00.0 UTC</issueUpdatedAt>
+        <issueUpdatedAt>2022-12-19 14:43:50.0 UTC</issueUpdatedAt>
         <title>Merge to tag jdk-11.0.18+7</title>
         <body>please pull</body>
-        <prUpdatedAt>2022-12-15 00:31:00.0 UTC</prUpdatedAt>
+        <prUpdatedAt>2022-12-19 14:43:50.0 UTC</prUpdatedAt>
         <headSha>6400cdc724f5ffeb03dec742494590a301cb3417</headSha>
         <headRef>pr-jdk-11.0.18+7</headRef>
         <mergeable>true</mergeable>
@@ -45,45 +45,25 @@
       </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
     </entry>
     <entry>
-      <int>1299</int>
+      <int>1305</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>1299</number>
-        <issueUpdatedAt>2022-12-16 00:30:21.0 UTC</issueUpdatedAt>
-        <title>Merge to tag jdk-20+28</title>
-        <body>please pull</body>
-        <prUpdatedAt>2022-12-16 00:30:21.0 UTC</prUpdatedAt>
-        <headSha>9bcdfc428597e1465c8a014d816ef671420d22df</headSha>
-        <headRef>pr-jdk-20+28</headRef>
-        <mergeable>true</mergeable>
-        <baseRef>sapmachine20</baseRef>
-        <userLogin>SapMachine</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/1299</htmlUrl>
-        <labels />
-        <sourceRepoOwner>SAP</sourceRepoOwner>
-        <state>OPEN</state>
-        <inBadState>false</inBadState>
-      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-    </entry>
-    <entry>
-      <int>1300</int>
-      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>1300</number>
-        <issueUpdatedAt>2022-12-17 09:56:51.0 UTC</issueUpdatedAt>
-        <title>SapMachine (20) #1294: Undo JDK-8226608 for SapMachine</title>
-        <body>(cherry picked from commit 5795e59ce5a63e0fb579c1010d80f4d27486fff1)
+        <number>1305</number>
+        <issueUpdatedAt>2022-12-19 22:42:21.0 UTC</issueUpdatedAt>
+        <title>SapMachine (19): 8297804: (tz) Update Timezone Data to 2022g</title>
+        <body>Seems like Timezone Data 22g is not in OpenJDK 19.0.2. But we have it in the January update of 11 and 17, so we should add it to SapMachine 19.
 
-fixes #1294
+fixes #1168 
 </body>
-        <prUpdatedAt>2022-12-17 09:56:51.0 UTC</prUpdatedAt>
-        <headSha>426365a9e79a0cfe61c93a5477e9483adfe2a9d8</headSha>
-        <headRef>onjcmd20</headRef>
+        <prUpdatedAt>2022-12-19 22:42:21.0 UTC</prUpdatedAt>
+        <headSha>3ffea0cebd6e9fbb731a7c1bbb05f4e8ccfca82c</headSha>
+        <headRef>tz22g19</headRef>
         <mergeable>true</mergeable>
-        <baseRef>sapmachine20</baseRef>
+        <baseRef>sapmachine19</baseRef>
         <userEmail>christoph.langer@sap.com</userEmail>
         <userLogin>RealCLanger</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/1300</htmlUrl>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1305</htmlUrl>
         <labels />
-        <lastCommentCreatedAt>2022-12-16 19:48:38.0 UTC</lastCommentCreatedAt>
+        <lastCommentCreatedAt>2022-12-19 22:42:20.0 UTC</lastCommentCreatedAt>
         <sourceRepoOwner>RealCLanger</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
