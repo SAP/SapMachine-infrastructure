@@ -13,7 +13,7 @@ from os.path import join
 from string import Template
 from versions import Tag
 
-sapMachinePushURL= str.format('https://{0}:{1}@github.com/SAP/jmc.git',
+sapMachinePushURL= str.format('https://github.com/SAP/SapMachine.git',
     os.environ['GIT_USER'], os.environ['GIT_PASSWORD'])
 
 os_description = {
@@ -27,7 +27,7 @@ os_description = {
 
 latest_template = '''---
 layout: default
-title: Latest SapMachine ${major} Release
+title: Latest JMC ${major} Release
 redirect_to:
   - ${url}
 ---
@@ -173,6 +173,7 @@ def main(argv=None):
             print(str.format("{0} skipped because newer version available", release['name']))
             continue
 
+        print("found JMC release: {0}", release['name'])
         for asset in release['assets']:
             match = asset_pattern.match(asset['name'])
             if match is None:
@@ -227,7 +228,7 @@ def main(argv=None):
             continue
 
         files.append({
-            'location': join('latest', str(major), 'index.md'),
+            'location': join('latest', 'jmc' + str(major), 'index.md'),
             'data': Template(latest_template).substitute(
                 major = major,
                 url = release_dict[major].release.url
