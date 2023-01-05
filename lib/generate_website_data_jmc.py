@@ -13,7 +13,7 @@ from os.path import join
 from string import Template
 from versions import Tag
 
-sapMachinePushURL= str.format('https://github.com/SAP/SapMachine.git',
+sapMachinePushURL= str.format('https://{0}:{1}@github.com/SAP/SapMachine.git',
     os.environ['GIT_USER'], os.environ['GIT_PASSWORD'])
 
 os_description = {
