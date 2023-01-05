@@ -39,3 +39,44 @@
                 }
             }
         }
+- job:
+    name: generate-website-data-jmc
+    description: 'Update dynamic website data for jmc.'
+    project-type: pipeline
+    sandbox: true
+    concurrent: false
+    properties:
+        - build-discarder:
+            num-to-keep: 40
+    dsl: |
+        pipeline {
+            agent {
+                label "website"
+            }
+            stages {
+                stage("Checkout Infrastructure Repository") {
+                    steps {
+                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+                    }
+                }
+                stage('Generate Data') {
+                    agent {
+                          dockerfile {
+                              dir "SapMachine-Infrastructure/dockerfiles/infrastructure"
+                              reuseNode true
+                              label "website"
+                          }
+                      }
+                      steps {
+                          withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
+                              sh "python3 SapMachine-Infrastructure/lib/generate_website_data_jmc.py"
+                          }
+                      }
+                  }
+            }
+            post {
+                always {
+                    cleanWs()
+                }
+            }
+        }
