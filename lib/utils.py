@@ -300,13 +300,19 @@ def git_checkout(dir, branch):
         print('git checkout failed')
 
 def git_tag(dir, tag_name, tag_desc=None, force=False):
+    env = os.environ.copy()
+    env['GIT_AUTHOR_NAME'] = 'SapMachine'
+    env['GIT_AUTHOR_EMAIL'] = 'sapmachine@sap.com'
+    env['GIT_COMMITTER_NAME'] = env['GIT_AUTHOR_NAME']
+    env['GIT_COMMITTER_EMAIL'] = env['GIT_AUTHOR_EMAIL']
+
     if tag_desc is None:
         tag_desc = tag_name
 
     if force is False:
-        run_cmd(['git', 'tag', '-a', '-m', tag_desc, tag_name], cwd=dir)
+        run_cmd(['git', 'tag', '-a', '-m', tag_desc, tag_name], cwd=dir, env=env)
     else:
-        run_cmd(['git', 'tag', '-a', '-f', '-m', tag_desc, tag_name], cwd=dir)
+        run_cmd(['git', 'tag', '-a', '-f', '-m', tag_desc, tag_name], cwd=dir, env=env)
 
 def git_push(dir):
     env = os.environ.copy()
