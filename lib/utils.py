@@ -306,7 +306,7 @@ def git_tag(dir, tag_name, tag_desc=None, force=False):
     if force is False:
         run_cmd(['git', 'tag', '-a', '-m', tag_desc, tag_name], cwd=dir)
     else:
-        run_cmd(['git', 'tag', '-a', -'f', '-m', tag_desc, tag_name], cwd=dir)
+        run_cmd(['git', 'tag', '-a', '-f', '-m', tag_desc, tag_name], cwd=dir)
 
 def git_push(dir):
     env = os.environ.copy()
@@ -328,16 +328,16 @@ def git_push(dir):
     except Exception:
         print('git push failed')
 
-def git_push_tag(dir, tag_name):
-    try:
-        if 'GIT_USER' in os.environ and 'GIT_PASSWORD' in os.environ:
-            _, giturl, _ = run_cmd(['git', 'config', '--get', 'remote.origin.url'], cwd=dir, std=True)
-            pushurl = str.format('https://{0}:{1}@{2}', os.environ['GIT_USER'], os.environ['GIT_PASSWORD'], giturl.rstrip().split("//")[1])
-            run_cmd(['git', 'push', pushurl, tag_name], cwd=dir)
+def git_push_tag(dir, tag_name, force=False):
+    if 'GIT_USER' in os.environ and 'GIT_PASSWORD' in os.environ:
+        _, giturl, _ = run_cmd(['git', 'config', '--get', 'remote.origin.url'], cwd=dir, std=True)
+        pushurl = str.format('https://{0}:{1}@{2}', os.environ['GIT_USER'], os.environ['GIT_PASSWORD'], giturl.rstrip().split("//")[1])
+        if force is True:
+            run_cmd(['git', 'push', '-f', pushurl, tag_name], cwd=dir)
         else:
-            run_cmd(['git', 'push', 'origin', tag_name], cwd=dir)
-    except Exception:
-        print('git push tag failed')
+            run_cmd(['git', 'push', pushurl, tag_name], cwd=dir)
+    else:
+        run_cmd(['git', 'push', 'origin', tag_name], cwd=dir)
 
 def github_api_request(api=None, url=None, owner='SAP', repository='SapMachine', data=None, method='GET', per_page=None, content_type=None, url_parameter=[]):
     if api is None and url is None:
