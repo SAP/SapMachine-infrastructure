@@ -1,5 +1,5 @@
 '''
-Copyright (c) 2017-2022 by SAP SE, Walldorf, Germany.
+Copyright (c) 2017-2023 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
@@ -24,7 +24,7 @@ RUN export GNUPGHOME="$$(mktemp -d)" \\
     && gpg --batch --keyserver hkps://keys.openpgp.org --recv-keys CACB9FE09150307D1D22D82962754C3B3ABCFE23 \\
     && gpg --batch --export --armor 'CACB 9FE0 9150 307D 1D22 D829 6275 4C3B 3ABC FE23' > /etc/apt/trusted.gpg.d/sapmachine.gpg.asc \\
     && gpgconf --kill all && rm -rf "$$GNUPGHOME" \\
-    && echo "deb http://dist.sapmachine.io/debian/${architecture}/ ./" > /etc/apt/sources.list.d/sapmachine.list \\
+    && echo "deb http://dist.sapmachine.io/debian/$(dpkg --print-architecture)/ ./" > /etc/apt/sources.list.d/sapmachine.list \\
     && apt-get update \\
     && apt-get -y --no-install-recommends install ${version} \\
     && rm -rf /var/lib/apt/lists/*
@@ -71,14 +71,12 @@ docker run -it --rm myapp
 ```
 '''
 
-architectures = ["amd64", "arm64", "ppc64el"]
-
 def process_release(release, infrastructure_tags, git_dir, args):
     tag = SapMachineTag.from_string(release['name'])
     version_string = tag.get_version_string()
     major = str(tag.get_major())
     skip_tag = False
-    dockerfile_base_dir = join(git_dir, 'dockerfiles', 'official', major)
+    dockerfile_dir = join(git_dir, 'dockerfiles', 'official', major)
 
     for infrastructure_tag in infrastructure_tags:
         if infrastructure_tag['name'] == version_string:
@@ -88,40 +86,36 @@ def process_release(release, infrastructure_tags, git_dir, args):
               break
 
     if not skip_tag:
-        utils.remove_if_exists(dockerfile_base_dir)
-        os.makedirs(dockerfile_base_dir)
+        utils.remove_if_exists(dockerfile_dir)
+        os.makedirs(dockerfile_dir)
 
-        for architecture in architectures:
-            os.makedirs(join(dockerfile_base_dir, architecture))
-            dockerfile_path = join(dockerfile_base_dir, architecture, 'Dockerfile')
-            with open(dockerfile_path, 'w+') as dockerfile:
-                dockerfile.write(Template(dockerfile_template).substitute(
-                    architecture=architecture,
-                    version=str.format('sapmachine-{0}-jdk={1}', major, version_string),
-                    major=major
-                ))
+        dockerfile_path = join(dockerfile_dir, 'Dockerfile')
+        with open(dockerfile_path, 'w+') as dockerfile:
+            dockerfile.write(Template(dockerfile_template).substitute(
+                version=str.format('sapmachine-{0}-jdk={1}', major, version_string),
+                major=major
+            ))
 
-            if utils.sapmachine_is_lts(major):
-                what = 'long term support'
-                docker_tag = major
-            else:
-                what = 'stable'
-                docker_tag = 'stable'
-            readme_path = join(dockerfile_base_dir, architecture, 'README.md')
-            with open(readme_path, 'w+') as readmefile:
-                readmefile.write(Template(readmefile_template).substitute(
-                    docker_tag=docker_tag,
-                    what=what,
-                    major=major,
-                    version=version_string
-                ))
+        if utils.sapmachine_is_lts(major):
+            what = 'long term support'
+            docker_tag = major
+        else:
+            what = 'stable'
+            docker_tag = 'stable'
+        readme_path = join(dockerfile_dir, 'README.md')
+        with open(readme_path, 'w+') as readmefile:
+            readmefile.write(Template(readmefile_template).substitute(
+                docker_tag=docker_tag,
+                what=what,
+                major=major,
+                version=version_string
+            ))
 
         utils.git_commit(git_dir, 'updated Dockerfile', [dockerfile_path, readme_path])
         if not args.dry:
             utils.git_tag(git_dir, version_string)
             utils.git_push(git_dir)
             utils.git_push_tag(git_dir, version_string)
-
 
 def main(argv=None):
     parser = argparse.ArgumentParser()

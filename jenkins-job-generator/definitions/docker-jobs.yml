@@ -1,11 +1,12 @@
 - job:
     name: docker-manifest
-    description: 'This project is generated. Do not modify manually.'
+    description: 'Generates the docker manifest for using at docker-library/official-images.'
     project-type: pipeline
+    sandbox: true
     concurrent: false
     properties:
         - build-discarder:
-            num-to-keep: 100
+            num-to-keep: 50
     dsl: |
         pipeline {
             agent {
@@ -40,12 +41,18 @@
 
 - job:
     name: generate-dockerfiles
-    description: 'This project is generated. Do not modify manually.'
+    description: 'Regenerates and updates docker files for SapMachine official images.'
     project-type: pipeline
+    sandbox: true
     concurrent: false
     properties:
         - build-discarder:
-            num-to-keep: 100
+            num-to-keep: 50
+    parameters:
+        - bool:
+            name: FORCE
+            default: false
+            description: 'Force recreation of dockerfiles, even if latest versions are already tagged.'
     dsl: |
         pipeline {
             agent {
@@ -67,7 +74,11 @@
                     }
                     steps {
                         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
-                            sh "cd SapMachine-Infrastructure && python3 lib/generate_dockerfiles.py"
+                            if (params.FORCE == true) {
+                                env.FORCE_REGENERATE=" --force"
+                            }
+
+                            sh "cd SapMachine-Infrastructure && python3 lib/generate_dockerfiles.py ${FORCE_REGENERATE}"
                         }
                     }
                 }
