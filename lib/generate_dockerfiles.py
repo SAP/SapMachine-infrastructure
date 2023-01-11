@@ -80,7 +80,7 @@ def process_release(release, infrastructure_tags, git_dir, args):
 
     for infrastructure_tag in infrastructure_tags:
         if infrastructure_tag['name'] == version_string:
-            print(str.format('tag "{0}" already exists for release "{1}"', version_string, release['name']))
+            print(str.format('Tag "{0}" already exists for release "{1}"', version_string, release['name']))
             if not args.force:
               skip_tag = True
               break
@@ -111,11 +111,16 @@ def process_release(release, infrastructure_tags, git_dir, args):
                 version=version_string
             ))
 
-        utils.git_commit(git_dir, str.format('Update Dockerfile for SapMachine {0}: {1}', major, version_string), [dockerfile_path, readme_path])
+        _, diff, _  = utils.run_cmd("git diff HEAD".split(' '), cwd=git_dir, std=True)
+        if not diff.strip():
+            print(str.format("No changes for {0}", version_string))
+            return
+
+        utils.git_commit(git_dir, str.format('Update Dockerfile for SapMachine {0}', version_string), [dockerfile_path, readme_path])
+        utils.git_tag(git_dir, version_string, force = True if args.force else False)
         if not args.dry:
-            utils.git_tag(git_dir, version_string, force = True if args.force else False)
             utils.git_push(git_dir)
-            utils.git_push_tag(git_dir, version_string)
+            utils.git_push_tag(git_dir, version_string, force = True if args.force else False)
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
