@@ -5,7 +5,7 @@ The image in this repository contains the stable releases 19 (version: 19.0.1) o
 
 For more information see the [SapMachine website](https://sapmachine.io).
 
-The SapMachine image supports the x86/64 architecture.
+The SapMachine image supports the x86/64, aarch64 and ppc64le architectures.
 
 Java and all Java-based trademarks and logos are trademarks or registered trademarks of Oracle and/or its affiliates.
 
