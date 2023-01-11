@@ -299,11 +299,14 @@ def git_checkout(dir, branch):
     except Exception:
         print('git checkout failed')
 
-def git_tag(dir, tag_name):
-    try:
-        run_cmd(['git', 'tag', tag_name], cwd=dir)
-    except Exception:
-        print('git tag failed')
+def git_tag(dir, tag_name, tag_desc=None, force=False):
+    if tag_desc is None:
+        tag_desc = tag_name
+
+    if force is False:
+        run_cmd(['git', 'tag', '-a', '-m', tag_desc, tag_name], cwd=dir)
+    else:
+        run_cmd(['git', 'tag', '-a', -'f', '-m', tag_desc, tag_name], cwd=dir)
 
 def git_push(dir):
     env = os.environ.copy()

@@ -76,10 +76,12 @@
                         script {
                             if (params.FORCE == true) {
                                 env.FORCE_REGENERATE=" --force"
+                            } else {
+                                env.FORCE_REGENERATE=""
                             }
                         }
                         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
-                            sh "cd SapMachine-Infrastructure && python3 lib/generate_dockerfiles.py ${FORCE_REGENERATE}"
+                            sh "cd SapMachine-Infrastructure && python3 lib/generate_dockerfiles.py $FORCE_REGENERATE"
                         }
                     }
                 }

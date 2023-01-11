@@ -111,9 +111,9 @@ def process_release(release, infrastructure_tags, git_dir, args):
                 version=version_string
             ))
 
-        utils.git_commit(git_dir, 'updated Dockerfile', [dockerfile_path, readme_path])
+        utils.git_commit(git_dir, str.format('updated Dockerfile for SapMachine {0}', major), [dockerfile_path, readme_path])
         if not args.dry:
-            utils.git_tag(git_dir, version_string)
+            utils.git_tag(git_dir, version_string, force = True if args.force else False)
             utils.git_push(git_dir)
             utils.git_push_tag(git_dir, version_string)
 
