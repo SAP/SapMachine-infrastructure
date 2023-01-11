@@ -5,7 +5,7 @@ The image in this repository contains the long term support releases 17 (version
 
 For more information see the [SapMachine website](https://sapmachine.io).
 
-The SapMachine image supports the x86/64 architecture.
+The SapMachine image supports the x86/64, aarch64 and ppc64le architectures.
 
 Java and all Java-based trademarks and logos are trademarks or registered trademarks of Oracle and/or its affiliates.
 
