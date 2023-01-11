@@ -19,7 +19,7 @@ ${images}
 '''
 
 template_image = '''Tags: ${tags}
-Architectures: amd64, aarch64, ppc64el
+Architectures: amd64, arm64v8, ppc64le
 GitCommit: ${git_commit}
 Directory: ${directory}'''
 
