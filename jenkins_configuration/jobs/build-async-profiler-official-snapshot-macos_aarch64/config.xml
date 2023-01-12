@@ -14,7 +14,7 @@
     <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty>
       <abortPrevious>false</abortPrevious>
     </org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty>
-    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.36.0">
+    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.36.1">
       <projectUrl>https://github.com/SAP/async-profiler</projectUrl>
       <displayName />
     </com.coravy.hudson.plugins.github.GithubProjectProperty>
@@ -69,7 +69,7 @@
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@3536.vb_8a_6628079d5">
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@3601.v9b_36a_d99e1cc">
     <script>pipeline {
     agent {
         label "macos_aarch64"
