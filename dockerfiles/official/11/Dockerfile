@@ -11,7 +11,7 @@ RUN export GNUPGHOME="$(mktemp -d)" \
     && gpgconf --kill all && rm -rf "$GNUPGHOME" \
     && echo "deb http://dist.sapmachine.io/debian/$(dpkg --print-architecture)/ ./" > /etc/apt/sources.list.d/sapmachine.list \
     && apt-get update \
-    && apt-get -y --no-install-recommends install sapmachine-11-jdk=11.0.17 \
+    && apt-get -y --no-install-recommends install sapmachine-11-jdk=11.0.18 \
     && rm -rf /var/lib/apt/lists/*
 
 ENV JAVA_HOME=/usr/lib/jvm/sapmachine-11
