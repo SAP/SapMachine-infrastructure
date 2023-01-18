@@ -533,7 +533,7 @@
                     {docker_agent}
                     when {{
                         beforeAgent true
-                        expression {{ env.VERIFICATION_RESULT != "2" && params.PUBLISH == true && params.RELEASE == true && JOB_NAME ==~ /((\S*)(release-linux)(\S*))/ }}
+                        expression {{ env.VERIFICATION_RESULT != "2" && params.PUBLISH == true && params.RELEASE == true && JOB_NAME ==~ /((\S*)(release-linux)(\S*))/ && JOB_NAME !=~ /((\S*)(linux_alpine_x86_64)(\S*))/ }}
                     }}
                     steps {{
                         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
@@ -554,7 +554,7 @@
                     }}
                     when {{
                         beforeAgent true
-                        expression {{ env.VERIFICATION_RESULT != "2" && params.PUBLISH == true && params.RELEASE == true && JOB_NAME ==~ /((\S*)(release-linux)(\S*))/ }}
+                        expression {{ env.VERIFICATION_RESULT != "2" && params.PUBLISH == true && params.RELEASE == true && JOB_NAME ==~ /((\S*)(release-linux)(\S*))/ && JOB_NAME !=~ /((\S*)(linux_alpine_x86_64)(\S*))/ }}
                     }}
                     steps {{
                         unstash 'infra'
