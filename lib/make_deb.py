@@ -1,5 +1,5 @@
 '''
-Copyright (c) 2017-2022 by SAP SE, Walldorf, Germany.
+Copyright (c) 2017-2023 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
@@ -95,7 +95,11 @@ def main(argv=None):
         jdk_archive = join(work_dir, jdk_url.rsplit('/', 1)[-1])
         utils.download_artifact(jdk_url, jdk_archive)
     else:
-        jdk_archive = join(cwd, jdk_url.rsplit('/', 1)[-1])
+        jdk_bundle_name_file = join(cwd, 'jdk_bundle_name.txt')
+        with open(jdk_bundle_name_file, 'r') as file:
+          jdk_bundle_name = file.read().rstrip()
+        print(str.format("JDK Bundle Name: {0}", jdk_bundle_name))
+        jdk_archive = join(cwd, jdk_bundle_name)
 
     jdk_dir = join(work_dir, jdk_name)
     mkdir(jdk_dir)
