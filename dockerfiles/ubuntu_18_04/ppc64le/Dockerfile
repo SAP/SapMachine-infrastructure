@@ -44,7 +44,7 @@ RUN pip3 install requests
 WORKDIR /opt/devkits
 RUN wget --no-verbose --show-progress --progress=bar:force:noscroll https://$ARTIFACTORY_CREDS@common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build/devkit/linux-ppc64le/${DEVKIT_NAME}/${DEVKIT_VERSION}/${DEVKIT_NAME}-${DEVKIT_VERSION}.tar.gz 2>&1
 WORKDIR /opt/devkits/${DEVKIT_NAME}-${DEVKIT_VERSION}
-RUN tar --no-same-permissions --no-same-owner -xzf ../${DEVKIT_NAME}-${DEVKIT_VERSION}.tar.gz && chmod 755 $(find /opt/devkits -type d) && chmod 644 $(find /opt/devkits -type f)
+RUN tar --no-same-permissions --no-same-owner -xzf ../${DEVKIT_NAME}-${DEVKIT_VERSION}.tar.gz && chmod 755 $(find /opt/devkits -type d) && chmod u+r,g+r,a+r $(find /opt/devkits -type f)
 
 WORKDIR /tmp
 ADD https://raw.githubusercontent.com/tstuefe/tinyreaper/master/tinyreaper.c /tmp/
