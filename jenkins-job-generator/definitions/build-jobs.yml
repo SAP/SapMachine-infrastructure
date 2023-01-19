@@ -66,7 +66,7 @@
                         additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
                     }}
                 }}
-            devkit_default: 'io.sapmachine.build.devkit.linux-ppc64le:devkit-rhel-gcc:7-8.3.0'
+            devkit_default: 'io.sapmachine.build.devkit.linux-ppc64le:devkit-rhel-gcc:7-8.3.0-nogold'
         - linux_x86_64:
             architecture: linux-x64
             debarch: amd64
@@ -533,7 +533,7 @@
                     {docker_agent}
                     when {{
                         beforeAgent true
-                        expression {{ env.VERIFICATION_RESULT != "2" && JOB_NAME ==~ /((\S*)(release-linux)(\S*))/ && !(JOB_NAME ==~ /((\S*)(linux_alpine_x86_64)(\S*))/) }}
+                        expression {{ env.VERIFICATION_RESULT != "2" && JOB_NAME ==~ /((\S*)(linux)(\S*))/ && !(JOB_NAME ==~ /((\S*)(linux_alpine_x86_64)(\S*))/) }}
                     }}
                     steps {{
                         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
