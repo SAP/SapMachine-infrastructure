@@ -103,10 +103,12 @@ def main(argv=None):
             return -1
         else:
             bundle_name_match = re.compile('sapmachine-\w+-((\d+)(\.\d+)*).*').match(bundle_name)
-            jdk_name = str.format('sapmachine-{0}-jdk-{1}', bundle_name_match.group(2), bundle_name_match.group(1).replace('-', '.'))
+            major = bundle_name_match.group(2)
+            jdk_name = str.format('sapmachine-{0}-jdk-{1}', major, bundle_name_match.group(1).replace('-', '.'))
             jdk_url = "https://sapmachine.io"
     else:
-        jdk_name = str.format('sapmachine-{0}-jdk-{1}', tag.get_major(), tag.get_version_string().replace('-', '.'))
+        major = tag.get_major()
+        jdk_name = str.format('sapmachine-{0}-jdk-{1}', major, tag.get_version_string().replace('-', '.'))
         jdk_url = utils.get_asset_urls(tag, args.architecture, ["jdk"])['jdk']
 
     if args.download:
@@ -130,13 +132,13 @@ def main(argv=None):
     jdk_exploded_image = glob.glob(join(jdk_dir, 'sapmachine-*'))[0]
 
     generate_configuration(
-        templates_dir=join(realpath("SapMachine-Infrastructure/debian-templates"), 'jdk'),
-        major=str(tag.get_major()),
+        templates_dir = join(realpath("SapMachine-Infrastructure/debian-templates"), 'jdk'),
+        major = str(major),
         arch = "arm64" if args.architecture == "linux-aarch64" else ("ppc64el" if args.architecture == "linux-ppc64le" else "amd64"),
-        target_dir=join(jdk_dir, 'debian'),
-        exploded_image=jdk_exploded_image,
-        src_dir=src_dir,
-        download_url=jdk_url)
+        target_dir = join(jdk_dir, 'debian'),
+        exploded_image = jdk_exploded_image,
+        src_dir = src_dir,
+        download_url = jdk_url)
 
     # we need to add --ignore-missing-info to the dh_shlibdeps call, otherwise we see errors on ppc64le
     with open(join(jdk_dir, "debian", "rules"), "a") as rulesfile:
