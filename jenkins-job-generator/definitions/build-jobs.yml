@@ -217,6 +217,10 @@
             default: true
             description: 'enable/disable jtreg runs'
         - bool:
+            name: BUILD_INSTALLER_PACKAGES
+            default: false
+            description: 'Build platform installer packages, e.g. Windows MSI, Debian packages. Will be set to true when PUBLISH is selected.'
+        - bool:
             name: PUBLISH
             default: '{publish_default}'
             description: 'When set to true, the resulting bundles will be published to GitHub.'
@@ -244,6 +248,11 @@
                                 env.SAPMACHINE_VERSION = params.GIT_REF
                             }} else {{
                                 env.SAPMACHINE_VERSION = params.SAPMACHINE_VERSION
+                            }}
+                            if (params.PUBLISH == true) {{
+                                env.BUILD_INSTALLER_PACKAGES = true
+                            }} else {{
+                                env.BUILD_INSTALLER_PACKAGES = params.BUILD_INSTALLER_PACKAGES
                             }}
                         }}
                         cleanWs()
@@ -458,7 +467,7 @@
                 }}
                 stage('Build Windows Installer') {{
                     when {{
-                        expression {{ env.VERIFICATION_RESULT != "2" && JOB_NAME ==~ /((\S*)(windows_x86_64)(\S*))/ }}
+                        expression {{ env.VERIFICATION_RESULT != "2" && env.BUILD_INSTALLER_PACKAGES && JOB_NAME ==~ /((\S*)(windows_x86_64)(\S*))/ }}
                     }}
                     steps {{
                         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
@@ -533,7 +542,7 @@
                     {docker_agent}
                     when {{
                         beforeAgent true
-                        expression {{ env.VERIFICATION_RESULT != "2" && JOB_NAME ==~ /((\S*)(linux)(\S*))/ && !(JOB_NAME ==~ /((\S*)(linux_alpine_x86_64)(\S*))/) }}
+                        expression {{ env.VERIFICATION_RESULT != "2" && env.BUILD_INSTALLER_PACKAGES && JOB_NAME ==~ /((\S*)(linux)(\S*))/ && !(JOB_NAME ==~ /((\S*)(alpine)(\S*))/) }}
                     }}
                     steps {{
                         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
