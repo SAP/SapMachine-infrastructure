@@ -11,13 +11,13 @@
   <description>snapshot build for SapMachine 17 on linux_ppc64le.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
   <properties>
-    <hudson.plugins.jira.JiraProjectProperty plugin="jira@3.8" />
-    <hudson.plugins.buildblocker.BuildBlockerProperty plugin="build-blocker-plugin@1.7.8">
-      <useBuildBlocker>false</useBuildBlocker>
-      <blockLevel>GLOBAL</blockLevel>
-      <scanQueueFor>DISABLED</scanQueueFor>
-      <blockingJobs />
-    </hudson.plugins.buildblocker.BuildBlockerProperty>
+    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty>
+      <abortPrevious>false</abortPrevious>
+    </org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty>
+    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.36.1">
+      <projectUrl>https://github.com/SAP/SapMachine</projectUrl>
+      <displayName />
+    </com.coravy.hudson.plugins.github.GithubProjectProperty>
     <jenkins.model.BuildDiscarderProperty>
       <strategy class="hudson.tasks.LogRotator">
         <daysToKeep>-1</daysToKeep>
@@ -26,13 +26,9 @@
         <artifactNumToKeep>1</artifactNumToKeep>
       </strategy>
     </jenkins.model.BuildDiscarderProperty>
-    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty>
-      <abortPrevious>false</abortPrevious>
-    </org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty>
-    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.36.1">
-      <projectUrl>https://github.com/SAP/SapMachine/</projectUrl>
-      <displayName />
-    </com.coravy.hudson.plugins.github.GithubProjectProperty>
+    <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+      <triggers />
+    </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
         <hudson.model.StringParameterDefinition>
@@ -50,11 +46,13 @@
         <hudson.model.StringParameterDefinition>
           <name>SAPMACHINE_VERSION</name>
           <description>Either a SapMachine Release Tag or a JDK Major version. If empty, GIT_REF is used.</description>
+          <defaultValue />
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>BUILD_NUMBER</name>
           <description>Sets the version build number explicitly.</description>
+          <defaultValue />
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
@@ -66,7 +64,7 @@
         <hudson.model.StringParameterDefinition>
           <name>DEVKIT</name>
           <description>Devkit, could be either a path that locally exists or the GAV coordinates to a tar.gz archive to be downloaded and extracted.</description>
-          <defaultValue>io.sapmachine.build.devkit.linux-ppc64le:devkit-rhel-gcc:7-8.3.0</defaultValue>
+          <defaultValue>io.sapmachine.build.devkit.linux-ppc64le:devkit-rhel-gcc:7-8.3.0-nogold</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
@@ -110,9 +108,6 @@
         </hudson.model.BooleanParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
-    <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
-      <triggers />
-    </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
   </properties>
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@3601.v9b_36a_d99e1cc">
     <script>pipeline {
@@ -135,13 +130,6 @@
                     } else {
                         env.SAPMACHINE_VERSION = params.SAPMACHINE_VERSION
                     }
-                    // env.VERIFICATION_RESULT != "2" &amp;&amp; JOB_NAME ==~ /((\S*)(linux)(\S*))/ &amp;&amp; !(JOB_NAME ==~ /((\S*)(linux_alpine_x86_64)(\S*))/)
-                    println "env.VERIFICATION_RESULT: " + env.VERIFICATION_RESULT
-                    println "JOB_NAME: " + JOB_NAME
-                    println "lynx match: " + (JOB_NAME ==~ /((\S*)(linux)(\S*))/)
-                    println "alpine match: " + (JOB_NAME ==~ /((\S*)(linux_alpine_x86_64)(\S*))/)
-                    println "alpine gegenmatch: " + !(JOB_NAME ==~ /((\S*)(linux_alpine_x86_64)(\S*))/)
-                    println "endcheck: " + (env.VERIFICATION_RESULT != "2" &amp;&amp; JOB_NAME ==~ /((\S*)(linux)(\S*))/ &amp;&amp; !(JOB_NAME ==~ /((\S*)(linux_alpine_x86_64)(\S*))/))
                 }
                 cleanWs()
             }
