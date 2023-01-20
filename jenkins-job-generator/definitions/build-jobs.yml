@@ -254,6 +254,7 @@
                             }} else {{
                                 env.BUILD_INSTALLER_PACKAGES = params.BUILD_INSTALLER_PACKAGES
                             }}
+                            println "Building installer packages: " + env.BUILD_INSTALLER_PACKAGES
                         }}
                         cleanWs()
                     }}
