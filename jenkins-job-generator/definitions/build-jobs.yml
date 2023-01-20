@@ -43,7 +43,7 @@
                         additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
                     }}
                 }}
-            devkit_default: 'io.sapmachine.build.devkit.linux-aarch64:devkit-fedora-gcc:21-8.3.0'
+            devkit_default: 'io.sapmachine.build.devkit.linux-aarch64:devkit-fedora-gcc:21-8.3.0-nogold'
         - linux_alpine_x86_64:
             docker_agent: |
                 agent {{
@@ -60,7 +60,7 @@
             docker_agent: |
                 agent {{
                     dockerfile {{
-                        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04/ppc64le"
+                        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/ppc64le"
                         reuseNode true
                         label "{platform}"
                         additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
@@ -73,13 +73,13 @@
             docker_agent: |
                 agent {{
                     dockerfile {{
-                        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04/x86_64"
+                        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/x86_64"
                         reuseNode true
                         label "{platform}"
                         additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
                     }}
                 }}
-            devkit_default: 'io.sapmachine.build.devkit.linux-x64:devkit-fedora-gcc:12-8.3.0.1'
+            devkit_default: 'io.sapmachine.build.devkit.linux-x64:devkit-fedora-gcc:12-8.3.0-nogold'
         - macos_x86_64:
             devkit_default: 'io.sapmachine.build.devkit.macos:devkit-xcode:13.1'
         - macos_aarch64:

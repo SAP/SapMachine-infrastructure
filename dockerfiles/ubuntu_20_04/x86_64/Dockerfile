@@ -2,7 +2,7 @@ FROM ubuntu:20.04
 
 ARG ARTIFACTORY_CREDS
 ARG DEVKIT_NAME=devkit-fedora-gcc
-ARG DEVKIT_VERSION=21-8.3.0-nogold
+ARG DEVKIT_VERSION=12-8.3.0-nogold
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -42,12 +42,12 @@ RUN useradd -ms /bin/bash jenkinsc -u 1002
 RUN pip3 install requests
 
 WORKDIR /opt/devkits
-RUN wget --no-verbose --show-progress --progress=bar:force:noscroll https://$ARTIFACTORY_CREDS@common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build/devkit/linux-aarch64/${DEVKIT_NAME}/${DEVKIT_VERSION}/${DEVKIT_NAME}-${DEVKIT_VERSION}.tar.gz 2>&1
+RUN wget --no-verbose --show-progress --progress=bar:force:noscroll https://$ARTIFACTORY_CREDS@common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build/devkit/linux-x64/${DEVKIT_NAME}/${DEVKIT_VERSION}/${DEVKIT_NAME}-${DEVKIT_VERSION}.tar.gz 2>&1
 WORKDIR /opt/devkits/${DEVKIT_NAME}-${DEVKIT_VERSION}
 RUN tar --no-same-permissions --no-same-owner --strip-components=1 -xzf ../${DEVKIT_NAME}-${DEVKIT_VERSION}.tar.gz && chmod 755 $(find /opt/devkits -type d) && chmod u+r,g+r,a+r $(find /opt/devkits -type f)
 
 WORKDIR /tmp
 ADD https://raw.githubusercontent.com/tstuefe/tinyreaper/master/tinyreaper.c /tmp/
-RUN /opt/devkits/${DEVKIT_NAME}-${DEVKIT_VERSION}/bin/gcc -I/usr/include -I/usr/include/aarch64-linux-gnu /tmp/tinyreaper.c -o /opt/tinyreaper && \
+RUN /opt/devkits/${DEVKIT_NAME}-${DEVKIT_VERSION}/bin/gcc -I/usr/include -I/usr/include/x86_64-linux-gnu /tmp/tinyreaper.c -o /opt/tinyreaper && \
     chmod +x /opt/tinyreaper && \
     rm /tmp/tinyreaper.c
