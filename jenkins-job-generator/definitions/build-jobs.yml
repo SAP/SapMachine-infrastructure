@@ -468,7 +468,7 @@
                 }}
                 stage('Build Windows Installer') {{
                     when {{
-                        expression {{ env.VERIFICATION_RESULT != "2" && env.BUILD_INSTALLER_PACKAGES && JOB_NAME ==~ /((\S*)(windows_x86_64)(\S*))/ }}
+                        expression {{ env.VERIFICATION_RESULT != "2" && env.BUILD_INSTALLER_PACKAGES == true && JOB_NAME ==~ /((\S*)(windows_x86_64)(\S*))/ }}
                     }}
                     steps {{
                         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
@@ -543,7 +543,7 @@
                     {docker_agent}
                     when {{
                         beforeAgent true
-                        expression {{ env.VERIFICATION_RESULT != "2" && env.BUILD_INSTALLER_PACKAGES && JOB_NAME ==~ /((\S*)(linux)(\S*))/ && !(JOB_NAME ==~ /((\S*)(alpine)(\S*))/) }}
+                        expression {{ env.VERIFICATION_RESULT != "2" && env.BUILD_INSTALLER_PACKAGES == true && JOB_NAME ==~ /((\S*)(linux)(\S*))/ && !(JOB_NAME ==~ /((\S*)(alpine)(\S*))/) }}
                     }}
                     steps {{
                         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
