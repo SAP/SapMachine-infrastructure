@@ -103,7 +103,7 @@
         <hudson.model.StringParameterDefinition>
           <name>DEVKIT</name>
           <description>Devkit, could be either a path that locally exists or the GAV coordinates to a tar.gz archive to be downloaded and extracted.</description>
-          <defaultValue>io.sapmachine.build.devkit.linux-x64:devkit-fedora-gcc:12-8.3.0.1</defaultValue>
+          <defaultValue>io.sapmachine.build.devkit.linux-x64:devkit-fedora-gcc:12-8.3.0-nogold</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
@@ -134,6 +134,11 @@
           <name>RUN_TESTS</name>
           <description>enable/disable jtreg runs</description>
           <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>BUILD_INSTALLER_PACKAGES</name>
+          <description>Build platform installer packages, e.g. Windows MSI, Debian packages. Will be set to true when PUBLISH is selected.</description>
+          <defaultValue>false</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>PUBLISH</name>
@@ -169,6 +174,12 @@
                     } else {
                         env.SAPMACHINE_VERSION = params.SAPMACHINE_VERSION
                     }
+                    if (params.PUBLISH == true) {
+                        env.BUILD_INSTALLER_PACKAGES = true
+                    } else {
+                        env.BUILD_INSTALLER_PACKAGES = params.BUILD_INSTALLER_PACKAGES
+                    }
+                    println "Building installer packages: " + env.BUILD_INSTALLER_PACKAGES
                 }
                 cleanWs()
             }
@@ -186,7 +197,7 @@
         stage("Verify PR") {
             agent {
     dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04/x86_64"
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/x86_64"
         reuseNode true
         label "linux_x86_64"
         additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
@@ -233,7 +244,7 @@
         stage('Prepare Devkit') {
             agent {
     dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04/x86_64"
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/x86_64"
         reuseNode true
         label "linux_x86_64"
         additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
@@ -265,7 +276,7 @@
         stage('Download Prerequisites') {
             agent {
     dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04/x86_64"
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/x86_64"
         reuseNode true
         label "linux_x86_64"
         additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
@@ -292,7 +303,7 @@
         stage("Build") {
             agent {
     dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04/x86_64"
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/x86_64"
         reuseNode true
         label "linux_x86_64"
         additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
@@ -313,7 +324,7 @@
         stage('Copy JTREG') {
             agent {
     dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04/x86_64"
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/x86_64"
         reuseNode true
         label "linux_x86_64"
         additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
@@ -331,7 +342,7 @@
         stage('Run jtreg hotspot') {
             agent {
     dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04/x86_64"
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/x86_64"
         reuseNode true
         label "linux_x86_64"
         additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
@@ -362,7 +373,7 @@
         stage('Run jtreg jdk') {
             agent {
     dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04/x86_64"
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/x86_64"
         reuseNode true
         label "linux_x86_64"
         additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
@@ -394,7 +405,7 @@
         stage('Run jtreg langtools') {
             agent {
     dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04/x86_64"
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/x86_64"
         reuseNode true
         label "linux_x86_64"
         additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
@@ -446,7 +457,7 @@
         }
         stage('Build Windows Installer') {
             when {
-                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; JOB_NAME ==~ /((\S*)(windows_x86_64)(\S*))/ }
+                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; env.BUILD_INSTALLER_PACKAGES &amp;&amp; JOB_NAME ==~ /((\S*)(windows_x86_64)(\S*))/ }
             }
             steps {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
@@ -508,7 +519,7 @@
         stage('Publish CF Java Buildpack Data') {
             agent {
     dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04/x86_64"
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/x86_64"
         reuseNode true
         label "linux_x86_64"
         additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
@@ -528,7 +539,7 @@
         stage('Build Debian Package') {
             agent {
     dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04/x86_64"
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/x86_64"
         reuseNode true
         label "linux_x86_64"
         additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
@@ -537,7 +548,7 @@
 
             when {
                 beforeAgent true
-                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; JOB_NAME ==~ /((\S*)(linux)(\S*))/ &amp;&amp; !(JOB_NAME ==~ /((\S*)(linux_alpine_x86_64)(\S*))/) }
+                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; env.BUILD_INSTALLER_PACKAGES &amp;&amp; JOB_NAME ==~ /((\S*)(linux)(\S*))/ &amp;&amp; !(JOB_NAME ==~ /((\S*)(alpine)(\S*))/) }
             }
             steps {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
