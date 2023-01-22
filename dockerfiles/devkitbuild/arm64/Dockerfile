@@ -25,4 +25,4 @@ RUN git clone -b sapmachinedevkit17 https://github.com/RealCLanger/SapMachine.gi
 
 WORKDIR /devkit/SapMachine/make/devkit
 
-RUN make BASE_OS=Fedora BASE_OS_VERSION=21 GCC_VER=80.3.0 tars
+RUN make BASE_OS=Fedora BASE_OS_VERSION=21 GCC_VER=8.3.0 tars
