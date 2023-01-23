@@ -27,4 +27,6 @@ RUN wget --no-verbose --show-progress --progress=bar:force:noscroll https://$ART
 
 WORKDIR /devkit/SapMachine/make/devkit
 
-RUN make BASE_OS=Fedora BASE_OS_VERSION=19 GCC_VER=8.3.0 tars
+RUN make BASE_OS=Fedora BASE_OS_VERSION=19 GCC_VER=8.3.0 tars && mv /devkit/SapMachine/build/devkit/result/*.tar.gz /devkit && rm -rf /devkit/SapMachine
+
+WORKDIR /devkit/SapMachine
