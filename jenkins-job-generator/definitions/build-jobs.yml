@@ -255,6 +255,13 @@
                                 env.BUILD_INSTALLER_PACKAGES = params.BUILD_INSTALLER_PACKAGES
                             }}
                             println "Building installer packages: " + env.BUILD_INSTALLER_PACKAGES
+                            println "env.VERIFICATION_RESULT: " + env.VERIFICATION_RESULT
+                            println "JOB_NAME: " + JOB_NAME
+                            println "lynx match: " + (JOB_NAME ==~ /((\S*)(linux)(\S*))/)
+                            println "alpine match: " + (JOB_NAME ==~ /((\S*)(alpine)(\S*))/)
+                            println "alpine gegenmatch: " + !(JOB_NAME ==~ /((\S*)(alpine)(\S*))/)
+                            println "endcheck: " + (env.VERIFICATION_RESULT != "2" && env.BUILD_INSTALLER_PACKAGES == true && JOB_NAME ==~ /((\S*)(linux)(\S*))/ && !(JOB_NAME ==~ /((\S*)(alpine)(\S*))/) )
+
                         }}
                         cleanWs()
                     }}
