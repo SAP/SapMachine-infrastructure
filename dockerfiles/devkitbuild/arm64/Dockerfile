@@ -17,7 +17,7 @@ xz-utils
 
 WORKDIR /devkit
 
-RUN git clone --depth 1 -b sapmachinedevkit17 https://github.com/RealCLanger/SapMachine.git && mv SapMachine/make/devkit . && rm -rf SapMachine && mkdir -p SapMachine/make && mv devkit SapMachine/make
+RUN git clone --depth 1 -b sapmachine17 https://github.com/SAP/SapMachine.git && mv SapMachine/make/devkit . && rm -rf SapMachine && mkdir -p SapMachine/make && mv devkit SapMachine/make
 
 WORKDIR /devkit/SapMachine/make/devkit
 
