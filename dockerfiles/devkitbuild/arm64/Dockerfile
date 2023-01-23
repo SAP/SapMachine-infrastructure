@@ -4,24 +4,20 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -qq -y --no-install-recommends \
 autoconf \
-build-essential \
 ca-certificates \
 cpio \
-curl \
-file \
 gcc \
-g++ \
 git \
-libelf-dev \
+g++ \
 make \
 rpm2cpio \
-unzip \
+texinfo \
 wget \
-zip
+xz-utils
 
 WORKDIR /devkit
 
-RUN git clone -b sapmachinedevkit17 https://github.com/RealCLanger/SapMachine.git
+RUN git clone --depth 1 -b sapmachinedevkit17 https://github.com/RealCLanger/SapMachine.git && mv SapMachine/make/devkit . && rm -rf SapMachine && mkdir -p SapMachine/make && mv devkit SapMachine/make
 
 WORKDIR /devkit/SapMachine/make/devkit
 
