@@ -7,6 +7,7 @@ autoconf \
 ca-certificates \
 cpio \
 gcc \
+gcc-multilib \
 git \
 g++ \
 make \
