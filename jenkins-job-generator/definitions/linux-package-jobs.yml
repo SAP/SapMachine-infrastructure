@@ -19,7 +19,7 @@
             docker_agent: |
                 agent {{
                     dockerfile {{
-                        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04/ppc64le"
+                        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/ppc64le"
                         reuseNode true
                         label "{platform}"
                         additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
@@ -31,7 +31,7 @@
             docker_agent: |
                 agent {{
                     dockerfile {{
-                        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04/x86_64"
+                        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/x86_64"
                         reuseNode true
                         label "{platform}"
                         additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
