@@ -3,6 +3,13 @@
   <description>Upload MacOS artifacts.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
   <properties>
+    <hudson.plugins.jira.JiraProjectProperty plugin="jira@3.8" />
+    <hudson.plugins.buildblocker.BuildBlockerProperty plugin="build-blocker-plugin@1.7.8">
+      <useBuildBlocker>false</useBuildBlocker>
+      <blockLevel>GLOBAL</blockLevel>
+      <scanQueueFor>DISABLED</scanQueueFor>
+      <blockingJobs />
+    </hudson.plugins.buildblocker.BuildBlockerProperty>
     <jenkins.model.BuildDiscarderProperty>
       <strategy class="hudson.tasks.LogRotator">
         <daysToKeep>-1</daysToKeep>
@@ -16,7 +23,6 @@
         <hudson.model.StringParameterDefinition>
           <name>SAPMACHINE_VERSION</name>
           <description>The SapMachine Release Tag to upload MacOS artifacts for.</description>
-          <defaultValue />
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
@@ -92,7 +98,7 @@
           <configs>
             <hudson.plugins.parameterizedtrigger.CurrentBuildParameters />
           </configs>
-          <projects>osx-upload-processor</projects>
+          <projects>osx-upload-processor-test</projects>
           <condition>ALWAYS</condition>
           <triggerWithNoParameters>false</triggerWithNoParameters>
           <triggerFromChildProjects>false</triggerFromChildProjects>
