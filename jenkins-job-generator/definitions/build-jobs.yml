@@ -392,7 +392,6 @@
                             reportFiles: 'JTreport/index.html',
                             reportName: "JT Report ${{env.TESTSUITE}}"
                         ]
-                        junit "test_report_${{env.TESTSUITE}}/JTwork/**/*.jtr.xml"
                         archiveArtifacts allowEmptyArchive: true, artifacts: "test_report_${{env.TESTSUITE}}/JTwork/**/hs_err_pid*.log"
                     }}
                 }}
@@ -416,7 +415,6 @@
                             reportFiles: 'JTreport/index.html',
                             reportName: "JT Report ${{env.TESTSUITE}}"
                         ]
-                        junit "test_report_${{env.TESTSUITE}}/JTwork/**/*.jtr.xml"
                         archiveArtifacts allowEmptyArchive: true, artifacts: "test_report_${{env.TESTSUITE}}/JTwork/**/hs_err_pid*.log"
                     }}
                 }}
@@ -440,7 +438,6 @@
                             reportFiles: 'JTreport/index.html',
                             reportName: "JT Report ${{env.TESTSUITE}}"
                         ]
-                        junit "test_report_${{env.TESTSUITE}}/JTwork/**/*.jtr.xml"
                         archiveArtifacts allowEmptyArchive: true, artifacts: "test_report_${{env.TESTSUITE}}/JTwork/**/hs_err_pid*.log"
                     }}
                 }}
