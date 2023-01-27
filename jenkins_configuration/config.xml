@@ -8,7 +8,7 @@
     <string>jenkins.security.s2m.MasterKillSwitchWarning</string>
     <string>jenkins.diagnostics.ControllerExecutorsAgents</string>
   </disabledAdministrativeMonitors>
-  <version>2.375.1</version>
+  <version>2.375.2</version>
   <numExecutors>2</numExecutors>
   <mode>EXCLUSIVE</mode>
   <useSecurity>true</useSecurity>
@@ -600,8 +600,6 @@
       <properties class="hudson.model.View$PropertyList" />
       <jobNames>
         <comparator class="java.lang.String$CaseInsensitiveComparator" />
-        <string>osx-upload-processor-test</string>
-        <string>osx-upload-test</string>
       </jobNames>
       <jobFilters />
       <columns>

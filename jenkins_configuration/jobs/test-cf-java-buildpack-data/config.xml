@@ -1,4 +1,4 @@
-<flow-definition plugin="workflow-job@1254.v3f64639b_11dd">
+<flow-definition plugin="workflow-job@1268.v6eb_e2ee1a_85a">
   <actions>
     <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@2.2118.v31fd5b_9944b_5" />
     <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@2.2118.v31fd5b_9944b_5">
@@ -30,7 +30,7 @@
       </triggers>
     </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
   </properties>
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@3601.v9b_36a_d99e1cc">
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@3606.v0b_d8b_e512dcf">
     <script>pipeline {
       agent {
           label 'cloud_foundry'

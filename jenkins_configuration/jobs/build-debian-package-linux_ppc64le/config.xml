@@ -16,7 +16,7 @@
         stage('Build') {
             agent {
     dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_18_04/ppc64le"
+        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/ppc64le"
         reuseNode true
         label "linux_ppc64le"
         additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'

@@ -1,6 +1,22 @@
 <list>
   <flow-owner plugin="workflow-job@1268.v6eb_e2ee1a_85a">
+    <job>generate-cf-java-buildpack-data</job>
+    <id>202</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@1268.v6eb_e2ee1a_85a">
+    <job>repository-update-and-tag</job>
+    <id>460</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@1268.v6eb_e2ee1a_85a">
+    <job>async-prof-repo-update</job>
+    <id>458</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@1268.v6eb_e2ee1a_85a">
+    <job>test-cf-java-buildpack-data</job>
+    <id>570</id>
+  </flow-owner>
+  <flow-owner plugin="workflow-job@1268.v6eb_e2ee1a_85a">
     <job>jenkins-configuration-backup</job>
-    <id>589</id>
+    <id>590</id>
   </flow-owner>
 </list>
