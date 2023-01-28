@@ -116,7 +116,7 @@
                 sh '''#!/bin/bash
                     set -ex
                     git init gtest &amp;&amp; cd gtest
-                    git fetch --depth 1 https://github.com/google/googletest.git refs/tags/release-1.8.1
+                    git fetch --depth 1 https://github.com/google/googletest.git refs/tags/v1.13.0
                     git checkout --detach FETCH_HEAD
                 '''
             }
@@ -163,7 +163,6 @@
                     reportFiles: 'JTreport/index.html',
                     reportName: "JT Report ${env.TESTSUITE}"
                 ]
-                junit "test_report_${env.TESTSUITE}/JTwork/**/*.jtr.xml"
                 archiveArtifacts allowEmptyArchive: true, artifacts: "test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log"
             }
         }
@@ -187,7 +186,6 @@
                     reportFiles: 'JTreport/index.html',
                     reportName: "JT Report ${env.TESTSUITE}"
                 ]
-                junit "test_report_${env.TESTSUITE}/JTwork/**/*.jtr.xml"
                 archiveArtifacts allowEmptyArchive: true, artifacts: "test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log"
             }
         }
@@ -211,7 +209,6 @@
                     reportFiles: 'JTreport/index.html',
                     reportName: "JT Report ${env.TESTSUITE}"
                 ]
-                junit "test_report_${env.TESTSUITE}/JTwork/**/*.jtr.xml"
                 archiveArtifacts allowEmptyArchive: true, artifacts: "test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log"
             }
         }
