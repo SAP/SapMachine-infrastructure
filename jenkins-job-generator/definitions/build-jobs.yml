@@ -9,6 +9,7 @@
     extra_configure_options: ''
     extra_configure_options_pr: ''
     windows_devkit: ''
+    gtest_version: release-1.8.1
     trigger: |
         <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
             <triggers/>
@@ -30,6 +31,7 @@
         - '21':
            branch_name: sapmachine
            windows_devkit: 'io.sapmachine.build.devkit.windows-x64:devkit-vs2019:16.11.13'
+           gtest_version: v1.13.0
     platforms: &platforms
         - linux_aarch64:
             architecture: linux-aarch64
@@ -345,7 +347,7 @@
                         sh '''#!/bin/bash
                             set -ex
                             git init gtest && cd gtest
-                            git fetch --depth 1 https://github.com/google/googletest.git refs/tags/v1.13.0
+                            git fetch --depth 1 https://github.com/google/googletest.git refs/tags/{gtest_version}
                             git checkout --detach FETCH_HEAD
                         '''
                     }}

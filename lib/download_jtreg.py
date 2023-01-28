@@ -33,7 +33,7 @@ def main(argv=None):
 
     dir = os.getcwd() if args.dir is None else args.dir
 
-    print(str.format('Downloading "{0}" and extracting to "{1}"', url, dir ))
+    print(str.format('Downloading "{0}" and extracting to "{1}"', url, dir))
 
     archive_path = join(dir, 'jtreg.zip')
     utils.remove_if_exists(archive_path)
