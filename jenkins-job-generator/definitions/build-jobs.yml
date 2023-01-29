@@ -688,7 +688,7 @@
             description: 'enable/disable jtreg runs'
         - bool:
             name: BUILD_INSTALLER_PACKAGES
-            default: false
+            default: true
             description: 'Build platform installer packages, e.g. Windows MSI, Debian packages. Will be set to true when PUBLISH is selected.'
         - bool:
             name: PUBLISH
@@ -862,7 +862,7 @@
                             }}
                             steps {{
                                 script {{
-                                    def job_windows_x86_64 = build job: 'build-{major}-{build_type}-windows_x86_64', propagate: false, wait: flase, parameters:
+                                    def job_windows_x86_64 = build job: 'build-{major}-{build_type}-windows_x86_64', propagate: false, wait: false, parameters:
                                     [
                                         string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
                                         string(name: 'GIT_REF', value: params.GIT_REF),
