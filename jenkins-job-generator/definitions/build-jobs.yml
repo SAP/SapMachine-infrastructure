@@ -238,6 +238,9 @@
             environment {{
                 ARTIFACTORY_CREDS = credentials('openjdk-artifactory')
             }}
+            tools {{
+                jfrog 'jfrog-cli'
+            }}
             stages {{
                 stage("Init") {{
                     steps {{
@@ -394,7 +397,11 @@
                             reportFiles: 'JTreport/index.html',
                             reportName: "JT Report ${{env.TESTSUITE}}"
                         ]
-                        archiveArtifacts allowEmptyArchive: true, artifacts: "test_report_${{env.TESTSUITE}}/JTwork/**/hs_err_pid*.log"
+                        script {{
+                            if (findFiles([glob: 'test_report_${{env.TESTSUITE}}/JTwork/**/hs_err_pid*.log']).size() > 0) {{
+                                archiveArtifacts allowEmptyArchive: true, artifacts: "test_report_${{env.TESTSUITE}}/JTwork/**/hs_err_pid*.log"
+                            }}
+                        }}
                     }}
                 }}
                 stage('Run jtreg jdk') {{
@@ -417,7 +424,11 @@
                             reportFiles: 'JTreport/index.html',
                             reportName: "JT Report ${{env.TESTSUITE}}"
                         ]
-                        archiveArtifacts allowEmptyArchive: true, artifacts: "test_report_${{env.TESTSUITE}}/JTwork/**/hs_err_pid*.log"
+                        script {{
+                            if (findFiles([glob: 'test_report_${{env.TESTSUITE}}/JTwork/**/hs_err_pid*.log']).size() > 0) {{
+                                archiveArtifacts allowEmptyArchive: true, artifacts: "test_report_${{env.TESTSUITE}}/JTwork/**/hs_err_pid*.log"
+                            }}
+                        }}
                     }}
                 }}
                 stage('Run jtreg langtools') {{
@@ -440,12 +451,27 @@
                             reportFiles: 'JTreport/index.html',
                             reportName: "JT Report ${{env.TESTSUITE}}"
                         ]
-                        archiveArtifacts allowEmptyArchive: true, artifacts: "test_report_${{env.TESTSUITE}}/JTwork/**/hs_err_pid*.log"
+                        script {{
+                            if (findFiles([glob: 'test_report_${{env.TESTSUITE}}/JTwork/**/hs_err_pid*.log']).size() > 0) {{
+                                archiveArtifacts allowEmptyArchive: true, artifacts: "test_report_${{env.TESTSUITE}}/JTwork/**/hs_err_pid*.log"
+                            }}
+                        }}
+                    }}
+                }}
+                stage('Publish Artifactory') {{
+                    when {{
+                        expression {{ env.VERIFICATION_RESULT != "2" && (JOB_NAME ==~ /((\S*)(release)(\S*))/ || JOB_NAME ==~ /((\S*)(snapshot)(\S*))/) }}
+                    }}
+                    steps {{
+                        // Show the installed version of JFrog CLI.
+                        jf '-v'
+
+                        // Show the configuration
+                        jf 'c s'
                     }}
                 }}
                 stage('Archive') {{
                     when {{
-                        beforeAgent true
                         expression {{ env.VERIFICATION_RESULT != "2" }}
                     }}
                     steps {{
