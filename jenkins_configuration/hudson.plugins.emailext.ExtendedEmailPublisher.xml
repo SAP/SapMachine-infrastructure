@@ -1,4 +1,4 @@
-<hudson.plugins.emailext.ExtendedEmailPublisherDescriptor plugin="email-ext@2.89">
+<hudson.plugins.emailext.ExtendedEmailPublisherDescriptor plugin="email-ext@2.93">
   <defaultSuffix>rene</defaultSuffix>
   <mailAccount>
     <smtpPort>25</smtpPort>
@@ -6,6 +6,7 @@
     <useTls>false</useTls>
     <advProperties />
     <defaultAccount>true</defaultAccount>
+    <useOAuth2>false</useOAuth2>
   </mailAccount>
   <addAccounts />
   <charset>UTF-8</charset>

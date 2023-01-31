@@ -1,0 +1,15 @@
+<io.jenkins.plugins.jfrog.configuration.JFrogPlatformBuilder_-DescriptorImpl plugin="jfrog@1.0.5">
+  <jfrogInstances>
+    <io.jenkins.plugins.jfrog.configuration.JFrogPlatformInstance>
+      <url>https://common.repositories.cloud.sap</url>
+      <artifactoryUrl>https://common.repositories.cloud.sap/artifactory</artifactoryUrl>
+      <distributionUrl>https://common.repositories.cloud.sap/distribution</distributionUrl>
+      <xrayUrl>https://common.repositories.cloud.sap/xray</xrayUrl>
+      <id>sap-external-artifactory</id>
+      <credentialsConfig>
+        <credentials />
+        <credentialsId>openjdk-artifactory</credentialsId>
+      </credentialsConfig>
+    </io.jenkins.plugins.jfrog.configuration.JFrogPlatformInstance>
+  </jfrogInstances>
+</io.jenkins.plugins.jfrog.configuration.JFrogPlatformBuilder_-DescriptorImpl>

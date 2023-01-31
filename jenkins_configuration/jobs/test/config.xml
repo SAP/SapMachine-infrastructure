@@ -20,7 +20,21 @@
   <concurrentBuild>false</concurrentBuild>
   <builders>
     <hudson.tasks.Shell>
-      <command>curl -u$ARTIFACTORY_USER:$ARTIFACTORY_PWD -O https://common.repositories.cloud.sap/artifactory/naas-deploy-releases-notarization/com/sap/sapmachine/sapmachine-jdk_darwinaarch64/11.0.18/sapmachine-jdk_darwinaarch64-11.0.18.dmg
+      <command>#!/bin/bash
+set -x
+version=11.0.18
+base=https://common.repositories.cloud.sap/artifactory/naas-deploy-releases-notarization/com/sap/sapmachine
+
+rm INTEL* AARCH*
+for format in dmg tar.gz dmg ;do
+    [ $format == "tar.gz" ] &amp;&amp; dstformat="tgz" || dstformat=$format 
+	for platform in aarch intel ;do
+		for type in jdk jre ;do
+            dst=${platform}_${type}_${dstformat}
+			curl -u$ARTIFACTORY_USER:$ARTIFACTORY_PWD -o ${dst^^} ${base}/sapmachine-${type}_darwin${platform}64/${version}/sapmachine-${type}_darwin${platform}64-${version}.${format}
+        done
+	done
+done
 ls -al</command>
       <configuredLocalRules />
     </hudson.tasks.Shell>
