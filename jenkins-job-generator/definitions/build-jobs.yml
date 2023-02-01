@@ -259,19 +259,6 @@
                             }} else {{
                                 env.BUILD_INSTALLER_PACKAGES = params.BUILD_INSTALLER_PACKAGES
                             }}
-                            if (JOB_NAME ==~ /((\S*)(snapshot)(\S*))/) {{
-                                env.ART_TYPE = "snapshot"
-                                env.ART_VERSION = "{major}." + (new java.text.SimpleDateFormat("yyyyMMddHHmmss")).format(new Date())
-                            }} else {{
-                                if (params.RELEASE == true) {{
-                                    env.ART_TYPE = "release"
-                                }} else {{
-                                    env.ART_TYPE = "ea"
-                                }}
-                                sh "python3 SapMachine-Infrastructure/lib/get_art_ver.py"
-                                env.ART_VERSION = readFile "art_vers.txt"
-                            }}
-                            println "env.ART_TYPE: " + env.ART_TYPE + ", env.ART_VERSION: " + env.ART_VERSION
                         }}
                         cleanWs()
                     }}
@@ -292,6 +279,20 @@
                         // credentials are needed to avoid rate limit exceedance in verify_pr.py
                         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
                             script {{
+                                if (JOB_NAME ==~ /((\S*)(snapshot)(\S*))/) {{
+                                    env.ART_TYPE = "snapshot"
+                                    env.ART_VERSION = "{major}." + (new java.text.SimpleDateFormat("yyyyMMddHHmmss")).format(new Date())
+                                }} else {{
+                                    if (params.RELEASE == true) {{
+                                        env.ART_TYPE = "release"
+                                    }} else {{
+                                        env.ART_TYPE = "ea"
+                                    }}
+                                    sh "python3 SapMachine-Infrastructure/lib/get_art_ver.py"
+                                    env.ART_VERSION = readFile "art_vers.txt"
+                                }}
+                                println "env.ART_TYPE: " + env.ART_TYPE + ", env.ART_VERSION: " + env.ART_VERSION
+
                                 if (JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/) {{
                                     def platform = "{platform}"
                                     env.COMMENT = ""
