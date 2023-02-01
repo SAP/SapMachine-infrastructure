@@ -1,0 +1,112 @@
+<project>
+  <actions />
+  <description>Upload MacOS artifacts.</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.plugins.jira.JiraProjectProperty plugin="jira@3.8" />
+    <hudson.plugins.buildblocker.BuildBlockerProperty plugin="build-blocker-plugin@1.7.8">
+      <useBuildBlocker>false</useBuildBlocker>
+      <blockLevel>GLOBAL</blockLevel>
+      <scanQueueFor>DISABLED</scanQueueFor>
+      <blockingJobs />
+    </hudson.plugins.buildblocker.BuildBlockerProperty>
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>-1</daysToKeep>
+        <numToKeep>30</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>5</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>SAPMACHINE_VERSION</name>
+          <description>The SapMachine Release Tag to upload MacOS artifacts for.</description>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>PUBLISH_CASKS</name>
+          <description>When set to true, update homebrew casks.</description>
+          <defaultValue>false</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>DOWNLOAD_URL_PREFIX</name>
+          <description>will be suffixed with e.g. /sapmachine-jdk_darwinaarch64/11.0.18/sapmachine-jdk_darwinaarch64-11.0.18.dmg</description>
+          <defaultValue>https://common.repositories.cloud.sap/artifactory/naas-deploy-releases-notarization/com/sap/sapmachine</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM" />
+  <assignedNode>osxupload</assignedNode>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers />
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>#!/bin/bash
+set -x
+
+# INTEL_JDK_TGZ, INTEL_JRE_TGZ, INTEL_JDK_DMG, INTEL_JRE_DMG, INTEL_SYMBOLS, AARCH_JDK_TGZ, AARCH_JRE_TGZ, AARCH_JDK_DMG, AARCH_JRE_DMG, AARCH_SYMBOLS
+# /sapmachine-jdk_darwinaarch64/11.0.18/sapmachine-jdk_darwinaarch64-11.0.18.dmg , /sapmachine-jre_darwinintel64/11.0.18/sapmachine-jre_darwinintel64-11.0.18.tar.gz
+#  /sapmachine-jdk_darwinintel64/11.0.18/sapmachine-jdk_darwinintel64-11.0.18.dmg
+#https://common.repositories.cloud.sap/artifactory/naas-deploy-releases-notarization/com/sap/sapmachine/sapmachine-jdk_darwinintel64/11.0.18/sapmachine-jdk_darwinintel64-11.0.18.dmg
+# https://common.repositories.cloud.sap/artifactory/naas-deploy-releases-notarization/com/sap/sapmachine/sapmachine-jdk_darwinaarch64/11.0.18/sapmachine-jdk_darwinaarch64-11.0.18.tar.gz
+# /sapmachine-symbols_darwinaarch64/11.0.18/sapmachine-symbols_darwinaarch64-11.0.18.tar.gz
+
+
+for type in jdk jre ;do
+  for platform in aarch intel ;do
+    for suffix in tar.gz dmg ;do
+      [ "$suffix" == "tar.gz" ] &amp;&amp; dsuffix="TGZ" || dsuffix=${suffix^^}
+      curl -u "${ARTIFACTORY_USER}:${ARTIFACTORY_PWD}" -o ${platform^^}_${type^^}_$dsuffix $DOWNLOAD_URL_PREFIX/sapmachine-${type}_darwin${platform}64/${SAPMACHINE_VERSION#sapmachine-}/sapmachine-${type}_darwin${platform}64-${SAPMACHINE_VERSION#sapmachine-}.$suffix
+    done
+  done
+done
+cp INTEL_JDK_TGZ INTEL_SYMBOLS # to be deleted
+cp INTEL_JDK_TGZ AARCH_SYMBOLS # to be deleted
+ls -al</command>
+      <configuredLocalRules />
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers>
+    <hudson.tasks.ArtifactArchiver>
+      <artifacts>INTEL_JDK_TGZ, INTEL_JRE_TGZ, INTEL_JDK_DMG, INTEL_JRE_DMG, INTEL_SYMBOLS, AARCH_JDK_TGZ, AARCH_JRE_TGZ, AARCH_JDK_DMG, AARCH_JRE_DMG, AARCH_SYMBOLS</artifacts>
+      <allowEmptyArchive>false</allowEmptyArchive>
+      <onlyIfSuccessful>false</onlyIfSuccessful>
+      <fingerprint>false</fingerprint>
+      <defaultExcludes>true</defaultExcludes>
+      <caseSensitive>true</caseSensitive>
+      <followSymlinks>true</followSymlinks>
+    </hudson.tasks.ArtifactArchiver>
+    <hudson.plugins.parameterizedtrigger.BuildTrigger plugin="parameterized-trigger@2.45">
+      <configs>
+        <hudson.plugins.parameterizedtrigger.BuildTriggerConfig>
+          <configs>
+            <hudson.plugins.parameterizedtrigger.CurrentBuildParameters />
+          </configs>
+          <projects>osx-upload-processor-test</projects>
+          <condition>ALWAYS</condition>
+          <triggerWithNoParameters>false</triggerWithNoParameters>
+          <triggerFromChildProjects>false</triggerFromChildProjects>
+        </hudson.plugins.parameterizedtrigger.BuildTriggerConfig>
+      </configs>
+    </hudson.plugins.parameterizedtrigger.BuildTrigger>
+  </publishers>
+  <buildWrappers>
+    <org.jenkinsci.plugins.credentialsbinding.impl.SecretBuildWrapper plugin="credentials-binding@523.vd859a_4b_122e6">
+      <bindings>
+        <org.jenkinsci.plugins.credentialsbinding.impl.UsernamePasswordMultiBinding>
+          <credentialsId>openjdk-artifactory</credentialsId>
+          <usernameVariable>ARTIFACTORY_USER</usernameVariable>
+          <passwordVariable>ARTIFACTORY_PWD</passwordVariable>
+        </org.jenkinsci.plugins.credentialsbinding.impl.UsernamePasswordMultiBinding>
+      </bindings>
+    </org.jenkinsci.plugins.credentialsbinding.impl.SecretBuildWrapper>
+  </buildWrappers>
+</project>
