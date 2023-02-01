@@ -92,7 +92,7 @@
     build_types: &build_types
         - snapshot
         - release:
-            addtl_params:
+            addtl_params: |
             - bool:
                 name: PUBLISH
                 default: '{publish_default}'
