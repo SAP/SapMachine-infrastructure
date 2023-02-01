@@ -91,7 +91,7 @@
             devkit_default: '{windows_devkit}'
     build_types: &build_types
         - snapshot
-        - release
+        - release:
             addtl_params:
             - bool:
                 name: PUBLISH
