@@ -260,13 +260,13 @@
                                 env.BUILD_INSTALLER_PACKAGES = params.BUILD_INSTALLER_PACKAGES
                             }}
                             if (JOB_NAME ==~ /((\S*)(snapshot)(\S*))/) {{
-                                env.ART_TYPE = snapshot
+                                env.ART_TYPE = "snapshot"
                                 env.ART_VERSION = "{major}." + (new java.text.SimpleDateFormat("yyyyMMddHHmmss")).format(new Date())
                             }} else {{
                                 if (params.RELEASE == true) {{
-                                    env.ART_TYPE = release
+                                    env.ART_TYPE = "release"
                                 }} else {{
-                                    env.ART_TYPE = ea
+                                    env.ART_TYPE = "ea"
                                 }}
                                 sh "python3 SapMachine-Infrastructure/lib/get_art_ver.py"
                                 env.ART_VERSION = readFile "art_vers.txt"
