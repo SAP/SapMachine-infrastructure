@@ -486,7 +486,7 @@
                         // Upload the JDK archive
                         script {{
                             def jdk_bundle_name = readFile "${{env.WORKSPACE}}/jdk_bundle_name.txt"
-                            jf "rt u " + jdk_bundle_name + " io/sapmachine/build-results/{major}/${{env.ART_TYPE}}/${{env.ART_VERSION}}/{platform}/" + jdk_bundle_name + ".zip"
+                            jf "rt u " + jdk_bundle_name + " io/sapmachine/build-results/{major}/${{env.ART_TYPE}}/${{env.ART_VERSION}}/{platform}/" + jdk_bundle_name
                         }}
 
                         // Upload the test archive
