@@ -5,6 +5,7 @@ All rights reserved. Confidential and proprietary.
 
 import os
 import sys
+import utils
 
 from versions import SapMachineTag
 
