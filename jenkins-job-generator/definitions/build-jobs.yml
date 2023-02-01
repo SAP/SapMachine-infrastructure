@@ -5,7 +5,6 @@
     release_default: false
     docker_agent: ''
     architecture: ''
-    addtl_params: ''
     debarch: ''
     extra_configure_options: ''
     extra_configure_options_pr: ''
@@ -91,16 +90,7 @@
             devkit_default: '{windows_devkit}'
     build_types: &build_types
         - snapshot
-        - release:
-            addtl_params: |
-            - bool:
-                name: PUBLISH
-                default: '{publish_default}'
-                description: 'When set to true, the resulting bundles will be published to GitHub.'
-            - bool:
-                name: RELEASE
-                default: '{release_default}'
-                description: 'When set to true, marks this build as a release build, otherwise as pre-release.'
+        - release
         - pr-validation:
             extra_configure_options_pr: '--with-debug-level=fastdebug'
             trigger: |
@@ -232,7 +222,14 @@
             name: BUILD_INSTALLER_PACKAGES
             default: false
             description: 'Build platform installer packages, e.g. Windows MSI, Debian packages. Will be set to true when PUBLISH is selected.'
-        {addtl_params}
+        - bool:
+            name: PUBLISH
+            default: '{publish_default}'
+            description: 'When set to true, the resulting bundles will be published to GitHub.'
+        - bool:
+            name: RELEASE
+            default: '{release_default}'
+            description: 'When set to true, marks this build as a release build, otherwise as pre-release.'
     dsl: |
         pipeline {{
             agent {{
