@@ -53,7 +53,7 @@ if [[ ! -z $SAPMACHINE_VERSION ]]; then
   _GIT_TAG=" -t $SAPMACHINE_VERSION"
 fi
 if [[ ! -z $BUILD_NUMBER ]]; then
-  _BUILD_NUMBER="-b $BUILD_NUMBER"
+  _BUILD_NUMBER=" -b $BUILD_NUMBER"
 fi
 if [ "$RELEASE" == true ]; then
   _RELEASE=" -r"

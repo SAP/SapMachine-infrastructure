@@ -259,6 +259,19 @@
                             }} else {{
                                 env.BUILD_INSTALLER_PACKAGES = params.BUILD_INSTALLER_PACKAGES
                             }}
+                            if (JOB_NAME ==~ /((\S*)(snapshot)(\S*))/) {{
+                                env.ART_TYPE = snapshot
+                                env.ART_VERSION = "{major}." + (new java.text.SimpleDateFormat("yyyyMMddHHmmss")).format(new Date())
+                            }} else {{
+                                if (params.RELEASE == true) {{
+                                    env.ART_TYPE = release
+                                }} else {{
+                                    env.ART_TYPE = ea
+                                }}
+                                sh "python3 SapMachine-Infrastructure/lib/get_art_ver.py"
+                                env.ART_VERSION = readFile "art_vers.txt"
+                            }}
+                            println "env.ART_TYPE: " + env.ART_TYPE + ", env.ART_VERSION: " + env.ART_VERSION
                         }}
                         cleanWs()
                     }}
@@ -468,6 +481,15 @@
 
                         // Show the configuration
                         jf 'c s'
+
+                        // Upload the JDK archive
+                        script {{
+                            def jdk_bundle_name = readFile "${{env.WORKSPACE}}/jdk_bundle_name.txt"
+                            jf "rt u " + jdk_bundle_name + " io/sapmachine/build-results/{major}/${{env.ART_TYPE}}/${{env.ART_VERSION}}/{platform}/" + jdk_bundle_name + ".zip"
+                        }}
+
+                        // Upload the test archive
+                        jf 'rt u test.zip io/sapmachine/build-results/{major}/${{env.ART_TYPE}}/${{env.ART_VERSION}}/{platform}/test.zip'
                     }}
                 }}
                 stage('Archive') {{
