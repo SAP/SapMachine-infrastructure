@@ -55,6 +55,20 @@
                 // credentials are needed to avoid rate limit exceedance in verify_pr.py
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
                     script {
+                        if (JOB_NAME ==~ /((\S*)(snapshot)(\S*))/) {
+                            env.ART_TYPE = "snapshot"
+                            env.ART_VERSION = "20." + (new java.text.SimpleDateFormat("yyyyMMddHHmmss")).format(new Date())
+                        } else {
+                            if (params.RELEASE == true) {
+                                env.ART_TYPE = "release"
+                            } else {
+                                env.ART_TYPE = "ea"
+                            }
+                            sh "python3 SapMachine-Infrastructure/lib/get_art_ver.py"
+                            env.ART_VERSION = readFile "art_vers.txt"
+                        }
+                        println "env.ART_TYPE: " + env.ART_TYPE + ", env.ART_VERSION: " + env.ART_VERSION
+
                         if (JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/) {
                             def platform = "linux_alpine_x86_64"
                             env.COMMENT = ""
@@ -293,6 +307,15 @@
 
                 // Show the configuration
                 jf 'c s'
+
+                // Upload the JDK archive
+                script {
+                    def jdk_bundle_name = readFile "${env.WORKSPACE}/jdk_bundle_name.txt"
+                    jf "rt u " + jdk_bundle_name + " io/sapmachine/build-results/20/${env.ART_TYPE}/${env.ART_VERSION}/linux_alpine_x86_64/" + jdk_bundle_name
+                }
+
+                // Upload the test archive
+                jf 'rt u test.zip io/sapmachine/build-results/20/${env.ART_TYPE}/${env.ART_VERSION}/linux_alpine_x86_64/test.zip'
             }
         }
         stage('Archive') {

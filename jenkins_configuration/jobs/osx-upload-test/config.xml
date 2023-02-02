@@ -50,27 +50,16 @@
   <builders>
     <hudson.tasks.Shell>
       <command>#!/bin/bash
-set -x
-
-# INTEL_JDK_TGZ, INTEL_JRE_TGZ, INTEL_JDK_DMG, INTEL_JRE_DMG, INTEL_SYMBOLS, AARCH_JDK_TGZ, AARCH_JRE_TGZ, AARCH_JDK_DMG, AARCH_JRE_DMG, AARCH_SYMBOLS
-# /sapmachine-jdk_darwinaarch64/11.0.18/sapmachine-jdk_darwinaarch64-11.0.18.dmg , /sapmachine-jre_darwinintel64/11.0.18/sapmachine-jre_darwinintel64-11.0.18.tar.gz
-#  /sapmachine-jdk_darwinintel64/11.0.18/sapmachine-jdk_darwinintel64-11.0.18.dmg
-#https://common.repositories.cloud.sap/artifactory/naas-deploy-releases-notarization/com/sap/sapmachine/sapmachine-jdk_darwinintel64/11.0.18/sapmachine-jdk_darwinintel64-11.0.18.dmg
-# https://common.repositories.cloud.sap/artifactory/naas-deploy-releases-notarization/com/sap/sapmachine/sapmachine-jdk_darwinaarch64/11.0.18/sapmachine-jdk_darwinaarch64-11.0.18.tar.gz
-# /sapmachine-symbols_darwinaarch64/11.0.18/sapmachine-symbols_darwinaarch64-11.0.18.tar.gz
-
-
-for type in jdk jre ;do
-  for platform in aarch intel ;do
+for platform in aarch intel ;do
+  for type in jdk jre ;do
     for suffix in tar.gz dmg ;do
       [ "$suffix" == "tar.gz" ] &amp;&amp; dsuffix="TGZ" || dsuffix=${suffix^^}
       curl -u "${ARTIFACTORY_USER}:${ARTIFACTORY_PWD}" -o ${platform^^}_${type^^}_$dsuffix $DOWNLOAD_URL_PREFIX/sapmachine-${type}_darwin${platform}64/${SAPMACHINE_VERSION#sapmachine-}/sapmachine-${type}_darwin${platform}64-${SAPMACHINE_VERSION#sapmachine-}.$suffix
     done
   done
+  cp ${platform^^}_JRE_TGZ ${platform^^}_SYMBOLS # to be deleted
 done
-cp INTEL_JDK_TGZ INTEL_SYMBOLS # to be deleted
-cp INTEL_JDK_TGZ AARCH_SYMBOLS # to be deleted
-ls -al</command>
+</command>
       <configuredLocalRules />
     </hudson.tasks.Shell>
   </builders>
