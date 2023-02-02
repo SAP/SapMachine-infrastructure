@@ -1,8 +1,6 @@
 - defaults:
     name: 'sapmachine_global'
     build_alpine: true
-    publish_default: false
-    release_default: false
     docker_agent: ''
     architecture: ''
     debarch: ''
@@ -193,11 +191,11 @@
                 description: 'Build platform installer packages, e.g. Windows MSI, Debian packages. Will be set to true when PUBLISH is selected.'
             - bool:
                 name: PUBLISH
-                default: '{publish_default}'
+                default: false
                 description: 'When set to true, the resulting bundles will be published to GitHub.'
             - bool:
                 name: RELEASE
-                default: '{release_default}'
+                default: false
                 description: 'When set to true, marks this build as a release build, otherwise as pre-release.'
         - pr-validation:
             extra_configure_options_pr: '--with-debug-level=fastdebug'
@@ -793,11 +791,11 @@
             description: 'Build platform installer packages, e.g. Windows MSI, Debian packages. Will be set to true when PUBLISH is selected.'
         - bool:
             name: PUBLISH
-            default: '{publish_default}'
+            default: false
             description: 'When set to true, the resulting bundles will be published to GitHub. (Only used in release builds!)'
         - bool:
             name: RELEASE
-            default: '{release_default}'
+            default: false
             description: 'When set to true, marks this build as a release build, otherwise as pre-release. (Only used in release builds!)'
         - string:
             name: hotspot_test_groups
