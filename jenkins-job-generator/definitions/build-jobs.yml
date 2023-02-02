@@ -4,6 +4,7 @@
     docker_agent: ''
     architecture: ''
     debarch: ''
+    devkit_default: ''
     extra_configure_options: ''
     extra_configure_options_pr: ''
     windows_devkit: ''
@@ -102,7 +103,6 @@
                         label "{platform}"
                     }}
                 }}
-            devkit_default: ''
         - linux_ppc64le:
             architecture: linux-ppc64le
             debarch: ppc64el
