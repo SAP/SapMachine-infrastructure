@@ -14,6 +14,55 @@
         <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
             <triggers/>
         </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+    build_params:
+        - string:
+            name: SAPMACHINE_GIT_REPOSITORY
+            default: 'https://github.com/SAP/SapMachine.git'
+            description: 'The Git repository to use.'
+        - string:
+            name: GIT_REF
+            default: '{branch_name}'
+            description: 'The Git tag, branch or commit to build.'
+        - string:
+            name: SAPMACHINE_VERSION
+            default: ''
+            description: 'Either a SapMachine Release Tag or a JDK Major version. If empty, GIT_REF is used.'
+        - string:
+            name: BUILD_NUMBER
+            default: ''
+            description: 'Sets the version build number explicitly.'
+        - string:
+            name: SAPMACHINE_ARCHIVE_NAME_PREFIX
+            default: 'sapmachine{major}-{platform}'
+            description: 'The prefix of the bundle archive.'
+        - string:
+            name: DEVKIT
+            default: '{devkit_default}'
+            description: 'Devkit, could be either a path that locally exists or the GAV coordinates to a tar.gz archive to be downloaded and extracted.'
+        - string:
+            name: EXTRA_CONFIGURE_OPTIONS
+            default: '{extra_configure_options} {extra_configure_options_pr}'
+            description: 'Extra configure options passed directly to configure script.'
+        - string:
+            name: hotspot_test_groups
+            default: ':tier1'
+            description: 'Select the test group for jtreg hotspot tests. Empty means disabled.'
+        - string:
+            name: jdk_test_groups
+            default: ':tier1'
+            description: 'Select the test group for jtreg jdk tests. Empty means disabled.'
+        - string:
+            name: langtools_test_groups
+            default: '"jdk tools lib"'
+            description: 'Select the test group for jtreg langtools tests. Empty means disabled.'
+        - bool:
+            name: RUN_TESTS
+            default: true
+            description: 'enable/disable jtreg runs'
+        - bool:
+            name: BUILD_INSTALLER_PACKAGES
+            default: false
+            description: 'Build platform installer packages, e.g. Windows MSI, Debian packages. Will be set to true when PUBLISH is selected.'
     majors: &majors
         - '11':
            branch_name: sapmachine11
@@ -90,7 +139,64 @@
             devkit_default: '{windows_devkit}'
     build_types: &build_types
         - snapshot
-        - release
+        - release:
+            build_params:
+            - string:
+                name: SAPMACHINE_GIT_REPOSITORY
+                default: 'https://github.com/SAP/SapMachine.git'
+                description: 'The Git repository to use.'
+            - string:
+                name: GIT_REF
+                default: '{branch_name}'
+                description: 'The Git tag, branch or commit to build.'
+            - string:
+                name: SAPMACHINE_VERSION
+                default: ''
+                description: 'Either a SapMachine Release Tag or a JDK Major version. If empty, GIT_REF is used.'
+            - string:
+                name: BUILD_NUMBER
+                default: ''
+                description: 'Sets the version build number explicitly.'
+            - string:
+                name: SAPMACHINE_ARCHIVE_NAME_PREFIX
+                default: 'sapmachine{major}-{platform}'
+                description: 'The prefix of the bundle archive.'
+            - string:
+                name: DEVKIT
+                default: '{devkit_default}'
+                description: 'Devkit, could be either a path that locally exists or the GAV coordinates to a tar.gz archive to be downloaded and extracted.'
+            - string:
+                name: EXTRA_CONFIGURE_OPTIONS
+                default: '{extra_configure_options} {extra_configure_options_pr}'
+                description: 'Extra configure options passed directly to configure script.'
+            - string:
+                name: hotspot_test_groups
+                default: ':tier1'
+                description: 'Select the test group for jtreg hotspot tests. Empty means disabled.'
+            - string:
+                name: jdk_test_groups
+                default: ':tier1'
+                description: 'Select the test group for jtreg jdk tests. Empty means disabled.'
+            - string:
+                name: langtools_test_groups
+                default: '"jdk tools lib"'
+                description: 'Select the test group for jtreg langtools tests. Empty means disabled.'
+            - bool:
+                name: RUN_TESTS
+                default: true
+                description: 'enable/disable jtreg runs'
+            - bool:
+                name: BUILD_INSTALLER_PACKAGES
+                default: false
+                description: 'Build platform installer packages, e.g. Windows MSI, Debian packages. Will be set to true when PUBLISH is selected.'
+            - bool:
+                name: PUBLISH
+                default: '{publish_default}'
+                description: 'When set to true, the resulting bundles will be published to GitHub.'
+            - bool:
+                name: RELEASE
+                default: '{release_default}'
+                description: 'When set to true, marks this build as a release build, otherwise as pre-release.'
         - pr-validation:
             extra_configure_options_pr: '--with-debug-level=fastdebug'
             trigger: |
@@ -173,63 +279,7 @@
             artifact-num-to-keep: 1
         - raw:
             xml: '{trigger}'
-    parameters:
-        - string:
-            name: SAPMACHINE_GIT_REPOSITORY
-            default: 'https://github.com/SAP/SapMachine.git'
-            description: 'The Git repository to use.'
-        - string:
-            name: GIT_REF
-            default: '{branch_name}'
-            description: 'The Git tag, branch or commit to build.'
-        - string:
-            name: SAPMACHINE_VERSION
-            default: ''
-            description: 'Either a SapMachine Release Tag or a JDK Major version. If empty, GIT_REF is used.'
-        - string:
-            name: BUILD_NUMBER
-            default: ''
-            description: 'Sets the version build number explicitly.'
-        - string:
-            name: SAPMACHINE_ARCHIVE_NAME_PREFIX
-            default: 'sapmachine{major}-{platform}'
-            description: 'The prefix of the bundle archive.'
-        - string:
-            name: DEVKIT
-            default: '{devkit_default}'
-            description: 'Devkit, could be either a path that locally exists or the GAV coordinates to a tar.gz archive to be downloaded and extracted.'
-        - string:
-            name: EXTRA_CONFIGURE_OPTIONS
-            default: '{extra_configure_options} {extra_configure_options_pr}'
-            description: 'Extra configure options passed directly to configure script.'
-        - string:
-            name: hotspot_test_groups
-            default: ':tier1'
-            description: 'Select the test group for jtreg hotspot tests. Empty means disabled.'
-        - string:
-            name: jdk_test_groups
-            default: ':tier1'
-            description: 'Select the test group for jtreg jdk tests. Empty means disabled.'
-        - string:
-            name: langtools_test_groups
-            default: '"jdk tools lib"'
-            description: 'Select the test group for jtreg langtools tests. Empty means disabled.'
-        - bool:
-            name: RUN_TESTS
-            default: true
-            description: 'enable/disable jtreg runs'
-        - bool:
-            name: BUILD_INSTALLER_PACKAGES
-            default: false
-            description: 'Build platform installer packages, e.g. Windows MSI, Debian packages. Will be set to true when PUBLISH is selected.'
-        - bool:
-            name: PUBLISH
-            default: '{publish_default}'
-            description: 'When set to true, the resulting bundles will be published to GitHub.'
-        - bool:
-            name: RELEASE
-            default: '{release_default}'
-            description: 'When set to true, marks this build as a release build, otherwise as pre-release.'
+    parameters: {build_params}
     dsl: |
         pipeline {{
             agent {{
