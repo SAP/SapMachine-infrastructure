@@ -5,8 +5,8 @@
     architecture: ''
     debarch: ''
     devkit_default: ''
-    extra_configure_options: ''
     windows_devkit: ''
+    extra_configure_options: ''
     gtest_version: release-1.8.1
     trigger: |
         <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
@@ -146,23 +146,45 @@
             stages {{
                 stage("Init") {{
                     steps {{
+                        // update GitHub status first, if required
                         script {{
                             if (JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/) {{
                                 setGitHubPullRequestStatus context: "validate-pr-{major}-{platform}", state: 'PENDING'
                             }}
                             env.VERIFICATION_RESULT = "1"
+                        }}
+
+                        // trigger workspace cleanup
+                        cleanWs()
+
+                        // check/configure some job parameters
+                        script {{
                             if (params.SAPMACHINE_VERSION.isEmpty()) {{
                                 env.SAPMACHINE_VERSION = params.GIT_REF
                             }} else {{
                                 env.SAPMACHINE_VERSION = params.SAPMACHINE_VERSION
                             }}
+
                             if (params.PUBLISH == true) {{
                                 env.BUILD_INSTALLER_PACKAGES = true
                             }} else {{
                                 env.BUILD_INSTALLER_PACKAGES = params.BUILD_INSTALLER_PACKAGES
                             }}
+
+                            // calculate artifactory version number
+                            // release jobs need to have a conforming SAPMACHINE_VERSION tag
+                            if (JOB_NAME ==~ /((\S*)(release)(\S*))/) {{
+                                def m = (env.SAPMACHINE_VERSION =~ /sapmachine-((\d+(\.\d+)*)(\+(\d+))?)$/)
+                                if (m) {{
+                                    env.ART_VERSION = m.group(1)
+                                }} else {{
+                                    error(env.SAPMACHINE_VERSION + " is no valid SapMachine version tag.")
+                                }}
+                            }} else {{
+                                env.ART_VERSION = "snapshot-{major}-" + (new java.text.SimpleDateFormat("yyyyMMddHHmmss")).format(new Date())
+                            }}
+                            println "env.ART_VERSION: " + env.ART_VERSION
                         }}
-                        cleanWs()
                     }}
                 }}
                 stage("Checkout Infrastructure Repository") {{
@@ -177,38 +199,26 @@
                 }}
                 stage("Verify PR") {{
                     {docker_agent}
+                    when {{
+                        beforeAgent true
+                        expression {{ JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/ }}
+                    }}
                     steps {{
                         // credentials are needed to avoid rate limit exceedance in verify_pr.py
                         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
                             script {{
-                                if (JOB_NAME ==~ /((\S*)(snapshot)(\S*))/) {{
-                                    env.ART_TYPE = "snapshot"
-                                    env.ART_VERSION = "{major}." + (new java.text.SimpleDateFormat("yyyyMMddHHmmss")).format(new Date())
-                                }} else {{
-                                    if (params.RELEASE == true) {{
-                                        env.ART_TYPE = "release"
-                                    }} else {{
-                                        env.ART_TYPE = "ea"
-                                    }}
-                                    sh "python3 SapMachine-Infrastructure/lib/get_art_ver.py"
-                                    env.ART_VERSION = readFile "art_vers.txt"
+                                def platform = "{platform}"
+                                env.COMMENT = ""
+                                if (platform == 'linux_x86_64') {{
+                                    env.COMMENT = "-c"
                                 }}
-                                println "env.ART_TYPE: " + env.ART_TYPE + ", env.ART_VERSION: " + env.ART_VERSION
+                                env.VERIFICATION_RESULT = sh(
+                                    script: "python3 SapMachine-Infrastructure/lib/verify_pr.py -p ${{env.GITHUB_PR_NUMBER}} ${{env.COMMENT}}",
+                                    returnStatus: true
+                                )
 
-                                if (JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/) {{
-                                    def platform = "{platform}"
-                                    env.COMMENT = ""
-                                    if (platform == 'linux_x86_64') {{
-                                        env.COMMENT = "-c"
-                                    }}
-                                    env.VERIFICATION_RESULT = sh(
-                                        script: "python3 SapMachine-Infrastructure/lib/verify_pr.py -p ${{env.GITHUB_PR_NUMBER}} ${{env.COMMENT}}",
-                                        returnStatus: true
-                                    )
-
-                                    if (env.VERIFICATION_RESULT == "0") {{
-                                        error("Pull Request Verification failed")
-                                    }}
+                                if (env.VERIFICATION_RESULT == "0") {{
+                                    error("Pull Request Verification failed")
                                 }}
                             }}
                         }}
@@ -388,11 +398,12 @@
                         // Upload the JDK archive
                         script {{
                             def jdk_bundle_name = readFile "${{env.WORKSPACE}}/jdk_bundle_name.txt"
-                            jf "rt u " + jdk_bundle_name + " io/sapmachine/build-results/{major}/${{env.ART_TYPE}}/${{env.ART_VERSION}}/{platform}/" + jdk_bundle_name
+                            println "JDK Bundle name: \"" + jdk_bundle_name + "\""
+                            jf "rt u " + jdk_bundle_name + " sapmachine-mvn/io/sapmachine/build-results/{platform}/${{env.ART_VERSION}}/" + jdk_bundle_name.trim()
                         }}
 
                         // Upload the test archive
-                        jf 'rt u test.zip io/sapmachine/build-results/{major}/${{env.ART_TYPE}}/${{env.ART_VERSION}}/{platform}/test.zip'
+                        jf 'rt u test.zip sapmachine-mvn/io/sapmachine/build-results/{platform}/${{env.ART_VERSION}}/test.zip'
                     }}
                 }}
                 stage('Archive') {{
@@ -669,7 +680,7 @@
         - bool:
             name: BUILD_INSTALLER_PACKAGES
             default: false
-            description: 'Build platform installer packages, e.g. Windows MSI, Debian packages. Will be set to true when PUBLISH is selected.'
+            description: 'Build platform installer packages, e.g. Windows MSI, Debian packages.'
     dsl: *build_dsl
 
 - job-template:
@@ -732,10 +743,6 @@
             name: RUN_TESTS
             default: true
             description: 'enable/disable jtreg runs'
-        - bool:
-            name: BUILD_INSTALLER_PACKAGES
-            default: false
-            description: 'Build platform installer packages, e.g. Windows MSI, Debian packages. Will be set to true when PUBLISH is selected.'
         - bool:
             name: PUBLISH
             default: false
@@ -802,7 +809,7 @@
         - bool:
             name: BUILD_INSTALLER_PACKAGES
             default: true
-            description: 'Build platform installer packages, e.g. Windows MSI, Debian packages. Will be set to true when PUBLISH is selected.'
+            description: 'Build platform installer packages, e.g. Windows MSI, Debian packages.'
         - bool:
             name: PUBLISH
             default: false
