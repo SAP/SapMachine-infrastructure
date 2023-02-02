@@ -6,7 +6,6 @@
     debarch: ''
     devkit_default: ''
     extra_configure_options: ''
-    extra_configure_options_pr: ''
     windows_devkit: ''
     gtest_version: release-1.8.1
     trigger: |
@@ -89,7 +88,7 @@
     build_types: &build_types
         - snapshot
         - pr-validation:
-            extra_configure_options_pr: '--with-debug-level=fastdebug'
+            extra_configure_options: '--with-debug-level=fastdebug'
             trigger: |
                 <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
                     <triggers>
@@ -649,7 +648,7 @@
             description: 'Devkit, could be either a path that locally exists or the GAV coordinates to a tar.gz archive to be downloaded and extracted.'
         - string:
             name: EXTRA_CONFIGURE_OPTIONS
-            default: '{extra_configure_options} {extra_configure_options_pr}'
+            default: '{extra_configure_options}'
             description: 'Extra configure options passed directly to configure script.'
         - string:
             name: hotspot_test_groups
@@ -715,7 +714,7 @@
             description: 'Devkit, could be either a path that locally exists or the GAV coordinates to a tar.gz archive to be downloaded and extracted.'
         - string:
             name: EXTRA_CONFIGURE_OPTIONS
-            default: '{extra_configure_options} {extra_configure_options_pr}'
+            default: '{extra_configure_options}'
             description: 'Extra configure options passed directly to configure script.'
         - string:
             name: hotspot_test_groups
