@@ -140,6 +140,8 @@
     build_types: &build_types
         - snapshot
         - release:
+            extra_configure_options: ''
+            extra_configure_options_pr: ''
             build_params:
             - string:
                 name: SAPMACHINE_GIT_REPOSITORY
