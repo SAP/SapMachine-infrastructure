@@ -7,10 +7,10 @@
         - build-discarder:
             num-to-keep: 20
         - github:
-            url: 'https://github.com/SAP/SapMachine-Infrastructure.git'
+            url: 'https://github.com/SAP/SapMachine-infrastructure'
     scm:
         - git:
-            url: 'https://github.com/SAP/SapMachine-Infrastructure.git'
+            url: 'https://github.com/SAP/SapMachine-infrastructure'
             branches:
                 - master
             included-regions:
@@ -29,7 +29,7 @@
         - build-discarder:
             num-to-keep: 50
         - github:
-            url: 'https://github.com/SAP/SapMachine-Infrastructure.git'
+            url: 'https://github.com/SAP/SapMachine-infrastructure'
         - raw:
             xml: |
                 <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
