@@ -41,6 +41,14 @@ redirect_to:
 ---
 '''
 
+latest_template_download = '''---
+layout: default
+title: Latest SapMachine ${major} Release for ${platform}
+redirect_to:
+  - ${url}
+---
+'''
+
 class SapMachineMajorVersion:
     def __init__(self, major):
         self.major = major
@@ -228,6 +236,23 @@ def main(argv=None):
             'commit_message': str.format('Updated latest link for SapMachine {0}', major)
         })
 
+        for i in list(json_root['assets'][major].keys()):
+            for j in list(json_root['assets'][major][i]):
+                for k in range(len(json_root['assets'][major][i])):
+                    for imageType in list(json_root['assets'][major][i][k]):
+                        if (imageType == "jdk" or imageType == "jre"):
+                            for platform in list(json_root['assets'][major][i][k][imageType]):
+                                
+                                files.append({
+                                    'location': join('latest', str(major), str(platform), str(imageType), 'index.md'),
+                                    'data': Template(latest_template_download).substitute(
+                                        major = major,
+                                        platform = str(platform),
+                                        url = str(json_root['assets'][major][i][k][imageType][platform])
+                                    ),
+                                    'commit_message': str.format('Updated latest link for SapMachine {0}, {1}/{2}', major, str(platform), str(imageType))
+                                })        
+								
     push_to_git(files)
 
     return 0
