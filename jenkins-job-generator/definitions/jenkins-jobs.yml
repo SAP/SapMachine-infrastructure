@@ -19,6 +19,11 @@
     triggers:
         - github
     wrappers:
+        - credentials-binding:
+            - username-password-separated:
+                credential-id: sapmachine-jenkins
+                username: JENKINS_USER
+                password: JENKINS_PASSWORD
         - docker-custom-build-env:
             image-type: 'dockerfile'
             context-path: "dockerfiles/infrastructure"
