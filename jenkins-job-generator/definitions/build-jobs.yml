@@ -839,38 +839,40 @@
             }}
             stages {{
                 stage('Trigger Builds') {{
-                    script {{
-                        def platforms = [
-                            "linux_aarch64": params.BUILD_LINUX_AARCH64,
-                            "linux_alpine_x86_64": params.BUILD_LINUX_ALPINE_X86_64,
-                            "linux_ppc64le": params.BUILD_LINUX_PPC64LE,
-                            "linux_x86_64": params.BUILD_LINUX_X86_64,
-                            "macos_aarch64": params.BUILD_MACOS_ARM_64,
-                            "macos_x86_64": params.BUILD_MACOS_X86_64,
-                            "windows_x86_64": params.BUILD_WINDOWS_X86_64
-                        ]
+                    steps {{
+                        script {{
+                            def platforms = [
+                                "linux_aarch64": params.BUILD_LINUX_AARCH64,
+                                "linux_alpine_x86_64": params.BUILD_LINUX_ALPINE_X86_64,
+                                "linux_ppc64le": params.BUILD_LINUX_PPC64LE,
+                                "linux_x86_64": params.BUILD_LINUX_X86_64,
+                                "macos_aarch64": params.BUILD_MACOS_ARM_64,
+                                "macos_x86_64": params.BUILD_MACOS_X86_64,
+                                "windows_x86_64": params.BUILD_WINDOWS_X86_64
+                            ]
 
-                        for (p in platforms) {{
-                            if (p.value) {{
-                                println "Starting build for " + p.key + "(build=" + p.value + ")."
-                                build job: 'build-{major}-{build_type}-' + p.value,
-                                    propagate: false,
-                                    wait: false,
-                                    parameters: [
-                                        string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
-                                        string(name: 'GIT_REF', value: params.GIT_REF),
-                                        string(name: 'SAPMACHINE_VERSION', value: params.SAPMACHINE_VERSION),
-                                        string(name: 'JDK_BUILD', value: params.JDK_BUILD),
-                                        string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
-                                        string(name: 'jdk_test_groups', value: params.jdk_test_groups),
-                                        string(name: 'langtools_test_groups', value: params.langtools_test_groups),
-                                        [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
-                                        [$class: 'BooleanParameterValue', name: 'BUILD_INSTALLER_PACKAGES', value: params.BUILD_INSTALLER_PACKAGES],
-                                        [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
-                                        [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
-                                    ]
-                            }} else {{
-                                println "Skipping build for " + p.key + "(build=" + p.value + ")."
+                            for (p in platforms) {{
+                                if (p.value) {{
+                                    println "Starting build for " + p.key + "(build=" + p.value + ")."
+                                    build job: 'build-{major}-{build_type}-' + p.value,
+                                        propagate: false,
+                                        wait: false,
+                                        parameters: [
+                                            string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
+                                            string(name: 'GIT_REF', value: params.GIT_REF),
+                                            string(name: 'SAPMACHINE_VERSION', value: params.SAPMACHINE_VERSION),
+                                            string(name: 'JDK_BUILD', value: params.JDK_BUILD),
+                                            string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
+                                            string(name: 'jdk_test_groups', value: params.jdk_test_groups),
+                                            string(name: 'langtools_test_groups', value: params.langtools_test_groups),
+                                            [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
+                                            [$class: 'BooleanParameterValue', name: 'BUILD_INSTALLER_PACKAGES', value: params.BUILD_INSTALLER_PACKAGES],
+                                            [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
+                                            [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
+                                        ]
+                                }} else {{
+                                    println "Skipping build for " + p.key + "(build=" + p.value + ")."
+                                }}
                             }}
                         }}
                     }}
