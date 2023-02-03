@@ -2,15 +2,6 @@
     name: 'sapmachine_global'
     build_alpine: true
     docker_agent: ''
-    docker_agent2: |
-        agent {
-            dockerfile {
-                dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/arm64"
-                reuseNode true
-                label "linux_aarch64"
-                additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
-            }
-        }
     architecture: ''
     debarch: ''
     devkit_default: ''
@@ -44,7 +35,7 @@
         - linux_aarch64:
             architecture: linux-aarch64
             debarch: arm64
-            docker_agent: |
+            docker_agent: &docker_agent_aarch64 |
                 agent {{
                     dockerfile {{
                         dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/arm64"
@@ -53,9 +44,10 @@
                         additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
                     }}
                 }}
+            docker_agent_verify: *docker_agent_aarch64
             devkit_default: 'io.sapmachine.build.devkit.linux-aarch64:devkit-fedora-gcc:21-8.3.0-nogold2'
         - linux_alpine_x86_64:
-            docker_agent: |
+            docker_agent: &docker_agent_alpine_x86_64 |
                 agent {{
                     dockerfile {{
                         dir "SapMachine-Infrastructure/dockerfiles/alpine_3/x86_64"
@@ -63,10 +55,11 @@
                         label "linux_alpine_x86_64"
                     }}
                 }}
+            docker_agent_verify: *docker_agent_alpine_x86_64
         - linux_ppc64le:
             architecture: linux-ppc64le
             debarch: ppc64el
-            docker_agent: |
+            docker_agent: &docker_agent_ppc64le |
                 agent {{
                     dockerfile {{
                         dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/ppc64le"
@@ -75,11 +68,12 @@
                         additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
                     }}
                 }}
+            docker_agent_verify: *docker_agent_ppc64le
             devkit_default: 'io.sapmachine.build.devkit.linux-ppc64le:devkit-rhel-gcc:7-8.3.0-nogold2'
         - linux_x86_64:
             architecture: linux-x64
             debarch: amd64
-            docker_agent: |
+            docker_agent: &docker_agent_x86_64 |
                 agent {{
                     dockerfile {{
                         dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/x86_64"
@@ -88,18 +82,23 @@
                         additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
                     }}
                 }}
+            docker_agent_verify: *docker_agent_x86_64
             devkit_default: 'io.sapmachine.build.devkit.linux-x64:devkit-fedora-gcc:12-8.3.0-nogold2'
         - macos_x86_64:
             devkit_default: 'io.sapmachine.build.devkit.macos:devkit-xcode:13.1'
             docker_agent: ''
+            docker_agent_verify: ''
         - macos_aarch64:
             devkit_default: 'io.sapmachine.build.devkit.macos:devkit-xcode:13.1'
             docker_agent: ''
+            docker_agent_verify: ''
         - windows_x86_64:
             devkit_default: '{windows_devkit}'
             docker_agent: ''
+            docker_agent_verify: ''
     build_types: &build_types
         - snapshot
+            docker_agent_verify: ''
         - pr-validation:
             extra_configure_options: '--with-debug-level=fastdebug'
             trigger: |
@@ -145,9 +144,9 @@
                         </org.jenkinsci.plugins.github.pullrequest.GitHubPRTrigger>
                     </triggers>
                 </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
-            verify_step: |
+            verify_pre: |
                 stage("Verify PR") {{
-                    {docker_agent}
+            verify_step: |
                     steps {{
                         // credentials are needed to avoid rate limit exceedance in verify_pr.py
                         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
@@ -234,6 +233,8 @@
                         '''
                     }}
                 }}
+                {verify_pre}
+                {docker_agent_verify}
                 {verify_step}
                 stage("Checkout SapMachine Repository") {{
                     when {{
@@ -611,19 +612,19 @@
 - project:
     name: builds
     major: *majors
-    build_type: *build_types
     platform: *platforms
+    build_type: *build_types
     exclude:
         - platform: linux_alpine_x86_64
           major: '11'
     jobs:
         - build-{major}-{build_type}-{platform}
         - build-{major}-release-{platform}
+            docker_agent_verify: ''
 
 - project:
     name: service-builds
     major: *majors
-    platform: *platforms
     jobs:
         - build-service-snapshot-{major}
         - build-service-release-{major}
