@@ -626,6 +626,7 @@
 - project:
     name: service-builds
     major: *majors
+    platform: ''
     jobs:
         - build-service-snapshot-{major}
         - build-service-release-{major}
