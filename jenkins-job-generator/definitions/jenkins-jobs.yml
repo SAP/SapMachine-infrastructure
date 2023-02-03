@@ -1,5 +1,5 @@
 - job:
-    name: jenkins-job-generator-beta
+    name: jenkins-job-generator
     description: 'Generate/Update Jenkins jobs from templates.'
     project-type: freestyle
     concurrent: false
@@ -29,94 +29,8 @@
             context-path: "dockerfiles/infrastructure"
     builders:
         - shell: "export HOME=$WORKSPACE_TMP && cd jenkins-job-generator && jenkins-jobs --conf jenkins_jobs_default.ini --user ${JENKINS_USER} --password ${JENKINS_PASSWORD} update --delete-old ./definitions"
-
-- job:
-    name: jenkins-job-generator-trigger
-    description: 'This produces a trigger for running the jenkins job generator.'
-    project-type: freestyle
-    disabled: true
-    concurrent: false
-    properties:
-        - build-discarder:
-            num-to-keep: 20
-        - github:
-            url: 'https://github.com/SAP/SapMachine-infrastructure'
-    scm:
-        - git:
-            url: 'https://github.com/SAP/SapMachine-infrastructure'
-            branches:
-                - master
-            included-regions:
-                - 'jenkins-job-generator/.*'
-    triggers:
-        - pollscm:
-            cron: "H/2 * * * *"
-
-- job:
-    name: jenkins-job-generator
-    description: 'Jenkins Job Generator.'
-    project-type: pipeline
-    disabled: true
-    sandbox: true
-    concurrent: false
-    properties:
-        - build-discarder:
-            num-to-keep: 50
-        - github:
-            url: 'https://github.com/SAP/SapMachine-infrastructure'
-        - raw:
-            xml: |
-                <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
-                    <triggers>
-                        <jenkins.triggers.ReverseBuildTrigger>
-                        <spec></spec>
-                        <upstreamProjects>jenkins-job-generator-trigger</upstreamProjects>
-                        <threshold>
-                            <name>SUCCESS</name>
-                            <ordinal>0</ordinal>
-                            <color>BLUE</color>
-                            <completeBuild>true</completeBuild>
-                        </threshold>
-                        </jenkins.triggers.ReverseBuildTrigger>
-                    </triggers>
-                </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
-    dsl: |
-        pipeline {
-            agent {
-                label "repository"
-            }
-            stages {
-                stage("Checkout Infrastructure Repository") {
-                    steps {
-                        sh '''#!/bin/bash
-                            set -ex
-                            git init SapMachine-Infrastructure && cd SapMachine-Infrastructure
-                            git fetch --depth 1 https://github.com/SAP/SapMachine-infrastructure.git master
-                            git checkout --detach FETCH_HEAD
-                        '''
-                    }
-                }
-                stage('Generate Jenkins Jobs') {
-                    agent {
-                        dockerfile {
-                            dir "SapMachine-Infrastructure/dockerfiles/infrastructure"
-                            reuseNode true
-                            label "repository"
-                        }
-                    }
-                    steps {
-                        withCredentials([usernamePassword(credentialsId: 'sapmachine-jenkins', usernameVariable: 'JENKINS_USER', passwordVariable: 'JENKINS_PASSWORD')]) {
-                            sh('cd SapMachine-Infrastructure/jenkins-job-generator && jenkins-jobs --conf jenkins_jobs_default.ini --user ${JENKINS_USER} --password ${JENKINS_PASSWORD} update --delete-old ./definitions')
-                        }
-                    }
-                }
-            }
-            post {
-                cleanup {
-                    cleanWs deleteDirs: true, disableDeferredWipeout: true
-                }
-            }
-        }
+    publishers:
+        - workspace-cleanup
 
 - job:
     name: jenkins-configuration-backup
