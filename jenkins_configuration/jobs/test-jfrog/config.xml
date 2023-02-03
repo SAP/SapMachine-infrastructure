@@ -28,11 +28,45 @@
     stages {
         stage ('Testing') {
             steps {
+                script {
+                    // def text = "sapmachine-17.0.1+23"
+                    def text = "sapmachine-17.0.1"
+                    // def text = "sapmachine-11"
+                    // def text = "dieter"
+                    def m = (text =~ /sapmachine-((\d+(\.\d+)*)(\+(\d+))?)$/)
+                    if (m) {
+                        //println "MATCH 0:" + m.group(0)
+                        //println "MATCH 1:" + m.group(1)
+                        //println "MATCH 2:" + m.group(2)
+                        //println "MATCH 3:" + m.group(3)
+                        echo("Found SapMachine version " + m.group(1))
+                    } else {
+                        error(text + " is no valid SapMachine version tag.")
+                    }
+                    return
+                }
+
                 // Show the installed version of JFrog CLI.
                 jf '-v'
 
                 // Show the configuration
                 jf 'c s'
+
+                // Ping Artifactory.
+                jf 'rt ping'
+
+                // Search for the artifact
+                script {
+                    try {
+                        def result = jf 'rt s --fail-no-op=true sapmachine-mvn/io/sapmachine/build-results/21/ea/21+7/macos_aarch64/bier.tar.gz'
+                    } catch(err) {
+                        echo "Caught: ${err}"
+                    }
+                }
+
+                // Create a file and upload it to a repository named 'sapmachine-mvn' in Artifactory
+                sh 'touch bier.tar.gz'
+                jf 'rt u bier.tar.gz sapmachine-mvn/io/sapmachine/build-results/21/ea/21+7/macos_aarch64/bier.tar.gz'
             }
         }
     }

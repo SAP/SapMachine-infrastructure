@@ -13,23 +13,45 @@
     stages {
         stage("Init") {
             steps {
+                // update GitHub status first, if required
                 script {
                     if (JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/) {
                         setGitHubPullRequestStatus context: "validate-pr-20-macos_aarch64", state: 'PENDING'
                     }
                     env.VERIFICATION_RESULT = "1"
+                }
+
+                // trigger workspace cleanup
+                cleanWs()
+
+                // check/configure some job parameters
+                script {
                     if (params.SAPMACHINE_VERSION.isEmpty()) {
                         env.SAPMACHINE_VERSION = params.GIT_REF
                     } else {
                         env.SAPMACHINE_VERSION = params.SAPMACHINE_VERSION
                     }
+
                     if (params.PUBLISH == true) {
                         env.BUILD_INSTALLER_PACKAGES = true
                     } else {
                         env.BUILD_INSTALLER_PACKAGES = params.BUILD_INSTALLER_PACKAGES
                     }
+
+                    // calculate artifactory version number
+                    // release jobs need to have a conforming SAPMACHINE_VERSION tag
+                    if (JOB_NAME ==~ /((\S*)(release)(\S*))/) {
+                        def m = (env.SAPMACHINE_VERSION =~ /sapmachine-((\d+(\.\d+)*)(\+(\d+))?)$/)
+                        if (m) {
+                            env.ART_VERSION = m.group(1)
+                        } else {
+                            error(env.SAPMACHINE_VERSION + " is no valid SapMachine version tag.")
+                        }
+                    } else {
+                        env.ART_VERSION = "snapshot-20-" + (new java.text.SimpleDateFormat("yyyyMMddHHmmss")).format(new Date())
+                    }
+                    println "env.ART_VERSION: " + env.ART_VERSION
                 }
-                cleanWs()
             }
         }
         stage("Checkout Infrastructure Repository") {
@@ -44,38 +66,26 @@
         }
         stage("Verify PR") {
             
+            when {
+                beforeAgent true
+                expression { JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/ }
+            }
             steps {
                 // credentials are needed to avoid rate limit exceedance in verify_pr.py
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
                     script {
-                        if (JOB_NAME ==~ /((\S*)(snapshot)(\S*))/) {
-                            env.ART_TYPE = "snapshot"
-                            env.ART_VERSION = "20." + (new java.text.SimpleDateFormat("yyyyMMddHHmmss")).format(new Date())
-                        } else {
-                            if (params.RELEASE == true) {
-                                env.ART_TYPE = "release"
-                            } else {
-                                env.ART_TYPE = "ea"
-                            }
-                            sh "python3 SapMachine-Infrastructure/lib/get_art_ver.py"
-                            env.ART_VERSION = readFile "art_vers.txt"
+                        def platform = "macos_aarch64"
+                        env.COMMENT = ""
+                        if (platform == 'linux_x86_64') {
+                            env.COMMENT = "-c"
                         }
-                        println "env.ART_TYPE: " + env.ART_TYPE + ", env.ART_VERSION: " + env.ART_VERSION
+                        env.VERIFICATION_RESULT = sh(
+                            script: "python3 SapMachine-Infrastructure/lib/verify_pr.py -p ${env.GITHUB_PR_NUMBER} ${env.COMMENT}",
+                            returnStatus: true
+                        )
 
-                        if (JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/) {
-                            def platform = "macos_aarch64"
-                            env.COMMENT = ""
-                            if (platform == 'linux_x86_64') {
-                                env.COMMENT = "-c"
-                            }
-                            env.VERIFICATION_RESULT = sh(
-                                script: "python3 SapMachine-Infrastructure/lib/verify_pr.py -p ${env.GITHUB_PR_NUMBER} ${env.COMMENT}",
-                                returnStatus: true
-                            )
-
-                            if (env.VERIFICATION_RESULT == "0") {
-                                error("Pull Request Verification failed")
-                            }
+                        if (env.VERIFICATION_RESULT == "0") {
+                            error("Pull Request Verification failed")
                         }
                     }
                 }
@@ -255,11 +265,14 @@
                 // Upload the JDK archive
                 script {
                     def jdk_bundle_name = readFile "${env.WORKSPACE}/jdk_bundle_name.txt"
-                    jf "rt u " + jdk_bundle_name + " io/sapmachine/build-results/20/${env.ART_TYPE}/${env.ART_VERSION}/macos_aarch64/" + jdk_bundle_name
+                    println "JDK Bundle name: \"" + jdk_bundle_name.trim() + "\""
+                    def jfcall = "rt u " + jdk_bundle_name.trim() + " sapmachine-mvn/io/sapmachine/build-results/macos_aarch64/${env.ART_VERSION}/" + jdk_bundle_name.trim()
+                    println "JF call: \"" + jfcall + "\""
+                    jf jfcall
                 }
 
                 // Upload the test archive
-                jf 'rt u test.zip io/sapmachine/build-results/20/${env.ART_TYPE}/${env.ART_VERSION}/macos_aarch64/test.zip'
+                jf 'rt u test.zip sapmachine-mvn/io/sapmachine/build-results/macos_aarch64/${env.ART_VERSION}/test.zip'
             }
         }
         stage('Archive') {
@@ -454,7 +467,7 @@
     <sandbox>true</sandbox>
   </definition>
   <actions />
-  <description>release build for SapMachine 20 on macos_aarch64.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+  <description>Release build for SapMachine 20 on macos_aarch64.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
   <properties>
     <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty />
@@ -494,7 +507,7 @@
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>BUILD_NUMBER</name>
+          <name>JDK_BUILD</name>
           <description>Sets the version build number explicitly.</description>
           <defaultValue />
           <trim>false</trim>
@@ -514,7 +527,7 @@
         <hudson.model.StringParameterDefinition>
           <name>EXTRA_CONFIGURE_OPTIONS</name>
           <description>Extra configure options passed directly to configure script.</description>
-          <defaultValue> </defaultValue>
+          <defaultValue />
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
@@ -539,11 +552,6 @@
           <name>RUN_TESTS</name>
           <description>enable/disable jtreg runs</description>
           <defaultValue>true</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
-        <hudson.model.BooleanParameterDefinition>
-          <name>BUILD_INSTALLER_PACKAGES</name>
-          <description>Build platform installer packages, e.g. Windows MSI, Debian packages. Will be set to true when PUBLISH is selected.</description>
-          <defaultValue>false</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>PUBLISH</name>

@@ -18,7 +18,7 @@
                                 string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
                                 string(name: 'GIT_REF', value: params.GIT_REF),
                                 string(name: 'SAPMACHINE_VERSION', value: params.SAPMACHINE_VERSION),
-                                string(name: 'BUILD_NUMBER', value: params.BUILD_NUMBER),
+                                string(name: 'JDK_BUILD', value: params.JDK_BUILD),
                                 string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                 string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                 string(name: 'langtools_test_groups', value: params.langtools_test_groups),
@@ -41,7 +41,7 @@
                                 string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
                                 string(name: 'GIT_REF', value: params.GIT_REF),
                                 string(name: 'SAPMACHINE_VERSION', value: params.SAPMACHINE_VERSION),
-                                string(name: 'BUILD_NUMBER', value: params.BUILD_NUMBER),
+                                string(name: 'JDK_BUILD', value: params.JDK_BUILD),
                                 string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                 string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                 string(name: 'langtools_test_groups', value: params.langtools_test_groups),
@@ -64,7 +64,7 @@
                                 string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
                                 string(name: 'GIT_REF', value: params.GIT_REF),
                                 string(name: 'SAPMACHINE_VERSION', value: params.SAPMACHINE_VERSION),
-                                string(name: 'BUILD_NUMBER', value: params.BUILD_NUMBER),
+                                string(name: 'JDK_BUILD', value: params.JDK_BUILD),
                                 string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                 string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                 string(name: 'langtools_test_groups', value: params.langtools_test_groups),
@@ -87,7 +87,7 @@
                                 string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
                                 string(name: 'GIT_REF', value: params.GIT_REF),
                                 string(name: 'SAPMACHINE_VERSION', value: params.SAPMACHINE_VERSION),
-                                string(name: 'BUILD_NUMBER', value: params.BUILD_NUMBER),
+                                string(name: 'JDK_BUILD', value: params.JDK_BUILD),
                                 string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                 string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                 string(name: 'langtools_test_groups', value: params.langtools_test_groups),
@@ -110,7 +110,7 @@
                                 string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
                                 string(name: 'GIT_REF', value: params.GIT_REF),
                                 string(name: 'SAPMACHINE_VERSION', value: params.SAPMACHINE_VERSION),
-                                string(name: 'BUILD_NUMBER', value: params.BUILD_NUMBER),
+                                string(name: 'JDK_BUILD', value: params.JDK_BUILD),
                                 string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                 string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                 string(name: 'langtools_test_groups', value: params.langtools_test_groups),
@@ -133,7 +133,7 @@
                                 string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
                                 string(name: 'GIT_REF', value: params.GIT_REF),
                                 string(name: 'SAPMACHINE_VERSION', value: params.SAPMACHINE_VERSION),
-                                string(name: 'BUILD_NUMBER', value: params.BUILD_NUMBER),
+                                string(name: 'JDK_BUILD', value: params.JDK_BUILD),
                                 string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                 string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                 string(name: 'langtools_test_groups', value: params.langtools_test_groups),
@@ -156,7 +156,7 @@
                                 string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
                                 string(name: 'GIT_REF', value: params.GIT_REF),
                                 string(name: 'SAPMACHINE_VERSION', value: params.SAPMACHINE_VERSION),
-                                string(name: 'BUILD_NUMBER', value: params.BUILD_NUMBER),
+                                string(name: 'JDK_BUILD', value: params.JDK_BUILD),
                                 string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                 string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                 string(name: 'langtools_test_groups', value: params.langtools_test_groups),
@@ -208,7 +208,7 @@
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>BUILD_NUMBER</name>
+          <name>JDK_BUILD</name>
           <description>Sets the version build number explicitely.</description>
           <defaultValue />
           <trim>false</trim>
@@ -255,7 +255,7 @@
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>BUILD_INSTALLER_PACKAGES</name>
-          <description>Build platform installer packages, e.g. Windows MSI, Debian packages. Will be set to true when PUBLISH is selected.</description>
+          <description>Build platform installer packages, e.g. Windows MSI, Debian packages.</description>
           <defaultValue>true</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
