@@ -839,15 +839,24 @@
             }}
             stages {{
                 stage('Trigger Builds') {{
-                    parallel {{
-                        stage('Linux aarch64') {{
-                            when {{
-                                expression {{ params.BUILD_LINUX_AARCH64 == true }}
-                            }}
-                            steps {{
-                                script {{
-                                    def job_linux_aarch64 = build job: 'build-{major}-{build_type}-linux_aarch64', propagate: false, wait: false, parameters:
-                                    [
+                    script {{
+                        def platforms = [
+                            "linux_aarch64": params.BUILD_LINUX_AARCH64,
+                            "linux_alpine_x86_64": params.BUILD_LINUX_ALPINE_X86_64,
+                            "linux_ppc64le": params.BUILD_LINUX_PPC64LE,
+                            "linux_x86_64": params.BUILD_LINUX_X86_64,
+                            "macos_aarch64": params.BUILD_MACOS_ARM_64,
+                            "macos_x86_64": params.BUILD_MACOS_X86_64,
+                            "windows_x86_64": params.BUILD_WINDOWS_X86_64
+                        ]
+
+                        for (p in platforms) {{
+                            if (p.value) {{
+                                println "Starting build for " + p.key + "(build=" + p.value + ")."
+                                build job: 'build-{major}-{build_type}-' + p.value,
+                                    propagate: false,
+                                    wait: false,
+                                    parameters: [
                                         string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
                                         string(name: 'GIT_REF', value: params.GIT_REF),
                                         string(name: 'SAPMACHINE_VERSION', value: params.SAPMACHINE_VERSION),
@@ -860,145 +869,8 @@
                                         [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
                                         [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
                                     ]
-                                }}
-                            }}
-                        }}
-                        stage('Linux Alpine x86_64') {{
-                            when {{
-                                expression {{ params.BUILD_LINUX_ALPINE_X86_64 == true }}
-                            }}
-                            steps {{
-                                script {{
-                                    def job_linux_alpine_x86_64 = build job: 'build-{major}-{build_type}-linux_alpine_x86_64', propagate: false, wait: false, parameters:
-                                    [
-                                        string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
-                                        string(name: 'GIT_REF', value: params.GIT_REF),
-                                        string(name: 'SAPMACHINE_VERSION', value: params.SAPMACHINE_VERSION),
-                                        string(name: 'JDK_BUILD', value: params.JDK_BUILD),
-                                        string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
-                                        string(name: 'jdk_test_groups', value: params.jdk_test_groups),
-                                        string(name: 'langtools_test_groups', value: params.langtools_test_groups),
-                                        [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
-                                        [$class: 'BooleanParameterValue', name: 'BUILD_INSTALLER_PACKAGES', value: params.BUILD_INSTALLER_PACKAGES],
-                                        [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
-                                        [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
-                                    ]
-                                }}
-                            }}
-                        }}
-                        stage('Linux ppc64le') {{
-                            when {{
-                                expression {{ params.BUILD_LINUX_PPC64LE == true }}
-                            }}
-                            steps {{
-                                script {{
-                                    def job_linux_ppc64le = build job: 'build-{major}-{build_type}-linux_ppc64le', propagate: false, wait: false, parameters:
-                                    [
-                                        string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
-                                        string(name: 'GIT_REF', value: params.GIT_REF),
-                                        string(name: 'SAPMACHINE_VERSION', value: params.SAPMACHINE_VERSION),
-                                        string(name: 'JDK_BUILD', value: params.JDK_BUILD),
-                                        string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
-                                        string(name: 'jdk_test_groups', value: params.jdk_test_groups),
-                                        string(name: 'langtools_test_groups', value: params.langtools_test_groups),
-                                        [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
-                                        [$class: 'BooleanParameterValue', name: 'BUILD_INSTALLER_PACKAGES', value: params.BUILD_INSTALLER_PACKAGES],
-                                        [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
-                                        [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
-                                    ]
-                                }}
-                            }}
-                        }}
-                        stage('Linux x86 64') {{
-                            when {{
-                                expression {{ params.BUILD_LINUX_X86_64 == true }}
-                            }}
-                            steps {{
-                                script {{
-                                    def job_linux_x86_64 = build job: 'build-{major}-{build_type}-linux_x86_64', propagate: false, wait: false, parameters:
-                                    [
-                                        string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
-                                        string(name: 'GIT_REF', value: params.GIT_REF),
-                                        string(name: 'SAPMACHINE_VERSION', value: params.SAPMACHINE_VERSION),
-                                        string(name: 'JDK_BUILD', value: params.JDK_BUILD),
-                                        string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
-                                        string(name: 'jdk_test_groups', value: params.jdk_test_groups),
-                                        string(name: 'langtools_test_groups', value: params.langtools_test_groups),
-                                        [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
-                                        [$class: 'BooleanParameterValue', name: 'BUILD_INSTALLER_PACKAGES', value: params.BUILD_INSTALLER_PACKAGES],
-                                        [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
-                                        [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
-                                    ]
-                                }}
-                            }}
-                        }}
-                        stage('macOS aarch 64') {{
-                            when {{
-                                expression {{ params.BUILD_MACOS_ARM_64 == true }}
-                            }}
-                            steps {{
-                                script {{
-                                    def job_macos_aarch64 = build job: 'build-{major}-{build_type}-macos_aarch64', propagate: false, wait: false, parameters:
-                                    [
-                                        string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
-                                        string(name: 'GIT_REF', value: params.GIT_REF),
-                                        string(name: 'SAPMACHINE_VERSION', value: params.SAPMACHINE_VERSION),
-                                        string(name: 'JDK_BUILD', value: params.JDK_BUILD),
-                                        string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
-                                        string(name: 'jdk_test_groups', value: params.jdk_test_groups),
-                                        string(name: 'langtools_test_groups', value: params.langtools_test_groups),
-                                        [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
-                                        [$class: 'BooleanParameterValue', name: 'BUILD_INSTALLER_PACKAGES', value: params.BUILD_INSTALLER_PACKAGES],
-                                        [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
-                                        [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
-                                    ]
-                                }}
-                            }}
-                        }}
-                        stage('macOS x86 64') {{
-                            when {{
-                                expression {{ params.BUILD_MACOS_X86_64 == true }}
-                            }}
-                            steps {{
-                                script {{
-                                    def job_macos_x86_64 = build job: 'build-{major}-{build_type}-macos_x86_64', propagate: false, wait: false, parameters:
-                                    [
-                                        string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
-                                        string(name: 'GIT_REF', value: params.GIT_REF),
-                                        string(name: 'SAPMACHINE_VERSION', value: params.SAPMACHINE_VERSION),
-                                        string(name: 'JDK_BUILD', value: params.JDK_BUILD),
-                                        string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
-                                        string(name: 'jdk_test_groups', value: params.jdk_test_groups),
-                                        string(name: 'langtools_test_groups', value: params.langtools_test_groups),
-                                        [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
-                                        [$class: 'BooleanParameterValue', name: 'BUILD_INSTALLER_PACKAGES', value: params.BUILD_INSTALLER_PACKAGES],
-                                        [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
-                                        [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
-                                    ]
-                                }}
-                            }}
-                        }}
-                        stage('Windows x86 64') {{
-                            when {{
-                                expression {{ params.BUILD_WINDOWS_X86_64 == true }}
-                            }}
-                            steps {{
-                                script {{
-                                    def job_windows_x86_64 = build job: 'build-{major}-{build_type}-windows_x86_64', propagate: false, wait: false, parameters:
-                                    [
-                                        string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
-                                        string(name: 'GIT_REF', value: params.GIT_REF),
-                                        string(name: 'SAPMACHINE_VERSION', value: params.SAPMACHINE_VERSION),
-                                        string(name: 'JDK_BUILD', value: params.JDK_BUILD),
-                                        string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
-                                        string(name: 'jdk_test_groups', value: params.jdk_test_groups),
-                                        string(name: 'langtools_test_groups', value: params.langtools_test_groups),
-                                        [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
-                                        [$class: 'BooleanParameterValue', name: 'BUILD_INSTALLER_PACKAGES', value: params.BUILD_INSTALLER_PACKAGES],
-                                        [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
-                                        [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
-                                    ]
-                                }}
+                            }} else {{
+                                println "Skipping build for " + p.key + "(build=" + p.value + ")."
                             }}
                         }}
                     }}
