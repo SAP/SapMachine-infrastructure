@@ -44,6 +44,15 @@
                         additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
                     }}
                 }}
+            docker_agent2: |
+                agent {
+                    dockerfile {
+                        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/arm64"
+                        reuseNode true
+                        label "linux_aarch64"
+                        additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
+                    }
+                }
             devkit_default: 'io.sapmachine.build.devkit.linux-aarch64:devkit-fedora-gcc:21-8.3.0-nogold2'
         - linux_alpine_x86_64:
             docker_agent: |
