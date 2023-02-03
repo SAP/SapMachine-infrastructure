@@ -756,9 +756,9 @@
     dsl: *build_dsl
 
 - job-template:
-    name: build-service-{build_type}-{major}
+    name: build-service-release-{major}
     defaults: 'sapmachine_global'
-    description: 'Start {build_type} build for SapMachine {major} on all platorms.'
+    description: 'Start release build for SapMachine {major} on all platorms.'
     project-type: pipeline
     sandbox: true
     concurrent: true
@@ -804,6 +804,22 @@
         - bool:
             name: BUILD_WINDOWS_X86_64
             default: true
+        - string:
+            name: EXTRA_CONFIGURE_OPTIONS
+            default: '{extra_configure_options}'
+            description: 'Extra configure options passed directly to configure script.'
+        - string:
+            name: hotspot_test_groups
+            default: ':tier1'
+            description: 'Select the test group for jtreg hotspot tests. Empty means disabled.'
+        - string:
+            name: jdk_test_groups
+            default: ':tier1'
+            description: 'Select the test group for jtreg jdk tests. Empty means disabled.'
+        - string:
+            name: langtools_test_groups
+            default: '"jdk tools lib"'
+            description: 'Select the test group for jtreg langtools tests. Empty means disabled.'
         - bool:
             name: RUN_TESTS
             default: true
@@ -820,18 +836,6 @@
             name: RELEASE
             default: false
             description: 'When set to true, marks this build as a release build, otherwise as pre-release. (Only used in release builds!)'
-        - string:
-            name: hotspot_test_groups
-            default: ':tier1'
-            description: 'Select the test group for jtreg hotspot tests. Empty means disabled.'
-        - string:
-            name: jdk_test_groups
-            default: ':tier1'
-            description: 'Select the test group for jtreg jdk tests. Empty means disabled.'
-        - string:
-            name: langtools_test_groups
-            default: '"jdk tools lib"'
-            description: 'Select the test group for jtreg langtools tests. Empty means disabled.'
     dsl: |
         pipeline {{
             agent {{
@@ -853,8 +857,7 @@
 
                             for (p in platforms) {{
                                 if (p.value) {{
-                                    println "Starting build for " + p.key + " (build=" + p.value + ")."
-                                    build job: 'build-{major}-{build_type}-' + p.key,
+                                    build job: 'build-{major}-release-' + p.key,
                                         propagate: false,
                                         wait: false,
                                         parameters: [
@@ -862,6 +865,7 @@
                                             string(name: 'GIT_REF', value: params.GIT_REF),
                                             string(name: 'SAPMACHINE_VERSION', value: params.SAPMACHINE_VERSION),
                                             string(name: 'JDK_BUILD', value: params.JDK_BUILD),
+                                            string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
                                             string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                             string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                             string(name: 'langtools_test_groups', value: params.langtools_test_groups),
@@ -869,6 +873,126 @@
                                             [$class: 'BooleanParameterValue', name: 'BUILD_INSTALLER_PACKAGES', value: params.BUILD_INSTALLER_PACKAGES],
                                             [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
                                             [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
+                                        ]
+                                }} else {{
+                                    println "Skipping build for " + p.key + " (build=" + p.value + ")."
+                                }}
+                            }}
+                        }}
+                    }}
+                }}
+            }}
+        }}
+
+
+- job-template:
+    name: build-service-snapshot-{major}
+    defaults: 'sapmachine_global'
+    description: 'Start snapshot build for SapMachine {major} on all platorms.'
+    project-type: pipeline
+    sandbox: true
+    concurrent: true
+    properties:
+        - build-discarder:
+            days-to-keep: 14
+            artifact-days-to-keep: 7
+    parameters:
+        - string:
+            name: SAPMACHINE_GIT_REPOSITORY
+            default: 'https://github.com/SAP/SapMachine.git'
+            description: 'The Git repository to use.'
+        - string:
+            name: GIT_REF
+            default: '{branch_name}'
+            description: 'The Git tag, branch or commit to build.'
+        - string:
+            name: SAPMACHINE_VERSION
+            default: ''
+            description: 'Either a SapMachine Release Tag or a JDK Major version. If empty, GIT_REF is used.'
+        - string:
+            name: JDK_BUILD
+            default: ''
+            description: 'Sets the version build number explicitely.'
+        - bool:
+            name: BUILD_LINUX_AARCH64
+            default: true
+        - bool:
+            name: BUILD_LINUX_ALPINE_X86_64
+            default: '{build_alpine}'
+        - bool:
+            name: BUILD_LINUX_PPC64LE
+            default: true
+        - bool:
+            name: BUILD_LINUX_X86_64
+            default: true
+        - bool:
+            name: BUILD_MACOS_ARM_64
+            default: true
+        - bool:
+            name: BUILD_MACOS_X86_64
+            default: true
+        - bool:
+            name: BUILD_WINDOWS_X86_64
+            default: true
+        - string:
+            name: EXTRA_CONFIGURE_OPTIONS
+            default: '{extra_configure_options}'
+            description: 'Extra configure options passed directly to configure script.'
+        - string:
+            name: hotspot_test_groups
+            default: ':tier1'
+            description: 'Select the test group for jtreg hotspot tests. Empty means disabled.'
+        - string:
+            name: jdk_test_groups
+            default: ':tier1'
+            description: 'Select the test group for jtreg jdk tests. Empty means disabled.'
+        - string:
+            name: langtools_test_groups
+            default: '"jdk tools lib"'
+            description: 'Select the test group for jtreg langtools tests. Empty means disabled.'
+        - bool:
+            name: RUN_TESTS
+            default: true
+            description: 'enable/disable jtreg runs'
+        - bool:
+            name: BUILD_INSTALLER_PACKAGES
+            default: true
+            description: 'Build platform installer packages, e.g. Windows MSI, Debian packages.'
+    dsl: |
+        pipeline {{
+            agent {{
+                label 'build_service'
+            }}
+            stages {{
+                stage('Trigger Builds') {{
+                    steps {{
+                        script {{
+                            def platforms = [
+                                "linux_aarch64": params.BUILD_LINUX_AARCH64,
+                                "linux_alpine_x86_64": params.BUILD_LINUX_ALPINE_X86_64,
+                                "linux_ppc64le": params.BUILD_LINUX_PPC64LE,
+                                "linux_x86_64": params.BUILD_LINUX_X86_64,
+                                "macos_aarch64": params.BUILD_MACOS_ARM_64,
+                                "macos_x86_64": params.BUILD_MACOS_X86_64,
+                                "windows_x86_64": params.BUILD_WINDOWS_X86_64
+                            ]
+
+                            for (p in platforms) {{
+                                if (p.value) {{
+                                    build job: 'build-{major}-snapshot-' + p.key,
+                                        propagate: false,
+                                        wait: false,
+                                        parameters: [
+                                            string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
+                                            string(name: 'GIT_REF', value: params.GIT_REF),
+                                            string(name: 'SAPMACHINE_VERSION', value: params.SAPMACHINE_VERSION),
+                                            string(name: 'JDK_BUILD', value: params.JDK_BUILD),
+                                            string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
+                                            string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
+                                            string(name: 'jdk_test_groups', value: params.jdk_test_groups),
+                                            string(name: 'langtools_test_groups', value: params.langtools_test_groups),
+                                            [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
+                                            [$class: 'BooleanParameterValue', name: 'BUILD_INSTALLER_PACKAGES', value: params.BUILD_INSTALLER_PACKAGES]
                                         ]
                                 }} else {{
                                     println "Skipping build for " + p.key + " (build=" + p.value + ")."
