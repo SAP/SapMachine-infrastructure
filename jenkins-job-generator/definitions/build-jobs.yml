@@ -700,7 +700,7 @@
     dsl: *build_dsl
 
 - job-template:
-    name: build-{major}-release-{platform}
+    name: build-{major}-{build_type_release}-{platform}
     defaults: 'sapmachine_global'
     description: 'Release build for SapMachine {major} on {platform}.'
     project-type: pipeline
