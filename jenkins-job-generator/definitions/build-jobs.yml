@@ -82,10 +82,13 @@
             devkit_default: 'io.sapmachine.build.devkit.linux-x64:devkit-fedora-gcc:12-8.3.0-nogold2'
         - macos_x86_64:
             devkit_default: 'io.sapmachine.build.devkit.macos:devkit-xcode:13.1'
+            docker_agent: ''
         - macos_aarch64:
             devkit_default: 'io.sapmachine.build.devkit.macos:devkit-xcode:13.1'
+            docker_agent: ''
         - windows_x86_64:
             devkit_default: '{windows_devkit}'
+            docker_agent: ''
     build_types: &build_types
         - snapshot
         - pr-validation:
