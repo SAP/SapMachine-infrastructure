@@ -619,7 +619,7 @@
           major: '11'
     jobs:
         - build-{major}-{build_type}-{platform}
-        - build-{major}-release-{platform}
+        - build-{major}-release-{platform}:
             docker_agent_verify: ''
 
 - project:
