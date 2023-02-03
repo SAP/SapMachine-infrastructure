@@ -97,7 +97,7 @@
             docker_agent: ''
             docker_agent_verify: ''
     build_types: &build_types
-        - snapshot
+        - snapshot:
             docker_agent_verify: ''
         - pr-validation:
             extra_configure_options: '--with-debug-level=fastdebug'
