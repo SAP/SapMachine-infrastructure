@@ -29,8 +29,6 @@
             context-path: "dockerfiles/infrastructure"
     builders:
         - shell: "export HOME=$WORKSPACE_TMP && cd jenkins-job-generator && jenkins-jobs --conf jenkins_jobs_default.ini --user ${JENKINS_USER} --password ${JENKINS_PASSWORD} update --delete-old ./definitions"
-    publishers:
-        - workspace-cleanup
 
 - job:
     name: jenkins-configuration-backup
