@@ -16,7 +16,8 @@
             included-regions:
                 - 'jenkins-job-generator/.*'
     triggers:
-        - github
+        - pollscm:
+            cron: "H/2 * * * *"
 
 - job:
     name: jenkins-job-generator
