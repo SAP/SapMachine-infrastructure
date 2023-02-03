@@ -50,7 +50,7 @@
                     dockerfile {
                         dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/arm64"
                         reuseNode true
-                        label "{platform}"
+                        label "linux_aarch64"
                         additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
                     }
                 }
@@ -69,7 +69,7 @@
                     dockerfile {
                         dir "SapMachine-Infrastructure/dockerfiles/alpine_3/x86_64"
                         reuseNode true
-                        label "{platform}"
+                        label "linux_alpine_x86_64"
                     }
                 }
         - linux_ppc64le:
@@ -89,7 +89,7 @@
                     dockerfile {
                         dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/ppc64le"
                         reuseNode true
-                        label "{platform}"
+                        label "linux_ppc64le"
                         additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
                     }
                 }
@@ -111,7 +111,7 @@
                     dockerfile {
                         dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/x86_64"
                         reuseNode true
-                        label "{platform}"
+                        label "linux_x86_64"
                         additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
                     }
                 }
