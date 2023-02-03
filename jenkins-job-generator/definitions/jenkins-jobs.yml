@@ -1,7 +1,35 @@
 - job:
+    name: jenkins-job-generator-beta
+    description: 'This is the new Jenkins Job Generator.'
+    project-type: freestyle
+    concurrent: false
+    node: repository
+    properties:
+        - build-discarder:
+            num-to-keep: 20
+        - github:
+            url: 'https://github.com/SAP/SapMachine-infrastructure'
+    scm:
+        - git:
+            url: 'https://github.com/SAP/SapMachine-infrastructure'
+            branches:
+                - master
+            included-regions:
+                - 'jenkins-job-generator/.*'
+    triggers:
+        - github
+    wrappers:
+        - docker-custom-build-env:
+            image-type: 'dockerfile'
+            context-path: "dockerfiles/infrastructure"
+    builders:
+        -shell: "export HOME=$WORKSPACE_TMP && cd jenkins-job-generator && jenkins-jobs --conf jenkins_jobs_default.ini --user ${JENKINS_USER} --password ${JENKINS_PASSWORD} update --delete-old ./definitions"
+
+- job:
     name: jenkins-job-generator-trigger
     description: 'This produces a trigger for running the jenkins job generator.'
     project-type: freestyle
+    disabled: true
     concurrent: false
     properties:
         - build-discarder:
@@ -23,6 +51,7 @@
     name: jenkins-job-generator
     description: 'Jenkins Job Generator.'
     project-type: pipeline
+    disabled: true
     sandbox: true
     concurrent: false
     properties:
