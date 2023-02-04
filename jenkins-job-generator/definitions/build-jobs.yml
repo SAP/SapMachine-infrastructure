@@ -1,7 +1,5 @@
 - defaults:
     name: 'build_defaults'
-    verify_step: ''
-    verify_pre: ''
     trigger: |
         <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
             <triggers/>
@@ -216,9 +214,9 @@
                         '''
                     }}
                 }}
-                {verify_pre}
+                {verify_pre|}
                     {docker_agent_verify|}
-                    {verify_step}
+                    {verify_step|}
                 stage("Checkout SapMachine Repository") {{
                     when {{
                         expression {{ env.VERIFICATION_RESULT != "2" }}
@@ -279,7 +277,7 @@
 
                         // Download jtreg if required
                         script {{
-                            if (params.RUN_TESTS == true) {{
+                            if (params.RUN_TESTS) {{
                                 sh "python3 SapMachine-Infrastructure/lib/download_jtreg.py"
                             }}
                         }}
