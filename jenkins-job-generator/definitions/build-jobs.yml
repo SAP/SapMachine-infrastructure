@@ -242,7 +242,8 @@
                         '''
                     }}
                 }}
-                stage('Prepare Devkit') {{{docker_agent|}
+                stage('Prepare Devkit') {
+                    {{docker_agent|}
                     when {{
                         beforeAgent true
                         expression {{ env.VERIFICATION_RESULT != "2" && !params.DEVKIT.isEmpty() }}
