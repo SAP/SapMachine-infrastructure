@@ -831,8 +831,7 @@
     concurrent: true
     properties:
         - build-discarder:
-            days-to-keep: 14
-            artifact-days-to-keep: 7
+            num-to-keep: 10
     parameters:
         - string:
             name: SAPMACHINE_GIT_REPOSITORY
@@ -950,8 +949,7 @@
     concurrent: true
     properties:
         - build-discarder:
-            days-to-keep: 14
-            artifact-days-to-keep: 7
+            num-to-keep: 10
     parameters:
         - string:
             name: SAPMACHINE_GIT_REPOSITORY
