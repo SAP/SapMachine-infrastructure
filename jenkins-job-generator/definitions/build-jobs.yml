@@ -1,10 +1,6 @@
 - defaults:
     name: 'build_defaults'
-    architecture: ''
-    debarch: ''
-    devkit_default: ''
-    windows_devkit: ''
-    extra_configure_options: ''
+    windows_devkit: 'io.sapmachine.build.devkit.windows-x64:devkit-vs2017:15.9.49'
     verify_step: ''
     verify_pre: ''
     gtest_version: release-1.8.1
@@ -15,13 +11,10 @@
     majors: &majors_build
         - '11':
            branch_name: sapmachine11
-           windows_devkit: 'io.sapmachine.build.devkit.windows-x64:devkit-vs2017:15.9.49'
         - '17':
            branch_name: sapmachine17
-           windows_devkit: 'io.sapmachine.build.devkit.windows-x64:devkit-vs2017:15.9.49'
         - '19':
            branch_name: sapmachine19
-           windows_devkit: 'io.sapmachine.build.devkit.windows-x64:devkit-vs2017:15.9.49'
         - '20':
            branch_name: sapmachine20
            windows_devkit: 'io.sapmachine.build.devkit.windows-x64:devkit-vs2019:16.11.13'
@@ -87,7 +80,7 @@
         - macos_aarch64:
             devkit_default: 'io.sapmachine.build.devkit.macos:devkit-xcode:13.1'
         - windows_x86_64:
-            devkit_default: '{windows_devkit}'
+            devkit_default: '{windows_devkit|}'
     build_types: &build_types
         - snapshot:
             docker_agent_verify: ''
@@ -243,7 +236,8 @@
                     }}
                 }}
                 stage('Prepare Devkit') {{
-                    {docker_agent|}                    when {{
+                    {docker_agent|}
+                    when {{
                         beforeAgent true
                         expression {{ env.VERIFICATION_RESULT != "2" && !params.DEVKIT.isEmpty() }}
                     }}
@@ -511,7 +505,7 @@
                     }}
                     steps {{
                         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
-                            sh "python3 SapMachine-Infrastructure/lib/make_deb.py --tag=${{env.SAPMACHINE_VERSION}} --architecture={architecture}"
+                            sh "python3 SapMachine-Infrastructure/lib/make_deb.py --tag=${{env.SAPMACHINE_VERSION}} --architecture={architecture|}"
                         }}
                     }}
                     post {{
@@ -533,8 +527,8 @@
                     steps {{
                         unstash 'infra'
                         unstash 'debPackage'
-                        sh "cp -n *.deb /var/pkg/deb/{debarch} || true"
-                        sh "python3 SapMachine-Infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/{debarch}"
+                        sh "cp -n *.deb /var/pkg/deb/{debarch|} || true"
+                        sh "python3 SapMachine-Infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/{debarch|}"
                     }}
                 }}
                 stage('Build and Publish RPM Linux Packages') {{
@@ -602,7 +596,6 @@
 - defaults:
     name: 'service_defaults'
     build_alpine: true
-    extra_configure_options: ''
     majors: &majors_service
         - '11':
            branch_name: sapmachine11
@@ -676,11 +669,11 @@
             description: 'The prefix of the bundle archive.'
         - string:
             name: DEVKIT
-            default: '{devkit_default}'
+            default: '{devkit_default|}'
             description: 'Devkit, could be either a path that locally exists or the GAV coordinates to a tar.gz archive to be downloaded and extracted.'
         - string:
             name: EXTRA_CONFIGURE_OPTIONS
-            default: '{extra_configure_options}'
+            default: '{extra_configure_options|}'
             description: 'Extra configure options passed directly to configure script.'
         - string:
             name: hotspot_test_groups
@@ -742,11 +735,11 @@
             description: 'The prefix of the bundle archive.'
         - string:
             name: DEVKIT
-            default: '{devkit_default}'
+            default: '{devkit_default|}'
             description: 'Devkit, could be either a path that locally exists or the GAV coordinates to a tar.gz archive to be downloaded and extracted.'
         - string:
             name: EXTRA_CONFIGURE_OPTIONS
-            default: '{extra_configure_options}'
+            default: '{extra_configure_options|}'
             description: 'Extra configure options passed directly to configure script.'
         - string:
             name: hotspot_test_groups
@@ -825,7 +818,7 @@
             default: true
         - string:
             name: EXTRA_CONFIGURE_OPTIONS
-            default: '{extra_configure_options}'
+            default: '{extra_configure_options|}'
             description: 'Extra configure options passed directly to configure script.'
         - string:
             name: hotspot_test_groups
@@ -944,7 +937,7 @@
             default: true
         - string:
             name: EXTRA_CONFIGURE_OPTIONS
-            default: '{extra_configure_options}'
+            default: '{extra_configure_options|}'
             description: 'Extra configure options passed directly to configure script.'
         - string:
             name: hotspot_test_groups
