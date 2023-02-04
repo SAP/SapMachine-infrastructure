@@ -1,27 +1,5 @@
 - defaults:
     name: 'build_defaults'
-    stage_publish_artifactory: |-
-        stage('Publish Artifactory') {{
-                    steps {{
-                        // Show the installed version of JFrog CLI.
-                        jf '-v'
-
-                        // Show the configuration
-                        jf 'c s'
-
-                        // Upload the JDK archive
-                        script {{
-                            def jdk_bundle_name = readFile "${{env.WORKSPACE}}/jdk_bundle_name.txt"
-                            println "JDK Bundle name: \"" + jdk_bundle_name.trim() + "\""
-                            def jfcall = "rt u " + jdk_bundle_name.trim() + " sapmachine-mvn/io/sapmachine/build-results/{platform}/${{env.ART_VERSION}}/" + jdk_bundle_name.trim()
-                            println "JF call: \"" + jfcall + "\""
-                            jf jfcall
-                        }}
-
-                        // Upload the test archive
-                        jf 'rt u test.zip sapmachine-mvn/io/sapmachine/build-results/{platform}/${{env.ART_VERSION}}/test.zip'
-                    }}
-                }}
     majors: &majors_build
         - '11':
            branch_name: sapmachine11
@@ -95,6 +73,28 @@
             devkit_default: 'io.sapmachine.build.devkit.macos:devkit-xcode:13.1'
         - windows_x86_64:
             devkit_default: '{windows_devkit|io.sapmachine.build.devkit.windows-x64:devkit-vs2017:15.9.49}'
+    stage_publish_artifactory: |-
+        stage('Publish Artifactory') {{
+                    steps {{
+                        // Show the installed version of JFrog CLI.
+                        jf '-v'
+
+                        // Show the configuration
+                        jf 'c s'
+
+                        // Upload the JDK archive
+                        script {{
+                            def jdk_bundle_name = readFile "${{env.WORKSPACE}}/jdk_bundle_name.txt"
+                            println "JDK Bundle name: \"" + jdk_bundle_name.trim() + "\""
+                            def jfcall = "rt u " + jdk_bundle_name.trim() + " sapmachine-mvn/io/sapmachine/build-results/{platform}/${{env.ART_VERSION}}/" + jdk_bundle_name.trim()
+                            println "JF call: \"" + jfcall + "\""
+                            jf jfcall
+                        }}
+
+                        // Upload the test archive
+                        jf 'rt u test.zip sapmachine-mvn/io/sapmachine/build-results/{platform}/${{env.ART_VERSION}}/test.zip'
+                    }}
+                }}
     build_type_pr: &build_type_pr
         - pr-validation:
             extra_configure_options: '--with-debug-level=fastdebug'
