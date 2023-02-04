@@ -634,7 +634,7 @@
 - job-template:
     name: build-{major}-{build_type_pr}-{platform}
     defaults: 'build_defaults'
-    description: '{build_type} build for SapMachine {major} on {platform}.'
+    description: 'PR build for SapMachine {major} on {platform}.'
     project-type: pipeline
     sandbox: true
     concurrent: false
@@ -700,7 +700,7 @@
 - job-template:
     name: build-{major}-{build_type_snapshot}-{platform}
     defaults: 'build_defaults'
-    description: '{build_type} build for SapMachine {major} on {platform}.'
+    description: 'Snapshot build for SapMachine {major} on {platform}.'
     project-type: pipeline
     sandbox: true
     concurrent: false
