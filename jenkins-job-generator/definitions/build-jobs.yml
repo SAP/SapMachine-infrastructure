@@ -1,5 +1,27 @@
 - defaults:
     name: 'build_defaults'
+    stage_publish_artifactory: |-
+        stage('Publish Artifactory') {{
+                    steps {{
+                        // Show the installed version of JFrog CLI.
+                        jf '-v'
+
+                        // Show the configuration
+                        jf 'c s'
+
+                        // Upload the JDK archive
+                        script {{
+                            def jdk_bundle_name = readFile "${{env.WORKSPACE}}/jdk_bundle_name.txt"
+                            println "JDK Bundle name: \"" + jdk_bundle_name.trim() + "\""
+                            def jfcall = "rt u " + jdk_bundle_name.trim() + " sapmachine-mvn/io/sapmachine/build-results/{platform}/${{env.ART_VERSION}}/" + jdk_bundle_name.trim()
+                            println "JF call: \"" + jfcall + "\""
+                            jf jfcall
+                        }}
+
+                        // Upload the test archive
+                        jf 'rt u test.zip sapmachine-mvn/io/sapmachine/build-results/{platform}/${{env.ART_VERSION}}/test.zip'
+                    }}
+                }}
     majors: &majors_build
         - '11':
            branch_name: sapmachine11
@@ -143,6 +165,7 @@
                                 }}
                             }}
                         }}
+            stage_publish_artifactory: ''
     build_type_snapshot: &build_type_snapshot
         - snapshot:
             docker_agent_verify: ''
@@ -376,30 +399,7 @@
                         }}
                     }}
                 }}
-                stage('Publish Artifactory') {{
-                    when {{
-                        expression {{ env.VERIFICATION_RESULT != "2" && (JOB_NAME ==~ /((\S*)(release)(\S*))/ || JOB_NAME ==~ /((\S*)(snapshot)(\S*))/) }}
-                    }}
-                    steps {{
-                        // Show the installed version of JFrog CLI.
-                        jf '-v'
-
-                        // Show the configuration
-                        jf 'c s'
-
-                        // Upload the JDK archive
-                        script {{
-                            def jdk_bundle_name = readFile "${{env.WORKSPACE}}/jdk_bundle_name.txt"
-                            println "JDK Bundle name: \"" + jdk_bundle_name.trim() + "\""
-                            def jfcall = "rt u " + jdk_bundle_name.trim() + " sapmachine-mvn/io/sapmachine/build-results/{platform}/${{env.ART_VERSION}}/" + jdk_bundle_name.trim()
-                            println "JF call: \"" + jfcall + "\""
-                            jf jfcall
-                        }}
-
-                        // Upload the test archive
-                        jf 'rt u test.zip sapmachine-mvn/io/sapmachine/build-results/{platform}/${{env.ART_VERSION}}/test.zip'
-                    }}
-                }}
+                {stage_publish_artifactory}
                 stage('Archive') {{
                     when {{
                         expression {{ env.VERIFICATION_RESULT != "2" }}
