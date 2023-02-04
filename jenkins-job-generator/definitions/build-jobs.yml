@@ -35,24 +35,24 @@
             debarch: arm64
             docker_agent: &docker_agent_aarch64 |
                 agent {{
-                    dockerfile {{
-                        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/arm64"
-                        reuseNode true
-                        label "linux_aarch64"
-                        additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
-                    }}
-                }}
+                                dockerfile {{
+                                    dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/arm64"
+                                    reuseNode true
+                                    label "linux_aarch64"
+                                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
+                                }}
+                            }}
             docker_agent_verify: *docker_agent_aarch64
             devkit_default: 'io.sapmachine.build.devkit.linux-aarch64:devkit-fedora-gcc:21-8.3.0-nogold2'
         - linux_alpine_x86_64:
             docker_agent: &docker_agent_alpine_x86_64 |
                 agent {{
-                    dockerfile {{
-                        dir "SapMachine-Infrastructure/dockerfiles/alpine_3/x86_64"
-                        reuseNode true
-                        label "linux_alpine_x86_64"
-                    }}
-                }}
+                                dockerfile {{
+                                    dir "SapMachine-Infrastructure/dockerfiles/alpine_3/x86_64"
+                                    reuseNode true
+                                    label "linux_alpine_x86_64"
+                                }}
+                            }}
             docker_agent_verify: *docker_agent_alpine_x86_64
         - linux_ppc64le:
             architecture: linux-ppc64le
@@ -73,13 +73,13 @@
             debarch: amd64
             docker_agent: &docker_agent_x86_64 |
                 agent {{
-                    dockerfile {{
-                        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/x86_64"
-                        reuseNode true
-                        label "linux_x86_64"
-                        additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
-                    }}
-                }}
+                                dockerfile {{
+                                    dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/x86_64"
+                                    reuseNode true
+                                    label "linux_x86_64"
+                                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
+                                }}
+                            }}
             docker_agent_verify: *docker_agent_x86_64
             devkit_default: 'io.sapmachine.build.devkit.linux-x64:devkit-fedora-gcc:12-8.3.0-nogold2'
         - macos_x86_64:
@@ -243,8 +243,7 @@
                     }}
                 }}
                 stage('Prepare Devkit') {{
-                    {docker_agent|}
-                    when {{
+                    {docker_agent|}                    when {{
                         beforeAgent true
                         expression {{ env.VERIFICATION_RESULT != "2" && !params.DEVKIT.isEmpty() }}
                     }}
