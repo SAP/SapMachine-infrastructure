@@ -64,40 +64,9 @@
                 '''
             }
         }
-        stage("Verify PR") {
-            agent {
-    dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/alpine_3/x86_64"
-        reuseNode true
-        label "linux_alpine_x86_64"
-    }
-}
-
-            when {
-                beforeAgent true
-                expression { JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/ }
-            }
-            steps {
-                // credentials are needed to avoid rate limit exceedance in verify_pr.py
-                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
-                    script {
-                        def platform = "linux_alpine_x86_64"
-                        env.COMMENT = ""
-                        if (platform == 'linux_x86_64') {
-                            env.COMMENT = "-c"
-                        }
-                        env.VERIFICATION_RESULT = sh(
-                            script: "python3 SapMachine-Infrastructure/lib/verify_pr.py -p ${env.GITHUB_PR_NUMBER} ${env.COMMENT}",
-                            returnStatus: true
-                        )
-
-                        if (env.VERIFICATION_RESULT == "0") {
-                            error("Pull Request Verification failed")
-                        }
-                    }
-                }
-            }
-        }
+        
+        
+        
         stage("Checkout SapMachine Repository") {
             when {
                 expression { env.VERIFICATION_RESULT != "2" }
@@ -157,16 +126,25 @@
                 expression { env.VERIFICATION_RESULT != "2" }
             }
             steps {
-                // credentials are needed to avoid rate limit exceedance
+                // Download Boot JDK, Credentials are needed to avoid rate limit exceedance
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
                     sh "python3 SapMachine-Infrastructure/lib/download_boot_jdk.py -d `pwd`"
                 }
+
+                // Download googletest
                 sh '''#!/bin/bash
                     set -ex
                     git init gtest &amp;&amp; cd gtest
                     git fetch --depth 1 https://github.com/google/googletest.git refs/tags/v1.13.0
                     git checkout --detach FETCH_HEAD
                 '''
+
+                // Download jtreg if required
+                script {
+                    if (params.RUN_TESTS == true) {
+                        sh "python3 SapMachine-Infrastructure/lib/download_jtreg.py"
+                    }
+                }
             }
         }
         stage("Build") {
@@ -187,23 +165,6 @@
             }
             steps {
                 sh 'SapMachine-Infrastructure/lib/build.sh'
-            }
-        }
-        stage('Copy JTREG') {
-            agent {
-    dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/alpine_3/x86_64"
-        reuseNode true
-        label "linux_alpine_x86_64"
-    }
-}
-
-            when {
-                beforeAgent true
-                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.RUN_TESTS == true }
-            }
-            steps {
-                sh "python3 SapMachine-Infrastructure/lib/download_jtreg.py"
             }
         }
         stage('Run jtreg hotspot') {
@@ -620,7 +581,7 @@
         </hudson.model.StringParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>RUN_TESTS</name>
-          <description>enable/disable jtreg runs</description>
+          <description>Enable/disable jtreg runs.</description>
           <defaultValue>true</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
