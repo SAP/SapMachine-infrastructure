@@ -127,30 +127,30 @@
                         </org.jenkinsci.plugins.github.pullrequest.GitHubPRTrigger>
                     </triggers>
                 </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
-            verify_pre: |
+            verify_pre: |-
                 stage("Verify PR") {{
-            verify_step: |
+            verify_step: |-
                 steps {{
-                    // credentials are needed to avoid rate limit exceedance in verify_pr.py
-                    withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
-                        script {{
-                            def platform = "{platform}"
-                            env.COMMENT = ""
-                            if (platform == 'linux_x86_64') {{
-                                env.COMMENT = "-c"
-                            }}
-                            env.VERIFICATION_RESULT = sh(
-                                script: "python3 SapMachine-Infrastructure/lib/verify_pr.py -p ${{env.GITHUB_PR_NUMBER}} ${{env.COMMENT}}",
-                                returnStatus: true
-                            )
+                                // credentials are needed to avoid rate limit exceedance in verify_pr.py
+                                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
+                                    script {{
+                                        def platform = "{platform}"
+                                        env.COMMENT = ""
+                                        if (platform == 'linux_x86_64') {{
+                                            env.COMMENT = "-c"
+                                        }}
+                                        env.VERIFICATION_RESULT = sh(
+                                            script: "python3 SapMachine-Infrastructure/lib/verify_pr.py -p ${{env.GITHUB_PR_NUMBER}} ${{env.COMMENT}}",
+                                            returnStatus: true
+                                        )
 
-                            if (env.VERIFICATION_RESULT == "0") {{
-                                error("Pull Request Verification failed")
+                                        if (env.VERIFICATION_RESULT == "0") {{
+                                            error("Pull Request Verification failed")
+                                        }}
+                                    }}
+                                }}
                             }}
                         }}
-                    }}
-                }}
-                }}
     build_dsl: &build_dsl |
         pipeline {{
             agent {{
@@ -217,8 +217,8 @@
                     }}
                 }}
                 {verify_pre}
-                {docker_agent_verify|}
-                {verify_step}
+                    {docker_agent_verify|}
+                    {verify_step}
                 stage("Checkout SapMachine Repository") {{
                     when {{
                         expression {{ env.VERIFICATION_RESULT != "2" }}
