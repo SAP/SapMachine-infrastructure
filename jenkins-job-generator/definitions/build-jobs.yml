@@ -1,6 +1,5 @@
 - defaults:
     name: 'build_defaults'
-    docker_agent: ''
     architecture: ''
     debarch: ''
     devkit_default: ''
@@ -58,7 +57,7 @@
         - linux_ppc64le:
             architecture: linux-ppc64le
             debarch: ppc64el
-            docker_agent: &docker_agent_ppc64le |
+            docker_agent: &docker_agent_ppc64le |16
                 agent {{
                     dockerfile {{
                         dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/ppc64le"
@@ -85,16 +84,10 @@
             devkit_default: 'io.sapmachine.build.devkit.linux-x64:devkit-fedora-gcc:12-8.3.0-nogold2'
         - macos_x86_64:
             devkit_default: 'io.sapmachine.build.devkit.macos:devkit-xcode:13.1'
-            docker_agent: ''
-            docker_agent_verify: ''
         - macos_aarch64:
             devkit_default: 'io.sapmachine.build.devkit.macos:devkit-xcode:13.1'
-            docker_agent: ''
-            docker_agent_verify: ''
         - windows_x86_64:
             devkit_default: '{windows_devkit}'
-            docker_agent: ''
-            docker_agent_verify: ''
     build_types: &build_types
         - snapshot:
             docker_agent_verify: ''
@@ -250,7 +243,7 @@
                     }}
                 }}
                 stage('Prepare Devkit') {{
-                    {docker_agent}
+                    {docker_agent|}
                     when {{
                         beforeAgent true
                         expression {{ env.VERIFICATION_RESULT != "2" && !params.DEVKIT.isEmpty() }}
@@ -274,7 +267,7 @@
                     }}
                 }}
                 stage('Download Prerequisites') {{
-                    {docker_agent}
+                    {docker_agent|}
                     when {{
                         beforeAgent true
                         expression {{ env.VERIFICATION_RESULT != "2" }}
@@ -302,7 +295,7 @@
                     }}
                 }}
                 stage("Build") {{
-                    {docker_agent}
+                    {docker_agent|}
                     when {{
                         beforeAgent true
                         expression {{ env.VERIFICATION_RESULT != "2" }}
@@ -315,7 +308,7 @@
                     }}
                 }}
                 stage('Run jtreg hotspot') {{
-                    {docker_agent}
+                    {docker_agent|}
                     when {{
                         beforeAgent true
                         expression {{ env.VERIFICATION_RESULT != "2" && params.RUN_TESTS == true && params.hotspot_test_groups }}
@@ -341,7 +334,7 @@
                     }}
                 }}
                 stage('Run jtreg jdk') {{
-                    {docker_agent}
+                    {docker_agent|}
                     when {{
                         beforeAgent true
                         expression {{ env.VERIFICATION_RESULT != "2" && params.RUN_TESTS == true && params.jdk_test_groups }}
@@ -368,7 +361,7 @@
                     }}
                 }}
                 stage('Run jtreg langtools') {{
-                    {docker_agent}
+                    {docker_agent|}
                     when {{
                         beforeAgent true
                         expression {{ env.VERIFICATION_RESULT != "2" && params.RUN_TESTS == true && params.langtools_test_groups }}
@@ -500,7 +493,7 @@
                     }}
                 }}
                 stage('Publish CF Java Buildpack Data') {{
-                    {docker_agent}
+                    {docker_agent|}
                     when {{
                         beforeAgent true
                         expression {{ env.VERIFICATION_RESULT != "2" && params.PUBLISH == true && params.RELEASE == true && JOB_NAME ==~ /((\S*)(release-linux_x86_64)(\S*))/ }}
@@ -512,7 +505,7 @@
                     }}
                 }}
                 stage('Build Debian Package') {{
-                    {docker_agent}
+                    {docker_agent|}
                     when {{
                         beforeAgent true
                         expression {{ env.VERIFICATION_RESULT != "2" && env.BUILD_INSTALLER_PACKAGES == "true" && JOB_NAME ==~ /((\S*)(linux)(\S*))/ && !(JOB_NAME ==~ /((\S*)(alpine)(\S*))/) }}
