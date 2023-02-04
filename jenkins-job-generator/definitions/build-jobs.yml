@@ -26,7 +26,7 @@
         - linux_aarch64:
             architecture: linux-aarch64
             debarch: arm64
-            docker_agent: &docker_agent_aarch64 |
+            docker_agent: &docker_agent_aarch64 |-
                 agent {{
                                 dockerfile {{
                                     dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/arm64"
@@ -38,7 +38,7 @@
             docker_agent_verify: *docker_agent_aarch64
             devkit_default: 'io.sapmachine.build.devkit.linux-aarch64:devkit-fedora-gcc:21-8.3.0-nogold2'
         - linux_alpine_x86_64:
-            docker_agent: &docker_agent_alpine_x86_64 |
+            docker_agent: &docker_agent_alpine_x86_64 |-
                 agent {{
                                 dockerfile {{
                                     dir "SapMachine-Infrastructure/dockerfiles/alpine_3/x86_64"
@@ -50,7 +50,7 @@
         - linux_ppc64le:
             architecture: linux-ppc64le
             debarch: ppc64el
-            docker_agent: &docker_agent_ppc64le |
+            docker_agent: &docker_agent_ppc64le |-
                 agent {{
                                 dockerfile {{
                                     dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/ppc64le"
@@ -64,7 +64,7 @@
         - linux_x86_64:
             architecture: linux-x64
             debarch: amd64
-            docker_agent: &docker_agent_x86_64 |
+            docker_agent: &docker_agent_x86_64 |-
                 agent {{
                                 dockerfile {{
                                     dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/x86_64"
@@ -80,7 +80,7 @@
         - macos_aarch64:
             devkit_default: 'io.sapmachine.build.devkit.macos:devkit-xcode:13.1'
         - windows_x86_64:
-            devkit_default: '{windows_devkit|}'
+            devkit_default: '{windows_devkit}'
     build_types: &build_types
         - snapshot:
             docker_agent_verify: ''
