@@ -1,19 +1,5 @@
 - defaults:
     name: 'build_defaults'
-    majors: &majors_build
-        - '11':
-           branch_name: sapmachine11
-        - '17':
-           branch_name: sapmachine17
-        - '19':
-           branch_name: sapmachine19
-        - '20':
-           branch_name: sapmachine20
-           windows_devkit: 'io.sapmachine.build.devkit.windows-x64:devkit-vs2019:16.11.13'
-        - '21':
-           branch_name: sapmachine
-           windows_devkit: 'io.sapmachine.build.devkit.windows-x64:devkit-vs2019:16.11.13'
-           gtest_version: v1.13.0
     template_publish_artifactory: &template_publish_artifactory |-
         stage('Publish Artifactory') {{
                     steps {{
@@ -36,6 +22,20 @@
                         jf 'rt u test.zip sapmachine-mvn/io/sapmachine/build-results/{platform}/${{env.ART_VERSION}}/test.zip'
                     }}
                 }}
+    majors: &majors_build
+        - '11':
+           branch_name: sapmachine11
+        - '17':
+           branch_name: sapmachine17
+        - '19':
+           branch_name: sapmachine19
+        - '20':
+           branch_name: sapmachine20
+           windows_devkit: 'io.sapmachine.build.devkit.windows-x64:devkit-vs2019:16.11.13'
+        - '21':
+           branch_name: sapmachine
+           windows_devkit: 'io.sapmachine.build.devkit.windows-x64:devkit-vs2019:16.11.13'
+           gtest_version: v1.13.0
     platforms: &platforms
         - linux_aarch64:
             architecture: linux-aarch64
@@ -148,11 +148,7 @@
                                 // credentials are needed to avoid rate limit exceedance in verify_pr.py
                                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
                                     script {{
-                                        def platform = "{platform}"
-                                        env.COMMENT = ""
-                                        if (platform == 'linux_x86_64') {{
-                                            env.COMMENT = "-c"
-                                        }}
+                                        env.COMMENT = ('{platform}' == 'linux_x86_64') ? "-c" : ""
                                         env.VERIFICATION_RESULT = sh(
                                             script: "python3 SapMachine-Infrastructure/lib/verify_pr.py -p ${{env.GITHUB_PR_NUMBER}} ${{env.COMMENT}}",
                                             returnStatus: true
@@ -165,7 +161,6 @@
                                 }}
                             }}
                         }}
-            publish_artifactory: ''
     build_type_snapshot: &build_type_snapshot
         - snapshot:
             docker_agent_verify: ''
@@ -401,7 +396,7 @@
                         }}
                     }}
                 }}
-                {publish_artifactory}
+                {publish_artifactory|}
                 stage('Archive') {{
                     when {{
                         expression {{ env.VERIFICATION_RESULT != "2" }}
