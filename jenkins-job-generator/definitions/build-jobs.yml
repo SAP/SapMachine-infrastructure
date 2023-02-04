@@ -1,9 +1,7 @@
 - defaults:
     name: 'build_defaults'
-    windows_devkit: 'io.sapmachine.build.devkit.windows-x64:devkit-vs2017:15.9.49'
     verify_step: ''
     verify_pre: ''
-    gtest_version: release-1.8.1
     trigger: |
         <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
             <triggers/>
@@ -80,7 +78,7 @@
         - macos_aarch64:
             devkit_default: 'io.sapmachine.build.devkit.macos:devkit-xcode:13.1'
         - windows_x86_64:
-            devkit_default: '{windows_devkit}'
+            devkit_default: '{windows_devkit|io.sapmachine.build.devkit.windows-x64:devkit-vs2017:15.9.49}'
     build_types: &build_types
         - snapshot:
             docker_agent_verify: ''
@@ -275,7 +273,7 @@
                         sh '''#!/bin/bash
                             set -ex
                             git init gtest && cd gtest
-                            git fetch --depth 1 https://github.com/google/googletest.git refs/tags/{gtest_version}
+                            git fetch --depth 1 https://github.com/google/googletest.git refs/tags/{gtest_version|release-1.8.1}
                             git checkout --detach FETCH_HEAD
                         '''
 
