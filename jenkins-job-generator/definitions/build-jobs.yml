@@ -1,6 +1,5 @@
 - defaults:
-    name: 'sapmachine_global'
-    build_alpine: true
+    name: 'build_defaults'
     docker_agent: ''
     architecture: ''
     debarch: ''
@@ -14,10 +13,9 @@
         <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
             <triggers/>
         </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
-    majors: &majors
+    majors: &majors_build
         - '11':
            branch_name: sapmachine11
-           build_alpine: false
            windows_devkit: 'io.sapmachine.build.devkit.windows-x64:devkit-vs2017:15.9.49'
         - '17':
            branch_name: sapmachine17
@@ -609,9 +607,26 @@
             }}
         }}
 
+- defaults:
+    name: 'service_defaults'
+    build_alpine: true
+    extra_configure_options: ''
+    majors: &majors_service
+        - '11':
+           branch_name: sapmachine11
+           build_alpine: false
+        - '17':
+           branch_name: sapmachine17
+        - '19':
+           branch_name: sapmachine19
+        - '20':
+           branch_name: sapmachine20
+        - '21':
+           branch_name: sapmachine
+
 - project:
     name: builds
-    major: *majors
+    major: *majors_build
     platform: *platforms
     build_type: *build_types
     build_type_release:
@@ -626,15 +641,14 @@
 
 - project:
     name: service-builds
-    major: *majors
-    platform: ''
+    major: *majors_service
     jobs:
         - build-service-snapshot-{major}
         - build-service-release-{major}
 
 - job-template:
     name: build-{major}-{build_type}-{platform}
-    defaults: 'sapmachine_global'
+    defaults: 'build_defaults'
     description: '{build_type} build for SapMachine {major} on {platform}.'
     project-type: pipeline
     sandbox: true
@@ -700,7 +714,7 @@
 
 - job-template:
     name: build-{major}-{build_type_release}-{platform}
-    defaults: 'sapmachine_global'
+    defaults: 'build_defaults'
     description: 'Release build for SapMachine {major} on {platform}.'
     project-type: pipeline
     sandbox: true
@@ -770,7 +784,7 @@
 
 - job-template:
     name: build-service-snapshot-{major}
-    defaults: 'sapmachine_global'
+    defaults: 'service_defaults'
     description: 'Start snapshot build for SapMachine {major} on all platorms.'
     project-type: pipeline
     sandbox: true
@@ -889,7 +903,7 @@
 
 - job-template:
     name: build-service-release-{major}
-    defaults: 'sapmachine_global'
+    defaults: 'service_defaults'
     description: 'Start release build for SapMachine {major} on all platorms.'
     project-type: pipeline
     sandbox: true
