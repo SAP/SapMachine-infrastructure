@@ -58,14 +58,15 @@
             architecture: linux-ppc64le
             debarch: ppc64el
             docker_agent: &docker_agent_ppc64le |
-                agent {{
-                    dockerfile {{
-                        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/ppc64le"
-                        reuseNode true
-                        label "linux_ppc64le"
-                        additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
-                    }}
-                }}
+                
+                            agent {{
+                                dockerfile {{
+                                    dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/ppc64le"
+                                    reuseNode true
+                                    label "linux_ppc64le"
+                                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
+                                }}
+                            }}
             docker_agent_verify: *docker_agent_ppc64le
             devkit_default: 'io.sapmachine.build.devkit.linux-ppc64le:devkit-rhel-gcc:7-8.3.0-nogold2'
         - linux_x86_64:
@@ -242,8 +243,7 @@
                         '''
                     }}
                 }}
-                stage('Prepare Devkit') {{
-                    {docker_agent|}
+                stage('Prepare Devkit') {{{docker_agent|}
                     when {{
                         beforeAgent true
                         expression {{ env.VERIFICATION_RESULT != "2" && !params.DEVKIT.isEmpty() }}
