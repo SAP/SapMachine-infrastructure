@@ -77,9 +77,7 @@
             devkit_default: 'io.sapmachine.build.devkit.macos:devkit-xcode:13.1'
         - windows_x86_64:
             devkit_default: '{windows_devkit|io.sapmachine.build.devkit.windows-x64:devkit-vs2017:15.9.49}'
-    build_types: &build_types
-        - snapshot:
-            docker_agent_verify: ''
+    build_type_pr: &build_type_pr
         - pr-validation:
             extra_configure_options: '--with-debug-level=fastdebug'
             trigger: |
@@ -149,6 +147,12 @@
                                 }}
                             }}
                         }}
+    build_type_snapshot: &build_type_snapshot
+        - snapshot:
+            docker_agent_verify: ''
+    build_type_release: &build_type_release
+        - release:
+            docker_agent_verify: ''
     build_dsl: &build_dsl |
         pipeline {{
             agent {{
@@ -609,15 +613,15 @@
     name: builds
     major: *majors_build
     platform: *platforms
-    build_type: *build_types
-    build_type_release:
-        - release:
-            docker_agent_verify: ''
+    build_type_pr: *build_type_pr
+    build_type_snapshot: *build_type_snapshot
+    build_type_release: *build_type_release
     exclude:
         - platform: linux_alpine_x86_64
           major: '11'
     jobs:
-        - build-{major}-{build_type}-{platform}
+        - build-{major}-{build_type_pr}-{platform}
+        - build-{major}-{build_type_snapshot}-{platform}
         - build-{major}-{build_type_release}-{platform}
 
 - project:
@@ -628,7 +632,73 @@
         - build-service-release-{major}
 
 - job-template:
-    name: build-{major}-{build_type}-{platform}
+    name: build-{major}-{build_type_pr}-{platform}
+    defaults: 'build_defaults'
+    description: '{build_type} build for SapMachine {major} on {platform}.'
+    project-type: pipeline
+    sandbox: true
+    concurrent: false
+    properties:
+        - github:
+            url: 'https://github.com/SAP/SapMachine'
+        - build-discarder:
+            num-to-keep: 20
+            artifact-num-to-keep: 1
+        - raw:
+            xml: '{trigger}'
+    parameters:
+        - string:
+            name: SAPMACHINE_GIT_REPOSITORY
+            default: 'https://github.com/SAP/SapMachine.git'
+            description: 'The Git repository to use.'
+        - string:
+            name: GIT_REF
+            default: '{branch_name}'
+            description: 'The Git tag, branch or commit to build.'
+        - string:
+            name: SAPMACHINE_VERSION
+            default: ''
+            description: 'Either a SapMachine Release Tag or a JDK Major version. If empty, GIT_REF is used.'
+        - string:
+            name: JDK_BUILD
+            default: ''
+            description: 'Sets the version build number explicitly.'
+        - string:
+            name: SAPMACHINE_ARCHIVE_NAME_PREFIX
+            default: 'sapmachine{major}-{platform}'
+            description: 'The prefix of the bundle archive.'
+        - string:
+            name: DEVKIT
+            default: '{devkit_default|}'
+            description: 'Devkit, could be either a path that locally exists or the GAV coordinates to a tar.gz archive to be downloaded and extracted.'
+        - string:
+            name: EXTRA_CONFIGURE_OPTIONS
+            default: '{extra_configure_options|}'
+            description: 'Extra configure options passed directly to configure script.'
+        - string:
+            name: hotspot_test_groups
+            default: ':tier1'
+            description: 'Select the test group for jtreg hotspot tests. Empty means disabled.'
+        - string:
+            name: jdk_test_groups
+            default: ':tier1'
+            description: 'Select the test group for jtreg jdk tests. Empty means disabled.'
+        - string:
+            name: langtools_test_groups
+            default: '"jdk tools lib"'
+            description: 'Select the test group for jtreg langtools tests. Empty means disabled.'
+        - bool:
+            name: RUN_TESTS
+            default: true
+            description: 'Enable/disable jtreg runs.'
+        - bool:
+            name: BUILD_INSTALLER_PACKAGES
+            default: false
+            description: 'Build platform installer packages, e.g. Windows MSI, Debian packages.'
+    dsl: *build_dsl
+
+- job-template:
+    name: build-{major}-{build_type_snapshot}-{platform}
     defaults: 'build_defaults'
     description: '{build_type} build for SapMachine {major} on {platform}.'
     project-type: pipeline
