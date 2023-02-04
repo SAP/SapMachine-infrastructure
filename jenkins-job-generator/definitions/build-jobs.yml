@@ -57,7 +57,7 @@
         - linux_ppc64le:
             architecture: linux-ppc64le
             debarch: ppc64el
-            docker_agent: &docker_agent_ppc64le |8
+            docker_agent: &docker_agent_ppc64le |
                 agent {{
                     dockerfile {{
                         dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/ppc64le"
