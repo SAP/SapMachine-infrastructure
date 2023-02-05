@@ -141,7 +141,7 @@
                         </org.jenkinsci.plugins.github.pullrequest.GitHubPRTrigger>
                     </triggers>
                 </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
-            init_pr: |-
+            init_pr: |
                 // update GitHub status and initialize PR Verification
                                 script {{
                                     setGitHubPullRequestStatus context: "validate-pr-{major}-{platform}", state: 'PENDING'
@@ -167,6 +167,17 @@
                                 }}
                             }}
                         }}
+            verification_switch: "env.VERIFICATION_RESULT != "2" &&"
+            verification_when: |-
+                when {{
+                                    expression {{ env.VERIFICATION_RESULT != "2" }}
+                                }}
+            verification_when_docker: |-
+                when {{
+                                    beforeAgent true
+                                    expression {{ env.VERIFICATION_RESULT != "2" }}
+                                }}
+
     build_type_snapshot: &build_type_snapshot
         - snapshot:
             docker_agent_verify: ''
@@ -190,7 +201,6 @@
                 stage("Init") {{
                     steps {{
                         {init_pr|}
-
                         // trigger workspace cleanup
                         cleanWs()
 
@@ -238,9 +248,7 @@
                     {docker_agent_verify|}
                     {verify_step|}
                 stage("Checkout SapMachine Repository") {{
-                    when {{
-                        expression {{ env.VERIFICATION_RESULT != "2" }}
-                    }}
+                    {verification_when|}
                     steps {{
                         sh '''#!/bin/bash
                             set -ex
@@ -255,7 +263,7 @@
                     {docker_agent|}
                     when {{
                         beforeAgent true
-                        expression {{ env.VERIFICATION_RESULT != "2" && !params.DEVKIT.isEmpty() }}
+                        expression {{ {verification_switch|} !params.DEVKIT.isEmpty() }}
                     }}
                     steps {{
                         script {{
@@ -277,10 +285,7 @@
                 }}
                 stage('Download Prerequisites') {{
                     {docker_agent|}
-                    when {{
-                        beforeAgent true
-                        expression {{ env.VERIFICATION_RESULT != "2" }}
-                    }}
+                    {verification_when_docker|}
                     steps {{
                         // Download Boot JDK, Credentials are needed to avoid rate limit exceedance
                         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
