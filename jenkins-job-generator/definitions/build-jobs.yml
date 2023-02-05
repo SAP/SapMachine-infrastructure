@@ -51,6 +51,14 @@
                             }}
             docker_agent_verify: *docker_agent_aarch64
             devkit_default: 'io.sapmachine.build.devkit.linux-aarch64:devkit-fedora-gcc:21-8.3.0-nogold2'
+            save_workspace_on_error: &save_workspace_on_error |-
+                unsuccessful {{
+                            script {{
+                                sh 'zip -rq workspace.zip .'
+                                archiveArtifacts allowEmptyArchive: true, artifacts: 'workspace.zip'
+                            }}
+                        }}
+
         - linux_alpine_x86_64:
             docker_agent: &docker_agent_alpine_x86_64 |-
                 agent {{
@@ -61,6 +69,7 @@
                                 }}
                             }}
             docker_agent_verify: *docker_agent_alpine_x86_64
+            save_workspace_on_error: *save_workspace_on_error
         - linux_ppc64le:
             architecture: linux-ppc64le
             debarch: ppc64el
@@ -89,6 +98,7 @@
                             }}
             docker_agent_verify: *docker_agent_x86_64
             devkit_default: 'io.sapmachine.build.devkit.linux-x64:devkit-fedora-gcc:12-8.3.0-nogold2'
+            save_workspace_on_error: *save_workspace_on_error
         - macos_x86_64:
             devkit_default: 'io.sapmachine.build.devkit.macos:devkit-xcode:13.1'
         - macos_aarch64:
@@ -116,6 +126,7 @@
                                 }}
                             }}
                         }}
+            save_workspace_on_error: *save_workspace_on_error
     build_type_pr: &build_type_pr
         - pr-validation:
             extra_configure_options: '--with-debug-level=fastdebug'
@@ -572,14 +583,7 @@
                 {post_code|success {{}
                     cleanWs()
                 }}
-                unsuccessful {{
-                    script {{
-                        if ((JOB_NAME ==~ /((\S*)(linux_aarch64)(\S*))/ || JOB_NAME ==~ /((\S*)(linux_alpine_x86_64)(\S*))/ || JOB_NAME ==~ /((\S*)(linux_x86_64)(\S*))/ || JOB_NAME ==~ /((\S*)(windows_x86_64)(\S*))/)) {{
-                            sh 'zip -rq workspace.zip .'
-                            archiveArtifacts allowEmptyArchive: true, artifacts: 'workspace.zip'
-                        }}
-                    }}
-                }}
+                {save_workspace_on_error|}
             }}
         }}
 
