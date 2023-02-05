@@ -95,6 +95,27 @@
             devkit_default: 'io.sapmachine.build.devkit.macos:devkit-xcode:13.1'
         - windows_x86_64:
             devkit_default: '{windows_devkit|io.sapmachine.build.devkit.windows-x64:devkit-vs2017:15.9.49}'
+            build_windows_installer: |-
+                stage('Build Windows Installer') {{
+                    when {{
+                        expression {{ env.BUILD_INSTALLER_PACKAGES == "true" }}
+                    }}
+                    steps {{
+                        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
+                            script {{
+                                def jdk_bundle_name = readFile "${{env.WORKSPACE}}/jdk_bundle_name.txt"
+                                def jre_bundle_name = readFile "${{env.WORKSPACE}}/jre_bundle_name.txt"
+                                jdk_bundle_name = jdk_bundle_name.trim()
+                                jre_bundle_name = jre_bundle_name.trim()
+
+                                sh "rm -f *.msi"
+                                sh "python3 SapMachine-Infrastructure/lib/make_msi.py --sapmachine-directory=`pwd`/SapMachine --asset=${{jdk_bundle_name}}"
+                                sh "python3 SapMachine-Infrastructure/lib/make_msi.py --sapmachine-directory=`pwd`/SapMachine --jre --asset=${{jre_bundle_name}}"
+                                archiveArtifacts allowEmptyArchive: true, artifacts: "*.msi"
+                            }}
+                        }}
+                    }}
+                }}
     build_type_pr: &build_type_pr
         - pr-validation:
             extra_configure_options: '--with-debug-level=fastdebug'
@@ -170,14 +191,14 @@
             verification_switch: 'env.VERIFICATION_RESULT != "2" &&'
             verification_when: |-
                 when {{
-                                    expression {{ env.VERIFICATION_RESULT != "2" }}
-                                }}
+                                expression {{ env.VERIFICATION_RESULT != "2" }}
+                            }}
             verification_when_docker: |-
                 when {{
-                                    beforeAgent true
-                                    expression {{ env.VERIFICATION_RESULT != "2" }}
-                                }}
-
+                                beforeAgent true
+                                expression {{ env.VERIFICATION_RESULT != "2" }}
+                            }}
+            build_windows_installer: ''
     build_type_snapshot: &build_type_snapshot
         - snapshot:
             docker_agent_verify: ''
@@ -310,10 +331,7 @@
                 }}
                 stage("Build") {{
                     {docker_agent|}
-                    when {{
-                        beforeAgent true
-                        expression {{ env.VERIFICATION_RESULT != "2" }}
-                    }}
+                    {verification_when_docker|}
                     environment {{
                         BOOT_JDK = "${{WORKSPACE}}/boot_jdk"
                     }}
@@ -325,7 +343,7 @@
                     {docker_agent|}
                     when {{
                         beforeAgent true
-                        expression {{ env.VERIFICATION_RESULT != "2" && params.RUN_TESTS == true && params.hotspot_test_groups }}
+                        expression {{ {verification_switch|} params.RUN_TESTS == true && params.hotspot_test_groups }}
                     }}
                     environment {{
                         TESTSUITE = 'hotspot'
@@ -351,7 +369,7 @@
                     {docker_agent|}
                     when {{
                         beforeAgent true
-                        expression {{ env.VERIFICATION_RESULT != "2" && params.RUN_TESTS == true && params.jdk_test_groups }}
+                        expression {{ {verification_switch|} params.RUN_TESTS == true && params.jdk_test_groups }}
                     }}
                     environment {{
                         TESTSUITE = 'jdk'
@@ -378,7 +396,7 @@
                     {docker_agent|}
                     when {{
                         beforeAgent true
-                        expression {{ env.VERIFICATION_RESULT != "2" && params.RUN_TESTS == true && params.langtools_test_groups }}
+                        expression {{ {verification_switch|} params.RUN_TESTS == true && params.langtools_test_groups }}
                     }}
                     environment {{
                         TESTSUITE = 'langtools'
@@ -401,11 +419,10 @@
                         }}
                     }}
                 }}
+                {build_windows_installer|}
                 {publish_artifactory|}
                 stage('Archive') {{
-                    when {{
-                        expression {{ env.VERIFICATION_RESULT != "2" }}
-                    }}
+                    {verification_when|}
                     steps {{
                         archiveArtifacts allowEmptyArchive: true, artifacts: 'test.zip'
                         archiveArtifacts allowEmptyArchive: true, artifacts: 'support_gensrc.zip'
@@ -419,26 +436,6 @@
                             step ([$class: 'ArtifactArchiver', artifacts: jdk_bundle_name]);
                             step ([$class: 'ArtifactArchiver', artifacts: jre_bundle_name]);
                             step ([$class: 'ArtifactArchiver', artifacts: symbols_bundle_name]);
-                        }}
-                    }}
-                }}
-                stage('Build Windows Installer') {{
-                    when {{
-                        expression {{ env.VERIFICATION_RESULT != "2" && env.BUILD_INSTALLER_PACKAGES == "true" && JOB_NAME ==~ /((\S*)(windows_x86_64)(\S*))/ }}
-                    }}
-                    steps {{
-                        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
-                            script {{
-                                def jdk_bundle_name = readFile "${{env.WORKSPACE}}/jdk_bundle_name.txt"
-                                def jre_bundle_name = readFile "${{env.WORKSPACE}}/jre_bundle_name.txt"
-                                jdk_bundle_name = jdk_bundle_name.trim()
-                                jre_bundle_name = jre_bundle_name.trim()
-
-                                sh "rm -f *.msi"
-                                sh "python3 SapMachine-Infrastructure/lib/make_msi.py --sapmachine-directory=`pwd`/SapMachine --asset=${{jdk_bundle_name}}"
-                                sh "python3 SapMachine-Infrastructure/lib/make_msi.py --sapmachine-directory=`pwd`/SapMachine --jre --asset=${{jre_bundle_name}}"
-                                archiveArtifacts allowEmptyArchive: true, artifacts: "*.msi"
-                            }}
                         }}
                     }}
                 }}
