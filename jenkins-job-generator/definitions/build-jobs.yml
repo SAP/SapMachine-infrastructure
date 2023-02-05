@@ -22,6 +22,19 @@
                         jf 'rt u test.zip sapmachine-mvn/io/sapmachine/build-results/{platform}/${{env.ART_VERSION}}/test.zip'
                     }}
                 }}
+    template_create_brew_casks: &template_create_brew_casks |-
+        stage('Create Brew Casks') {{
+                    when {{
+                        expression {{ params.PUBLISH == true && JOB_NAME ==~ /((\S*)(release-macos)(\S*))/ && params.RELEASE != true }}
+                    }}
+                    steps {{
+                        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
+                            lock('MacBrewCaskGenerationSynchronizer') {{
+                                sh "python3 SapMachine-Infrastructure/lib/make_cask.py -t $SAPMACHINE_VERSION"
+                            }}
+                        }}
+                    }}
+                }}
     majors: &majors_build
         - '11':
            branch_name: sapmachine11
@@ -101,8 +114,10 @@
             save_workspace_on_error: *save_workspace_on_error
         - macos_x86_64:
             devkit_default: 'io.sapmachine.build.devkit.macos:devkit-xcode:13.1'
+            create_brew_casks: *template_create_brew_casks
         - macos_aarch64:
             devkit_default: 'io.sapmachine.build.devkit.macos:devkit-xcode:13.1'
+            create_brew_casks: *template_create_brew_casks
         - windows_x86_64:
             devkit_default: '{windows_devkit|io.sapmachine.build.devkit.windows-x64:devkit-vs2017:15.9.49}'
             build_windows_installer: |-
@@ -210,6 +225,7 @@
                                 expression {{ env.VERIFICATION_RESULT != "2" }}
                             }}
             build_windows_installer: ''
+            create_brew_casks: ''
             post_code: |-
                 aborted {{
                             script {{
@@ -235,6 +251,7 @@
         - snapshot:
             docker_agent_verify: ''
             publish_artifactory: *template_publish_artifactory
+            create_brew_casks: ''
     build_type_release: &build_type_release
         - release:
             docker_agent_verify: ''
@@ -478,18 +495,7 @@
                     }}
                 }}
                 {publish_github|}
-                stage('Create Brew Casks') {{
-                    when {{
-                        expression {{ env.VERIFICATION_RESULT != "2" && params.PUBLISH == true && JOB_NAME ==~ /((\S*)(release-macos)(\S*))/ && params.RELEASE != true }}
-                    }}
-                    steps {{
-                        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
-                            lock('MacBrewCaskGenerationSynchronizer') {{
-                                sh "python3 SapMachine-Infrastructure/lib/make_cask.py -t $SAPMACHINE_VERSION"
-                            }}
-                        }}
-                    }}
-                }}
+                {create_brew_casks|}
                 stage('Publish Windows Installer') {{
                     when {{
                         expression {{ env.VERIFICATION_RESULT != "2" && params.PUBLISH == true && JOB_NAME ==~ /((\S*)(release-windows_x86_64)(\S*))/ }}
