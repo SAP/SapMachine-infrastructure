@@ -65,8 +65,8 @@
             }
         }
         
-        
-        
+            
+            
         stage("Checkout SapMachine Repository") {
             when {
                 expression { env.VERIFICATION_RESULT != "2" }
@@ -127,7 +127,7 @@
 
                 // Download jtreg if required
                 script {
-                    if (params.RUN_TESTS == true) {
+                    if (params.RUN_TESTS) {
                         sh "python3 SapMachine-Infrastructure/lib/download_jtreg.py"
                     }
                 }
@@ -227,9 +227,6 @@
             }
         }
         stage('Publish Artifactory') {
-            when {
-                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; (JOB_NAME ==~ /((\S*)(release)(\S*))/ || JOB_NAME ==~ /((\S*)(snapshot)(\S*))/) }
-            }
             steps {
                 // Show the installed version of JFrog CLI.
                 jf '-v'
@@ -442,7 +439,7 @@
     <sandbox>true</sandbox>
   </definition>
   <actions />
-  <description>snapshot build for SapMachine 21 on macos_aarch64.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+  <description>Snapshot build for SapMachine 21 on macos_aarch64.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
   <properties>
     <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty />
@@ -458,9 +455,6 @@
         <artifactNumToKeep>1</artifactNumToKeep>
       </strategy>
     </jenkins.model.BuildDiscarderProperty>
-    <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
-      <triggers />
-    </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
         <hudson.model.StringParameterDefinition>

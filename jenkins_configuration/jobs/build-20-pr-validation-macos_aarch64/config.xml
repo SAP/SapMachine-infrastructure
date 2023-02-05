@@ -65,30 +65,24 @@
             }
         }
         stage("Verify PR") {
+            
+            steps {
+                // credentials are needed to avoid rate limit exceedance in verify_pr.py
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
+                    script {
+                        env.COMMENT = ('macos_aarch64' == 'linux_x86_64') ? "-c" : ""
+                        env.VERIFICATION_RESULT = sh(
+                            script: "python3 SapMachine-Infrastructure/lib/verify_pr.py -p ${env.GITHUB_PR_NUMBER} ${env.COMMENT}",
+                            returnStatus: true
+                        )
 
-        
-        steps {
-    // credentials are needed to avoid rate limit exceedance in verify_pr.py
-    withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
-        script {
-            def platform = "macos_aarch64"
-            env.COMMENT = ""
-            if (platform == 'linux_x86_64') {
-                env.COMMENT = "-c"
-            }
-            env.VERIFICATION_RESULT = sh(
-                script: "python3 SapMachine-Infrastructure/lib/verify_pr.py -p ${env.GITHUB_PR_NUMBER} ${env.COMMENT}",
-                returnStatus: true
-            )
-
-            if (env.VERIFICATION_RESULT == "0") {
-                error("Pull Request Verification failed")
+                        if (env.VERIFICATION_RESULT == "0") {
+                            error("Pull Request Verification failed")
+                        }
+                    }
+                }
             }
         }
-    }
-}
-}
-
         stage("Checkout SapMachine Repository") {
             when {
                 expression { env.VERIFICATION_RESULT != "2" }
@@ -149,7 +143,7 @@
 
                 // Download jtreg if required
                 script {
-                    if (params.RUN_TESTS == true) {
+                    if (params.RUN_TESTS) {
                         sh "python3 SapMachine-Infrastructure/lib/download_jtreg.py"
                     }
                 }
@@ -248,30 +242,7 @@
                 }
             }
         }
-        stage('Publish Artifactory') {
-            when {
-                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; (JOB_NAME ==~ /((\S*)(release)(\S*))/ || JOB_NAME ==~ /((\S*)(snapshot)(\S*))/) }
-            }
-            steps {
-                // Show the installed version of JFrog CLI.
-                jf '-v'
-
-                // Show the configuration
-                jf 'c s'
-
-                // Upload the JDK archive
-                script {
-                    def jdk_bundle_name = readFile "${env.WORKSPACE}/jdk_bundle_name.txt"
-                    println "JDK Bundle name: \"" + jdk_bundle_name.trim() + "\""
-                    def jfcall = "rt u " + jdk_bundle_name.trim() + " sapmachine-mvn/io/sapmachine/build-results/macos_aarch64/${env.ART_VERSION}/" + jdk_bundle_name.trim()
-                    println "JF call: \"" + jfcall + "\""
-                    jf jfcall
-                }
-
-                // Upload the test archive
-                jf 'rt u test.zip sapmachine-mvn/io/sapmachine/build-results/macos_aarch64/${env.ART_VERSION}/test.zip'
-            }
-        }
+        
         stage('Archive') {
             when {
                 expression { env.VERIFICATION_RESULT != "2" }
@@ -464,7 +435,7 @@
     <sandbox>true</sandbox>
   </definition>
   <actions />
-  <description>pr-validation build for SapMachine 20 on macos_aarch64.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+  <description>PR build for SapMachine 20 on macos_aarch64.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
   <properties>
     <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty />
@@ -482,7 +453,7 @@
     </jenkins.model.BuildDiscarderProperty>
     <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
       <triggers>
-        <org.jenkinsci.plugins.github.pullrequest.GitHubPRTrigger plugin="github-pullrequest@0.2.4">
+        <org.jenkinsci.plugins.github.pullrequest.GitHubPRTrigger plugin="github-pullrequest@0.4.0">
           <spec>H/1 * * * *</spec>
           <triggerMode>HEAVY_HOOKS</triggerMode>
           <cancelQueued>true</cancelQueued>
