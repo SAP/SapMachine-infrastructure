@@ -141,6 +141,12 @@
                         </org.jenkinsci.plugins.github.pullrequest.GitHubPRTrigger>
                     </triggers>
                 </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+            init_pr: |-
+                // update GitHub status and initialize PR Verification
+                                script {{
+                                    setGitHubPullRequestStatus context: "validate-pr-{major}-{platform}", state: 'PENDING'
+                                    env.VERIFICATION_RESULT = "1"
+                                }}
             verify_pre: |-
                 stage("Verify PR") {{
             verify_step: |-
@@ -183,13 +189,7 @@
             stages {{
                 stage("Init") {{
                     steps {{
-                        // update GitHub status first, if required
-                        script {{
-                            if (JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/) {{
-                                setGitHubPullRequestStatus context: "validate-pr-{major}-{platform}", state: 'PENDING'
-                            }}
-                            env.VERIFICATION_RESULT = "1"
-                        }}
+                        {init_pr|}
 
                         // trigger workspace cleanup
                         cleanWs()

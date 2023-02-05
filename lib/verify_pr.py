@@ -1,17 +1,12 @@
 '''
-Copyright (c) 2001-2018 by SAP SE, Walldorf, Germany.
+Copyright (c) 2018-2023 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
 import os
 import sys
-import json
 import re
-import utils
 import argparse
-from urllib.request import urlopen, Request
-from urllib.parse import quote
-from os.path import join
 from utils import github_api_request
 
 org = 'SAP'
