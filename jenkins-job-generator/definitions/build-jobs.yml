@@ -167,7 +167,7 @@
                                 }}
                             }}
                         }}
-            verification_switch: "env.VERIFICATION_RESULT != "2" &&"
+            verification_switch: 'env.VERIFICATION_RESULT != "2" &&'
             verification_when: |-
                 when {{
                                     expression {{ env.VERIFICATION_RESULT != "2" }}
