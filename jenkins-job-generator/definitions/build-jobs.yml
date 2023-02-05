@@ -97,25 +97,25 @@
             devkit_default: '{windows_devkit|io.sapmachine.build.devkit.windows-x64:devkit-vs2017:15.9.49}'
             build_windows_installer: |-
                 stage('Build Windows Installer') {{
-                    when {{
-                        expression {{ env.BUILD_INSTALLER_PACKAGES == "true" }}
-                    }}
-                    steps {{
-                        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
-                            script {{
-                                def jdk_bundle_name = readFile "${{env.WORKSPACE}}/jdk_bundle_name.txt"
-                                def jre_bundle_name = readFile "${{env.WORKSPACE}}/jre_bundle_name.txt"
-                                jdk_bundle_name = jdk_bundle_name.trim()
-                                jre_bundle_name = jre_bundle_name.trim()
+                            when {{
+                                expression {{ env.BUILD_INSTALLER_PACKAGES == "true" }}
+                            }}
+                            steps {{
+                                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
+                                    script {{
+                                        def jdk_bundle_name = readFile "${{env.WORKSPACE}}/jdk_bundle_name.txt"
+                                        def jre_bundle_name = readFile "${{env.WORKSPACE}}/jre_bundle_name.txt"
+                                        jdk_bundle_name = jdk_bundle_name.trim()
+                                        jre_bundle_name = jre_bundle_name.trim()
 
-                                sh "rm -f *.msi"
-                                sh "python3 SapMachine-Infrastructure/lib/make_msi.py --sapmachine-directory=`pwd`/SapMachine --asset=${{jdk_bundle_name}}"
-                                sh "python3 SapMachine-Infrastructure/lib/make_msi.py --sapmachine-directory=`pwd`/SapMachine --jre --asset=${{jre_bundle_name}}"
-                                archiveArtifacts allowEmptyArchive: true, artifacts: "*.msi"
+                                        sh "rm -f *.msi"
+                                        sh "python3 SapMachine-Infrastructure/lib/make_msi.py --sapmachine-directory=`pwd`/SapMachine --asset=${{jdk_bundle_name}}"
+                                        sh "python3 SapMachine-Infrastructure/lib/make_msi.py --sapmachine-directory=`pwd`/SapMachine --jre --asset=${{jre_bundle_name}}"
+                                        archiveArtifacts allowEmptyArchive: true, artifacts: "*.msi"
+                                    }}
+                                }}
                             }}
                         }}
-                    }}
-                }}
     build_type_pr: &build_type_pr
         - pr-validation:
             extra_configure_options: '--with-debug-level=fastdebug'
@@ -199,6 +199,27 @@
                                 expression {{ env.VERIFICATION_RESULT != "2" }}
                             }}
             build_windows_installer: ''
+            post_code: |-
+                aborted {{
+                            script {{
+                                setGitHubPullRequestStatus context: "validate-pr-{major}-{platform}", state: 'FAILURE', message: 'job aborted'
+                            }}
+                        }}
+                        failure {{
+                            script {{
+                                setGitHubPullRequestStatus context: "validate-pr-{major}-{platform}", state: 'FAILURE', message: 'build failed'
+                            }}
+                        }}
+                        unstable {{
+                            script {{
+                                setGitHubPullRequestStatus context: "validate-pr-{major}-{platform}", state: 'FAILURE', message: 'tests failed'
+                            }}
+                        }}
+                        success {{
+                            script {{
+                                setGitHubPullRequestStatus context: "validate-pr-{major}-{platform}", state: 'SUCCESS'
+                            }}
+
     build_type_snapshot: &build_type_snapshot
         - snapshot:
             docker_agent_verify: ''
@@ -548,38 +569,12 @@
                 }}
             }}
             post {{
-                aborted {{
-                    script {{
-                        if (JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/) {{
-                            setGitHubPullRequestStatus context: "validate-pr-{major}-{platform}", state: 'FAILURE', message: 'job aborted'
-                        }}
-                    }}
-                }}
-                failure {{
-                    script {{
-                        if (JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/) {{
-                            setGitHubPullRequestStatus context: "validate-pr-{major}-{platform}", state: 'FAILURE', message: 'build failed'
-                        }}
-                    }}
-                }}
-                unstable {{
-                    script {{
-                        if (JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/) {{
-                            setGitHubPullRequestStatus context: "validate-pr-{major}-{platform}", state: 'FAILURE', message: 'tests failed'
-                        }}
-                    }}
-                }}
-                success {{
-                    script {{
-                        if (JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/) {{
-                            setGitHubPullRequestStatus context: "validate-pr-{major}-{platform}", state: 'SUCCESS'
-                        }}
-                    }}
+                {post_code|success {{}
                     cleanWs()
                 }}
                 unsuccessful {{
                     script {{
-                        if ((JOB_NAME ==~ /((\S*)(windows_x86_64)(\S*))/) || (JOB_NAME ==~ /((\S*)(linux_x86_64)(\S*))/)) {{
+                        if ((JOB_NAME ==~ /((\S*)(linux_aarch64)(\S*))/ || JOB_NAME ==~ /((\S*)(linux_alpine_x86_64)(\S*))/ || JOB_NAME ==~ /((\S*)(linux_x86_64)(\S*))/ || JOB_NAME ==~ /((\S*)(windows_x86_64)(\S*))/)) {{
                             sh 'zip -rq workspace.zip .'
                             archiveArtifacts allowEmptyArchive: true, artifacts: 'workspace.zip'
                         }}
