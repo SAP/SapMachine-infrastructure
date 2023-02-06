@@ -13,11 +13,9 @@
     stages {
         stage("Init") {
             steps {
-                // update GitHub status first, if required
+                // update GitHub status and initialize PR Verification
                 script {
-                    if (JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/) {
-                        setGitHubPullRequestStatus context: "validate-pr-11-macos_aarch64", state: 'PENDING'
-                    }
+                    setGitHubPullRequestStatus context: "validate-pr-11-macos_aarch64", state: 'PENDING'
                     env.VERIFICATION_RESULT = "1"
                 }
 
@@ -243,6 +241,7 @@
             }
         }
         
+        
         stage('Archive') {
             when {
                 expression { env.VERIFICATION_RESULT != "2" }
@@ -250,62 +249,15 @@
             steps {
                 archiveArtifacts allowEmptyArchive: true, artifacts: 'test.zip'
                 archiveArtifacts allowEmptyArchive: true, artifacts: 'support_gensrc.zip'
-                archiveArtifacts allowEmptyArchive: true, artifacts: '*.dmg'
 
                 script {
                     def jdk_bundle_name = readFile "${env.WORKSPACE}/jdk_bundle_name.txt"
-                    def jre_bundle_name = readFile "${env.WORKSPACE}/jre_bundle_name.txt"
-                    def symbols_bundle_name = readFile "${env.WORKSPACE}/symbols_bundle_name.txt"
-
                     step ([$class: 'ArtifactArchiver', artifacts: jdk_bundle_name]);
-                    step ([$class: 'ArtifactArchiver', artifacts: jre_bundle_name]);
-                    step ([$class: 'ArtifactArchiver', artifacts: symbols_bundle_name]);
                 }
             }
         }
-        stage('Build Windows Installer') {
-            when {
-                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; env.BUILD_INSTALLER_PACKAGES == "true" &amp;&amp; JOB_NAME ==~ /((\S*)(windows_x86_64)(\S*))/ }
-            }
-            steps {
-                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
-                    script {
-                        def jdk_bundle_name = readFile "${env.WORKSPACE}/jdk_bundle_name.txt"
-                        def jre_bundle_name = readFile "${env.WORKSPACE}/jre_bundle_name.txt"
-                        jdk_bundle_name = jdk_bundle_name.trim()
-                        jre_bundle_name = jre_bundle_name.trim()
-
-                        sh "rm -f *.msi"
-                        sh "python3 SapMachine-Infrastructure/lib/make_msi.py --sapmachine-directory=`pwd`/SapMachine --asset=${jdk_bundle_name}"
-                        sh "python3 SapMachine-Infrastructure/lib/make_msi.py --sapmachine-directory=`pwd`/SapMachine --jre --asset=${jre_bundle_name}"
-                        archiveArtifacts allowEmptyArchive: true, artifacts: "*.msi"
-                    }
-                }
-            }
-        }
-        stage('Publish GitHub') {
-            when {
-                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.PUBLISH == true &amp;&amp; JOB_NAME ==~ /((\S*)(release)(\S*))/ &amp;&amp; !(JOB_NAME ==~ /((\S*)(release-macos)(\S*))/ &amp;&amp; params.RELEASE == true) }
-            }
-            steps {
-                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
-                    sh "SapMachine-Infrastructure/lib/publish.sh"
-                    archiveArtifacts allowEmptyArchive: true, artifacts: "*.sha256.txt"
-                }
-            }
-        }
-        stage('Create Brew Casks') {
-            when {
-                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.PUBLISH == true &amp;&amp; JOB_NAME ==~ /((\S*)(release-macos)(\S*))/ &amp;&amp; params.RELEASE != true }
-            }
-            steps {
-                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
-                    lock('MacBrewCaskGenerationSynchronizer') {
-                        sh "python3 SapMachine-Infrastructure/lib/make_cask.py -t $SAPMACHINE_VERSION"
-                    }
-                }
-            }
-        }
+        
+        
         stage('Publish Windows Installer') {
             when {
                 expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.PUBLISH == true &amp;&amp; JOB_NAME ==~ /((\S*)(release-windows_x86_64)(\S*))/ }
@@ -394,41 +346,26 @@
     post {
         aborted {
             script {
-                if (JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/) {
-                    setGitHubPullRequestStatus context: "validate-pr-11-macos_aarch64", state: 'FAILURE', message: 'job aborted'
-                }
+                setGitHubPullRequestStatus context: "validate-pr-11-macos_aarch64", state: 'FAILURE', message: 'job aborted'
             }
         }
         failure {
             script {
-                if (JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/) {
-                    setGitHubPullRequestStatus context: "validate-pr-11-macos_aarch64", state: 'FAILURE', message: 'build failed'
-                }
+                setGitHubPullRequestStatus context: "validate-pr-11-macos_aarch64", state: 'FAILURE', message: 'build failed'
             }
         }
         unstable {
             script {
-                if (JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/) {
-                    setGitHubPullRequestStatus context: "validate-pr-11-macos_aarch64", state: 'FAILURE', message: 'tests failed'
-                }
+                setGitHubPullRequestStatus context: "validate-pr-11-macos_aarch64", state: 'FAILURE', message: 'tests failed'
             }
         }
         success {
             script {
-                if (JOB_NAME ==~ /((\S*)(pr-validation)(\S*))/) {
-                    setGitHubPullRequestStatus context: "validate-pr-11-macos_aarch64", state: 'SUCCESS'
-                }
+                setGitHubPullRequestStatus context: "validate-pr-11-macos_aarch64", state: 'SUCCESS'
             }
             cleanWs()
         }
-        unsuccessful {
-            script {
-                if ((JOB_NAME ==~ /((\S*)(windows_x86_64)(\S*))/) || (JOB_NAME ==~ /((\S*)(linux_x86_64)(\S*))/)) {
-                    sh 'zip -rq workspace.zip .'
-                    archiveArtifacts allowEmptyArchive: true, artifacts: 'workspace.zip'
-                }
-            }
-        }
+        
     }
 }
 </script>
