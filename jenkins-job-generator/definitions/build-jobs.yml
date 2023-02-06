@@ -169,7 +169,8 @@
             docker_agent_debian: *docker_agent_x86_64
             build_debian_packages_step: *template_build_debian_packages_step
             build_rpm_packages: |-
-                agent {{
+                stage('Build RPM Packages') {{
+                            agent {{
                                 dockerfile {{
                                     dir "SapMachine-Infrastructure/dockerfiles/fedora-rpm"
                                     reuseNode true
@@ -186,6 +187,17 @@
                             }}
                         }}
             publish_debian_packages: *template_publish_debian_packages
+            publish_rpm_packages: |-
+                stage('Publish RPM Packages') {{
+                            when {{
+                                expression {{ params.PUBLISH == true }}
+                            }}
+                            steps {{
+                                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
+                                    sh "SapMachine-Infrastructure/lib/publish_rpm.sh"
+                                }}
+                            }}
+                        }}
             publish_cf_data: &publish_cf_data |-
                 stage('Publish CF Java Buildpack Data') {{
                     when {{
@@ -315,6 +327,7 @@
             build_debian_packages_step: ''
             build_rpm_packages: ''
             publish_debian_packages: ''
+            publish_rpm_packages: ''
             create_brew_casks: ''
             generate_dockerfiles: ''
             publish_cf_data: ''
@@ -342,6 +355,8 @@
         - snapshot:
             docker_agent_verify: ''
             publish_artifactory: *template_publish_artifactory
+            publish_debian_packages: ''
+            publish_rpm_packages: ''
             create_brew_casks: ''
             generate_dockerfiles: ''
             publish_cf_data: ''
@@ -357,7 +372,6 @@
                             steps {{
                                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
                                     sh "SapMachine-Infrastructure/lib/publish.sh"
-                                    archiveArtifacts allowEmptyArchive: true, artifacts: "*.sha256.txt"
                                 }}
                             }}
                         }}
@@ -603,6 +617,7 @@
                 }}
                 {publish_github|}
                 {publish_debian_packages|}
+                {publish_rpm_packages|}
                 {create_brew_casks|}
                 {generate_dockerfiles|}
                 {publish_website_data|}

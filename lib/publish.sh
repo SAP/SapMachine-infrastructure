@@ -73,7 +73,3 @@ if [[ $UNAME == CYGWIN* ]]; then
     python3 SapMachine-Infrastructure/lib/github_publish.py -t ${SAPMACHINE_VERSION} -a ${MSIFILE}.sha256.txt
   done
 fi
-
-for RPMFILE in *.rpm; do
-  python3 SapMachine-Infrastructure/lib/github_publish.py -t ${SAPMACHINE_VERSION} -a ${RPMFILE}
-done
