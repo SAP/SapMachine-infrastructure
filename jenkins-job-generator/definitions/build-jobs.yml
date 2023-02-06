@@ -19,7 +19,7 @@
                         }}
 
                         // Upload the test archive
-                        jf 'rt u test.zip sapmachine-mvn/io/sapmachine/build-results/{platform}/${{env.ART_VERSION}}/test.zip'
+                        jf "rt u test.zip sapmachine-mvn/io/sapmachine/build-results/{platform}/${{env.ART_VERSION}}/test.zip"
                     }}
                 }}
     template_create_brew_casks: &template_create_brew_casks |-
@@ -259,7 +259,7 @@
             publish_github: |-
                 stage('Publish GitHub') {{
                             when {{
-                                expression {{ params.PUBLISH == true && JOB_NAME ==~ /((\S*)(release)(\S*))/ && !(JOB_NAME ==~ /((\S*)(release-macos)(\S*))/ && params.RELEASE == true) }}
+                                expression {{ params.PUBLISH == true && !(JOB_NAME ==~ /((\S*)(release-macos)(\S*))/ && params.RELEASE == true) }}
                             }}
                             steps {{
                                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
@@ -294,6 +294,7 @@
                                 env.SAPMACHINE_VERSION = params.SAPMACHINE_VERSION
                             }}
 
+                            // when we publish, installer packages are mandatory
                             if (params.PUBLISH == true) {{
                                 env.BUILD_INSTALLER_PACKAGES = true
                             }} else {{
@@ -687,10 +688,6 @@
             name: RUN_TESTS
             default: true
             description: 'Enable/disable jtreg runs.'
-        - bool:
-            name: BUILD_INSTALLER_PACKAGES
-            default: false
-            description: 'Build platform installer packages, e.g. Windows MSI, Debian packages.'
     dsl: *build_dsl
 
 - job-template:
@@ -753,7 +750,7 @@
             description: 'Enable/disable jtreg runs.'
         - bool:
             name: BUILD_INSTALLER_PACKAGES
-            default: false
+            default: true
             description: 'Build platform installer packages, e.g. Windows MSI, Debian packages.'
     dsl: *build_dsl
 
@@ -816,13 +813,17 @@
             default: true
             description: 'Enable/disable jtreg runs.'
         - bool:
-            name: PUBLISH
-            default: false
-            description: 'When set to true, the resulting bundles will be published to GitHub.'
+            name: BUILD_INSTALLER_PACKAGES
+            default: true
+            description: 'Build platform installer packages, e.g. Windows MSI, Debian packages.'
         - bool:
             name: RELEASE
             default: false
             description: 'When set to true, marks this build as a release build, otherwise as pre-release.'
+        - bool:
+            name: PUBLISH
+            default: false
+            description: 'When set to true, the resulting bundles will be published to GitHub.'
     dsl: *build_dsl
 
 - job-template:
@@ -1016,13 +1017,13 @@
             default: true
             description: 'Build platform installer packages, e.g. Windows MSI, Debian packages.'
         - bool:
-            name: PUBLISH
-            default: false
-            description: 'When set to true, the resulting bundles will be published to GitHub. (Only used in release builds!)'
-        - bool:
             name: RELEASE
             default: false
-            description: 'When set to true, marks this build as a release build, otherwise as pre-release. (Only used in release builds!)'
+            description: 'When set to true, marks this build as a release build, otherwise as pre-release.'
+        - bool:
+            name: PUBLISH
+            default: false
+            description: 'When set to true, the resulting bundles will be published to GitHub.'
     dsl: |
         pipeline {{
             agent {{
@@ -1058,8 +1059,8 @@
                                             string(name: 'langtools_test_groups', value: params.langtools_test_groups),
                                             [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
                                             [$class: 'BooleanParameterValue', name: 'BUILD_INSTALLER_PACKAGES', value: params.BUILD_INSTALLER_PACKAGES],
-                                            [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
-                                            [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE]
+                                            [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE],
+                                            [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH]
                                         ]
                                 }} else {{
                                     println "Skipping build for " + p.key + " (build=" + p.value + ")."
