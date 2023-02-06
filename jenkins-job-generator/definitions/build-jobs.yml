@@ -100,6 +100,7 @@
         - linux_x86_64:
             architecture: linux-x64
             debarch: amd64
+            devkit_default: 'io.sapmachine.build.devkit.linux-x64:devkit-fedora-gcc:12-8.3.0-nogold2'
             docker_agent: &docker_agent_x86_64 |-
                 agent {{
                                 dockerfile {{
@@ -110,7 +111,15 @@
                                 }}
                             }}
             docker_agent_verify: *docker_agent_x86_64
-            devkit_default: 'io.sapmachine.build.devkit.linux-x64:devkit-fedora-gcc:12-8.3.0-nogold2'
+            publish_cf_data: &publish_cf_data |-
+                stage('Publish CF Java Buildpack Data') {{
+                    when {{
+                        expression {{ params.RELEASE == true && params.PUBLISH == true }}
+                    }}
+                    steps {{
+                        build job: 'generate-cf-java-buildpack-data', propagate: true, wait: true
+                    }}
+                }}
             save_workspace_on_error: *save_workspace_on_error
         - macos_x86_64:
             devkit_default: 'io.sapmachine.build.devkit.macos:devkit-xcode:13.1'
@@ -226,6 +235,7 @@
                             }}
             build_windows_installer: ''
             create_brew_casks: ''
+            publish_cf_data: ''
             post_code: |-
                 aborted {{
                             script {{
@@ -246,12 +256,12 @@
                             script {{
                                 setGitHubPullRequestStatus context: "validate-pr-{major}-{platform}", state: 'SUCCESS'
                             }}
-
     build_type_snapshot: &build_type_snapshot
         - snapshot:
             docker_agent_verify: ''
             publish_artifactory: *template_publish_artifactory
             create_brew_casks: ''
+            publish_cf_data: ''
     build_type_release: &build_type_release
         - release:
             docker_agent_verify: ''
@@ -266,6 +276,15 @@
                                     sh "SapMachine-Infrastructure/lib/publish.sh"
                                     archiveArtifacts allowEmptyArchive: true, artifacts: "*.sha256.txt"
                                 }}
+                            }}
+                        }}
+            publish_website_data: |-
+                stage('Publish Website Data') {{
+                            when {{
+                                expression {{ params.PUBLISH == true }}
+                            }}
+                            steps {{
+                                build job: 'generate-website-data', propagate: false, wait: false
                             }}
                         }}
     build_dsl: &build_dsl |
@@ -497,36 +516,8 @@
                 }}
                 {publish_github|}
                 {create_brew_casks|}
-                stage('Publish Windows Installer') {{
-                    when {{
-                        expression {{ env.VERIFICATION_RESULT != "2" && params.PUBLISH == true && JOB_NAME ==~ /((\S*)(release-windows_x86_64)(\S*))/ }}
-                    }}
-                    steps {{
-                        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
-                            sh "SapMachine-Infrastructure/lib/publish_msi.sh"
-                        }}
-                    }}
-                }}
-                stage('Publish Website Data') {{
-                    when {{
-                        expression {{ env.VERIFICATION_RESULT != "2" && params.PUBLISH == true && JOB_NAME ==~ /((\S*)(release)(\S*))/}}
-                    }}
-                    steps {{
-                        build job: 'generate-website-data', propagate: false, wait: false
-                    }}
-                }}
-                stage('Publish CF Java Buildpack Data') {{
-                    {docker_agent|}
-                    when {{
-                        beforeAgent true
-                        expression {{ env.VERIFICATION_RESULT != "2" && params.PUBLISH == true && params.RELEASE == true && JOB_NAME ==~ /((\S*)(release-linux_x86_64)(\S*))/ }}
-                    }}
-                    steps {{
-                        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
-                            sh "python3 SapMachine-Infrastructure/lib/generate_cf_buildpack_data.py"
-                        }}
-                    }}
-                }}
+                {publish_website_data|}
+                {publish_cf_data|}
                 stage('Build Debian Package') {{
                     {docker_agent|}
                     when {{
