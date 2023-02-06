@@ -35,6 +35,25 @@
                         }}
                     }}
                 }}
+    template_build_debian_packages: &template_build_debian_packages |-
+        stage('Build Debian Package') {{
+                    {docker_agent|}
+                    when {{
+                        beforeAgent true
+                        expression {{ env.BUILD_INSTALLER_PACKAGES == "true" }}
+                    }}
+                    steps {{
+                        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
+                            sh "python3 SapMachine-Infrastructure/lib/make_deb.py --tag=${{env.SAPMACHINE_VERSION}} --architecture={architecture|}"
+                        }}
+                    }}
+                    post {{
+                        success {{
+                            stash includes: '*.deb', name: 'debPackage'
+                            stash includes: 'SapMachine-Infrastructure/**', name: 'infra'
+                        }}
+                    }}
+                }}
     majors: &majors_build
         - '11':
            branch_name: sapmachine11
@@ -53,6 +72,7 @@
         - linux_aarch64:
             architecture: linux-aarch64
             debarch: arm64
+            devkit_default: 'io.sapmachine.build.devkit.linux-aarch64:devkit-fedora-gcc:21-8.3.0-nogold2'
             docker_agent: &docker_agent_aarch64 |-
                 agent {{
                                 dockerfile {{
@@ -63,7 +83,7 @@
                                 }}
                             }}
             docker_agent_verify: *docker_agent_aarch64
-            devkit_default: 'io.sapmachine.build.devkit.linux-aarch64:devkit-fedora-gcc:21-8.3.0-nogold2'
+            build_debian_packages: *template_build_debian_packages
             save_workspace_on_error: &save_workspace_on_error |-
                 unsuccessful {{
                             script {{
@@ -86,6 +106,7 @@
         - linux_ppc64le:
             architecture: linux-ppc64le
             debarch: ppc64el
+            devkit_default: 'io.sapmachine.build.devkit.linux-ppc64le:devkit-rhel-gcc:7-8.3.0-nogold2'
             docker_agent: &docker_agent_ppc64le |-
                 agent {{
                                 dockerfile {{
@@ -96,7 +117,7 @@
                                 }}
                             }}
             docker_agent_verify: *docker_agent_ppc64le
-            devkit_default: 'io.sapmachine.build.devkit.linux-ppc64le:devkit-rhel-gcc:7-8.3.0-nogold2'
+            build_debian_packages: *template_build_debian_packages
         - linux_x86_64:
             architecture: linux-x64
             debarch: amd64
@@ -111,6 +132,7 @@
                                 }}
                             }}
             docker_agent_verify: *docker_agent_x86_64
+            build_debian_packages: *template_build_debian_packages
             publish_cf_data: &publish_cf_data |-
                 stage('Publish CF Java Buildpack Data') {{
                     when {{
@@ -234,6 +256,7 @@
                                 expression {{ env.VERIFICATION_RESULT != "2" }}
                             }}
             build_windows_installer: ''
+            build_debian_packages: ''
             create_brew_casks: ''
             publish_cf_data: ''
             post_code: |-
@@ -501,6 +524,7 @@
                     }}
                 }}
                 {build_windows_installer|}
+                {build_debian_packages|}
                 {publish_artifactory|}
                 stage('Archive') {{
                     {verification_when|}
@@ -518,25 +542,6 @@
                 {create_brew_casks|}
                 {publish_website_data|}
                 {publish_cf_data|}
-                stage('Build Debian Package') {{
-                    {docker_agent|}
-                    when {{
-                        beforeAgent true
-                        expression {{ env.VERIFICATION_RESULT != "2" && env.BUILD_INSTALLER_PACKAGES == "true" && JOB_NAME ==~ /((\S*)(linux)(\S*))/ && !(JOB_NAME ==~ /((\S*)(alpine)(\S*))/) }}
-                    }}
-                    steps {{
-                        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
-                            sh "python3 SapMachine-Infrastructure/lib/make_deb.py --tag=${{env.SAPMACHINE_VERSION}} --architecture={architecture|}"
-                        }}
-                    }}
-                    post {{
-                        success {{
-                            archiveArtifacts allowEmptyArchive: true, artifacts: "*.deb"
-                            stash includes: '*.deb', name: 'debPackage'
-                            stash includes: 'SapMachine-Infrastructure/**', name: 'infra'
-                        }}
-                    }}
-                }}
                 stage('Publish Debian Package') {{
                     agent {{
                         label 'agent-local-docker-ubuntu'
