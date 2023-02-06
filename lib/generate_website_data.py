@@ -117,18 +117,22 @@ def push_to_git(files):
     else:
         utils.run_cmd("git pull origin gh-pages".split(' '), cwd=local_repo)
 
+    addFile = False
     commits = False
     for _file in files:
         location = join(local_repo, _file['location'])
         if not os.path.exists(os.path.dirname(location)):
             os.makedirs(os.path.dirname(location))
+        if not os.path.isfile(location):
+            addFile = True
         with open(location, 'w+') as out:
             out.write(_file['data'])
+        if addFile:
+            utils.run_cmd(str.format('git add {0}', _file['location']).split(' '), cwd=local_repo)
         _, diff, _  = utils.run_cmd("git diff".split(' '), cwd=local_repo, std=True)
         if diff.strip():
             utils.git_commit(local_repo, _file['commit_message'], [location])
             commits = True
-
     if commits:
         utils.run_cmd(str.format('git push {0}', sapMachinePushURL).split(' '), cwd=local_repo)
 
