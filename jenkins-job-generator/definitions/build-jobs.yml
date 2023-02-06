@@ -168,7 +168,7 @@
             build_debian_packages_pre: *template_build_debian_packages_pre
             docker_agent_debian: *docker_agent_x86_64
             build_debian_packages_step: *template_build_debian_packages_step
-            build_rpm_packages: &template_build_debian_packages_step |-
+            build_rpm_packages: |-
                 agent {{
                                 dockerfile {{
                                     dir "SapMachine-Infrastructure/dockerfiles/fedora-rpm"
