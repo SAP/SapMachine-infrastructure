@@ -127,10 +127,8 @@ def push_to_git(files):
             addFile = True
         with open(location, 'w+') as out:
             out.write(_file['data'])
-        if addFile:
-            utils.run_cmd(str.format('git add {0}', _file['location']).split(' '), cwd=local_repo)
         _, diff, _  = utils.run_cmd("git diff".split(' '), cwd=local_repo, std=True)
-        if diff.strip():
+        if diff.strip() or addFile:
             utils.git_commit(local_repo, _file['commit_message'], [location])
             commits = True
     if commits:
