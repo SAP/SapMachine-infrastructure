@@ -73,7 +73,7 @@
     template_generate_dockerfiles: &template_generate_dockerfiles |-
         stage('Generate Dockerfiles') {{
                     when {{
-                        expression {{ env.VERIFICATION_RESULT != "2" && params.PUBLISH == true && params.RELEASE == true && JOB_NAME ==~ /((\S*)(release-linux_x86_64)(\S*))/ }}
+                        expression {{ params.RELEASE == true && params.PUBLISH == true }}
                     }}
                     steps {{
                         build job: 'generate-dockerfiles', propagate: false, wait: true
@@ -190,7 +190,7 @@
             publish_rpm_packages: |-
                 stage('Publish RPM Packages') {{
                             when {{
-                                expression {{ params.PUBLISH == true }}
+                                expression {{ params.RELEASE == true && params.PUBLISH == true }}
                             }}
                             steps {{
                                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
@@ -289,7 +289,6 @@
                 // update GitHub status and initialize PR Verification
                                 script {{
                                     setGitHubPullRequestStatus context: "validate-pr-{major}-{platform}", state: 'PENDING'
-                                    env.VERIFICATION_RESULT = "1"
                                 }}
             verify_pre: |-
                 stage("Verify PR") {{
