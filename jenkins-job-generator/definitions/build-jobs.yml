@@ -35,10 +35,10 @@
                         }}
                     }}
                 }}
-    template_build_debian_packages: &template_build_debian_packages |-
-        stage('Build Debian Package') {{
-                    {docker_agent|}
-                    when {{
+    template_build_debian_packages_pre: &template_build_debian_packages_pre |-
+        stage('Build Debian Packages') {{
+    template_build_debian_packages_step: &template_build_debian_packages_step |-
+        when {{
                         beforeAgent true
                         expression {{ env.BUILD_INSTALLER_PACKAGES == "true" }}
                     }}
@@ -52,6 +52,31 @@
                             stash includes: '*.deb', name: 'debPackage'
                             stash includes: 'SapMachine-Infrastructure/**', name: 'infra'
                         }}
+                    }}
+                }}
+    template_publish_debian_packages: &template_publish_debian_packages |-
+        stage('Publish Debian Packages') {{
+                    agent {{
+                        label 'agent-local-docker-ubuntu'
+                    }}
+                    when {{
+                        beforeAgent true
+                        expression {{ params.RELEASE == true && params.PUBLISH == true }}
+                    }}
+                    steps {{
+                        unstash 'infra'
+                        unstash 'debPackage'
+                        sh "cp -n *.deb /var/pkg/deb/{debarch|} || true"
+                        sh "python3 SapMachine-Infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/{debarch|}"
+                    }}
+                }}
+    template_generate_dockerfiles: &template_generate_dockerfiles |-
+        stage('Generate Dockerfiles') {{
+                    when {{
+                        expression {{ env.VERIFICATION_RESULT != "2" && params.PUBLISH == true && params.RELEASE == true && JOB_NAME ==~ /((\S*)(release-linux_x86_64)(\S*))/ }}
+                    }}
+                    steps {{
+                        build job: 'generate-dockerfiles', propagate: false, wait: true
                     }}
                 }}
     majors: &majors_build
@@ -83,7 +108,11 @@
                                 }}
                             }}
             docker_agent_verify: *docker_agent_aarch64
-            build_debian_packages: *template_build_debian_packages
+            build_debian_packages_pre: *template_build_debian_packages_pre
+            docker_agent_debian: *docker_agent_aarch64
+            build_debian_packages_step: *template_build_debian_packages_step
+            publish_debian_packages: *template_publish_debian_packages
+            generate_dockerfiles: *template_generate_dockerfiles
             save_workspace_on_error: &save_workspace_on_error |-
                 unsuccessful {{
                             script {{
@@ -117,7 +146,11 @@
                                 }}
                             }}
             docker_agent_verify: *docker_agent_ppc64le
-            build_debian_packages: *template_build_debian_packages
+            build_debian_packages_pre: *template_build_debian_packages_pre
+            docker_agent_debian: *docker_agent_ppc64le
+            build_debian_packages_step: *template_build_debian_packages_step
+            publish_debian_packages: *template_publish_debian_packages
+            generate_dockerfiles: *template_generate_dockerfiles
         - linux_x86_64:
             architecture: linux-x64
             debarch: amd64
@@ -132,7 +165,27 @@
                                 }}
                             }}
             docker_agent_verify: *docker_agent_x86_64
-            build_debian_packages: *template_build_debian_packages
+            build_debian_packages_pre: *template_build_debian_packages_pre
+            docker_agent_debian: *docker_agent_x86_64
+            build_debian_packages_step: *template_build_debian_packages_step
+            build_rpm_packages: &template_build_debian_packages_step |-
+                agent {{
+                                dockerfile {{
+                                    dir "SapMachine-Infrastructure/dockerfiles/fedora-rpm"
+                                    reuseNode true
+                                    label "linux_x86_64"
+                                }}
+                            }}
+                            when {{
+                                beforeAgent true
+                                expression {{ env.BUILD_INSTALLER_PACKAGES == "true" }}
+                            }}
+                            steps {{
+                                sh 'rm -f *.rpm'
+                                sh "/usr/bin/python3 SapMachine-Infrastructure/lib/make_rpm.py --tag=${params.GIT_TAG_NAME}"
+                            }}
+                        }}
+            publish_debian_packages: *template_publish_debian_packages
             publish_cf_data: &publish_cf_data |-
                 stage('Publish CF Java Buildpack Data') {{
                     when {{
@@ -142,6 +195,7 @@
                         build job: 'generate-cf-java-buildpack-data', propagate: true, wait: true
                     }}
                 }}
+            generate_dockerfiles: *template_generate_dockerfiles
             save_workspace_on_error: *save_workspace_on_error
         - macos_x86_64:
             devkit_default: 'io.sapmachine.build.devkit.macos:devkit-xcode:13.1'
@@ -256,8 +310,13 @@
                                 expression {{ env.VERIFICATION_RESULT != "2" }}
                             }}
             build_windows_installer: ''
-            build_debian_packages: ''
+            build_debian_packages_pre: ''
+            docker_agent_debian: ''
+            build_debian_packages_step: ''
+            build_rpm_packages: ''
+            publish_debian_packages: ''
             create_brew_casks: ''
+            generate_dockerfiles: ''
             publish_cf_data: ''
             post_code: |-
                 aborted {{
@@ -284,6 +343,7 @@
             docker_agent_verify: ''
             publish_artifactory: *template_publish_artifactory
             create_brew_casks: ''
+            generate_dockerfiles: ''
             publish_cf_data: ''
     build_type_release: &build_type_release
         - release:
@@ -524,7 +584,10 @@
                     }}
                 }}
                 {build_windows_installer|}
-                {build_debian_packages|}
+                {build_debian_packages_pre|}
+                    {docker_agent_debian|}
+                    {build_debian_packages_step|}
+                {build_rpm_packages|}
                 {publish_artifactory|}
                 stage('Archive') {{
                     {verification_when|}
@@ -539,44 +602,11 @@
                     }}
                 }}
                 {publish_github|}
+                {publish_debian_packages|}
                 {create_brew_casks|}
+                {generate_dockerfiles|}
                 {publish_website_data|}
                 {publish_cf_data|}
-                stage('Publish Debian Package') {{
-                    agent {{
-                        label 'agent-local-docker-ubuntu'
-                    }}
-                    when {{
-                        beforeAgent true
-                        expression {{ env.VERIFICATION_RESULT != "2" && params.PUBLISH == true && params.RELEASE == true && JOB_NAME ==~ /((\S*)(release-linux)(\S*))/ && !(JOB_NAME ==~ /((\S*)(linux_alpine_x86_64)(\S*))/) }}
-                    }}
-                    steps {{
-                        unstash 'infra'
-                        unstash 'debPackage'
-                        sh "cp -n *.deb /var/pkg/deb/{debarch|} || true"
-                        sh "python3 SapMachine-Infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/{debarch|}"
-                    }}
-                }}
-                stage('Build and Publish RPM Linux Packages') {{
-                    when {{
-                        expression {{ env.VERIFICATION_RESULT != "2" && params.PUBLISH == true && params.RELEASE == true && JOB_NAME ==~ /((\S*)(release-linux_x86_64)(\S*))/ }}
-                    }}
-                    steps {{
-                        build job: 'rpm-package', propagate: false, wait: true, parameters:
-                            [
-                                string(name: 'GIT_TAG_NAME', value: env.SAPMACHINE_VERSION),
-                                [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
-                            ]
-                    }}
-                }}
-                stage('Generate Dockerfiles') {{
-                    when {{
-                        expression {{ env.VERIFICATION_RESULT != "2" && params.PUBLISH == true && params.RELEASE == true && JOB_NAME ==~ /((\S*)(release-linux_x86_64)(\S*))/ }}
-                    }}
-                    steps {{
-                        build job: 'generate-dockerfiles', propagate: false, wait: true
-                    }}
-                }}
             }}
             post {{
                 {post_code|success {{}

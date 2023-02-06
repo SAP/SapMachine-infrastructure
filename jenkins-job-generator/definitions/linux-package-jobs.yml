@@ -60,6 +60,10 @@
             name: GIT_TAG_NAME
             default: ''
             description: 'The Git tag to create a debian package from.'
+        - bool:
+            name: PUBLISH
+            default: false
+            description: 'When set to true, the resulting packages will be published.'
     dsl: |
         pipeline {{
             agent {{
@@ -166,7 +170,7 @@
             description: 'The Git tag to create an rpm package from.'
         - bool:
             name: PUBLISH
-            default: '{publish_default}'
+            default: false
             description: 'When set to true, the resulting RPMs will be published to GitHub.'
     dsl: |
         pipeline {
