@@ -200,13 +200,13 @@
                         }}
             publish_cf_data: &publish_cf_data |-
                 stage('Publish CF Java Buildpack Data') {{
-                    when {{
-                        expression {{ params.RELEASE == true && params.PUBLISH == true }}
-                    }}
-                    steps {{
-                        build job: 'generate-cf-java-buildpack-data', propagate: true, wait: true
-                    }}
-                }}
+                            when {{
+                                expression {{ params.RELEASE == true && params.PUBLISH == true }}
+                            }}
+                            steps {{
+                                build job: 'generate-cf-java-buildpack-data', propagate: true, wait: true
+                            }}
+                        }}
             generate_dockerfiles: *template_generate_dockerfiles
             save_workspace_on_error: *save_workspace_on_error
         - macos_x86_64:
