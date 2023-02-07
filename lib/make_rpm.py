@@ -45,7 +45,7 @@ https://sapmachine.io
 
 %install
 mkdir -p %{buildroot}/usr/lib/jvm/sapmachine-${major}
-cp -r ${workdir}/sapmachine-jdk-${version}/* %{buildroot}/usr/lib/jvm/sapmachine-${major}
+cp -r ${exploded_image}/* %{buildroot}/usr/lib/jvm/sapmachine-${major}
 find %{buildroot} -type f \( -name '*.so' -o -name '*.so.*' \) -exec chmod 755 {} +
 
 %files
@@ -87,12 +87,10 @@ def main(argv=None):
             bundle_name_match = re.compile('sapmachine-\w+-((\d+)(\.\d+)*).*').match(bundle_name)
             major = bundle_name_match.group(2)
             version = bundle_name_match.group(1).replace('-', '.')
-            jdk_name = str.format('sapmachine-{0}-jdk-{1}', major, version)
             jdk_url = "https://sapmachine.io"
     else:
         major = tag.get_major()
         version = tag.get_version_string().replace('-', '.')
-        jdk_name = str.format('sapmachine-{0}-jdk-{1}', major, version)
         jdk_url = utils.get_asset_urls(tag, args.architecture, ["jdk"])['jdk']
 
     if args.download:
@@ -105,14 +103,16 @@ def main(argv=None):
         jdk_archive = join(cwd, bundle_name)
 
     utils.extract_archive(jdk_archive, work_dir)
+    jdk_exploded_image = glob.glob(join(work_dir, 'sapmachine-*'))[0]
+    print(str.format("JDK Exploded image: {0}", jdk_exploded_image))
 
-    bin_dir = join(work_dir, jdk_name, 'bin')
+    bin_dir = join(jdk_exploded_image, 'bin')
     tools = [f for f in listdir(bin_dir) if isfile(join(bin_dir, f))]
     alternatives = []
     alternatives_t = Template(alternatives_template)
 
     for tool in tools:
-        alternatives.append(alternatives_t.substitute(tool=tool, major=tag.get_major()))
+        alternatives.append(alternatives_t.substitute(tool=tool, major=major))
 
     alternatives = '\n'.join(alternatives)
 
@@ -121,7 +121,7 @@ def main(argv=None):
         version=version,
         major=major,
         alternatives=alternatives,
-        workdir=work_dir
+        exploded_image=jdk_exploded_image
     )
 
     with open(join(work_dir, 'sapmachine.spec'), 'w') as specfile:

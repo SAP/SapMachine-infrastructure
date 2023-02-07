@@ -182,8 +182,9 @@
                                 expression {{ env.BUILD_INSTALLER_PACKAGES == "true" }}
                             }}
                             steps {{
-                                sh 'rm -f *.rpm'
-                                sh "/usr/bin/python3 SapMachine-Infrastructure/lib/make_rpm.py --tag=${{env.SAPMACHINE_VERSION}}"
+                                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
+                                    sh "/usr/bin/python3 SapMachine-Infrastructure/lib/make_rpm.py --tag=${{env.SAPMACHINE_VERSION}}"
+                                }}
                             }}
                         }}
             publish_debian_packages: *template_publish_debian_packages
