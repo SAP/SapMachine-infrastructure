@@ -1,11 +1,12 @@
 '''
-Copyright (c) 2017-2022 by SAP SE, Walldorf, Germany.
+Copyright (c) 2017-2023 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
 import argparse
 import glob
 import os
+import re
 import sys
 import utils
 
@@ -58,22 +59,50 @@ alternatives_template = 'update-alternatives --install /usr/bin/${tool} ${tool} 
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
-    parser.add_argument('-t', '--tag', help='the tag to create the debian packages from', metavar='TAG', required=True)
+    parser.add_argument('-t', '--tag', help='SapMachine version tag to create the rpm package for', metavar='TAG')
+    parser.add_argument('-d', '--download', help='Download artifact and clone git repo', action='store_true')
     args = parser.parse_args()
 
     cwd = os.getcwd()
     work_dir = join(cwd, 'rpm_work')
-    tag = SapMachineTag.from_string(args.tag)
-    version = tag.get_version_string().replace('-', '.')
-    jdk_name = str.format('sapmachine-jdk-{0}', version)
-    urls = utils.get_asset_urls(tag, 'linux-x64', ["jdk"])
-
     utils.remove_if_exists(work_dir)
     mkdir(work_dir)
 
-    jdk_archive = join(work_dir, urls["jdk"].rsplit('/', 1)[-1])
+    if not args.download:
+        bundle_name_file = join(cwd, 'jdk_bundle_name.txt')
+        if not isfile(bundle_name_file):
+            print(str.format("Bundle name file \"{0}\" does not exist. I don't know what to package", bundle_name_file))
+            return -1
+        with open(bundle_name_file, 'r') as file:
+            bundle_name = file.read().rstrip()
+        print(str.format("Bundle Name: {0}", bundle_name))
 
-    utils.download_artifact(urls["jdk"], jdk_archive)
+    tag = SapMachineTag.from_string(args.tag)
+    if tag is None:
+        if args.download:
+            print(str.format("Passed tag \"{0}\" is invalid. I don't know what to download!", args.tag))
+            return -1
+        else:
+            bundle_name_match = re.compile('sapmachine-\w+-((\d+)(\.\d+)*).*').match(bundle_name)
+            major = bundle_name_match.group(2)
+            version = bundle_name_match.group(1).replace('-', '.')
+            jdk_name = str.format('sapmachine-{0}-jdk-{1}', major, version)
+            jdk_url = "https://sapmachine.io"
+    else:
+        major = tag.get_major()
+        version = tag.get_version_string().replace('-', '.')
+        jdk_name = str.format('sapmachine-{0}-jdk-{1}', major, version)
+        jdk_url = utils.get_asset_urls(tag, args.architecture, ["jdk"])['jdk']
+
+    if args.download:
+        src_dir = join(work_dir, 'sapmachine_master')
+        utils.git_clone('github.com/SAP/SapMachine', args.tag, src_dir)
+        jdk_archive = join(work_dir, jdk_url.rsplit('/', 1)[-1])
+        utils.download_artifact(jdk_url, jdk_archive)
+    else:
+        src_dir = join(cwd, 'SapMachine')
+        jdk_archive = join(cwd, bundle_name)
+
     utils.extract_archive(jdk_archive, work_dir)
 
     bin_dir = join(work_dir, jdk_name, 'bin')
@@ -89,7 +118,7 @@ def main(argv=None):
     specfile_t = Template(spec_template)
     specfile_content = specfile_t.substitute(
         version=version,
-        major=tag.get_major(),
+        major=major,
         alternatives=alternatives,
         workdir=work_dir
     )

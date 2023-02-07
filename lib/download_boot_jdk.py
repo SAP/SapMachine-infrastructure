@@ -106,7 +106,7 @@ def main(argv=None):
                         boot_jdk_exploded = join(destination, 'boot_jdk')
                         utils.remove_if_exists(boot_jdk_exploded)
                         os.makedirs(boot_jdk_exploded)
-                        utils.extract_archive(archive_path, boot_jdk_exploded)
+                        utils.extract_archive(archive_path, boot_jdk_exploded, remove_archive=True)
 
                         sapmachine_folder = [f for f_ in [glob.glob(join(boot_jdk_exploded, e)) for e in ('sapmachine*', 'jdk*')] for f in f_]
 

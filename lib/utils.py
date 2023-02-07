@@ -1,5 +1,5 @@
 '''
-Copyright (c) 2017-2022 by SAP SE, Walldorf, Germany.
+Copyright (c) 2017-2023 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
@@ -77,7 +77,7 @@ class SafeZipFile(ZipFile):
         for zipinfo in members:
             self.extract(zipinfo, path, pwd)
 
-def extract_archive(archive, target, remove_archive=True):
+def extract_archive(archive, target, remove_archive=False):
     if archive.endswith('.zip'):
         with SafeZipFile(archive) as zip_ref:
             print((str.format('Extracting zip archive {0} ...', archive)))
