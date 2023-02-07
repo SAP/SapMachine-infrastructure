@@ -22,12 +22,12 @@ VENDOR_URL_ARG =            '--with-vendor-url=https://sapmachine.io/'
 VENDOR_BUG_URL_ARG =        '--with-vendor-bug-url=https://github.com/SAP/SapMachine/issues/new'
 VENDOR_VM_BUG_URL_ARG =     '--with-vendor-vm-bug-url=https://github.com/SAP/SapMachine/issues/new'
 GTEST_OPT =                 '--with-gtest={0}'
+DISABLE_MAC_CODESIGN_OPT =  '--with-macosx-codesign=disabled'
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('-t', '--tag', help='the SapMachine git tag', metavar='TAG')
     parser.add_argument('-b', '--build', help='the build number, overrules any value from tag(s)', metavar='BUILD_NR')
-    parser.add_argument('-r', '--release', help='set if this is a release build', action='store_true')
     args = parser.parse_args()
 
     configure_opts = []
@@ -76,18 +76,18 @@ def main(argv=None):
         configure_opts.append(VERSION_BUILD_ARG.format(build_number))
 
     # set version date in snapshot builds. In release builds or builds of a certain tag, we rely on DEFAULT_VERSION_DATE in version-numbers.conf
-    if not args.release and tag is None:
+    if tag is None:
         release_date = date.today().strftime("%Y-%m-%d")
         print(str.format("Set release date to today: {0}", release_date), file=sys.stderr)
         configure_opts.append(VERSION_DATE_ARG.format(release_date))
 
     # set version pre
-    version_pre = ''
-    if not args.release:
-        if tag is None:
-            version_pre = 'snapshot'
-        else:
-            version_pre = 'ea'
+    if os.environ['RELEASE_BUILD'] is None or tag is None:
+        version_pre = 'snapshot'
+    elif tag.is_ga() :
+        version_pre = ''
+    else:
+        version_pre = 'ea'
 
     if utils.get_system(major) == 'linux' and os.path.isfile('/etc/alpine-release'):
         if not version_pre:
@@ -101,7 +101,7 @@ def main(argv=None):
     if tag is None:
         configure_opts.append(VERSION_OPT_ARG.format(release_date))
     else:
-        if args.release and utils.sapmachine_is_lts(major):
+        if tag.is_ga() and utils.sapmachine_is_lts(major):
             if major < 15:
                 configure_opts.append(VERSION_OPT_ARG.format('LTS-sapmachine'))
             else:
@@ -132,6 +132,9 @@ def main(argv=None):
     # set gtest option
     if 'GTEST_DIR' in os.environ and major >= 15:
         configure_opts.append(GTEST_OPT.format(os.environ['GTEST_DIR']))
+
+    if utils.get_system(major) == 'macos' and major >= 20 and os.environ['RELEASE_BUILD'] == "true":
+        configure_opts.append(DISABLE_MAC_CODESIGN_OPT)
 
     print(' '.join(configure_opts))
 

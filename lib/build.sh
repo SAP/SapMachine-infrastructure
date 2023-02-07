@@ -55,11 +55,8 @@ fi
 if [[ ! -z $JDK_BUILD ]]; then
   _BUILD_NUMBER=" -b $BUILD_NUMBER"
 fi
-if [ "$RELEASE" == true ]; then
-  _RELEASE=" -r"
-fi
 
-eval _CONFIGURE_OPTS=($(python3 ../SapMachine-Infrastructure/lib/get_configure_opts.py $_GIT_TAG $_BUILD_NUMBER $_RELEASE))
+eval _CONFIGURE_OPTS=($(python3 ../SapMachine-Infrastructure/lib/get_configure_opts.py $_GIT_TAG $_BUILD_NUMBER))
 
 set -x
 bash ./configure \

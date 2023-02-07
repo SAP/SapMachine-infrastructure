@@ -384,6 +384,7 @@
                                     def m = (env.SAPMACHINE_VERSION =~ /sapmachine-((\d+(\.\d+)*)(\+(\d+))?)$/)
                                     if (m) {{
                                         env.ART_VERSION = m.group(1)
+                                        env.RELEASE_BUILD = "true"
                                         if (m.group(4) == null) {{
                                             env.RELEASE = "true"
                                         }} else {{
