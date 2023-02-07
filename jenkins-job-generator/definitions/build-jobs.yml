@@ -1,10 +1,5 @@
 - defaults:
     name: 'build_defaults'
-    template_init_variables: &template_init_variables |-
-        // initialize some variables
-                            env.BUILD_INSTALLER_PACKAGES = params.BUILD_INSTALLER_PACKAGES
-                            env.ART_VERSION = "snapshot-{major}-" + (new java.text.SimpleDateFormat("yyyyMMddHHmmss")).format(new Date())
-                            env.RELEASE = "false"
     template_publish_artifactory: &template_publish_artifactory |-
         stage('Publish Artifactory') {{
                     steps {{
@@ -296,7 +291,9 @@
                                 script {{
                                     setGitHubPullRequestStatus context: "validate-pr-{major}-{platform}", state: 'PENDING'
                                 }}
-            init_variables: *template_init_variables
+            init_variables: |-
+                // initialize some variables
+                                    env.RELEASE = "false"
             verify_pre: |-
                 stage("Verify PR") {{
             verify_step: |-
@@ -360,7 +357,11 @@
     build_type_snapshot: &build_type_snapshot
         - snapshot:
             docker_agent_verify: ''
-            init_variables: *template_init_variables
+            init_variables: |-
+                // initialize some variables
+                                    env.BUILD_INSTALLER_PACKAGES = params.BUILD_INSTALLER_PACKAGES
+                                    env.ART_VERSION = "snapshot-{major}-" + (new java.text.SimpleDateFormat("yyyyMMddHHmmss")).format(new Date())
+                                    env.RELEASE = "false"
             publish_artifactory: *template_publish_artifactory
             publish_debian_packages: ''
             publish_rpm_packages: ''
@@ -372,25 +373,25 @@
             docker_agent_verify: ''
             init_variables: |-
                 // when we publish, installer packages are mandatory
-                            if (params.PUBLISH == true) {{
-                                env.BUILD_INSTALLER_PACKAGES = true
-                            }} else {{
-                                env.BUILD_INSTALLER_PACKAGES = params.BUILD_INSTALLER_PACKAGES
-                            }}
+                                    if (params.PUBLISH == true) {{
+                                        env.BUILD_INSTALLER_PACKAGES = true
+                                    }} else {{
+                                        env.BUILD_INSTALLER_PACKAGES = params.BUILD_INSTALLER_PACKAGES
+                                    }}
 
-                            // calculate artifactory version and RELEASE flag
-                            // release jobs need to have a conforming SAPMACHINE_VERSION tag
-                            def m = (env.SAPMACHINE_VERSION =~ /sapmachine-((\d+(\.\d+)*)(\+(\d+))?)$/)
-                            if (m) {{
-                                env.ART_VERSION = m.group(1)
-                                if (m.group(4) == null) {{
-                                    env.RELEASE = "true"
-                                }} else {{
-                                    env.RELEASE = "false"
-                                }}
-                            }} else {{
-                                error(env.SAPMACHINE_VERSION + " is no valid SapMachine version tag.")
-                            }}
+                                    // calculate artifactory version and RELEASE flag
+                                    // release jobs need to have a conforming SAPMACHINE_VERSION tag
+                                    def m = (env.SAPMACHINE_VERSION =~ /sapmachine-((\d+(\.\d+)*)(\+(\d+))?)$/)
+                                    if (m) {{
+                                        env.ART_VERSION = m.group(1)
+                                        if (m.group(4) == null) {{
+                                            env.RELEASE = "true"
+                                        }} else {{
+                                            env.RELEASE = "false"
+                                        }}
+                                    }} else {{
+                                        error(env.SAPMACHINE_VERSION + " is no valid SapMachine version tag.")
+                                    }}
             publish_artifactory: *template_publish_artifactory
             publish_github: |-
                 stage('Publish GitHub') {{
