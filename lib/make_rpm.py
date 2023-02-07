@@ -61,6 +61,7 @@ def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('-t', '--tag', help='SapMachine version tag to create the rpm package for', metavar='TAG')
     parser.add_argument('-d', '--download', help='Download artifact and clone git repo', action='store_true')
+    parser.add_argument('-a', '--architecture', help='specifies the architecture (linux-aarch64, linux-ppc64le, linux-x64)', metavar='ARCH', default='linux-x64')
     args = parser.parse_args()
 
     cwd = os.getcwd()
