@@ -1,5 +1,10 @@
 - defaults:
     name: 'build_defaults'
+    template_init_variables: |-
+        // initialize some variables
+                            env.BUILD_INSTALLER_PACKAGES = params.BUILD_INSTALLER_PACKAGES
+                            env.ART_VERSION = "snapshot-{major}-" + (new java.text.SimpleDateFormat("yyyyMMddHHmmss")).format(new Date())
+                            env.RELEASE = "false"
     template_publish_artifactory: &template_publish_artifactory |-
         stage('Publish Artifactory') {{
                     steps {{
@@ -25,7 +30,7 @@
     template_create_brew_casks: &template_create_brew_casks |-
         stage('Create Brew Casks') {{
                     when {{
-                        expression {{ params.PUBLISH == true && JOB_NAME ==~ /((\S*)(release-macos)(\S*))/ && params.RELEASE != true }}
+                        expression {{ params.PUBLISH == true && JOB_NAME ==~ /((\S*)(release-macos)(\S*))/ && env.RELEASE != "true" }}
                     }}
                     steps {{
                         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
@@ -61,7 +66,7 @@
                     }}
                     when {{
                         beforeAgent true
-                        expression {{ params.RELEASE == true && params.PUBLISH == true }}
+                        expression {{ params.PUBLISH == true && env.RELEASE == "true" }}
                     }}
                     steps {{
                         unstash 'infra'
@@ -73,7 +78,7 @@
     template_generate_dockerfiles: &template_generate_dockerfiles |-
         stage('Generate Dockerfiles') {{
                     when {{
-                        expression {{ params.RELEASE == true && params.PUBLISH == true }}
+                        expression {{ params.PUBLISH == true && env.RELEASE == "true" }}
                     }}
                     steps {{
                         build job: 'generate-dockerfiles', propagate: false, wait: true
@@ -191,7 +196,7 @@
             publish_rpm_packages: |-
                 stage('Publish RPM Packages') {{
                             when {{
-                                expression {{ params.RELEASE == true && params.PUBLISH == true }}
+                                expression {{ params.PUBLISH == true && env.RELEASE == "true" }}
                             }}
                             steps {{
                                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
@@ -202,7 +207,7 @@
             publish_cf_data: &publish_cf_data |-
                 stage('Publish CF Java Buildpack Data') {{
                             when {{
-                                expression {{ params.RELEASE == true && params.PUBLISH == true }}
+                                expression {{ params.PUBLISH == true && env.RELEASE == "true" }}
                             }}
                             steps {{
                                 build job: 'generate-cf-java-buildpack-data', propagate: true, wait: true
@@ -291,6 +296,7 @@
                                 script {{
                                     setGitHubPullRequestStatus context: "validate-pr-{major}-{platform}", state: 'PENDING'
                                 }}
+            init_variables: *template_init_variables
             verify_pre: |-
                 stage("Verify PR") {{
             verify_step: |-
@@ -354,6 +360,7 @@
     build_type_snapshot: &build_type_snapshot
         - snapshot:
             docker_agent_verify: ''
+            init_variables: *template_init_variables
             publish_artifactory: *template_publish_artifactory
             publish_debian_packages: ''
             publish_rpm_packages: ''
@@ -363,11 +370,32 @@
     build_type_release: &build_type_release
         - release:
             docker_agent_verify: ''
+            init_variables: |-
+                // when we publish, installer packages are mandatory
+                            if (params.PUBLISH == true) {{
+                                env.BUILD_INSTALLER_PACKAGES = true
+                            }} else {{
+                                env.BUILD_INSTALLER_PACKAGES = params.BUILD_INSTALLER_PACKAGES
+                            }}
+
+                            // calculate artifactory version and RELEASE flag
+                            // release jobs need to have a conforming SAPMACHINE_VERSION tag
+                            def m = (env.SAPMACHINE_VERSION =~ /sapmachine-((\d+(\.\d+)*)(\+(\d+))?)$/)
+                            if (m) {{
+                                env.ART_VERSION = m.group(1)
+                                if (m.group(4) == null) {{
+                                    env.RELEASE = "true"
+                                }} else {{
+                                    env.RELEASE = "false"
+                                }}
+                            }} else {{
+                                error(env.SAPMACHINE_VERSION + " is no valid SapMachine version tag.")
+                            }}
             publish_artifactory: *template_publish_artifactory
             publish_github: |-
                 stage('Publish GitHub') {{
                             when {{
-                                expression {{ params.PUBLISH == true && !(JOB_NAME ==~ /((\S*)(release-macos)(\S*))/ && params.RELEASE == true) }}
+                                expression {{ params.PUBLISH == true && !(JOB_NAME ==~ /((\S*)(release-macos)(\S*))/ && env.RELEASE == "true") }}
                             }}
                             steps {{
                                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
@@ -410,26 +438,7 @@
                                 env.SAPMACHINE_VERSION = params.SAPMACHINE_VERSION
                             }}
 
-                            // when we publish, installer packages are mandatory
-                            if (params.PUBLISH == true) {{
-                                env.BUILD_INSTALLER_PACKAGES = true
-                            }} else {{
-                                env.BUILD_INSTALLER_PACKAGES = params.BUILD_INSTALLER_PACKAGES
-                            }}
-
-                            // calculate artifactory version number
-                            // release jobs need to have a conforming SAPMACHINE_VERSION tag
-                            if (JOB_NAME ==~ /((\S*)(release)(\S*))/) {{
-                                def m = (env.SAPMACHINE_VERSION =~ /sapmachine-((\d+(\.\d+)*)(\+(\d+))?)$/)
-                                if (m) {{
-                                    env.ART_VERSION = m.group(1)
-                                }} else {{
-                                    error(env.SAPMACHINE_VERSION + " is no valid SapMachine version tag.")
-                                }}
-                            }} else {{
-                                env.ART_VERSION = "snapshot-{major}-" + (new java.text.SimpleDateFormat("yyyyMMddHHmmss")).format(new Date())
-                            }}
-                            println "env.ART_VERSION: " + env.ART_VERSION
+                            {init_variables|}
                         }}
                     }}
                 }}
@@ -514,7 +523,9 @@
                         BOOT_JDK = "${{WORKSPACE}}/boot_jdk"
                     }}
                     steps {{
-                        sh 'SapMachine-Infrastructure/lib/build.sh'
+                        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
+                            sh 'SapMachine-Infrastructure/lib/build.sh'
+                        }}
                     }}
                 }}
                 stage('Run jtreg hotspot') {{
@@ -858,10 +869,6 @@
             default: true
             description: 'Build platform installer packages, e.g. Windows MSI, Debian packages.'
         - bool:
-            name: RELEASE
-            default: false
-            description: 'When set to true, marks this build as a release build, otherwise as pre-release.'
-        - bool:
             name: PUBLISH
             default: false
             description: 'When set to true, the resulting bundles will be published to GitHub.'
@@ -1058,10 +1065,6 @@
             default: true
             description: 'Build platform installer packages, e.g. Windows MSI, Debian packages.'
         - bool:
-            name: RELEASE
-            default: false
-            description: 'When set to true, marks this build as a release build, otherwise as pre-release.'
-        - bool:
             name: PUBLISH
             default: false
             description: 'When set to true, the resulting bundles will be published to GitHub.'
@@ -1100,7 +1103,6 @@
                                             string(name: 'langtools_test_groups', value: params.langtools_test_groups),
                                             [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
                                             [$class: 'BooleanParameterValue', name: 'BUILD_INSTALLER_PACKAGES', value: params.BUILD_INSTALLER_PACKAGES],
-                                            [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE],
                                             [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH]
                                         ]
                                 }} else {{

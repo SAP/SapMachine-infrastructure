@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -ex
 
 if [[ -z $WORKSPACE ]]; then
   WORKSPACE=$PWD
@@ -189,7 +189,7 @@ if [ "$RELEASE" == true ]; then
   ARCHIVE_NAME_JRE="$(echo $JRE_BUNDLE_NAME | sed 's/\+[0-9]*//')"
   ARCHIVE_NAME_SYMBOLS="$(echo $SYMBOLS_BUNDLE_NAME | sed 's/\+[0-9]*//')"
 else
-  # substitute build number +xx to .xx to avoid problmes with uploads. + is no good character :-)
+  # substitute build number +xx to .xx to avoid problems with uploads. + is no good character :-)
   ARCHIVE_NAME_JDK="$(echo $JDK_BUNDLE_NAME | sed 's/\+/\./')"
   ARCHIVE_NAME_JRE="$(echo $JRE_BUNDLE_NAME | sed 's/\+/\./')"
   ARCHIVE_NAME_SYMBOLS="$(echo $SYMBOLS_BUNDLE_NAME | sed 's/\+/\./')"
