@@ -25,6 +25,7 @@
                         env.SAPMACHINE_VERSION = params.SAPMACHINE_VERSION
                     }
 
+                    // when we publish, installer packages are mandatory
                     if (params.PUBLISH == true) {
                         env.BUILD_INSTALLER_PACKAGES = true
                     } else {
@@ -254,6 +255,48 @@
             }
         }
         
+        stage('Build Debian Packages') {
+            agent {
+                dockerfile {
+                    dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/x86_64"
+                    reuseNode true
+                    label "linux_x86_64"
+                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
+                }
+            }
+            when {
+                beforeAgent true
+                expression { env.BUILD_INSTALLER_PACKAGES == "true" }
+            }
+            steps {
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
+                    sh "python3 SapMachine-Infrastructure/lib/make_deb.py --tag=${env.SAPMACHINE_VERSION} --architecture=linux-x64"
+                }
+            }
+            post {
+                success {
+                    stash includes: '*.deb', name: 'debPackage'
+                    stash includes: 'SapMachine-Infrastructure/**', name: 'infra'
+                }
+            }
+        }
+        stage('Build RPM Packages') {
+            agent {
+                dockerfile {
+                    dir "SapMachine-Infrastructure/dockerfiles/fedora-rpm"
+                    reuseNode true
+                    label "linux_x86_64"
+                }
+            }
+            when {
+                beforeAgent true
+                expression { env.BUILD_INSTALLER_PACKAGES == "true" }
+            }
+            steps {
+                sh 'rm -f *.rpm'
+                sh "/usr/bin/python3 SapMachine-Infrastructure/lib/make_rpm.py --tag=${env.SAPMACHINE_VERSION}"
+            }
+        }
         stage('Publish Artifactory') {
             steps {
                 // Show the installed version of JFrog CLI.
@@ -272,7 +315,7 @@
                 }
 
                 // Upload the test archive
-                jf 'rt u test.zip sapmachine-mvn/io/sapmachine/build-results/linux_x86_64/${env.ART_VERSION}/test.zip'
+                jf "rt u test.zip sapmachine-mvn/io/sapmachine/build-results/linux_x86_64/${env.ART_VERSION}/test.zip"
             }
         }
         stage('Archive') {
@@ -289,104 +332,11 @@
         }
         
         
-        stage('Publish Windows Installer') {
-            when {
-                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.PUBLISH == true &amp;&amp; JOB_NAME ==~ /((\S*)(release-windows_x86_64)(\S*))/ }
-            }
-            steps {
-                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
-                    sh "SapMachine-Infrastructure/lib/publish_msi.sh"
-                }
-            }
-        }
-        stage('Publish Website Data') {
-            when {
-                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.PUBLISH == true &amp;&amp; JOB_NAME ==~ /((\S*)(release)(\S*))/}
-            }
-            steps {
-                build job: 'generate-website-data', propagate: false, wait: false
-            }
-        }
-        stage('Publish CF Java Buildpack Data') {
-            agent {
-                dockerfile {
-                    dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/x86_64"
-                    reuseNode true
-                    label "linux_x86_64"
-                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
-                }
-            }
-            when {
-                beforeAgent true
-                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.PUBLISH == true &amp;&amp; params.RELEASE == true &amp;&amp; JOB_NAME ==~ /((\S*)(release-linux_x86_64)(\S*))/ }
-            }
-            steps {
-                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
-                    sh "python3 SapMachine-Infrastructure/lib/generate_cf_buildpack_data.py"
-                }
-            }
-        }
-        stage('Build Debian Package') {
-            agent {
-                dockerfile {
-                    dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/x86_64"
-                    reuseNode true
-                    label "linux_x86_64"
-                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
-                }
-            }
-            when {
-                beforeAgent true
-                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; env.BUILD_INSTALLER_PACKAGES == "true" &amp;&amp; JOB_NAME ==~ /((\S*)(linux)(\S*))/ &amp;&amp; !(JOB_NAME ==~ /((\S*)(alpine)(\S*))/) }
-            }
-            steps {
-                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
-                    sh "python3 SapMachine-Infrastructure/lib/make_deb.py --tag=${env.SAPMACHINE_VERSION} --architecture=linux-x64"
-                }
-            }
-            post {
-                success {
-                    archiveArtifacts allowEmptyArchive: true, artifacts: "*.deb"
-                    stash includes: '*.deb', name: 'debPackage'
-                    stash includes: 'SapMachine-Infrastructure/**', name: 'infra'
-                }
-            }
-        }
-        stage('Publish Debian Package') {
-            agent {
-                label 'agent-local-docker-ubuntu'
-            }
-            when {
-                beforeAgent true
-                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.PUBLISH == true &amp;&amp; params.RELEASE == true &amp;&amp; JOB_NAME ==~ /((\S*)(release-linux)(\S*))/ &amp;&amp; !(JOB_NAME ==~ /((\S*)(linux_alpine_x86_64)(\S*))/) }
-            }
-            steps {
-                unstash 'infra'
-                unstash 'debPackage'
-                sh "cp -n *.deb /var/pkg/deb/amd64 || true"
-                sh "python3 SapMachine-Infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/amd64"
-            }
-        }
-        stage('Build and Publish RPM Linux Packages') {
-            when {
-                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.PUBLISH == true &amp;&amp; params.RELEASE == true &amp;&amp; JOB_NAME ==~ /((\S*)(release-linux_x86_64)(\S*))/ }
-            }
-            steps {
-                build job: 'rpm-package', propagate: false, wait: true, parameters:
-                    [
-                        string(name: 'GIT_TAG_NAME', value: env.SAPMACHINE_VERSION),
-                        [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
-                    ]
-            }
-        }
-        stage('Generate Dockerfiles') {
-            when {
-                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.PUBLISH == true &amp;&amp; params.RELEASE == true &amp;&amp; JOB_NAME ==~ /((\S*)(release-linux_x86_64)(\S*))/ }
-            }
-            steps {
-                build job: 'generate-dockerfiles', propagate: false, wait: true
-            }
-        }
+        
+        
+        
+        
+        
     }
     post {
         success {
@@ -490,7 +440,7 @@
         <hudson.model.BooleanParameterDefinition>
           <name>BUILD_INSTALLER_PACKAGES</name>
           <description>Build platform installer packages, e.g. Windows MSI, Debian packages.</description>
-          <defaultValue>false</defaultValue>
+          <defaultValue>true</defaultValue>
         </hudson.model.BooleanParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>

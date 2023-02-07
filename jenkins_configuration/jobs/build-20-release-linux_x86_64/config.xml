@@ -1,5 +1,117 @@
-<flow-definition plugin="workflow-job">
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps">
+<flow-definition plugin="workflow-job@1268.v6eb_e2ee1a_85a">
+  <actions>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@2.2118.v31fd5b_9944b_5" />
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@2.2118.v31fd5b_9944b_5">
+      <jobProperties />
+      <triggers />
+      <parameters />
+      <options />
+    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
+  </actions>
+  <description>Release build for SapMachine 20 on linux_x86_64.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty>
+      <abortPrevious>false</abortPrevious>
+    </org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty>
+    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.36.1">
+      <projectUrl>https://github.com/SAP/SapMachine</projectUrl>
+      <displayName />
+    </com.coravy.hudson.plugins.github.GithubProjectProperty>
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>-1</daysToKeep>
+        <numToKeep>20</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>1</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>SAPMACHINE_GIT_REPOSITORY</name>
+          <description>The Git repository to use.</description>
+          <defaultValue>https://github.com/SAP/SapMachine.git</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>GIT_REF</name>
+          <description>The Git tag, branch or commit to build.</description>
+          <defaultValue>sapmachine20</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>SAPMACHINE_VERSION</name>
+          <description>Either a SapMachine Release Tag or a JDK Major version. If empty, GIT_REF is used.</description>
+          <defaultValue />
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>JDK_BUILD</name>
+          <description>Sets the version build number explicitly.</description>
+          <defaultValue />
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>SAPMACHINE_ARCHIVE_NAME_PREFIX</name>
+          <description>The prefix of the bundle archive.</description>
+          <defaultValue>sapmachine20-linux_x86_64</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>DEVKIT</name>
+          <description>Devkit, could be either a path that locally exists or the GAV coordinates to a tar.gz archive to be downloaded and extracted.</description>
+          <defaultValue>io.sapmachine.build.devkit.linux-x64:devkit-fedora-gcc:12-8.3.0-nogold2</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>EXTRA_CONFIGURE_OPTIONS</name>
+          <description>Extra configure options passed directly to configure script.</description>
+          <defaultValue />
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>hotspot_test_groups</name>
+          <description>Select the test group for jtreg hotspot tests. Empty means disabled.</description>
+          <defaultValue>:tier1</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>jdk_test_groups</name>
+          <description>Select the test group for jtreg jdk tests. Empty means disabled.</description>
+          <defaultValue>:tier1</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>langtools_test_groups</name>
+          <description>Select the test group for jtreg langtools tests. Empty means disabled.</description>
+          <defaultValue>"jdk tools lib"</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>RUN_TESTS</name>
+          <description>Enable/disable jtreg runs.</description>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>BUILD_INSTALLER_PACKAGES</name>
+          <description>Build platform installer packages, e.g. Windows MSI, Debian packages.</description>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>RELEASE</name>
+          <description>When set to true, marks this build as a release build, otherwise as pre-release.</description>
+          <defaultValue>false</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>PUBLISH</name>
+          <description>When set to true, the resulting bundles will be published to GitHub.</description>
+          <defaultValue>false</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@3611.v201b_d9f9eb_f7">
     <script>pipeline {
     agent {
         label "linux_x86_64"
@@ -25,6 +137,7 @@
                         env.SAPMACHINE_VERSION = params.SAPMACHINE_VERSION
                     }
 
+                    // when we publish, installer packages are mandatory
                     if (params.PUBLISH == true) {
                         env.BUILD_INSTALLER_PACKAGES = true
                     } else {
@@ -254,6 +367,48 @@
             }
         }
         
+        stage('Build Debian Packages') {
+            agent {
+                dockerfile {
+                    dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/x86_64"
+                    reuseNode true
+                    label "linux_x86_64"
+                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
+                }
+            }
+            when {
+                beforeAgent true
+                expression { env.BUILD_INSTALLER_PACKAGES == "true" }
+            }
+            steps {
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
+                    sh "python3 SapMachine-Infrastructure/lib/make_deb.py --tag=${env.SAPMACHINE_VERSION} --architecture=linux-x64"
+                }
+            }
+            post {
+                success {
+                    stash includes: '*.deb', name: 'debPackage'
+                    stash includes: 'SapMachine-Infrastructure/**', name: 'infra'
+                }
+            }
+        }
+        stage('Build RPM Packages') {
+            agent {
+                dockerfile {
+                    dir "SapMachine-Infrastructure/dockerfiles/fedora-rpm"
+                    reuseNode true
+                    label "linux_x86_64"
+                }
+            }
+            when {
+                beforeAgent true
+                expression { env.BUILD_INSTALLER_PACKAGES == "true" }
+            }
+            steps {
+                sh 'rm -f *.rpm'
+                sh "/usr/bin/python3 SapMachine-Infrastructure/lib/make_rpm.py --tag=${env.SAPMACHINE_VERSION}"
+            }
+        }
         stage('Publish Artifactory') {
             steps {
                 // Show the installed version of JFrog CLI.
@@ -272,7 +427,7 @@
                 }
 
                 // Upload the test archive
-                jf 'rt u test.zip sapmachine-mvn/io/sapmachine/build-results/linux_x86_64/${env.ART_VERSION}/test.zip'
+                jf "rt u test.zip sapmachine-mvn/io/sapmachine/build-results/linux_x86_64/${env.ART_VERSION}/test.zip"
             }
         }
         stage('Archive') {
@@ -289,86 +444,21 @@
         }
         stage('Publish GitHub') {
             when {
-                expression { params.PUBLISH == true &amp;&amp; JOB_NAME ==~ /((\S*)(release)(\S*))/ &amp;&amp; !(JOB_NAME ==~ /((\S*)(release-macos)(\S*))/ &amp;&amp; params.RELEASE == true) }
+                expression { params.PUBLISH == true &amp;&amp; !(JOB_NAME ==~ /((\S*)(release-macos)(\S*))/ &amp;&amp; params.RELEASE == true) }
             }
             steps {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
                     sh "SapMachine-Infrastructure/lib/publish.sh"
-                    archiveArtifacts allowEmptyArchive: true, artifacts: "*.sha256.txt"
                 }
             }
         }
-        
-        stage('Publish Windows Installer') {
-            when {
-                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.PUBLISH == true &amp;&amp; JOB_NAME ==~ /((\S*)(release-windows_x86_64)(\S*))/ }
-            }
-            steps {
-                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
-                    sh "SapMachine-Infrastructure/lib/publish_msi.sh"
-                }
-            }
-        }
-        stage('Publish Website Data') {
-            when {
-                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.PUBLISH == true &amp;&amp; JOB_NAME ==~ /((\S*)(release)(\S*))/}
-            }
-            steps {
-                build job: 'generate-website-data', propagate: false, wait: false
-            }
-        }
-        stage('Publish CF Java Buildpack Data') {
-            agent {
-                dockerfile {
-                    dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/x86_64"
-                    reuseNode true
-                    label "linux_x86_64"
-                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
-                }
-            }
-            when {
-                beforeAgent true
-                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.PUBLISH == true &amp;&amp; params.RELEASE == true &amp;&amp; JOB_NAME ==~ /((\S*)(release-linux_x86_64)(\S*))/ }
-            }
-            steps {
-                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
-                    sh "python3 SapMachine-Infrastructure/lib/generate_cf_buildpack_data.py"
-                }
-            }
-        }
-        stage('Build Debian Package') {
-            agent {
-                dockerfile {
-                    dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/x86_64"
-                    reuseNode true
-                    label "linux_x86_64"
-                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
-                }
-            }
-            when {
-                beforeAgent true
-                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; env.BUILD_INSTALLER_PACKAGES == "true" &amp;&amp; JOB_NAME ==~ /((\S*)(linux)(\S*))/ &amp;&amp; !(JOB_NAME ==~ /((\S*)(alpine)(\S*))/) }
-            }
-            steps {
-                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
-                    sh "python3 SapMachine-Infrastructure/lib/make_deb.py --tag=${env.SAPMACHINE_VERSION} --architecture=linux-x64"
-                }
-            }
-            post {
-                success {
-                    archiveArtifacts allowEmptyArchive: true, artifacts: "*.deb"
-                    stash includes: '*.deb', name: 'debPackage'
-                    stash includes: 'SapMachine-Infrastructure/**', name: 'infra'
-                }
-            }
-        }
-        stage('Publish Debian Package') {
+        stage('Publish Debian Packages') {
             agent {
                 label 'agent-local-docker-ubuntu'
             }
             when {
                 beforeAgent true
-                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.PUBLISH == true &amp;&amp; params.RELEASE == true &amp;&amp; JOB_NAME ==~ /((\S*)(release-linux)(\S*))/ &amp;&amp; !(JOB_NAME ==~ /((\S*)(linux_alpine_x86_64)(\S*))/) }
+                expression { params.RELEASE == true &amp;&amp; params.PUBLISH == true }
             }
             steps {
                 unstash 'infra'
@@ -377,24 +467,39 @@
                 sh "python3 SapMachine-Infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/amd64"
             }
         }
-        stage('Build and Publish RPM Linux Packages') {
+        stage('Publish RPM Packages') {
             when {
-                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.PUBLISH == true &amp;&amp; params.RELEASE == true &amp;&amp; JOB_NAME ==~ /((\S*)(release-linux_x86_64)(\S*))/ }
+                expression { params.RELEASE == true &amp;&amp; params.PUBLISH == true }
             }
             steps {
-                build job: 'rpm-package', propagate: false, wait: true, parameters:
-                    [
-                        string(name: 'GIT_TAG_NAME', value: env.SAPMACHINE_VERSION),
-                        [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
-                    ]
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
+                    sh "SapMachine-Infrastructure/lib/publish_rpm.sh"
+                }
             }
         }
+        
         stage('Generate Dockerfiles') {
             when {
-                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.PUBLISH == true &amp;&amp; params.RELEASE == true &amp;&amp; JOB_NAME ==~ /((\S*)(release-linux_x86_64)(\S*))/ }
+                expression { params.RELEASE == true &amp;&amp; params.PUBLISH == true }
             }
             steps {
                 build job: 'generate-dockerfiles', propagate: false, wait: true
+            }
+        }
+        stage('Publish Website Data') {
+            when {
+                expression { params.PUBLISH == true }
+            }
+            steps {
+                build job: 'generate-website-data', propagate: false, wait: false
+            }
+        }
+        stage('Publish CF Java Buildpack Data') {
+            when {
+                expression { params.RELEASE == true &amp;&amp; params.PUBLISH == true }
+            }
+            steps {
+                build job: 'generate-cf-java-buildpack-data', propagate: true, wait: true
             }
         }
     }
@@ -413,101 +518,5 @@
 </script>
     <sandbox>true</sandbox>
   </definition>
-  <actions />
-  <description>Release build for SapMachine 20 on linux_x86_64.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
-  <keepDependencies>false</keepDependencies>
-  <properties>
-    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty />
-    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github">
-      <projectUrl>https://github.com/SAP/SapMachine</projectUrl>
-      <displayName />
-    </com.coravy.hudson.plugins.github.GithubProjectProperty>
-    <jenkins.model.BuildDiscarderProperty>
-      <strategy class="hudson.tasks.LogRotator">
-        <daysToKeep>-1</daysToKeep>
-        <numToKeep>20</numToKeep>
-        <artifactDaysToKeep>-1</artifactDaysToKeep>
-        <artifactNumToKeep>1</artifactNumToKeep>
-      </strategy>
-    </jenkins.model.BuildDiscarderProperty>
-    <hudson.model.ParametersDefinitionProperty>
-      <parameterDefinitions>
-        <hudson.model.StringParameterDefinition>
-          <name>SAPMACHINE_GIT_REPOSITORY</name>
-          <description>The Git repository to use.</description>
-          <defaultValue>https://github.com/SAP/SapMachine.git</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>GIT_REF</name>
-          <description>The Git tag, branch or commit to build.</description>
-          <defaultValue>sapmachine20</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>SAPMACHINE_VERSION</name>
-          <description>Either a SapMachine Release Tag or a JDK Major version. If empty, GIT_REF is used.</description>
-          <defaultValue />
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>JDK_BUILD</name>
-          <description>Sets the version build number explicitly.</description>
-          <defaultValue />
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>SAPMACHINE_ARCHIVE_NAME_PREFIX</name>
-          <description>The prefix of the bundle archive.</description>
-          <defaultValue>sapmachine20-linux_x86_64</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>DEVKIT</name>
-          <description>Devkit, could be either a path that locally exists or the GAV coordinates to a tar.gz archive to be downloaded and extracted.</description>
-          <defaultValue>io.sapmachine.build.devkit.linux-x64:devkit-fedora-gcc:12-8.3.0-nogold2</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>EXTRA_CONFIGURE_OPTIONS</name>
-          <description>Extra configure options passed directly to configure script.</description>
-          <defaultValue />
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>hotspot_test_groups</name>
-          <description>Select the test group for jtreg hotspot tests. Empty means disabled.</description>
-          <defaultValue>:tier1</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>jdk_test_groups</name>
-          <description>Select the test group for jtreg jdk tests. Empty means disabled.</description>
-          <defaultValue>:tier1</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>langtools_test_groups</name>
-          <description>Select the test group for jtreg langtools tests. Empty means disabled.</description>
-          <defaultValue>"jdk tools lib"</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.BooleanParameterDefinition>
-          <name>RUN_TESTS</name>
-          <description>Enable/disable jtreg runs.</description>
-          <defaultValue>true</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
-        <hudson.model.BooleanParameterDefinition>
-          <name>PUBLISH</name>
-          <description>When set to true, the resulting bundles will be published to GitHub.</description>
-          <defaultValue>false</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
-        <hudson.model.BooleanParameterDefinition>
-          <name>RELEASE</name>
-          <description>When set to true, marks this build as a release build, otherwise as pre-release.</description>
-          <defaultValue>false</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
-      </parameterDefinitions>
-    </hudson.model.ParametersDefinitionProperty>
-  </properties>
+  <disabled>false</disabled>
 </flow-definition>
