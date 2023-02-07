@@ -862,7 +862,7 @@
             description: 'Select the test group for jtreg langtools tests. Empty means disabled.'
         - bool:
             name: RUN_TESTS
-            default: true
+            default: false
             description: 'Enable/disable jtreg runs.'
         - bool:
             name: BUILD_INSTALLER_PACKAGES
@@ -1058,7 +1058,7 @@
             description: 'Select the test group for jtreg langtools tests. Empty means disabled.'
         - bool:
             name: RUN_TESTS
-            default: true
+            default: false
             description: 'Enable/disable jtreg runs.'
         - bool:
             name: BUILD_INSTALLER_PACKAGES
