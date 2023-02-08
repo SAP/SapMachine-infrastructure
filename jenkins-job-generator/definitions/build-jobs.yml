@@ -184,17 +184,6 @@
                             }}
                         }}
             publish_debian_packages: *template_publish_debian_packages
-            publish_rpm_packages: |-
-                stage('Publish RPM Packages') {{
-                            when {{
-                                expression {{ params.PUBLISH == true && env.RELEASE == "true" }}
-                            }}
-                            steps {{
-                                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
-                                    sh "SapMachine-Infrastructure/lib/publish_rpm.sh"
-                                }}
-                            }}
-                        }}
             publish_cf_data: &publish_cf_data |-
                 stage('Publish CF Java Buildpack Data') {{
                             when {{
@@ -326,7 +315,6 @@
             build_debian_packages_step: ''
             build_rpm_packages: ''
             publish_debian_packages: ''
-            publish_rpm_packages: ''
             create_brew_casks: ''
             generate_dockerfiles: ''
             publish_cf_data: ''
@@ -360,7 +348,6 @@
                                     env.RELEASE = "false"
             publish_artifactory: *template_publish_artifactory
             publish_debian_packages: ''
-            publish_rpm_packages: ''
             create_brew_casks: ''
             generate_dockerfiles: ''
             publish_cf_data: ''
@@ -626,7 +613,6 @@
                 }}
                 {publish_github|}
                 {publish_debian_packages|}
-                {publish_rpm_packages|}
                 {create_brew_casks|}
                 {generate_dockerfiles|}
                 {publish_website_data|}

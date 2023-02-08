@@ -50,6 +50,14 @@ python3 SapMachine-Infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -
 python3 SapMachine-Infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${ARCHIVE_SUM_JRE}"
 python3 SapMachine-Infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${ARCHIVE_SUM_SYMBOLS}"
 
+if [[ $UNAME == "Linux" ]]; then
+  if [ "$RELEASE" == true ]; then
+    for RPMFILE in *.rpm; do
+      python3 SapMachine-Infrastructure/lib/github_publish.py -t ${SAPMACHINE_VERSION} -a ${RPMFILE}
+    done
+  fi
+fi
+
 if [ $UNAME == Darwin ]; then
   DMG_NAME_JDK="$(cat jdk_dmg_name.txt)"
   DMG_NAME_JRE="$(cat jre_dmg_name.txt)"
