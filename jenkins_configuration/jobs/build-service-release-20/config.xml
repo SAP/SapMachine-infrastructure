@@ -34,7 +34,6 @@
                                     string(name: 'langtools_test_groups', value: params.langtools_test_groups),
                                     [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
                                     [$class: 'BooleanParameterValue', name: 'BUILD_INSTALLER_PACKAGES', value: params.BUILD_INSTALLER_PACKAGES],
-                                    [$class: 'BooleanParameterValue', name: 'RELEASE', value: params.RELEASE],
                                     [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH]
                                 ]
                         } else {
@@ -149,17 +148,12 @@
         <hudson.model.BooleanParameterDefinition>
           <name>RUN_TESTS</name>
           <description>Enable/disable jtreg runs.</description>
-          <defaultValue>true</defaultValue>
+          <defaultValue>false</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>BUILD_INSTALLER_PACKAGES</name>
           <description>Build platform installer packages, e.g. Windows MSI, Debian packages.</description>
           <defaultValue>true</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
-        <hudson.model.BooleanParameterDefinition>
-          <name>RELEASE</name>
-          <description>When set to true, marks this build as a release build, otherwise as pre-release.</description>
-          <defaultValue>false</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>PUBLISH</name>

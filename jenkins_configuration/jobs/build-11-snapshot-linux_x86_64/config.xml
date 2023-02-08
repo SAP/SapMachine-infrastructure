@@ -127,26 +127,10 @@
                         env.SAPMACHINE_VERSION = params.SAPMACHINE_VERSION
                     }
 
-                    // when we publish, installer packages are mandatory
-                    if (params.PUBLISH == true) {
-                        env.BUILD_INSTALLER_PACKAGES = true
-                    } else {
-                        env.BUILD_INSTALLER_PACKAGES = params.BUILD_INSTALLER_PACKAGES
-                    }
-
-                    // calculate artifactory version number
-                    // release jobs need to have a conforming SAPMACHINE_VERSION tag
-                    if (JOB_NAME ==~ /((\S*)(release)(\S*))/) {
-                        def m = (env.SAPMACHINE_VERSION =~ /sapmachine-((\d+(\.\d+)*)(\+(\d+))?)$/)
-                        if (m) {
-                            env.ART_VERSION = m.group(1)
-                        } else {
-                            error(env.SAPMACHINE_VERSION + " is no valid SapMachine version tag.")
-                        }
-                    } else {
-                        env.ART_VERSION = "snapshot-11-" + (new java.text.SimpleDateFormat("yyyyMMddHHmmss")).format(new Date())
-                    }
-                    println "env.ART_VERSION: " + env.ART_VERSION
+                    // initialize some variables
+                    env.BUILD_INSTALLER_PACKAGES = params.BUILD_INSTALLER_PACKAGES
+                    env.ART_VERSION = "snapshot-11-" + (new java.text.SimpleDateFormat("yyyyMMddHHmmss")).format(new Date())
+                    env.RELEASE = "false"
                 }
             }
         }
@@ -252,7 +236,9 @@
                 BOOT_JDK = "${WORKSPACE}/boot_jdk"
             }
             steps {
-                sh 'SapMachine-Infrastructure/lib/build.sh'
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
+                    sh 'SapMachine-Infrastructure/lib/build.sh'
+                }
             }
         }
         stage('Run jtreg hotspot') {
@@ -395,8 +381,9 @@
                 expression { env.BUILD_INSTALLER_PACKAGES == "true" }
             }
             steps {
-                sh 'rm -f *.rpm'
-                sh "/usr/bin/python3 SapMachine-Infrastructure/lib/make_rpm.py --tag=${env.SAPMACHINE_VERSION}"
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
+                    sh "/usr/bin/python3 SapMachine-Infrastructure/lib/make_rpm.py --tag=${env.SAPMACHINE_VERSION}"
+                }
             }
         }
         stage('Publish Artifactory') {

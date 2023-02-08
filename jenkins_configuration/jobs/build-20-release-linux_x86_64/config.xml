@@ -91,17 +91,12 @@
         <hudson.model.BooleanParameterDefinition>
           <name>RUN_TESTS</name>
           <description>Enable/disable jtreg runs.</description>
-          <defaultValue>true</defaultValue>
+          <defaultValue>false</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>BUILD_INSTALLER_PACKAGES</name>
           <description>Build platform installer packages, e.g. Windows MSI, Debian packages.</description>
           <defaultValue>true</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
-        <hudson.model.BooleanParameterDefinition>
-          <name>RELEASE</name>
-          <description>When set to true, marks this build as a release build, otherwise as pre-release.</description>
-          <defaultValue>false</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>PUBLISH</name>
@@ -144,19 +139,20 @@
                         env.BUILD_INSTALLER_PACKAGES = params.BUILD_INSTALLER_PACKAGES
                     }
 
-                    // calculate artifactory version number
+                    // calculate artifactory version and RELEASE flag
                     // release jobs need to have a conforming SAPMACHINE_VERSION tag
-                    if (JOB_NAME ==~ /((\S*)(release)(\S*))/) {
-                        def m = (env.SAPMACHINE_VERSION =~ /sapmachine-((\d+(\.\d+)*)(\+(\d+))?)$/)
-                        if (m) {
-                            env.ART_VERSION = m.group(1)
+                    def m = (env.SAPMACHINE_VERSION =~ /sapmachine-((\d+(\.\d+)*)(\+(\d+))?)$/)
+                    if (m) {
+                        env.ART_VERSION = m.group(1)
+                        env.RELEASE_BUILD = "true"
+                        if (m.group(4) == null) {
+                            env.RELEASE = "true"
                         } else {
-                            error(env.SAPMACHINE_VERSION + " is no valid SapMachine version tag.")
+                            env.RELEASE = "false"
                         }
                     } else {
-                        env.ART_VERSION = "snapshot-20-" + (new java.text.SimpleDateFormat("yyyyMMddHHmmss")).format(new Date())
+                        error(env.SAPMACHINE_VERSION + " is no valid SapMachine version tag.")
                     }
-                    println "env.ART_VERSION: " + env.ART_VERSION
                 }
             }
         }
@@ -262,7 +258,9 @@
                 BOOT_JDK = "${WORKSPACE}/boot_jdk"
             }
             steps {
-                sh 'SapMachine-Infrastructure/lib/build.sh'
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
+                    sh 'SapMachine-Infrastructure/lib/build.sh'
+                }
             }
         }
         stage('Run jtreg hotspot') {
@@ -405,8 +403,9 @@
                 expression { env.BUILD_INSTALLER_PACKAGES == "true" }
             }
             steps {
-                sh 'rm -f *.rpm'
-                sh "/usr/bin/python3 SapMachine-Infrastructure/lib/make_rpm.py --tag=${env.SAPMACHINE_VERSION}"
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
+                    sh "/usr/bin/python3 SapMachine-Infrastructure/lib/make_rpm.py --tag=${env.SAPMACHINE_VERSION}"
+                }
             }
         }
         stage('Publish Artifactory') {
@@ -444,7 +443,7 @@
         }
         stage('Publish GitHub') {
             when {
-                expression { params.PUBLISH == true &amp;&amp; !(JOB_NAME ==~ /((\S*)(release-macos)(\S*))/ &amp;&amp; params.RELEASE == true) }
+                expression { params.PUBLISH == true &amp;&amp; !(JOB_NAME ==~ /((\S*)(release-macos)(\S*))/ &amp;&amp; env.RELEASE == "true") }
             }
             steps {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
@@ -458,7 +457,7 @@
             }
             when {
                 beforeAgent true
-                expression { params.RELEASE == true &amp;&amp; params.PUBLISH == true }
+                expression { params.PUBLISH == true &amp;&amp; env.RELEASE == "true" }
             }
             steps {
                 unstash 'infra'
@@ -469,7 +468,7 @@
         }
         stage('Publish RPM Packages') {
             when {
-                expression { params.RELEASE == true &amp;&amp; params.PUBLISH == true }
+                expression { params.PUBLISH == true &amp;&amp; env.RELEASE == "true" }
             }
             steps {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
@@ -480,7 +479,7 @@
         
         stage('Generate Dockerfiles') {
             when {
-                expression { params.RELEASE == true &amp;&amp; params.PUBLISH == true }
+                expression { params.PUBLISH == true &amp;&amp; env.RELEASE == "true" }
             }
             steps {
                 build job: 'generate-dockerfiles', propagate: false, wait: true
@@ -496,7 +495,7 @@
         }
         stage('Publish CF Java Buildpack Data') {
             when {
-                expression { params.RELEASE == true &amp;&amp; params.PUBLISH == true }
+                expression { params.PUBLISH == true &amp;&amp; env.RELEASE == "true" }
             }
             steps {
                 build job: 'generate-cf-java-buildpack-data', propagate: true, wait: true

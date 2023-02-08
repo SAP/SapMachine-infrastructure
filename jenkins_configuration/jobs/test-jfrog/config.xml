@@ -11,7 +11,7 @@
   <description />
   <keepDependencies>false</keepDependencies>
   <properties>
-    <hudson.plugins.jira.JiraProjectProperty plugin="jira@3.8" />
+    <hudson.plugins.jira.JiraProjectProperty plugin="jira@3.9" />
     <hudson.plugins.buildblocker.BuildBlockerProperty plugin="build-blocker-plugin@1.7.8">
       <useBuildBlocker>false</useBuildBlocker>
       <blockLevel>GLOBAL</blockLevel>
@@ -19,7 +19,7 @@
       <blockingJobs />
     </hudson.plugins.buildblocker.BuildBlockerProperty>
   </properties>
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@3606.v0b_d8b_e512dcf">
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@3611.v201b_d9f9eb_f7">
     <script>pipeline {
     agent any
     tools {
@@ -30,15 +30,17 @@
             steps {
                 script {
                     // def text = "sapmachine-17.0.1+23"
-                    def text = "sapmachine-17.0.1"
+                    def text = "sapmachine-17+23"
                     // def text = "sapmachine-11"
                     // def text = "dieter"
                     def m = (text =~ /sapmachine-((\d+(\.\d+)*)(\+(\d+))?)$/)
                     if (m) {
-                        //println "MATCH 0:" + m.group(0)
-                        //println "MATCH 1:" + m.group(1)
-                        //println "MATCH 2:" + m.group(2)
-                        //println "MATCH 3:" + m.group(3)
+                        println "MATCH 0:" + m.group(0)
+                        println "MATCH 1:" + m.group(1)
+                        println "MATCH 2:" + m.group(2)
+                        println "MATCH 3:" + m.group(3)
+                        println "MATCH 4:" + m.group(4)
+                        println "MATCH 5:" + m.group(5)
                         echo("Found SapMachine version " + m.group(1))
                     } else {
                         error(text + " is no valid SapMachine version tag.")
