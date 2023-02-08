@@ -22,7 +22,7 @@ VENDOR_URL_ARG =            '--with-vendor-url=https://sapmachine.io/'
 VENDOR_BUG_URL_ARG =        '--with-vendor-bug-url=https://github.com/SAP/SapMachine/issues/new'
 VENDOR_VM_BUG_URL_ARG =     '--with-vendor-vm-bug-url=https://github.com/SAP/SapMachine/issues/new'
 GTEST_OPT =                 '--with-gtest={0}'
-DISABLE_MAC_CODESIGN_OPT =  '--with-macosx-codesign=disabled'
+DISABLE_MAC_CODESIGN_OPT =  '--without-macosx-codesign'
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
@@ -133,8 +133,8 @@ def main(argv=None):
     if 'GTEST_DIR' in os.environ and major >= 15:
         configure_opts.append(GTEST_OPT.format(os.environ['GTEST_DIR']))
 
-    #if utils.get_system(major) == 'macos' and major >= 20 and os.environ['RELEASE_BUILD'] == "true":
-    #    configure_opts.append(DISABLE_MAC_CODESIGN_OPT)
+    if utils.get_system(major) == 'macos' and major >= 20 and os.environ['RELEASE_BUILD'] == "true":
+        configure_opts.append(DISABLE_MAC_CODESIGN_OPT)
 
     print(' '.join(configure_opts))
 
