@@ -58,15 +58,14 @@ fi
 
 eval _CONFIGURE_OPTS=($(python3 ../SapMachine-Infrastructure/lib/get_configure_opts.py $_GIT_TAG $_BUILD_NUMBER))
 
-set -x
+(set -x &&
 bash ./configure \
 --with-boot-jdk=$BOOT_JDK \
 "${_CONFIGURE_OPTS[@]}" \
 $_DEVKIT_OPTION \
 $_CONFIGURE_OS_OPTIONS \
 --with-freetype=bundled \
-$EXTRA_CONFIGURE_OPTIONS
-{ set +x; } 2>/dev/null
+$EXTRA_CONFIGURE_OPTIONS)
 
 # Try to build with legacy-bundles in one step.
 # In case there is an error, we give it another try without legacy bundles and try to create the legacy bundle manually afterwards.

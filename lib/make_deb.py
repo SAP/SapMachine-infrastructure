@@ -109,7 +109,10 @@ def main(argv=None):
     else:
         major = tag.get_major()
         jdk_name = str.format('sapmachine-{0}-jdk-{1}', major, tag.get_version_string().replace('-', '.'))
-        jdk_url = utils.get_asset_urls(tag, args.architecture, ["jdk"])['jdk']
+        if args.download:
+            jdk_url = utils.get_asset_urls(tag, args.architecture, ["jdk"])['jdk']
+        else:
+            jdk_url = "https://github.com/SAP/SapMachine/releases/download/sapmachine-" + tag.get_version_string() + "/" + bundle_name
 
     if args.download:
         src_dir = join(work_dir, 'sapmachine_master')
