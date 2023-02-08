@@ -67,22 +67,7 @@ $_CONFIGURE_OS_OPTIONS \
 --with-freetype=bundled \
 $EXTRA_CONFIGURE_OPTIONS)
 
-# Try to build with legacy-bundles in one step.
-# In case there is an error, we give it another try without legacy bundles and try to create the legacy bundle manually afterwards.
-# This is needed to support building older source versions that didn't have the legacy-bundles target.
-# Drawback: If there is a real build error, we'll restart the build and run into it again.
-
-legacy_bundles_available=1
-(set -x && make JOBS=12 product-bundles legacy-bundles test-image || legacy_bundles_available=0)
-
-if [ $legacy_bundles_available -ne 1 ]; then
-  (set -x && make JOBS=12 product-bundles test-image)
-  if [[ $UNAME == Darwin ]]; then
-    (set -x && make JOBS=12 mac-legacy-jre-bundle || true)
-  else
-    (set -x && make JOBS=12 legacy-jre-image || true)
-  fi
-fi
+(set -x && make JOBS=12 product-bundles legacy-bundles test-image)
 
 if [[ -f ${WORKSPACE}/test.zip ]]; then
   rm "${WORKSPACE}/test.zip"
@@ -145,32 +130,6 @@ read JDK_VERSION JDK_SUFFIX<<< $(echo $JDK_NAME | sed $SEDFLAGS 's/'"${SAPMACHIN
 JDK_BUNDLE_NAME="${SAPMACHINE_BUNDLE_PREFIX}jdk-${JDK_VERSION}${JDK_SUFFIX}"
 JRE_BUNDLE_NAME="${SAPMACHINE_BUNDLE_PREFIX}jre-${JDK_VERSION}${JDK_SUFFIX}"
 SYMBOLS_BUNDLE_NAME=$(ls *_bin-*symbols.*)
-
-if [ $legacy_bundles_available -ne 1 ]; then
-  HAS_JRE=$(ls ${SAPMACHINE_BUNDLE_PREFIX}jre* | wc -l)
-
-  if [ "$HAS_JRE" -lt "1" ]; then
-    JRE_BUNDLE_TOP_DIR="${SAPMACHINE_BUNDLE_PREFIX}jre-$JDK_VERSION.jre"
-
-    rm -rf $JRE_BUNDLE_NAME
-    mkdir $JRE_BUNDLE_TOP_DIR
-    if [[ $UNAME == Darwin ]]; then
-        cp -a ../images/${SAPMACHINE_BUNDLE_PREFIX}jre-bundle/$JRE_BUNDLE_TOP_DIR* .
-        SetFile -a b ${SAPMACHINE_BUNDLE_PREFIX}jre*
-    else
-        cp -r ../images/jre/* $JRE_BUNDLE_TOP_DIR
-    fi
-    find $JRE_BUNDLE_TOP_DIR -name "*.debuginfo" -type f -delete
-
-    if [ ${JDK_SUFFIX: -4} == ".zip" ]; then
-      zip -r $JRE_BUNDLE_NAME $JRE_BUNDLE_TOP_DIR
-    else
-      tar -czf  $JRE_BUNDLE_NAME $JRE_BUNDLE_TOP_DIR
-    fi
-
-    rm -rf $JRE_BUNDLE_TOP_DIR
-  fi
-fi
 
 rm "${WORKSPACE}/${SAPMACHINE_BUNDLE_PREFIX}jdk-*" || true
 rm "${WORKSPACE}/${SAPMACHINE_BUNDLE_PREFIX}jre-*" || true
