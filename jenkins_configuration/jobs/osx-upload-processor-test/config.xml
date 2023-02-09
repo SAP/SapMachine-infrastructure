@@ -1,17 +1,9 @@
 <flow-definition plugin="workflow-job@1268.v6eb_e2ee1a_85a">
-  <actions>
-    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@2.2118.v31fd5b_9944b_5" />
-    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@2.2118.v31fd5b_9944b_5">
-      <jobProperties />
-      <triggers />
-      <parameters />
-      <options />
-    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
-  </actions>
-  <description>Process upload of MacOS artifacts.</description>
+  <actions />
+  <description>Process upload of MacOS artifacts.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
   <properties>
-    <hudson.plugins.jira.JiraProjectProperty plugin="jira@3.8" />
+    <hudson.plugins.jira.JiraProjectProperty plugin="jira@3.9" />
     <hudson.plugins.buildblocker.BuildBlockerProperty plugin="build-blocker-plugin@1.7.8">
       <useBuildBlocker>false</useBuildBlocker>
       <blockLevel>GLOBAL</blockLevel>
@@ -44,7 +36,7 @@
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@3606.v0b_d8b_e512dcf">
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@3611.v201b_d9f9eb_f7">
     <script>pipeline {
     agent {
         label 'macos_x86_64'
@@ -57,21 +49,21 @@
         }
         stage('Copy Upstream Artifacts') {
             steps {
-                copyArtifacts filter: 'INTEL_JDK_TGZ, INTEL_JRE_TGZ, INTEL_JDK_DMG, INTEL_JRE_DMG, INTEL_SYMBOLS, AARCH_JDK_TGZ, AARCH_JRE_TGZ, AARCH_JDK_DMG, AARCH_JRE_DMG, AARCH_SYMBOLS', projectName: 'osx-upload-test', selector: upstream()
+                copyArtifacts filter: 'INTEL_JDK_TGZ, INTEL_JRE_TGZ, INTEL_JDK_DMG, INTEL_JRE_DMG, INTEL_SYMBOLS, AARCH_JDK_TGZ, AARCH_JRE_TGZ, AARCH_JDK_DMG, AARCH_JRE_DMG, AARCH_SYMBOLS', projectName: 'osx-upload', selector: upstream()
             }
         }
         stage('Deploy') {
             steps {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
-                    sh "SAPMACHINE_VERSION=sapmachine-0.0.0; SapMachine-Infrastructure/lib/publish_osx.sh # todo"
+                    sh "SapMachine-Infrastructure/lib/publish_osx.sh"
                 }
             }
         }
-//        stage('Publish Website Data') {
-//            steps {
-//                build job: 'generate-website-data', propagate: false, wait: false
-//            }
-//        }
+        stage('Publish Website Data') {
+            steps {
+                build job: 'generate-website-data', propagate: false, wait: false
+            }
+        }
     }
     post {
         always {

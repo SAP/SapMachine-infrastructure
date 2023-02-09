@@ -255,9 +255,7 @@
                 expression { env.BUILD_INSTALLER_PACKAGES == "true" }
             }
             steps {
-                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
-                    sh "python3 SapMachine-Infrastructure/lib/make_deb.py --tag=${env.SAPMACHINE_VERSION} --architecture=linux-aarch64"
-                }
+                sh "python3 SapMachine-Infrastructure/lib/make_deb.py --tag=${env.SAPMACHINE_VERSION} --architecture=linux-aarch64"
             }
             post {
                 success {
