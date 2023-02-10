@@ -82,7 +82,7 @@ def main(argv=None):
         configure_opts.append(VERSION_DATE_ARG.format(release_date))
 
     # set version pre
-    if os.environ['RELEASE_BUILD'] is None or tag is None:
+    if 'RELEASE_BUILD' in os.environ or tag is None:
         version_pre = 'snapshot'
     elif tag.is_ga() :
         version_pre = ''

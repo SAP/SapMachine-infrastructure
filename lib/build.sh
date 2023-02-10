@@ -57,10 +57,10 @@ if [[ ! -z $JDK_BUILD ]]; then
 fi
 
 _CONFIGURE_OPTS=$(python3 ../SapMachine-Infrastructure/lib/get_configure_opts.py $_GIT_TAG $_BUILD_NUMBER)
-if ($? ne 0)
-  echo "Error in get_configure_opts.py"
-  exit 1
-fi
+#if ($? ne 0)
+#  echo "Error in get_configure_opts.py"
+#  exit 1
+#fi
 eval _CONFIGURE_OPTS=(${_CONFIGURE_OPTS})
 
 (set -x &&
