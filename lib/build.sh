@@ -56,11 +56,8 @@ if [[ ! -z $JDK_BUILD ]]; then
   _BUILD_NUMBER=" -b $BUILD_NUMBER"
 fi
 
+#need to do the python call first and the eval in a second step to bail out on $? != 0
 _CONFIGURE_OPTS=$(python3 ../SapMachine-Infrastructure/lib/get_configure_opts.py $_GIT_TAG $_BUILD_NUMBER)
-#if ($? ne 0)
-#  echo "Error in get_configure_opts.py"
-#  exit 1
-#fi
 eval _CONFIGURE_OPTS=(${_CONFIGURE_OPTS})
 
 (set -x &&
