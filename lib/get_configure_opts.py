@@ -89,7 +89,7 @@ def main(argv=None):
     else:
         version_pre = 'ea'
 
-    if utils.get_system(major) == 'linux' and os.path.isfile('/etc/alpine-release'):
+    if utils.get_system() == 'linux' and os.path.isfile('/etc/alpine-release'):
         if not version_pre:
             version_pre = 'beta'
         else:
@@ -133,7 +133,7 @@ def main(argv=None):
     if 'GTEST_DIR' in os.environ and major >= 15:
         configure_opts.append(GTEST_OPT.format(os.environ['GTEST_DIR']))
 
-    if utils.get_system(major) == 'macos' and major >= 17 and os.environ['RELEASE_BUILD'] == "true":
+    if major >= 17 and utils.get_system() == 'macos' and utils.get_arch() == 'x64' and 'RELEASE_BUILD' in os.environ and os.environ['RELEASE_BUILD'] == "true":
         configure_opts.append(DISABLE_MAC_CODESIGN_OPT)
 
     print(' '.join(configure_opts))

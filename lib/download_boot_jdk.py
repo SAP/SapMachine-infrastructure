@@ -67,7 +67,7 @@ def main(argv=None):
     boot_jdk_major_min = boot_jdk_major_max - 1
     destination = os.path.realpath(os.getcwd() if args.destination is None else args.destination)
     releases = utils.get_github_releases()
-    system = utils.get_system(boot_jdk_major_max)
+    system = utils.get_system()
     platform = str.format('{0}-{1}_bin', system, utils.get_arch())
     # adjust platform name for Alpine Linux
     if os.path.isfile('/etc/alpine-release'):

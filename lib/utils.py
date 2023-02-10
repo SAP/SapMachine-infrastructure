@@ -463,7 +463,7 @@ def sapmachine_tag_is_release(tag):
 
     return False
 
-def get_system(major = sapmachine_default_major()):
+def get_system():
     system = platform.system().lower()
 
     if system.startswith('msys') or system.startswith('cygwin') or system.startswith('win'):
