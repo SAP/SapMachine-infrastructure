@@ -198,6 +198,8 @@
                     reportFiles: 'JTreport/index.html',
                     reportName: "JT Report ${env.TESTSUITE}"
                 ]
+                // persist data for test trend graph
+                junit "test_report_${env.TESTSUITE}/JTwork/**/*.jtr.xml"
                 script {
                     if (findFiles([glob: 'test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log']).size() &gt; 0) {
                         archiveArtifacts allowEmptyArchive: true, artifacts: "test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log"
@@ -232,6 +234,8 @@
                     reportFiles: 'JTreport/index.html',
                     reportName: "JT Report ${env.TESTSUITE}"
                 ]
+                // persist data for test trend graph
+                junit "test_report_${env.TESTSUITE}/JTwork/**/*.jtr.xml"
                 script {
                     if (findFiles([glob: 'test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log']).size() &gt; 0) {
                         archiveArtifacts allowEmptyArchive: true, artifacts: "test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log"
@@ -266,6 +270,8 @@
                     reportFiles: 'JTreport/index.html',
                     reportName: "JT Report ${env.TESTSUITE}"
                 ]
+                // persist data for test trend graph
+                junit "test_report_${env.TESTSUITE}/JTwork/**/*.jtr.xml"
                 script {
                     if (findFiles([glob: 'test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log']).size() &gt; 0) {
                         archiveArtifacts allowEmptyArchive: true, artifacts: "test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log"
@@ -293,7 +299,6 @@
                 }
             }
         }
-        
         
         
         
