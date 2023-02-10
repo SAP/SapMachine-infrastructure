@@ -1,27 +1,5 @@
 - defaults:
     name: 'build_defaults'
-    template_publish_artifactory: &template_publish_artifactory |-
-        stage('Publish Artifactory') {{
-                    steps {{
-                        // Show the installed version of JFrog CLI.
-                        jf '-v'
-
-                        // Show the configuration
-                        jf 'c s'
-
-                        // Upload the JDK archive
-                        script {{
-                            def jdk_bundle_name = readFile "${{env.WORKSPACE}}/jdk_bundle_name.txt"
-                            println "JDK Bundle name: \"" + jdk_bundle_name.trim() + "\""
-                            def jfcall = "rt u " + jdk_bundle_name.trim() + " sapmachine-mvn/io/sapmachine/build-results/{platform}/${{env.ART_VERSION}}/" + jdk_bundle_name.trim()
-                            println "JF call: \"" + jfcall + "\""
-                            jf jfcall
-                        }}
-
-                        // Upload the test archive
-                        jf "rt u test.zip sapmachine-mvn/io/sapmachine/build-results/{platform}/${{env.ART_VERSION}}/test.zip"
-                    }}
-                }}
     template_create_brew_casks: &template_create_brew_casks |-
         stage('Create Brew Casks') {{
                     when {{
@@ -216,10 +194,8 @@
                                         jdk_bundle_name = jdk_bundle_name.trim()
                                         jre_bundle_name = jre_bundle_name.trim()
 
-                                        sh "rm -f *.msi"
                                         sh "python3 SapMachine-Infrastructure/lib/make_msi.py --sapmachine-directory=`pwd`/SapMachine --asset=${{jdk_bundle_name}}"
                                         sh "python3 SapMachine-Infrastructure/lib/make_msi.py --sapmachine-directory=`pwd`/SapMachine --jre --asset=${{jre_bundle_name}}"
-                                        archiveArtifacts allowEmptyArchive: true, artifacts: "*.msi"
                                     }}
                                 }}
                             }}
@@ -346,7 +322,28 @@
                                     env.BUILD_INSTALLER_PACKAGES = params.BUILD_INSTALLER_PACKAGES
                                     env.ART_VERSION = "snapshot-{major}-" + (new java.text.SimpleDateFormat("yyyyMMddHHmmss")).format(new Date())
                                     env.RELEASE = "false"
-            publish_artifactory: *template_publish_artifactory
+            publish_artifactory: &publish_artifactory |-
+                stage('Publish Artifactory') {{
+                            steps {{
+                                // Show the installed version of JFrog CLI.
+                                jf '-v'
+
+                                // Show the configuration
+                                jf 'c s'
+
+                                // Upload the JDK archive
+                                script {{
+                                    def jdk_bundle_name = readFile "${{env.WORKSPACE}}/jdk_bundle_name.txt"
+                                    println "JDK Bundle name: \"" + jdk_bundle_name.trim() + "\""
+                                    def jfcall = "rt u " + jdk_bundle_name.trim() + " sapmachine-mvn/io/sapmachine/build-results/{platform}/${{env.ART_VERSION}}/" + jdk_bundle_name.trim()
+                                    println "JF call: \"" + jfcall + "\""
+                                    jf jfcall
+                                }}
+
+                                // Upload the test archive
+                                jf "rt u test.zip sapmachine-mvn/io/sapmachine/build-results/{platform}/${{env.ART_VERSION}}/test.zip"
+                            }}
+                        }}
             publish_debian_packages: ''
             create_brew_casks: ''
             generate_dockerfiles: ''
@@ -376,7 +373,7 @@
                                     }} else {{
                                         error(env.SAPMACHINE_VERSION + " is no valid SapMachine version tag.")
                                     }}
-            publish_artifactory: *template_publish_artifactory
+            publish_artifactory: *publish_artifactory
             publish_github: |-
                 stage('Publish GitHub') {{
                             when {{
