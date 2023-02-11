@@ -317,33 +317,33 @@
                                     env.BUILD_INSTALLER_PACKAGES = params.BUILD_INSTALLER_PACKAGES
                                     env.ART_VERSION = "snapshot-{major}-" + (new java.text.SimpleDateFormat("yyyyMMddHHmmss")).format(new Date())
                                     env.RELEASE = "false"
-            artifactory_when: |-
+            publish_artifactory_pre: &publish_artifactory |-
+                stage('Publish Artifactory') {{
+            publish_artifactory_when: |-
                 when {{
                                 expression {{ params.UPLOAD_ARTIFACTORY == true }}
                             }}
-            publish_artifactory: &publish_artifactory |-
-                stage('Publish Artifactory') {{
-                            {artifactory_when|}
-                            steps {{
-                                // Show the installed version of JFrog CLI.
-                                jf '-v'
+            publish_artifactory_step: &publish_artifactory |-
+                steps {{
+                            // Show the installed version of JFrog CLI.
+                            jf '-v'
 
-                                // Show the configuration
-                                jf 'c s'
+                            // Show the configuration
+                            jf 'c s'
 
-                                // Upload the JDK archive
-                                script {{
-                                    def jdk_bundle_name = readFile "${{env.WORKSPACE}}/jdk_bundle_name.txt"
-                                    println "JDK Bundle name: \"" + jdk_bundle_name.trim() + "\""
-                                    def jfcall = "rt u " + jdk_bundle_name.trim() + " sapmachine-mvn/io/sapmachine/build-results/{platform}/${{env.ART_VERSION}}/" + jdk_bundle_name.trim()
-                                    println "JF call: \"" + jfcall + "\""
-                                    jf jfcall
-                                }}
-
-                                // Upload the test archive
-                                jf "rt u test.zip sapmachine-mvn/io/sapmachine/build-results/{platform}/${{env.ART_VERSION}}/test.zip"
+                            // Upload the JDK archive
+                            script {{
+                                def jdk_bundle_name = readFile "${{env.WORKSPACE}}/jdk_bundle_name.txt"
+                                println "JDK Bundle name: \"" + jdk_bundle_name.trim() + "\""
+                                def jfcall = "rt u " + jdk_bundle_name.trim() + " sapmachine-mvn/io/sapmachine/build-results/{platform}/${{env.ART_VERSION}}/" + jdk_bundle_name.trim()
+                                println "JF call: \"" + jfcall + "\""
+                                jf jfcall
                             }}
+
+                            // Upload the test archive
+                            jf "rt u test.zip sapmachine-mvn/io/sapmachine/build-results/{platform}/${{env.ART_VERSION}}/test.zip"
                         }}
+                    }}
             publish_debian_packages: ''
             create_brew_casks: ''
             generate_dockerfiles: ''
@@ -393,7 +393,8 @@
                                     }} else {{
                                         error(env.SAPMACHINE_VERSION + " is no valid SapMachine version tag.")
                                     }}
-            publish_artifactory: *publish_artifactory
+            publish_artifactory_pre: *publish_artifactory_pre
+            publish_artifactory_pre: *publish_artifactory_step
             publish_github: |-
                 stage('Publish GitHub') {{
                             when {{
@@ -622,7 +623,9 @@
                     {docker_agent_debian|}
                     {build_debian_packages_step|}
                 {build_rpm_packages|}
-                {publish_artifactory|}
+                {publish_artifactory_pre|}
+                    {publish_artifactory_when|}
+                    {publish_artifactory_step|}
                 {publish_github|}
                 {publish_debian_packages|}
                 {create_brew_casks|}
