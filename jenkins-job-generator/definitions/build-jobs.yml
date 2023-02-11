@@ -317,13 +317,13 @@
                                     env.BUILD_INSTALLER_PACKAGES = params.BUILD_INSTALLER_PACKAGES
                                     env.ART_VERSION = "snapshot-{major}-" + (new java.text.SimpleDateFormat("yyyyMMddHHmmss")).format(new Date())
                                     env.RELEASE = "false"
-            publish_artifactory_pre: &publish_artifactory |-
+            publish_artifactory_pre: &publish_artifactory_pre |-
                 stage('Publish Artifactory') {{
             publish_artifactory_when: |-
                 when {{
                                 expression {{ params.UPLOAD_ARTIFACTORY == true }}
                             }}
-            publish_artifactory_step: &publish_artifactory |-
+            publish_artifactory_step: &publish_artifactory_step |-
                 steps {{
                             // Show the installed version of JFrog CLI.
                             jf '-v'
