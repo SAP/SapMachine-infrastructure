@@ -108,7 +108,7 @@ zip -rq "${WORKSPACE}/test.zip" src/java.base/share/data/blockedcertsconverter/b
 zip -rq "${WORKSPACE}/test.zip" src/java.base/share/data/tzdata || true
 zip -rq "${WORKSPACE}/test.zip" src/jdk.compiler/share/data/symbols/include.list || true
 
-cd "${WORKSPACE}/SapMachine/build"
+cd build
 cd "$(ls)"
 
 zip -rq "${WORKSPACE}/test.zip" spec.gmk
