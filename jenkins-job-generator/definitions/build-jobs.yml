@@ -394,7 +394,7 @@
                                         error(env.SAPMACHINE_VERSION + " is no valid SapMachine version tag.")
                                     }}
             publish_artifactory_pre: *publish_artifactory_pre
-            publish_artifactory_pre: *publish_artifactory_step
+            publish_artifactory_step: *publish_artifactory_step
             publish_github: |-
                 stage('Publish GitHub') {{
                             when {{
