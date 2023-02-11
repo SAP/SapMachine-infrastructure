@@ -345,24 +345,24 @@
             publish_cf_data: ''
             archive: &archive |-
                 script {{
-                            // archive artifacts
-                            // to be removed when test framework switched to artifactory
-                            archiveArtifacts artifacts: 'test.zip'
-                            def jdk_bundle_name = readFile "${{env.WORKSPACE}}/jdk_bundle_name.txt"
-                            archiveArtifacts artifacts: jdk_bundle_name
+                                // archive artifacts
+                                // to be removed when test framework switched to artifactory
+                                archiveArtifacts artifacts: 'test.zip'
+                                def jdk_bundle_name = readFile "${{env.WORKSPACE}}/jdk_bundle_name.txt"
+                                archiveArtifacts artifacts: jdk_bundle_name
 
-                            // create a gensrc archive
-                            if (params.ARCHIVE_GENSRC_BUNDLE == true) {{
-                                sh 'zip -rq support_gensrc.zip support/gensrc'
-                                archiveArtifacts artifacts: 'support_gensrc.zip'
-                            }}
+                                // create a gensrc archive
+                                if (params.ARCHIVE_GENSRC_BUNDLE == true) {{
+                                    sh 'zip -rq support_gensrc.zip support/gensrc'
+                                    archiveArtifacts artifacts: 'support_gensrc.zip'
+                                }}
 
-                            // archive workspace on request
-                            if (params.ARCHIVE_WORKSPACE == true) {{
-                                sh 'zip -rq workspace.zip .'
-                                archiveArtifacts allowEmptyArchive: true, artifacts: 'workspace.zip'
+                                // archive workspace on request
+                                if (params.ARCHIVE_WORKSPACE == true) {{
+                                    sh 'zip -rq workspace.zip .'
+                                    archiveArtifacts allowEmptyArchive: true, artifacts: 'workspace.zip'
+                                }}
                             }}
-                        }}
     build_type_release: &build_type_release
         - release:
             docker_agent_verify: ''
