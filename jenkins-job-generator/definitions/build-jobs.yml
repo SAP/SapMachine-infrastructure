@@ -1,60 +1,5 @@
 - defaults:
     name: 'build_defaults'
-    template_create_brew_casks: &template_create_brew_casks |-
-        stage('Create Brew Casks') {{
-                    when {{
-                        expression {{ params.PUBLISH == true && JOB_NAME ==~ /((\S*)(release-macos)(\S*))/ && env.RELEASE != "true" }}
-                    }}
-                    steps {{
-                        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
-                            lock('MacBrewCaskGenerationSynchronizer') {{
-                                sh "python3 SapMachine-Infrastructure/lib/make_cask.py -t $SAPMACHINE_VERSION"
-                            }}
-                        }}
-                    }}
-                }}
-    template_build_debian_packages_pre: &template_build_debian_packages_pre |-
-        stage('Build Debian Packages') {{
-    template_build_debian_packages_step: &template_build_debian_packages_step |-
-        when {{
-                        beforeAgent true
-                        expression {{ env.BUILD_INSTALLER_PACKAGES == "true" }}
-                    }}
-                    steps {{
-                        sh "python3 SapMachine-Infrastructure/lib/make_deb.py --tag=${{env.SAPMACHINE_VERSION}} --architecture={architecture|}"
-                    }}
-                    post {{
-                        success {{
-                            stash includes: '*.deb', name: 'debPackage'
-                            stash includes: 'SapMachine-Infrastructure/**', name: 'infra'
-                        }}
-                    }}
-                }}
-    template_publish_debian_packages: &template_publish_debian_packages |-
-        stage('Publish Debian Packages') {{
-                    agent {{
-                        label 'agent-local-docker-ubuntu'
-                    }}
-                    when {{
-                        beforeAgent true
-                        expression {{ params.PUBLISH == true && env.RELEASE == "true" }}
-                    }}
-                    steps {{
-                        unstash 'infra'
-                        unstash 'debPackage'
-                        sh "cp -n *.deb /var/pkg/deb/{debarch|} || true"
-                        sh "python3 SapMachine-Infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/{debarch|}"
-                    }}
-                }}
-    template_generate_dockerfiles: &template_generate_dockerfiles |-
-        stage('Generate Dockerfiles') {{
-                    when {{
-                        expression {{ params.PUBLISH == true && env.RELEASE == "true" }}
-                    }}
-                    steps {{
-                        build job: 'generate-dockerfiles', propagate: false, wait: true
-                    }}
-                }}
     majors: &majors_build
         - '11':
            branch_name: sapmachine11
@@ -84,11 +29,49 @@
                                 }}
                             }}
             docker_agent_verify: *docker_agent_aarch64
-            build_debian_packages_pre: *template_build_debian_packages_pre
+            build_debian_packages_pre: &build_debian_packages_pre |-
+                stage('Build Debian Packages') {{
             docker_agent_debian: *docker_agent_aarch64
-            build_debian_packages_step: *template_build_debian_packages_step
-            publish_debian_packages: *template_publish_debian_packages
-            generate_dockerfiles: *template_generate_dockerfiles
+            build_debian_packages_step: &build_debian_packages_step |-
+                when {{
+                                beforeAgent true
+                                expression {{ env.BUILD_INSTALLER_PACKAGES == "true" }}
+                            }}
+                            steps {{
+                                sh "python3 SapMachine-Infrastructure/lib/make_deb.py --tag=${{env.SAPMACHINE_VERSION}} --architecture={architecture|}"
+                            }}
+                            post {{
+                                success {{
+                                    stash includes: '*.deb', name: 'debPackage'
+                                    stash includes: 'SapMachine-Infrastructure/**', name: 'infra'
+                                }}
+                            }}
+                        }}
+            publish_debian_packages: &publish_debian_packages |-
+                stage('Publish Debian Packages') {{
+                            agent {{
+                                label 'agent-local-docker-ubuntu'
+                            }}
+                            when {{
+                                beforeAgent true
+                                expression {{ params.PUBLISH == true && env.RELEASE == "true" }}
+                            }}
+                            steps {{
+                                unstash 'infra'
+                                unstash 'debPackage'
+                                sh "cp -n *.deb /var/pkg/deb/{debarch|} || true"
+                                sh "python3 SapMachine-Infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/{debarch|}"
+                            }}
+                        }}
+            generate_dockerfiles: &generate_dockerfiles |-
+                stage('Generate Dockerfiles') {{
+                            when {{
+                                expression {{ params.PUBLISH == true && env.RELEASE == "true" }}
+                            }}
+                            steps {{
+                                build job: 'generate-dockerfiles', propagate: false, wait: true
+                            }}
+                        }}
             save_workspace_on_error: &save_workspace_on_error |-
                 unsuccessful {{
                             script {{
@@ -122,11 +105,11 @@
                                 }}
                             }}
             docker_agent_verify: *docker_agent_ppc64le
-            build_debian_packages_pre: *template_build_debian_packages_pre
+            build_debian_packages_pre: *build_debian_packages_pre
             docker_agent_debian: *docker_agent_ppc64le
-            build_debian_packages_step: *template_build_debian_packages_step
-            publish_debian_packages: *template_publish_debian_packages
-            generate_dockerfiles: *template_generate_dockerfiles
+            build_debian_packages_step: *build_debian_packages_step
+            publish_debian_packages: *publish_debian_packages
+            generate_dockerfiles: *generate_dockerfiles
         - linux_x86_64:
             architecture: linux-x64
             debarch: amd64
@@ -141,9 +124,9 @@
                                 }}
                             }}
             docker_agent_verify: *docker_agent_x86_64
-            build_debian_packages_pre: *template_build_debian_packages_pre
+            build_debian_packages_pre: *build_debian_packages_pre
             docker_agent_debian: *docker_agent_x86_64
-            build_debian_packages_step: *template_build_debian_packages_step
+            build_debian_packages_step: *build_debian_packages_step
             build_rpm_packages: |-
                 stage('Build RPM Packages') {{
                             agent {{
@@ -161,7 +144,7 @@
                                 sh "python3 SapMachine-Infrastructure/lib/make_rpm.py --tag=${{env.SAPMACHINE_VERSION}}"
                             }}
                         }}
-            publish_debian_packages: *template_publish_debian_packages
+            publish_debian_packages: *publish_debian_packages
             publish_cf_data: &publish_cf_data |-
                 stage('Publish CF Java Buildpack Data') {{
                             when {{
@@ -171,14 +154,26 @@
                                 build job: 'generate-cf-java-buildpack-data', propagate: true, wait: true
                             }}
                         }}
-            generate_dockerfiles: *template_generate_dockerfiles
+            generate_dockerfiles: *generate_dockerfiles
             save_workspace_on_error: *save_workspace_on_error
         - macos_x86_64:
             devkit_default: 'io.sapmachine.build.devkit.macos:devkit-xcode:13.1'
-            create_brew_casks: *template_create_brew_casks
+            create_brew_casks: &create_brew_casks |-
+                stage('Create Brew Casks') {{
+                            when {{
+                                expression {{ params.PUBLISH == true && JOB_NAME ==~ /((\S*)(release-macos)(\S*))/ && env.RELEASE != "true" }}
+                            }}
+                            steps {{
+                                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
+                                    lock('MacBrewCaskGenerationSynchronizer') {{
+                                        sh "python3 SapMachine-Infrastructure/lib/make_cask.py -t $SAPMACHINE_VERSION"
+                                    }}
+                                }}
+                            }}
+                        }}
         - macos_aarch64:
             devkit_default: 'io.sapmachine.build.devkit.macos:devkit-xcode:13.1'
-            create_brew_casks: *template_create_brew_casks
+            create_brew_casks: *create_brew_casks
         - windows_x86_64:
             devkit_default: '{windows_devkit|io.sapmachine.build.devkit.windows-x64:devkit-vs2017:15.9.49}'
             build_windows_installer: |-
