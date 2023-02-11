@@ -358,7 +358,7 @@
 
                                 // create a gensrc archive
                                 if (params.CREATE_GENSRC_BUNDLE == true) {{
-                                    sh 'cd SapMachine/build && cd $(ls) && zip -rq ${{env.WORKSPACE}}/support_gensrc.zip support/gensrc'
+                                    sh 'cd SapMachine/build && cd $(ls) && zip -rq ${{WORKSPACE}}/support_gensrc.zip support/gensrc'
                                     archiveArtifacts artifacts: 'support_gensrc.zip'
                                 }}
 
