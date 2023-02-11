@@ -317,8 +317,13 @@
                                     env.BUILD_INSTALLER_PACKAGES = params.BUILD_INSTALLER_PACKAGES
                                     env.ART_VERSION = "snapshot-{major}-" + (new java.text.SimpleDateFormat("yyyyMMddHHmmss")).format(new Date())
                                     env.RELEASE = "false"
+            artifactory_when: |-
+                when {{
+                                expression {{ params.UPLOAD_ARTIFACTORY == true }}
+                            }}
             publish_artifactory: &publish_artifactory |-
                 stage('Publish Artifactory') {{
+                            {artifactory_when|}
                             steps {{
                                 // Show the installed version of JFrog CLI.
                                 jf '-v'
@@ -352,7 +357,7 @@
                                 archiveArtifacts artifacts: jdk_bundle_name
 
                                 // create a gensrc archive
-                                if (params.ARCHIVE_GENSRC_BUNDLE == true) {{
+                                if (params.CREATE_GENSRC_BUNDLE == true) {{
                                     sh 'zip -rq support_gensrc.zip support/gensrc'
                                     archiveArtifacts artifacts: 'support_gensrc.zip'
                                 }}
@@ -797,13 +802,17 @@
             default: true
             description: 'Build platform installer packages, e.g. Windows MSI, Debian packages.'
         - bool:
-            name: ARCHIVE_GENSRC_BUNDLE
+            name: CREATE_GENSRC_BUNDLE
             default: true
-            description: 'Create and archive the gensrc files, to be used e.g. in IDE setups.'
+            description: 'Create a bundle with generated source files (gensrc), to be used in e.g. IDE setups.'
+        - bool:
+            name: UPLOAD_ARTIFACTORY
+            default: true
+            description: 'Upload build results to artifactory which will trigger testing.'
         - bool:
             name: ARCHIVE_WORKSPACE
             default: false
-            description: 'Archive the workspace after build.'
+            description: 'Archive workspace for inspection after build.'
     dsl: *build_dsl
 
 - job-template:
@@ -873,13 +882,13 @@
             default: false
             description: 'When set to true, the resulting bundles will be published to GitHub.'
         - bool:
-            name: ARCHIVE_GENSRC_BUNDLE
+            name: CREATE_GENSRC_BUNDLE
             default: true
-            description: 'Create and archive the gensrc files, to be used e.g. in IDE setups.'
+            description: 'Create a bundle with generated source files (gensrc), to be used in e.g. IDE setups.'
         - bool:
             name: ARCHIVE_WORKSPACE
             default: false
-            description: 'Archive the workspace after build.'
+            description: 'Archive workspace for inspection after build.'
     dsl: *build_dsl
 
 - job-template:
