@@ -343,6 +343,26 @@
             create_brew_casks: ''
             generate_dockerfiles: ''
             publish_cf_data: ''
+            archive: &archive |-
+                script {{
+                            // archive artifacts
+                            // to be removed when test framework switched to artifactory
+                            archiveArtifacts artifacts: 'test.zip'
+                            def jdk_bundle_name = readFile "${{env.WORKSPACE}}/jdk_bundle_name.txt"
+                            archiveArtifacts artifacts: jdk_bundle_name
+
+                            // create a gensrc archive
+                            if (params.ARCHIVE_GENSRC_BUNDLE == true) {{
+                                sh 'zip -rq support_gensrc.zip support/gensrc'
+                                archiveArtifacts artifacts: 'support_gensrc.zip'
+                            }}
+
+                            // archive workspace on request
+                            if (params.ARCHIVE_WORKSPACE == true) {{
+                                sh 'zip -rq workspace.zip .'
+                                archiveArtifacts allowEmptyArchive: true, artifacts: 'workspace.zip'
+                            }}
+                        }}
     build_type_release: &build_type_release
         - release:
             docker_agent_verify: ''
@@ -389,6 +409,7 @@
                                 build job: 'generate-website-data', propagate: false, wait: false
                             }}
                         }}
+            archive: *archive
     build_dsl: &build_dsl |
         pipeline {{
             agent {{
@@ -597,18 +618,6 @@
                     {build_debian_packages_step|}
                 {build_rpm_packages|}
                 {publish_artifactory|}
-                stage('Archive') {{
-                    {verification_when|}
-                    steps {{
-                        archiveArtifacts allowEmptyArchive: true, artifacts: 'test.zip'
-                        archiveArtifacts allowEmptyArchive: true, artifacts: 'support_gensrc.zip'
-
-                        script {{
-                            def jdk_bundle_name = readFile "${{env.WORKSPACE}}/jdk_bundle_name.txt"
-                            step ([$class: 'ArtifactArchiver', artifacts: jdk_bundle_name]);
-                        }}
-                    }}
-                }}
                 {publish_github|}
                 {publish_debian_packages|}
                 {create_brew_casks|}
@@ -618,6 +627,7 @@
             }}
             post {{
                 {post_code|success {{}
+                    {archive|}
                     cleanWs()
                 }}
                 {save_workspace_on_error|}
@@ -786,6 +796,14 @@
             name: BUILD_INSTALLER_PACKAGES
             default: true
             description: 'Build platform installer packages, e.g. Windows MSI, Debian packages.'
+        - bool:
+            name: ARCHIVE_GENSRC_BUNDLE
+            default: true
+            description: 'Create and archive the gensrc files, to be used e.g. in IDE setups.'
+        - bool:
+            name: ARCHIVE_WORKSPACE
+            default: false
+            description: 'Archive the workspace after build.'
     dsl: *build_dsl
 
 - job-template:
@@ -854,6 +872,14 @@
             name: PUBLISH
             default: false
             description: 'When set to true, the resulting bundles will be published to GitHub.'
+        - bool:
+            name: ARCHIVE_GENSRC_BUNDLE
+            default: true
+            description: 'Create and archive the gensrc files, to be used e.g. in IDE setups.'
+        - bool:
+            name: ARCHIVE_WORKSPACE
+            default: false
+            description: 'Archive the workspace after build.'
     dsl: *build_dsl
 
 - job-template:

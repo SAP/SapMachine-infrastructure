@@ -111,7 +111,6 @@ zip -rq "${WORKSPACE}/test.zip" src/jdk.compiler/share/data/symbols/include.list
 cd "${WORKSPACE}/SapMachine/build"
 cd "$(ls)"
 
-zip -rq "${WORKSPACE}/support_gensrc.zip" support/gensrc
 zip -rq "${WORKSPACE}/test.zip" spec.gmk
 zip -rq "${WORKSPACE}/test.zip" bundles/*jdk-*_bin.* bundles/*jdk-*_bin-debug.*
 
