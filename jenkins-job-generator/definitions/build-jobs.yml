@@ -328,9 +328,6 @@
                                 // Show the installed version of JFrog CLI.
                                 jf '-v'
 
-                                // Show the configuration
-                                jf 'c s'
-
                                 // Upload the JDK archive
                                 script {{
                                     def jdk_bundle_name = readFile "${{env.WORKSPACE}}/jdk_bundle_name.txt"
