@@ -246,6 +246,9 @@
             
         
         stage('Publish Artifactory') {
+            when {
+                expression { params.UPLOAD_ARTIFACTORY == true }
+            }
             steps {
                 // Show the installed version of JFrog CLI.
                 jf '-v'
@@ -266,18 +269,6 @@
                 jf "rt u test.zip sapmachine-mvn/io/sapmachine/build-results/linux_alpine_x86_64/${env.ART_VERSION}/test.zip"
             }
         }
-        stage('Archive') {
-            
-            steps {
-                archiveArtifacts allowEmptyArchive: true, artifacts: 'test.zip'
-                archiveArtifacts allowEmptyArchive: true, artifacts: 'support_gensrc.zip'
-
-                script {
-                    def jdk_bundle_name = readFile "${env.WORKSPACE}/jdk_bundle_name.txt"
-                    step ([$class: 'ArtifactArchiver', artifacts: jdk_bundle_name]);
-                }
-            }
-        }
         
         
         
@@ -287,6 +278,25 @@
     }
     post {
         success {
+            script {
+                // archive artifacts
+                // to be removed when test framework switched to artifactory
+                archiveArtifacts artifacts: 'test.zip'
+                def jdk_bundle_name = readFile "${env.WORKSPACE}/jdk_bundle_name.txt"
+                archiveArtifacts artifacts: jdk_bundle_name
+
+                // create a gensrc archive
+                if (params.CREATE_GENSRC_BUNDLE == true) {
+                    sh 'cd SapMachine/build &amp;&amp; cd $(ls) &amp;&amp; zip -rq ${WORKSPACE}/support_gensrc.zip support/gensrc'
+                    archiveArtifacts artifacts: 'support_gensrc.zip'
+                }
+
+                // archive workspace on request
+                if (params.ARCHIVE_WORKSPACE == true) {
+                    sh 'zip -rq workspace.zip .'
+                    archiveArtifacts allowEmptyArchive: true, artifacts: 'workspace.zip'
+                }
+            }
             cleanWs()
         }
         unsuccessful {
@@ -388,6 +398,21 @@
           <name>BUILD_INSTALLER_PACKAGES</name>
           <description>Build platform installer packages, e.g. Windows MSI, Debian packages.</description>
           <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>CREATE_GENSRC_BUNDLE</name>
+          <description>Create a bundle with generated source files (gensrc), to be used in e.g. IDE setups.</description>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>UPLOAD_ARTIFACTORY</name>
+          <description>Upload build results to artifactory which will trigger testing.</description>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>ARCHIVE_WORKSPACE</name>
+          <description>Archive workspace for inspection after build.</description>
+          <defaultValue>false</defaultValue>
         </hudson.model.BooleanParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>

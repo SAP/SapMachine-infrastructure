@@ -236,20 +236,8 @@
             
         
         
-        stage('Archive') {
-            when {
-                expression { env.VERIFICATION_RESULT != "2" }
-            }
-            steps {
-                archiveArtifacts allowEmptyArchive: true, artifacts: 'test.zip'
-                archiveArtifacts allowEmptyArchive: true, artifacts: 'support_gensrc.zip'
-
-                script {
-                    def jdk_bundle_name = readFile "${env.WORKSPACE}/jdk_bundle_name.txt"
-                    step ([$class: 'ArtifactArchiver', artifacts: jdk_bundle_name]);
-                }
-            }
-        }
+            
+            
         
         
         
@@ -277,6 +265,7 @@
             script {
                 setGitHubPullRequestStatus context: "validate-pr-19-macos_aarch64", state: 'SUCCESS'
             }
+            
             cleanWs()
         }
         
