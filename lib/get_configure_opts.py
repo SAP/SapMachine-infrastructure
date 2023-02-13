@@ -82,9 +82,12 @@ def main(argv=None):
         configure_opts.append(VERSION_DATE_ARG.format(release_date))
 
     # set version pre
-    if 'RELEASE_BUILD' in os.environ or tag is None:
+    if not 'RELEASE_BUILD' in os.environ or os.environ['RELEASE_BUILD'] != "true":
         version_pre = 'snapshot'
-    elif tag.is_ga() :
+    elif tag is None:
+        print(str.format("Running release build but no tag given, should not happen...", file=sys.stderr))
+        return -1
+    elif tag.is_ga():
         version_pre = ''
     else:
         version_pre = 'ea'
