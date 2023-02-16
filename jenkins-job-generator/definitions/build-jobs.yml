@@ -328,15 +328,6 @@
                                 // Show the installed version of JFrog CLI.
                                 jf '-v'
 
-                                // Upload the JDK archive
-                                script {{
-                                    def jdk_bundle_name = readFile "${{env.WORKSPACE}}/jdk_bundle_name.txt"
-                                    println "JDK Bundle name: \"" + jdk_bundle_name.trim() + "\""
-                                    def jfcall = "rt u " + jdk_bundle_name.trim() + " sapmachine-mvn/io/sapmachine/build-results/{platform}/${{env.ART_VERSION}}/" + jdk_bundle_name.trim()
-                                    println "JF call: \"" + jfcall + "\""
-                                    jf jfcall
-                                }}
-
                                 // Upload the test archive
                                 jf "rt u test.zip sapmachine-mvn/io/sapmachine/build-results/{platform}/${{env.ART_VERSION}}/test.zip"
                             }}
