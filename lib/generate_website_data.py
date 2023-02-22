@@ -12,6 +12,7 @@ import utils
 from os.path import join
 from string import Template
 from versions import SapMachineTag
+from enum import Enum
 
 sapMachinePushURL= str.format('https://{0}:{1}@github.com/SAP/SapMachine.git',
     os.environ['GIT_USER'], os.environ['GIT_PASSWORD'])
@@ -48,6 +49,11 @@ redirect_to:
   - ${url}
 ---
 '''
+
+class FileOperation(Enum):
+    ADD_FILE = 1
+    REMOVE_DIR = 2
+
 
 class SapMachineMajorVersion:
     def __init__(self, major):
@@ -121,16 +127,27 @@ def push_to_git(files):
     commits = False
     for _file in files:
         location = join(local_repo, _file['location'])
-        if not os.path.exists(os.path.dirname(location)):
-            os.makedirs(os.path.dirname(location))
-        if not os.path.isfile(location):
-            addFile = True
-        with open(location, 'w+') as out:
-            out.write(_file['data'])
-        _, diff, _  = utils.run_cmd("git diff".split(' '), cwd=local_repo, std=True)
-        if diff.strip() or addFile:
-            utils.git_commit(local_repo, _file['commit_message'], [location])
-            commits = True
+        
+        if _file['operation'] == FileOperation.ADD_FILE:
+            if not os.path.exists(os.path.dirname(location)):
+                os.makedirs(os.path.dirname(location))
+            if not os.path.isfile(location):
+                addFile = True
+            with open(location, 'w+') as out:
+                out.write(_file['data'])
+            _, diff, _  = utils.run_cmd("git diff".split(' '), cwd=local_repo, std=True)
+            if diff.strip():
+                utils.git_commit(local_repo, _file['commit_message'], [_file['location']])
+                commits = True
+            elif addFile:
+                utils.git_commit(local_repo, _file['commit_message'], [location])
+                commits = True
+
+        elif _file['operation'] == FileOperation.REMOVE_DIR:
+            if os.path.exists(location):
+                print("remove dir: ", _file['commit_message'])
+                utils.run_cmd(['git', 'rm', '-r', _file['location']], cwd=local_repo, std=True)
+            
     if commits:
         utils.run_cmd(str.format('git push {0}', sapMachinePushURL).split(' '), cwd=local_repo)
 
@@ -188,6 +205,8 @@ def main(argv=None):
 
             sapMachineRelease.add_asset(image_type, os, asset['browser_download_url'])
 
+    files = []
+    
     # reduce releases dictionary by removing obsolete versions
     # Keep LTS versions, latest release and the release that is currently in development
     latest_released_version = 0
@@ -199,6 +218,12 @@ def main(argv=None):
                 del release_dict[latest_released_version]
             latest_released_version = major
         elif not release_dict[major].is_lts():
+            files.append({
+                'operation' : FileOperation.REMOVE_DIR,
+                'location': join('latest', str(major)),
+                'data': '',
+                'commit_message': str.format('delete outdated latest link directory for SapMachine {0}.', major)
+            })
             del release_dict[major]
 
     json_root = {
@@ -219,17 +244,19 @@ def main(argv=None):
     for os in os_description:
         json_root['os'].append({'key': os, 'value': os_description[os]['name'], 'ordinal': os_description[os]['ordinal']})
 
-    files = [{
+    files.append({
+        'operation' : FileOperation.ADD_FILE,
         'location': join('assets', 'data', 'sapmachine_releases.json'),
         'data': json.dumps(json_root, indent=4) + '\n',
         'commit_message': 'Updated release data.'
-    }]
+    })
 
     for major in release_dict:
         if not release_dict[major].is_released():
             continue
 
         files.append({
+            'operation' : FileOperation.ADD_FILE,
             'location': join('latest', str(major), 'index.md'),
             'data': Template(latest_template).substitute(
                 major = major,
@@ -246,6 +273,7 @@ def main(argv=None):
                             for platform in list(json_root['assets'][major][i][k][imageType]):
                                 
                                 files.append({
+                                    'operation' : FileOperation.ADD_FILE,
                                     'location': join('latest', str(major), str(platform), str(imageType), 'index.md'),
                                     'data': Template(latest_template_download).substitute(
                                         major = major,
