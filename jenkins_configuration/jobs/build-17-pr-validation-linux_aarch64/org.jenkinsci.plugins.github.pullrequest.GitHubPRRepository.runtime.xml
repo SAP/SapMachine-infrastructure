@@ -8,10 +8,10 @@
       <int>1346</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>1346</number>
-        <issueUpdatedAt>2023-02-17 11:47:41.0 UTC</issueUpdatedAt>
+        <issueUpdatedAt>2023-02-22 15:01:43.0 UTC</issueUpdatedAt>
         <title>Merge to tag jdk-21+10</title>
         <body>please pull</body>
-        <prUpdatedAt>2023-02-17 11:47:41.0 UTC</prUpdatedAt>
+        <prUpdatedAt>2023-02-22 15:01:43.0 UTC</prUpdatedAt>
         <headSha>eca3d2d14416b57b5bae9e4fd50ebd9779b88a5f</headSha>
         <headRef>pr-jdk-21+10</headRef>
         <mergeable>true</mergeable>
@@ -25,26 +25,159 @@
       </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
     </entry>
     <entry>
-      <int>1349</int>
+      <int>1351</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>1349</number>
-        <issueUpdatedAt>2023-02-21 17:04:14.0 UTC</issueUpdatedAt>
-        <title>SapMachine #1348: Fix jtreg test jdk/jfr/api/recording/settings/TestGetConfigurations.java</title>
-        <body>Test failed after two additional JFR configuration files were added with https://github.com/SAP/SapMachine/pull/1336
+        <number>1351</number>
+        <issueUpdatedAt>2023-02-22 13:51:59.0 UTC</issueUpdatedAt>
+        <title>SapMachine #1350: Fix build failing with gcc 12.2.1</title>
+        <body>Fixes the build when gcc 12.2 is used, this gcc version complains about unneeded NULL checks. Observed with Alpine 3.17 build container.
 
-fixes #1348
+fixes #1350
 
 </body>
-        <prUpdatedAt>2023-02-21 17:04:14.0 UTC</prUpdatedAt>
-        <headSha>316fba5b372ed57041b1cf3f623493c88430f728</headSha>
-        <headRef>sapmachine</headRef>
+        <prUpdatedAt>2023-02-22 13:51:59.0 UTC</prUpdatedAt>
+        <headSha>1b83f909890b59c041d4487f4677527ebf958104</headSha>
+        <headRef>fix-build-using-gcc12</headRef>
         <mergeable>true</mergeable>
         <baseRef>sapmachine</baseRef>
-        <userLogin>ansteiner</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/1349</htmlUrl>
+        <userLogin>MBaesken</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1351</htmlUrl>
         <labels />
-        <lastCommentCreatedAt>2023-02-21 08:16:07.0 UTC</lastCommentCreatedAt>
+        <lastCommentCreatedAt>2023-02-22 11:53:46.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>SAP</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>1352</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>1352</number>
+        <issueUpdatedAt>2023-02-22 13:58:35.0 UTC</issueUpdatedAt>
+        <title>SapMachine11 #1348: Fix jtreg test jdk/jfr/api/recording/settings/TestG&#8230;</title>
+        <body>&#8230;etConfigurations.java (#1349)
+
+* fix test for jfr configuration
+* fix typo
+
+(cherry picked from commit a560c82a717406c872d1fbd3dc8690aece9b1b0b)
+
+
+fixes #1348 
+
+</body>
+        <prUpdatedAt>2023-02-22 13:58:35.0 UTC</prUpdatedAt>
+        <headSha>698c8ed110cdc97176ff357ea4729a9eb6af1e2c</headSha>
+        <headRef>sapmachine11</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine11</baseRef>
+        <userLogin>ansteiner</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1352</htmlUrl>
+        <labels />
+        <lastCommentCreatedAt>2023-02-22 12:18:30.0 UTC</lastCommentCreatedAt>
         <sourceRepoOwner>ansteiner</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>1353</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>1353</number>
+        <issueUpdatedAt>2023-02-22 13:59:18.0 UTC</issueUpdatedAt>
+        <title>SapMachine17 #1348: Fix jtreg test jdk/jfr/api/recording/settings/TestG&#8230;</title>
+        <body>&#8230;etConfigurations.java (#1349)
+
+* fix test for jfr configuration
+* fix typo
+
+(cherry picked from commit a560c82a717406c872d1fbd3dc8690aece9b1b0b)
+
+
+fixes #1348 
+
+</body>
+        <prUpdatedAt>2023-02-22 13:59:18.0 UTC</prUpdatedAt>
+        <headSha>9606cf479bc419c5dfce82b1f0b1af53d75038b1</headSha>
+        <headRef>sapmachine17</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine17</baseRef>
+        <userLogin>ansteiner</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1353</htmlUrl>
+        <labels />
+        <lastCommentCreatedAt>2023-02-22 13:10:49.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>ansteiner</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>1354</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>1354</number>
+        <issueUpdatedAt>2023-02-22 15:00:07.0 UTC</issueUpdatedAt>
+        <title>SapMachine20 #1348: Fix jtreg test jdk/jfr/api/recording/settings/TestG&#8230;</title>
+        <body>&#8230;etConfigurations.java (#1349)
+
+* fix test for jfr configuration
+* fix typo
+
+(cherry picked from commit a560c82a717406c872d1fbd3dc8690aece9b1b0b)
+
+
+fixes #1348 
+
+</body>
+        <prUpdatedAt>2023-02-22 15:00:07.0 UTC</prUpdatedAt>
+        <headSha>2bad232ea83fd48556bfbc320310f75f0c9f930f</headSha>
+        <headRef>sapmachine20</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine20</baseRef>
+        <userLogin>ansteiner</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1354</htmlUrl>
+        <labels />
+        <lastCommentCreatedAt>2023-02-22 13:15:02.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>ansteiner</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>1355</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>1355</number>
+        <issueUpdatedAt>2023-02-23 00:30:47.0 UTC</issueUpdatedAt>
+        <title>Merge to tag jdk-17.0.7+3</title>
+        <body>please pull</body>
+        <prUpdatedAt>2023-02-23 00:30:47.0 UTC</prUpdatedAt>
+        <headSha>da62b2b37e079d88039eec363cb9c7f5e59a8ff0</headSha>
+        <headRef>pr-jdk-17.0.7+3</headRef>
+        <mergeable>false</mergeable>
+        <baseRef>sapmachine17</baseRef>
+        <userLogin>SapMachine</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1355</htmlUrl>
+        <labels />
+        <sourceRepoOwner>SAP</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>1356</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>1356</number>
+        <issueUpdatedAt>2023-02-23 00:31:05.0 UTC</issueUpdatedAt>
+        <title>Merge to tag jdk-11.0.19+3</title>
+        <body>please pull</body>
+        <prUpdatedAt>2023-02-23 00:31:05.0 UTC</prUpdatedAt>
+        <headSha>bc29f1eb26714ef4a4f1494d9e9cd8aaf9050d7d</headSha>
+        <headRef>pr-jdk-11.0.19+3</headRef>
+        <mergeable>false</mergeable>
+        <baseRef>sapmachine11</baseRef>
+        <userLogin>SapMachine</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1356</htmlUrl>
+        <labels />
+        <sourceRepoOwner>SAP</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
       </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
