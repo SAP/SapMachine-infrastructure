@@ -79,7 +79,6 @@
                                 archiveArtifacts allowEmptyArchive: true, artifacts: 'workspace.zip'
                             }}
                         }}
-
         - linux_alpine_x86_64:
             docker_agent: &docker_agent_alpine_x86_64 |-
                 agent {{
@@ -360,19 +359,12 @@
         - release:
             docker_agent_verify: ''
             init_variables: |-
-                // when we publish, installer packages are mandatory
-                                    if (params.PUBLISH == true) {{
-                                        env.BUILD_INSTALLER_PACKAGES = true
-                                    }} else {{
-                                        env.BUILD_INSTALLER_PACKAGES = params.BUILD_INSTALLER_PACKAGES
-                                    }}
+                // this variable, indicating that we run a release build, is needed in some scripts
+                                    env.RELEASE_BUILD = "true"
 
-                                    // calculate artifactory version and RELEASE flag
-                                    // release jobs need to have a conforming SAPMACHINE_VERSION tag
+                                    // check for conforming SAPMACHINE_VERSION tag and set RELEASE flag accordingly
                                     def m = (env.SAPMACHINE_VERSION =~ /sapmachine-((\d+(\.\d+)*)(\+(\d+))?)$/)
                                     if (m) {{
-                                        env.ART_VERSION = m.group(1)
-                                        env.RELEASE_BUILD = "true"
                                         if (m.group(4) == null) {{
                                             env.RELEASE = "true"
                                         }} else {{
@@ -381,6 +373,16 @@
                                     }} else {{
                                         error(env.SAPMACHINE_VERSION + " is no valid SapMachine version tag.")
                                     }}
+
+                                    // when we publish, installer packages are mandatory
+                                    if (params.PUBLISH == true) {{
+                                        env.BUILD_INSTALLER_PACKAGES = true
+                                    }} else {{
+                                        env.BUILD_INSTALLER_PACKAGES = params.BUILD_INSTALLER_PACKAGES
+                                    }}
+            get_art_ver: |-
+                env.ART_VERSION = readFile "${{env.WORKSPACE}}/javavmversion.txt"
+                                                echo "java.vm.version: ${{env.ART_VERSION}}"
             publish_artifactory_pre: *publish_artifactory_pre
             publish_artifactory_step: *publish_artifactory_step
             publish_github: |-
@@ -471,10 +473,7 @@
                             if (gav.length == 3) {{
                                 echo "Extracting devkit from GAV coordinates: \"${{params.DEVKIT}}\"."
                                 sh("SapMachine-Infrastructure/lib/deploy-devkit.sh ${{gav[0]}} ${{gav[1]}} ${{gav[2]}}")
-                                env.DEVKIT_PATH = sh (
-                                    script: "cat devkitlocation.txt",
-                                    returnStdout: true
-                                ).trim()
+                                env.DEVKIT_PATH = sh(script: "cat devkitlocation.txt", returnStdout: true).trim()
                             }} else {{
                                 echo "Devkit not in GAV notation, assuming path."
                                 env.DEVKIT_PATH = params.DEVKIT;
@@ -518,8 +517,7 @@
                         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
                             script {{
                                 sh("SapMachine-Infrastructure/lib/build.sh")
-                                env.JAVA_VM_VERSION = sh(script: "cat javavmversion.txt", returnStdout: true).trim()
-                                echo "java.vm.version: ${{env.JAVA_VM_VERSION}}"
+                                {get_art_ver|}
                             }}
                         }}
                     }}
