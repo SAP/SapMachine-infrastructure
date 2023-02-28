@@ -107,6 +107,9 @@ zip -rq "${WORKSPACE}/test.zip" src/jdk.security.auth/share/classes/com/sun/secu
 cd build
 cd "$(ls)"
 
+# get java.vm.version property into a file
+echo "public class PropertyPrinter{public static void main(String[] args){System.out.print(System.getProperty(\"java.vm.version\"));}}" > PropertyPrinter.java && images/jdk/bin/java PropertyPrinter.java > ../javavmversion.txt && rm PropertyPrinter.java
+
 zip -rq "${WORKSPACE}/test.zip" spec.gmk
 zip -rq "${WORKSPACE}/test.zip" images/jdk/release
 zip -rq "${WORKSPACE}/test.zip" bundles/*jdk-*_bin.* bundles/*jdk-*_bin-debug.*
