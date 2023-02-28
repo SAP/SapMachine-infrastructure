@@ -76,37 +76,33 @@ if [[ -f ${WORKSPACE}/test.zip ]]; then
 fi
 
 zip -rq "${WORKSPACE}/test.zip" test
-zip -rq "${WORKSPACE}/test.zip" make/data/lsrdata || true
-zip -rq "${WORKSPACE}/test.zip" make/data/blacklistedcertsconverter/blacklisted.certs.pem || true
 zip -rq "${WORKSPACE}/test.zip" make/data/blockedcertsconverter || true
-zip -rq "${WORKSPACE}/test.zip" make/data/unicodedata || true
+zip -rq "${WORKSPACE}/test.zip" make/data/lsrdata || true
+zip -rq "${WORKSPACE}/test.zip" make/data/publicsuffixlist/VERSION || true
 zip -rq "${WORKSPACE}/test.zip" make/data/tzdata || true
+zip -rq "${WORKSPACE}/test.zip" make/data/unicodedata || true
 zip -rq "${WORKSPACE}/test.zip" make/jdk/src/classes/build/tools/makejavasecurity || true
-zip -rq "${WORKSPACE}/test.zip" src/jdk.incubator.jpackage/*/classes/jdk/incubator/jpackage/internal || true
-zip -rq "${WORKSPACE}/test.zip" src/jdk.jpackage/*/classes/jdk/jpackage/internal || true
+zip -rq "${WORKSPACE}/test.zip" src/*/*/legal/ || true
 zip -rq "${WORKSPACE}/test.zip" src/java.base/share/classes/javax/security/auth/ || true
 zip -rq "${WORKSPACE}/test.zip" src/java.base/share/classes/sun/security/provider/ || true
 zip -rq "${WORKSPACE}/test.zip" src/java.base/share/classes/sun/security/tools/ || true
-zip -rq "${WORKSPACE}/test.zip" src/java.compiler/share/classes/javax/tools/snippet-files/ || true
-zip -rq "${WORKSPACE}/test.zip" src/jdk.crypto.cryptoki/share/classes/sun/security/pkcs11/SunPKCS11.java || true
-zip -rq "${WORKSPACE}/test.zip" src/jdk.jartool/share/classes/sun/security/tools/jarsigner/Main.java || true
-zip -rq "${WORKSPACE}/test.zip" src/jdk.javadoc/share/man || true
-zip -rq "${WORKSPACE}/test.zip" src/jdk.javadoc/share/classes/jdk/javadoc/doclet/ || true
-zip -rq "${WORKSPACE}/test.zip" src/jdk.javadoc/share/classes/jdk/javadoc/internal/doclets/formats/html/resources/script-dir || true
-zip -rq "${WORKSPACE}/test.zip" src/jdk.security.auth/share/classes/com/sun/security/auth/ || true
-zip -rq "${WORKSPACE}/test.zip" src/java.xml.crypto/share/classes/org/jcp/xml/dsig/internal/dom/XMLDSigRI.java || true
-zip -rq "${WORKSPACE}/test.zip" src/*/*/legal/ || true
-zip -rq "${WORKSPACE}/test.zip" make/data/publicsuffixlist/VERSION || true
-zip -rq "${WORKSPACE}/test.zip" src/java.smartcardio/unix/native/libj2pcsc/MUSCLE/pcsclite.h || true
-
-zip -rq "${WORKSPACE}/test.zip" src/java.base/share/data/publicsuffixlist/VERSION || true
+zip -rq "${WORKSPACE}/test.zip" src/java.base/share/data/blockedcertsconverter/blocked.certs.pem || true
 zip -rq "${WORKSPACE}/test.zip" src/java.base/share/data/currency/CurrencyData.properties || true
 zip -rq "${WORKSPACE}/test.zip" src/java.base/share/data/lsrdata/language-subtag-registry.txt || true
-zip -rq "${WORKSPACE}/test.zip" src/java.base/share/data/unicodedata || true
-zip -rq "${WORKSPACE}/test.zip" src/java.base/share/data/charsetmapping || true
-zip -rq "${WORKSPACE}/test.zip" src/java.base/share/data/blockedcertsconverter/blocked.certs.pem || true
+zip -rq "${WORKSPACE}/test.zip" src/java.base/share/data/publicsuffixlist/VERSION || true
 zip -rq "${WORKSPACE}/test.zip" src/java.base/share/data/tzdata || true
+zip -rq "${WORKSPACE}/test.zip" src/java.base/share/data/unicodedata || true
+zip -rq "${WORKSPACE}/test.zip" src/java.compiler/share/classes/javax/tools/snippet-files/ || true
+zip -rq "${WORKSPACE}/test.zip" src/java.smartcardio/unix/native/libj2pcsc/MUSCLE/pcsclite.h || true
+zip -rq "${WORKSPACE}/test.zip" src/java.xml.crypto/share/classes/org/jcp/xml/dsig/internal/dom/XMLDSigRI.java || true
 zip -rq "${WORKSPACE}/test.zip" src/jdk.compiler/share/data/symbols/include.list || true
+zip -rq "${WORKSPACE}/test.zip" src/jdk.crypto.cryptoki/share/classes/sun/security/pkcs11/SunPKCS11.java || true
+zip -rq "${WORKSPACE}/test.zip" src/jdk.jartool/share/classes/sun/security/tools/jarsigner/Main.java || true
+zip -rq "${WORKSPACE}/test.zip" src/jdk.javadoc/share/classes/jdk/javadoc/doclet/ || true
+zip -rq "${WORKSPACE}/test.zip" src/jdk.javadoc/share/classes/jdk/javadoc/internal/doclets/formats/html/resources/script-dir || true
+zip -rq "${WORKSPACE}/test.zip" src/jdk.javadoc/share/man || true
+zip -rq "${WORKSPACE}/test.zip" src/jdk.jpackage/*/classes/jdk/jpackage/internal || true
+zip -rq "${WORKSPACE}/test.zip" src/jdk.security.auth/share/classes/com/sun/security/auth/ || true
 
 cd build
 cd "$(ls)"
