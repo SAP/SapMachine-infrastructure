@@ -516,12 +516,11 @@
                     }}
                     steps {{
                         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
-                            sh 'SapMachine-Infrastructure/lib/build.sh'
-                            env.JAVA_VM_VERSION = sh (
-                                script: "cat javavmversion.txt",
-                                returnStdout: true
-                            ).trim()
-                            echo "java.vm.version: ${{env.JAVA_VM_VERSION}}"
+                            script {{
+                                sh("SapMachine-Infrastructure/lib/build.sh")
+                                env.JAVA_VM_VERSION = sh(script: "cat javavmversion.txt", returnStdout: true).trim()
+                                echo "java.vm.version: ${{env.JAVA_VM_VERSION}}"
+                            }}
                         }}
                     }}
                 }}
