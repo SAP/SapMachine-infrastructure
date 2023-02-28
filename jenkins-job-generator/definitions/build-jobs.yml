@@ -337,12 +337,6 @@
             publish_cf_data: ''
             archive: &archive |-
                 script {{
-                                // archive artifacts
-                                // to be removed when test framework switched to artifactory
-                                archiveArtifacts artifacts: 'test.zip'
-                                def jdk_bundle_name = readFile "${{env.WORKSPACE}}/jdk_bundle_name.txt"
-                                archiveArtifacts artifacts: jdk_bundle_name
-
                                 // create a gensrc archive
                                 if (params.CREATE_GENSRC_BUNDLE == true) {{
                                     sh 'cd SapMachine/build && cd $(ls) && zip -rq ${{WORKSPACE}}/support_gensrc.zip support/gensrc'
@@ -380,9 +374,7 @@
                                     }} else {{
                                         env.BUILD_INSTALLER_PACKAGES = params.BUILD_INSTALLER_PACKAGES
                                     }}
-            get_art_ver: |-
-                env.ART_VERSION = readFile "${{env.WORKSPACE}}/javavmversion.txt"
-                                                echo "java.vm.version: ${{env.ART_VERSION}}"
+            get_art_ver: env.ART_VERSION = readFile "${{env.WORKSPACE}}/javavmversion.txt"
             publish_artifactory_pre: *publish_artifactory_pre
             publish_artifactory_step: *publish_artifactory_step
             publish_github: |-
