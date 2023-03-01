@@ -69,10 +69,7 @@
                     if (gav.length == 3) {
                         echo "Extracting devkit from GAV coordinates: \"${params.DEVKIT}\"."
                         sh("SapMachine-Infrastructure/lib/deploy-devkit.sh ${gav[0]} ${gav[1]} ${gav[2]}")
-                        env.DEVKIT_PATH = sh (
-                            script: "cat devkitlocation.txt",
-                            returnStdout: true
-                        ).trim()
+                        env.DEVKIT_PATH = sh(script: "cat devkitlocation.txt", returnStdout: true).trim()
                     } else {
                         echo "Devkit not in GAV notation, assuming path."
                         env.DEVKIT_PATH = params.DEVKIT;
@@ -114,7 +111,10 @@
             }
             steps {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
-                    sh 'SapMachine-Infrastructure/lib/build.sh'
+                    script {
+                        sh("SapMachine-Infrastructure/lib/build.sh")
+                        
+                    }
                 }
             }
         }
@@ -231,12 +231,6 @@
     post {
         success {
             script {
-                // archive artifacts
-                // to be removed when test framework switched to artifactory
-                archiveArtifacts artifacts: 'test.zip'
-                def jdk_bundle_name = readFile "${env.WORKSPACE}/jdk_bundle_name.txt"
-                archiveArtifacts artifacts: jdk_bundle_name
-
                 // create a gensrc archive
                 if (params.CREATE_GENSRC_BUNDLE == true) {
                     sh 'cd SapMachine/build &amp;&amp; cd $(ls) &amp;&amp; zip -rq ${WORKSPACE}/support_gensrc.zip support/gensrc'

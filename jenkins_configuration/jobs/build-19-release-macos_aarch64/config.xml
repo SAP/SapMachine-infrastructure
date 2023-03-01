@@ -25,19 +25,12 @@
                         env.SAPMACHINE_VERSION = params.SAPMACHINE_VERSION
                     }
 
-                    // when we publish, installer packages are mandatory
-                    if (params.PUBLISH == true) {
-                        env.BUILD_INSTALLER_PACKAGES = true
-                    } else {
-                        env.BUILD_INSTALLER_PACKAGES = params.BUILD_INSTALLER_PACKAGES
-                    }
+                    // this variable, indicating that we run a release build, is needed in some scripts
+                    env.RELEASE_BUILD = "true"
 
-                    // calculate artifactory version and RELEASE flag
-                    // release jobs need to have a conforming SAPMACHINE_VERSION tag
+                    // check for conforming SAPMACHINE_VERSION tag and set RELEASE flag accordingly
                     def m = (env.SAPMACHINE_VERSION =~ /sapmachine-((\d+(\.\d+)*)(\+(\d+))?)$/)
                     if (m) {
-                        env.ART_VERSION = m.group(1)
-                        env.RELEASE_BUILD = "true"
                         if (m.group(4) == null) {
                             env.RELEASE = "true"
                         } else {
@@ -45,6 +38,13 @@
                         }
                     } else {
                         error(env.SAPMACHINE_VERSION + " is no valid SapMachine version tag.")
+                    }
+
+                    // when we publish, installer packages are mandatory
+                    if (params.PUBLISH == true) {
+                        env.BUILD_INSTALLER_PACKAGES = true
+                    } else {
+                        env.BUILD_INSTALLER_PACKAGES = params.BUILD_INSTALLER_PACKAGES
                     }
                 }
             }
@@ -86,10 +86,7 @@
                     if (gav.length == 3) {
                         echo "Extracting devkit from GAV coordinates: \"${params.DEVKIT}\"."
                         sh("SapMachine-Infrastructure/lib/deploy-devkit.sh ${gav[0]} ${gav[1]} ${gav[2]}")
-                        env.DEVKIT_PATH = sh (
-                            script: "cat devkitlocation.txt",
-                            returnStdout: true
-                        ).trim()
+                        env.DEVKIT_PATH = sh(script: "cat devkitlocation.txt", returnStdout: true).trim()
                     } else {
                         echo "Devkit not in GAV notation, assuming path."
                         env.DEVKIT_PATH = params.DEVKIT;
@@ -131,7 +128,10 @@
             }
             steps {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
-                    sh 'SapMachine-Infrastructure/lib/build.sh'
+                    script {
+                        sh("SapMachine-Infrastructure/lib/build.sh")
+                        env.ART_VERSION = readFile "${env.WORKSPACE}/javavmversion.txt"
+                    }
                 }
             }
         }
@@ -273,12 +273,6 @@
     post {
         success {
             script {
-                // archive artifacts
-                // to be removed when test framework switched to artifactory
-                archiveArtifacts artifacts: 'test.zip'
-                def jdk_bundle_name = readFile "${env.WORKSPACE}/jdk_bundle_name.txt"
-                archiveArtifacts artifacts: jdk_bundle_name
-
                 // create a gensrc archive
                 if (params.CREATE_GENSRC_BUNDLE == true) {
                     sh 'cd SapMachine/build &amp;&amp; cd $(ls) &amp;&amp; zip -rq ${WORKSPACE}/support_gensrc.zip support/gensrc'

@@ -89,10 +89,7 @@
                     if (gav.length == 3) {
                         echo "Extracting devkit from GAV coordinates: \"${params.DEVKIT}\"."
                         sh("SapMachine-Infrastructure/lib/deploy-devkit.sh ${gav[0]} ${gav[1]} ${gav[2]}")
-                        env.DEVKIT_PATH = sh (
-                            script: "cat devkitlocation.txt",
-                            returnStdout: true
-                        ).trim()
+                        env.DEVKIT_PATH = sh(script: "cat devkitlocation.txt", returnStdout: true).trim()
                     } else {
                         echo "Devkit not in GAV notation, assuming path."
                         env.DEVKIT_PATH = params.DEVKIT;
@@ -140,7 +137,10 @@
             }
             steps {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
-                    sh 'SapMachine-Infrastructure/lib/build.sh'
+                    script {
+                        sh("SapMachine-Infrastructure/lib/build.sh")
+                        
+                    }
                 }
             }
         }
