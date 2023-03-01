@@ -5,7 +5,7 @@
             base_os_version_default: '21'
             docker_agent: |-
                 agent {{
-                    dockerfile {{
+                                dockerfile {{
                                     dir "SapMachine-Infrastructure/dockerfiles/devkitbuild/11/arm64"
                                     reuseNode true
                                     label "{platform}"
@@ -14,18 +14,19 @@
                             }}
         - linux_ppc64le:
             base_os_version_default: '19'
-            docker_agent: |-
+            docker_agent: &docker_agent_ppc64le |-
                 agent {{
-                    dockerfile {{
+                                dockerfile {{
                                     dir "SapMachine-Infrastructure/dockerfiles/devkitbuild/11/ppc64le"
                                     reuseNode true
                                     label "{platform}"
                                     additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
                                 }}
                             }}
+            prepare_rpm_packages_pre: "stage("Prepare RPM packages") {{"
+            prepare_rpm_packages_docker_agent: *docker_agent_ppc64le
             prepare_rpm_packages: |-
-                stage("Prepare RPM packages") {{
-                                steps {{
+                steps {{
                                     // Show the installed version of JFrog CLI.
                                     jf '-v'
 
@@ -111,7 +112,9 @@
                         '''
                     }}
                 }}
-                {prepare_rpm_packages|}
+                {prepare_rpm_packages_pre|}
+                    {prepare_rpm_packages_docker_agent|}
+                    {prepare_rpm_packages|}
                 stage('Build') {{
                     {docker_agent}
                     steps {{
