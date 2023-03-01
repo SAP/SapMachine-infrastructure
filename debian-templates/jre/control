@@ -1,4 +1,4 @@
-Source: sapmachine-${major}-jdk
+Source: sapmachine-${major}-jre
 Section: java
 Priority: optional
 Maintainer: SapMachine Team <sapmachine@sap.com>
@@ -8,11 +8,11 @@ Homepage: https://sapmachine.io
 #Vcs-Git: https://github.com/SAP/sapmachine.git
 #Vcs-Browser: https://github.com/SAP/sapmachine
 
-Package: sapmachine-${major}-jdk
+Package: sapmachine-${major}-jre
 Architecture: ${arch}
-Provides: java-sdk,
-  java2-sdk, java5-sdk, java6-sdk,
-  java7-sdk, java8-sdk, java-compiler
+Provides: java-jre,
+  java2-jre, java5-jre, java6-jre,
+  java7-jre, java8-jre, java11-jre
 Depends:
   $${jredefault:Depends},
   $${cacert:Depends},
@@ -26,5 +26,5 @@ Depends:
   $${misc:Depends},
   libfontconfig1,
   libnss3 (>= 2:3.17.1)
-Description: SapMachine JDK
- The SapMachine Java Development Kit
+Description: SapMachine JRE
+ The SapMachine Java Runtime Environment

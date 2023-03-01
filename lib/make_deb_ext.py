@@ -80,15 +80,17 @@ def main(argv=None):
     parser.add_argument('-t', '--tag', help='SapMachine version tag to create the debian package for', metavar='TAG')
     parser.add_argument('-d', '--download', help='Download artifact and clone git repo', action='store_true')
     parser.add_argument('-a', '--architecture', help='specifies the architecture (linux-aarch64, linux-ppc64le, linux-x64)', metavar='ARCH', default='linux-x64')
+    parser.add_argument('-y', '--type', help='specifies whether a jdk (default) or a jre should be build (jdk, jre)', metavar='TYPE', default='jdk')
     args = parser.parse_args()
 
     cwd = os.getcwd()
     work_dir = join(cwd, 'deb_work')
     utils.remove_if_exists(work_dir)
     mkdir(work_dir)
+    t=args.type
 
     if not args.download:
-        bundle_name_file = join(cwd, 'jdk_bundle_name.txt')
+        bundle_name_file = join(cwd, t, '_bundle_name.txt')
         if not isfile(bundle_name_file):
             print(str.format("Bundle name file \"{0}\" does not exist. I don't know what to package", bundle_name_file))
             return -1
@@ -104,50 +106,50 @@ def main(argv=None):
         else:
             bundle_name_match = re.compile('sapmachine-\w+-((\d+)(\.\d+)*).*').match(bundle_name)
             major = bundle_name_match.group(2)
-            jdk_name = str.format('sapmachine-{0}-jdk-{1}', major, bundle_name_match.group(1).replace('-', '.'))
-            jdk_url = "https://sapmachine.io"
+            j_name = str.format('sapmachine-{0}-{1}-{2}', major, t, bundle_name_match.group(1).replace('-', '.'))
+            j_url = "https://sapmachine.io"
     else:
         major = tag.get_major()
-        jdk_name = str.format('sapmachine-{0}-jdk-{1}', major, tag.get_version_string().replace('-', '.'))
+        j_name = str.format('sapmachine-{0}-{1}-{2}', major, t, tag.get_version_string().replace('-', '.'))
         if args.download:
-            jdk_url = utils.get_asset_urls(tag, args.architecture, ["jdk"])['jdk']
+            j_url = utils.get_asset_urls(tag, args.architecture, [t])[t]
         else:
-            jdk_url = "https://github.com/SAP/SapMachine/releases/download/sapmachine-" + tag.get_version_string() + "/" + bundle_name
+            j_url = "https://github.com/SAP/SapMachine/releases/download/sapmachine-" + tag.get_version_string() + "/" + bundle_name
 
     if args.download:
         src_dir = join(work_dir, 'sapmachine_master')
         utils.git_clone('github.com/SAP/SapMachine', args.tag, src_dir)
-        jdk_archive = join(work_dir, jdk_url.rsplit('/', 1)[-1])
-        utils.download_artifact(jdk_url, jdk_archive)
+        j_archive = join(work_dir, j_url.rsplit('/', 1)[-1])
+        utils.download_artifact(j_url, j_archive)
     else:
         src_dir = join(cwd, 'SapMachine')
-        jdk_archive = join(cwd, bundle_name)
+        j_archive = join(cwd, bundle_name)
 
-    jdk_dir = join(work_dir, jdk_name)
-    mkdir(jdk_dir)
-    utils.extract_archive(jdk_archive, jdk_dir)
+    j_dir = join(work_dir, j_name)
+    mkdir(j_dir)
+    utils.extract_archive(j_archive, j_dir)
 
     env = os.environ.copy()
     env['DEBFULLNAME'] = 'SapMachine'
     env['DEBEMAIL'] = 'sapmachine@sap.com'
-    utils.run_cmd(['dh_make', '-n', '-s', '-y'], cwd=jdk_dir, env=env)
+    utils.run_cmd(['dh_make', '-n', '-s', '-y'], cwd=j_dir, env=env)
 
-    jdk_exploded_image = glob.glob(join(jdk_dir, 'sapmachine-*'))[0]
+    j_exploded_image = glob.glob(join(j_dir, 'sapmachine-*'))[0]
 
     generate_configuration(
-        templates_dir = join(realpath("SapMachine-Infrastructure/debian-templates"), 'jdk'),
+        templates_dir = join(realpath("SapMachine-Infrastructure/debian-templates"), t),
         major = str(major),
         arch = "arm64" if args.architecture == "linux-aarch64" else ("ppc64el" if args.architecture == "linux-ppc64le" else "amd64"),
-        target_dir = join(jdk_dir, 'debian'),
-        exploded_image = jdk_exploded_image,
+        target_dir = join(j_dir, 'debian'),
+        exploded_image = j_exploded_image,
         src_dir = src_dir,
-        download_url = jdk_url)
+        download_url = j_url)
 
     # we need to add --ignore-missing-info to the dh_shlibdeps call, otherwise we see errors on ppc64le
-    with open(join(jdk_dir, "debian", "rules"), "a") as rulesfile:
+    with open(join(j_dir, "debian", "rules"), "a") as rulesfile:
         rulesfile.write("\noverride_dh_shlibdeps:\n\tdh_shlibdeps --dpkg-shlibdeps-params=--ignore-missing-info\n")
 
-    utils.run_cmd(['debuild', '-b', '-uc', '-us'], cwd=jdk_dir, env=env)
+    utils.run_cmd(['debuild', '-b', '-uc', '-us'], cwd=j_dir, env=env)
 
     deb_files = glob.glob(join(work_dir, '*.deb'))
 
