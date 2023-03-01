@@ -1,0 +1,101 @@
+- defaults:
+    name: 'devkits_global'
+    platforms: &platforms
+        - linux_aarch64:
+            base_os_version_default: '21'
+            docker_agent: |
+                agent {{
+                    dockerfile {{
+                        dir "SapMachine-Infrastructure/dockerfiles/devkitbuild/11/arm64"
+                        reuseNode true
+                        label "{platform}"
+                        additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
+                    }}
+                }}
+        - linux_ppc64le:
+            base_os_version_default: '19'
+            docker_agent: |
+                agent {{
+                    dockerfile {{
+                        dir "SapMachine-Infrastructure/dockerfiles/devkitbuild/11/ppc64le"
+                        reuseNode true
+                        label "{platform}"
+                        additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
+                    }}
+                }}
+        - linux_x86_64:
+            base_os_version_default: '12'
+            docker_agent: |
+                agent {{
+                    dockerfile {{
+                        dir "SapMachine-Infrastructure/dockerfiles/devkitbuild/11/x86_64"
+                        reuseNode true
+                        label "{platform}"
+                        additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
+                    }}
+                }}
+
+- project:
+    name: devkit-builds
+    platform: *platforms
+    jobs:
+        - build-devkit-{platform}
+
+- job-template:
+    name: build-devkit-{platform}
+    defaults: 'devkits_global'
+    description: 'Build a Development Kit for SapMachine on {platform}.'
+    project-type: pipeline
+    sandbox: true
+    concurrent: false
+    properties:
+        - build-discarder:
+            num-to-keep: 20
+            artifact-num-to-keep: 1
+    parameters:
+        - string:
+            name: GIT_REPOSITORY
+            default: 'https://github.com/SAP/SapMachine.git'
+            description: 'The Git repository to use the devkit makefiles from.'
+        - string:
+            name: GIT_REF
+            default: 'sapmachine17'
+            description: 'The branch/ref to use the devkit makefiles from.'
+        - string:
+            name: BASE_OS
+            default: 'Fedora'
+            description: 'The BASE OS to build the devkit from.'
+        - string:
+            name: BASE_OS_VERSION
+            default: '{base_os_version_default}'
+            description: 'The BASE OS version to build the devkit from.'
+        - string:
+            name: GCC_VERSION
+            default: '8.5.0'
+            description: 'The GCC version to build the devkit from.'
+    dsl: |
+        pipeline {{
+            agent {{
+                label "{platform}"
+            }}
+            stages {{
+                stage("Checkout SapMachine Repository") {{
+                    {docker_agent}
+                    steps {{
+                        sh '''#!/bin/bash
+                            set -ex
+                            git init SapMachine && cd SapMachine
+                            git remote add origin $GIT_REPOSITORY
+                            git fetch origin $GIT_REF
+                            git checkout --detach FETCH_HEAD
+                        '''
+                    }}
+                }}
+                stage('Build') {{
+                    {docker_agent}
+                    steps {{
+                        sh "cd SapMachine/make/devkit && make BASE_OS=${{BASE_OS}} BASE_OS_VERSION=${{BASE_OS_VERSION}} GCC_VER=${{GCC_VERSION}} tars && ls ../../build/devkit/result/"
+                    }}
+                }}
+            }}
+        }}

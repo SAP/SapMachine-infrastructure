@@ -69,6 +69,7 @@
         - update-cask
         - repository-update-and-tag
         - upload-ossrh
+    regex: '(build-devkit-.*)'
 
 - view:
     name: 'Cloud Foundry Java Buildpack'
@@ -90,7 +91,6 @@
     name: 'Linux Packages'
     description: 'Linux Package jobs'
     view-type: list
-    job-name:
     regex: '(resign-debian-repository-.*|build-debian-package-.*|rpm-package)'
 
 - view:
