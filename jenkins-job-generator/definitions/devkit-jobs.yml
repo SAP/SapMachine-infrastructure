@@ -9,7 +9,6 @@
                                     dir "SapMachine-Infrastructure/dockerfiles/devkitbuild/11/arm64"
                                     reuseNode true
                                     label "{platform}"
-                                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
                                 }}
                             }}
         - linux_ppc64le:
@@ -20,7 +19,6 @@
                                     dir "SapMachine-Infrastructure/dockerfiles/devkitbuild/11/ppc64le"
                                     reuseNode true
                                     label "{platform}"
-                                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
                                 }}
                             }}
             prepare_rpm_packages_pre: 'stage("Prepare RPM packages") {{'
@@ -34,7 +32,7 @@
                                     jf "rt dl sapmachine-mvn/io/sapmachine/build/devkit/linux-ppc64le/rpms/7/rpms-7.tar.gz"
 
                                     // Extract and clean up
-                                    sh "cd SapMachine/build/devkit/download/rpms/ppc64le-linux-gnu-Fedora_19 && tar --no-same-permissions --no-same-owner -xzf ${{WORKSPACE}}/rpms-7.tar.gz && rm ${{WORKSPACE}}/rpms-7.tar.gz")
+                                    sh "cd SapMachine/build/devkit/download/rpms/ppc64le-linux-gnu-Fedora_19 && tar --no-same-permissions --no-same-owner -xzf ${{WORKSPACE}}/rpms-7.tar.gz && rm ${{WORKSPACE}}/rpms-7.tar.gz"
                                 }}
                             }}
                         }}
@@ -47,7 +45,6 @@
                                     dir "SapMachine-Infrastructure/dockerfiles/devkitbuild/11/x86_64"
                                     reuseNode true
                                     label "{platform}"
-                                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
                                 }}
                             }}
 
