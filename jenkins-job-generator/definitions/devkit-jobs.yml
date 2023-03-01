@@ -23,7 +23,7 @@
                                     additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
                                 }}
                             }}
-            prepare_rpm_packages_pre: "stage("Prepare RPM packages") {{"
+            prepare_rpm_packages_pre: 'stage("Prepare RPM packages") {{'
             prepare_rpm_packages_docker_agent: *docker_agent_ppc64le
             prepare_rpm_packages: |-
                 steps {{
