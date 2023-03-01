@@ -6,37 +6,37 @@
             debarch: arm64
             docker_agent: |-
                 agent {{
-                            dockerfile {{
-                                dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/arm64"
-                                reuseNode true
-                                label "{platform}"
-                                additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
+                                dockerfile {{
+                                    dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/arm64"
+                                    reuseNode true
+                                    label "{platform}"
+                                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
+                                }}
                             }}
-                        }}
         - linux_ppc64le:
             architecture: linux-ppc64le
             debarch: ppc64el
             docker_agent: |-
                 agent {{
-                            dockerfile {{
-                                dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/ppc64le"
-                                reuseNode true
-                                label "{platform}"
-                                additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
+                                dockerfile {{
+                                    dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/ppc64le"
+                                    reuseNode true
+                                    label "{platform}"
+                                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
+                                }}
                             }}
-                        }}
         - linux_x86_64:
             architecture: linux-x64
             debarch: amd64
             docker_agent: |-
                 agent {{
-                            dockerfile {{
-                                dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/x86_64"
-                                reuseNode true
-                                label "{platform}"
-                                additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
+                                dockerfile {{
+                                    dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/x86_64"
+                                    reuseNode true
+                                    label "{platform}"
+                                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
+                                }}
                             }}
-                        }}
 
 - project:
     name: debian-builds

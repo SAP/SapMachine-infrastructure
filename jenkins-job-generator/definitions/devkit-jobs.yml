@@ -30,9 +30,9 @@
                                 jf '-v'
 
                                 // Download rpms archive
-                                jf "rt dl sapmachine-mvn/io/sapmachine/build/devkit/linux-ppc64le/rpms/7/rpms-7.tar.gz"
+                                jf "rt dl sapmachine-mvn/io/sapmachine/build/devkit/linux-ppc64le/rpms/7/rpms-7.tar.gz --flat"
 
-                                // Extract and clean up
+                                // Extract it
                                 sh "mkdir -p SapMachine/build/devkit/download/rpms/ppc64le-linux-gnu-Fedora_19 && cd SapMachine/build/devkit/download/rpms/ppc64le-linux-gnu-Fedora_19 && tar --no-same-permissions --no-same-owner -xzf ${{WORKSPACE}}/rpms-7.tar.gz"
                             }}
                         }}
@@ -116,7 +116,7 @@
                 stage("Build") {{
                     {docker_agent}
                     steps {{
-                        sh "cd SapMachine/make/devkit && make BASE_OS=${{BASE_OS}} BASE_OS_VERSION=${{BASE_OS_VERSION}} GCC_VER=${{GCC_VERSION}} tars && ls ../../build/devkit/result/"
+                        sh "cd SapMachine/make/devkit && make BASE_OS=${{BASE_OS}} BASE_OS_VERSION=${{BASE_OS_VERSION}} GCC_VER=${{GCC_VERSION}} tars"
                     }}
                 }}
                 stage("Upload Artifactory") {{
