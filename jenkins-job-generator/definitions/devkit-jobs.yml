@@ -33,7 +33,7 @@
                                 jf "rt dl sapmachine-mvn/io/sapmachine/build/devkit/linux-ppc64le/rpms/7/rpms-7.tar.gz"
 
                                 // Extract and clean up
-                                sh "cd SapMachine/build/devkit/download/rpms/ppc64le-linux-gnu-Fedora_19 && tar --no-same-permissions --no-same-owner -xzf ${{WORKSPACE}}/rpms-7.tar.gz && rm ${{WORKSPACE}}/rpms-7.tar.gz"
+                                sh "mkdir -p SapMachine/build/devkit/download/rpms/ppc64le-linux-gnu-Fedora_19 && cd SapMachine/build/devkit/download/rpms/ppc64le-linux-gnu-Fedora_19 && tar --no-same-permissions --no-same-owner -xzf ${{WORKSPACE}}/rpms-7.tar.gz"
                             }}
                         }}
         - linux_x86_64:
