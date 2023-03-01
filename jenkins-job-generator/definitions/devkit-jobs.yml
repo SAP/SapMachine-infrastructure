@@ -2,6 +2,7 @@
     name: 'devkits_global'
     platforms: &platforms
         - linux_aarch64:
+            artarch: 'linux-aarch64'
             base_os_version_default: '21'
             docker_agent: |-
                 agent {{
@@ -12,6 +13,7 @@
                                 }}
                             }}
         - linux_ppc64le:
+            artarch: 'linux-ppc64le'
             base_os_version_default: '19'
             docker_agent: |-
                 agent {{
@@ -35,6 +37,7 @@
                             }}
                         }}
         - linux_x86_64:
+            artarch: 'linux-x64'
             base_os_version_default: '12'
             docker_agent: |-
                 agent {{
@@ -111,6 +114,15 @@
                     {docker_agent}
                     steps {{
                         sh "cd SapMachine/make/devkit && make BASE_OS=${{BASE_OS}} BASE_OS_VERSION=${{BASE_OS_VERSION}} GCC_VER=${{GCC_VERSION}} tars && ls ../../build/devkit/result/"
+                    }}
+                }}
+                stage("Upload Artifactory") {{
+                    steps {{
+                        // Show the installed version of JFrog CLI.
+                        jf '-v'
+
+                        // Upload devkit archive
+                        jf "rt u SapMachine/build/devkit/result/*.tar.gz sapmachine-mvn/io/sapmachine/build/devkit/{artarch}/devkit-fedora-gcc/${{BASE_OS_VERSION}}-${{GCC_VERSION}}/devkit-fedora-gcc-${{BASE_OS_VERSION}}-${{GCC_VERSION}}.tar.gz"
                     }}
                 }}
             }}
