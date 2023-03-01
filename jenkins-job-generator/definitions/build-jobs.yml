@@ -29,8 +29,7 @@
                                 }}
                             }}
             docker_agent_verify: *docker_agent_aarch64
-            build_debian_packages_pre: &build_debian_packages_pre |-
-                stage('Build Debian Packages') {{
+            build_debian_packages_pre: &build_debian_packages_pre 'stage("Build Debian Packages") {{'
             docker_agent_debian: *docker_agent_aarch64
             build_debian_packages_step: &build_debian_packages_step |-
                 when {{
@@ -48,7 +47,7 @@
                             }}
                         }}
             publish_debian_packages: &publish_debian_packages |-
-                stage('Publish Debian Packages') {{
+                stage("Publish Debian Packages") {{
                             agent {{
                                 label 'agent-local-docker-ubuntu'
                             }}
@@ -64,7 +63,7 @@
                             }}
                         }}
             generate_dockerfiles: &generate_dockerfiles |-
-                stage('Generate Dockerfiles') {{
+                stage("Generate Dockerfiles") {{
                             when {{
                                 expression {{ params.PUBLISH == true && env.RELEASE == "true" }}
                             }}
@@ -127,7 +126,7 @@
             docker_agent_debian: *docker_agent_x86_64
             build_debian_packages_step: *build_debian_packages_step
             build_rpm_packages: |-
-                stage('Build RPM Packages') {{
+                stage("Build RPM Packages") {{
                             agent {{
                                 dockerfile {{
                                     dir "SapMachine-Infrastructure/dockerfiles/fedora-rpm"
@@ -145,7 +144,7 @@
                         }}
             publish_debian_packages: *publish_debian_packages
             publish_cf_data: &publish_cf_data |-
-                stage('Publish CF Java Buildpack Data') {{
+                stage("Publish CF Java Buildpack Data") {{
                             when {{
                                 expression {{ params.PUBLISH == true && env.RELEASE == "true" }}
                             }}
@@ -158,7 +157,7 @@
         - macos_x86_64:
             devkit_default: 'io.sapmachine.build.devkit.macos:devkit-xcode:13.1'
             create_brew_casks: &create_brew_casks |-
-                stage('Create Brew Casks') {{
+                stage("Create Brew Casks") {{
                             when {{
                                 expression {{ params.PUBLISH == true && JOB_NAME ==~ /((\S*)(release-macos)(\S*))/ && env.RELEASE != "true" }}
                             }}
@@ -176,7 +175,7 @@
         - windows_x86_64:
             devkit_default: '{windows_devkit|io.sapmachine.build.devkit.windows-x64:devkit-vs2017:15.9.49}'
             build_windows_installer: |-
-                stage('Build Windows Installer') {{
+                stage("Build Windows Installer") {{
                             when {{
                                 expression {{ env.BUILD_INSTALLER_PACKAGES == "true" }}
                             }}
@@ -249,8 +248,7 @@
             init_variables: |-
                 // initialize some variables
                                     env.RELEASE = "false"
-            verify_pre: |-
-                stage("Verify PR") {{
+            verify_pre: 'stage("Verify PR") {{'
             verify_step: |-
                 steps {{
                                 // credentials are needed to avoid rate limit exceedance in verify_pr.py
@@ -316,8 +314,7 @@
                                     env.BUILD_INSTALLER_PACKAGES = params.BUILD_INSTALLER_PACKAGES
                                     env.ART_VERSION = "snapshot-{major}-" + (new java.text.SimpleDateFormat("yyyyMMddHHmmss")).format(new Date())
                                     env.RELEASE = "false"
-            publish_artifactory_pre: &publish_artifactory_pre |-
-                stage('Publish Artifactory') {{
+            publish_artifactory_pre: &publish_artifactory_pre 'stage("Publish Artifactory") {{'
             publish_artifactory_when: |-
                 when {{
                                 expression {{ params.UPLOAD_ARTIFACTORY == true }}
@@ -378,7 +375,7 @@
             publish_artifactory_pre: *publish_artifactory_pre
             publish_artifactory_step: *publish_artifactory_step
             publish_github: |-
-                stage('Publish GitHub') {{
+                stage("Publish GitHub") {{
                             when {{
                                 expression {{ params.PUBLISH == true && !(JOB_NAME ==~ /((\S*)(release-macos)(\S*))/ && env.RELEASE == "true") }}
                             }}
@@ -389,7 +386,7 @@
                             }}
                         }}
             publish_website_data: |-
-                stage('Publish Website Data') {{
+                stage("Publish Website Data") {{
                             when {{
                                 expression {{ params.PUBLISH == true }}
                             }}
@@ -453,7 +450,7 @@
                         '''
                     }}
                 }}
-                stage('Prepare Devkit') {{
+                stage("Prepare Devkit") {{
                     {docker_agent|}
                     when {{
                         beforeAgent true
@@ -474,7 +471,7 @@
                         }}
                     }}
                 }}
-                stage('Download Prerequisites') {{
+                stage("Download Prerequisites") {{
                     {docker_agent|}
                     {verification_when_docker|}
                     steps {{
@@ -514,7 +511,7 @@
                         }}
                     }}
                 }}
-                stage('Run jtreg hotspot') {{
+                stage("Run jtreg hotspot") {{
                     {docker_agent|}
                     when {{
                         beforeAgent true
@@ -542,7 +539,7 @@
                         }}
                     }}
                 }}
-                stage('Run jtreg jdk') {{
+                stage("Run jtreg jdk") {{
                     {docker_agent|}
                     when {{
                         beforeAgent true
@@ -571,7 +568,7 @@
                         }}
                     }}
                 }}
-                stage('Run jtreg langtools') {{
+                stage("Run jtreg langtools") {{
                     {docker_agent|}
                     when {{
                         beforeAgent true
@@ -954,7 +951,7 @@
                 label 'build_service'
             }}
             stages {{
-                stage('Trigger Builds') {{
+                stage("Trigger Builds") {{
                     steps {{
                         script {{
                             def platforms = [
@@ -1076,7 +1073,7 @@
                 label 'build_service'
             }}
             stages {{
-                stage('Trigger Builds') {{
+                stage("Trigger Builds") {{
                     steps {{
                         script {{
                             def platforms = [
