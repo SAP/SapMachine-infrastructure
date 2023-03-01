@@ -18,7 +18,7 @@
         - linux_aarch64:
             architecture: linux-aarch64
             debarch: arm64
-            devkit_default: 'io.sapmachine.build.devkit.linux-aarch64:devkit-fedora-gcc:21-8.3.0-nogold2'
+            devkit_default: 'io.sapmachine.build.devkit.linux-aarch64:devkit-fedora-gcc:21-8.5.0'
             docker_agent: &docker_agent_aarch64 |-
                 agent {{
                                 dockerfile {{
@@ -111,7 +111,7 @@
         - linux_x86_64:
             architecture: linux-x64
             debarch: amd64
-            devkit_default: 'io.sapmachine.build.devkit.linux-x64:devkit-fedora-gcc:12-8.3.0-nogold'
+            devkit_default: 'io.sapmachine.build.devkit.linux-x64:devkit-fedora-gcc:12-8.5.0'
             docker_agent: &docker_agent_x86_64 |-
                 agent {{
                                 dockerfile {{
