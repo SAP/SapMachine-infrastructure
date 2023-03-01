@@ -25,18 +25,16 @@
             prepare_rpm_packages_docker_agent: *docker_agent_ppc64le
             prepare_rpm_packages: |-
                 steps {{
-                                    // Show the installed version of JFrog CLI.
-                                    jf '-v'
+                                // Show the installed version of JFrog CLI.
+                                jf '-v'
 
-                                    // Download rpms archive
-                                    jf "rt dl sapmachine-mvn/io/sapmachine/build/devkit/linux-ppc64le/rpms/7/rpms-7.tar.gz"
+                                // Download rpms archive
+                                jf "rt dl sapmachine-mvn/io/sapmachine/build/devkit/linux-ppc64le/rpms/7/rpms-7.tar.gz"
 
-                                    // Extract and clean up
-                                    sh "cd SapMachine/build/devkit/download/rpms/ppc64le-linux-gnu-Fedora_19 && tar --no-same-permissions --no-same-owner -xzf ${{WORKSPACE}}/rpms-7.tar.gz && rm ${{WORKSPACE}}/rpms-7.tar.gz"
-                                }}
+                                // Extract and clean up
+                                sh "cd SapMachine/build/devkit/download/rpms/ppc64le-linux-gnu-Fedora_19 && tar --no-same-permissions --no-same-owner -xzf ${{WORKSPACE}}/rpms-7.tar.gz && rm ${{WORKSPACE}}/rpms-7.tar.gz"
                             }}
                         }}
-
         - linux_x86_64:
             base_os_version_default: '12'
             docker_agent: |-
