@@ -3,50 +3,52 @@
     platforms: &platforms
         - linux_aarch64:
             base_os_version_default: '21'
-            docker_agent: |
+            docker_agent: |-
                 agent {{
                     dockerfile {{
-                        dir "SapMachine-Infrastructure/dockerfiles/devkitbuild/11/arm64"
-                        reuseNode true
-                        label "{platform}"
-                        additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
-                    }}
-                }}
+                                    dir "SapMachine-Infrastructure/dockerfiles/devkitbuild/11/arm64"
+                                    reuseNode true
+                                    label "{platform}"
+                                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
+                                }}
+                            }}
         - linux_ppc64le:
             base_os_version_default: '19'
-            docker_agent: |
+            docker_agent: |-
                 agent {{
                     dockerfile {{
-                        dir "SapMachine-Infrastructure/dockerfiles/devkitbuild/11/ppc64le"
-                        reuseNode true
-                        label "{platform}"
-                        additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
-                    }}
-                }}
-            download_rhel_stuff: |-
-                steps {{
-                                // Show the installed version of JFrog CLI.
-                                jf '-v'
+                                    dir "SapMachine-Infrastructure/dockerfiles/devkitbuild/11/ppc64le"
+                                    reuseNode true
+                                    label "{platform}"
+                                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
+                                }}
+                            }}
+            prepare_rpm_packages: |-
+                stage("Prepare RPM packages") {{
+                                steps {{
+                                    // Show the installed version of JFrog CLI.
+                                    jf '-v'
 
-                                // Download rpms archive
-                                jf "rt dl sapmachine-mvn/io/sapmachine/build/devkit/linux-ppc64le/rpms/7/rpms-7.tar.gz"
+                                    // Download rpms archive
+                                    jf "rt dl sapmachine-mvn/io/sapmachine/build/devkit/linux-ppc64le/rpms/7/rpms-7.tar.gz"
 
-                                // Extract and clean up
-                                sh "cd SapMachine/build/devkit/download/rpms/ppc64le-linux-gnu-Fedora_19 && tar --no-same-permissions --no-same-owner -xzf ${{WORKSPACE}}/rpms-7.tar.gz && rm ${{WORKSPACE}}/rpms-7.tar.gz")
+                                    // Extract and clean up
+                                    sh "cd SapMachine/build/devkit/download/rpms/ppc64le-linux-gnu-Fedora_19 && tar --no-same-permissions --no-same-owner -xzf ${{WORKSPACE}}/rpms-7.tar.gz && rm ${{WORKSPACE}}/rpms-7.tar.gz")
+                                }}
                             }}
                         }}
 
         - linux_x86_64:
             base_os_version_default: '12'
-            docker_agent: |
+            docker_agent: |-
                 agent {{
-                    dockerfile {{
-                        dir "SapMachine-Infrastructure/dockerfiles/devkitbuild/11/x86_64"
-                        reuseNode true
-                        label "{platform}"
-                        additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
-                    }}
-                }}
+                                dockerfile {{
+                                    dir "SapMachine-Infrastructure/dockerfiles/devkitbuild/11/x86_64"
+                                    reuseNode true
+                                    label "{platform}"
+                                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
+                                }}
+                            }}
 
 - project:
     name: devkit-builds
@@ -109,7 +111,7 @@
                         '''
                     }}
                 }}
-                {download_rhel_stuff|}
+                {prepare_rpm_packages|}
                 stage('Build') {{
                     {docker_agent}
                     steps {{
