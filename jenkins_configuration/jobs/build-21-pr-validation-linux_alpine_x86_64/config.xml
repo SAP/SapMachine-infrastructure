@@ -83,7 +83,7 @@
                 '''
             }
         }
-        stage('Prepare Devkit') {
+        stage("Prepare Devkit") {
             agent {
                 dockerfile {
                     dir "SapMachine-Infrastructure/dockerfiles/alpine_3/x86_64"
@@ -110,7 +110,7 @@
                 }
             }
         }
-        stage('Download Prerequisites') {
+        stage("Download Prerequisites") {
             agent {
                 dockerfile {
                     dir "SapMachine-Infrastructure/dockerfiles/alpine_3/x86_64"
@@ -168,7 +168,7 @@
                 }
             }
         }
-        stage('Run jtreg hotspot') {
+        stage("Run jtreg hotspot") {
             agent {
                 dockerfile {
                     dir "SapMachine-Infrastructure/dockerfiles/alpine_3/x86_64"
@@ -202,7 +202,7 @@
                 }
             }
         }
-        stage('Run jtreg jdk') {
+        stage("Run jtreg jdk") {
             agent {
                 dockerfile {
                     dir "SapMachine-Infrastructure/dockerfiles/alpine_3/x86_64"
@@ -237,7 +237,7 @@
                 }
             }
         }
-        stage('Run jtreg langtools') {
+        stage("Run jtreg langtools") {
             agent {
                 dockerfile {
                     dir "SapMachine-Infrastructure/dockerfiles/alpine_3/x86_64"

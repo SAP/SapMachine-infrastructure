@@ -74,7 +74,7 @@
                 '''
             }
         }
-        stage('Prepare Devkit') {
+        stage("Prepare Devkit") {
             agent {
                 dockerfile {
                     dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/arm64"
@@ -102,7 +102,7 @@
                 }
             }
         }
-        stage('Download Prerequisites') {
+        stage("Download Prerequisites") {
             agent {
                 dockerfile {
                     dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/arm64"
@@ -156,7 +156,7 @@
                 }
             }
         }
-        stage('Run jtreg hotspot') {
+        stage("Run jtreg hotspot") {
             agent {
                 dockerfile {
                     dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/arm64"
@@ -191,7 +191,7 @@
                 }
             }
         }
-        stage('Run jtreg jdk') {
+        stage("Run jtreg jdk") {
             agent {
                 dockerfile {
                     dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/arm64"
@@ -227,7 +227,7 @@
                 }
             }
         }
-        stage('Run jtreg langtools') {
+        stage("Run jtreg langtools") {
             agent {
                 dockerfile {
                     dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/arm64"
@@ -264,7 +264,7 @@
             }
         }
         
-        stage('Build Debian Packages') {
+        stage("Build Debian Packages") {
             agent {
                 dockerfile {
                     dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/arm64"
@@ -288,7 +288,7 @@
             }
         }
         
-        stage('Publish Artifactory') {
+        stage("Publish Artifactory") {
             
             steps {
                 // Show the installed version of JFrog CLI.
@@ -298,7 +298,7 @@
                 jf "rt u test.zip sapmachine-mvn/io/sapmachine/build-results/linux_aarch64/${env.ART_VERSION}/test.zip"
             }
         }
-        stage('Publish GitHub') {
+        stage("Publish GitHub") {
             when {
                 expression { params.PUBLISH == true &amp;&amp; !(JOB_NAME ==~ /((\S*)(release-macos)(\S*))/ &amp;&amp; env.RELEASE == "true") }
             }
@@ -308,7 +308,7 @@
                 }
             }
         }
-        stage('Publish Debian Packages') {
+        stage("Publish Debian Packages") {
             agent {
                 label 'agent-local-docker-ubuntu'
             }
@@ -324,7 +324,7 @@
             }
         }
         
-        stage('Generate Dockerfiles') {
+        stage("Generate Dockerfiles") {
             when {
                 expression { params.PUBLISH == true &amp;&amp; env.RELEASE == "true" }
             }
@@ -332,7 +332,7 @@
                 build job: 'generate-dockerfiles', propagate: false, wait: true
             }
         }
-        stage('Publish Website Data') {
+        stage("Publish Website Data") {
             when {
                 expression { params.PUBLISH == true }
             }
@@ -422,7 +422,7 @@
         <hudson.model.StringParameterDefinition>
           <name>DEVKIT</name>
           <description>Devkit, could be either a path that locally exists or the GAV coordinates to a tar.gz archive to be downloaded and extracted.</description>
-          <defaultValue>io.sapmachine.build.devkit.linux-aarch64:devkit-fedora-gcc:21-8.3.0-nogold2</defaultValue>
+          <defaultValue>io.sapmachine.build.devkit.linux-aarch64:devkit-fedora-gcc:21-8.5.0</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>

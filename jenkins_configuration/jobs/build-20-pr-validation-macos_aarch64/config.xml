@@ -77,7 +77,7 @@
                 '''
             }
         }
-        stage('Prepare Devkit') {
+        stage("Prepare Devkit") {
             
             when {
                 beforeAgent true
@@ -98,7 +98,7 @@
                 }
             }
         }
-        stage('Download Prerequisites') {
+        stage("Download Prerequisites") {
             
             when {
                 beforeAgent true
@@ -144,7 +144,7 @@
                 }
             }
         }
-        stage('Run jtreg hotspot') {
+        stage("Run jtreg hotspot") {
             
             when {
                 beforeAgent true
@@ -172,7 +172,7 @@
                 }
             }
         }
-        stage('Run jtreg jdk') {
+        stage("Run jtreg jdk") {
             
             when {
                 beforeAgent true
@@ -201,7 +201,7 @@
                 }
             }
         }
-        stage('Run jtreg langtools') {
+        stage("Run jtreg langtools") {
             
             when {
                 beforeAgent true

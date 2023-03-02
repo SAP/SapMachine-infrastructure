@@ -13,16 +13,15 @@
                 checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
             }
         }
-        stage('Build') {
+        stage("Build") {
             agent {
-    dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/ppc64le"
-        reuseNode true
-        label "linux_ppc64le"
-        additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
-    }
-}
-
+                dockerfile {
+                    dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/ppc64le"
+                    reuseNode true
+                    label "linux_ppc64le"
+                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
+                }
+            }
             steps {
                 // credentials are needed to avoid rate limit exceedance
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
@@ -37,7 +36,7 @@
                 }
             }
         }
-        stage('Publish') {
+        stage("Publish") {
             agent {
                 label 'agent-local-docker-ubuntu'
             }

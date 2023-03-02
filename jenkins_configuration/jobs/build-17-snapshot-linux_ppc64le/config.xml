@@ -57,7 +57,7 @@
                 '''
             }
         }
-        stage('Prepare Devkit') {
+        stage("Prepare Devkit") {
             agent {
                 dockerfile {
                     dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/ppc64le"
@@ -85,7 +85,7 @@
                 }
             }
         }
-        stage('Download Prerequisites') {
+        stage("Download Prerequisites") {
             agent {
                 dockerfile {
                     dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/ppc64le"
@@ -139,7 +139,7 @@
                 }
             }
         }
-        stage('Run jtreg hotspot') {
+        stage("Run jtreg hotspot") {
             agent {
                 dockerfile {
                     dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/ppc64le"
@@ -174,7 +174,7 @@
                 }
             }
         }
-        stage('Run jtreg jdk') {
+        stage("Run jtreg jdk") {
             agent {
                 dockerfile {
                     dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/ppc64le"
@@ -210,7 +210,7 @@
                 }
             }
         }
-        stage('Run jtreg langtools') {
+        stage("Run jtreg langtools") {
             agent {
                 dockerfile {
                     dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/ppc64le"
@@ -247,7 +247,7 @@
             }
         }
         
-        stage('Build Debian Packages') {
+        stage("Build Debian Packages") {
             agent {
                 dockerfile {
                     dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/ppc64le"
@@ -271,7 +271,7 @@
             }
         }
         
-        stage('Publish Artifactory') {
+        stage("Publish Artifactory") {
             when {
                 expression { params.UPLOAD_ARTIFACTORY == true }
             }

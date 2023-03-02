@@ -10,7 +10,7 @@
                 checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
             }
         }
-        stage('Recreate') {
+        stage("Recreate") {
             steps {
                 sh "python3 SapMachine-Infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/arm64"
             }
@@ -18,7 +18,7 @@
     }
     post {
         always {
-            cleanWs deleteDirs: true, disableDeferredWipeout: true
+            cleanWs()
         }
     }
 }

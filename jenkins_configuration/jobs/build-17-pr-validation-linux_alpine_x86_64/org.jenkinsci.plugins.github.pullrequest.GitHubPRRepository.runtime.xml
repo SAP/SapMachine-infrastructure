@@ -1,7 +1,48 @@
-<org.jenkinsci.plugins.github.pullrequest.GitHubPRRepository plugin="github-pullrequest@0.4.0">
+<org.jenkinsci.plugins.github.pullrequest.GitHubPRRepository plugin="github-pullrequest@0.5.0">
   <fullName>SAP/SapMachine</fullName>
   <githubUrl>https://github.com/SAP/SapMachine</githubUrl>
   <gitUrl>git://github.com/SAP/SapMachine.git</gitUrl>
   <sshUrl>git@github.com:SAP/SapMachine.git</sshUrl>
-  <pulls class="concurrent-hash-map" />
+  <pulls class="concurrent-hash-map">
+    <entry>
+      <int>1361</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>1361</number>
+        <issueUpdatedAt>2023-03-02 00:30:38.0 UTC</issueUpdatedAt>
+        <title>Merge to tag jdk-17.0.7+4</title>
+        <body>please pull</body>
+        <prUpdatedAt>2023-03-02 00:30:38.0 UTC</prUpdatedAt>
+        <headSha>58b479b0c5f63cefd5e01dd99b077e44f630e909</headSha>
+        <headRef>pr-jdk-17.0.7+4</headRef>
+        <mergeable>false</mergeable>
+        <baseRef>sapmachine17</baseRef>
+        <userLogin>SapMachine</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1361</htmlUrl>
+        <labels />
+        <sourceRepoOwner>SAP</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>1362</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>1362</number>
+        <issueUpdatedAt>2023-03-02 00:30:55.0 UTC</issueUpdatedAt>
+        <title>Merge to tag jdk-11.0.19+4</title>
+        <body>please pull</body>
+        <prUpdatedAt>2023-03-02 00:30:55.0 UTC</prUpdatedAt>
+        <headSha>5802a9a92604585d5cb7ff03a26926486a50e1e8</headSha>
+        <headRef>pr-jdk-11.0.19+4</headRef>
+        <mergeable>false</mergeable>
+        <baseRef>sapmachine11</baseRef>
+        <userLogin>SapMachine</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1362</htmlUrl>
+        <labels />
+        <sourceRepoOwner>SAP</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+  </pulls>
 </org.jenkinsci.plugins.github.pullrequest.GitHubPRRepository>

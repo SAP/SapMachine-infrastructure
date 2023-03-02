@@ -57,7 +57,7 @@
                 '''
             }
         }
-        stage('Prepare Devkit') {
+        stage("Prepare Devkit") {
             agent {
                 dockerfile {
                     dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/x86_64"
@@ -85,7 +85,7 @@
                 }
             }
         }
-        stage('Download Prerequisites') {
+        stage("Download Prerequisites") {
             agent {
                 dockerfile {
                     dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/x86_64"
@@ -139,7 +139,7 @@
                 }
             }
         }
-        stage('Run jtreg hotspot') {
+        stage("Run jtreg hotspot") {
             agent {
                 dockerfile {
                     dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/x86_64"
@@ -174,7 +174,7 @@
                 }
             }
         }
-        stage('Run jtreg jdk') {
+        stage("Run jtreg jdk") {
             agent {
                 dockerfile {
                     dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/x86_64"
@@ -210,7 +210,7 @@
                 }
             }
         }
-        stage('Run jtreg langtools') {
+        stage("Run jtreg langtools") {
             agent {
                 dockerfile {
                     dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/x86_64"
@@ -247,7 +247,7 @@
             }
         }
         
-        stage('Build Debian Packages') {
+        stage("Build Debian Packages") {
             agent {
                 dockerfile {
                     dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/x86_64"
@@ -270,7 +270,7 @@
                 }
             }
         }
-        stage('Build RPM Packages') {
+        stage("Build RPM Packages") {
             agent {
                 dockerfile {
                     dir "SapMachine-Infrastructure/dockerfiles/fedora-rpm"
@@ -286,7 +286,7 @@
                 sh "python3 SapMachine-Infrastructure/lib/make_rpm.py --tag=${env.SAPMACHINE_VERSION}"
             }
         }
-        stage('Publish Artifactory') {
+        stage("Publish Artifactory") {
             when {
                 expression { params.UPLOAD_ARTIFACTORY == true }
             }
@@ -385,7 +385,7 @@
         <hudson.model.StringParameterDefinition>
           <name>DEVKIT</name>
           <description>Devkit, could be either a path that locally exists or the GAV coordinates to a tar.gz archive to be downloaded and extracted.</description>
-          <defaultValue>io.sapmachine.build.devkit.linux-x64:devkit-fedora-gcc:12-8.3.0-nogold2</defaultValue>
+          <defaultValue>io.sapmachine.build.devkit.linux-x64:devkit-fedora-gcc:12-8.5.0</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>

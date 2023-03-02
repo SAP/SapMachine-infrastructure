@@ -5,7 +5,7 @@
         label 'build_service'
     }
     stages {
-        stage('Trigger Builds') {
+        stage("Trigger Builds") {
             steps {
                 script {
                     def platforms = [

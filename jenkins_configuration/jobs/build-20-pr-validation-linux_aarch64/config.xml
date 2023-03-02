@@ -84,7 +84,7 @@
                 '''
             }
         }
-        stage('Prepare Devkit') {
+        stage("Prepare Devkit") {
             agent {
                 dockerfile {
                     dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/arm64"
@@ -112,7 +112,7 @@
                 }
             }
         }
-        stage('Download Prerequisites') {
+        stage("Download Prerequisites") {
             agent {
                 dockerfile {
                     dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/arm64"
@@ -172,7 +172,7 @@
                 }
             }
         }
-        stage('Run jtreg hotspot') {
+        stage("Run jtreg hotspot") {
             agent {
                 dockerfile {
                     dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/arm64"
@@ -207,7 +207,7 @@
                 }
             }
         }
-        stage('Run jtreg jdk') {
+        stage("Run jtreg jdk") {
             agent {
                 dockerfile {
                     dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/arm64"
@@ -243,7 +243,7 @@
                 }
             }
         }
-        stage('Run jtreg langtools') {
+        stage("Run jtreg langtools") {
             agent {
                 dockerfile {
                     dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/arm64"
@@ -422,7 +422,7 @@
         <hudson.model.StringParameterDefinition>
           <name>DEVKIT</name>
           <description>Devkit, could be either a path that locally exists or the GAV coordinates to a tar.gz archive to be downloaded and extracted.</description>
-          <defaultValue>io.sapmachine.build.devkit.linux-aarch64:devkit-fedora-gcc:21-8.3.0-nogold2</defaultValue>
+          <defaultValue>io.sapmachine.build.devkit.linux-aarch64:devkit-fedora-gcc:21-8.5.0</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>

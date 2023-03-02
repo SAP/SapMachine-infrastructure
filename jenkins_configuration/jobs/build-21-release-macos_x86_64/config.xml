@@ -74,7 +74,7 @@
                 '''
             }
         }
-        stage('Prepare Devkit') {
+        stage("Prepare Devkit") {
             
             when {
                 beforeAgent true
@@ -95,7 +95,7 @@
                 }
             }
         }
-        stage('Download Prerequisites') {
+        stage("Download Prerequisites") {
             
             
             steps {
@@ -135,7 +135,7 @@
                 }
             }
         }
-        stage('Run jtreg hotspot') {
+        stage("Run jtreg hotspot") {
             
             when {
                 beforeAgent true
@@ -163,7 +163,7 @@
                 }
             }
         }
-        stage('Run jtreg jdk') {
+        stage("Run jtreg jdk") {
             
             when {
                 beforeAgent true
@@ -192,7 +192,7 @@
                 }
             }
         }
-        stage('Run jtreg langtools') {
+        stage("Run jtreg langtools") {
             
             when {
                 beforeAgent true
@@ -226,7 +226,7 @@
             
             
         
-        stage('Publish Artifactory') {
+        stage("Publish Artifactory") {
             
             steps {
                 // Show the installed version of JFrog CLI.
@@ -236,7 +236,7 @@
                 jf "rt u test.zip sapmachine-mvn/io/sapmachine/build-results/macos_x86_64/${env.ART_VERSION}/test.zip"
             }
         }
-        stage('Publish GitHub') {
+        stage("Publish GitHub") {
             when {
                 expression { params.PUBLISH == true &amp;&amp; !(JOB_NAME ==~ /((\S*)(release-macos)(\S*))/ &amp;&amp; env.RELEASE == "true") }
             }
@@ -247,7 +247,7 @@
             }
         }
         
-        stage('Create Brew Casks') {
+        stage("Create Brew Casks") {
             when {
                 expression { params.PUBLISH == true &amp;&amp; JOB_NAME ==~ /((\S*)(release-macos)(\S*))/ &amp;&amp; env.RELEASE != "true" }
             }
@@ -260,7 +260,7 @@
             }
         }
         
-        stage('Publish Website Data') {
+        stage("Publish Website Data") {
             when {
                 expression { params.PUBLISH == true }
             }
