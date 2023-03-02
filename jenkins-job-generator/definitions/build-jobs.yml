@@ -92,7 +92,7 @@
         - linux_ppc64le:
             architecture: linux-ppc64le
             debarch: ppc64el
-            devkit_default: 'io.sapmachine.build.devkit.linux-ppc64le:devkit-rhel-gcc:7-8.3.0-nogold2'
+            devkit_default: 'io.sapmachine.build.devkit.linux-ppc64le:devkit-fedora-gcc:19-8.5.0'
             docker_agent: &docker_agent_ppc64le |-
                 agent {{
                                 dockerfile {{
