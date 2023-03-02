@@ -59,7 +59,13 @@ fi
 echo Extracting ${DEVKIT_ARCHIVE_PATH} to ${DEVKIT_PATH}...
 mkdir ${DEVKIT_PATH}
 pushd ${DEVKIT_PATH}
-tar xzf ${DEVKIT_ARCHIVE_PATH}
+
+if [[ $UNAME == "Linux" ]]; then
+  tar --no-same-permissions --no-same-owner --strip-components=1 -xzf ${DEVKIT_ARCHIVE_PATH}
+else
+  tar xzf ${DEVKIT_ARCHIVE_PATH}
+fi
+
 popd
 echo Extracted devkit.
 
