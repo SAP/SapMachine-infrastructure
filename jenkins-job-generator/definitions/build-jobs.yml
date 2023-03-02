@@ -3,6 +3,9 @@
     majors: &majors_build
         - '11':
            branch_name: sapmachine11
+           linux_aarch64_devkit: 'io.sapmachine.build.devkit.linux-aarch64:devkit-fedora-gcc:21-8.5.0'
+           linux_ppc64le_devkit: 'io.sapmachine.build.devkit.linux-ppc64le:devkit-fedora-gcc:19-8.5.0'
+           linux_x86_64_devkit: 'io.sapmachine.build.devkit.linux-x64:devkit-fedora-gcc:12-8.5.0'
         - '17':
            branch_name: sapmachine17
         - '19':
@@ -18,7 +21,7 @@
         - linux_aarch64:
             architecture: linux-aarch64
             debarch: arm64
-            devkit_default: 'io.sapmachine.build.devkit.linux-aarch64:devkit-fedora-gcc:21-8.5.0'
+            devkit_default: '{linux_aarch64_devkit|io.sapmachine.build.devkit.linux-aarch64:devkit-fedora-gcc:21-10.3.0}'
             docker_agent: &docker_agent_aarch64 |-
                 agent {{
                                 dockerfile {{
@@ -92,7 +95,7 @@
         - linux_ppc64le:
             architecture: linux-ppc64le
             debarch: ppc64el
-            devkit_default: 'io.sapmachine.build.devkit.linux-ppc64le:devkit-fedora-gcc:19-8.5.0'
+            devkit_default: '{linux_ppc64le_devkit|io.sapmachine.build.devkit.linux-ppc64le:devkit-fedora-gcc:19-10.3.0}'
             docker_agent: &docker_agent_ppc64le |-
                 agent {{
                                 dockerfile {{
@@ -111,7 +114,7 @@
         - linux_x86_64:
             architecture: linux-x64
             debarch: amd64
-            devkit_default: 'io.sapmachine.build.devkit.linux-x64:devkit-fedora-gcc:12-8.5.0'
+            devkit_default: '{linux_x86_64_devkit|io.sapmachine.build.devkit.linux-x64:devkit-fedora-gcc:19-10.3.0}'
             docker_agent: &docker_agent_x86_64 |-
                 agent {{
                                 dockerfile {{
