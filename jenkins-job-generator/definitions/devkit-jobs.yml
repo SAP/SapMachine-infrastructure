@@ -25,6 +25,9 @@
                             }}
             prepare_rpm_packages: |-
                 stage("Prepare RPM packages") {{
+                            when {{
+                                expression {{ params.BASE_OS_VERSION == "19" }}
+                            }}
                             steps {{
                                 // Show the installed version of JFrog CLI.
                                 jf '-v'
