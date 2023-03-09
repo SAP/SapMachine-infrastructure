@@ -123,6 +123,7 @@
     <permission>USER:hudson.model.Hudson.Administer:SapMachine</permission>
     <permission>GROUP:hudson.model.Hudson.Read:authenticated</permission>
     <permission>GROUP:hudson.model.Hudson.Read:SAP</permission>
+    <permission>GROUP:hudson.model.Hudson.Read:SAP*sapmachine-team</permission>
     <permission>USER:hudson.model.Hudson.Read:arno</permission>
     <permission>USER:hudson.model.Hudson.Read:ArnoZeller</permission>
     <permission>USER:hudson.model.Hudson.Read:chalstrick</permission>
@@ -133,6 +134,7 @@
     <permission>USER:hudson.model.Hudson.Read:RealCLanger</permission>
     <permission>USER:hudson.model.Hudson.Read:SapMachine</permission>
     <permission>GROUP:hudson.model.Item.Build:SAP</permission>
+    <permission>GROUP:hudson.model.Item.Build:SAP*sapmachine-team</permission>
     <permission>USER:hudson.model.Item.Build:arno</permission>
     <permission>USER:hudson.model.Item.Build:ArnoZeller</permission>
     <permission>USER:hudson.model.Item.Build:chalstrick</permission>
@@ -142,6 +144,7 @@
     <permission>USER:hudson.model.Item.Build:parttimenerd</permission>
     <permission>USER:hudson.model.Item.Build:RealCLanger</permission>
     <permission>USER:hudson.model.Item.Build:SapMachine</permission>
+    <permission>GROUP:hudson.model.Item.Cancel:SAP*sapmachine-team</permission>
     <permission>USER:hudson.model.Item.Cancel:arno</permission>
     <permission>USER:hudson.model.Item.Cancel:ArnoZeller</permission>
     <permission>USER:hudson.model.Item.Cancel:chalstrick</permission>
@@ -199,6 +202,7 @@
     <permission>USER:hudson.model.Item.Move:SapMachine</permission>
     <permission>GROUP:hudson.model.Item.Read:authenticated</permission>
     <permission>GROUP:hudson.model.Item.Read:SAP</permission>
+    <permission>GROUP:hudson.model.Item.Read:SAP*sapmachine-team</permission>
     <permission>USER:hudson.model.Item.Read:anonymous</permission>
     <permission>USER:hudson.model.Item.Read:arno</permission>
     <permission>USER:hudson.model.Item.Read:ArnoZeller</permission>
@@ -227,6 +231,7 @@
     <permission>USER:hudson.model.Run.Delete:parttimenerd</permission>
     <permission>USER:hudson.model.Run.Delete:RealCLanger</permission>
     <permission>USER:hudson.model.Run.Delete:SapMachine</permission>
+    <permission>GROUP:hudson.model.Run.Replay:SAP*sapmachine-team</permission>
     <permission>USER:hudson.model.Run.Replay:arno</permission>
     <permission>USER:hudson.model.Run.Replay:ArnoZeller</permission>
     <permission>USER:hudson.model.Run.Replay:chalstrick</permission>
@@ -236,6 +241,7 @@
     <permission>USER:hudson.model.Run.Replay:parttimenerd</permission>
     <permission>USER:hudson.model.Run.Replay:RealCLanger</permission>
     <permission>USER:hudson.model.Run.Replay:SapMachine</permission>
+    <permission>GROUP:hudson.model.Run.Update:SAP*sapmachine-team</permission>
     <permission>USER:hudson.model.Run.Update:arno</permission>
     <permission>USER:hudson.model.Run.Update:ArnoZeller</permission>
     <permission>USER:hudson.model.Run.Update:chalstrick</permission>
@@ -274,6 +280,7 @@
     <permission>USER:hudson.model.View.Delete:SapMachine</permission>
     <permission>GROUP:hudson.model.View.Read:authenticated</permission>
     <permission>GROUP:hudson.model.View.Read:SAP</permission>
+    <permission>GROUP:hudson.model.View.Read:SAP*sapmachine-team</permission>
     <permission>USER:hudson.model.View.Read:anonymous</permission>
     <permission>USER:hudson.model.View.Read:arno</permission>
     <permission>USER:hudson.model.View.Read:ArnoZeller</permission>
@@ -321,6 +328,7 @@
     <permission>USER:org.jenkins.plugins.lockableresources.LockableResourcesManager.Unlock:RealCLanger</permission>
     <permission>USER:org.jenkins.plugins.lockableresources.LockableResourcesManager.Unlock:SapMachine</permission>
     <permission>GROUP:org.jenkins.plugins.lockableresources.LockableResourcesManager.View:SAP</permission>
+    <permission>GROUP:org.jenkins.plugins.lockableresources.LockableResourcesManager.View:SAP*sapmachine-team</permission>
     <permission>USER:org.jenkins.plugins.lockableresources.LockableResourcesManager.View:arno</permission>
     <permission>USER:org.jenkins.plugins.lockableresources.LockableResourcesManager.View:ArnoZeller</permission>
     <permission>USER:org.jenkins.plugins.lockableresources.LockableResourcesManager.View:chalstrick</permission>
@@ -330,6 +338,7 @@
     <permission>USER:org.jenkins.plugins.lockableresources.LockableResourcesManager.View:parttimenerd</permission>
     <permission>USER:org.jenkins.plugins.lockableresources.LockableResourcesManager.View:RealCLanger</permission>
     <permission>USER:org.jenkins.plugins.lockableresources.LockableResourcesManager.View:SapMachine</permission>
+    <permission>GROUP:org.jenkinsci.plugins.pluginusage.PluginUsageView.PluginView:SAP*sapmachine-team</permission>
     <permission>USER:org.jenkinsci.plugins.pluginusage.PluginUsageView.PluginView:arno</permission>
     <permission>USER:org.jenkinsci.plugins.pluginusage.PluginUsageView.PluginView:ArnoZeller</permission>
     <permission>USER:org.jenkinsci.plugins.pluginusage.PluginUsageView.PluginView:chalstrick</permission>
@@ -344,7 +353,7 @@
     <githubWebUri>https://github.com</githubWebUri>
     <githubApiUri>https://api.github.com</githubApiUri>
     <clientID>aab9eef71d4565e3e772</clientID>
-    <clientSecret>{AQAAABAAAAAw1wrRzH7y5ZrAx3tP8Eldtcjv6sPxCkOckEvcKi9p/iYN4zok9LgfqSsI9HEBmz2CEMeAv15/UPV27YPuy/fAfg==}</clientSecret>
+    <clientSecret>{AQAAABAAAAAwR27NyE9IqemvqL6Up4LY8MaR9Buf4UfBDi8WRhsmAIHJwKh6XOV7Ij1XtZUiKDG+yerjbY8oYyCDQ3whv8hfQg==}</clientSecret>
     <oauthScopes>read:org,user:email,repo</oauthScopes>
   </securityRealm>
   <disableRememberMe>false</disableRememberMe>
@@ -356,7 +365,7 @@
   <viewsTabBar class="hudson.views.DefaultViewsTabBar" />
   <myViewsTabBar class="hudson.views.DefaultMyViewsTabBar" />
   <clouds>
-    <hudson.plugins.ec2.EC2Cloud plugin="ec2@2.0.5">
+    <hudson.plugins.ec2.EC2Cloud plugin="ec2@2.0.6">
       <name>ec2-SapMachine Cloud</name>
       <useInstanceProfileForCredentials>false</useInstanceProfileForCredentials>
       <roleArn />
