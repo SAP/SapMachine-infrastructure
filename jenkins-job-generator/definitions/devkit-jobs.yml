@@ -7,7 +7,7 @@
             docker_agent: |-
                 agent {{
                                 dockerfile {{
-                                    dir "SapMachine-Infrastructure/devkits/dockerfiles/11/arm64"
+                                    dir "SapMachine-Infrastructure/devkits/dockerfiles/arm64"
                                     reuseNode true
                                     label "{platform}"
                                 }}
@@ -18,7 +18,7 @@
             docker_agent: |-
                 agent {{
                                 dockerfile {{
-                                    dir "SapMachine-Infrastructure/devkits/dockerfiles/11/ppc64le"
+                                    dir "SapMachine-Infrastructure/devkits/dockerfiles/ppc64le"
                                     reuseNode true
                                     label "{platform}"
                                 }}
@@ -45,7 +45,7 @@
             docker_agent: |-
                 agent {{
                                 dockerfile {{
-                                    dir "SapMachine-Infrastructure/devkits/dockerfiles/11/x86_64"
+                                    dir "SapMachine-Infrastructure/devkits/dockerfiles/x86_64"
                                     reuseNode true
                                     label "{platform}"
                                 }}
