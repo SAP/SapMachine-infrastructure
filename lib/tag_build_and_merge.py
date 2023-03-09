@@ -20,17 +20,17 @@ sapMachinePushURL = str.format('https://{0}:{1}@github.com/SAP/SapMachine.git',
 def run_jenkins_jobs(major, tag):
     print(str.format('Starting jenkins jobs for {0}: {1}...', major, tag))
 
-    if 'JENKINS_CREDENTIALS_USR' not in os.environ:
-        print("JENKINS_CREDENTIALS_USR environment variable not found, can not start jenkins jobs.")
+    if 'GIT_USER' not in os.environ:
+        print("GIT_USER environment variable not found, can not start jenkins jobs.")
         return
 
-    if 'JENKINS_CREDENTIALS_PSW' not in os.environ:
-        print("JENKINS_CREDENTIALS_PSW environment variable not found, can not start jenkins jobs.")
+    if 'GIT_PASSWORD' not in os.environ:
+        print("GIT_PASSWORD environment variable not found, can not start jenkins jobs.")
         return
 
     jenkins_url = 'https://ci.sapmachine.io'
-    jenkins_user = os.environ['JENKINS_CREDENTIALS_USR']
-    jenkins_password = os.environ['JENKINS_CREDENTIALS_PSW']
+    jenkins_user = os.environ['GIT_USER']
+    jenkins_password = os.environ['GIT_PASSWORD']
 
     server = Jenkins(jenkins_url, username=jenkins_user, password=jenkins_password,
         requester=CrumbRequester(
