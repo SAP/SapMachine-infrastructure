@@ -16,7 +16,7 @@
         stage("Checkout SapMachine Repository") {
             agent {
                 dockerfile {
-                    dir "SapMachine-Infrastructure/dockerfiles/devkitbuild/11/x86_64"
+                    dir "SapMachine-Infrastructure/devkits/dockerfiles/x86_64"
                     reuseNode true
                     label "linux_x86_64"
                 }
@@ -35,7 +35,7 @@
         stage("Build") {
             agent {
                 dockerfile {
-                    dir "SapMachine-Infrastructure/dockerfiles/devkitbuild/11/x86_64"
+                    dir "SapMachine-Infrastructure/devkits/dockerfiles/x86_64"
                     reuseNode true
                     label "linux_x86_64"
                 }
