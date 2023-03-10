@@ -37,7 +37,7 @@ CMD ["jshell"]
 readmefile_template = '''
 ### Overview
 
-The image in this repository contains the ${what} releases ${major} (version: ${version}) of the SapMachine Java virtual machine (JVM). SapMachine is an OpenJDK based JVM that is build, quality tested and long-term supported by SAP. It is the default JVM on the [SAP Cloud Platform](https://cloudplatform.sap.com/index.html) and it is also supported as a [Standard JRE](https://github.com/cloudfoundry/java-buildpack/blob/master/docs/jre-sap_machine_jre.md) in the [Cloud Foundry Java Build Pack](https://github.com/cloudfoundry/java-buildpack).
+The image in this repository contains the ${what} releases ${major} (version: ${version}) of the SapMachine Java virtual machine (JVM). SapMachine is an OpenJDK based JVM that is built, quality tested and long-term supported by SAP. It is the default JVM on the [SAP Cloud Platform](https://cloudplatform.sap.com/index.html) and it is also supported as a [Standard JRE](https://github.com/cloudfoundry/java-buildpack/blob/master/docs/jre-sap_machine_jre.md) in the [Cloud Foundry Java Build Pack](https://github.com/cloudfoundry/java-buildpack).
 
 For more information see the [SapMachine website](https://sapmachine.io).
 
