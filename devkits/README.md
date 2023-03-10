@@ -2,7 +2,7 @@
 
 ## Linux devkits
 
-Linux devkits are built with dedicated jobs on our [Jenkins CI server](https://ci.sapmachine.io).
+Linux devkits are built with dedicated jobs on our [Jenkins CI server](https://ci.sapmachine.io). The build is done in Docker containers as defined in [dockerfiles](dockerfiles). We can use Ubuntu 20 based containers currently for all used devkits. The actual build server has to be on an OS-Release that supports the glibc requirements that result from the used build container version.
 
 We use the following parameters:
 
