@@ -1,6 +1,23 @@
 <hudson.model.Queue_-State>
-  <counter>11660</counter>
+  <counter>11671</counter>
   <items>
+    <hudson.model.Queue_-BlockedItem>
+      <actions>
+        <hudson.model.CauseAction>
+          <causeBag class="linked-hash-map">
+            <entry>
+              <hudson.triggers.TimerTrigger_-TimerTriggerCause />
+              <int>1</int>
+            </entry>
+          </causeBag>
+        </hudson.model.CauseAction>
+      </actions>
+      <id>11669</id>
+      <task class="org.jenkinsci.plugins.workflow.job.WorkflowJob">async-prof-repo-update</task>
+      <inQueueSince>1678754700355</inQueueSince>
+      <buildableStartMilliseconds>1678754700356</buildableStartMilliseconds>
+      <outer-class>queue</outer-class>
+    </hudson.model.Queue_-BlockedItem>
     <hudson.model.Queue_-BuildableItem>
       <actions />
       <id>11658</id>
