@@ -22,7 +22,7 @@
       <parameterDefinitions>
         <hudson.model.StringParameterDefinition>
           <name>SAPMACHINE_VERSION</name>
-          <description>The SapMachine Release Tag to upload MacOS artifacts for.</description>
+          <description>The SapMachine Release Tag to upload MacOS artifacts for. Should be starting with 'sapmachine-'. E.g. 'sapmachine-17.0.6'</description>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
@@ -34,6 +34,12 @@
           <name>DOWNLOAD_URL_PREFIX</name>
           <description>will be suffixed with e.g. /sapmachine-jdk_darwinaarch64/11.0.18/sapmachine-jdk_darwinaarch64-11.0.18.dmg</description>
           <defaultValue>https://common.repositories.cloud.sap/artifactory/naas-deploy-releases-notarization/com/sap/sapmachine</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>DOWNLOAD_SYMBOLS_URL_PREFIX</name>
+          <description>will be suffixed with e.g. '/sapmachine-symbols_darwinaarch64/17.0.6/sapmachine-symbols_darwinaarch64-17.0.6.tar.gz'</description>
+          <defaultValue>https://common.repositories.cloud.sap/artifactory/deploy.milestones.xmake/com/sap/sapmachine</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
@@ -57,7 +63,7 @@ for platform in aarch intel ;do
       curl -u "${ARTIFACTORY_USER}:${ARTIFACTORY_PWD}" -o ${platform^^}_${type^^}_$dsuffix $DOWNLOAD_URL_PREFIX/sapmachine-${type}_darwin${platform}64/${SAPMACHINE_VERSION#sapmachine-}/sapmachine-${type}_darwin${platform}64-${SAPMACHINE_VERSION#sapmachine-}.$suffix
     done
   done
-  cp ${platform^^}_JRE_TGZ ${platform^^}_SYMBOLS # to be deleted
+  curl -u "${ARTIFACTORY_USER}:${ARTIFACTORY_PWD}" -o ${platform^^}_SYMBOLS $DOWNLOAD_SYMBOLS_URL_PREFIX/sapmachine-symbols_darwin${platform}64/${SAPMACHINE_VERSION#sapmachine-}/sapmachine-symbols_darwin${platform}64-${SAPMACHINE_VERSION#sapmachine-}.tar.gz
 done
 </command>
       <configuredLocalRules />
