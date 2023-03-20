@@ -53,11 +53,11 @@ if [[ ! -z $SAPMACHINE_VERSION ]]; then
   _GIT_TAG=" -t $SAPMACHINE_VERSION"
 fi
 if [[ ! -z $JDK_BUILD ]]; then
-  _BUILD_NUMBER=" -b $BUILD_NUMBER"
+  _JDK_BUILD=" -b $JDK_BUILD"
 fi
 
 # need to do the python call first and the eval in a second step to bail out on $? != 0
-_CONFIGURE_OPTS=$(python3 ../SapMachine-Infrastructure/lib/get_configure_opts.py $_GIT_TAG $_BUILD_NUMBER)
+_CONFIGURE_OPTS=$(python3 ../SapMachine-Infrastructure/lib/get_configure_opts.py $_GIT_TAG $_JDK_BUILD)
 eval _CONFIGURE_OPTS=(${_CONFIGURE_OPTS})
 
 (set -x &&
