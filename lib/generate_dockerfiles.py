@@ -14,7 +14,7 @@ from utils import github_api_request
 from versions import SapMachineTag
 
 dockerfile_template = '''
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 
 RUN apt-get update \\
     && apt-get install -y --no-install-recommends ca-certificates gnupg2 \\
