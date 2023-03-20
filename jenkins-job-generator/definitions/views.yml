@@ -17,10 +17,16 @@
     regex: 'build-[\d]+-pr-validation-.*$|validate-pr-[\d]+$'
 
 - view:
-    name: 'Linux x86 64 Builds'
-    description: 'Linux x86 64 Builds'
+    name: 'Linux aarch64 Builds'
+    description: 'Linux aarch64 Builds'
     view-type: list
-    regex: 'build-.*-linux_x86_64$'
+    regex: 'build-.*-linux_aarch64$'
+
+- view:
+    name: 'Linux Alpine Builds'
+    description: 'Linux aarch64 Builds'
+    view-type: list
+    regex: 'build-.*-linux_alpine_x86_64$'
 
 - view:
     name: 'Linux ppc64le Builds'
@@ -29,22 +35,22 @@
     regex: 'build-.*-linux_ppc64le$'
 
 - view:
-    name: 'Linux aarch64 Builds (Beta)'
-    description: 'Linux aarch64 Builds (Beta)'
+    name: 'Linux x86 64 Builds'
+    description: 'Linux x86 64 Builds'
     view-type: list
-    regex: 'build-.*-linux_aarch64$'
-    
-- view:
-    name: 'macOS x86 64 Builds'
-    description: 'macOS x86 64 Builds'
-    view-type: list
-    regex: 'build-.*-macos_x86_64$'
+    regex: 'build-.*-linux_x86_64$'
 
 - view:
-    name: 'macOS aarch 64 Builds'
+    name: 'MacOS aarch 64 Builds'
     description: 'macOS aarch 64 Builds'
     view-type: list
     regex: 'build-.*-macos_aarch64$'
+
+- view:
+    name: 'MacOS x86 64 Builds'
+    description: 'macOS x86 64 Builds'
+    view-type: list
+    regex: 'build-.*-macos_x86_64$'
 
 - view:
     name: 'Windows x86 64 Builds'
@@ -94,13 +100,13 @@
     regex: '(resign-debian-repository-.*|build-debian-package-.*|rpm-package)'
 
 - view:
-    name: 'Async Profiler Builds'
-    description: 'Async Profiler Builds'
+    name: 'Async Profiler'
+    description: 'Async Profiler Builds and other related jobs'
     view-type: list
     regex: 'build-async-profiler-.*'
 
 - view:
-    name: 'JMC Jobs'
-    description: 'JMC Builds and other JMC related jobs'
+    name: 'JMC'
+    description: 'JMC Builds and other related jobs'
     view-type: list
     regex: '.*jmc.*'
