@@ -106,6 +106,16 @@
 						</configuration>
 					</execution>
 					<execution>
+						<id>https://github.com/SAP/SapMachine/releases/download/sapmachine-${project.version}/${project.artifactId}-${project.version}_linux-x64-musl_bin.tar.gz</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>wget</goal>
+						</goals>
+						<configuration>
+							<url>https://github.com/SAP/SapMachine/releases/download/sapmachine-${project.version}/${project.artifactId}-${project.version}_linux-x64-musl_bin.tar.gz</url>
+						</configuration>
+					</execution>
+					<execution>
 						<id>https://github.com/SAP/SapMachine/releases/download/sapmachine-${project.version}/${project.artifactId}-${project.version}_linux-aarch64_bin.tar.gz</id>
 						<phase>process-resources</phase>
 						<goals>
@@ -169,6 +179,11 @@
 								<artifact>
 									<file>${project.build.directory}/${project.artifactId}-${project.version}_linux-x64_bin.tar.gz</file>
 									<classifier>linux-x64</classifier>
+									<type>tar.gz</type>
+								</artifact>
+								<artifact>
+									<file>${project.build.directory}/${project.artifactId}-${project.version}_linux-x64-musl_bin.tar.gz</file>
+									<classifier>linux-x64-musl</classifier>
 									<type>tar.gz</type>
 								</artifact>
 								<artifact>
