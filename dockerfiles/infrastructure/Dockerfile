@@ -24,8 +24,4 @@ gpg-agent
 
 RUN useradd -ms /bin/bash jenkins -u 1002
 
-RUN pip3 install wheel
-RUN pip3 install jenkins-job-builder
-RUN pip3 install jenkinsapi
-RUN pip3 install pyyaml
-RUN pip3 install requests
+RUN pip3 install wheel jenkins-job-builder jenkinsapi pyyaml requests
