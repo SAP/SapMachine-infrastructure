@@ -44,7 +44,9 @@ exception_list = [
     'openjdk/jdk17',
     'openjdk/jdk18',
     'openjdk/jdk18u',
-    'openjdk/jdk19'
+    'openjdk/jdk19',
+    'openjdk/jdk19u',
+    'openjdk/jdk20'
 ]
 
 def test_repositories(scm_base, repository_base, repository_suffix = ''):
