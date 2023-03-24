@@ -50,15 +50,13 @@ RUN wget --no-verbose --show-progress --progress=bar:force:noscroll https://$ART
 RUN wget --no-verbose --show-progress --progress=bar:force:noscroll https://$ARTIFACTORY_CREDS@common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build/devkit/linux-ppc64le/${DEVKIT_NAME}/${DEVKIT_VERSION_3}/${DEVKIT_NAME}-${DEVKIT_VERSION_3}.tar.gz 2>&1
 
 WORKDIR /opt/devkits/${DEVKIT_NAME}-${DEVKIT_VERSION}
-RUN tar --no-same-permissions --no-same-owner --strip-components=1 -xzf ../${DEVKIT_NAME}-${DEVKIT_VERSION}.tar.gz
+RUN tar --no-same-permissions --no-same-owner --strip-components=1 -xzf ../${DEVKIT_NAME}-${DEVKIT_VERSION}.tar.gz && chmod 755 $(find /opt/devkits/${DEVKIT_NAME}-${DEVKIT_VERSION} -type d) && chmod u+r,g+r,a+r $(find /opt/devkits/${DEVKIT_NAME}-${DEVKIT_VERSION} -type f)
 
 WORKDIR /opt/devkits/${DEVKIT_NAME}-${DEVKIT_VERSION_2}
-RUN tar --no-same-permissions --no-same-owner --strip-components=1 -xzf ../${DEVKIT_NAME}-${DEVKIT_VERSION_2}.tar.gz
+RUN tar --no-same-permissions --no-same-owner --strip-components=1 -xzf ../${DEVKIT_NAME}-${DEVKIT_VERSION_2}.tar.gz && chmod u+r,g+r,a+r $(find /opt/devkits/${DEVKIT_NAME}-${DEVKIT_VERSION_2} -type f)
 
 WORKDIR /opt/devkits/${DEVKIT_NAME}-${DEVKIT_VERSION_3}
-RUN tar --no-same-permissions --no-same-owner --strip-components=1 -xzf ../${DEVKIT_NAME}-${DEVKIT_VERSION_3}.tar.gz
-
-RUN chmod 755 $(find /opt/devkits -type d) && chmod u+r,g+r,a+r $(find /opt/devkits -type f)
+RUN tar --no-same-permissions --no-same-owner --strip-components=1 -xzf ../${DEVKIT_NAME}-${DEVKIT_VERSION_3}.tar.gz && chmod u+r,g+r,a+r $(find /opt/devkits/${DEVKIT_NAME}-${DEVKIT_VERSION_3} -type f)
 
 WORKDIR /tmp
 ADD https://raw.githubusercontent.com/tstuefe/tinyreaper/master/tinyreaper.c /tmp/
