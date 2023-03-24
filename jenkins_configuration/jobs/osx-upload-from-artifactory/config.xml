@@ -60,11 +60,12 @@ for platform in aarch intel ;do
   for type in jdk jre ;do
     for suffix in tar.gz dmg ;do
       [ "$suffix" == "tar.gz" ] &amp;&amp; dsuffix="TGZ" || dsuffix=${suffix^^}
-      curl -u "${ARTIFACTORY_USER}:${ARTIFACTORY_PWD}" -o ${platform^^}_${type^^}_$dsuffix $DOWNLOAD_URL_PREFIX/sapmachine-${type}_darwin${platform}64/${SAPMACHINE_VERSION#sapmachine-}/sapmachine-${type}_darwin${platform}64-${SAPMACHINE_VERSION#sapmachine-}.$suffix
+      curl -su "${ARTIFACTORY_USER}:${ARTIFACTORY_PWD}" -o ${platform^^}_${type^^}_$dsuffix $DOWNLOAD_URL_PREFIX/sapmachine-${type}_darwin${platform}64/${SAPMACHINE_VERSION#sapmachine-}/sapmachine-${type}_darwin${platform}64-${SAPMACHINE_VERSION#sapmachine-}-notarized.$suffix
     done
   done
-  curl -u "${ARTIFACTORY_USER}:${ARTIFACTORY_PWD}" -o ${platform^^}_SYMBOLS $DOWNLOAD_SYMBOLS_URL_PREFIX/sapmachine-symbols_darwin${platform}64/${SAPMACHINE_VERSION#sapmachine-}/sapmachine-symbols_darwin${platform}64-${SAPMACHINE_VERSION#sapmachine-}.tar.gz
+  curl -su "${ARTIFACTORY_USER}:${ARTIFACTORY_PWD}" -o ${platform^^}_SYMBOLS $DOWNLOAD_SYMBOLS_URL_PREFIX/sapmachine-symbols_darwin${platform}64/${SAPMACHINE_VERSION#sapmachine-}/sapmachine-symbols_darwin${platform}64-${SAPMACHINE_VERSION#sapmachine-}.tar.gz
 done
+ls -al .
 </command>
       <configuredLocalRules />
     </hudson.tasks.Shell>
