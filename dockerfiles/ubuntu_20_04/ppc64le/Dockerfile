@@ -1,8 +1,10 @@
 FROM ubuntu:20.04
 
 ARG ARTIFACTORY_CREDS
-ARG DEVKIT_NAME=devkit-rhel-gcc
-ARG DEVKIT_VERSION=7-8.3.0-nogold2
+ARG DEVKIT_NAME=devkit-fedora-gcc
+ARG DEVKIT_VERSION=19-8.5.0
+ARG DEVKIT_VERSION_2=19-10.3.0
+ARG DEVKIT_VERSION_3=27-11.3.0
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -42,9 +44,21 @@ RUN useradd -ms /bin/bash jenkinsc -u 1002
 RUN pip3 install requests
 
 WORKDIR /opt/devkits
+
 RUN wget --no-verbose --show-progress --progress=bar:force:noscroll https://$ARTIFACTORY_CREDS@common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build/devkit/linux-ppc64le/${DEVKIT_NAME}/${DEVKIT_VERSION}/${DEVKIT_NAME}-${DEVKIT_VERSION}.tar.gz 2>&1
+RUN wget --no-verbose --show-progress --progress=bar:force:noscroll https://$ARTIFACTORY_CREDS@common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build/devkit/linux-ppc64le/${DEVKIT_NAME}/${DEVKIT_VERSION_2}/${DEVKIT_NAME}-${DEVKIT_VERSION_2}.tar.gz 2>&1
+RUN wget --no-verbose --show-progress --progress=bar:force:noscroll https://$ARTIFACTORY_CREDS@common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build/devkit/linux-ppc64le/${DEVKIT_NAME}/${DEVKIT_VERSION_3}/${DEVKIT_NAME}-${DEVKIT_VERSION_3}.tar.gz 2>&1
+
 WORKDIR /opt/devkits/${DEVKIT_NAME}-${DEVKIT_VERSION}
-RUN tar --no-same-permissions --no-same-owner --strip-components=1 -xzf ../${DEVKIT_NAME}-${DEVKIT_VERSION}.tar.gz && chmod 755 $(find /opt/devkits -type d) && chmod u+r,g+r,a+r $(find /opt/devkits -type f)
+RUN tar --no-same-permissions --no-same-owner --strip-components=1 -xzf ../${DEVKIT_NAME}-${DEVKIT_VERSION}.tar.gz
+
+WORKDIR /opt/devkits/${DEVKIT_NAME}-${DEVKIT_VERSION_2}
+RUN tar --no-same-permissions --no-same-owner --strip-components=1 -xzf ../${DEVKIT_NAME}-${DEVKIT_VERSION_2}.tar.gz
+
+WORKDIR /opt/devkits/${DEVKIT_NAME}-${DEVKIT_VERSION_3}
+RUN tar --no-same-permissions --no-same-owner --strip-components=1 -xzf ../${DEVKIT_NAME}-${DEVKIT_VERSION_3}.tar.gz
+
+RUN chmod 755 $(find /opt/devkits -type d) && chmod u+r,g+r,a+r $(find /opt/devkits -type f)
 
 WORKDIR /tmp
 ADD https://raw.githubusercontent.com/tstuefe/tinyreaper/master/tinyreaper.c /tmp/
