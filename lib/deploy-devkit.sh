@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -ex
 
 UNAME=$(uname)
 NEXUS_PATH=https://common.repositories.cloud.sap/artifactory/sapmachine-mvn
@@ -52,7 +52,7 @@ if [ ! -f ${DEVKIT_ARCHIVE_PATH} ]; then
     echo Error: ${DOWNLOAD_URL} is not downloadable, request returned $HTTPRC.
     exit -1
   fi
-  echo Downloading ${DOWNLOAD_URL} to ${DEVKIT_ARCHIVE_PATH} ...
+  echo Downloading ${DOWNLOAD_URL} to ${DEVKIT_ARCHIVE_PATH}...
   curl -L -s -o ${DEVKIT_ARCHIVE_PATH} -u ${ARTIFACTORY_CREDS} ${DOWNLOAD_URL}
 fi
 
