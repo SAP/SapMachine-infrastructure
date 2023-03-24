@@ -1,5 +1,5 @@
 #!/bin/bash
-set -ex
+set -e
 
 UNAME=$(uname)
 NEXUS_PATH=https://common.repositories.cloud.sap/artifactory/sapmachine-mvn
@@ -53,7 +53,7 @@ if [ ! -f ${DEVKIT_ARCHIVE_PATH} ]; then
     exit -1
   fi
   echo Downloading ${DOWNLOAD_URL} to ${DEVKIT_ARCHIVE_PATH}...
-  curl -L -o ${DEVKIT_ARCHIVE_PATH} -u ${ARTIFACTORY_CREDS} ${DOWNLOAD_URL}
+  curl -L -s -o ${DEVKIT_ARCHIVE_PATH} -u ${ARTIFACTORY_CREDS} ${DOWNLOAD_URL}
 fi
 
 echo Extracting ${DEVKIT_ARCHIVE_PATH} to ${DEVKIT_PATH}...
