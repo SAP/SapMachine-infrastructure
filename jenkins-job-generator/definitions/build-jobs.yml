@@ -433,7 +433,21 @@
                 }}
                 stage("Checkout Infrastructure Repository") {{
                     steps {{
-                        sh("SapMachine-Infrastructure/lib/git_clone.sh https://github.com/SAP/SapMachine-infrastructure.git SapMachine-Infrastructure master")
+                        sh '''#!/bin/bash
+                            set -e
+
+                            if [[ `uname` == CYGWIN* ]]; then
+                              GIT_TOOL=/cygdrive/c/Program\ Files/Git/cmd/git.exe
+                            else
+                              GIT_TOOL=git
+                            fi
+
+                            "$GIT_TOOL" --version
+                            set -ex
+                            "$GIT_TOOL" init SapMachine-Infrastructure && cd SapMachine-Infrastructure
+                            "$GIT_TOOL" fetch --depth 1 https://github.com/SAP/SapMachine-infrastructure.git master
+                            "$GIT_TOOL" checkout --detach FETCH_HEAD
+                        '''
                     }}
                 }}
                 {verify_pre|}
