@@ -433,12 +433,7 @@
                 }}
                 stage("Checkout Infrastructure Repository") {{
                     steps {{
-                        sh '''#!/bin/bash
-                            set -ex
-                            git init SapMachine-Infrastructure && cd SapMachine-Infrastructure
-                            git fetch --depth 1 https://github.com/SAP/SapMachine-infrastructure.git master
-                            git checkout --detach FETCH_HEAD
-                        '''
+                        sh("SapMachine-Infrastructure/lib/git_clone.sh https://github.com/SAP/SapMachine-infrastructure.git SapMachine-Infrastructure master")
                     }}
                 }}
                 {verify_pre|}
@@ -447,13 +442,7 @@
                 stage("Checkout SapMachine Repository") {{
                     {verification_when|}
                     steps {{
-                        sh '''#!/bin/bash
-                            set -ex
-                            git init SapMachine && cd SapMachine
-                            git remote add origin $SAPMACHINE_GIT_REPOSITORY
-                            git fetch origin $GIT_REF
-                            git checkout --detach FETCH_HEAD
-                        '''
+                        sh("SapMachine-Infrastructure/lib/git_clone.sh $SAPMACHINE_GIT_REPOSITORY SapMachine $GIT_REF")
                     }}
                 }}
                 stage("Prepare Devkit") {{
@@ -487,12 +476,7 @@
                         }}
 
                         // Download googletest
-                        sh '''#!/bin/bash
-                            set -ex
-                            git init gtest && cd gtest
-                            git fetch --depth 1 https://github.com/google/googletest.git refs/tags/{gtest_version|release-1.8.1}
-                            git checkout --detach FETCH_HEAD
-                        '''
+                        sh("SapMachine-Infrastructure/lib/git_clone.sh https://github.com/google/googletest.git gtest refs/tags/{gtest_version|release-1.8.1}")
 
                         // Download jtreg if required
                         script {{

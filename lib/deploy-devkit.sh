@@ -53,8 +53,13 @@ if [ ! -f ${DEVKIT_ARCHIVE_PATH} ]; then
     exit -1
   fi
   echo Downloading ${DOWNLOAD_URL} to ${DEVKIT_ARCHIVE_PATH}...
-  which curl
-  curl -L -o ${DEVKIT_ARCHIVE_PATH} -u ${ARTIFACTORY_CREDS} ${DOWNLOAD_URL}
+  if [[ $UNAME == CYGWIN* ]]; then
+    CURL_TOOL=/usr/bin/curl
+  else
+    CURL_TOOL=curl
+  fi
+  (set -x && curl --version)
+  curl -L -s -o ${DEVKIT_ARCHIVE_PATH} -u ${ARTIFACTORY_CREDS} ${DOWNLOAD_URL}
 fi
 
 echo Extracting ${DEVKIT_ARCHIVE_PATH} to ${DEVKIT_PATH}...

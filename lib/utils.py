@@ -264,6 +264,8 @@ def get_active_jmc_branches():
     return jmc_branches
 
 def git_clone(repo, branch, target):
+    git_command = ['git', '--version']
+    git_command = ['git', 'config', '-l']
     git_command = ['git', 'clone', '--single-branch', '-b', branch]
     if 'GIT_USER' in os.environ and 'GIT_PASSWORD' in os.environ:
         git_command.append(str.format('https://{0}:{1}@{2}', os.environ['GIT_USER'], os.environ['GIT_PASSWORD'], repo))
