@@ -437,7 +437,7 @@
                             set -e
 
                             if [[ `uname` == CYGWIN* ]]; then
-                              GIT_TOOL=/cygdrive/c/Program\ Files/Git/cmd/git.exe
+                              GIT_TOOL="/cygdrive/c/Program Files/Git/cmd/git.exe"
                             else
                               GIT_TOOL=git
                             fi
