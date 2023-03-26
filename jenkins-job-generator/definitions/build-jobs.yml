@@ -445,7 +445,7 @@
                             "$GIT_TOOL" --version
                             set -ex
                             "$GIT_TOOL" init SapMachine-Infrastructure && cd SapMachine-Infrastructure
-                            "$GIT_TOOL" fetch --depth 1 https://github.com/SAP/SapMachine-infrastructure.git master
+                            GIT_TERMINAL_PROMPT=0 "$GIT_TOOL" fetch --depth 1 https://github.com/SAP/SapMachine-infrastructure.git master
                             "$GIT_TOOL" checkout --detach FETCH_HEAD
                         '''
                     }}

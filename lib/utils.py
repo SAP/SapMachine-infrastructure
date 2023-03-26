@@ -264,18 +264,23 @@ def get_active_jmc_branches():
     return jmc_branches
 
 def git_clone(repo, branch, target):
-    git_command = ['git', '--version']
+    if platform.system().lower().startswith('cygwin'):
+        git_tool = "/cygdrive/c/Program\ Files/Git/cmd/git.exe"
+        _, target_mixed, _ = run_cmd(['cygpath', '-m', target])
+    else :
+        git_tool = "git"
+        target_mixed = target
+
+    git_command = [git_tool, '--version']
     run_cmd(git_command)
-    git_command = ['git', 'config', '-l']
-    run_cmd(git_command)
-    git_command = ['git', 'clone', '--single-branch', '-b', branch]
+    git_command = [git_tool, 'clone', '--single-branch', '-b', branch]
     if 'GIT_USER' in os.environ and 'GIT_PASSWORD' in os.environ:
         git_command.append(str.format('https://{0}:{1}@{2}', os.environ['GIT_USER'], os.environ['GIT_PASSWORD'], repo))
-        git_fix_remote_command = ['git', 'remote', 'set-url', 'origin', str.format('https://{0}', repo)]
+        git_fix_remote_command = [git_tool, 'remote', 'set-url', 'origin', str.format('https://{0}', repo)]
     else:
         git_command.append(str.format('https://{0}', repo))
         git_fix_remote_command = None
-    git_command.append(target)
+    git_command.append(target_mixed)
 
     remove_if_exists(target)
     run_cmd(git_command)

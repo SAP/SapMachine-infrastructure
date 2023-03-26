@@ -48,7 +48,8 @@ def write_as_rtf(source, target):
 def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('-a', '--asset', help='the SapMachine asset file', metavar='ASSET', required=True)
-    parser.add_argument('-j', '--jre', help='Build SapMachine JRE installer', action='store_true', default=False)
+    parser.add_argument('-j', '--jre', help='build SapMachine JRE installer', action='store_true', default=False)
+    parser.add_argument('-f', '--fips', help='use FIPS option for WIX toolkit', action='store_true', default=False)
     parser.add_argument('-s', '--sapmachine-directory', help='specify the SapMachine GIT directory', metavar='DIR', required=True)
     args = parser.parse_args()
 
@@ -139,7 +140,7 @@ def main(argv=None):
     shutil.copyfile(join(work_dir, 'SourceDir', 'release'), join(work_dir, 'release'))
     utils.remove_if_exists(join(work_dir, 'SourceDir', 'release'))
 
-    utils.run_cmd('heat dir SourceDir -sw -srd -gg -platform x64 -template:module -cg SapMachineGroup -out SapMachineModule.wxs'.split(' '), cwd=work_dir)
+    utils.run_cmd('heat dir SourceDir -sw -srd -gg' + (' -fips' if args.fips else '') + ' -platform x64 -template:module -cg SapMachineGroup -out SapMachineModule.wxs'.split(' '), cwd=work_dir)
 
     with open(join(work_dir, 'SapMachineModule.wxs'), 'r+') as sapmachine_module:
         sapmachine_module_content = sapmachine_module.read()
