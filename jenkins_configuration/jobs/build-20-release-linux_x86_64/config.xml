@@ -52,10 +52,19 @@
         stage("Checkout Infrastructure Repository") {
             steps {
                 sh '''#!/bin/bash
+                    set -e
+
+                    if [[ `uname` == CYGWIN* ]]; then
+                      GIT_TOOL="/cygdrive/c/Program Files/Git/cmd/git.exe"
+                    else
+                      GIT_TOOL=git
+                    fi
+
+                    "$GIT_TOOL" --version
                     set -ex
-                    git init SapMachine-Infrastructure &amp;&amp; cd SapMachine-Infrastructure
-                    git fetch --depth 1 https://github.com/SAP/SapMachine-infrastructure.git master
-                    git checkout --detach FETCH_HEAD
+                    "$GIT_TOOL" init SapMachine-Infrastructure &amp;&amp; cd SapMachine-Infrastructure
+                    GIT_TERMINAL_PROMPT=0 "$GIT_TOOL" fetch --depth 1 https://github.com/SAP/SapMachine-infrastructure.git master
+                    "$GIT_TOOL" checkout --detach FETCH_HEAD
                 '''
             }
         }
@@ -65,13 +74,7 @@
         stage("Checkout SapMachine Repository") {
             
             steps {
-                sh '''#!/bin/bash
-                    set -ex
-                    git init SapMachine &amp;&amp; cd SapMachine
-                    git remote add origin $SAPMACHINE_GIT_REPOSITORY
-                    git fetch origin $GIT_REF
-                    git checkout --detach FETCH_HEAD
-                '''
+                sh("SapMachine-Infrastructure/lib/git_clone.sh $SAPMACHINE_GIT_REPOSITORY SapMachine $GIT_REF")
             }
         }
         stage("Prepare Devkit") {
@@ -119,12 +122,7 @@
                 }
 
                 // Download googletest
-                sh '''#!/bin/bash
-                    set -ex
-                    git init gtest &amp;&amp; cd gtest
-                    git fetch --depth 1 https://github.com/google/googletest.git refs/tags/release-1.8.1
-                    git checkout --detach FETCH_HEAD
-                '''
+                sh("SapMachine-Infrastructure/lib/git_clone.sh https://github.com/google/googletest.git gtest refs/tags/release-1.8.1")
 
                 // Download jtreg if required
                 script {

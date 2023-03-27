@@ -115,7 +115,7 @@
           <connectUsingPublicIp>false</connectUsingPublicIp>
         </hudson.plugins.ec2.SlaveTemplate>
         <hudson.plugins.ec2.SlaveTemplate>
-          <ami>ami-0c6081ffb6bcd3942</ami>
+          <ami>ami-0a10caa9049462fd5</ami>
           <description>Windows Client</description>
           <zone>us-east-1d</zone>
           <securityGroups>JenkinsWindowsClient</securityGroups>
@@ -502,6 +502,7 @@
       <properties class="hudson.model.View$PropertyList" />
       <jobNames>
         <comparator class="java.lang.String$CaseInsensitiveComparator" />
+        <string>osx-upload-from-artifactory</string>
         <string>osx-upload-from-artifactory-test</string>
         <string>osx-upload-test</string>
         <string>showEnv</string>
