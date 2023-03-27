@@ -66,6 +66,7 @@ bash ./configure \
 "${_CONFIGURE_OPTS[@]}" \
 $_DEVKIT_OPTION \
 $_CONFIGURE_OS_OPTIONS \
+--disable-dtrace \
 --with-freetype=bundled \
 $EXTRA_CONFIGURE_OPTIONS)
 
