@@ -150,9 +150,9 @@ def main(argv=None):
         sapmachine_module.truncate()
         sapmachine_module.write(sapmachine_module_content)
 
-    utils.run_cmd('candle -arch x64 SapMachineModule.wxs'.split(' '), cwd=work_dir)
+    utils.run_cmd('candle' + (' -fips' if args.fips else '') + ' -arch x64 SapMachineModule.wxs'.split(' '), cwd=work_dir)
     utils.run_cmd('light SapMachineModule.wixobj'.split(' '), cwd=work_dir)
-    utils.run_cmd('candle -arch x64 SapMachine.wxs'.split(' '), cwd=work_dir)
+    utils.run_cmd('candle' + (' -fips' if args.fips else '') + ' -arch x64 SapMachine.wxs'.split(' '), cwd=work_dir)
     utils.run_cmd('light -ext WixUIExtension SapMachine.wixobj'.split(' '), cwd=work_dir)
 
     msi_name = os.path.basename(asset)
