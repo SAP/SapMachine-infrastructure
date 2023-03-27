@@ -49,7 +49,7 @@ def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('-a', '--asset', help='the SapMachine asset file', metavar='ASSET', required=True)
     parser.add_argument('-j', '--jre', help='build SapMachine JRE installer', action='store_true', default=False)
-    parser.add_argument('-f', '--fips', help='use FIPS option for WIX toolkit', action='store_true', default=False)
+    parser.add_argument('-f', '--workarounds', help='use workarounds for internal build server', action='store_true', default=False)
     parser.add_argument('-s', '--sapmachine-directory', help='specify the SapMachine GIT directory', metavar='DIR', required=True)
     args = parser.parse_args()
 
@@ -140,7 +140,7 @@ def main(argv=None):
     shutil.copyfile(join(work_dir, 'SourceDir', 'release'), join(work_dir, 'release'))
     utils.remove_if_exists(join(work_dir, 'SourceDir', 'release'))
 
-    utils.run_cmd(('heat dir SourceDir -sw -srd -gg' + (' -fips' if args.fips else '') + ' -platform x64 -template:module -cg SapMachineGroup -out SapMachineModule.wxs').split(' '), cwd=work_dir)
+    utils.run_cmd(('heat dir SourceDir -sw -srd -gg' + (' -fips' if args.workarounds else '') + ' -platform x64 -template:module -cg SapMachineGroup -out SapMachineModule.wxs').split(' '), cwd=work_dir)
 
     with open(join(work_dir, 'SapMachineModule.wxs'), 'r+') as sapmachine_module:
         sapmachine_module_content = sapmachine_module.read()
@@ -150,10 +150,10 @@ def main(argv=None):
         sapmachine_module.truncate()
         sapmachine_module.write(sapmachine_module_content)
 
-    utils.run_cmd(('candle' + (' -fips' if args.fips else '') + ' -arch x64 SapMachineModule.wxs').split(' '), cwd=work_dir)
-    utils.run_cmd(('light' + (' -sval' if args.fips else '') + ' SapMachineModule.wixobj').split(' '), cwd=work_dir)
-    utils.run_cmd(('candle' + (' -fips' if args.fips else '') + ' -arch x64 SapMachine.wxs').split(' '), cwd=work_dir)
-    utils.run_cmd(('light' + (' -sval' if args.fips else '') + ' -ext WixUIExtension SapMachine.wixobj'.split(' ')), cwd=work_dir)
+    utils.run_cmd(('candle' + (' -fips' if args.workarounds else '') + ' -arch x64 SapMachineModule.wxs').split(' '), cwd=work_dir)
+    utils.run_cmd(('light' + (' -sval' if args.workarounds else '') + ' SapMachineModule.wixobj').split(' '), cwd=work_dir)
+    utils.run_cmd(('candle' + (' -fips' if args.workarounds else '') + ' -arch x64 SapMachine.wxs').split(' '), cwd=work_dir)
+    utils.run_cmd(('light' + (' -sval' if args.workarounds else '') + ' -ext WixUIExtension SapMachine.wixobj').split(' '), cwd=work_dir)
 
     msi_name = os.path.basename(asset)
     msi_name = os.path.splitext(msi_name)[0]
