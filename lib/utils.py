@@ -266,7 +266,8 @@ def get_active_jmc_branches():
 def git_clone(repo, branch, target):
     if platform.system().lower().startswith('cygwin'):
         git_tool = "/cygdrive/c/Program\ Files/Git/cmd/git.exe"
-        _, target_mixed, _ = run_cmd(['cygpath', '-m', target])
+        _, target_mixed, _ = run_cmd(['cygpath', '-m', target], std=True)
+        target_mixed = target_mixed.rstrip()
     else :
         git_tool = "git"
         target_mixed = target
