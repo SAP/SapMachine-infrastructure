@@ -1,4 +1,4 @@
-<io.jenkins.plugins.jfrog.configuration.JFrogPlatformBuilder_-DescriptorImpl plugin="jfrog@1.0.5">
+<io.jenkins.plugins.jfrog.configuration.JFrogPlatformBuilder_-DescriptorImpl plugin="jfrog@1.2.1">
   <jfrogInstances>
     <io.jenkins.plugins.jfrog.configuration.JFrogPlatformInstance>
       <url>https://common.repositories.cloud.sap</url>
@@ -12,4 +12,5 @@
       </credentialsConfig>
     </io.jenkins.plugins.jfrog.configuration.JFrogPlatformInstance>
   </jfrogInstances>
+  <allowHttpConnections>false</allowHttpConnections>
 </io.jenkins.plugins.jfrog.configuration.JFrogPlatformBuilder_-DescriptorImpl>
