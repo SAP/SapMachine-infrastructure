@@ -12,17 +12,18 @@ import utils
 from os.path import join
 from versions import SapMachineTag
 
-cf_18_lines = []
-
-def download_cf_yaml():
-    global cf_18_lines
-    response = requests.get("https://java-buildpack.cloudfoundry.org/openjdk/bionic/x86_64/index.yml")
+def download_cf_yaml(url):
+    cf_18_lines = []
+    response = requests.get(url)
     lines = response.text.splitlines()
     for line in lines:
         if line.startswith("1.8."):
             cf_18_lines.append(line)
+    return cf_18_lines
 
-def write_index_yaml(assets, target):
+def write_index_yaml(assets, cf_18_lines, target):
+    if not os.path.exists(target):
+        os.makedirs(target) 
     with open(join(target, "index.yml"), "w+") as index_yaml:
         index_yaml.write("---\n")
         for line in cf_18_lines:
@@ -32,7 +33,6 @@ def write_index_yaml(assets, target):
 
 def main(argv=None):
     # Since SapMachine has no release 8, we add the OpenJDK 8 versions from CF to our index.yml
-    download_cf_yaml()
 
     releases = utils.get_github_releases()
     if releases is None:
@@ -77,8 +77,16 @@ def main(argv=None):
 
     local_repo = join(os.getcwd(), 'gh-pages')
     utils.git_clone('github.com/SAP/SapMachine.git', 'gh-pages', local_repo)
-    write_index_yaml(asset_map_jre, join(local_repo, 'assets', 'cf', 'jre', 'linux', 'x86_64'))
-    write_index_yaml(asset_map_jdk, join(local_repo, 'assets', 'cf', 'jdk', 'linux', 'x86_64'))
+    
+    cf_bionic18_lines = download_cf_yaml("https://java-buildpack.cloudfoundry.org/openjdk/bionic/x86_64/index.yml")
+    write_index_yaml(asset_map_jre, cf_bionic18_lines, join(local_repo, 'assets', 'cf', 'jre', 'linux', 'x86_64'))
+    write_index_yaml(asset_map_jdk, cf_bionic18_lines, join(local_repo, 'assets', 'cf', 'jdk', 'linux', 'x86_64'))
+    write_index_yaml(asset_map_jre, cf_bionic18_lines, join(local_repo, 'assets', 'cf', 'jre', 'bionic', 'x86_64'))
+    write_index_yaml(asset_map_jdk, cf_bionic18_lines, join(local_repo, 'assets', 'cf', 'jdk', 'bionic', 'x86_64'))
+    
+    cf_jammy18_lines = download_cf_yaml("https://java-buildpack.cloudfoundry.org/openjdk/jammy/x86_64/index.yml")
+    write_index_yaml(asset_map_jre, cf_jammy18_lines, join(local_repo, 'assets', 'cf', 'jre', 'jammy', 'x86_64'))
+    write_index_yaml(asset_map_jdk, cf_jammy18_lines, join(local_repo, 'assets', 'cf', 'jdk', 'jammy', 'x86_64'))
     utils.git_commit(local_repo, 'Update version list for Cloud Foundry buildpacks', ['assets'])
     utils.git_push(local_repo)
     utils.remove_if_exists(local_repo)
