@@ -135,7 +135,7 @@ def main(argv=None):
     jdk_exploded_image = glob.glob(join(jdk_dir, 'sapmachine-*'))[0]
 
     generate_configuration(
-        templates_dir = join(realpath("SapMachine-Infrastructure/debian-templates"), 'jdk'),
+        templates_dir = join(realpath("SapMachine-infrastructure/debian-templates"), 'jdk'),
         major = str(major),
         arch = "arm64" if args.architecture == "linux-aarch64" else ("ppc64el" if args.architecture == "linux-ppc64le" else "amd64"),
         target_dir = join(jdk_dir, 'debian'),

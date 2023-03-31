@@ -15,13 +15,13 @@
             stages {
                 stage("Checkout Infrastructure Repository") {
                     steps {
-                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-infrastructure']], userRemoteConfigs: [[url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
                     }
                 }
                 stage('Upload') {
                     agent {
                         dockerfile {
-                            dir "SapMachine-Infrastructure/dockerfiles/ossrh-upload"
+                            dir "SapMachine-infrastructure/dockerfiles/ossrh-upload"
                             reuseNode true
                             label "repository"
                         }
@@ -29,7 +29,7 @@
                     steps {
                         withCredentials([file(credentialsId: 'SapMachine-secret-gpg-key', variable: 'GPGSEC'),
                                          file(credentialsId: 'OSSRH_SETTINGS', variable: 'OSSRH_SETTINGS_XML')]) {
-                            sh 'SapMachine-Infrastructure/lib/ossrh/upload.sh'
+                            sh 'SapMachine-infrastructure/lib/ossrh/upload.sh'
                         }
                     }
                 }

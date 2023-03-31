@@ -12,7 +12,7 @@ cd upload
 
 mvn --version
 
-cp ../SapMachine-Infrastructure/lib/ossrh/upload_pom.xml .
+cp ../SapMachine-infrastructure/lib/ossrh/upload_pom.xml .
 sed -i "s/\${type}/jre/g" upload_pom.xml
 sed -i "s/\${version}/$VERSION/g" upload_pom.xml
 sed -i "s/\${maven.name}/SapMachine JRE/g" upload_pom.xml
@@ -25,7 +25,7 @@ else
 fi
 mvn -B --no-transfer-progress --settings $OSSRH_SETTINGS_XML -f upload_pom.xml clean deploy
 
-cp -f ../SapMachine-Infrastructure/lib/ossrh/upload_pom.xml .
+cp -f ../SapMachine-infrastructure/lib/ossrh/upload_pom.xml .
 sed -i "s/\${type}/jdk/g" upload_pom.xml
 sed -i "s/\${version}/$VERSION/g" upload_pom.xml
 sed -i "s/\${maven.name}/SapMachine JDK/g" upload_pom.xml

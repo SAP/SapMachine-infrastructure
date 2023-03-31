@@ -16,7 +16,7 @@ jenkins_configuration = 'jenkins_configuration'
 def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('-t', '--targetdir', help='the target directory (Jenkins home directory)', metavar='DIR', required=True)
-    parser.add_argument('-b', '--backuprepodir', help='the backup repository', metavar='DIR', default='SapMachine-Infrastructure')
+    parser.add_argument('-b', '--backuprepodir', help='the backup repository', metavar='DIR', default='SapMachine-infrastructure')
     parser.add_argument('--install-plugins', help='install the Jenkins plugins', action='store_true', default=False)
     parser.add_argument('--plugins-only', help='install only the Jenkins plugins (implies --install-plugins)', action='store_true', default=False)
     args = parser.parse_args()
