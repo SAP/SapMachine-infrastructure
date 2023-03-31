@@ -2,9 +2,11 @@
 set -e
 
 if [[ `uname` == CYGWIN* ]]; then
-  GIT_TOOL="/cygdrive/c/Program\ Files/Git/cmd/git.exe"
+  GIT_TOOL="/cygdrive/c/Program Files/Git/cmd/git.exe"
+  GIT_TOOL_FOR_EVAL="/cygdrive/c/Program\ Files/Git/cmd/git.exe"
 else
   GIT_TOOL=git
+  GIT_TOOL_FOR_EVAL=git
 fi
 
 if [ ! -z $GIT_USER ]; then
@@ -14,5 +16,5 @@ fi
 "$GIT_TOOL" --version
 set -ex
 "$GIT_TOOL" init $2 && cd $2
-GIT_TERMINAL_PROMPT=0 eval "$GIT_TOOL" $GIT_CREDENTIALS fetch --depth 1 $1 $3
+GIT_TERMINAL_PROMPT=0 eval "$GIT_TOOL_FOR_EVAL" $GIT_CREDENTIALS fetch --depth 1 $1 $3
 "$GIT_TOOL" checkout --detach FETCH_HEAD
