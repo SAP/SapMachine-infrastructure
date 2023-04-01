@@ -642,10 +642,10 @@
            branch_name: sapmachine
     type_snapshot: &type_snapshot_service
         - snapshot:
-            release_option_param: "[$class: 'BooleanParameterValue', name: 'UPLOAD_ARTIFACTORY', value: params.UPLOAD_ARTIFACTORY]"
+            release_option_param: "[$class: 'BooleanParameterValue', name: 'UPLOAD_ARTIFACTORY', value: params.UPLOAD_ARTIFACTORY],"
     type_release: &type_release_service
         - release:
-            release_option_param: "[$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH]"
+            release_option_param: "[$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],"
     build_service_dsl: &build_service_dsl |
         pipeline {{
             agent {{
@@ -683,6 +683,7 @@
                                             [$class: 'BooleanParameterValue', name: 'BUILD_INSTALLER_PACKAGES', value: params.BUILD_INSTALLER_PACKAGES],
                                             [$class: 'BooleanParameterValue', name: 'CREATE_GENSRC_BUNDLE', value: params.CREATE_GENSRC_BUNDLE],
                                             {release_option_param}
+                                            [$class: 'BooleanParameterValue', name: 'ARCHIVE_WORKSPACE', value: params.ARCHIVE_WORKSPACE]
                                         ]
                                 }} else {{
                                     println "Skipping build for " + p.key + " (build=" + p.value + ")."
@@ -919,13 +920,13 @@
             default: true
             description: 'Build platform installer packages, e.g. Windows MSI, Debian packages.'
         - bool:
-            name: PUBLISH
-            default: false
-            description: 'When set to true, the resulting bundles will be published to GitHub.'
-        - bool:
             name: CREATE_GENSRC_BUNDLE
             default: true
             description: 'Create a bundle with generated source files (gensrc), to be used in e.g. IDE setups.'
+        - bool:
+            name: PUBLISH
+            default: false
+            description: 'When set to true, the resulting bundles will be published to GitHub.'
         - bool:
             name: ARCHIVE_WORKSPACE
             default: false
@@ -1012,6 +1013,10 @@
             name: UPLOAD_ARTIFACTORY
             default: true
             description: 'Upload build results to artifactory which will trigger testing.'
+        - bool:
+            name: ARCHIVE_WORKSPACE
+            default: false
+            description: 'Archive workspace for inspection after build.'
     dsl: *build_service_dsl
 
 - job-template:
@@ -1094,4 +1099,8 @@
             name: PUBLISH
             default: false
             description: 'When set to true, the resulting bundles will be published to GitHub.'
+        - bool:
+            name: ARCHIVE_WORKSPACE
+            default: false
+            description: 'Archive workspace for inspection after build.'
     dsl: *build_service_dsl
