@@ -640,6 +640,59 @@
            branch_name: sapmachine20
         - '21':
            branch_name: sapmachine
+    build_type_snapshot: &build_type_snapshot_service
+        - snapshot:
+            release_option_param: "[$class: 'BooleanParameterValue', name: 'UPLOAD_ARTIFACTORY', value: params.UPLOAD_ARTIFACTORY]"
+    build_type_release: &build_type_release_service
+            release_option_param: "[$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH]"
+        - release:
+    build_service_dsl: &build_service_dsl |
+        pipeline {{
+            agent {{
+                label 'build_service'
+            }}
+            stages {{
+                stage("Trigger Builds") {{
+                    steps {{
+                        script {{
+                            def platforms = [
+                                "linux_aarch64": params.BUILD_LINUX_AARCH64,
+                                "linux_alpine_x86_64": params.BUILD_LINUX_ALPINE_X86_64,
+                                "linux_ppc64le": params.BUILD_LINUX_PPC64LE,
+                                "linux_x86_64": params.BUILD_LINUX_X86_64,
+                                "macos_aarch64": params.BUILD_MACOS_ARM_64,
+                                "macos_x86_64": params.BUILD_MACOS_X86_64,
+                                "windows_x86_64": params.BUILD_WINDOWS_X86_64
+                            ]
+
+                            for (p in platforms) {{
+                                if (p.value) {{
+                                    build job: 'build-{major}-snapshot-' + p.key,
+                                        propagate: false,
+                                        wait: false,
+                                        parameters: [
+                                            string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
+                                            string(name: 'GIT_REF', value: params.GIT_REF),
+                                            string(name: 'SAPMACHINE_VERSION', value: params.SAPMACHINE_VERSION),
+                                            string(name: 'JDK_BUILD', value: params.JDK_BUILD),
+                                            string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
+                                            string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
+                                            string(name: 'jdk_test_groups', value: params.jdk_test_groups),
+                                            string(name: 'langtools_test_groups', value: params.langtools_test_groups),
+                                            [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
+                                            [$class: 'BooleanParameterValue', name: 'BUILD_INSTALLER_PACKAGES', value: params.BUILD_INSTALLER_PACKAGES],
+                                            [$class: 'BooleanParameterValue', name: 'CREATE_GENSRC_BUNDLE', value: params.CREATE_GENSRC_BUNDLE],
+                                            {release_option_param}
+                                        ]
+                                }} else {{
+                                    println "Skipping build for " + p.key + " (build=" + p.value + ")."
+                                }}
+                            }}
+                        }}
+                    }}
+                }}
+            }}
+        }}
 
 - project:
     name: builds
@@ -659,9 +712,11 @@
 - project:
     name: service-builds
     major: *majors_service
+    build_type_snapshot: *build_type_service_snapshot_service
+    build_type_release: *build_type_service_release_service
     jobs:
-        - build-service-snapshot-{major}
-        - build-service-release-{major}
+        - build-service-{build_type_snapshot}-{major}
+        - build-service-{build_type_release}-{major}
 
 - job-template:
     name: build-{major}-{build_type_pr}-{platform}
@@ -949,51 +1004,15 @@
             name: BUILD_INSTALLER_PACKAGES
             default: true
             description: 'Build platform installer packages, e.g. Windows MSI, Debian packages.'
-    dsl: |
-        pipeline {{
-            agent {{
-                label 'build_service'
-            }}
-            stages {{
-                stage("Trigger Builds") {{
-                    steps {{
-                        script {{
-                            def platforms = [
-                                "linux_aarch64": params.BUILD_LINUX_AARCH64,
-                                "linux_alpine_x86_64": params.BUILD_LINUX_ALPINE_X86_64,
-                                "linux_ppc64le": params.BUILD_LINUX_PPC64LE,
-                                "linux_x86_64": params.BUILD_LINUX_X86_64,
-                                "macos_aarch64": params.BUILD_MACOS_ARM_64,
-                                "macos_x86_64": params.BUILD_MACOS_X86_64,
-                                "windows_x86_64": params.BUILD_WINDOWS_X86_64
-                            ]
-
-                            for (p in platforms) {{
-                                if (p.value) {{
-                                    build job: 'build-{major}-snapshot-' + p.key,
-                                        propagate: false,
-                                        wait: false,
-                                        parameters: [
-                                            string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
-                                            string(name: 'GIT_REF', value: params.GIT_REF),
-                                            string(name: 'SAPMACHINE_VERSION', value: params.SAPMACHINE_VERSION),
-                                            string(name: 'JDK_BUILD', value: params.JDK_BUILD),
-                                            string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
-                                            string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
-                                            string(name: 'jdk_test_groups', value: params.jdk_test_groups),
-                                            string(name: 'langtools_test_groups', value: params.langtools_test_groups),
-                                            [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
-                                            [$class: 'BooleanParameterValue', name: 'BUILD_INSTALLER_PACKAGES', value: params.BUILD_INSTALLER_PACKAGES]
-                                        ]
-                                }} else {{
-                                    println "Skipping build for " + p.key + " (build=" + p.value + ")."
-                                }}
-                            }}
-                        }}
-                    }}
-                }}
-            }}
-        }}
+        - bool:
+            name: CREATE_GENSRC_BUNDLE
+            default: true
+            description: 'Create a bundle with generated source files (gensrc), to be used in e.g. IDE setups.'
+        - bool:
+            name: UPLOAD_ARTIFACTORY
+            default: true
+            description: 'Upload build results to artifactory which will trigger testing.'
+    dsl: *build_service_dsl
 
 - job-template:
     name: build-service-release-{major}
@@ -1068,52 +1087,11 @@
             default: true
             description: 'Build platform installer packages, e.g. Windows MSI, Debian packages.'
         - bool:
+            name: CREATE_GENSRC_BUNDLE
+            default: true
+            description: 'Create a bundle with generated source files (gensrc), to be used in e.g. IDE setups.'
+        - bool:
             name: PUBLISH
             default: false
             description: 'When set to true, the resulting bundles will be published to GitHub.'
-    dsl: |
-        pipeline {{
-            agent {{
-                label 'build_service'
-            }}
-            stages {{
-                stage("Trigger Builds") {{
-                    steps {{
-                        script {{
-                            def platforms = [
-                                "linux_aarch64": params.BUILD_LINUX_AARCH64,
-                                "linux_alpine_x86_64": params.BUILD_LINUX_ALPINE_X86_64,
-                                "linux_ppc64le": params.BUILD_LINUX_PPC64LE,
-                                "linux_x86_64": params.BUILD_LINUX_X86_64,
-                                "macos_aarch64": params.BUILD_MACOS_ARM_64,
-                                "macos_x86_64": params.BUILD_MACOS_X86_64,
-                                "windows_x86_64": params.BUILD_WINDOWS_X86_64
-                            ]
-
-                            for (p in platforms) {{
-                                if (p.value) {{
-                                    build job: 'build-{major}-release-' + p.key,
-                                        propagate: false,
-                                        wait: false,
-                                        parameters: [
-                                            string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
-                                            string(name: 'GIT_REF', value: params.GIT_REF),
-                                            string(name: 'SAPMACHINE_VERSION', value: params.SAPMACHINE_VERSION),
-                                            string(name: 'JDK_BUILD', value: params.JDK_BUILD),
-                                            string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
-                                            string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
-                                            string(name: 'jdk_test_groups', value: params.jdk_test_groups),
-                                            string(name: 'langtools_test_groups', value: params.langtools_test_groups),
-                                            [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
-                                            [$class: 'BooleanParameterValue', name: 'BUILD_INSTALLER_PACKAGES', value: params.BUILD_INSTALLER_PACKAGES],
-                                            [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH]
-                                        ]
-                                }} else {{
-                                    println "Skipping build for " + p.key + " (build=" + p.value + ")."
-                                }}
-                            }}
-                        }}
-                    }}
-                }}
-            }}
-        }}
+    dsl: *build_service_dsl
