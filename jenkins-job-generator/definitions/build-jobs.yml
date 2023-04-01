@@ -1026,7 +1026,7 @@
 - job-template:
     name: build-service-{type_snapshot}-11
     defaults: 'service_defaults'
-    description: 'Start snapshot build for SapMachine {major} on all platorms.'
+    description: 'Start snapshot build for SapMachine 11 on all platorms.'
     project-type: pipeline
     sandbox: true
     concurrent: true
@@ -1104,6 +1104,7 @@
             name: ARCHIVE_WORKSPACE
             default: false
             description: 'Archive workspace for inspection after build.'
+    major: '11'
     dsl: *build_service_dsl
 
 - job-template:
@@ -1195,7 +1196,7 @@
 - job-template:
     name: build-service-{type_release}-11
     defaults: 'service_defaults'
-    description: 'Start release build for SapMachine {major} on all platorms.'
+    description: 'Start release build for SapMachine 11 on all platorms.'
     project-type: pipeline
     sandbox: true
     concurrent: true
@@ -1273,4 +1274,5 @@
             name: ARCHIVE_WORKSPACE
             default: false
             description: 'Archive workspace for inspection after build.'
+    major: '11'
     dsl: *build_service_dsl
