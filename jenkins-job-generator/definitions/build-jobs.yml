@@ -705,6 +705,7 @@
     majors: &majors_service
         - '11':
             branch_name: sapmachine11
+            build_alpine: false
             parameters:
                 - string:
                     name: SAPMACHINE_GIT_REPOSITORY
