@@ -644,8 +644,8 @@
         - snapshot:
             release_option_param: "[$class: 'BooleanParameterValue', name: 'UPLOAD_ARTIFACTORY', value: params.UPLOAD_ARTIFACTORY]"
     build_type_release: &build_type_release_service
-            release_option_param: "[$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH]"
         - release:
+            release_option_param: "[$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH]"
     build_service_dsl: &build_service_dsl |
         pipeline {{
             agent {{
