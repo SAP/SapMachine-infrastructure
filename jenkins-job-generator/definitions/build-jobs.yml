@@ -653,7 +653,7 @@
                         script {{
                             def platforms = [
                                 "linux_aarch64": params.BUILD_LINUX_AARCH64,
-                                "linux_alpine_x86_64": params.BUILD_LINUX_ALPINE_X86_64,
+                                {linux_alpine_include|}
                                 "linux_ppc64le": params.BUILD_LINUX_PPC64LE,
                                 "linux_x86_64": params.BUILD_LINUX_X86_64,
                                 "macos_aarch64": params.BUILD_MACOS_ARM_64,
@@ -939,6 +939,7 @@
 
 - job-template:
     name: build-service-{type_snapshot}-{major}
+    linux_alpine_include: '"linux_alpine_x86_64": params.BUILD_LINUX_ALPINE_X86_64,'
     defaults: 'service_defaults'
     description: 'Start snapshot build for SapMachine {major} on all platorms.'
     project-type: pipeline
@@ -1025,8 +1026,9 @@
 
 - job-template:
     name: build-service-{type_snapshot}-11
+    major: '11'
     defaults: 'service_defaults'
-    description: 'Start snapshot build for SapMachine 11 on all platorms.'
+    description: 'Start snapshot build for SapMachine {major} on all platorms.'
     project-type: pipeline
     sandbox: true
     concurrent: true
@@ -1040,7 +1042,7 @@
             description: 'The Git repository to use.'
         - string:
             name: GIT_REF
-            default: 'sapmachine11'
+            default: 'sapmachine{major}'
             description: 'The Git tag, branch or commit to build.'
         - string:
             name: SAPMACHINE_VERSION
@@ -1104,11 +1106,11 @@
             name: ARCHIVE_WORKSPACE
             default: false
             description: 'Archive workspace for inspection after build.'
-    major: '11'
     dsl: *build_service_dsl
 
 - job-template:
     name: build-service-{type_release}-{major}
+    linux_alpine_include: '"linux_alpine_x86_64": params.BUILD_LINUX_ALPINE_X86_64,'
     defaults: 'service_defaults'
     description: 'Start release build for SapMachine {major} on all platorms.'
     project-type: pipeline
@@ -1195,8 +1197,9 @@
 
 - job-template:
     name: build-service-{type_release}-11
+    major: '11'
     defaults: 'service_defaults'
-    description: 'Start release build for SapMachine 11 on all platorms.'
+    description: 'Start release build for SapMachine {major} on all platorms.'
     project-type: pipeline
     sandbox: true
     concurrent: true
@@ -1210,7 +1213,7 @@
             description: 'The Git repository to use.'
         - string:
             name: GIT_REF
-            default: 'sapmachine11'
+            default: 'sapmachine{major}'
             description: 'The Git tag, branch or commit to build.'
         - string:
             name: SAPMACHINE_VERSION
@@ -1274,5 +1277,4 @@
             name: ARCHIVE_WORKSPACE
             default: false
             description: 'Archive workspace for inspection after build.'
-    major: '11'
     dsl: *build_service_dsl
