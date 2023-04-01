@@ -20,7 +20,7 @@ if [[ -z "$SAPMACHINE_VERSION" ]]; then
   echo "SAPMACHINE_VERSION not set"
   exit 1
 fi
-python3 SapMachine-Infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION $PRE_RELEASE_OPT || true
+python3 SapMachine-infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION $PRE_RELEASE_OPT || true
 
 ls -la
 
@@ -43,17 +43,17 @@ shasum -a 256 $ARCHIVE_NAME_JDK > $ARCHIVE_SUM_JDK
 shasum -a 256 $ARCHIVE_NAME_JRE > $ARCHIVE_SUM_JRE
 shasum -a 256 $ARCHIVE_NAME_SYMBOLS > $ARCHIVE_SUM_SYMBOLS
 
-python3 SapMachine-Infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${ARCHIVE_NAME_JDK}"
-python3 SapMachine-Infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${ARCHIVE_NAME_JRE}"
-python3 SapMachine-Infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${ARCHIVE_NAME_SYMBOLS}"
-python3 SapMachine-Infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${ARCHIVE_SUM_JDK}"
-python3 SapMachine-Infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${ARCHIVE_SUM_JRE}"
-python3 SapMachine-Infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${ARCHIVE_SUM_SYMBOLS}"
+python3 SapMachine-infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${ARCHIVE_NAME_JDK}"
+python3 SapMachine-infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${ARCHIVE_NAME_JRE}"
+python3 SapMachine-infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${ARCHIVE_NAME_SYMBOLS}"
+python3 SapMachine-infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${ARCHIVE_SUM_JDK}"
+python3 SapMachine-infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${ARCHIVE_SUM_JRE}"
+python3 SapMachine-infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${ARCHIVE_SUM_SYMBOLS}"
 
 if [[ $UNAME == "Linux" ]] && [ "$RELEASE" == true ]; then
   for RPMFILE in *.rpm; do
     [ -f "$RPMFILE" ] || continue
-    python3 SapMachine-Infrastructure/lib/github_publish.py -t ${SAPMACHINE_VERSION} -a ${RPMFILE}
+    python3 SapMachine-infrastructure/lib/github_publish.py -t ${SAPMACHINE_VERSION} -a ${RPMFILE}
   done
 fi
 
@@ -67,16 +67,16 @@ if [ $UNAME == Darwin ]; then
   shasum -a 256 $DMG_NAME_JDK > $DMG_SUM_JDK
   shasum -a 256 $DMG_NAME_JRE > $DMG_SUM_JRE
 
-  python3 SapMachine-Infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${DMG_NAME_JDK}"
-  python3 SapMachine-Infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${DMG_NAME_JRE}"
-  python3 SapMachine-Infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${DMG_SUM_JDK}"
-  python3 SapMachine-Infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${DMG_SUM_JRE}"
+  python3 SapMachine-infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${DMG_NAME_JDK}"
+  python3 SapMachine-infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${DMG_NAME_JRE}"
+  python3 SapMachine-infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${DMG_SUM_JDK}"
+  python3 SapMachine-infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${DMG_SUM_JRE}"
 fi
 
 if [[ $UNAME == CYGWIN* ]]; then
   for MSIFILE in *.msi; do
     shasum -a 256 $MSIFILE > ${MSIFILE}.sha256.txt
-    python3 SapMachine-Infrastructure/lib/github_publish.py -t ${SAPMACHINE_VERSION} -a ${MSIFILE}
-    python3 SapMachine-Infrastructure/lib/github_publish.py -t ${SAPMACHINE_VERSION} -a ${MSIFILE}.sha256.txt
+    python3 SapMachine-infrastructure/lib/github_publish.py -t ${SAPMACHINE_VERSION} -a ${MSIFILE}
+    python3 SapMachine-infrastructure/lib/github_publish.py -t ${SAPMACHINE_VERSION} -a ${MSIFILE}.sha256.txt
   done
 fi

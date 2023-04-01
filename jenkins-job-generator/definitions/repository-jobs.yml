@@ -27,10 +27,10 @@
                     steps {
                         sh '''#!/bin/bash
                             set -ex
-                            if [ ! -d SapMachine-Infrastructure ]; then
-                              git init SapMachine-Infrastructure
+                            if [ ! -d SapMachine-infrastructure ]; then
+                              git init SapMachine-infrastructure
                             fi
-                            cd SapMachine-Infrastructure
+                            cd SapMachine-infrastructure
                             git fetch --depth 1 https://github.com/SAP/SapMachine-infrastructure.git master
                             git checkout --detach FETCH_HEAD
                         '''
@@ -43,11 +43,11 @@
                     steps {
                         withCredentials([usernamePassword(credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD')]) {
                             sh '''
-                                openjdk_repositories=$(python3 SapMachine-Infrastructure/lib/list_openjdk_repositories.py)
+                                openjdk_repositories=$(python3 SapMachine-infrastructure/lib/list_openjdk_repositories.py)
                                 for i in ${openjdk_repositories}
                                 do
                                     :
-                                    SapMachine-Infrastructure/lib/update_repo.sh $i
+                                    SapMachine-infrastructure/lib/update_repo.sh $i
                                 done
                             '''
                         }
@@ -74,7 +74,7 @@
                 stage('Tag, Build and Merge') {
                     agent {
                         dockerfile {
-                            dir "SapMachine-Infrastructure/dockerfiles/infrastructure"
+                            dir "SapMachine-infrastructure/dockerfiles/infrastructure"
                             reuseNode true
                             label "repository"
                         }
@@ -85,7 +85,7 @@
                     }
                     steps {
                         withCredentials([usernamePassword(credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD')]) {
-                            sh("cd SapMachine && python3 ../SapMachine-Infrastructure/lib/tag_build_and_merge.py")
+                            sh("cd SapMachine && python3 ../SapMachine-infrastructure/lib/tag_build_and_merge.py")
                         }
                     }
                 }
@@ -110,7 +110,7 @@
             stages {
                 stage("Checkout Infrastructure Repository") {
                     steps {
-                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-infrastructure']], userRemoteConfigs: [[url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
                     }
                 }
                 stage("Checkout Repository") {
@@ -121,7 +121,7 @@
                 stage('Merge') {
                     agent {
                         dockerfile {
-                            dir "SapMachine-Infrastructure/dockerfiles/infrastructure"
+                            dir "SapMachine-infrastructure/dockerfiles/infrastructure"
                             reuseNode true
                             label "repository"
                         }
@@ -130,7 +130,7 @@
                         withCredentials([usernamePassword(credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD')]) {
                             script {
                                 env.ASYNC_PROF_BUILD_REQUIRED = sh(
-                                        script: "SapMachine-Infrastructure/lib/merge_async_prof.sh",
+                                        script: "SapMachine-infrastructure/lib/merge_async_prof.sh",
                                         returnStatus: true
                                 )
                             }
@@ -140,7 +140,7 @@
                 stage('Check Release') {
                     agent {
                         dockerfile {
-                            dir "SapMachine-Infrastructure/dockerfiles/infrastructure"
+                            dir "SapMachine-infrastructure/dockerfiles/infrastructure"
                             reuseNode true
                             label "repository"
                         }
@@ -149,7 +149,7 @@
                         withCredentials([usernamePassword(credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD')]) {
                             script {
                                 env.ASYNC_PROF_RELEASE_TAG = sh(
-                                        script: "python3 SapMachine-Infrastructure/lib/async_check_release.py",
+                                        script: "python3 SapMachine-infrastructure/lib/async_check_release.py",
                                         returnStdout: true
                                 )
                             }

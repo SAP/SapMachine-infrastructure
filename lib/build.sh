@@ -57,7 +57,7 @@ if [[ ! -z $JDK_BUILD ]]; then
 fi
 
 # need to do the python call first and the eval in a second step to bail out on $? != 0
-_CONFIGURE_OPTS=$(python3 ../SapMachine-Infrastructure/lib/get_configure_opts.py $_GIT_TAG $_JDK_BUILD)
+_CONFIGURE_OPTS=$(python3 ../SapMachine-infrastructure/lib/get_configure_opts.py $_GIT_TAG $_JDK_BUILD)
 eval _CONFIGURE_OPTS=(${_CONFIGURE_OPTS})
 
 (set -x &&

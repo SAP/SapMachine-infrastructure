@@ -1,7 +1,7 @@
 #!/bin/bash
 set -ex
 
-read VERSION OS_NAME<<< $(python3 ${WORKSPACE}/SapMachine-Infrastructure/lib/publish_osx_get_version_osname.py -t ${SAPMACHINE_VERSION})
+read VERSION OS_NAME<<< $(python3 ${WORKSPACE}/SapMachine-infrastructure/lib/publish_osx_get_version_osname.py -t ${SAPMACHINE_VERSION})
 
 INTEL_ARCHIVE_NAME_JDK="sapmachine-jdk-${VERSION}_${OS_NAME}-x64_bin.tar.gz"
 INTEL_ARCHIVE_NAME_JRE="sapmachine-jre-${VERSION}_${OS_NAME}-x64_bin.tar.gz"
@@ -47,27 +47,27 @@ shasum -a 256 $AARCH_ARCHIVE_NAME_SYMBOLS > $AARCH_ARCHIVE_SUM_SYMBOLS
 shasum -a 256 $AARCH_DMG_NAME_JDK > $AARCH_DMG_SUM_JDK
 shasum -a 256 $AARCH_DMG_NAME_JRE > $AARCH_DMG_SUM_JRE
 
-python3 SapMachine-Infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${INTEL_ARCHIVE_NAME_JDK}"
-python3 SapMachine-Infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${INTEL_ARCHIVE_NAME_JRE}"
-python3 SapMachine-Infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${INTEL_ARCHIVE_NAME_SYMBOLS}"
-python3 SapMachine-Infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${INTEL_ARCHIVE_SUM_JDK}"
-python3 SapMachine-Infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${INTEL_ARCHIVE_SUM_JRE}"
-python3 SapMachine-Infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${INTEL_ARCHIVE_SUM_SYMBOLS}"
-python3 SapMachine-Infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${INTEL_DMG_NAME_JDK}"
-python3 SapMachine-Infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${INTEL_DMG_NAME_JRE}"
-python3 SapMachine-Infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${INTEL_DMG_SUM_JDK}"
-python3 SapMachine-Infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${INTEL_DMG_SUM_JRE}"
-python3 SapMachine-Infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${AARCH_ARCHIVE_NAME_JDK}"
-python3 SapMachine-Infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${AARCH_ARCHIVE_NAME_JRE}"
-python3 SapMachine-Infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${AARCH_ARCHIVE_NAME_SYMBOLS}"
-python3 SapMachine-Infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${AARCH_ARCHIVE_SUM_JDK}"
-python3 SapMachine-Infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${AARCH_ARCHIVE_SUM_JRE}"
-python3 SapMachine-Infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${AARCH_ARCHIVE_SUM_SYMBOLS}"
-python3 SapMachine-Infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${AARCH_DMG_NAME_JDK}"
-python3 SapMachine-Infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${AARCH_DMG_NAME_JRE}"
-python3 SapMachine-Infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${AARCH_DMG_SUM_JDK}"
-python3 SapMachine-Infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${AARCH_DMG_SUM_JRE}"
+python3 SapMachine-infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${INTEL_ARCHIVE_NAME_JDK}"
+python3 SapMachine-infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${INTEL_ARCHIVE_NAME_JRE}"
+python3 SapMachine-infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${INTEL_ARCHIVE_NAME_SYMBOLS}"
+python3 SapMachine-infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${INTEL_ARCHIVE_SUM_JDK}"
+python3 SapMachine-infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${INTEL_ARCHIVE_SUM_JRE}"
+python3 SapMachine-infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${INTEL_ARCHIVE_SUM_SYMBOLS}"
+python3 SapMachine-infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${INTEL_DMG_NAME_JDK}"
+python3 SapMachine-infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${INTEL_DMG_NAME_JRE}"
+python3 SapMachine-infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${INTEL_DMG_SUM_JDK}"
+python3 SapMachine-infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${INTEL_DMG_SUM_JRE}"
+python3 SapMachine-infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${AARCH_ARCHIVE_NAME_JDK}"
+python3 SapMachine-infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${AARCH_ARCHIVE_NAME_JRE}"
+python3 SapMachine-infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${AARCH_ARCHIVE_NAME_SYMBOLS}"
+python3 SapMachine-infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${AARCH_ARCHIVE_SUM_JDK}"
+python3 SapMachine-infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${AARCH_ARCHIVE_SUM_JRE}"
+python3 SapMachine-infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${AARCH_ARCHIVE_SUM_SYMBOLS}"
+python3 SapMachine-infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${AARCH_DMG_NAME_JDK}"
+python3 SapMachine-infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${AARCH_DMG_NAME_JRE}"
+python3 SapMachine-infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${AARCH_DMG_SUM_JDK}"
+python3 SapMachine-infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${AARCH_DMG_SUM_JRE}"
 
 if [ "$PUBLISH_CASKS" == true ]; then
-    python3 SapMachine-Infrastructure/lib/make_cask.py -t $SAPMACHINE_VERSION
+    python3 SapMachine-infrastructure/lib/make_cask.py -t $SAPMACHINE_VERSION
 fi

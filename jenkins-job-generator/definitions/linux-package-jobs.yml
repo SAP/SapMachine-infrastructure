@@ -7,7 +7,7 @@
             docker_agent: |-
                 agent {{
                                 dockerfile {{
-                                    dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/arm64"
+                                    dir "SapMachine-infrastructure/dockerfiles/ubuntu_20_04/arm64"
                                     reuseNode true
                                     label "{platform}"
                                     additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
@@ -19,7 +19,7 @@
             docker_agent: |-
                 agent {{
                                 dockerfile {{
-                                    dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/ppc64le"
+                                    dir "SapMachine-infrastructure/dockerfiles/ubuntu_20_04/ppc64le"
                                     reuseNode true
                                     label "{platform}"
                                     additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
@@ -31,7 +31,7 @@
             docker_agent: |-
                 agent {{
                                 dockerfile {{
-                                    dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/x86_64"
+                                    dir "SapMachine-infrastructure/dockerfiles/ubuntu_20_04/x86_64"
                                     reuseNode true
                                     label "{platform}"
                                     additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
@@ -75,7 +75,7 @@
             stages {{
                 stage("Checkout Infrastructure Repository") {{
                     steps {{
-                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
                     }}
                 }}
                 stage("Build") {{
@@ -83,14 +83,14 @@
                     steps {{
                         // credentials are needed to avoid rate limit exceedance
                         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
-                            sh "python3 SapMachine-Infrastructure/lib/make_deb.py --tag=${{params.GIT_TAG_NAME}} --download --architecture={architecture}"
+                            sh "python3 SapMachine-infrastructure/lib/make_deb.py --tag=${{params.GIT_TAG_NAME}} --download --architecture={architecture}"
                         }}
                     }}
                     post {{
                         success {{
                             archiveArtifacts allowEmptyArchive: true, artifacts: "*.deb"
                             stash includes: '*.deb', name: 'debPackage'
-                            stash includes: 'SapMachine-Infrastructure/**', name: 'infra'
+                            stash includes: 'SapMachine-infrastructure/**', name: 'infra'
                         }}
                     }}
                 }}
@@ -102,7 +102,7 @@
                         unstash 'infra'
                         unstash 'debPackage'
                         sh "cp -n *.deb /var/pkg/deb/{debarch} || true"
-                        sh "python3 SapMachine-Infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/{debarch}"
+                        sh "python3 SapMachine-infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/{debarch}"
                     }}
                 }}
             }}
@@ -138,12 +138,12 @@
             stages {{
                 stage("Checkout Infrastructure Repository") {{
                     steps {{
-                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
                     }}
                 }}
                 stage("Recreate") {{
                     steps {{
-                        sh "python3 SapMachine-Infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/{debarch}"
+                        sh "python3 SapMachine-infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/{debarch}"
                     }}
                 }}
             }}
@@ -180,20 +180,20 @@
             stages {
                 stage("Checkout Infrastructure Repository") {
                     steps {
-                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
                     }
                 }
                 stage("Build") {
                     agent {
                         dockerfile {
-                            dir "SapMachine-Infrastructure/dockerfiles/fedora-rpm"
+                            dir "SapMachine-infrastructure/dockerfiles/fedora-rpm"
                             reuseNode true
                             label "linux_x86_64"
                         }
                     }
                     steps {
                         sh 'rm -f *.rpm'
-                        sh "/usr/bin/python3 SapMachine-Infrastructure/lib/make_rpm.py --tag=${params.GIT_TAG_NAME}" --download
+                        sh "/usr/bin/python3 SapMachine-infrastructure/lib/make_rpm.py --tag=${params.GIT_TAG_NAME}" --download
                     }
                     post {
                         success {
@@ -207,14 +207,14 @@
                     }
                     agent {
                         dockerfile {
-                            dir "SapMachine-Infrastructure/dockerfiles/infrastructure"
+                            dir "SapMachine-infrastructure/dockerfiles/infrastructure"
                             reuseNode true
                             label "linux_x86_64"
                         }
                     }
                     steps {
                         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
-                            sh "SapMachine-Infrastructure/lib/publish_rpm.sh"
+                            sh "SapMachine-infrastructure/lib/publish_rpm.sh"
                         }
                     }
                 }
