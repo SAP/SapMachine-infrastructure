@@ -200,7 +200,7 @@
                             }}
                         }}
             save_workspace_on_error: *save_workspace_on_error
-    build_type_pr: &build_type_pr
+    type_pr: &type_pr_build
         - pr-validation:
             extra_configure_options: '--with-debug-level=fastdebug'
             trigger: |
@@ -312,7 +312,7 @@
                             script {{
                                 setGitHubPullRequestStatus context: "validate-pr-{major}-{platform}", state: 'SUCCESS'
                             }}
-    build_type_snapshot: &build_type_snapshot
+    type_snapshot: &type_snapshot_build
         - snapshot:
             docker_agent_verify: ''
             init_variables: |-
@@ -352,7 +352,7 @@
                                     archiveArtifacts allowEmptyArchive: true, artifacts: 'workspace.zip'
                                 }}
                             }}
-    build_type_release: &build_type_release
+    type_release: &type_release_build
         - release:
             docker_agent_verify: ''
             init_variables: |-
@@ -640,10 +640,10 @@
            branch_name: sapmachine20
         - '21':
            branch_name: sapmachine
-    build_type_snapshot: &build_type_snapshot_service
+    type_snapshot: &type_snapshot_service
         - snapshot:
             release_option_param: "[$class: 'BooleanParameterValue', name: 'UPLOAD_ARTIFACTORY', value: params.UPLOAD_ARTIFACTORY]"
-    build_type_release: &build_type_release_service
+    type_release: &type_release_service
         - release:
             release_option_param: "[$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH]"
     build_service_dsl: &build_service_dsl |
@@ -698,28 +698,28 @@
     name: builds
     major: *majors_build
     platform: *platforms
-    build_type_pr: *build_type_pr
-    build_type_snapshot: *build_type_snapshot
-    build_type_release: *build_type_release
+    type_pr: *type_pr_build
+    type_snapshot: *type_snapshot_build
+    type_release: *type_release_build
     exclude:
         - platform: linux_alpine_x86_64
           major: '11'
     jobs:
-        - build-{major}-{build_type_pr}-{platform}
-        - build-{major}-{build_type_snapshot}-{platform}
-        - build-{major}-{build_type_release}-{platform}
+        - build-{major}-{type_pr}-{platform}
+        - build-{major}-{type_snapshot}-{platform}
+        - build-{major}-{type_release}-{platform}
 
 - project:
     name: service-builds
     major: *majors_service
-    build_type_snapshot: *build_type_service_snapshot_service
-    build_type_release: *build_type_service_release_service
+    type_snapshot: *type_snapshot_service
+    type_release: *type_release_service
     jobs:
-        - build-service-{build_type_snapshot}-{major}
-        - build-service-{build_type_release}-{major}
+        - build-service-{type_snapshot}-{major}
+        - build-service-{type_release}-{major}
 
 - job-template:
-    name: build-{major}-{build_type_pr}-{platform}
+    name: build-{major}-{type_pr}-{platform}
     defaults: 'build_defaults'
     description: 'PR build for SapMachine {major} on {platform}.'
     project-type: pipeline
@@ -781,7 +781,7 @@
     dsl: *build_dsl
 
 - job-template:
-    name: build-{major}-{build_type_snapshot}-{platform}
+    name: build-{major}-{type_snapshot}-{platform}
     defaults: 'build_defaults'
     description: 'Snapshot build for SapMachine {major} on {platform}.'
     project-type: pipeline
@@ -857,7 +857,7 @@
     dsl: *build_dsl
 
 - job-template:
-    name: build-{major}-{build_type_release}-{platform}
+    name: build-{major}-{type_release}-{platform}
     defaults: 'build_defaults'
     description: 'Release build for SapMachine {major} on {platform}.'
     project-type: pipeline
@@ -933,7 +933,7 @@
     dsl: *build_dsl
 
 - job-template:
-    name: build-service-snapshot-{major}
+    name: build-service-{type_snapshot}-{major}
     defaults: 'service_defaults'
     description: 'Start snapshot build for SapMachine {major} on all platorms.'
     project-type: pipeline
@@ -1015,7 +1015,7 @@
     dsl: *build_service_dsl
 
 - job-template:
-    name: build-service-release-{major}
+    name: build-service-{type_release}-{major}
     defaults: 'service_defaults'
     description: 'Start release build for SapMachine {major} on all platorms.'
     project-type: pipeline
