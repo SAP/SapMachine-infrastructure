@@ -70,13 +70,19 @@
         - jenkins-configuration-restore
         - jenkins-job-generator
         - jtreg
-        - osx-upload
-        - osx-upload-processor
-        - osx-download-from-artifactory
-        - update-cask
         - repository-update-and-tag
         - upload-ossrh
     regex: '(build-devkit-.*)'
+
+- view:
+    name: 'MacOS'
+    description: 'MacOS related jobs'
+    view-type: list
+    job-name:
+        - osx-upload
+        - osx-upload-processor
+        - update-cask
+    regex: '(publish-macos-packages-.*)'
 
 - view:
     name: 'Cloud Foundry Java Buildpack'

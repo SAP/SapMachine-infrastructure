@@ -1,3 +1,64 @@
+- defaults:
+    name: 'publish_macos_global'
+    platforms: &platforms
+        - macos_x86_64
+        - macos_aarch64
+
+- project:
+    name: publish-macos-packages
+    platform: *platforms
+    jobs:
+        - publish-macos-packages-{platform}
+
+- job-template:
+    name: publish-macos-packages-{platform}
+    defaults: 'publish_macos_global'
+    description: 'Download MacOS artifacts for {platform} from Artifactory location, do some verification and, if succesful, publish to GitHub'
+    project-type: pipeline
+    sandbox: true
+    concurrent: false
+    properties:
+        - build-discarder:
+            num-to-keep: 20
+            artifact-num-to-keep: 1
+    parameters:
+        - string:
+            name: SAPMACHINE_VERSION
+            default: ''
+            description: 'The SapMachine Release Tag to upload MacOS artifacts for. Should start with "sapmachine-". E.g. "sapmachine-17.0.6".'
+        - bool:
+            name: PUBLISH_CASKS
+            default: false
+            description: 'When set to true, update homebrew casks.'
+        - string:
+            name: DOWNLOAD_URL_PREFIX
+            default: 'https://common.repositories.cloud.sap/artifactory/naas-deploy-releases-notarization/com/sap/sapmachine'
+            description: 'This string will be suffixed with e.g. "/sapmachine-jdk_darwinaarch64/11.0.18/sapmachine-jdk_darwinaarch64-11.0.18.dmg" to compute the download location of the standard artifacts.'
+        - string:
+            name: DOWNLOAD_SYMBOLS_URL_PREFIX
+            default: 'https://common.repositories.cloud.sap/artifactory/deploy.milestones.xmake/com/sap/sapmachine'
+            description: 'This string will be suffixed with e.g. "/sapmachine-symbols_darwinaarch64/17.0.6/sapmachine-symbols_darwinaarch64-17.0.6.tar.gz" to compute the download location of the symbol files.'
+    dsl: |
+        pipeline {{
+            agent {{
+                label "{platform}"
+            }}
+            stages {{
+                stage("Checkout Infrastructure Repository") {{
+                    steps {{
+                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+                    }}
+                }
+                stage('Download artifacts') {{
+                    steps {
+                        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
+                            sh "python3 SapMachine-infrastructure/lib/download-osx-artifacts.py"
+                        }}
+                    }}
+                }}
+            }}
+        }}
+
 - job:
     name: osx-upload
     description: 'Upload MacOS artifacts.'
@@ -53,59 +114,6 @@
       - trigger-parameterized-builds:
         - project: osx-upload-processor
           current-parameters: true
-
-- job:
-    name: osx-download-from-artifactory
-    description: 'Download artifacts from given server (e.g. SAPs artifactory) and triggers the job to upload them to github'
-    project-type: pipeline
-    concurrent: false
-    properties:
-        - build-discarder:
-            num-to-keep: 100
-            artifact-num-to-keep: 1
-    parameters:
-        - string:
-            name: SAPMACHINE_VERSION
-            default: ''
-            description: 'The SapMachine Release Tag to upload MacOS artifacts for. Should start with "sapmachine-". E.g. "sapmachine-17.0.6".'
-        - bool:
-            name: PUBLISH_CASKS
-            default: false
-            description: 'When set to true, update homebrew casks.'
-        - string:
-            name: DOWNLOAD_URL_PREFIX
-            default: 'https://common.repositories.cloud.sap/artifactory/naas-deploy-releases-notarization/com/sap/sapmachine'
-            description: 'This string will be suffixed with e.g. "/sapmachine-jdk_darwinaarch64/11.0.18/sapmachine-jdk_darwinaarch64-11.0.18.dmg" to compute the download location of the standard artifacts.'
-        - string:
-            name: DOWNLOAD_SYMBOLS_URL_PREFIX
-            default: 'https://common.repositories.cloud.sap/artifactory/deploy.milestones.xmake/com/sap/sapmachine'
-            description: 'This string will be suffixed with e.g. "/sapmachine-symbols_darwinaarch64/17.0.6/sapmachine-symbols_darwinaarch64-17.0.6.tar.gz" to compute the download location of the symbol files.'
-    publishers:
-      - archive:
-          artifacts: 'INTEL_JDK_TGZ, INTEL_JRE_TGZ, INTEL_JDK_DMG, INTEL_JRE_DMG, INTEL_SYMBOLS, AARCH_JDK_TGZ, AARCH_JRE_TGZ, AARCH_JDK_DMG, AARCH_JRE_DMG, AARCH_SYMBOLS'
-      - trigger-parameterized-builds:
-        - project: osx-upload-processor
-          current-parameters: true
-    dsl: |
-        pipeline {
-            agent {
-                label 'macos_x86_64'
-            }
-            stages {
-                stage("Checkout Infrastructure Repository") {
-                    steps {
-                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
-                    }
-                }
-                stage('Download artifacts') {
-                    steps {
-                        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
-                            sh "python3 SapMachine-infrastructure/lib/download-osx-artifacts.py"
-                        }
-                    }
-                }
-            }
-        }
 
 - job:
     name: osx-upload-processor
