@@ -14,7 +14,7 @@
             steps {
                 sh '''#!/bin/bash
                     set -ex
-                    git init SapMachine-Infrastructure &amp;&amp; cd SapMachine-Infrastructure
+                    git init SapMachine-infrastructure &amp;&amp; cd SapMachine-infrastructure
                     git fetch --depth 1 https://github.com/SAP/SapMachine-infrastructure.git master
                     git checkout --detach FETCH_HEAD
                 '''
@@ -34,7 +34,7 @@
         stage ('Download Prerequisites'){
             agent {
     dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/jmc/x86_64"
+        dir "SapMachine-infrastructure/dockerfiles/jmc/x86_64"
         reuseNode true
         label "linux_x86_64"
     }
@@ -43,14 +43,14 @@
             steps {
                 // credentials are needed to avoid rate limit exceedance
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
-                    sh "python3 SapMachine-Infrastructure/lib/download_boot_jdk.py -m ${params.BUILD_JDK} -d `pwd`"
+                    sh "python3 SapMachine-infrastructure/lib/download_boot_jdk.py -m ${params.BUILD_JDK} -d `pwd`"
                 }
             }
         }
         stage("Build and Basic Tests") {
             agent {
     dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/jmc/x86_64"
+        dir "SapMachine-infrastructure/dockerfiles/jmc/x86_64"
         reuseNode true
         label "linux_x86_64"
     }
@@ -61,13 +61,13 @@
                 JAVA_HOME = "${WORKSPACE}/boot_jdk"
             }
             steps {
-                sh 'SapMachine-Infrastructure/lib/jmc/build.sh'
+                sh 'SapMachine-infrastructure/lib/jmc/build.sh'
             }
         }
         stage("Test") {
             agent {
     dockerfile {
-        dir "SapMachine-Infrastructure/dockerfiles/jmc/x86_64"
+        dir "SapMachine-infrastructure/dockerfiles/jmc/x86_64"
         reuseNode true
         label "linux_x86_64"
     }
@@ -82,7 +82,7 @@
             }
             steps {
                 catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
-                    sh 'SapMachine-Infrastructure/lib/jmc/test.sh'
+                    sh 'SapMachine-infrastructure/lib/jmc/test.sh'
                 }
             }
         }

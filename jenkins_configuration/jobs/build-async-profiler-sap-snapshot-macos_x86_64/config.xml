@@ -11,7 +11,7 @@
                     env.VERIFICATION_RESULT = "1"
                 }
                 cleanWs deleteDirs: true, disableDeferredWipeout: true
-                checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+                checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
             }
         }
         stage("Checkout Repository") {
@@ -29,7 +29,7 @@
             }
             steps {
                 script {
-                    sh "python3 SapMachine-Infrastructure/lib/download_boot_jdk.py -m ${params.BUILD_JDK} -d `pwd`"
+                    sh "python3 SapMachine-infrastructure/lib/download_boot_jdk.py -m ${params.BUILD_JDK} -d `pwd`"
                 }
             }
         }
@@ -43,7 +43,7 @@
                 BUILD_JDK = "${WORKSPACE}/boot_jdk"
             }
             steps {
-                sh 'SapMachine-Infrastructure/lib/build_asyncprof.sh'
+                sh 'SapMachine-infrastructure/lib/build_asyncprof.sh'
             }
         }
         stage("Test") {
@@ -55,7 +55,7 @@
                 BUILD_JDK = "${WORKSPACE}/boot_jdk"
             }
             steps {
-                sh 'SapMachine-Infrastructure/lib/test_asyncprof.sh'
+                sh 'SapMachine-infrastructure/lib/test_asyncprof.sh'
             }
         }
         stage('Archive') {
@@ -78,7 +78,7 @@
             steps {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
                     sh '''
-                    SapMachine-Infrastructure/lib/publish_async_prof.sh
+                    SapMachine-infrastructure/lib/publish_async_prof.sh
                     '''
                 }
             }

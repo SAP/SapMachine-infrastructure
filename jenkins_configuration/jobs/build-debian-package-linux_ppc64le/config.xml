@@ -10,13 +10,13 @@
     stages {
         stage("Checkout Infrastructure Repository") {
             steps {
-                checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+                checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
             }
         }
         stage("Build") {
             agent {
                 dockerfile {
-                    dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/ppc64le"
+                    dir "SapMachine-infrastructure/dockerfiles/ubuntu_20_04/ppc64le"
                     reuseNode true
                     label "linux_ppc64le"
                     additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
@@ -25,14 +25,14 @@
             steps {
                 // credentials are needed to avoid rate limit exceedance
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
-                    sh "python3 SapMachine-Infrastructure/lib/make_deb.py --tag=${params.GIT_TAG_NAME} --download --architecture=linux-ppc64le"
+                    sh "python3 SapMachine-infrastructure/lib/make_deb.py --tag=${params.GIT_TAG_NAME} --download --architecture=linux-ppc64le"
                 }
             }
             post {
                 success {
                     archiveArtifacts allowEmptyArchive: true, artifacts: "*.deb"
                     stash includes: '*.deb', name: 'debPackage'
-                    stash includes: 'SapMachine-Infrastructure/**', name: 'infra'
+                    stash includes: 'SapMachine-infrastructure/**', name: 'infra'
                 }
             }
         }
@@ -44,7 +44,7 @@
                 unstash 'infra'
                 unstash 'debPackage'
                 sh "cp -n *.deb /var/pkg/deb/ppc64el || true"
-                sh "python3 SapMachine-Infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/ppc64el"
+                sh "python3 SapMachine-infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/ppc64el"
             }
         }
     }

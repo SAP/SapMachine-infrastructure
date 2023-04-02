@@ -62,8 +62,8 @@
 
                     "$GIT_TOOL" --version
                     set -ex
-                    "$GIT_TOOL" init SapMachine-Infrastructure &amp;&amp; cd SapMachine-Infrastructure
-                    GIT_TERMINAL_PROMPT=0 "$GIT_TOOL" fetch --depth 1 https://github.com/SAP/SapMachine-infrastructure.git master
+                    "$GIT_TOOL" init SapMachine-infrastructure &amp;&amp; cd SapMachine-infrastructure
+                    GIT_TERMINAL_PROMPT=0 "$GIT_TOOL" fetch --depth 1 https://github.com/SAP/SapMachine-infrastructure master
                     "$GIT_TOOL" checkout --detach FETCH_HEAD
                 '''
             }
@@ -74,13 +74,13 @@
         stage("Checkout SapMachine Repository") {
             
             steps {
-                sh("SapMachine-Infrastructure/lib/git_clone.sh $SAPMACHINE_GIT_REPOSITORY SapMachine $GIT_REF")
+                sh("SapMachine-infrastructure/lib/git_clone.sh $SAPMACHINE_GIT_REPOSITORY SapMachine $GIT_REF")
             }
         }
         stage("Prepare Devkit") {
             agent {
                 dockerfile {
-                    dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/arm64"
+                    dir "SapMachine-infrastructure/dockerfiles/ubuntu_20_04/arm64"
                     reuseNode true
                     label "linux_aarch64"
                     additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
@@ -95,7 +95,7 @@
                     String[] gav = params.DEVKIT.split(":");
                     if (gav.length == 3) {
                         echo "Extracting devkit from GAV coordinates: \"${params.DEVKIT}\"."
-                        sh("SapMachine-Infrastructure/lib/deploy-devkit.sh ${gav[0]} ${gav[1]} ${gav[2]}")
+                        sh("SapMachine-infrastructure/lib/deploy-devkit.sh ${gav[0]} ${gav[1]} ${gav[2]}")
                         env.DEVKIT_PATH = sh(script: "cat devkitlocation.txt", returnStdout: true).trim()
                     } else {
                         echo "Devkit not in GAV notation, assuming path."
@@ -108,7 +108,7 @@
         stage("Download Prerequisites") {
             agent {
                 dockerfile {
-                    dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/arm64"
+                    dir "SapMachine-infrastructure/dockerfiles/ubuntu_20_04/arm64"
                     reuseNode true
                     label "linux_aarch64"
                     additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
@@ -118,16 +118,16 @@
             steps {
                 // Download Boot JDK, Credentials are needed to avoid rate limit exceedance
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
-                    sh "python3 SapMachine-Infrastructure/lib/download_boot_jdk.py -d `pwd`"
+                    sh "python3 SapMachine-infrastructure/lib/download_boot_jdk.py -d `pwd`"
                 }
 
                 // Download googletest
-                sh("SapMachine-Infrastructure/lib/git_clone.sh https://github.com/google/googletest.git gtest refs/tags/v1.13.0")
+                sh("SapMachine-infrastructure/lib/git_clone.sh https://github.com/google/googletest gtest refs/tags/v1.13.0")
 
                 // Download jtreg if required
                 script {
                     if (params.RUN_TESTS) {
-                        sh "python3 SapMachine-Infrastructure/lib/download_jtreg.py"
+                        sh "python3 SapMachine-infrastructure/lib/download_jtreg.py"
                     }
                 }
             }
@@ -135,7 +135,7 @@
         stage("Build") {
             agent {
                 dockerfile {
-                    dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/arm64"
+                    dir "SapMachine-infrastructure/dockerfiles/ubuntu_20_04/arm64"
                     reuseNode true
                     label "linux_aarch64"
                     additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
@@ -148,7 +148,7 @@
             steps {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
                     script {
-                        sh("SapMachine-Infrastructure/lib/build.sh")
+                        sh("SapMachine-infrastructure/lib/build.sh")
                         env.ART_VERSION = readFile "${env.WORKSPACE}/javavmversion.txt"
                     }
                 }
@@ -157,7 +157,7 @@
         stage("Run jtreg hotspot") {
             agent {
                 dockerfile {
-                    dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/arm64"
+                    dir "SapMachine-infrastructure/dockerfiles/ubuntu_20_04/arm64"
                     reuseNode true
                     label "linux_aarch64"
                     additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
@@ -171,7 +171,7 @@
                 TESTSUITE = 'hotspot'
             }
             steps {
-                sh "bash SapMachine-Infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${env.TESTSUITE} ${params.hotspot_test_groups} || true"
+                sh "bash SapMachine-infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${env.TESTSUITE} ${params.hotspot_test_groups} || true"
                 publishHTML target: [
                     allowMissing: false,
                     alwaysLinkToLastBuild: false,
@@ -192,7 +192,7 @@
         stage("Run jtreg jdk") {
             agent {
                 dockerfile {
-                    dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/arm64"
+                    dir "SapMachine-infrastructure/dockerfiles/ubuntu_20_04/arm64"
                     reuseNode true
                     label "linux_aarch64"
                     additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
@@ -206,7 +206,7 @@
                 TESTSUITE = 'jdk'
             }
             steps {
-                sh "bash SapMachine-Infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${env.TESTSUITE} ${params.jdk_test_groups} || true"
+                sh "bash SapMachine-infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${env.TESTSUITE} ${params.jdk_test_groups} || true"
 
                 publishHTML target: [
                     allowMissing: false,
@@ -228,7 +228,7 @@
         stage("Run jtreg langtools") {
             agent {
                 dockerfile {
-                    dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/arm64"
+                    dir "SapMachine-infrastructure/dockerfiles/ubuntu_20_04/arm64"
                     reuseNode true
                     label "linux_aarch64"
                     additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
@@ -242,7 +242,7 @@
                 TESTSUITE = 'langtools'
             }
             steps {
-                sh "bash SapMachine-Infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${env.TESTSUITE} ${params.langtools_test_groups} || true"
+                sh "bash SapMachine-infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${env.TESTSUITE} ${params.langtools_test_groups} || true"
 
                 publishHTML target: [
                     allowMissing: false,
@@ -265,7 +265,7 @@
         stage("Build Debian Packages") {
             agent {
                 dockerfile {
-                    dir "SapMachine-Infrastructure/dockerfiles/ubuntu_20_04/arm64"
+                    dir "SapMachine-infrastructure/dockerfiles/ubuntu_20_04/arm64"
                     reuseNode true
                     label "linux_aarch64"
                     additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
@@ -276,12 +276,12 @@
                 expression { env.BUILD_INSTALLER_PACKAGES == "true" }
             }
             steps {
-                sh "python3 SapMachine-Infrastructure/lib/make_deb.py --tag=${env.SAPMACHINE_VERSION} --architecture=linux-aarch64"
+                sh "python3 SapMachine-infrastructure/lib/make_deb.py --tag=${env.SAPMACHINE_VERSION} --architecture=linux-aarch64"
             }
             post {
                 success {
                     stash includes: '*.deb', name: 'debPackage'
-                    stash includes: 'SapMachine-Infrastructure/**', name: 'infra'
+                    stash includes: 'SapMachine-infrastructure/**', name: 'infra'
                 }
             }
         }
@@ -302,7 +302,7 @@
             }
             steps {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
-                    sh "SapMachine-Infrastructure/lib/publish.sh"
+                    sh "SapMachine-infrastructure/lib/publish.sh"
                 }
             }
         }
@@ -318,7 +318,7 @@
                 unstash 'infra'
                 unstash 'debPackage'
                 sh "cp -n *.deb /var/pkg/deb/arm64 || true"
-                sh "python3 SapMachine-Infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/arm64"
+                sh "python3 SapMachine-infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/arm64"
             }
         }
         
@@ -390,7 +390,7 @@
         <hudson.model.StringParameterDefinition>
           <name>SAPMACHINE_GIT_REPOSITORY</name>
           <description>The Git repository to use.</description>
-          <defaultValue>https://github.com/SAP/SapMachine.git</defaultValue>
+          <defaultValue>https://github.com/SAP/SapMachine</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
@@ -458,14 +458,14 @@
           <defaultValue>true</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
-          <name>PUBLISH</name>
-          <description>When set to true, the resulting bundles will be published to GitHub.</description>
-          <defaultValue>false</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
-        <hudson.model.BooleanParameterDefinition>
           <name>CREATE_GENSRC_BUNDLE</name>
           <description>Create a bundle with generated source files (gensrc), to be used in e.g. IDE setups.</description>
           <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>PUBLISH</name>
+          <description>When set to true, the resulting bundles will be published to GitHub.</description>
+          <defaultValue>false</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>ARCHIVE_WORKSPACE</name>

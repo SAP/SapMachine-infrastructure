@@ -14,7 +14,7 @@
             steps {
                 sh '''#!/bin/bash
                     set -ex
-                    git init SapMachine-Infrastructure &amp;&amp; cd SapMachine-Infrastructure
+                    git init SapMachine-infrastructure &amp;&amp; cd SapMachine-infrastructure
                     git fetch --depth 1 https://github.com/SAP/SapMachine-infrastructure.git master
                     git checkout --detach FETCH_HEAD
                 '''
@@ -31,7 +31,7 @@
             }
             steps {
                 withCredentials([usernamePassword(credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD')]) {
-                    sh "SapMachine-Infrastructure/lib/jmc/update_repo.sh"
+                    sh "SapMachine-infrastructure/lib/jmc/update_repo.sh"
                 }
             }
         }
@@ -41,7 +41,7 @@
             }
             steps {
                 withCredentials([usernamePassword(credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD')]) {
-                    sh "cd jmc &amp;&amp; python3 ../SapMachine-Infrastructure/lib/jmc/merge_from_upstream.py"
+                    sh "cd jmc &amp;&amp; python3 ../SapMachine-infrastructure/lib/jmc/merge_from_upstream.py"
                 }
             }
         }

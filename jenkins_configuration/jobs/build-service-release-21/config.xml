@@ -20,7 +20,7 @@
 
                     for (p in platforms) {
                         if (p.value) {
-                            build job: 'build-21-release-' + p.key,
+                            build job: 'build-21-snapshot-' + p.key,
                                 propagate: false,
                                 wait: false,
                                 parameters: [
@@ -34,7 +34,9 @@
                                     string(name: 'langtools_test_groups', value: params.langtools_test_groups),
                                     [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
                                     [$class: 'BooleanParameterValue', name: 'BUILD_INSTALLER_PACKAGES', value: params.BUILD_INSTALLER_PACKAGES],
-                                    [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH]
+                                    [$class: 'BooleanParameterValue', name: 'CREATE_GENSRC_BUNDLE', value: params.CREATE_GENSRC_BUNDLE],
+                                    [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
+                                    [$class: 'BooleanParameterValue', name: 'ARCHIVE_WORKSPACE', value: params.ARCHIVE_WORKSPACE]
                                 ]
                         } else {
                             println "Skipping build for " + p.key + " (build=" + p.value + ")."
@@ -65,7 +67,7 @@
         <hudson.model.StringParameterDefinition>
           <name>SAPMACHINE_GIT_REPOSITORY</name>
           <description>The Git repository to use.</description>
-          <defaultValue>https://github.com/SAP/SapMachine.git</defaultValue>
+          <defaultValue>https://github.com/SAP/SapMachine</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
@@ -156,8 +158,18 @@
           <defaultValue>true</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
+          <name>CREATE_GENSRC_BUNDLE</name>
+          <description>Create a bundle with generated source files (gensrc), to be used in e.g. IDE setups.</description>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
           <name>PUBLISH</name>
           <description>When set to true, the resulting bundles will be published to GitHub.</description>
+          <defaultValue>false</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>ARCHIVE_WORKSPACE</name>
+          <description>Archive workspace for inspection after build.</description>
           <defaultValue>false</defaultValue>
         </hudson.model.BooleanParameterDefinition>
       </parameterDefinitions>

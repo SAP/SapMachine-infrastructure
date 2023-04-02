@@ -11,7 +11,7 @@
             steps {
                 sh '''#!/bin/bash
                     set -ex
-                    git init --initial-branch=master SapMachine-Infrastructure &amp;&amp; cd SapMachine-Infrastructure
+                    git init --initial-branch=master SapMachine-infrastructure &amp;&amp; cd SapMachine-infrastructure
                     git fetch --depth 1 https://github.com/SAP/SapMachine-infrastructure.git master
                     git checkout --detach FETCH_HEAD
                 '''
@@ -19,7 +19,7 @@
         }
         stage('Backup') {
             steps {
-                sh('python3 SapMachine-Infrastructure/lib/jenkins_restore.py -t /var/jenkins_home --install-plugins')
+                sh('python3 SapMachine-infrastructure/lib/jenkins_restore.py -t /var/jenkins_home --install-plugins')
             }
         }
     }

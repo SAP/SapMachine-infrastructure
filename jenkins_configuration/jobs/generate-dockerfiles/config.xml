@@ -7,13 +7,13 @@
     stages {
         stage("Checkout Infrastructure Repository") {
             steps {
-                checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-Infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+                checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
             }
         }
         stage('Generate Dockerfiles') {
             agent {
                 dockerfile {
-                    dir "SapMachine-Infrastructure/dockerfiles/infrastructure"
+                    dir "SapMachine-infrastructure/dockerfiles/infrastructure"
                     reuseNode true
                     label "docker"
                 }
@@ -27,7 +27,7 @@
                     }
                 }
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
-                    sh "cd SapMachine-Infrastructure &amp;&amp; python3 lib/generate_dockerfiles.py $FORCE_REGENERATE"
+                    sh "cd SapMachine-infrastructure &amp;&amp; python3 lib/generate_dockerfiles.py $FORCE_REGENERATE"
                 }
             }
         }

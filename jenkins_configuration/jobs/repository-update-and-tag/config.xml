@@ -54,10 +54,10 @@
             steps {
                 sh '''#!/bin/bash
                     set -ex
-                    if [ ! -d SapMachine-Infrastructure ]; then
-                      git init SapMachine-Infrastructure
+                    if [ ! -d SapMachine-infrastructure ]; then
+                      git init SapMachine-infrastructure
                     fi
-                    cd SapMachine-Infrastructure
+                    cd SapMachine-infrastructure
                     git fetch --depth 1 https://github.com/SAP/SapMachine-infrastructure.git master
                     git checkout --detach FETCH_HEAD
                 '''
@@ -70,11 +70,11 @@
             steps {
                 withCredentials([usernamePassword(credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD')]) {
                     sh '''
-                        openjdk_repositories=$(python3 SapMachine-Infrastructure/lib/list_openjdk_repositories.py)
+                        openjdk_repositories=$(python3 SapMachine-infrastructure/lib/list_openjdk_repositories.py)
                         for i in ${openjdk_repositories}
                         do
                             :
-                            SapMachine-Infrastructure/lib/update_repo.sh $i
+                            SapMachine-infrastructure/lib/update_repo.sh $i
                         done
                     '''
                 }
@@ -101,7 +101,7 @@
         stage('Tag, Build and Merge') {
             agent {
                 dockerfile {
-                    dir "SapMachine-Infrastructure/dockerfiles/infrastructure"
+                    dir "SapMachine-infrastructure/dockerfiles/infrastructure"
                     reuseNode true
                     label "repository"
                 }
@@ -112,7 +112,7 @@
             }
             steps {
                 withCredentials([usernamePassword(credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD')]) {
-                    sh("cd SapMachine &amp;&amp; python3 ../SapMachine-Infrastructure/lib/tag_build_and_merge.py")
+                    sh("cd SapMachine &amp;&amp; python3 ../SapMachine-infrastructure/lib/tag_build_and_merge.py")
                 }
             }
         }
