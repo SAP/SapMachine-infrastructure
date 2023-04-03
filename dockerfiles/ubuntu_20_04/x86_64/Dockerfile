@@ -56,14 +56,14 @@ RUN wget --no-verbose --show-progress --progress=bar:force:noscroll https://$ART
   mkdir ${DEVKIT_NAME}-${DEVKIT_VERSION_2} && cd ${DEVKIT_NAME}-${DEVKIT_VERSION_2} && \
   tar --no-same-permissions --no-same-owner --strip-components=1 -xzf ../${DEVKIT_NAME}-${DEVKIT_VERSION_2}.tar.gz && \
   rm ../${DEVKIT_NAME}-${DEVKIT_VERSION_2}.tar.gz && \
-  chmod 755 $(find /opt/devkits/${DEVKIT_NAME}-${DEVKIT_VERSION2} -type d) && \
+  chmod 755 $(find /opt/devkits/${DEVKIT_NAME}-${DEVKIT_VERSION_2} -type d) && \
   chmod u+r,g+r,a+r $(find /opt/devkits/${DEVKIT_NAME}-${DEVKIT_VERSION_2} -type f)
 
 RUN wget --no-verbose --show-progress --progress=bar:force:noscroll https://$ARTIFACTORY_CREDS@common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build/devkit/linux-x64/${DEVKIT_NAME}/${DEVKIT_VERSION_3}/${DEVKIT_NAME}-${DEVKIT_VERSION_3}.tar.gz 2>&1 && \
   mkdir ${DEVKIT_NAME}-${DEVKIT_VERSION_3} && cd ${DEVKIT_NAME}-${DEVKIT_VERSION_3} && \
   tar --no-same-permissions --no-same-owner --strip-components=1 -xzf ../${DEVKIT_NAME}-${DEVKIT_VERSION_3}.tar.gz && \
   rm ../${DEVKIT_NAME}-${DEVKIT_VERSION_3}.tar.gz && \
-  chmod 755 $(find /opt/devkits/${DEVKIT_NAME}-${DEVKIT_VERSION3} -type d) && \
+  chmod 755 $(find /opt/devkits/${DEVKIT_NAME}-${DEVKIT_VERSION_3} -type d) && \
   chmod u+r,g+r,a+r $(find /opt/devkits/${DEVKIT_NAME}-${DEVKIT_VERSION_3} -type f)
 
 WORKDIR /tmp
