@@ -27,6 +27,7 @@ git config user.email SAPMACHINE_GIT_EMAIL
 echo "Git Revision=$(git rev-parse HEAD)"
 
 if [ "$GITHUB_PR_NUMBER" ]; then
+  git fetch $SAPMACHINE_GIT_REPOSITORY
   git fetch $SAPMACHINE_GIT_REPOSITORY "pull/$GITHUB_PR_NUMBER/head"
   git merge FETCH_HEAD
 fi
