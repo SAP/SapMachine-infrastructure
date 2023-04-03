@@ -205,6 +205,7 @@
             save_workspace_on_error: *save_workspace_on_error
     type_pr: &type_pr_build
         - pr-validation:
+            deep_fetch: 'deep'
             extra_configure_options: '--with-debug-level=fastdebug'
             trigger: |
                 <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
@@ -459,7 +460,7 @@
                 stage("Checkout SapMachine Repository") {{
                     {verification_when|}
                     steps {{
-                        sh("SapMachine-infrastructure/lib/git_clone.sh $SAPMACHINE_GIT_REPOSITORY SapMachine $GIT_REF")
+                        sh("SapMachine-infrastructure/lib/git_clone.sh $SAPMACHINE_GIT_REPOSITORY SapMachine $GIT_REF {deep_fetch|}")
                     }}
                 }}
                 stage("Prepare Devkit") {{
