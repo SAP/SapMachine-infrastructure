@@ -57,7 +57,7 @@
         stage("Checkout SapMachine Repository") {
             
             steps {
-                sh("SapMachine-infrastructure/lib/git_clone.sh $SAPMACHINE_GIT_REPOSITORY SapMachine $GIT_REF")
+                sh("SapMachine-infrastructure/lib/git_clone.sh $SAPMACHINE_GIT_REPOSITORY SapMachine $GIT_REF ")
             }
         }
         stage("Prepare Devkit") {

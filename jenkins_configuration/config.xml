@@ -45,7 +45,7 @@
   <viewsTabBar class="hudson.views.DefaultViewsTabBar" />
   <myViewsTabBar class="hudson.views.DefaultMyViewsTabBar" />
   <clouds>
-    <hudson.plugins.ec2.EC2Cloud plugin="ec2@2.0.6">
+    <hudson.plugins.ec2.EC2Cloud plugin="ec2@2.0.7">
       <name>ec2-SapMachine Cloud</name>
       <useInstanceProfileForCredentials>false</useInstanceProfileForCredentials>
       <roleArn />
@@ -55,7 +55,7 @@
       <instanceCap>12</instanceCap>
       <templates>
         <hudson.plugins.ec2.SlaveTemplate>
-          <ami>ami-0e4b65554cd793a74</ami>
+          <ami>ami-02af3fed0ce138ad4</ami>
           <description>Linux x86_64 Client</description>
           <zone>us-east-1d</zone>
           <securityGroups>JenkinsLinuxSlave</securityGroups>
@@ -175,7 +175,7 @@
           <connectUsingPublicIp>false</connectUsingPublicIp>
         </hudson.plugins.ec2.SlaveTemplate>
         <hudson.plugins.ec2.SlaveTemplate>
-          <ami>ami-09531f833e22c3364</ami>
+          <ami>ami-0ebc2a08d917821a4</ami>
           <description>Linux aarch64 Client</description>
           <zone>us-east-1d</zone>
           <securityGroups>JenkinsLinuxSlave</securityGroups>
