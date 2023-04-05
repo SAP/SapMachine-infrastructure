@@ -1,6 +1,7 @@
 FROM alpine:3.17
 
 RUN apk update && apk upgrade && apk add \
+alpine-sdk \
 alsa-lib-dev \
 autoconf \
 bash \
