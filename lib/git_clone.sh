@@ -23,7 +23,8 @@ if [ ! -z $GIT_USER ]; then
 fi
 
 "$GIT_TOOL" --version
-(set -ex && "$GIT_TOOL" init $2 && cd $2)
+(set -ex && "$GIT_TOOL" init $2)
+cd $2
 (set -ex && GIT_TERMINAL_PROMPT=0 eval "$GIT_TOOL_FOR_EVAL" $GIT_CREDENTIALS fetch --no-tags $DEPTH_OPTION $1 $3:ref $PR_SPEC)
 (set -ex && "$GIT_TOOL" checkout ref)
 if [ ! -z $4 ]; then
