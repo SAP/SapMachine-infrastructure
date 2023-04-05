@@ -21,15 +21,7 @@ export GTEST_DIR
 
 cd "${WORKSPACE}/SapMachine"
 
-git config user.name SAPMACHINE_GIT_USER
-git config user.email SAPMACHINE_GIT_EMAIL
-
 echo "Git Revision=$(git rev-parse HEAD)"
-
-if [ "$GITHUB_PR_NUMBER" ]; then
-  git fetch $SAPMACHINE_GIT_REPOSITORY "pull/$GITHUB_PR_NUMBER/head"
-  git merge FETCH_HEAD
-fi
 
 if [ -z $BOOT_JDK ]; then
   # error

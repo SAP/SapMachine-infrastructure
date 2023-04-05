@@ -2,10 +2,12 @@
 set -e
 
 DEPTH_OPTION="--depth 1"
+PR_REF=
+PR_SPEC=
 if [ ! -z $4 ]; then
-  if [[ $4 == deep ]]; then
-    DEPTH_OPTION=
-  fi
+  DEPTH_OPTION=
+  PR_REF=pull/$4/head
+  PR_SPEC=$PR_REF:pr
 fi
 
 if [[ `uname` == CYGWIN* ]]; then
@@ -21,7 +23,9 @@ if [ ! -z $GIT_USER ]; then
 fi
 
 "$GIT_TOOL" --version
-set -ex
-"$GIT_TOOL" init $2 && cd $2
-GIT_TERMINAL_PROMPT=0 eval "$GIT_TOOL_FOR_EVAL" $GIT_CREDENTIALS fetch $DEPTH_OPTION $1 $3
-"$GIT_TOOL" checkout --detach FETCH_HEAD
+(set -ex && "$GIT_TOOL" init $2 && cd $2)
+(set -ex && GIT_TERMINAL_PROMPT=0 eval "$GIT_TOOL_FOR_EVAL" $GIT_CREDENTIALS fetch --no-tags $DEPTH_OPTION $1 $3:ref $PR_SPEC)
+(set -ex && "$GIT_TOOL" checkout ref)
+if [ ! -z $4 ]; then
+  (set -ex && git merge pr)
+fi
