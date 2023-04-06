@@ -83,7 +83,7 @@
                 expression { env.VERIFICATION_RESULT != "2" }
             }
             steps {
-                sh("SapMachine-infrastructure/lib/git_clone.sh $SAPMACHINE_GIT_REPOSITORY SapMachine $GIT_REF deep")
+                sh("SapMachine-infrastructure/lib/git_clone.sh $SAPMACHINE_GIT_REPOSITORY SapMachine $GIT_REF $GITHUB_PR_NUMBER")
             }
         }
         stage("Prepare Devkit") {
