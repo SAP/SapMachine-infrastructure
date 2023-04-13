@@ -1,8 +1,10 @@
 - defaults:
     name: 'publish_macos_global'
     platforms: &platforms
-        - macos_x86_64
-        - macos_aarch64
+        - macos_x86_64:
+            xmake_platform: intel
+        - macos_aarch64:
+            xmake_platform: aarch
 
 - project:
     name: publish-macos-packages
@@ -52,7 +54,7 @@
                 stage("Download artifacts") {{
                     steps {{
                         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'openjdk-artifactory', usernameVariable: 'ARTIFACTORY_USER', passwordVariable: 'ARTIFACTORY_PWD']]) {{
-                            sh "python3 SapMachine-infrastructure/lib/download-from-artifactory.py"
+                            sh "python3 SapMachine-infrastructure/lib/download-from-artifactory.py -p {xmake_platform}"
                         }}
                     }}
                 }}
