@@ -54,7 +54,7 @@
                 stage("Download artifacts") {{
                     steps {{
                         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'openjdk-artifactory', usernameVariable: 'ARTIFACTORY_USER', passwordVariable: 'ARTIFACTORY_PWD']]) {{
-                            sh "python3 SapMachine-infrastructure/lib/download-from-artifactory.py -p {xmake_platform}"
+                            sh "python3 SapMachine-infrastructure/lib/download_from_artifactory.py -p {xmake_platform}"
                         }}
                     }}
                 }}
