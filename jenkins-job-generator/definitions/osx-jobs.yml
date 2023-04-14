@@ -2,9 +2,9 @@
     name: 'publish_macos_global'
     platforms: &platforms
         - macos_x86_64:
-            xmake_platform: intel
+            publish_platform: x64
         - macos_aarch64:
-            xmake_platform: aarch
+            publish_platform: aarch64
 
 - project:
     name: publish-macos-packages
@@ -60,12 +60,19 @@
                         checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
                     }}
                 }}
-                stage("Download artifacts") {{
+                stage("Download Artifactory") {{
                     environment {{
                         ARTIFACTORY_CREDS = credentials('openjdk-artifactory')
                     }}
                     steps {{
-                        sh "SapMachine-infrastructure/lib/download-from-artifactory.sh {xmake_platform}"
+                        sh "SapMachine-infrastructure/lib/download-from-artifactory.sh {publish_platform}"
+                    }}
+                }}
+                stage("Publish GitHub") {{
+                    steps {{
+                        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
+                            sh "SapMachine-infrastructure/lib/publish_osx.sh {publish_platform}"
+                        }}
                     }}
                 }}
             }}
