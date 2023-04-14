@@ -28,18 +28,22 @@
             name: SAPMACHINE_VERSION
             default: ''
             description: 'The SapMachine Release Tag to upload MacOS artifacts for. Should start with "sapmachine-". E.g. "sapmachine-17.0.6".'
+        - string:
+            name: BINARY_SOURCE
+            default: 'https://common.repositories.cloud.sap/artifactory/naas-deploy-releases-notarization/com/sap/sapmachine'
+            description: 'Artifactory location where SapMachine binaries should be taken from.'
+        - string:
+            name: SYMBOL_SOURCE
+            default: 'https://common.repositories.cloud.sap/artifactory/build.releases/com/sap/sapmachine'
+            description: 'Artifactory location where symbol bundle should be taken from.'
+        - string:
+            name: NOTARIZED_SUFFIX
+            default: '-notarized'
+            description: 'Suffix to be appended to artifacts that are notarized.'
         - bool:
             name: PUBLISH_CASKS
-            default: false
+            default: true
             description: 'When set to true, update homebrew casks.'
-        - string:
-            name: DOWNLOAD_URL_PREFIX
-            default: 'https://common.repositories.cloud.sap/artifactory/naas-deploy-releases-notarization/com/sap/sapmachine'
-            description: 'This string will be suffixed with e.g. "/sapmachine-jdk_darwinaarch64/11.0.18/sapmachine-jdk_darwinaarch64-11.0.18.dmg" to compute the download location of the standard artifacts.'
-        - string:
-            name: DOWNLOAD_SYMBOLS_URL_PREFIX
-            default: 'https://common.repositories.cloud.sap/artifactory/build.releases/com/sap/sapmachine'
-            description: 'This string will be suffixed with e.g. "/sapmachine-symbols_darwinaarch64/17.0.6/sapmachine-symbols_darwinaarch64-17.0.6.tar.gz" to compute the download location of the symbol files.'
     dsl: |
         pipeline {{
             agent {{
@@ -52,10 +56,11 @@
                     }}
                 }}
                 stage("Download artifacts") {{
+                    environment {{
+                        ARTIFACTORY_CREDS = credentials('openjdk-artifactory')
+                    }}
                     steps {{
-                        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'openjdk-artifactory', usernameVariable: 'ARTIFACTORY_USER', passwordVariable: 'ARTIFACTORY_PWD']]) {{
-                            sh "python3 SapMachine-infrastructure/lib/download_from_artifactory.py -p {xmake_platform}"
-                        }}
+                        sh "SapMachine-infrastructure/lib/download-from-artifactory.sh {xmake_platform}"
                     }}
                 }}
             }}
