@@ -46,20 +46,21 @@ if [ ! -f ${DEVKIT_ARCHIVE_PATH} ]; then
     DEVKIT_ARCHIVE_PATH=$(pwd)"/${DEVKIT_ARCHIVE}"
   fi
 
-  DOWNLOAD_URL=${ARTIFACTORY_PATH}/${DEVKIT_GROUP_SLASH}/${DEVKIT_ARTEFACT}/${DEVKIT_VERSION}/${DEVKIT_ARCHIVE}
-  HTTPRC=`curl -L -s -I -u ${ARTIFACTORY_CREDS} ${DOWNLOAD_URL} | head -n 1 | cut -d$' ' -f2`
-  if [[ $HTTPRC -ne 200 ]]; then
-    echo Error: ${DOWNLOAD_URL} is not downloadable, request returned $HTTPRC.
-    exit -1
-  fi
-  echo Downloading ${DOWNLOAD_URL} to ${DEVKIT_ARCHIVE_PATH}...
   if [[ $UNAME == CYGWIN* ]]; then
     CURL_TOOL=/usr/bin/curl
   else
     CURL_TOOL=curl
   fi
-  (set -x && curl --version)
-  curl -L -s -o ${DEVKIT_ARCHIVE_PATH} -u ${ARTIFACTORY_CREDS} ${DOWNLOAD_URL}
+  (set -x && ${CURL_TOOL} --version)
+
+  DOWNLOAD_URL=${ARTIFACTORY_PATH}/${DEVKIT_GROUP_SLASH}/${DEVKIT_ARTEFACT}/${DEVKIT_VERSION}/${DEVKIT_ARCHIVE}
+  HTTPRC=`${CURL_TOOL} -L -s -I -u ${ARTIFACTORY_CREDS} ${DOWNLOAD_URL} | head -n 1 | cut -d$' ' -f2`
+  if [[ $HTTPRC -ne 200 ]]; then
+    echo Error: ${DOWNLOAD_URL} is not downloadable, request returned $HTTPRC.
+    exit -1
+  fi
+  echo Downloading ${DOWNLOAD_URL} to ${DEVKIT_ARCHIVE_PATH}...
+  ${CURL_TOOL} -L -s -o ${DEVKIT_ARCHIVE_PATH} -u ${ARTIFACTORY_CREDS} ${DOWNLOAD_URL}
 fi
 
 echo Extracting ${DEVKIT_ARCHIVE_PATH} to ${DEVKIT_PATH}...
