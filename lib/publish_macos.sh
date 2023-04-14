@@ -24,9 +24,6 @@ shasum -a 256 $SYMBOLS_TGZ_NAME > $SYMBOLS_TGZ_SUM
 shasum -a 256 $JDK_DMG_NAME > $JDK_DMG_SUM
 shasum -a 256 $JRE_DMG_NAME > $JRE_DMG_SUM
 
-#debug, delete before using productively
-SAPMACHINE_VERSION="sapmachine-0.0.0"
-
 python3 SapMachine-infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${JDK_TGZ_NAME}"
 python3 SapMachine-infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${JDK_TGZ_SUM}"
 python3 SapMachine-infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${JDK_DMG_NAME}"
@@ -37,9 +34,6 @@ python3 SapMachine-infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -
 python3 SapMachine-infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${JRE_DMG_SUM}"
 python3 SapMachine-infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${SYMBOLS_TGZ_NAME}"
 python3 SapMachine-infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${SYMBOLS_TGZ_SUM}"
-
-#debug, delete before using productively
-exit 0
 
 if [ "$PUBLISH_CASKS" == true ]; then
     python3 SapMachine-infrastructure/lib/make_cask.py -t $SAPMACHINE_VERSION
