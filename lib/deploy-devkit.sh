@@ -2,7 +2,7 @@
 set -e
 
 UNAME=$(uname)
-NEXUS_PATH=https://common.repositories.cloud.sap/artifactory/sapmachine-mvn
+ARTIFACTORY_PATH=https://common.repositories.cloud.sap/artifactory/sapmachine-mvn
 DEVKIT_GROUP=$1
 DEVKIT_GROUP_SLASH=`echo $DEVKIT_GROUP | tr . /`
 DEVKIT_ARTEFACT=$2
@@ -46,7 +46,7 @@ if [ ! -f ${DEVKIT_ARCHIVE_PATH} ]; then
     DEVKIT_ARCHIVE_PATH=$(pwd)"/${DEVKIT_ARCHIVE}"
   fi
 
-  DOWNLOAD_URL=${NEXUS_PATH}/${DEVKIT_GROUP_SLASH}/${DEVKIT_ARTEFACT}/${DEVKIT_VERSION}/${DEVKIT_ARCHIVE}
+  DOWNLOAD_URL=${ARTIFACTORY_PATH}/${DEVKIT_GROUP_SLASH}/${DEVKIT_ARTEFACT}/${DEVKIT_VERSION}/${DEVKIT_ARCHIVE}
   HTTPRC=`curl -L -s -I -u ${ARTIFACTORY_CREDS} ${DOWNLOAD_URL} | head -n 1 | cut -d$' ' -f2`
   if [[ $HTTPRC -ne 200 ]]; then
     echo Error: ${DOWNLOAD_URL} is not downloadable, request returned $HTTPRC.
