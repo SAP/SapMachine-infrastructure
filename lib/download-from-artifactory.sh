@@ -31,7 +31,7 @@ JRE_DMG_NAME=sapmachine-jre_darwin${PLATFORM_ARG}64-${SMVERS}${NOTARIZED_SUFFIX}
 JRE_DMG_URL=${BINARY_SOURCE}/sapmachine-jre_darwin${PLATFORM_ARG}64/${SMVERS}/${JRE_DMG_NAME}
 
 SYMBOLS_NAME=sapmachine-symbols_darwin${PLATFORM_ARG}64-${SMVERS}.tar.gz
-SYMBOLS_URL=${SYMBOL_SOURCE}/sapmachine-symbols_darwin${PLATFORM_ARG}64/${SMVERS}/${}
+SYMBOLS_URL=${SYMBOL_SOURCE}/sapmachine-symbols_darwin${PLATFORM_ARG}64/${SMVERS}/${SYMBOLS_NAME}
 
 download_artifact ${JDK_TGZ_URL} ${JDK_TGZ_NAME}
 download_artifact ${JDK_DMG_URL} ${JDK_DMG_NAME}

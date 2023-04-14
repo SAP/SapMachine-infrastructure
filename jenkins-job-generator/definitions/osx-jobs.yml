@@ -50,6 +50,11 @@
                 label "{platform}"
             }}
             stages {{
+                stage("Cleanup") {{
+                    steps {{
+                        cleanWs deleteDirs: true, disableDeferredWipeout: true
+                    }}
+                }}
                 stage("Checkout Infrastructure Repository") {{
                     steps {{
                         checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
