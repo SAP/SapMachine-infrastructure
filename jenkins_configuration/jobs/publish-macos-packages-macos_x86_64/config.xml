@@ -1,19 +1,50 @@
-<flow-definition plugin="workflow-job@1289.vd1c337fd5354">
-  <actions>
-    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@2.2125.vddb_a_44a_d605e" />
-    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@2.2125.vddb_a_44a_d605e">
-      <jobProperties />
-      <triggers />
-      <parameters />
-      <options />
-    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
-  </actions>
+<flow-definition plugin="workflow-job">
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps">
+    <script>pipeline {
+    agent {
+        label "macos_x86_64"
+    }
+    stages {
+        stage("Checkout Infrastructure Repository") {
+            steps {
+                checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+            }
+        }
+        stage("Download Artifactory") {
+            environment {
+                ARTIFACTORY_CREDS = credentials('openjdk-artifactory')
+            }
+            steps {
+                sh "SapMachine-infrastructure/lib/download_macos.sh x64"
+            }
+        }
+        stage("Publish GitHub") {
+            steps {
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
+                    sh "SapMachine-infrastructure/lib/publish_macos.sh x64"
+                }
+            }
+        }
+        stage("Publish Website Data") {
+            steps {
+                build job: 'generate-website-data', propagate: false, wait: false
+            }
+        }
+    }
+    post {
+        success {
+            cleanWs()
+        }
+    }
+}
+</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <actions />
   <description>Download MacOS artifacts for macos_x86_64 from Artifactory location, do some verification and, if succesful, publish to GitHub&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
   <properties>
-    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty>
-      <abortPrevious>false</abortPrevious>
-    </org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty>
+    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty />
     <jenkins.model.BuildDiscarderProperty>
       <strategy class="hudson.tasks.LogRotator">
         <daysToKeep>-1</daysToKeep>
@@ -30,48 +61,30 @@
           <defaultValue />
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
-        <hudson.model.BooleanParameterDefinition>
-          <name>PUBLISH_CASKS</name>
-          <description>When set to true, update homebrew casks.</description>
-          <defaultValue>false</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>DOWNLOAD_URL_PREFIX</name>
-          <description>This string will be suffixed with e.g. "/sapmachine-jdk_darwinaarch64/11.0.18/sapmachine-jdk_darwinaarch64-11.0.18.dmg" to compute the download location of the standard artifacts.</description>
+          <name>BINARY_SOURCE</name>
+          <description>Artifactory location where SapMachine binaries should be taken from.</description>
           <defaultValue>https://common.repositories.cloud.sap/artifactory/naas-deploy-releases-notarization/com/sap/sapmachine</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>DOWNLOAD_SYMBOLS_URL_PREFIX</name>
-          <description>This string will be suffixed with e.g. "/sapmachine-symbols_darwinaarch64/17.0.6/sapmachine-symbols_darwinaarch64-17.0.6.tar.gz" to compute the download location of the symbol files.</description>
+          <name>SYMBOL_SOURCE</name>
+          <description>Artifactory location where symbol bundle should be taken from.</description>
           <defaultValue>https://common.repositories.cloud.sap/artifactory/build.releases/com/sap/sapmachine</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>NOTARIZED_SUFFIX</name>
+          <description>Suffix to be appended to artifacts that are notarized.</description>
+          <defaultValue>-notarized</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>PUBLISH_CASKS</name>
+          <description>When set to true, update homebrew casks.</description>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@3653.v07ea_433c90b_4">
-    <script>pipeline {
-    agent {
-        label "macos_x86_64"
-    }
-    stages {
-        stage("Checkout Infrastructure Repository") {
-            steps {
-                checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
-            }
-        }
-        stage("Download artifacts") {
-            steps {
-                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'openjdk-artifactory', usernameVariable: 'ARTIFACTORY_USER', passwordVariable: 'ARTIFACTORY_PWD']]) {
-                    sh "python3 SapMachine-infrastructure/lib/download_from_artifactory.py -p intel"
-                }
-            }
-        }
-    }
-}
-</script>
-    <sandbox>true</sandbox>
-  </definition>
-  <disabled>false</disabled>
 </flow-definition>
