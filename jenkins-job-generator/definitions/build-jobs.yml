@@ -637,9 +637,11 @@
         - '21'
     type_snapshot: &type_snapshot_service
         - snapshot:
+            type: snapshot
             release_option_param: "[$class: 'BooleanParameterValue', name: 'UPLOAD_ARTIFACTORY', value: params.UPLOAD_ARTIFACTORY],"
     type_release: &type_release_service
         - release:
+            type: release
             release_option_param: "[$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],"
     build_service_dsl: &build_service_dsl |
         pipeline {{
@@ -662,7 +664,7 @@
 
                             for (p in platforms) {{
                                 if (p.value) {{
-                                    build job: 'build-{major}-snapshot-' + p.key,
+                                    build job: 'build-{major}-{type}-' + p.key,
                                         propagate: false,
                                         wait: false,
                                         parameters: [
