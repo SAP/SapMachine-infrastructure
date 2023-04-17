@@ -443,10 +443,11 @@
                             fi
 
                             "$GIT_TOOL" --version
-                            set -ex
-                            "$GIT_TOOL" init SapMachine-infrastructure && cd SapMachine-infrastructure
-                            GIT_TERMINAL_PROMPT=0 "$GIT_TOOL" fetch --depth 1 https://github.com/SAP/SapMachine-infrastructure master
-                            "$GIT_TOOL" checkout --detach FETCH_HEAD
+                            "$GIT_TOOL" config --global init.defaultBranch master
+                            (set -ex && "$GIT_TOOL" init SapMachine-infrastructure)
+                            cd SapMachine-infrastructure
+                            (set -ex && GIT_TERMINAL_PROMPT=0 "$GIT_TOOL" fetch --depth 1 https://github.com/SAP/SapMachine-infrastructure master)
+                            (set -ex && "$GIT_TOOL" checkout --detach FETCH_HEAD)
                         '''
                     }}
                 }}
