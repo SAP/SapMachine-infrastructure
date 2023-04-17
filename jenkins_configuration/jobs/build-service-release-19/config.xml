@@ -20,7 +20,7 @@
 
                     for (p in platforms) {
                         if (p.value) {
-                            build job: 'build-19-snapshot-' + p.key,
+                            build job: 'build-19-release-' + p.key,
                                 propagate: false,
                                 wait: false,
                                 parameters: [
