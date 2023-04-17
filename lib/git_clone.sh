@@ -25,10 +25,25 @@ fi
 "$GIT_TOOL" --version
 (set -ex && "$GIT_TOOL" init $2)
 cd $2
-(set -ex && GIT_TERMINAL_PROMPT=0 eval "$GIT_TOOL_FOR_EVAL" $GIT_CREDENTIALS fetch $DEPTH_OPTION $1 $3:ref $PR_SPEC)
-(set -ex && "$GIT_TOOL" checkout ref)
-if [ ! -z $4 ]; then
-  git config user.name SAPMACHINE_PR_TEST
-  git config user.email sapmachine@sap.com
-  (set -ex && git merge pr)
+
+if git rev-parse --quiet --verify refs/tags/$3 >/dev/null; then
+  # we have a tag
+  (set -ex && GIT_TERMINAL_PROMPT=0 eval "$GIT_TOOL_FOR_EVAL" $GIT_CREDENTIALS fetch $DEPTH_OPTION $1 $3 $PR_SPEC)
+  (set -ex && "$GIT_TOOL" checkout $3)
+  if [ ! -z $4 ]; then
+    echo "Should not happen: Try to merge $4 into tag $3"
+    exit -1
+  fi
+elif git rev-parse --quiet --verify refs/heads/$3 >/dev/null; then
+  # we have a branch
+  (set -ex && GIT_TERMINAL_PROMPT=0 eval "$GIT_TOOL_FOR_EVAL" $GIT_CREDENTIALS fetch --no-tags $DEPTH_OPTION $1 $3:ref $PR_SPEC)
+  (set -ex && "$GIT_TOOL" checkout ref)
+  if [ ! -z $4 ]; then
+    git config user.name SAPMACHINE_PR_TEST
+    git config user.email sapmachine@sap.com
+    (set -ex && git merge pr)
+  fi
+else
+  echo "$3 is not a valid git reference"
+  exit -1
 fi
