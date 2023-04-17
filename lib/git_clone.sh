@@ -19,7 +19,7 @@ fi
 cd $2
 
 # handle tag
-if GIT_TERMINAL_PROMPT=0 "$GIT_TOOL" ls-remote --tags "$1" | grep -q "refs/tags/$3"; then
+if GIT_TERMINAL_PROMPT=0 "$GIT_TOOL" ls-remote --tags "$1" | grep -q "refs/tags/$3$"; then
   if [ ! -z $4 ]; then
     echo "Should not happen: Try to merge $4 into tag($3)"
     exit -1
