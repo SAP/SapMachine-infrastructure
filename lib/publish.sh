@@ -73,10 +73,10 @@ if [ $UNAME == Darwin ]; then
   python3 SapMachine-infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${DMG_SUM_JRE}"
 fi
 
-if [[ $UNAME == CYGWIN* ]]; then
-  for MSIFILE in *.msi; do
-    shasum -a 256 $MSIFILE > ${MSIFILE}.sha256.txt
-    python3 SapMachine-infrastructure/lib/github_publish.py -t ${SAPMACHINE_VERSION} -a ${MSIFILE}
-    python3 SapMachine-infrastructure/lib/github_publish.py -t ${SAPMACHINE_VERSION} -a ${MSIFILE}.sha256.txt
-  done
-fi
+#if [[ $UNAME == CYGWIN* ]]; then
+#  for MSIFILE in *.msi; do
+#    shasum -a 256 $MSIFILE > ${MSIFILE}.sha256.txt
+#    python3 SapMachine-infrastructure/lib/github_publish.py -t ${SAPMACHINE_VERSION} -a ${MSIFILE}
+#    python3 SapMachine-infrastructure/lib/github_publish.py -t ${SAPMACHINE_VERSION} -a ${MSIFILE}.sha256.txt
+#  done
+#fi

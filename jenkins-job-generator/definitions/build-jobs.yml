@@ -332,6 +332,20 @@
 
                                 // Upload the test archive
                                 jf "rt u test.zip sapmachine-mvn/io/sapmachine/build-results/{platform}/${{env.ART_VERSION}}/test.zip"
+
+                                // On Windows, upload msi Files to Artifactory
+                                script {{
+                                    if (params.PUBLISH == true && JOB_NAME ==~ /((\S*)(release-windows)(\S*))/) {{
+                                        def jdk_bundle_name = readFile "${{env.WORKSPACE}}/jdk_bundle_name.txt"
+                                        def jre_bundle_name = readFile "${{env.WORKSPACE}}/jre_bundle_name.txt"
+
+                                        def jdk_msi_name = new File(jdk_bundle_name.trim()).getNameWithoutExtension() + ".msi"
+                                        def jre_msi_name = new File(jre_bundle_name.trim()).getNameWithoutExtension() + ".msi"
+
+                                        jf "rt u ${{jdk_msi_name}} sapmachine-mvn/io/sapmachine/build-results/{platform}/${{env.ART_VERSION}}/${{jdk_msi_name}}"
+                                        jf "rt u ${{jre_msi_name}} sapmachine-mvn/io/sapmachine/build-results/{platform}/${{env.ART_VERSION}}/${{jre_msi_name}}"
+                                    }}
+                                }}
                             }}
                         }}
             publish_debian_packages: ''
