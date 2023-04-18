@@ -44,10 +44,11 @@
                     fi
 
                     "$GIT_TOOL" --version
-                    set -ex
-                    "$GIT_TOOL" init SapMachine-infrastructure &amp;&amp; cd SapMachine-infrastructure
-                    GIT_TERMINAL_PROMPT=0 "$GIT_TOOL" fetch --depth 1 https://github.com/SAP/SapMachine-infrastructure master
-                    "$GIT_TOOL" checkout --detach FETCH_HEAD
+                    "$GIT_TOOL" config --global init.defaultBranch master
+                    (set -ex &amp;&amp; "$GIT_TOOL" init SapMachine-infrastructure)
+                    cd SapMachine-infrastructure
+                    (set -ex &amp;&amp; GIT_TERMINAL_PROMPT=0 "$GIT_TOOL" fetch --depth 1 https://github.com/SAP/SapMachine-infrastructure master)
+                    (set -ex &amp;&amp; "$GIT_TOOL" checkout --detach FETCH_HEAD)
                 '''
             }
         }
@@ -105,7 +106,7 @@
                 }
 
                 // Download googletest
-                sh("SapMachine-infrastructure/lib/git_clone.sh https://github.com/google/googletest gtest refs/tags/release-1.8.1")
+                sh("SapMachine-infrastructure/lib/git_clone.sh https://github.com/google/googletest gtest release-1.8.1")
 
                 // Download jtreg if required
                 script {
