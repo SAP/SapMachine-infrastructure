@@ -63,6 +63,11 @@
                         sh "SapMachine-infrastructure/lib/download_macos.sh {publish_platform}"
                     }}
                 }}
+                stage("Verify") {{
+                    steps {{
+                        sh "python3 SapMachine-infrastructure/lib/verify_macos_artifacts.py --tag=${{params.SAPMACHINE_VERSION}} --platform={publish_platform}"
+                    }}
+                }}
                 stage("Publish GitHub") {{
                     steps {{
                         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
