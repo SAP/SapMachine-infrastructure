@@ -339,8 +339,8 @@
                                         def jdk_bundle_name = readFile "${{env.WORKSPACE}}/jdk_bundle_name.txt"
                                         def jre_bundle_name = readFile "${{env.WORKSPACE}}/jre_bundle_name.txt"
 
-                                        def jdk_msi_name = jdk_bundle_name.trim().substring(0, jdk_bundle_name.indexOf('.')) + ".msi"
-                                        def jre_msi_name = jre_bundle_name.trim().substring(0, jdk_bundle_name.indexOf('.')) + ".msi"
+                                        def jdk_msi_name = jdk_bundle_name.trim().replace(".zip", ".msi")
+                                        def jre_msi_name = jre_bundle_name.trim().replace(".zip", ".msi")
 
                                         jf "rt u ${{jdk_msi_name}} sapmachine-mvn/io/sapmachine/build-results/{platform}/${{env.ART_VERSION}}/${{jdk_msi_name}}"
                                         jf "rt u ${{jre_msi_name}} sapmachine-mvn/io/sapmachine/build-results/{platform}/${{env.ART_VERSION}}/${{jre_msi_name}}"
