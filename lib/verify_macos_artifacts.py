@@ -27,7 +27,7 @@ def test_platform(version, filename, suffix):
         if p:
             err = subprocess.run([p[0], "-version"], capture_output=True, text=True).stderr
             pattern = re.compile(r'openjdk (version ")?(?P<version>[\.\d]+)')
-            print("java -version output:", err.replace('\n', '\\n'))
+            print("java -version output:\n" + err + "\n")
             m = pattern.match(err)
             assert m and m.group('version'), 'could not extract version from line: ' + err
             return 0
