@@ -5,6 +5,7 @@ All rights reserved. Confidential and proprietary.
 
 import argparse
 import glob
+import os
 import re
 import shutil
 import subprocess
@@ -13,12 +14,14 @@ import tarfile
 #quick hack: import utils. Otherwise there is a circularity when importing SapMachineTag from versions.
 import utils
 
+from os.path import join
 from versions import SapMachineTag
 
 def test_platform(version, filename, suffix):
     if suffix == "tar.gz":
+        dest_dir = join(os.getcwd(), 'destination')
+        utils.remove_if_exists(dest_dir)
         file = tarfile.open(filename)
-        shutil.rmtree("./destination")
         file.extractall('./destination')
         p = glob.glob("./destination/*/Contents/Home/bin/java")
         if p:
