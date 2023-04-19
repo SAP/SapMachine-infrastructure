@@ -698,8 +698,6 @@
 
                             for (p in platforms) {{
                                 if (p.value) {{
-                                    println "Triggering build for " + p.key + " (build=" + p.value + ")."
-                                    continue
                                     build job: 'build-{major}-{type}-' + p.key,
                                         propagate: false,
                                         wait: false,
