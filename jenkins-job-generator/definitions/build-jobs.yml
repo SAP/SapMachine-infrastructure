@@ -669,9 +669,10 @@
             release_option_param: "[$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],"
             trigger_macos_builds: |
                 // only trigger macos jobs for non-release builds
-                                    def m = (params.SAPMACHINE_VERSION =~ /sapmachine-((\d+(\.\d+)*)(\+(\d+))?)$/)
-                                    if (m && m.group(4) != null) {{
-                                        platforms.addAll([
+                                    def tag = params.SAPMACHINE_VERSION.isEmpty() ? params.GIT_REF : params.SAPMACHINE_VERSION
+                                    def m = (tag =~ /sapmachine-((\d+(\.\d+)*)(\+(\d+))?)$/)
+                                    if (!m || m.group(4) != null) {{
+                                        platforms.putAll([
                                             "macos_aarch64": params.BUILD_MACOS_ARM_64,
                                             "macos_x86_64": params.BUILD_MACOS_X86_64])
                                     }}
