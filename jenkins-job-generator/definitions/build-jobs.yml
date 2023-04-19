@@ -660,21 +660,21 @@
             type: snapshot
             release_option_param: "[$class: 'BooleanParameterValue', name: 'UPLOAD_ARTIFACTORY', value: params.UPLOAD_ARTIFACTORY],"
             trigger_macos_builds: |
-                platforms.addAll([
-                                "macos_aarch64": params.BUILD_MACOS_ARM_64,
-                                "macos_x86_64": params.BUILD_MACOS_X86_64])
+                platforms.putAll([
+                                        "macos_aarch64": params.BUILD_MACOS_ARM_64,
+                                        "macos_x86_64": params.BUILD_MACOS_X86_64])
     type_release: &type_release_service
         - release:
             type: release
             release_option_param: "[$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],"
             trigger_macos_builds: |
                 // only trigger macos jobs for non-release builds
-                            def m = (params.SAPMACHINE_VERSION =~ /sapmachine-((\d+(\.\d+)*)(\+(\d+))?)$/)
-                            if (m && m.group(4) != null) {{
-                                platforms.addAll([
-                                    "macos_aarch64": params.BUILD_MACOS_ARM_64,
-                                    "macos_x86_64": params.BUILD_MACOS_X86_64])
-                            }}
+                                    def m = (params.SAPMACHINE_VERSION =~ /sapmachine-((\d+(\.\d+)*)(\+(\d+))?)$/)
+                                    if (m && m.group(4) != null) {{
+                                        platforms.addAll([
+                                            "macos_aarch64": params.BUILD_MACOS_ARM_64,
+                                            "macos_x86_64": params.BUILD_MACOS_X86_64])
+                                    }}
 
     build_service_dsl: &build_service_dsl |
         pipeline {{
