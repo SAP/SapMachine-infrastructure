@@ -198,6 +198,21 @@
                                 }}
                             }}
                         }}
+            publish_artifactory_win_msi: &publish_artifactory_win_msi |-
+                // Upload msi Files to Artifactory
+                                script {{
+                                    if (env.RELEASE == "true") {{
+                                        def jdk_bundle_name = readFile "${{env.WORKSPACE}}/jdk_bundle_name.txt"
+                                        def jre_bundle_name = readFile "${{env.WORKSPACE}}/jre_bundle_name.txt"
+
+                                        def jdk_msi_name = jdk_bundle_name.trim().replace(".zip", ".msi")
+                                        def jre_msi_name = jre_bundle_name.trim().replace(".zip", ".msi")
+
+                                        jf "rt u ${{jdk_msi_name}} sapmachine-mvn/io/sapmachine/build-results/{platform}/${{env.ART_VERSION}}/${{jdk_msi_name}}"
+                                        jf "rt u ${{jre_msi_name}} sapmachine-mvn/io/sapmachine/build-results/{platform}/${{env.ART_VERSION}}/${{jre_msi_name}}"
+                                    }}
+                                }}
+
             save_workspace_on_error: *save_workspace_on_error
     type_pr: &type_pr_build
         - pr-validation:
@@ -332,21 +347,8 @@
 
                                 // Upload the test archive
                                 jf "rt u test.zip sapmachine-mvn/io/sapmachine/build-results/{platform}/${{env.ART_VERSION}}/test.zip"
-
-                                // On Windows, upload msi Files to Artifactory
-                                script {{
-                                    if (params.PUBLISH == true && JOB_NAME ==~ /((\S*)(release-windows)(\S*))/) {{
-                                        def jdk_bundle_name = readFile "${{env.WORKSPACE}}/jdk_bundle_name.txt"
-                                        def jre_bundle_name = readFile "${{env.WORKSPACE}}/jre_bundle_name.txt"
-
-                                        def jdk_msi_name = jdk_bundle_name.trim().replace(".zip", ".msi")
-                                        def jre_msi_name = jre_bundle_name.trim().replace(".zip", ".msi")
-
-                                        jf "rt u ${{jdk_msi_name}} sapmachine-mvn/io/sapmachine/build-results/{platform}/${{env.ART_VERSION}}/${{jdk_msi_name}}"
-                                        jf "rt u ${{jre_msi_name}} sapmachine-mvn/io/sapmachine/build-results/{platform}/${{env.ART_VERSION}}/${{jre_msi_name}}"
-                                    }}
-                                }}
-                            }}
+            publish_artifactory_end: &publish_artifactory_end |-
+                }}
                         }}
             publish_debian_packages: ''
             create_brew_casks: ''
@@ -394,6 +396,8 @@
             get_art_ver: env.ART_VERSION = readFile "${{env.WORKSPACE}}/javavmversion.txt"
             publish_artifactory_pre: *publish_artifactory_pre
             publish_artifactory_step: *publish_artifactory_step
+            publish_artifactory_msi: *publish_artifactory_win_msi
+            publish_artifactory_end: *publish_artifactory_end
             publish_github: |-
                 stage("Publish GitHub") {{
                             when {{
@@ -624,6 +628,8 @@
                 {publish_artifactory_pre|}
                     {publish_artifactory_when|}
                     {publish_artifactory_step|}
+                    {publish_artifactory_msi|}
+                    {publish_artifactory_end|}
                 {publish_github|}
                 {publish_debian_packages|}
                 {create_brew_casks|}
