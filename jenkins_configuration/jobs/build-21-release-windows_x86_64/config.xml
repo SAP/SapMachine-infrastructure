@@ -250,10 +250,9 @@
 
                 // Upload the test archive
                 jf "rt u test.zip sapmachine-mvn/io/sapmachine/build-results/windows_x86_64/${env.ART_VERSION}/test.zip"
-
-                // On Windows, upload msi Files to Artifactory
+                // Upload msi Files to Artifactory
                 script {
-                    if (params.PUBLISH == true &amp;&amp; JOB_NAME ==~ /((\S*)(release-windows)(\S*))/) {
+                    if (env.RELEASE == "true") {
                         def jdk_bundle_name = readFile "${env.WORKSPACE}/jdk_bundle_name.txt"
                         def jre_bundle_name = readFile "${env.WORKSPACE}/jre_bundle_name.txt"
 
