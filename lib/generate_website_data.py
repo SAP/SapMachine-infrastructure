@@ -13,6 +13,8 @@ from os.path import join
 from string import Template
 from versions import SapMachineTag
 from enum import Enum
+from urllib.request import urlopen, Request
+from urllib.error import HTTPError
 
 sapMachinePushURL= str.format('https://{0}:{1}@github.com/SAP/SapMachine.git',
     os.environ['GIT_USER'], os.environ['GIT_PASSWORD'])
@@ -95,6 +97,7 @@ class Release:
         self.tag = tag
         self.url = url
         self.assets = {}
+        self.checksums = {}
 
     def add_asset(self, image_type, os, asset_url):
         if image_type not in self.assets:
@@ -102,9 +105,16 @@ class Release:
 
         self.assets[image_type][os] = asset_url
 
+    def add_checksum(self, image_type, os, checksum):
+        if image_type not in self.checksums:
+            self.checksums[image_type] = {}
+
+        self.checksums[image_type][os] = checksum
+
     def to_release_json(self):
         json_root = {
-            'releases': []
+            'releases': [],
+            'checksums': []
         }
         release_json = {
             'tag': self.tag.as_string()
@@ -114,6 +124,16 @@ class Release:
             for os in self.assets[image_type]:
                 release_json[image_type][os] = self.assets[image_type][os]
         json_root['releases'].append(release_json)
+
+        checksum_json = {
+            'tag': self.tag.as_string()
+        }
+        for image_type in self.checksums:
+            checksum_json[image_type] = {}
+            for os in self.checksums[image_type]:
+                checksum_json[image_type][os] = self.checksums[image_type][os]
+        json_root['checksums'].append(checksum_json)
+
         return json_root
 
 def push_to_git(files):
@@ -151,6 +171,9 @@ def push_to_git(files):
     if commits:
         utils.run_cmd(str.format('git push {0}', sapMachinePushURL).split(' '), cwd=local_repo)
 
+def sapmachine_checksum_pattern():
+    return utils.sapmachine_asset_base_pattern() + '(|\.msi\.|\.dmg\.|\.)(sha256\.txt)$'
+
 def main(argv=None):
     print("Querying GitHub for SapMachine releases...")
     sys.stdout.flush()
@@ -158,13 +181,17 @@ def main(argv=None):
     print("Done.")
 
     asset_pattern = re.compile(utils.sapmachine_asset_pattern())
+    checksum_pattern = re.compile(sapmachine_checksum_pattern())
+    
     release_dict = {}
     for release in releases:
         sapMachineTag = SapMachineTag.from_string(release['name'])
-
+        
         if sapMachineTag is None:
             print(str.format("{0} is no SapMachine release, dropping", release['name']))
             continue
+
+        print(str.format("release: {0}", release['name']))
 
         major = sapMachineTag.get_major()
         if not major in release_dict:
@@ -180,31 +207,78 @@ def main(argv=None):
 
         for asset in release['assets']:
             match = asset_pattern.match(asset['name'])
+            print(str.format("\nfound asset: {0}", asset['name']))
 
-            if match is None:
-                continue
+            skipped = True
+            if match is not None:
 
-            image_type = match.group(1)
-            os = match.group(3)
-            file_type = match.group(4)
+                image_type = match.group(1)
+                os = match.group(3)
+                file_type = match.group(4)
 
-            if os == 'windows-x64' and file_type == '.msi':
-                os = 'windows-x64-installer'
+                if os == 'windows-x64' and file_type == '.msi':
+                    os = 'windows-x64-installer'
 
-            if os == 'macos-x64' or os == 'osx-x64':
-                if file_type == '.dmg':
-                    os = 'macos-x64-installer'
-                else:
-                    os = 'macos-x64'
+                if os == 'macos-x64' or os == 'osx-x64':
+                    if file_type == '.dmg':
+                        os = 'macos-x64-installer'
+                    else:
+                        os = 'macos-x64'
 
-            if os == 'macos-aarch64' or os == 'osx-aarch64':
-                if file_type == '.dmg':
-                    os = 'macos-aarch64-installer'
-                else:
-                    os = 'macos-aarch64'
+                if os == 'macos-aarch64' or os == 'osx-aarch64':
+                    if file_type == '.dmg':
+                        os = 'macos-aarch64-installer'
+                    else:
+                        os = 'macos-aarch64'
 
-            sapMachineRelease.add_asset(image_type, os, asset['browser_download_url'])
+                print(str.format("  identified as downloadable file [ os: {0} - file type: {1} ] ", os, file_type))
+                print("  url: " + asset['browser_download_url'])
 
+                sapMachineRelease.add_asset(image_type, os, asset['browser_download_url'])
+                skipped = False
+            
+            checksum_match = checksum_pattern.match(asset['name'])
+            if checksum_match is not None:
+                image_type = checksum_match.group(1)
+                os = checksum_match.group(3)
+                file_type2 = checksum_match.group(4)
+                file_type = checksum_match.group(5)
+                
+                if os == 'windows-x64' and file_type2 == '.msi.':
+                    os = 'windows-x64-installer'
+
+                if os == 'macos-x64' or os == 'osx-x64':
+                    if file_type2 == '.dmg.':
+                        os = 'macos-x64-installer'
+                    else:
+                        os = 'macos-x64'
+
+                if os == 'macos-aarch64' or os == 'osx-aarch64':
+                    if file_type2 == '.dmg.':
+                        os = 'macos-aarch64-installer'
+                    else:
+                        os = 'macos-aarch64'
+            
+
+                print(str.format("  identified as checksum file [ os: {0} - file type: {1} - sub file type: {2} ]", os, file_type, file_type2))
+                print("  checksum url: " + asset['browser_download_url'])
+                
+                request = Request(asset['browser_download_url'])
+                checksum = 0
+                try:
+                    response = urlopen(request)
+                    response = response.read()
+                    print("  found checksum: " + str(response[:64].decode()))
+                    sapMachineRelease.add_checksum(image_type, os, response[:64].decode())
+
+                    skipped = False
+                except HTTPError as httpError:
+                    print("  checksum file couldn't be downloaded: " + str(httpError.code) + ": " + httpError.reason)
+
+            if skipped:
+                print("  skipped because not identified as archive or no checksum found")
+            
+            
     files = []
     
     # reduce releases dictionary by removing obsolete versions
