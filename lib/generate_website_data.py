@@ -1,5 +1,5 @@
 '''
-Copyright (c) 2018-2022 by SAP SE, Walldorf, Germany.
+Copyright (c) 2018-2023 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
@@ -9,12 +9,12 @@ import re
 import sys
 import utils
 
+from enum import Enum
 from os.path import join
 from string import Template
-from versions import SapMachineTag
-from enum import Enum
 from urllib.request import urlopen, Request
 from urllib.error import HTTPError
+from versions import SapMachineTag
 
 sapMachinePushURL= str.format('https://{0}:{1}@github.com/SAP/SapMachine.git',
     os.environ['GIT_USER'], os.environ['GIT_PASSWORD'])
@@ -147,7 +147,7 @@ def push_to_git(files):
     commits = False
     for _file in files:
         location = join(local_repo, _file['location'])
-        
+
         if _file['operation'] == FileOperation.ADD_FILE:
             if not os.path.exists(os.path.dirname(location)):
                 os.makedirs(os.path.dirname(location))
@@ -167,7 +167,7 @@ def push_to_git(files):
             if os.path.exists(location):
                 print("remove dir: ", _file['commit_message'])
                 utils.run_cmd(['git', 'rm', '-r', _file['location']], cwd=local_repo, std=True)
-            
+
     if commits:
         utils.run_cmd(str.format('git push {0}', sapMachinePushURL).split(' '), cwd=local_repo)
 
@@ -182,11 +182,11 @@ def main(argv=None):
 
     asset_pattern = re.compile(utils.sapmachine_asset_pattern())
     checksum_pattern = re.compile(sapmachine_checksum_pattern())
-    
+
     release_dict = {}
     for release in releases:
         sapMachineTag = SapMachineTag.from_string(release['name'])
-        
+
         if sapMachineTag is None:
             print(str.format("{0} is no SapMachine release, dropping", release['name']))
             continue
@@ -236,14 +236,14 @@ def main(argv=None):
 
                 sapMachineRelease.add_asset(image_type, os, asset['browser_download_url'])
                 skipped = False
-            
+
             checksum_match = checksum_pattern.match(asset['name'])
             if checksum_match is not None:
                 image_type = checksum_match.group(1)
                 os = checksum_match.group(3)
                 file_type2 = checksum_match.group(4)
                 file_type = checksum_match.group(5)
-                
+
                 if os == 'windows-x64' and file_type2 == '.msi.':
                     os = 'windows-x64-installer'
 
@@ -258,11 +258,11 @@ def main(argv=None):
                         os = 'macos-aarch64-installer'
                     else:
                         os = 'macos-aarch64'
-            
+
 
                 print(str.format("  identified as checksum file [ os: {0} - file type: {1} - sub file type: {2} ]", os, file_type, file_type2))
                 print("  checksum url: " + asset['browser_download_url'])
-                
+
                 request = Request(asset['browser_download_url'])
                 checksum = 0
                 try:
@@ -277,10 +277,10 @@ def main(argv=None):
 
             if skipped:
                 print("  skipped because not identified as archive or no checksum found")
-            
-            
+
+
     files = []
-    
+
     # reduce releases dictionary by removing obsolete versions
     # Keep LTS versions, latest release and the release that is currently in development
     latest_released_version = 0
@@ -345,7 +345,7 @@ def main(argv=None):
                     for imageType in list(json_root['assets'][major][i][k]):
                         if (imageType == "jdk" or imageType == "jre"):
                             for platform in list(json_root['assets'][major][i][k][imageType]):
-                                
+
                                 files.append({
                                     'operation' : FileOperation.ADD_FILE,
                                     'location': join('latest', str(major), str(platform), str(imageType), 'index.md'),
@@ -355,8 +355,8 @@ def main(argv=None):
                                         url = str(json_root['assets'][major][i][k][imageType][platform])
                                     ),
                                     'commit_message': str.format('Updated latest link for SapMachine {0}, {1}/{2}', major, str(platform), str(imageType))
-                                })        
-								
+                                })
+
     push_to_git(files)
 
     return 0
