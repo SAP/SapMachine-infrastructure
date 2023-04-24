@@ -47,6 +47,7 @@ redirect_to:
 latest_template_download = '''---
 layout: default
 title: Latest SapMachine ${major} Release for ${platform}
+checksum: ${checksum}
 redirect_to:
   - ${url}
 ---
@@ -269,7 +270,7 @@ def main(argv=None):
                     response = urlopen(request)
                     response = response.read()
                     print("  found checksum: " + str(response[:64].decode()))
-                    sapMachineRelease.add_checksum(image_type, os, response[:64].decode())
+                    sapMachineRelease.add_checksum(image_type, os, "sha256 " + response[:64].decode())
 
                     skipped = False
                 except HTTPError as httpError:
@@ -339,23 +340,28 @@ def main(argv=None):
             'commit_message': str.format('Updated latest link for SapMachine {0}', major)
         })
 
-        for i in list(json_root['assets'][major].keys()):
-            for j in list(json_root['assets'][major][i]):
-                for k in range(len(json_root['assets'][major][i])):
-                    for imageType in list(json_root['assets'][major][i][k]):
-                        if (imageType == "jdk" or imageType == "jre"):
-                            for platform in list(json_root['assets'][major][i][k][imageType]):
+        for k in range(len(json_root['assets'][major]['releases'])):
+            for imageType in list(json_root['assets'][major]['releases'][k]):
+                if (imageType == "jdk" or imageType == "jre"):
+                    for platform in list(json_root['assets'][major]['releases'][k][imageType]):
 
-                                files.append({
-                                    'operation' : FileOperation.ADD_FILE,
-                                    'location': join('latest', str(major), str(platform), str(imageType), 'index.md'),
-                                    'data': Template(latest_template_download).substitute(
-                                        major = major,
-                                        platform = str(platform),
-                                        url = str(json_root['assets'][major][i][k][imageType][platform])
-                                    ),
-                                    'commit_message': str.format('Updated latest link for SapMachine {0}, {1}/{2}', major, str(platform), str(imageType))
-                                })
+                        checksum = ""
+                        try:
+                            checksum = str(json_root['assets'][major]['checksums'][k][imageType][platform])
+                        except KeyError:
+                            checksum = "not available"
+                            
+                        files.append({
+                            'operation' : FileOperation.ADD_FILE,
+                            'location': join('latest', str(major), str(platform), str(imageType), 'index.md'),
+                            'data': Template(latest_template_download).substitute(
+                                major = major,
+                                platform = str(platform),
+                                checksum = str(checksum),
+                                url = str(json_root['assets'][major]['releases'][k][imageType][platform])
+                            ),
+                            'commit_message': str.format('Updated latest link for SapMachine {0}, {1}/{2}', major, str(platform), str(imageType))
+                        })
 
     push_to_git(files)
 
