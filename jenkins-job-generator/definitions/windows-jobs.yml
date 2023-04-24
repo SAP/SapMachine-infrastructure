@@ -11,11 +11,11 @@
     parameters:
         - string:
             name: SAPMACHINE_VERSION
-            default: ''
+            default: 'sapmachine-'
             description: 'The SapMachine Release Tag to upload MSI files artifacts for. Should start with "sapmachine-". E.g. "sapmachine-17.0.6".'
         - string:
             name: SOURCE_LOCATION
-            default: 'https://common.repositories.cloud.sap/artifactory/naas-deploy-releases-manual-signing/BCP'
+            default: 'https://common.repositories.cloud.sap/artifactory/naas-deploy-releases-manual-signing/BCP/'
             description: 'Artifactory location where SapMachine binaries should be taken from. URL likely needs to be modified.'
     dsl: |
         pipeline {
