@@ -115,7 +115,7 @@
           <connectUsingPublicIp>false</connectUsingPublicIp>
         </hudson.plugins.ec2.SlaveTemplate>
         <hudson.plugins.ec2.SlaveTemplate>
-          <ami>ami-0a10caa9049462fd5</ami>
+          <ami>ami-00e5f254425919a78</ami>
           <description>Windows Client</description>
           <zone>us-east-1d</zone>
           <securityGroups>JenkinsWindowsClient</securityGroups>
@@ -404,6 +404,7 @@
         <string>jenkins-configuration-restore</string>
         <string>jenkins-job-generator</string>
         <string>jtreg</string>
+        <string>publish-windows-msi</string>
         <string>repository-update-and-tag</string>
         <string>upload-ossrh</string>
       </jobNames>
