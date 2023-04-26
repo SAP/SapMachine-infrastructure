@@ -25,6 +25,7 @@ make \
 python3 \
 py3-pip \
 sed \
+sudo \
 tar \
 unzip \
 wget \
@@ -33,6 +34,11 @@ zip
 RUN adduser --shell /bin/bash --uid 1000 --disabled-password jenkinsa
 RUN adduser --shell /bin/bash --uid 1001 --disabled-password jenkinsb
 RUN adduser --shell /bin/bash --uid 1002 --disabled-password jenkinsc
+
+# enable the users for abuild-keygen, this needs sudo or doas
+RUN echo "jenkinsa ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/jenkinsa && chmod 0440 /etc/sudoers.d/jenkinsa
+RUN echo "jenkinsb ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/jenkinsb && chmod 0440 /etc/sudoers.d/jenkinsb
+RUN echo "jenkinsc ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/jenkinsc && chmod 0440 /etc/sudoers.d/jenkinsc
 
 RUN pip3 install requests
 
