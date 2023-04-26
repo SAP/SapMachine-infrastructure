@@ -47,6 +47,11 @@ RUN adduser jenkinsc abuild
 RUN mkdir -p /var/cache/distfiles
 RUN chmod a+w /var/cache/distfiles
 
+# prepare the apk keys, precondition for running make-apk.py
+# doas has problems so tell abuild-keygen to use sudo instead
+ENV SUDO=sudo
+RUN abuild-keygen -a -i -n
+
 RUN pip3 install requests
 
 ADD https://raw.githubusercontent.com/tstuefe/tinyreaper/master/tinyreaper.c /tmp
