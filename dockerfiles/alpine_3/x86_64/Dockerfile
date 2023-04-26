@@ -40,6 +40,13 @@ RUN echo "jenkinsa ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/jenkinsa && chmod 04
 RUN echo "jenkinsb ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/jenkinsb && chmod 0440 /etc/sudoers.d/jenkinsb
 RUN echo "jenkinsc ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/jenkinsc && chmod 0440 /etc/sudoers.d/jenkinsc
 
+# fill group for Alpine apk build and create cache location
+RUN addgroup jenkinsa abuild
+RUN adduser jenkinsb abuild
+RUN adduser jenkinsc abuild
+RUN mkdir -p /var/cache/distfiles
+RUN chmod a+w /var/cache/distfiles
+
 RUN pip3 install requests
 
 ADD https://raw.githubusercontent.com/tstuefe/tinyreaper/master/tinyreaper.c /tmp
