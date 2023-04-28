@@ -92,6 +92,21 @@
                                     label "linux_alpine_x86_64"
                                 }}
                             }}
+            build_alpine_apk_packages_step: &build_alpine_apk_packages_step |-
+                when {{
+                                beforeAgent true
+                                expression {{ env.BUILD_INSTALLER_PACKAGES == "true" }}
+                            }}
+                            steps {ns-job-generator/definitions/build-jobs.yml{
+                                sh "python3 SapMachine-infrastructure/lib/make_apk.py -t sapmachine-${{env.SAPMACHINE_VERSION}} -d SapMachine-infrastructure/alpine-templates"
+                            }}
+                            post {{
+                                success {{
+                                    stash includes: '*.apk', name: 'apkPackage'
+                                    stash includes: 'SapMachine-infrastructure/**', name: 'infra'
+                                }}
+                            }}
+                        }}
             docker_agent_verify: *docker_agent_alpine_x86_64
             save_workspace_on_error: *save_workspace_on_error
         - linux_ppc64le:
