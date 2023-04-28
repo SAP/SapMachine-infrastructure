@@ -50,6 +50,7 @@ def main(argv=None):
     jdk_dir = join(work_dir, jdk_name)
     jre_dir = join(work_dir, jre_name)
 
+    print("work_dir:", work_dir)
     utils.remove_if_exists(work_dir)
 
     mkdir(work_dir)
