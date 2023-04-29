@@ -137,7 +137,7 @@ def main(argv=None):
     if 'GTEST_DIR' in os.environ and major >= 15:
         configure_opts.append(GTEST_OPT.format(os.environ['GTEST_DIR']))
 
-    if major >= 17 and utils.get_system() == 'macos' and utils.get_arch() == 'x64' and 'RELEASE_BUILD' in os.environ and os.environ['RELEASE_BUILD'] == "true":
+    if utils.get_system() == 'macos' and utils.get_arch() == 'x64' and 'RELEASE_BUILD' in os.environ and os.environ['RELEASE_BUILD'] == "true":
         configure_opts.append(DISABLE_MAC_CODESIGN_OPT)
 
     print(' '.join(configure_opts))

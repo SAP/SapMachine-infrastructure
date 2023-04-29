@@ -18,34 +18,14 @@ from versions import SapMachineTag
 extra_bootjdks = [
     {
         'prerelease': False,
-        'name': 'sapmachine-11.0.16.1',
+        'name': 'sapmachine-11.0.19',
         'assets': [
             {
                 'name': 'sapmachine-jdk-11.0.16.1_linux-x64_alpine_bin.tar.gz',
-                'browser_download_url': 'https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.16.1%2B1/OpenJDK11U-jdk_x64_alpine-linux_hotspot_11.0.16.1_1.tar.gz'
+                'browser_download_url': 'https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.19%2B7/OpenJDK11U-jdk_x64_alpine-linux_hotspot_11.0.19_7.tar.gz'
             }
         ]
-    },
-    {
-        'prerelease': False,
-        'name': 'sapmachine-17.0.4.1',
-        'assets': [
-            {
-                'name': 'sapmachine-jdk-17.0.4.1_linux-x64_alpine_bin.tar.gz',
-                'browser_download_url': 'https://github.com/SAP/SapMachine/releases/download/sapmachine-17.0.4.1/sapmachine-jdk-17.0.4.1-beta_linux-x64-musl_bin.tar.gz'
-            }
-        ]
-    },
-    {
-        'prerelease': False,
-        'name': 'sapmachine-19',
-        'assets': [
-            {
-                'name': 'sapmachine-jdk-19_linux-x64_alpine_bin.tar.gz',
-                'browser_download_url': 'https://github.com/SAP/SapMachine/releases/download/sapmachine-19/sapmachine-jdk-19-beta_linux-x64-musl_bin.tar.gz'
-            }
-        ]
-    }    
+    }
 ]
 
 def main(argv=None):
@@ -71,7 +51,7 @@ def main(argv=None):
     platform = str.format('{0}-{1}_bin', system, utils.get_arch())
     # adjust platform name for Alpine Linux
     if os.path.isfile('/etc/alpine-release'):
-        platform = str.format('{0}-{1}_alpine_bin', system, utils.get_arch())
+        platform = str.format('{0}-{1}-musl_bin', system, utils.get_arch())
     
     retries = 2
 
