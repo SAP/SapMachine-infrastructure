@@ -70,7 +70,13 @@
             }
         }
         
-            
+            agent {
+                dockerfile {
+                    dir "SapMachine-infrastructure/dockerfiles/alpine_3/x86_64"
+                    reuseNode true
+                    label "linux_alpine_x86_64"
+                }
+            }
             
         stage("Checkout SapMachine Repository") {
             

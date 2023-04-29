@@ -53,7 +53,14 @@
             }
         }
         
-            
+            agent {
+                dockerfile {
+                    dir "SapMachine-infrastructure/dockerfiles/ubuntu_20_04/ppc64le"
+                    reuseNode true
+                    label "linux_ppc64le"
+                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
+                }
+            }
             
         stage("Checkout SapMachine Repository") {
             
@@ -284,9 +291,30 @@
             }
         }
         
+        stage("Publish Debian Packages") {
+            agent {
+                label 'agent-local-docker-ubuntu'
+            }
+            when {
+                beforeAgent true
+                expression { params.PUBLISH == true &amp;&amp; env.RELEASE == "true" }
+            }
+            steps {
+                unstash 'infra'
+                unstash 'debPackage'
+                sh "cp -n *.deb /var/pkg/deb/ppc64el || true"
+                sh "python3 SapMachine-infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/ppc64el"
+            }
+        }
         
-        
-        
+        stage("Generate Dockerfiles") {
+            when {
+                expression { params.PUBLISH == true &amp;&amp; env.RELEASE == "true" }
+            }
+            steps {
+                build job: 'generate-dockerfiles', propagate: false, wait: true
+            }
+        }
         
         
     }

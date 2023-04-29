@@ -1,4 +1,4 @@
-<flow-definition plugin="workflow-job@1289.vd1c337fd5354">
+<flow-definition plugin="workflow-job@1292.v27d8cc3e2602">
   <actions>
     <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@2.2125.vddb_a_44a_d605e" />
     <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@2.2125.vddb_a_44a_d605e">
@@ -138,7 +138,7 @@
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@3653.v07ea_433c90b_4">
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@3659.v582dc37621d8">
     <script>pipeline {
     agent {
         label "linux_x86_64"
@@ -418,21 +418,84 @@
             }
         }
         
-        
-            
-            
-        
+        stage("Build Debian Packages") {
+            agent {
+                dockerfile {
+                    dir "SapMachine-infrastructure/dockerfiles/ubuntu_20_04/x86_64"
+                    reuseNode true
+                    label "linux_x86_64"
+                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
+                }
+            }
+            when {
+                beforeAgent true
+                expression { env.BUILD_INSTALLER_PACKAGES == "true" }
+            }
+            steps {
+                sh "python3 SapMachine-infrastructure/lib/make_deb.py --tag=${env.SAPMACHINE_VERSION} --architecture=linux-x64"
+            }
+            post {
+                success {
+                    stash includes: '*.deb', name: 'debPackage'
+                    stash includes: 'SapMachine-infrastructure/**', name: 'infra'
+                }
+            }
+        }
+        stage("Build RPM Packages") {
+            agent {
+                dockerfile {
+                    dir "SapMachine-infrastructure/dockerfiles/fedora-rpm"
+                    reuseNode true
+                    label "linux_x86_64"
+                }
+            }
+            when {
+                beforeAgent true
+                expression { env.BUILD_INSTALLER_PACKAGES == "true" }
+            }
+            steps {
+                sh "python3 SapMachine-infrastructure/lib/make_rpm.py --tag=${env.SAPMACHINE_VERSION}"
+            }
+        }
         
             
             
                 
             
         
+        stage("Publish Debian Packages") {
+            agent {
+                label 'agent-local-docker-ubuntu'
+            }
+            when {
+                beforeAgent true
+                expression { params.PUBLISH == true &amp;&amp; env.RELEASE == "true" }
+            }
+            steps {
+                unstash 'infra'
+                unstash 'debPackage'
+                sh "cp -n *.deb /var/pkg/deb/amd64 || true"
+                sh "python3 SapMachine-infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/amd64"
+            }
+        }
         
+        stage("Generate Dockerfiles") {
+            when {
+                expression { params.PUBLISH == true &amp;&amp; env.RELEASE == "true" }
+            }
+            steps {
+                build job: 'generate-dockerfiles', propagate: false, wait: true
+            }
+        }
         
-        
-        
-        
+        stage("Publish CF Java Buildpack Data") {
+            when {
+                expression { params.PUBLISH == true &amp;&amp; env.RELEASE == "true" }
+            }
+            steps {
+                build job: 'generate-cf-java-buildpack-data', propagate: true, wait: true
+            }
+        }
     }
     post {
         aborted {

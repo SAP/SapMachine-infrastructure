@@ -70,7 +70,14 @@
             }
         }
         
-            
+            agent {
+                dockerfile {
+                    dir "SapMachine-infrastructure/dockerfiles/ubuntu_20_04/x86_64"
+                    reuseNode true
+                    label "linux_x86_64"
+                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
+                }
+            }
             
         stage("Checkout SapMachine Repository") {
             
