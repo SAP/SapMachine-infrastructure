@@ -17,28 +17,28 @@
     regex: 'build-[\d]+-pr-validation-.*$|build-[\d]+-.*-pr-validation$|validate-pr-[\d]+$'
 
 - view:
+    name: 'Linux alpine/musl Builds'
+    description: 'Linux aarch64 Builds'
+    view-type: list
+    regex: 'build-[\d]+-linux_alpine_x86_64.*'
+
+- view:
     name: 'Linux aarch64 Builds'
     description: 'Linux aarch64 Builds'
     view-type: list
     regex: 'build-[\d]+-linux_aarch64.*'
 
 - view:
-    name: 'Linux Alpine Builds'
-    description: 'Linux aarch64 Builds'
-    view-type: list
-    regex: 'build-.*-linux_alpine_x86_64$'
-
-- view:
     name: 'Linux ppc64le Builds'
     description: 'Linux ppc64le Builds'
     view-type: list
-    regex: 'build-.*-linux_ppc64le$'
+    regex: 'build-[\d]+-linux_ppc64le.*'
 
 - view:
-    name: 'Linux x86 64 Builds'
-    description: 'Linux x86 64 Builds'
+    name: 'Linux x64 Builds'
+    description: 'Linux x86_64 Builds'
     view-type: list
-    regex: 'build-.*-linux_x86_64$'
+    regex: 'build-[\d]+-linux_x86_64.*'
 
 - view:
     name: 'MacOS aarch 64 Builds'
