@@ -751,7 +751,7 @@
         - platform: linux_alpine_x86_64
           major: '11'
     jobs:
-        - build-{major}-{type_pr}-{platform}
+        - build-{major}-{platform}-{type_pr}
         - build-{major}-{type_snapshot}-{platform}
         - build-{major}-{type_release}-{platform}
 
