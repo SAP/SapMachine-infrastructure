@@ -753,7 +753,7 @@
           major: '11'
     jobs:
         - build-{major}-{platform}-{type_pr}
-        - build-{major}-{type_snapshot}-{platform}
+        - build-{major}-{platform}-{type_snapshot}
         - build-{major}-{platform}-{type_release}
 
 - project:
@@ -836,7 +836,7 @@
     dsl: *build_dsl
 
 - job-template:
-    name: build-{major}-{type_snapshot}-{platform}
+    name: build-{major}-{platform}-{type_snapshot}
     defaults: 'build_defaults'
     description: 'Snapshot build for SapMachine {major} on {platform}.'
     project-type: pipeline
