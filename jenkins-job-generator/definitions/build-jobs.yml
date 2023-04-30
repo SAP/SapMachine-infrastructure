@@ -773,7 +773,7 @@
         - build-service-{type_release}-11
 
 - job-template:
-    name: build-{major}-{type_pr}-{platform}
+    name: build-{major}-{platform}-{type_pr}
     defaults: 'build_defaults'
     description: 'PR build for SapMachine {major} on {platform}.'
     project-type: pipeline
