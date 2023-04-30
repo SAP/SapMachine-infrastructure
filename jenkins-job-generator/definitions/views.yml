@@ -23,8 +23,8 @@
     regex: 'build-[\d]+-linux_alpine_x86_64.*'
 
 - view:
-    name: 'Linux aarch64 Builds'
-    description: 'Linux aarch64 Builds'
+    name: 'Linux arm64 Builds'
+    description: 'Linux arm64 Builds'
     view-type: list
     regex: 'build-[\d]+-linux_aarch64.*'
 
@@ -41,22 +41,22 @@
     regex: 'build-[\d]+-linux_x86_64.*'
 
 - view:
-    name: 'MacOS aarch 64 Builds'
-    description: 'macOS aarch 64 Builds'
+    name: 'MacOS arm64 Builds'
+    description: 'macOS arm64 Builds'
     view-type: list
-    regex: 'build-.*-macos_aarch64$'
+    regex: 'build-[\d]+-macos_aarch64.*'
 
 - view:
-    name: 'MacOS x86 64 Builds'
-    description: 'macOS x86 64 Builds'
+    name: 'MacOS x64 Builds'
+    description: 'macOS x64 Builds'
     view-type: list
-    regex: 'build-.*-macos_x86_64$'
+    regex: 'build-[\d]+-macos_x86_64.*'
 
 - view:
-    name: 'Windows x86 64 Builds'
-    description: 'Windows x86 64 Builds'
+    name: 'Windows x64 Builds'
+    description: 'Windows x64 Builds'
     view-type: list
-    regex: 'build-.*-windows_x86_64$'
+    regex: 'build-[\d]+-windows_x86_64.*'
 
 - view:
     name: 'Infrastructure'
