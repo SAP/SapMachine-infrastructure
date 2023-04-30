@@ -664,12 +664,6 @@
 
 - defaults:
     name: 'service_defaults'
-    majors: &majors_service
-        - '17':
-            branch_name: sapmachine17
-        - '20':
-            branch_name: sapmachine20
-        - '21'
     type_snapshot: &type_snapshot_service
         - snapshot:
             type: snapshot
@@ -691,7 +685,12 @@
                                             "macos_aarch64": params.BUILD_MACOS_ARM_64,
                                             "macos_x86_64": params.BUILD_MACOS_X86_64])
                                     }}
-
+    majors: &majors_service
+        - '17':
+            branch_name: sapmachine17
+        - '20':
+            branch_name: sapmachine20
+        - '21'
     build_service_dsl: &build_service_dsl |
         pipeline {{
             agent {{
@@ -713,7 +712,7 @@
 
                             for (p in platforms) {{
                                 if (p.value) {{
-                                    build job: 'build-{major}-{type}-' + p.key,
+                                    build job: 'build-{major}-' + p.key + '-{type}'',
                                         propagate: false,
                                         wait: false,
                                         parameters: [
@@ -758,9 +757,9 @@
 
 - project:
     name: service-builds
-    major: *majors_service
     type_snapshot: *type_snapshot_service
     type_release: *type_release_service
+    major: *majors_service
     jobs:
         - build-service-{type_snapshot}-{major}
         - build-service-{type_release}-{major}

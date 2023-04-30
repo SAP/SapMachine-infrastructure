@@ -2,7 +2,7 @@
     name: 'Snapshot Builds'
     description: 'Snapshot Builds'
     view-type: list
-    regex: 'build-[\d]+-snapshot-.*$|build-[\d]+-.*-snapshot$|build-service-snapshot-[\d]+$'
+    regex: 'build-[\d]+-.*-snapshot$|build-service-snapshot-[\d]+$'
 
 - view:
     name: 'Release Builds'
@@ -14,7 +14,7 @@
     name: 'Pull Request Validation Builds '
     description: 'Pull Request Validation Builds'
     view-type: list
-    regex: 'build-[\d]+-pr-validation-.*$|build-[\d]+-.*-pr-validation$|validate-pr-[\d]+$'
+    regex: 'build-[\d]+-.*-pr-validation$|validate-pr-[\d]+$'
 
 - view:
     name: 'Linux alpine-musl Builds'
