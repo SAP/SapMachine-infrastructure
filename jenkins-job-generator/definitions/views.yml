@@ -8,7 +8,7 @@
     name: 'Release Builds'
     description: 'Release Builds'
     view-type: list
-    regex: 'build-[\d]+-release-.*$|build-service-release-[\d]+$'
+    regex: 'build-[\d]+-release-.*$|build-[\d]+-.*-release$|build-service-release-[\d]+$'
 
 - view:
     name: 'Pull Request Validation Builds '
