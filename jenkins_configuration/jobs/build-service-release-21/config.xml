@@ -28,7 +28,7 @@
 
                     for (p in platforms) {
                         if (p.value) {
-                            build job: 'build-21-release-' + p.key,
+                            build job: 'build-21-' + p.key + '-release'',
                                 propagate: false,
                                 wait: false,
                                 parameters: [

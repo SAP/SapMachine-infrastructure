@@ -23,7 +23,7 @@
 
                     for (p in platforms) {
                         if (p.value) {
-                            build job: 'build-17-snapshot-' + p.key,
+                            build job: 'build-17-' + p.key + '-snapshot'',
                                 propagate: false,
                                 wait: false,
                                 parameters: [

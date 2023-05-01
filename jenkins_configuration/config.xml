@@ -270,30 +270,7 @@
         <hudson.views.LastDurationColumn />
         <hudson.views.BuildButtonColumn />
       </columns>
-      <includeRegex>build-.*-linux_ppc64le$</includeRegex>
-      <recurse>false</recurse>
-    </listView>
-    <listView>
-      <owner class="hudson" reference="../../.." />
-      <name>Linux x86 64 Builds</name>
-      <description>Linux x86 64 Builds&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
-      <filterExecutors>false</filterExecutors>
-      <filterQueue>false</filterQueue>
-      <properties class="hudson.model.View$PropertyList" />
-      <jobNames>
-        <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator" />
-      </jobNames>
-      <jobFilters />
-      <columns>
-        <hudson.views.StatusColumn />
-        <hudson.views.WeatherColumn />
-        <hudson.views.JobColumn />
-        <hudson.views.LastSuccessColumn />
-        <hudson.views.LastFailureColumn />
-        <hudson.views.LastDurationColumn />
-        <hudson.views.BuildButtonColumn />
-      </columns>
-      <includeRegex>build-.*-linux_x86_64$</includeRegex>
+      <includeRegex>build-[\d]+-linux_ppc64le.*|build-[\d]+-release-linux_ppc64le$</includeRegex>
       <recurse>false</recurse>
     </listView>
     <listView>
@@ -316,7 +293,7 @@
         <hudson.views.LastDurationColumn />
         <hudson.views.BuildButtonColumn />
       </columns>
-      <includeRegex>build-[\d]+-pr-validation-.*$|validate-pr-[\d]+$</includeRegex>
+      <includeRegex>build-[\d]+-.*-pr-validation$|validate-pr-[\d]+$</includeRegex>
       <recurse>false</recurse>
     </listView>
     <listView>
@@ -339,30 +316,7 @@
         <hudson.views.LastDurationColumn />
         <hudson.views.BuildButtonColumn />
       </columns>
-      <includeRegex>build-[\d]+-snapshot-.*$|build-service-snapshot-[\d]+$</includeRegex>
-      <recurse>false</recurse>
-    </listView>
-    <listView>
-      <owner class="hudson" reference="../../.." />
-      <name>Windows x86 64 Builds</name>
-      <description>Windows x86 64 Builds&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
-      <filterExecutors>false</filterExecutors>
-      <filterQueue>false</filterQueue>
-      <properties class="hudson.model.View$PropertyList" />
-      <jobNames>
-        <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator" />
-      </jobNames>
-      <jobFilters />
-      <columns>
-        <hudson.views.StatusColumn />
-        <hudson.views.WeatherColumn />
-        <hudson.views.JobColumn />
-        <hudson.views.LastSuccessColumn />
-        <hudson.views.LastFailureColumn />
-        <hudson.views.LastDurationColumn />
-        <hudson.views.BuildButtonColumn />
-      </columns>
-      <includeRegex>build-.*-windows_x86_64$</includeRegex>
+      <includeRegex>build-[\d]+-.*-snapshot$|build-service-snapshot-[\d]+$</includeRegex>
       <recurse>false</recurse>
     </listView>
     <listView>
@@ -385,7 +339,7 @@
         <hudson.views.LastDurationColumn />
         <hudson.views.BuildButtonColumn />
       </columns>
-      <includeRegex>build-[\d]+-release-.*$|build-service-release-[\d]+$</includeRegex>
+      <includeRegex>build-[\d]+-release-.*$|build-[\d]+-.*-release$|build-service-release-[\d]+$</includeRegex>
       <recurse>false</recurse>
     </listView>
     <listView>
@@ -494,29 +448,6 @@
     </listView>
     <listView>
       <owner class="hudson" reference="../../.." />
-      <name>Test</name>
-      <filterExecutors>false</filterExecutors>
-      <filterQueue>false</filterQueue>
-      <properties class="hudson.model.View$PropertyList" />
-      <jobNames>
-        <comparator class="java.lang.String$CaseInsensitiveComparator" />
-        <string>test-jfrog</string>
-      </jobNames>
-      <jobFilters />
-      <columns>
-        <hudson.views.StatusColumn />
-        <hudson.views.WeatherColumn />
-        <hudson.views.JobColumn />
-        <hudson.views.LastSuccessColumn />
-        <hudson.views.LastFailureColumn />
-        <hudson.views.LastDurationColumn />
-        <hudson.views.BuildButtonColumn />
-        <hudson.plugins.favorite.column.FavoriteColumn plugin="favorite@2.4.1" />
-      </columns>
-      <recurse>false</recurse>
-    </listView>
-    <listView>
-      <owner class="hudson" reference="../../.." />
       <name>Async Profiler</name>
       <description>Async Profiler Builds and other related jobs&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
       <filterExecutors>false</filterExecutors>
@@ -563,98 +494,6 @@
     </listView>
     <listView>
       <owner class="hudson" reference="../../.." />
-      <name>Linux Alpine Builds</name>
-      <description>Linux aarch64 Builds&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
-      <filterExecutors>false</filterExecutors>
-      <filterQueue>false</filterQueue>
-      <properties class="hudson.model.View$PropertyList" />
-      <jobNames>
-        <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator" />
-      </jobNames>
-      <jobFilters />
-      <columns>
-        <hudson.views.StatusColumn />
-        <hudson.views.WeatherColumn />
-        <hudson.views.JobColumn />
-        <hudson.views.LastSuccessColumn />
-        <hudson.views.LastFailureColumn />
-        <hudson.views.LastDurationColumn />
-        <hudson.views.BuildButtonColumn />
-      </columns>
-      <includeRegex>build-.*-linux_alpine_x86_64$</includeRegex>
-      <recurse>false</recurse>
-    </listView>
-    <listView>
-      <owner class="hudson" reference="../../.." />
-      <name>Linux aarch64 Builds</name>
-      <description>Linux aarch64 Builds&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
-      <filterExecutors>false</filterExecutors>
-      <filterQueue>false</filterQueue>
-      <properties class="hudson.model.View$PropertyList" />
-      <jobNames>
-        <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator" />
-      </jobNames>
-      <jobFilters />
-      <columns>
-        <hudson.views.StatusColumn />
-        <hudson.views.WeatherColumn />
-        <hudson.views.JobColumn />
-        <hudson.views.LastSuccessColumn />
-        <hudson.views.LastFailureColumn />
-        <hudson.views.LastDurationColumn />
-        <hudson.views.BuildButtonColumn />
-      </columns>
-      <includeRegex>build-.*-linux_aarch64$</includeRegex>
-      <recurse>false</recurse>
-    </listView>
-    <listView>
-      <owner class="hudson" reference="../../.." />
-      <name>MacOS aarch 64 Builds</name>
-      <description>macOS aarch 64 Builds&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
-      <filterExecutors>false</filterExecutors>
-      <filterQueue>false</filterQueue>
-      <properties class="hudson.model.View$PropertyList" />
-      <jobNames>
-        <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator" />
-      </jobNames>
-      <jobFilters />
-      <columns>
-        <hudson.views.StatusColumn />
-        <hudson.views.WeatherColumn />
-        <hudson.views.JobColumn />
-        <hudson.views.LastSuccessColumn />
-        <hudson.views.LastFailureColumn />
-        <hudson.views.LastDurationColumn />
-        <hudson.views.BuildButtonColumn />
-      </columns>
-      <includeRegex>build-.*-macos_aarch64$</includeRegex>
-      <recurse>false</recurse>
-    </listView>
-    <listView>
-      <owner class="hudson" reference="../../.." />
-      <name>MacOS x86 64 Builds</name>
-      <description>macOS x86 64 Builds&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
-      <filterExecutors>false</filterExecutors>
-      <filterQueue>false</filterQueue>
-      <properties class="hudson.model.View$PropertyList" />
-      <jobNames>
-        <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator" />
-      </jobNames>
-      <jobFilters />
-      <columns>
-        <hudson.views.StatusColumn />
-        <hudson.views.WeatherColumn />
-        <hudson.views.JobColumn />
-        <hudson.views.LastSuccessColumn />
-        <hudson.views.LastFailureColumn />
-        <hudson.views.LastDurationColumn />
-        <hudson.views.BuildButtonColumn />
-      </columns>
-      <includeRegex>build-.*-macos_x86_64$</includeRegex>
-      <recurse>false</recurse>
-    </listView>
-    <listView>
-      <owner class="hudson" reference="../../.." />
       <name>MacOS</name>
       <description>MacOS related jobs&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
       <filterExecutors>false</filterExecutors>
@@ -677,6 +516,144 @@
       <includeRegex>(publish-macos-packages-.*)</includeRegex>
       <recurse>false</recurse>
     </listView>
+    <listView>
+      <owner class="hudson" reference="../../.." />
+      <name>Linux x64 Builds</name>
+      <description>Linux x86_64 Builds&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <properties class="hudson.model.View$PropertyList" />
+      <jobNames>
+        <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator" />
+      </jobNames>
+      <jobFilters />
+      <columns>
+        <hudson.views.StatusColumn />
+        <hudson.views.WeatherColumn />
+        <hudson.views.JobColumn />
+        <hudson.views.LastSuccessColumn />
+        <hudson.views.LastFailureColumn />
+        <hudson.views.LastDurationColumn />
+        <hudson.views.BuildButtonColumn />
+      </columns>
+      <includeRegex>build-[\d]+-linux_x86_64.*|build-[\d]+-release-linux_x86_64$</includeRegex>
+      <recurse>false</recurse>
+    </listView>
+    <listView>
+      <owner class="hudson" reference="../../.." />
+      <name>Linux alpine-musl Builds</name>
+      <description>Linux alpine/musl Builds&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <properties class="hudson.model.View$PropertyList" />
+      <jobNames>
+        <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator" />
+      </jobNames>
+      <jobFilters />
+      <columns>
+        <hudson.views.StatusColumn />
+        <hudson.views.WeatherColumn />
+        <hudson.views.JobColumn />
+        <hudson.views.LastSuccessColumn />
+        <hudson.views.LastFailureColumn />
+        <hudson.views.LastDurationColumn />
+        <hudson.views.BuildButtonColumn />
+      </columns>
+      <includeRegex>build-[\d]+-linux_alpine_x86_64.*|build-[\d]+-release-linux_alpine_x86_64$</includeRegex>
+      <recurse>false</recurse>
+    </listView>
+    <listView>
+      <owner class="hudson" reference="../../.." />
+      <name>Linux arm64 Builds</name>
+      <description>Linux arm64 Builds&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <properties class="hudson.model.View$PropertyList" />
+      <jobNames>
+        <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator" />
+      </jobNames>
+      <jobFilters />
+      <columns>
+        <hudson.views.StatusColumn />
+        <hudson.views.WeatherColumn />
+        <hudson.views.JobColumn />
+        <hudson.views.LastSuccessColumn />
+        <hudson.views.LastFailureColumn />
+        <hudson.views.LastDurationColumn />
+        <hudson.views.BuildButtonColumn />
+      </columns>
+      <includeRegex>build-[\d]+-linux_aarch64.*|build-[\d]+-release-linux_aarch64$</includeRegex>
+      <recurse>false</recurse>
+    </listView>
+    <listView>
+      <owner class="hudson" reference="../../.." />
+      <name>MacOS arm64 Builds</name>
+      <description>macOS arm64 Builds&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <properties class="hudson.model.View$PropertyList" />
+      <jobNames>
+        <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator" />
+      </jobNames>
+      <jobFilters />
+      <columns>
+        <hudson.views.StatusColumn />
+        <hudson.views.WeatherColumn />
+        <hudson.views.JobColumn />
+        <hudson.views.LastSuccessColumn />
+        <hudson.views.LastFailureColumn />
+        <hudson.views.LastDurationColumn />
+        <hudson.views.BuildButtonColumn />
+      </columns>
+      <includeRegex>build-[\d]+-macos_aarch64.*|build-[\d]+-release-macos_aarch64$</includeRegex>
+      <recurse>false</recurse>
+    </listView>
+    <listView>
+      <owner class="hudson" reference="../../.." />
+      <name>MacOS x64 Builds</name>
+      <description>macOS x64 Builds&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <properties class="hudson.model.View$PropertyList" />
+      <jobNames>
+        <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator" />
+      </jobNames>
+      <jobFilters />
+      <columns>
+        <hudson.views.StatusColumn />
+        <hudson.views.WeatherColumn />
+        <hudson.views.JobColumn />
+        <hudson.views.LastSuccessColumn />
+        <hudson.views.LastFailureColumn />
+        <hudson.views.LastDurationColumn />
+        <hudson.views.BuildButtonColumn />
+      </columns>
+      <includeRegex>build-[\d]+-macos_x86_64.*|build-[\d]+-release-macos_x86_64$</includeRegex>
+      <recurse>false</recurse>
+    </listView>
+    <listView>
+      <owner class="hudson" reference="../../.." />
+      <name>Windows x64 Builds</name>
+      <description>Windows x64 Builds&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <properties class="hudson.model.View$PropertyList" />
+      <jobNames>
+        <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator" />
+      </jobNames>
+      <jobFilters />
+      <columns>
+        <hudson.views.StatusColumn />
+        <hudson.views.WeatherColumn />
+        <hudson.views.JobColumn />
+        <hudson.views.LastSuccessColumn />
+        <hudson.views.LastFailureColumn />
+        <hudson.views.LastDurationColumn />
+        <hudson.views.BuildButtonColumn />
+      </columns>
+      <includeRegex>build-[\d]+-windows_x86_64.*|build-[\d]+-release-windows_x86_64$</includeRegex>
+      <recurse>false</recurse>
+    </listView>
   </views>
   <primaryView>Pull Request Validation Builds </primaryView>
   <slaveAgentPort>50000</slaveAgentPort>
@@ -695,7 +672,7 @@
         <unserializable-parents />
         <tree-map>
           <default>
-            <comparator class="java.lang.String$CaseInsensitiveComparator" reference="../../../../../../views/listView[11]/jobNames/comparator" />
+            <comparator class="java.lang.String$CaseInsensitiveComparator" />
           </default>
           <int>1</int>
           <string>MAVEN_OPTS</string>
