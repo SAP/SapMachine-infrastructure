@@ -44,16 +44,16 @@ def run_jenkins_jobs(major, tag):
     # server.use_auth_cookie()
 
     build_jobs = [
-        str.format('build-{0}-release-linux_x86_64', major),
-        str.format('build-{0}-release-linux_ppc64le', major),
-        str.format('build-{0}-release-linux_aarch64', major),
-        str.format('build-{0}-release-macos_x86_64', major),
-        str.format('build-{0}-release-macos_aarch64', major),
-        str.format('build-{0}-release-windows_x86_64', major)
+        str.format('build-{0}-linux_x86_64-release', major),
+        str.format('build-{0}-linux_ppc64le-release', major),
+        str.format('build-{0}-linux_aarch64-release', major),
+        str.format('build-{0}-macos_x86_64-release', major),
+        str.format('build-{0}-macos_aarch64-release', major),
+        str.format('build-{0}-windows_x86_64-release', major)
     ]
 
     if major > 11:
-        build_jobs.append(str.format('build-{0}-release-linux_alpine_x86_64', major))
+        build_jobs.append(str.format('build-{0}-linux_alpine_x86_64-release', major))
 
     job_params = {
         'PUBLISH': 'true' ,
