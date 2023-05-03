@@ -179,7 +179,7 @@
             create_brew_casks: &create_brew_casks |-
                 stage("Create Brew Casks") {{
                             when {{
-                                expression {{ params.PUBLISH == true && JOB_NAME ==~ /((\S*)(release-macos)(\S*))/ && env.RELEASE != "true" }}
+                                expression {{ params.PUBLISH == true && JOB_NAME ==~ /((\S*)(-macos)(\S*)(-release))/ && env.RELEASE != "true" }}
                             }}
                             steps {{
                                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
@@ -417,7 +417,7 @@
             publish_github: |-
                 stage("Publish GitHub") {{
                             when {{
-                                expression {{ params.PUBLISH == true && !(JOB_NAME ==~ /((\S*)(release-macos)(\S*))/ && env.RELEASE == "true") }}
+                                expression {{ params.PUBLISH == true && !(JOB_NAME ==~ /((\S*)(-macos)(\S*)(-release))/ && env.RELEASE == "true") }}
                             }}
                             steps {{
                                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
