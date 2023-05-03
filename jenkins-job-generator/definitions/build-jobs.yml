@@ -712,7 +712,7 @@
 
                             for (p in platforms) {{
                                 if (p.value) {{
-                                    build job: 'build-{major}-' + p.key + '-{type}'',
+                                    build job: 'build-{major}-' + p.key + '-{type}',
                                         propagate: false,
                                         wait: false,
                                         parameters: [
