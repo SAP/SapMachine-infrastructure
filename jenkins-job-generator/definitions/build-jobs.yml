@@ -92,6 +92,8 @@
                                     label "linux_alpine_x86_64"
                                 }}
                             }}
+            build_alpine_apk_packages_pre: &build_alpine_apk_packages_pre 'stage("Build Alpine apk Packages") {{'
+            docker_agent_alpine: *docker_agent_alpine_x86_64
             build_alpine_apk_packages_step: &build_alpine_apk_packages_step |-
                 when {{
                                 beforeAgent true
@@ -317,6 +319,9 @@
             build_debian_packages_pre: ''
             docker_agent_debian: ''
             build_debian_packages_step: ''
+            build_alpine_apk_packages_pre: ''
+            docker_agent_alpine: ''
+            build_alpine_apk_packages_step: ''
             build_rpm_packages: ''
             publish_artifactory_msi: ''
             publish_debian_packages: ''
@@ -640,6 +645,9 @@
                 {build_debian_packages_pre|}
                     {docker_agent_debian|}
                     {build_debian_packages_step|}
+                {build_alpine_apk_packages_pre|}
+                    {docker_agent_alpine|}
+                    {build_alpine_apk_packages_step|}
                 {build_rpm_packages|}
                 {publish_artifactory_pre|}
                     {publish_artifactory_when|}
