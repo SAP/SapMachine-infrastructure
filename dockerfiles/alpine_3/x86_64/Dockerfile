@@ -41,11 +41,13 @@ RUN echo "jenkinsb ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/jenkinsb && chmod 04
 RUN echo "jenkinsc ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/jenkinsc && chmod 0440 /etc/sudoers.d/jenkinsc
 
 # fill group for Alpine apk build and create cache location
-RUN addgroup jenkinsa abuild
+RUN addgroup abuild
+RUN adduser jenkinsa abuild
 RUN adduser jenkinsb abuild
 RUN adduser jenkinsc abuild
 RUN mkdir -p /var/cache/distfiles
 RUN chmod a+w /var/cache/distfiles
+RUN touch /mytestfile9
 
 # prepare the apk keys, precondition for running make-apk.py
 # doas has problems so tell abuild-keygen to use sudo instead
