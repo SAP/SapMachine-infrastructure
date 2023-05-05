@@ -38,11 +38,13 @@ def main(argv=None):
     args = parser.parse_args()
 
     templates_dir = realpath(args.templates_directory)
-
-    tag = SapMachineTag.from_string(args.tag)
-    if not tag.startswith("sapmachine-"):
-        tag = "sapmachine-" + tag
     
+    tagstr = args.tag
+    if tagstr is not None:
+        if not tagstr.startswith("sapmachine-"):
+            tagstr = "sapmachine-" + tagstr
+    
+    tag = SapMachineTag.from_string(tagstr)    
     print("tag:", tag)
 
     cwd = os.getcwd()
