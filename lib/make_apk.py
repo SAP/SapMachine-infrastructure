@@ -40,6 +40,10 @@ def main(argv=None):
     templates_dir = realpath(args.templates_directory)
 
     tag = SapMachineTag.from_string(args.tag)
+    if not tag.startswith("sapmachine-"):
+        tag = "sapmachine-" + tag
+    
+    print("tag:", tag)
 
     cwd = os.getcwd()
     home = expanduser("~")
