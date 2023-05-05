@@ -225,6 +225,9 @@
             
             
         
+            
+            
+        
         stage("Publish Artifactory") {
             when {
                 expression { params.UPLOAD_ARTIFACTORY == true }
