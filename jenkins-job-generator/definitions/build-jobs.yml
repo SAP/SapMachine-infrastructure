@@ -645,9 +645,6 @@
                 {build_debian_packages_pre|}
                     {docker_agent_debian|}
                     {build_debian_packages_step|}
-                {build_alpine_apk_packages_pre|}
-                    {docker_agent_alpine|}
-                    {build_alpine_apk_packages_step|}
                 {build_rpm_packages|}
                 {publish_artifactory_pre|}
                     {publish_artifactory_when|}
@@ -659,6 +656,9 @@
                 {create_brew_casks|}
                 {generate_dockerfiles|}
                 {publish_website_data|}
+                {build_alpine_apk_packages_pre|}
+                    {docker_agent_alpine|}
+                    {build_alpine_apk_packages_step|}
                 {publish_cf_data|}
             }}
             post {{
