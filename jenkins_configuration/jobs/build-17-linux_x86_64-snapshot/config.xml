@@ -269,9 +269,6 @@
                 }
             }
         }
-        
-            
-            
         stage("Build RPM Packages") {
             agent {
                 dockerfile {
@@ -306,6 +303,9 @@
         
         
         
+        
+            
+            
         
     }
     post {

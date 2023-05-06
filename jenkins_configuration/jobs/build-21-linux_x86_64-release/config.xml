@@ -286,9 +286,6 @@
                 }
             }
         }
-        
-            
-            
         stage("Build RPM Packages") {
             agent {
                 dockerfile {
@@ -358,6 +355,9 @@
                 build job: 'generate-website-data', propagate: false, wait: false
             }
         }
+        
+            
+            
         stage("Publish CF Java Buildpack Data") {
             when {
                 expression { params.PUBLISH == true &amp;&amp; env.RELEASE == "true" }

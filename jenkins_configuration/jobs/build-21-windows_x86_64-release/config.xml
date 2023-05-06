@@ -242,9 +242,6 @@
             
             
         
-            
-            
-        
         stage("Publish Artifactory") {
             
             steps {
@@ -289,6 +286,9 @@
                 build job: 'generate-website-data', propagate: false, wait: false
             }
         }
+        
+            
+            
         
     }
     post {

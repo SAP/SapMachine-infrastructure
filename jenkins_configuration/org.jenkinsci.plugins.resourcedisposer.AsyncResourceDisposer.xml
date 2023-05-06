@@ -4,32 +4,7 @@
     <unserializable-parents />
     <java.util.Collections_-SetFromMap>
       <default>
-        <m class="concurrent-hash-map">
-          <entry>
-            <org.jenkinsci.plugins.resourcedisposer.AsyncResourceDisposer_-WorkItem>
-              <disposer reference="../../../../../../.." />
-              <disposable class="hudson.plugins.ws_cleanup.Wipeout$DisposableImpl" plugin="ws-cleanup@0.45">
-                <node>EC2 (ec2-SapMachine Cloud) - Windows Client (i-0e2827bbe20edefeb)</node>
-                <path>C:\jenkins_work\workspace\build-11-windows_x86_64-release_ws-cleanup_1683249543369</path>
-              </disposable>
-              <registered>2023-05-05 01:19:03.597 UTC</registered>
-              <disposableInfo>hudson.plugins.ws_cleanup.Wipeout$DisposableImpl:Workspace EC2 (ec2-SapMachine Cloud) - Windows Client (i-0e2827bbe20edefeb):C:\jenkins_work\workspace\build-11-windows_x86_64-release_ws-cleanup_1683249543369</disposableInfo>
-            </org.jenkinsci.plugins.resourcedisposer.AsyncResourceDisposer_-WorkItem>
-            <boolean>true</boolean>
-          </entry>
-          <entry>
-            <org.jenkinsci.plugins.resourcedisposer.AsyncResourceDisposer_-WorkItem>
-              <disposer reference="../../../../../../.." />
-              <disposable class="hudson.plugins.ws_cleanup.Wipeout$DisposableImpl" plugin="ws-cleanup@0.45">
-                <node>agent-linux-ppc64le-1</node>
-                <path>/home/jenkins/client-home/workspace/build-11-linux_ppc64le-release_ws-cleanup_1683249586549</path>
-              </disposable>
-              <registered>2023-05-05 01:19:46.694 UTC</registered>
-              <disposableInfo>hudson.plugins.ws_cleanup.Wipeout$DisposableImpl:Workspace agent-linux-ppc64le-1:/home/jenkins/client-home/workspace/build-11-linux_ppc64le-release_ws-cleanup_1683249586549</disposableInfo>
-            </org.jenkinsci.plugins.resourcedisposer.AsyncResourceDisposer_-WorkItem>
-            <boolean>true</boolean>
-          </entry>
-        </m>
+        <m class="concurrent-hash-map" />
       </default>
     </java.util.Collections_-SetFromMap>
   </backlog>
