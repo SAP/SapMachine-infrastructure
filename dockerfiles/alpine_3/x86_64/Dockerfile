@@ -31,8 +31,8 @@ unzip \
 wget \
 zip
 
-# create abuild group for apk stuff and add the users to it
-RUN addgroup --gid 1000 abuild
+# create abuild group for apk stuff and add the users to it; abuild group already exists
+# RUN addgroup --gid 1000 abuild
 RUN adduser --shell /bin/bash --uid 1000 --ingroup abuild --disabled-password jenkinsa
 RUN adduser --shell /bin/bash --uid 1001 --ingroup abuild --disabled-password jenkinsb
 RUN adduser --shell /bin/bash --uid 1002 --ingroup abuild --disabled-password jenkinsc
