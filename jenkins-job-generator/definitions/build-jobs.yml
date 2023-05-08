@@ -104,7 +104,7 @@
                                 sh "getent group abuild"
                                 sh "cat /etc/group"
                                 sh "SUDO=sudo abuild-keygen -a -i -n"
-                                sh "python3 SapMachine-infrastructure/lib/make_apk.py -t ${{env.SAPMACHINE_VERSION}} -d SapMachine-infrastructure/alpine-templates"
+                                sh "sudo -g abuild python3 SapMachine-infrastructure/lib/make_apk.py -t ${{env.SAPMACHINE_VERSION}} -d SapMachine-infrastructure/alpine-templates"
                             }}
                             post {{
                                 success {{
