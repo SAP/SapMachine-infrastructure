@@ -45,8 +45,6 @@ RUN echo "jenkinsc ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/jenkinsc && chmod 04
 # create apk cache location
 RUN mkdir -p /var/cache/distfiles
 RUN chmod a+w /var/cache/distfiles
-RUN touch /mytestfile9
-RUN getent group abuild
 
 # prepare the apk keys, precondition for running make-apk.py
 # doas has problems so tell abuild-keygen to use sudo instead
