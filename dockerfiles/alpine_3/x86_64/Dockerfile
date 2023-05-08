@@ -31,26 +31,22 @@ unzip \
 wget \
 zip
 
-RUN adduser --shell /bin/bash --uid 1000 --disabled-password jenkinsa
-RUN adduser --shell /bin/bash --uid 1001 --disabled-password jenkinsb
-RUN adduser --shell /bin/bash --uid 1002 --disabled-password jenkinsc
+# create abuild group for apk stuff and add the users to it
+RUN addgroup --gid 1000 abuild
+RUN adduser --shell /bin/bash --uid 1000 --ingroup abuild --disabled-password jenkinsa
+RUN adduser --shell /bin/bash --uid 1001 --ingroup abuild --disabled-password jenkinsb
+RUN adduser --shell /bin/bash --uid 1002 --ingroup abuild --disabled-password jenkinsc
 
 # enable the users for abuild-keygen, this needs sudo or doas
 RUN echo "jenkinsa ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/jenkinsa && chmod 0440 /etc/sudoers.d/jenkinsa
 RUN echo "jenkinsb ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/jenkinsb && chmod 0440 /etc/sudoers.d/jenkinsb
 RUN echo "jenkinsc ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/jenkinsc && chmod 0440 /etc/sudoers.d/jenkinsc
 
-# fill group for Alpine apk build and create cache location
-RUN addgroup jenkinsc abuild
-RUN adduser jenkinsa abuild
-RUN adduser jenkinsb abuild
-RUN adduser jenkinsc abuild
+# create apk cache location
 RUN mkdir -p /var/cache/distfiles
 RUN chmod a+w /var/cache/distfiles
 RUN touch /mytestfile9
 RUN getent group abuild
-
-RUN echo "jenkinsa ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/jenkinsa && chmod 0440 /etc/sudoers.d/jenkinsa
 
 # prepare the apk keys, precondition for running make-apk.py
 # doas has problems so tell abuild-keygen to use sudo instead
