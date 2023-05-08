@@ -48,6 +48,9 @@ RUN adduser jenkinsc abuild
 RUN mkdir -p /var/cache/distfiles
 RUN chmod a+w /var/cache/distfiles
 RUN touch /mytestfile9
+RUN getent group abuild
+
+RUN echo "jenkinsa ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/jenkinsa && chmod 0440 /etc/sudoers.d/jenkinsa
 
 # prepare the apk keys, precondition for running make-apk.py
 # doas has problems so tell abuild-keygen to use sudo instead
