@@ -163,6 +163,12 @@ echo "${ARCHIVE_NAME_JRE}" > "${WORKSPACE}/jre_bundle_name.txt"
 echo "${ARCHIVE_NAME_SYMBOLS}" > "${WORKSPACE}/symbols_bundle_name.txt"
 
 if [[ $UNAME == Darwin ]]; then
+
+  if [[ -n "$NODMG" ]]; then
+    echo "Skipping DMG generation."
+    exit 0
+  fi
+
   rm -rf *.dmg
 
   # create dmg

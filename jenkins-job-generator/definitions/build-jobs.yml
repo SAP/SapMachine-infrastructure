@@ -290,6 +290,7 @@
             init_variables: |-
                 // initialize some variables
                                     env.RELEASE = "false"
+                                    env.NODMG = "true"
             verify_pre: 'stage("Verify PR") {{'
             verify_step: |-
                 steps {{
