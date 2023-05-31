@@ -1,7 +1,7 @@
-<flow-definition plugin="workflow-job@1292.v27d8cc3e2602">
+<flow-definition plugin="workflow-job@1295.v395eb_7400005">
   <actions>
-    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@2.2125.vddb_a_44a_d605e" />
-    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@2.2125.vddb_a_44a_d605e">
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@2.2131.vb_9788088fdb_5" />
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@2.2131.vb_9788088fdb_5">
       <jobProperties />
       <triggers />
       <parameters />
@@ -14,7 +14,7 @@
     <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty>
       <abortPrevious>false</abortPrevious>
     </org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty>
-    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.37.0">
+    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.37.1">
       <projectUrl>https://github.com/SAP/async-profiler</projectUrl>
       <displayName />
     </com.coravy.hudson.plugins.github.GithubProjectProperty>
