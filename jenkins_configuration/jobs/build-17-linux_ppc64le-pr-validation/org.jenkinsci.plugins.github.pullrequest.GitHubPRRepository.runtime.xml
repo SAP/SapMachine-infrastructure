@@ -8,11 +8,11 @@
       <int>1413</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>1413</number>
-        <issueUpdatedAt>2023-05-31 00:30:55.0 UTC</issueUpdatedAt>
+        <issueUpdatedAt>2023-06-05 19:42:05.0 UTC</issueUpdatedAt>
         <title>Merge to tag jdk-17.0.8+5</title>
         <body>please pull</body>
-        <prUpdatedAt>2023-05-31 00:30:55.0 UTC</prUpdatedAt>
-        <headSha>a93cf5f2b959ba97d5197fe027b81ec69de18382</headSha>
+        <prUpdatedAt>2023-06-05 19:42:05.0 UTC</prUpdatedAt>
+        <headSha>0f711e91585b79f29f64453da41bd7bcce0c46a2</headSha>
         <headRef>pr-jdk-17.0.8+5</headRef>
         <mergeable>true</mergeable>
         <baseRef>sapmachine17</baseRef>
@@ -28,13 +28,13 @@
       <int>1414</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>1414</number>
-        <issueUpdatedAt>2023-05-31 00:31:14.0 UTC</issueUpdatedAt>
+        <issueUpdatedAt>2023-06-05 19:40:37.0 UTC</issueUpdatedAt>
         <title>Merge to tag jdk-11.0.20+5</title>
         <body>please pull</body>
-        <prUpdatedAt>2023-05-31 00:31:14.0 UTC</prUpdatedAt>
-        <headSha>1000b1c0074af4b954c5f210d1684b5623e9723b</headSha>
+        <prUpdatedAt>2023-06-05 19:40:37.0 UTC</prUpdatedAt>
+        <headSha>584eabf9f4f9e528278c1758c81ace1748eedb1e</headSha>
         <headRef>pr-jdk-11.0.20+5</headRef>
-        <mergeable>false</mergeable>
+        <mergeable>true</mergeable>
         <baseRef>sapmachine11</baseRef>
         <userLogin>SapMachine</userLogin>
         <htmlUrl>https://github.com/SAP/SapMachine/pull/1414</htmlUrl>
@@ -60,6 +60,30 @@
         <htmlUrl>https://github.com/SAP/SapMachine/pull/1415</htmlUrl>
         <labels />
         <sourceRepoOwner>SAP</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>1416</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>1416</number>
+        <issueUpdatedAt>2023-06-05 12:13:28.0 UTC</issueUpdatedAt>
+        <title>Added missing unregisters for NMT</title>
+        <body>Unregister the thread stack in the gtests too, so we don't have a leak.
+
+</body>
+        <prUpdatedAt>2023-06-05 12:13:28.0 UTC</prUpdatedAt>
+        <headSha>dc0a7e1b3ba653c538b8446b4f6f12b115bd05b2</headSha>
+        <headRef>fix-missing-unregister</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine17</baseRef>
+        <userEmail>ralf.schmelter@sap.com</userEmail>
+        <userLogin>schmelter-sap</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1416</htmlUrl>
+        <labels />
+        <lastCommentCreatedAt>2023-06-05 12:13:28.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>schmelter-sap</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
       </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
