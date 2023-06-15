@@ -184,7 +184,7 @@ if [[ $UNAME == Darwin ]]; then
     # We see sometimes errors like "hdiutil: create failed - Resource busy." when invoking it right after tar.
     # Let's retry after sleeping a little while.
     sleep 30
-    hdiutil create -srcfolder ${DMG_BASE} -fs HFS+ -volname ${DMG_NAME} "${WORKSPACE}/${DMG_NAME}.dmg"
+    hdiutil create -verbose -srcfolder ${DMG_BASE} -fs HFS+ -volname ${DMG_NAME} "${WORKSPACE}/${DMG_NAME}.dmg"
   fi
 
   echo "${DMG_NAME}.dmg" > "${WORKSPACE}/jdk_dmg_name.txt"
@@ -200,7 +200,7 @@ if [[ $UNAME == Darwin ]]; then
     # We see sometimes errors like "hdiutil: create failed - Resource busy." when invoking it right after tar.
     # Let's retry after sleeping a little while.
     sleep 30
-    hdiutil create -srcfolder ${DMG_BASE} -fs HFS+ -volname ${DMG_NAME} "${WORKSPACE}/${DMG_NAME}.dmg"
+    hdiutil create -verbose -srcfolder ${DMG_BASE} -fs HFS+ -volname ${DMG_NAME} "${WORKSPACE}/${DMG_NAME}.dmg"
   fi
   echo "${DMG_NAME}.dmg" > "${WORKSPACE}/jre_dmg_name.txt"
 fi
