@@ -289,7 +289,7 @@ def main(argv=None):
             # create a pull request branch and a pull request.
             create_openjdk_pr(latest_tag, sapmachine_branch[0])
         else:
-            print(str.format('Tag "{0}" was already merged into branch "{1}" or a PR branch exists', latest_tag.as_string(), sapmachine_branch[0]))
+            print(str.format('Tag "{0}" was already merged into branch "{1}" or a PR branch exists. Match: "{2}"', latest_tag.as_string(), sapmachine_branch[0], match.string))
 
     return 0
 

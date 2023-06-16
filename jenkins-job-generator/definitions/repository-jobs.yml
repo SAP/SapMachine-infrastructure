@@ -67,6 +67,7 @@
                               cd SapMachine
                             fi
                             git fetch origin
+                            git remote prune origin
                             git checkout sapmachine
                         '''
                     }
