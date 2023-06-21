@@ -235,7 +235,6 @@
                                         jf "rt u ${{jre_msi_name}} sapmachine-mvn/io/sapmachine/build-results/{platform}/${{env.ART_VERSION}}/${{jre_msi_name}}"
                                     }}
                                 }}
-
             save_workspace_on_error: *save_workspace_on_error
     type_pr: &type_pr_build
         - pr-validation:
