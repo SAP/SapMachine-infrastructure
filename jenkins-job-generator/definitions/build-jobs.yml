@@ -363,6 +363,7 @@
                                     env.BUILD_INSTALLER_PACKAGES = params.BUILD_INSTALLER_PACKAGES
                                     env.ART_VERSION = "snapshot-{major}-" + (new java.text.SimpleDateFormat("yyyyMMddHHmmss")).format(new Date())
                                     env.RELEASE = "false"
+                                    env.NODMG = "true"
             publish_artifactory_pre: &publish_artifactory_pre 'stage("Publish Artifactory") {{'
             publish_artifactory_when: |-
                 when {{
