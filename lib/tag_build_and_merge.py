@@ -47,8 +47,9 @@ def run_jenkins_jobs(major, tag):
         str.format('build-{0}-linux_x86_64-release', major),
         str.format('build-{0}-linux_ppc64le-release', major),
         str.format('build-{0}-linux_aarch64-release', major),
-        str.format('build-{0}-macos_x86_64-release', major),
-        str.format('build-{0}-macos_aarch64-release', major),
+        # don't build macos ea releases on ci.sapmachine.io due to issues with hdiutil in that landscape
+        # str.format('build-{0}-macos_x86_64-release', major),
+        # str.format('build-{0}-macos_aarch64-release', major),
         str.format('build-{0}-windows_x86_64-release', major)
     ]
 
