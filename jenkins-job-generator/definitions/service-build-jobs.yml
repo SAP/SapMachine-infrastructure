@@ -1,0 +1,436 @@
+- defaults:
+    name: 'service_defaults'
+    type_snapshot: &type_snapshot_service
+        - snapshot:
+            type: snapshot
+            release_option_param: "[$class: 'BooleanParameterValue', name: 'UPLOAD_ARTIFACTORY', value: params.UPLOAD_ARTIFACTORY],"
+            trigger_macos_builds: |
+                platforms.putAll([
+                                        "macos_aarch64": params.BUILD_MACOS_ARM_64,
+                                        "macos_x86_64": params.BUILD_MACOS_X86_64])
+    type_release: &type_release_service
+        - release:
+            type: release
+            release_option_param: "[$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],"
+            trigger_macos_builds: |
+                // only trigger macos jobs for non-release builds
+                                    def tag = params.SAPMACHINE_VERSION.isEmpty() ? params.GIT_REF : params.SAPMACHINE_VERSION
+                                    def m = (tag =~ /sapmachine-((\d+(\.\d+)*)(\+(\d+))?)$/)
+                                    if (!m || m.group(4) != null) {{
+                                        platforms.putAll([
+                                            "macos_aarch64": params.BUILD_MACOS_ARM_64,
+                                            "macos_x86_64": params.BUILD_MACOS_X86_64])
+                                    }}
+    majors: &majors_service
+        - '17':
+            branch_name: sapmachine17
+        - '20':
+            branch_name: sapmachine20
+        - '21'
+    build_service_dsl: &build_service_dsl |
+        pipeline {{
+            agent {{
+                label 'build_service'
+            }}
+            stages {{
+                stage("Trigger Builds") {{
+                    steps {{
+                        script {{
+                            def platforms = [
+                                "linux_aarch64": params.BUILD_LINUX_AARCH64,
+                                {linux_alpine_include|}
+                                "linux_ppc64le": params.BUILD_LINUX_PPC64LE,
+                                "linux_x86_64": params.BUILD_LINUX_X86_64,
+                                "windows_x86_64": params.BUILD_WINDOWS_X86_64
+                            ]
+
+                            {trigger_macos_builds|}
+
+                            for (p in platforms) {{
+                                if (p.value) {{
+                                    build job: 'build-{major}-' + p.key + '-{type}',
+                                        propagate: false,
+                                        wait: false,
+                                        parameters: [
+                                            string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
+                                            string(name: 'GIT_REF', value: params.GIT_REF),
+                                            string(name: 'SAPMACHINE_VERSION', value: params.SAPMACHINE_VERSION),
+                                            string(name: 'JDK_BUILD', value: params.JDK_BUILD),
+                                            string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
+                                            string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
+                                            string(name: 'jdk_test_groups', value: params.jdk_test_groups),
+                                            string(name: 'langtools_test_groups', value: params.langtools_test_groups),
+                                            [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
+                                            [$class: 'BooleanParameterValue', name: 'BUILD_INSTALLER_PACKAGES', value: params.BUILD_INSTALLER_PACKAGES],
+                                            [$class: 'BooleanParameterValue', name: 'CREATE_GENSRC_BUNDLE', value: params.CREATE_GENSRC_BUNDLE],
+                                            {release_option_param}
+                                            [$class: 'BooleanParameterValue', name: 'ARCHIVE_WORKSPACE', value: params.ARCHIVE_WORKSPACE]
+                                        ]
+                                }} else {{
+                                    println "Skipping build for " + p.key + " (build=" + p.value + ")."
+                                }}
+                            }}
+                        }}
+                    }}
+                }}
+            }}
+        }}
+
+- project:
+    name: service-builds
+    type_snapshot: *type_snapshot_service
+    type_release: *type_release_service
+    major: *majors_service
+    jobs:
+        - build-service-{type_snapshot}-{major}
+        - build-service-{type_release}-{major}
+
+- project:
+    name: service-builds-11
+    type_snapshot: *type_snapshot_service
+    type_release: *type_release_service
+    jobs:
+        - build-service-{type_snapshot}-11
+        - build-service-{type_release}-11
+
+- job-template:
+    name: build-service-{type_snapshot}-{major}
+    linux_alpine_include: '"linux_alpine_x86_64": params.BUILD_LINUX_ALPINE_X86_64,'
+    defaults: 'service_defaults'
+    description: 'Start snapshot build for SapMachine {major} on all platorms.'
+    project-type: pipeline
+    sandbox: true
+    concurrent: true
+    properties:
+        - build-discarder:
+            num-to-keep: 10
+    parameters:
+        - string:
+            name: SAPMACHINE_GIT_REPOSITORY
+            default: 'https://github.com/SAP/SapMachine'
+            description: 'The Git repository to use.'
+        - string:
+            name: GIT_REF
+            default: '{branch_name|sapmachine}'
+            description: 'The Git tag, branch or commit to build.'
+        - string:
+            name: SAPMACHINE_VERSION
+            default: ''
+            description: 'Either a SapMachine Release Tag or a JDK Major version. If empty, GIT_REF is used.'
+        - string:
+            name: JDK_BUILD
+            default: ''
+            description: 'Sets the version build number explicitly.'
+        - bool:
+            name: BUILD_LINUX_AARCH64
+            default: true
+        - bool:
+            name: BUILD_LINUX_ALPINE_X86_64
+            default: true
+        - bool:
+            name: BUILD_LINUX_PPC64LE
+            default: true
+        - bool:
+            name: BUILD_LINUX_X86_64
+            default: true
+        - bool:
+            name: BUILD_MACOS_ARM_64
+            default: true
+        - bool:
+            name: BUILD_MACOS_X86_64
+            default: true
+        - bool:
+            name: BUILD_WINDOWS_X86_64
+            default: true
+        - string:
+            name: EXTRA_CONFIGURE_OPTIONS
+            default: '{extra_configure_options|}'
+            description: 'Extra configure options passed directly to configure script.'
+        - string:
+            name: hotspot_test_groups
+            default: ':tier1'
+            description: 'Select the test group for jtreg hotspot tests. Empty means disabled.'
+        - string:
+            name: jdk_test_groups
+            default: ':tier1'
+            description: 'Select the test group for jtreg jdk tests. Empty means disabled.'
+        - string:
+            name: langtools_test_groups
+            default: '"jdk tools lib"'
+            description: 'Select the test group for jtreg langtools tests. Empty means disabled.'
+        - bool:
+            name: RUN_TESTS
+            default: true
+            description: 'Enable/disable jtreg runs.'
+        - bool:
+            name: BUILD_INSTALLER_PACKAGES
+            default: true
+            description: 'Build platform installer packages, e.g. Windows MSI, Debian packages.'
+        - bool:
+            name: CREATE_GENSRC_BUNDLE
+            default: true
+            description: 'Create a bundle with generated source files (gensrc), to be used in e.g. IDE setups.'
+        - bool:
+            name: UPLOAD_ARTIFACTORY
+            default: true
+            description: 'Upload build results to artifactory which will trigger testing.'
+        - bool:
+            name: ARCHIVE_WORKSPACE
+            default: false
+            description: 'Archive workspace for inspection after build.'
+    dsl: *build_service_dsl
+
+- job-template:
+    name: build-service-{type_snapshot}-11
+    major: '11'
+    defaults: 'service_defaults'
+    description: 'Start snapshot build for SapMachine {major} on all platorms.'
+    project-type: pipeline
+    sandbox: true
+    concurrent: true
+    properties:
+        - build-discarder:
+            num-to-keep: 10
+    parameters:
+        - string:
+            name: SAPMACHINE_GIT_REPOSITORY
+            default: 'https://github.com/SAP/SapMachine'
+            description: 'The Git repository to use.'
+        - string:
+            name: GIT_REF
+            default: 'sapmachine{major}'
+            description: 'The Git tag, branch or commit to build.'
+        - string:
+            name: SAPMACHINE_VERSION
+            default: ''
+            description: 'Either a SapMachine Release Tag or a JDK Major version. If empty, GIT_REF is used.'
+        - string:
+            name: JDK_BUILD
+            default: ''
+            description: 'Sets the version build number explicitly.'
+        - bool:
+            name: BUILD_LINUX_AARCH64
+            default: true
+        - bool:
+            name: BUILD_LINUX_PPC64LE
+            default: true
+        - bool:
+            name: BUILD_LINUX_X86_64
+            default: true
+        - bool:
+            name: BUILD_MACOS_ARM_64
+            default: true
+        - bool:
+            name: BUILD_MACOS_X86_64
+            default: true
+        - bool:
+            name: BUILD_WINDOWS_X86_64
+            default: true
+        - string:
+            name: EXTRA_CONFIGURE_OPTIONS
+            default: '{extra_configure_options|}'
+            description: 'Extra configure options passed directly to configure script.'
+        - string:
+            name: hotspot_test_groups
+            default: ':tier1'
+            description: 'Select the test group for jtreg hotspot tests. Empty means disabled.'
+        - string:
+            name: jdk_test_groups
+            default: ':tier1'
+            description: 'Select the test group for jtreg jdk tests. Empty means disabled.'
+        - string:
+            name: langtools_test_groups
+            default: '"jdk tools lib"'
+            description: 'Select the test group for jtreg langtools tests. Empty means disabled.'
+        - bool:
+            name: RUN_TESTS
+            default: true
+            description: 'Enable/disable jtreg runs.'
+        - bool:
+            name: BUILD_INSTALLER_PACKAGES
+            default: true
+            description: 'Build platform installer packages, e.g. Windows MSI, Debian packages.'
+        - bool:
+            name: CREATE_GENSRC_BUNDLE
+            default: true
+            description: 'Create a bundle with generated source files (gensrc), to be used in e.g. IDE setups.'
+        - bool:
+            name: UPLOAD_ARTIFACTORY
+            default: true
+            description: 'Upload build results to artifactory which will trigger testing.'
+        - bool:
+            name: ARCHIVE_WORKSPACE
+            default: false
+            description: 'Archive workspace for inspection after build.'
+    dsl: *build_service_dsl
+
+- job-template:
+    name: build-service-{type_release}-{major}
+    linux_alpine_include: '"linux_alpine_x86_64": params.BUILD_LINUX_ALPINE_X86_64,'
+    defaults: 'service_defaults'
+    description: 'Start release build for SapMachine {major} on all platorms.'
+    project-type: pipeline
+    sandbox: true
+    concurrent: true
+    properties:
+        - build-discarder:
+            num-to-keep: 10
+    parameters:
+        - string:
+            name: SAPMACHINE_GIT_REPOSITORY
+            default: 'https://github.com/SAP/SapMachine'
+            description: 'The Git repository to use.'
+        - string:
+            name: GIT_REF
+            default: '{branch_name|sapmachine}'
+            description: 'The Git tag, branch or commit to build.'
+        - string:
+            name: SAPMACHINE_VERSION
+            default: ''
+            description: 'Either a SapMachine Release Tag or a JDK Major version. If empty, GIT_REF is used.'
+        - string:
+            name: JDK_BUILD
+            default: ''
+            description: 'Sets the version build number explicitly.'
+        - bool:
+            name: BUILD_LINUX_AARCH64
+            default: true
+        - bool:
+            name: BUILD_LINUX_ALPINE_X86_64
+            default: true
+        - bool:
+            name: BUILD_LINUX_PPC64LE
+            default: true
+        - bool:
+            name: BUILD_LINUX_X86_64
+            default: true
+        - bool:
+            name: BUILD_MACOS_ARM_64
+            default: true
+        - bool:
+            name: BUILD_MACOS_X86_64
+            default: true
+        - bool:
+            name: BUILD_WINDOWS_X86_64
+            default: true
+        - string:
+            name: EXTRA_CONFIGURE_OPTIONS
+            default: '{extra_configure_options|}'
+            description: 'Extra configure options passed directly to configure script.'
+        - string:
+            name: hotspot_test_groups
+            default: ':tier1'
+            description: 'Select the test group for jtreg hotspot tests. Empty means disabled.'
+        - string:
+            name: jdk_test_groups
+            default: ':tier1'
+            description: 'Select the test group for jtreg jdk tests. Empty means disabled.'
+        - string:
+            name: langtools_test_groups
+            default: '"jdk tools lib"'
+            description: 'Select the test group for jtreg langtools tests. Empty means disabled.'
+        - bool:
+            name: RUN_TESTS
+            default: false
+            description: 'Enable/disable jtreg runs.'
+        - bool:
+            name: BUILD_INSTALLER_PACKAGES
+            default: true
+            description: 'Build platform installer packages, e.g. Windows MSI, Debian packages.'
+        - bool:
+            name: CREATE_GENSRC_BUNDLE
+            default: true
+            description: 'Create a bundle with generated source files (gensrc), to be used in e.g. IDE setups.'
+        - bool:
+            name: PUBLISH
+            default: false
+            description: 'When set to true, the resulting bundles will be published to GitHub.'
+        - bool:
+            name: ARCHIVE_WORKSPACE
+            default: false
+            description: 'Archive workspace for inspection after build.'
+    dsl: *build_service_dsl
+
+- job-template:
+    name: build-service-{type_release}-11
+    major: '11'
+    defaults: 'service_defaults'
+    description: 'Start release build for SapMachine {major} on all platorms.'
+    project-type: pipeline
+    sandbox: true
+    concurrent: true
+    properties:
+        - build-discarder:
+            num-to-keep: 10
+    parameters:
+        - string:
+            name: SAPMACHINE_GIT_REPOSITORY
+            default: 'https://github.com/SAP/SapMachine'
+            description: 'The Git repository to use.'
+        - string:
+            name: GIT_REF
+            default: 'sapmachine{major}'
+            description: 'The Git tag, branch or commit to build.'
+        - string:
+            name: SAPMACHINE_VERSION
+            default: ''
+            description: 'Either a SapMachine Release Tag or a JDK Major version. If empty, GIT_REF is used.'
+        - string:
+            name: JDK_BUILD
+            default: ''
+            description: 'Sets the version build number explicitly.'
+        - bool:
+            name: BUILD_LINUX_AARCH64
+            default: true
+        - bool:
+            name: BUILD_LINUX_PPC64LE
+            default: true
+        - bool:
+            name: BUILD_LINUX_X86_64
+            default: true
+        - bool:
+            name: BUILD_MACOS_ARM_64
+            default: true
+        - bool:
+            name: BUILD_MACOS_X86_64
+            default: true
+        - bool:
+            name: BUILD_WINDOWS_X86_64
+            default: true
+        - string:
+            name: EXTRA_CONFIGURE_OPTIONS
+            default: '{extra_configure_options|}'
+            description: 'Extra configure options passed directly to configure script.'
+        - string:
+            name: hotspot_test_groups
+            default: ':tier1'
+            description: 'Select the test group for jtreg hotspot tests. Empty means disabled.'
+        - string:
+            name: jdk_test_groups
+            default: ':tier1'
+            description: 'Select the test group for jtreg jdk tests. Empty means disabled.'
+        - string:
+            name: langtools_test_groups
+            default: '"jdk tools lib"'
+            description: 'Select the test group for jtreg langtools tests. Empty means disabled.'
+        - bool:
+            name: RUN_TESTS
+            default: false
+            description: 'Enable/disable jtreg runs.'
+        - bool:
+            name: BUILD_INSTALLER_PACKAGES
+            default: true
+            description: 'Build platform installer packages, e.g. Windows MSI, Debian packages.'
+        - bool:
+            name: CREATE_GENSRC_BUNDLE
+            default: true
+            description: 'Create a bundle with generated source files (gensrc), to be used in e.g. IDE setups.'
+        - bool:
+            name: PUBLISH
+            default: false
+            description: 'When set to true, the resulting bundles will be published to GitHub.'
+        - bool:
+            name: ARCHIVE_WORKSPACE
+            default: false
+            description: 'Archive workspace for inspection after build.'
+    dsl: *build_service_dsl
