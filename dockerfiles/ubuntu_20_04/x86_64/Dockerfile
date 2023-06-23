@@ -66,6 +66,8 @@ RUN wget --no-verbose --show-progress --progress=bar:force:noscroll https://$ART
   chmod 755 $(find /opt/devkits/${DEVKIT_NAME}-${DEVKIT_VERSION_3} -type d) && \
   chmod u+r,g+r,a+r $(find /opt/devkits/${DEVKIT_NAME}-${DEVKIT_VERSION_3} -type f)
 
+RUN useradd -ms /bin/bash sapmachine -u 50050
+
 WORKDIR /tmp
 ADD https://raw.githubusercontent.com/tstuefe/tinyreaper/master/tinyreaper.c /tmp/
 RUN /opt/devkits/${DEVKIT_NAME}-${DEVKIT_VERSION}/bin/gcc -I/usr/include -I/usr/include/x86_64-linux-gnu /tmp/tinyreaper.c -o /opt/tinyreaper && \
