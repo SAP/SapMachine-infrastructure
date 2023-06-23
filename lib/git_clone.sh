@@ -13,10 +13,6 @@ if [ ! -z $GIT_USER ]; then
   GIT_CREDENTIALS="-c credential.helper='!f() { sleep 1; echo \"username=${GIT_USER}\"; echo \"password=${GIT_PASSWORD}\"; }; f'"
 fi
 
-echo "Git User: ${GIT_USER}"
-echo "Git Password (length): ${#GIT_PASSWORD}"
-echo "Credential stuff: ${GIT_CREDENTIALS}"
-
 "$GIT_TOOL" --version
 "$GIT_TOOL" config --global init.defaultBranch master
 (set -ex && "$GIT_TOOL" init $2)
