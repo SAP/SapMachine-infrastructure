@@ -31,16 +31,13 @@ unzip \
 wget \
 zip
 
-# create abuild group for apk stuff and add the users to it; abuild group already exists
-# RUN addgroup --gid 1000 abuild
-RUN adduser --shell /bin/bash --uid 1000 --ingroup abuild --disabled-password jenkinsa
-RUN adduser --shell /bin/bash --uid 1001 --ingroup abuild --disabled-password jenkinsb
-RUN adduser --shell /bin/bash --uid 1002 --ingroup abuild --disabled-password jenkinsc
+# create users and add to abuild group which already exists
+RUN adduser --shell /bin/bash --uid 1000 --ingroup abuild --disabled-password jenkinse
+RUN adduser --shell /bin/bash --uid 50050 --ingroup abuild --disabled-password jenkinsi
 
 # enable the users for abuild-keygen, this needs sudo or doas
-RUN echo "jenkinsa ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/jenkinsa && chmod 0440 /etc/sudoers.d/jenkinsa
-RUN echo "jenkinsb ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/jenkinsb && chmod 0440 /etc/sudoers.d/jenkinsb
-RUN echo "jenkinsc ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/jenkinsc && chmod 0440 /etc/sudoers.d/jenkinsc
+RUN echo "jenkinse ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/jenkinse && chmod 0440 /etc/sudoers.d/jenkinse
+RUN echo "jenkinsi ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/jenkinsi && chmod 0440 /etc/sudoers.d/jenkinsi
 
 # create apk cache location
 RUN mkdir -p /var/cache/distfiles

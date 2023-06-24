@@ -37,9 +37,10 @@ unzip \
 wget \
 zip
 
-RUN useradd -ms /bin/bash jenkinsa -u 1000
-RUN useradd -ms /bin/bash jenkinsb -u 1001
-RUN useradd -ms /bin/bash jenkinsc -u 1002
+# Add some users for ids that are used by jenkins docker containers
+# This is necessary for some things to work, e.g. git config --global
+RUN useradd -ms /bin/bash jenkinse -u 1000
+RUN useradd -ms /bin/bash jenkinsi -u 50050
 
 RUN pip3 install requests
 
@@ -65,8 +66,6 @@ RUN wget --no-verbose --show-progress --progress=bar:force:noscroll https://$ART
   rm ../${DEVKIT_NAME}-${DEVKIT_VERSION_3}.tar.gz && \
   chmod 755 $(find /opt/devkits/${DEVKIT_NAME}-${DEVKIT_VERSION_3} -type d) && \
   chmod u+r,g+r,a+r $(find /opt/devkits/${DEVKIT_NAME}-${DEVKIT_VERSION_3} -type f)
-
-RUN useradd -ms /bin/bash sapmachine -u 50050
 
 WORKDIR /tmp
 ADD https://raw.githubusercontent.com/tstuefe/tinyreaper/master/tinyreaper.c /tmp/

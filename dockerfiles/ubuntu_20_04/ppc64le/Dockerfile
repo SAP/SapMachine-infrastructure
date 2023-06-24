@@ -37,9 +37,10 @@ unzip \
 wget \
 zip
 
-RUN useradd -ms /bin/bash jenkinsa -u 1000
-RUN useradd -ms /bin/bash jenkinsb -u 1001
-RUN useradd -ms /bin/bash jenkinsc -u 1002
+# Add some users for ids that are used by jenkins docker containers
+# This is necessary for some things to work, e.g. git config --global
+RUN useradd -ms /bin/bash jenkinse -u 1002
+RUN useradd -ms /bin/bash jenkinsi -u 50050
 
 RUN pip3 install requests
 
