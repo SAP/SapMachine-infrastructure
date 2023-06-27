@@ -79,6 +79,7 @@ zip -rq "${WORKSPACE}/test.zip" src/*/*/legal/ || true
 zip -rq "${WORKSPACE}/test.zip" src/java.base/share/classes/javax/security/auth/ || true
 zip -rq "${WORKSPACE}/test.zip" src/java.base/share/classes/sun/security/provider/ || true
 zip -rq "${WORKSPACE}/test.zip" src/java.base/share/classes/sun/security/tools/ || true
+zip -rq "${WORKSPACE}/test.zip" src/java.base/share/classes/java/lang/ || true
 zip -rq "${WORKSPACE}/test.zip" src/java.base/share/data/blockedcertsconverter/blocked.certs.pem || true
 zip -rq "${WORKSPACE}/test.zip" src/java.base/share/data/currency/CurrencyData.properties || true
 zip -rq "${WORKSPACE}/test.zip" src/java.base/share/data/lsrdata/language-subtag-registry.txt || true
