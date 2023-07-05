@@ -3,5 +3,40 @@
   <githubUrl>https://github.com/SAP/SapMachine</githubUrl>
   <gitUrl>git://github.com/SAP/SapMachine.git</gitUrl>
   <sshUrl>git@github.com:SAP/SapMachine.git</sshUrl>
-  <pulls class="concurrent-hash-map" />
+  <pulls class="concurrent-hash-map">
+    <entry>
+      <int>1439</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>1439</number>
+        <issueUpdatedAt>2023-07-04 18:53:08.0 UTC</issueUpdatedAt>
+        <title>Vitals: cld-graph walk as NonJavaThread is not synchronized with GC</title>
+        <body>Avoid the unsynchronized ClassLoaderDataGraph walk in `sample_jvm_values`.
+Instead, update counters whenever a CLD is added/removed.
+
+Testing:
+
+- vmTestbase/vm/mlvm/hiddenloader/stress/byteMutation/Test.java (the reproducer)
+- GHA
+- jtreg:test/hotspot/jtreg/runtime/Vitals
+- gtest:vitals/server
+
+fixes #1438
+
+</body>
+        <prUpdatedAt>2023-07-04 18:53:08.0 UTC</prUpdatedAt>
+        <headSha>60c0ae22bd7642f83a653842a47dd9c16a59b06c</headSha>
+        <headRef>vitals_cld_count_fix</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine</baseRef>
+        <userEmail>richard.reingruber@sap.com</userEmail>
+        <userLogin>reinrich</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1439</htmlUrl>
+        <labels />
+        <lastCommentCreatedAt>2023-07-04 08:51:56.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>reinrich</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+  </pulls>
 </org.jenkinsci.plugins.github.pullrequest.GitHubPRRepository>
