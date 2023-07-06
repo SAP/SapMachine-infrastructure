@@ -5,34 +5,25 @@
   <sshUrl>git@github.com:SAP/SapMachine.git</sshUrl>
   <pulls class="concurrent-hash-map">
     <entry>
-      <int>1439</int>
+      <int>1441</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>1439</number>
-        <issueUpdatedAt>2023-07-04 18:53:08.0 UTC</issueUpdatedAt>
-        <title>Vitals: cld-graph walk as NonJavaThread is not synchronized with GC</title>
-        <body>Avoid the unsynchronized ClassLoaderDataGraph walk in `sample_jvm_values`.
-Instead, update counters whenever a CLD is added/removed.
-
-Testing:
-
-- vmTestbase/vm/mlvm/hiddenloader/stress/byteMutation/Test.java (the reproducer)
-- GHA
-- jtreg:test/hotspot/jtreg/runtime/Vitals
-- gtest:vitals/server
+        <number>1441</number>
+        <issueUpdatedAt>2023-07-05 20:43:03.0 UTC</issueUpdatedAt>
+        <title>Vitals: ClassLoaderDataGraph by SamplerThread is unsynchronized</title>
+        <body>This is a clean backport of https://github.com/SAP/SapMachine/commit/a04a40bdb7c555775674f4873eb62838b15a538d
 
 fixes #1438
-
 </body>
-        <prUpdatedAt>2023-07-04 18:53:08.0 UTC</prUpdatedAt>
-        <headSha>60c0ae22bd7642f83a653842a47dd9c16a59b06c</headSha>
-        <headRef>vitals_cld_count_fix</headRef>
+        <prUpdatedAt>2023-07-05 20:43:03.0 UTC</prUpdatedAt>
+        <headSha>42aaca63f2b767af509f1810a6dcdefeeb9d2434</headSha>
+        <headRef>vitals_cld_count_fix_21</headRef>
         <mergeable>true</mergeable>
-        <baseRef>sapmachine</baseRef>
+        <baseRef>sapmachine21</baseRef>
         <userEmail>richard.reingruber@sap.com</userEmail>
         <userLogin>reinrich</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/1439</htmlUrl>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1441</htmlUrl>
         <labels />
-        <lastCommentCreatedAt>2023-07-04 08:51:56.0 UTC</lastCommentCreatedAt>
+        <lastCommentCreatedAt>2023-07-05 17:09:34.0 UTC</lastCommentCreatedAt>
         <sourceRepoOwner>reinrich</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
