@@ -5,46 +5,10 @@
   <sshUrl>git@github.com:SAP/SapMachine.git</sshUrl>
   <pulls class="concurrent-hash-map">
     <entry>
-      <int>1442</int>
-      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>1442</number>
-        <issueUpdatedAt>2023-07-06 13:35:34.0 UTC</issueUpdatedAt>
-        <title>Vitals: ClassLoaderDataGraph by SamplerThread is unsynchronized</title>
-        <body>This is a backport of https://github.com/SAP/SapMachine/commit/a04a40bdb7c555775674f4873eb62838b15a538d with conflicts.
-
-I think we should do the backport to sapmachine17 because there the cld graph walk is also not sufficiently synchronized.
-
-Conflicts
-
-- ClassLoaderDataGraph::do_unloading: resolved to sapmachine17 version and inserted `dec_cld_count()` call at the right place.
-- sample_jvm_values: sapmachine17 version calls `ClassLoaderDataGraph::cld_do`, higher versions call `ClassLoaderDataGraph::loaded_cld_do`
-
-Testing:
-jtreg:test/hotspot/jtreg/runtime/Vitals
-gtest:vitals/server
-
-fixes #1438
-</body>
-        <prUpdatedAt>2023-07-06 13:35:34.0 UTC</prUpdatedAt>
-        <headSha>5b887b8c85dda3ea2e685e4a5a3ec676fbfb99c7</headSha>
-        <headRef>vitals_cld_count_fix_17</headRef>
-        <mergeable>true</mergeable>
-        <baseRef>sapmachine17</baseRef>
-        <userEmail>richard.reingruber@sap.com</userEmail>
-        <userLogin>reinrich</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/1442</htmlUrl>
-        <labels />
-        <lastCommentCreatedAt>2023-07-06 11:27:06.0 UTC</lastCommentCreatedAt>
-        <sourceRepoOwner>reinrich</sourceRepoOwner>
-        <state>OPEN</state>
-        <inBadState>false</inBadState>
-      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-    </entry>
-    <entry>
       <int>1443</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>1443</number>
-        <issueUpdatedAt>2023-07-06 13:51:49.0 UTC</issueUpdatedAt>
+        <issueUpdatedAt>2023-07-07 06:03:38.0 UTC</issueUpdatedAt>
         <title>Vitals: ClassLoaderDataGraph by SamplerThread is unsynchronized</title>
         <body>This is a backport of https://github.com/SAP/SapMachine/commit/a04a40bdb7c555775674f4873eb62838b15a538d with conflicts.
 
@@ -62,7 +26,7 @@ gtest:vitals/server
 fixes #1438 
 
 </body>
-        <prUpdatedAt>2023-07-06 13:51:49.0 UTC</prUpdatedAt>
+        <prUpdatedAt>2023-07-07 06:03:38.0 UTC</prUpdatedAt>
         <headSha>66da6288c09bac01c821dba76ee141f383c7290d</headSha>
         <headRef>vitals_cld_count_fix_11</headRef>
         <mergeable>true</mergeable>
