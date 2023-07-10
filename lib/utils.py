@@ -263,6 +263,31 @@ def get_active_jmc_branches():
 
     return jmc_branches
 
+def git_get(repo, ref, target):
+    if platform.system().lower().startswith('cygwin'):
+        git_tool = "/cygdrive/c/Program Files/Git/cmd/git.exe"
+        _, target_mixed, _ = run_cmd(['cygpath', '-m', target], std=True)
+        target_mixed = target_mixed.rstrip()
+    else :
+        git_tool = "git"
+        target_mixed = target
+
+    git_command = [git_tool, '--version']
+    run_cmd(git_command)
+    git_command = [git_tool, 'init', target]
+    run_cmd(git_command)
+    git_command = [git_tool, 'config', 'advice.detachedHead', 'false']
+    run_cmd(git_command, cwd = target)
+    git_command = [git_tool, 'fetch']
+    if 'GIT_USER' in os.environ and 'GIT_PASSWORD' in os.environ:
+        git_command.append(str.format('https://{0}:{1}@{2}', os.environ['GIT_USER'], os.environ['GIT_PASSWORD'], repo))
+    else:
+        git_command.append(str.format('https://{0}', repo))
+    git_command.append(ref)
+    run_cmd(git_command, cwd = target)
+    git_command = [git_tool, 'checkout', 'FETCH_HEAD']
+    run_cmd(git_command, cwd = target)
+
 def git_clone(repo, branch, target):
     if platform.system().lower().startswith('cygwin'):
         git_tool = "/cygdrive/c/Program Files/Git/cmd/git.exe"
