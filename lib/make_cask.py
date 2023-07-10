@@ -35,8 +35,6 @@ cask_template = '''cask "sapmachine${CASK_TAG}-${IMAGE_TYPE}" do
   end
 
   artifact "sapmachine-${IMAGE_TYPE}-#{${RUBY_VERSION}}.${IMAGE_TYPE}", target: "/Library/Java/JavaVirtualMachines/sapmachine-#{version.major}${EA_EXT}${IMAGE_TYPE}"
-
-  uninstall rmdir: "/Library/Java/JavaVirtualMachines"
 end
 '''
 
