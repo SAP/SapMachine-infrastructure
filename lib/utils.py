@@ -484,6 +484,8 @@ def get_system():
         return system
 
 def get_arch():
+    if get_system() == "aix":
+        return "ppc64"
     arch = platform.machine().lower()
 
     if arch == 'x86_64' or arch == 'amd64':

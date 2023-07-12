@@ -14,15 +14,15 @@ from os.path import join
 from versions import SapMachineTag
 
 # This list is a temporary solution for platforms that we have not yet delivered with SapMachine
-# Currently: Linux Alpine
+# Currently: AIX
 extra_bootjdks = [
     {
         'prerelease': False,
-        'name': 'sapmachine-11.0.19',
+        'name': 'sapmachine-20',
         'assets': [
             {
-                'name': 'sapmachine-jdk-11.0.16.1_linux-x64_alpine_bin.tar.gz',
-                'browser_download_url': 'https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.19%2B7/OpenJDK11U-jdk_x64_alpine-linux_hotspot_11.0.19_7.tar.gz'
+                'name': 'sapmachine-jdk-20_aix-ppc64_bin.tar.gz',
+                'browser_download_url': 'https://github.com/SAP/SapMachine-infrastructure/releases/download/aixjdk20/sapmachine-jdk-20_aix-ppc64_bin.tar.gz'
             }
         ]
     }
@@ -48,14 +48,10 @@ def main(argv=None):
     destination = os.path.realpath(os.getcwd() if args.destination is None else args.destination)
     releases = utils.get_github_releases()
     system = utils.get_system()
-    platform = str.format('{0}-{1}_bin', system, utils.get_arch())
-    # adjust platform name for Alpine Linux
-    if os.path.isfile('/etc/alpine-release'):
-        platform = str.format('{0}-{1}-musl_bin', system, utils.get_arch())
-    
-    retries = 2
-
+    platform = str.format('{0}-{1}{2}_bin', system, utils.get_arch(), "-musl" if os.path.isfile('/etc/alpine-release') else "")
     print(str.format('detected platform "{0}"', platform))
+
+    retries = 2
 
     releases = extra_bootjdks + releases
 
