@@ -20,7 +20,7 @@ RUN apt-get update \\
     && export GNUPGHOME="$$(mktemp -d)" \\
     && gpg --no-default-keyring --keyring gnupg-ring:/etc/apt/trusted.gpg.d/sapmachine.gpg --batch --keyserver hkps://keys.openpgp.org --recv-keys CACB9FE09150307D1D22D82962754C3B3ABCFE23 \\
     && chmod 644 /etc/apt/trusted.gpg.d/sapmachine.gpg \\
-    && echo "deb http://dist.sapmachine.io/debian/$(dpkg --print-architecture)/ ./" > /etc/apt/sources.list.d/sapmachine.list \\
+    && echo "deb http://dist.sapmachine.io/debian/$$(dpkg --print-architecture)/ ./" > /etc/apt/sources.list.d/sapmachine.list \\
     && apt-get update \\
     && apt-get -y --no-install-recommends install ${version} \\
     && apt-get remove -y --purge --autoremove ca-certificates gnupg \\
@@ -132,7 +132,7 @@ def main(argv=None):
     utils.remove_if_exists(workdir)
     os.makedirs(workdir)
 
-    releases = github_api_request('releases', per_page=100)
+    releases = utils.get_github_releases()
     infrastructure_tags = utils.get_github_tags(repository='SapMachine-infrastructure')
     docker_releases = {}
     stable_release = None
