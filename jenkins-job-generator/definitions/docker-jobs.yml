@@ -27,7 +27,7 @@
                         }
                     }
                     steps {
-                        sh "cd SapMachine-infrastructure && python3 lib/make_docker_manifest.py -d dockerfiles/official -m ../sapmachine.manifest"
+                        sh "cd SapMachine-infrastructure && python3 lib/generate_docker_manifest.py -d dockerfiles/official -m ../sapmachine.manifest"
                         archiveArtifacts 'sapmachine.manifest'
                     }
                 }

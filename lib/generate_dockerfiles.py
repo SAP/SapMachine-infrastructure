@@ -34,7 +34,9 @@ CMD ["jshell"]
 readmefile_template = '''
 ### Overview
 
-The image in this repository contains the ${what} releases ${major} (version: ${version}) of the SapMachine Java virtual machine (JVM). SapMachine is an OpenJDK based JVM that is built, quality tested and long-term supported by SAP. It is the default JVM on the [SAP Cloud Platform](https://cloudplatform.sap.com/index.html) and it is also supported as a [Standard JRE](https://github.com/cloudfoundry/java-buildpack/blob/master/docs/jre-sap_machine_jre.md) in the [Cloud Foundry Java Build Pack](https://github.com/cloudfoundry/java-buildpack).
+The dockerfiles in this subdirectory define images for consuming the ${what} release ${major} (version: ${version}) of the SapMachine Java Virtual Machine (JVM).
+SapMachine is an OpenJDK based JVM that is built, quality tested and long-term supported by SAP.
+It is the default JVM on the [SAP Business Technology Platform](https://www.sap.com/products/technology-platform.html) and it is also supported as a [Standard JRE](https://github.com/cloudfoundry/java-buildpack/blob/master/docs/jre-sap_machine_jre.md) in the [Cloud Foundry Java Build Pack](https://github.com/cloudfoundry/java-buildpack).
 
 For more information see the [SapMachine website](https://sapmachine.io).
 
@@ -68,12 +70,22 @@ docker run -it --rm myapp
 ```
 '''
 
-def process_release(release, infrastructure_tags, git_dir, args):
+def write_dockerfile(base_dir, type, major, version_string):
+    dockerfile_dir = join(base_dir, type)
+    os.makedirs(dockerfile_dir)
+    with open(join(dockerfile_dir, 'Dockerfile'), 'w+') as dockerfile:
+            dockerfile.write(Template(dockerfile_template).substitute(
+                version=str.format('sapmachine-{0}-{1}={2}', major, type, version_string),
+                major=major
+            ))
+
+def process_release(release, infrastructure_tags, dockerfiles_dir, args):
     tag = SapMachineTag.from_string(release['name'])
     version_string = tag.get_version_string()
     major = str(tag.get_major())
     skip_tag = False
-    dockerfile_dir = join(git_dir, 'dockerfiles', 'official', major)
+    major_dir = join(dockerfiles_dir, major)
+    ubuntu_dir = join(major_dir, 'ubuntu')
 
     for infrastructure_tag in infrastructure_tags:
         if infrastructure_tag['name'] == version_string:
@@ -83,23 +95,22 @@ def process_release(release, infrastructure_tags, git_dir, args):
               break
 
     if not skip_tag:
-        utils.remove_if_exists(dockerfile_dir)
-        os.makedirs(dockerfile_dir)
+        # Write ubuntu dockerfiles
+        utils.remove_if_exists(ubuntu_dir)
+        os.makedirs(ubuntu_dir)
+        write_dockerfile(ubuntu_dir, 'jre', major, version_string)
+        write_dockerfile(ubuntu_dir, 'jre-headless', major, version_string)
+        write_dockerfile(ubuntu_dir, 'jdk', major, version_string)
+        write_dockerfile(ubuntu_dir, 'jdk-headless', major, version_string)
 
-        dockerfile_path = join(dockerfile_dir, 'Dockerfile')
-        with open(dockerfile_path, 'w+') as dockerfile:
-            dockerfile.write(Template(dockerfile_template).substitute(
-                version=str.format('sapmachine-{0}-jdk={1}', major, version_string),
-                major=major
-            ))
-
+        # Write the readme
         if utils.sapmachine_is_lts(major):
             what = 'long term support'
             docker_tag = major
         else:
             what = 'stable'
             docker_tag = 'stable'
-        readme_path = join(dockerfile_dir, 'README.md')
+        readme_path = join(major_dir, 'README.md')
         with open(readme_path, 'w+') as readmefile:
             readmefile.write(Template(readmefile_template).substitute(
                 docker_tag=docker_tag,
@@ -108,16 +119,16 @@ def process_release(release, infrastructure_tags, git_dir, args):
                 version=version_string
             ))
 
-        _, diff, _  = utils.run_cmd("git diff HEAD".split(' '), cwd=git_dir, std=True)
+        _, diff, _  = utils.run_cmd("git diff HEAD".split(' '), cwd=dockerfiles_dir, std=True)
         if not diff.strip():
             print(str.format("No changes for {0}", version_string))
             return
 
-        utils.git_commit(git_dir, str.format('Update Dockerfile for SapMachine {0}', version_string), [dockerfile_path, readme_path])
-        utils.git_tag(git_dir, version_string, force = True if args.force else False)
+        utils.git_commit(dockerfiles_dir, str.format('Update Dockerfiles for SapMachine {0}', version_string), [ubuntu_dir])
+        utils.git_tag(dockerfiles_dir, version_string, force = True if args.force else False)
         if not args.dry:
-            utils.git_push(git_dir)
-            utils.git_push_tag(git_dir, version_string, force = True if args.force else False)
+            utils.git_push(dockerfiles_dir)
+            utils.git_push_tag(dockerfiles_dir, version_string, force = True if args.force else False)
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
@@ -132,7 +143,9 @@ def main(argv=None):
     utils.remove_if_exists(workdir)
     os.makedirs(workdir)
 
+    print('Loading SapMachine Release data...')
     releases = utils.get_github_releases()
+    print('Loading SapMachine-infrastructure tags...')
     infrastructure_tags = utils.get_github_tags(repository='SapMachine-infrastructure')
     docker_releases = {}
     stable_release = None
@@ -176,17 +189,17 @@ def main(argv=None):
 
     utils.git_clone('github.com/SAP/SapMachine-infrastructure', 'master', git_dir)
 
-    versions_dir = join(git_dir, 'dockerfiles', 'official')
+    dockerfiles_dir = join(git_dir, 'dockerfiles', 'official')
     removed = []
-    for f in os.listdir(versions_dir):
+    for f in os.listdir(dockerfiles_dir):
         if not int(f) in docker_releases:
-            utils.remove_if_exists(join(versions_dir, f))
-            removed.append(join(versions_dir, f))
+            utils.remove_if_exists(join(dockerfiles_dir, f))
+            removed.append(join(dockerfiles_dir, f))
     if removed != []:
         utils.git_commit(git_dir, 'remove discontinued versions', removed)
 
     for release in docker_releases:
-        process_release(docker_releases[release], infrastructure_tags, git_dir, args)
+        process_release(docker_releases[release], infrastructure_tags, dockerfiles_dir, args)
 
     if not args.dry:
         utils.remove_if_exists(workdir)

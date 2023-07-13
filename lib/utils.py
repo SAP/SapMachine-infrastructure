@@ -6,12 +6,14 @@ All rights reserved. Confidential and proprietary.
 import gzip
 import json
 import os
+import pickle
 import platform
 import re
 import requests
 import sys
 import shutil
 import tarfile
+import time
 import zipfile
 
 from os import remove
@@ -23,6 +25,33 @@ from urllib.parse import quote
 from urllib.request import urlopen, Request
 from versions import SapMachineTag
 from zipfile import ZipFile, ZipInfo
+
+def save_dictionary_to_file(dictionary, filename):
+    with open(filename, 'wb') as file:
+        pickle.dump(dictionary, file)
+
+def load_dictionary_from_file(filename):
+    with open(filename, 'rb') as file:
+        dictionary = pickle.load(file)
+    return dictionary
+
+def file_exists_and_is_younger_than_an_hour(filename):
+    if not os.path.exists(filename):
+        return False
+
+    one_hour = 60 * 60  # 1 hour in seconds
+
+    # Get the current time
+    current_time = time.time()
+
+    # Get the last modified time of the file
+    file_modified_time = os.path.getmtime(filename)
+
+    # Calculate the time difference
+    time_difference = current_time - file_modified_time
+
+    # Compare the time difference with one hour
+    return time_difference < one_hour
 
 def run_cmd(cmdline, throw=True, cwd=None, env=None, std=False, shell=False):
     import subprocess
@@ -451,8 +480,15 @@ def get_github_tags(repository='SapMachine'):
 github_releases = None
 def get_github_releases():
     global github_releases
-    if github_releases is None:
+    if not github_releases is None:
+        return github_releases
+
+    if file_exists_and_is_younger_than_an_hour('github_releases.pkl'):
+        github_releases = load_dictionary_from_file('github_releases.pkl')
+    else:
         github_releases = github_api_request('releases', per_page=100)
+        save_dictionary_to_file(github_releases, 'github_releases.pkl')
+
     return github_releases
 
 def sapmachine_asset_base_pattern():
