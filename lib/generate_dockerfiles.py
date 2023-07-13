@@ -24,7 +24,7 @@ RUN apt-get update \\
     && apt-get update \\
     && apt-get -y --no-install-recommends install ${version} \\
     && apt-get remove -y --purge --autoremove ca-certificates gnupg \\
-    && rm -rf "$GNUPGHOME" /var/lib/apt/lists/*
+    && rm -rf "$$GNUPGHOME" /var/lib/apt/lists/*
 
 ENV JAVA_HOME=/usr/lib/jvm/sapmachine-${major}
 
