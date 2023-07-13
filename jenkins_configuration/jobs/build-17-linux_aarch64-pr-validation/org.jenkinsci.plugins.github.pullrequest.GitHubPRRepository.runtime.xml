@@ -5,38 +5,41 @@
   <sshUrl>git@github.com:SAP/SapMachine.git</sshUrl>
   <pulls class="concurrent-hash-map">
     <entry>
-      <int>1443</int>
+      <int>1446</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>1443</number>
-        <issueUpdatedAt>2023-07-11 08:26:40.0 UTC</issueUpdatedAt>
-        <title>Vitals: ClassLoaderDataGraph by SamplerThread is unsynchronized</title>
-        <body>This is a backport of https://github.com/SAP/SapMachine/commit/a04a40bdb7c555775674f4873eb62838b15a538d with conflicts.
-
-In sapmachine11 the CLDs were not even counted. So no bug there. With the approach from #1438 we can do it without risk.
-
-Conflicts
-
-- Code related to CLD graph walk is commented out in sapmachine11. The pr just deletes it.
-- CLDs have a property `is_anonymous` in sapmachine11. It corresponds to `has_class_mirror_holder` in higher versions (see commit ["fixups"](https://github.com/SAP/SapMachine/pull/1443/commits/66da6288c09bac01c821dba76ee141f383c7290d))
-
-Testing:
-jtreg:test/hotspot/jtreg/runtime/Vitals
-gtest:vitals/server
-
-fixes #1438 
-
-</body>
-        <prUpdatedAt>2023-07-11 08:26:40.0 UTC</prUpdatedAt>
-        <headSha>66da6288c09bac01c821dba76ee141f383c7290d</headSha>
-        <headRef>vitals_cld_count_fix_11</headRef>
-        <mergeable>true</mergeable>
-        <baseRef>sapmachine11</baseRef>
-        <userEmail>richard.reingruber@sap.com</userEmail>
-        <userLogin>reinrich</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/1443</htmlUrl>
+        <number>1446</number>
+        <issueUpdatedAt>2023-07-13 00:30:14.0 UTC</issueUpdatedAt>
+        <title>Merge to tag jdk-22+6</title>
+        <body>please pull</body>
+        <prUpdatedAt>2023-07-13 00:30:14.0 UTC</prUpdatedAt>
+        <headSha>aac903dbfb7dfb42464cad23aa9f1d536b55cfc1</headSha>
+        <headRef>pr-jdk-22+6</headRef>
+        <mergeable>false</mergeable>
+        <baseRef>sapmachine</baseRef>
+        <userLogin>SapMachine</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1446</htmlUrl>
         <labels />
-        <lastCommentCreatedAt>2023-07-11 08:26:40.0 UTC</lastCommentCreatedAt>
-        <sourceRepoOwner>reinrich</sourceRepoOwner>
+        <sourceRepoOwner>SAP</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>1447</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>1447</number>
+        <issueUpdatedAt>2023-07-13 00:30:25.0 UTC</issueUpdatedAt>
+        <title>Merge to tag jdk-21+31</title>
+        <body>please pull</body>
+        <prUpdatedAt>2023-07-13 00:30:25.0 UTC</prUpdatedAt>
+        <headSha>480dc220bf640c1bc0396639c94562ba0ad079b4</headSha>
+        <headRef>pr-jdk-21+31</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine21</baseRef>
+        <userLogin>SapMachine</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1447</htmlUrl>
+        <labels />
+        <sourceRepoOwner>SAP</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
       </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
