@@ -124,7 +124,7 @@ def process_release(release, infrastructure_tags, dockerfiles_dir, args):
             print(str.format("No changes for {0}", version_string))
             return
 
-        utils.git_commit(dockerfiles_dir, str.format('Update Dockerfiles for SapMachine {0}', version_string), [ubuntu_dir])
+        utils.git_commit(dockerfiles_dir, str.format('Update Dockerfiles for SapMachine {0}', version_string), [major_dir])
         utils.git_tag(dockerfiles_dir, version_string, force = True if args.force else False)
         if not args.dry:
             utils.git_push(dockerfiles_dir)
