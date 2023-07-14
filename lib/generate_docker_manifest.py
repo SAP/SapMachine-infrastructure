@@ -34,6 +34,8 @@ def fill_image_template(git_dir, dockerfiles_subdir, major, dockerpath, dockerta
     tags = [str.format('{0}-{1}', dockertag, major)]
     if major != version:
         tags.append(str.format('{0}-{1}', dockertag, version))
+    if isLatest:
+        tags.append(str.format('{0}', dockertag))
     if isLatestLts:
         tags.append(str.format('{0}-lts', dockertag))
     if dockertag == 'jdk-ubuntu':
