@@ -25,12 +25,12 @@ Directory: ${directory}'''
 
 dockerfile_version_pattern = re.compile('sapmachine-(\d+)-(jdk|jre)(-headless)?=(\S+)')
 
-def fill_image_template(directory, major, dockerpath, dockertag, isLatest, isLatestLts):
-    dockerfile_path = join(directory, major, dockerpath, 'Dockerfile')
-    with open(dockerfile_path, 'r') as dockerfile:
+def fill_image_template(git_dir, dockerfiles_subdir, major, dockerpath, dockertag, isLatest, isLatestLts):
+    dockerfile_path = join(dockerfiles_subdir, major, dockerpath, 'Dockerfile')
+    with open(join(git_dir, dockerfile_path), 'r') as dockerfile:
         version_match = dockerfile_version_pattern.search(dockerfile.read())
     version = version_match.group(4)
-    _, git_commit, _ = utils.run_cmd(['git', 'log', '-n', '1', '--pretty=format:%H', '--', dockerfile_path], std=True)
+    _, git_commit, _ = utils.run_cmd(['git', 'log', '-n', '1', '--pretty=format:%H', '--', dockerfile_path], cwd=git_dir, std=True)
     tags = [str.format('{0}-{1}', dockertag, major)]
     if major != version:
         tags.append(str.format('{0}-{1}', dockertag, version))
@@ -47,23 +47,23 @@ def fill_image_template(directory, major, dockerpath, dockertag, isLatest, isLat
         if isLatestLts:
             tags.append('lts')
 
-    return Template(template_image).substitute(tags=", ".join(tags), git_commit=git_commit, directory=str.format('{0}/{1}/{2}', directory, major, dockerpath))
+    return Template(template_image).substitute(tags=", ".join(tags), git_commit=git_commit, directory=str.format('{0}/{1}/{2}', dockerfiles_subdir, major, dockerpath))
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
-    parser.add_argument('-d', '--directory', help='the directory containing the Dockerfiles', metavar='DIR', required=True)
-    parser.add_argument('-m', '--manifest', help='the manifest file output directory and file name', metavar='FILE', required=True)
+    parser.add_argument('-d', '--directory', default='dockerfiles/official', help='the subdirectory in the GitHub repository, containing the Dockerfiles', metavar='DIR')
+    parser.add_argument('-m', '--manifest', default='sapmachine.manifest', help='the output manifest file (name and/or path)', metavar='FILE')
     args = parser.parse_args()
 
-    dockerfiles_dir = args.directory
+    dockerfiles_subdir = args.directory
     manifest = args.manifest
+    git_dir = os.path.abspath(join(os.path.dirname(__file__), '..'))
 
-    images = ''
     latest_lts = '00'
     latest = '00'
     releases = []
 
-    for _, dirs, _ in os.walk(dockerfiles_dir, topdown=False):
+    for _, dirs, _ in os.walk(join(git_dir, dockerfiles_subdir), topdown=False):
         for dir in dirs:
             if re.match(r"\d\d\d?", dir):
                 releases.append(dir)
@@ -80,10 +80,10 @@ def main(argv=None):
         isLatest = release == latest
         isLatestLts = release == latest_lts
 
-        images.append(fill_image_template(dockerfiles_dir, release, 'ubuntu/jre-headless', 'jre-headless-ubuntu', isLatest, isLatestLts))
-        images.append(fill_image_template(dockerfiles_dir, release, 'ubuntu/jre', 'jre-ubuntu', isLatest, isLatestLts))
-        images.append(fill_image_template(dockerfiles_dir, release, 'ubuntu/jdk-headless', 'jdk-headless-ubuntu', isLatest, isLatestLts))
-        images.append(fill_image_template(dockerfiles_dir, release, 'ubuntu/jdk', 'jdk-ubuntu', isLatest, isLatestLts))
+        images.append(fill_image_template(git_dir, dockerfiles_subdir, release, 'ubuntu/jre-headless', 'jre-headless-ubuntu', isLatest, isLatestLts))
+        images.append(fill_image_template(git_dir, dockerfiles_subdir, release, 'ubuntu/jre', 'jre-ubuntu', isLatest, isLatestLts))
+        images.append(fill_image_template(git_dir, dockerfiles_subdir, release, 'ubuntu/jdk-headless', 'jdk-headless-ubuntu', isLatest, isLatestLts))
+        images.append(fill_image_template(git_dir, dockerfiles_subdir, release, 'ubuntu/jdk', 'jdk-ubuntu', isLatest, isLatestLts))
 
     with open(manifest, 'w') as manifest_file:
         manifest_file.write(Template(template_manifest).substitute(images='\n\n'.join(images)))

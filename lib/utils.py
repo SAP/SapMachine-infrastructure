@@ -36,7 +36,7 @@ def load_dictionary_from_file(filename):
     return dictionary
 
 def file_exists_and_is_younger_than_an_hour(filename):
-    if not os.path.exists(filename):
+    if not exists(filename):
         return False
 
     one_hour = 60 * 60  # 1 hour in seconds
@@ -186,10 +186,10 @@ def copytree(source, dest):
         for file in files:
             full_path = join(root, file)
             rel_path = os.path.relpath(root, start=source)
-            dest_path = os.path.join(dest, rel_path, file)
+            dest_path = join(dest, rel_path, file)
             dest_dir = os.path.dirname(dest_path)
 
-            if not os.path.exists(dest_dir):
+            if not exists(dest_dir):
                 os.makedirs(dest_dir)
 
             shutil.copyfile(full_path, dest_path)
@@ -198,7 +198,7 @@ active_releases = None
 def get_active_releases():
     global active_releases
     if active_releases == None:
-        releases_file = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'active_releases.json'))
+        releases_file = os.path.abspath(join(os.path.dirname(__file__), '..', 'active_releases.json'))
         with open(releases_file, 'r') as file:
             active_releases = json.loads(file.read())
 
