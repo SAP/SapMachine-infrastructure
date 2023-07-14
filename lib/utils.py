@@ -526,9 +526,9 @@ def get_asset_urls(tag, platform, asset_types=["jdk", "jre"], pattern=None):
     return asset_urls
 
 def sapmachine_tag_is_release(tag):
-    response = github_api_request('releases')
+    releases = get_github_releases()
 
-    for release in response:
+    for release in releases:
         if release['tag_name'] == tag:
             return not release['prerelease']
 
