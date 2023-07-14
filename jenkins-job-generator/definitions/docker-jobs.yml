@@ -28,7 +28,7 @@
                     }
                     steps {
                         sh "python3 SapMachine-infrastructure/lib/generate_docker_manifest.py"
-                        archiveArtifacts 'sapmachine.manifest'
+                        archiveArtifacts 'sapmachine'
                     }
                 }
             }

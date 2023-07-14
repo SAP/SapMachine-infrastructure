@@ -34,8 +34,6 @@ def fill_image_template(git_dir, dockerfiles_subdir, major, dockerpath, dockerta
     tags = [str.format('{0}-{1}', dockertag, major)]
     if major != version:
         tags.append(str.format('{0}-{1}', dockertag, version))
-    if isLatest:
-        tags.append(str.format('{0}-latest', dockertag))
     if isLatestLts:
         tags.append(str.format('{0}-lts', dockertag))
     if dockertag == 'jdk-ubuntu':
@@ -52,7 +50,7 @@ def fill_image_template(git_dir, dockerfiles_subdir, major, dockerpath, dockerta
 def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('-d', '--directory', default='dockerfiles/official', help='the subdirectory in the GitHub repository, containing the Dockerfiles', metavar='DIR')
-    parser.add_argument('-m', '--manifest', default='sapmachine.manifest', help='the output manifest file (name and/or path)', metavar='FILE')
+    parser.add_argument('-m', '--manifest', default='sapmachine', help='the output manifest file (name and/or path)', metavar='FILE')
     args = parser.parse_args()
 
     dockerfiles_subdir = args.directory
