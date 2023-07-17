@@ -478,12 +478,12 @@ def get_github_tags(repository='SapMachine'):
     return github_tags[repository]
 
 github_releases = None
-def get_github_releases():
+def get_github_releases(cache=True):
     global github_releases
-    if not github_releases is None:
+    if cache is True and github_releases is not None:
         return github_releases
 
-    if file_exists_and_is_younger_than_an_hour('github_releases.pkl'):
+    if cache is True and file_exists_and_is_younger_than_an_hour('github_releases.pkl'):
         github_releases = load_dictionary_from_file('github_releases.pkl')
     else:
         github_releases = github_api_request('releases', per_page=100)
