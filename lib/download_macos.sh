@@ -25,17 +25,24 @@ fi
 
 read VERSION OS_NAME<<< $(python3 ${WORKSPACE}/SapMachine-infrastructure/lib/publish_osx_get_version_osname.py -t ${SAPMACHINE_VERSION})
 
+BINARY_SOURCE_PREFIX=${BINARY_SOURCE_PATTERN//%v/$VERSION}
+BINARY_SOURCE_PREFIX=${BINARY_SOURCE_PREFIX//%p/$SOURCE_PLATFORM}
+
 JDK_TGZ_NAME=sapmachine-jdk-${VERSION}_${OS_NAME}-${PUBLISH_PLATFORM}_bin.tar.gz
-JDK_TGZ_URL=${BINARY_SOURCE}/sapmachine-jdk_darwin${SOURCE_PLATFORM}/${VERSION}/sapmachine-jdk_darwin${SOURCE_PLATFORM}-${VERSION}${NOTARIZED_SUFFIX}.tar.gz
+JDK_TGZ_URL=${BINARY_SOURCE_PREFIX//%b/jdk}
+JDK_TGZ_URL=${JDK_TGZ_URL//%x/tar.gz}
 
 JDK_DMG_NAME=sapmachine-jdk-${VERSION}_${OS_NAME}-${PUBLISH_PLATFORM}_bin.dmg
-JDK_DMG_URL=${BINARY_SOURCE}/sapmachine-jdk_darwin${SOURCE_PLATFORM}/${VERSION}/sapmachine-jdk_darwin${SOURCE_PLATFORM}-${VERSION}${NOTARIZED_SUFFIX}.dmg
+JDK_DMG_URL=${BINARY_SOURCE_PREFIX//%b/jdk}
+JDK_DMG_URL=${JDK_DMG_URL//%x/dmg}
 
 JRE_TGZ_NAME=sapmachine-jre-${VERSION}_${OS_NAME}-${PUBLISH_PLATFORM}_bin.tar.gz
-JRE_TGZ_URL=${BINARY_SOURCE}/sapmachine-jre_darwin${SOURCE_PLATFORM}/${VERSION}/sapmachine-jre_darwin${SOURCE_PLATFORM}-${VERSION}${NOTARIZED_SUFFIX}.tar.gz
+JRE_TGZ_URL=${BINARY_SOURCE_PREFIX//%b/jre}
+JRE_TGZ_URL=${JDK_TGZ_URL//%x/tar.gz}
 
 JRE_DMG_NAME=sapmachine-jre-${VERSION}_${OS_NAME}-${PUBLISH_PLATFORM}_bin.dmg
-JRE_DMG_URL=${BINARY_SOURCE}/sapmachine-jre_darwin${SOURCE_PLATFORM}/${VERSION}/sapmachine-jre_darwin${SOURCE_PLATFORM}-${VERSION}${NOTARIZED_SUFFIX}.dmg
+JRE_DMG_URL=${BINARY_SOURCE_PREFIX//%b/jre}
+JRE_DMG_URL=${JRE_DMG_URL//%x/dmg}
 
 SYMBOLS_TGZ_NAME=sapmachine-jdk-${VERSION}_${OS_NAME}-${PUBLISH_PLATFORM}_bin-symbols.tar.gz
 SYMBOLS_URL=${SYMBOL_SOURCE}/sapmachine-symbols_darwin${SOURCE_PLATFORM}/${VERSION}/sapmachine-symbols_darwin${SOURCE_PLATFORM}-${VERSION}.tar.gz
