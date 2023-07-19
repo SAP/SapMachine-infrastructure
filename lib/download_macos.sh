@@ -26,16 +26,16 @@ fi
 read VERSION OS_NAME<<< $(python3 ${WORKSPACE}/SapMachine-infrastructure/lib/publish_osx_get_version_osname.py -t ${SAPMACHINE_VERSION})
 
 JDK_TGZ_NAME=sapmachine-jdk-${VERSION}_${OS_NAME}-${PUBLISH_PLATFORM}_bin.tar.gz
-JDK_TGZ_URL=${BINARY_SOURCE}/sapmachine-jdk_darwin${SOURCE_PLATFORM}/${VERSION}/sapmachine-jdk_darwin${SOURCE_PLATFORM}-${VERSION}${NOTARIZED_SUFFIX}.tar.gz
+JDK_TGZ_URL=${BINARY_SOURCE}/sapmachine-jdk_darwin${SOURCE_PLATFORM}/${VERSION}${NOTARIZED_SUFFIX}/sapmachine-jdk_darwin${SOURCE_PLATFORM}-${VERSION}${NOTARIZED_SUFFIX}.tar.gz
 
 JDK_DMG_NAME=sapmachine-jdk-${VERSION}_${OS_NAME}-${PUBLISH_PLATFORM}_bin.dmg
-JDK_DMG_URL=${BINARY_SOURCE}/sapmachine-jdk_darwin${SOURCE_PLATFORM}/${VERSION}/sapmachine-jdk_darwin${SOURCE_PLATFORM}-${VERSION}${NOTARIZED_SUFFIX}.dmg
+JDK_DMG_URL=${BINARY_SOURCE}/sapmachine-jdk_darwin${SOURCE_PLATFORM}/${VERSION}${NOTARIZED_SUFFIX}/sapmachine-jdk_darwin${SOURCE_PLATFORM}-${VERSION}${NOTARIZED_SUFFIX}.dmg
 
 JRE_TGZ_NAME=sapmachine-jre-${VERSION}_${OS_NAME}-${PUBLISH_PLATFORM}_bin.tar.gz
-JRE_TGZ_URL=${BINARY_SOURCE}/sapmachine-jre_darwin${SOURCE_PLATFORM}/${VERSION}/sapmachine-jre_darwin${SOURCE_PLATFORM}-${VERSION}${NOTARIZED_SUFFIX}.tar.gz
+JRE_TGZ_URL=${BINARY_SOURCE}/sapmachine-jre_darwin${SOURCE_PLATFORM}/${VERSION}${NOTARIZED_SUFFIX}/sapmachine-jre_darwin${SOURCE_PLATFORM}-${VERSION}${NOTARIZED_SUFFIX}.tar.gz
 
 JRE_DMG_NAME=sapmachine-jre-${VERSION}_${OS_NAME}-${PUBLISH_PLATFORM}_bin.dmg
-JRE_DMG_URL=${BINARY_SOURCE}/sapmachine-jre_darwin${SOURCE_PLATFORM}/${VERSION}/sapmachine-jre_darwin${SOURCE_PLATFORM}-${VERSION}${NOTARIZED_SUFFIX}.dmg
+JRE_DMG_URL=${BINARY_SOURCE}/sapmachine-jre_darwin${SOURCE_PLATFORM}/${VERSION}${NOTARIZED_SUFFIX}/sapmachine-jre_darwin${SOURCE_PLATFORM}-${VERSION}${NOTARIZED_SUFFIX}.dmg
 
 SYMBOLS_TGZ_NAME=sapmachine-jdk-${VERSION}_${OS_NAME}-${PUBLISH_PLATFORM}_bin-symbols.tar.gz
 SYMBOLS_URL=${SYMBOL_SOURCE}/sapmachine-symbols_darwin${SOURCE_PLATFORM}/${VERSION}/sapmachine-symbols_darwin${SOURCE_PLATFORM}-${VERSION}.tar.gz
