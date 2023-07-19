@@ -8,15 +8,18 @@
       <int>1448</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>1448</number>
-        <issueUpdatedAt>2023-07-17 15:32:21.0 UTC</issueUpdatedAt>
-        <title>Store extreme samples for vitals</title>
+        <issueUpdatedAt>2023-07-18 09:21:23.0 UTC</issueUpdatedAt>
+        <title>SapMachine #1449: Store vitals samples for max/min values</title>
         <body>This stores the extreme samples for specific values. For most values the sample at the maximum is stored, but for some the minimum sample is stored (e.g. free memory). The samples are included at the end of the report.
 
 Some additional changes were made:
 - Fixed small memory leak in the ColumnWidth class.
 - We don't use the temporary pre-allocated buffer when dumping the report but instead use the supplied outputStream directly. Blocking when writing to the stream should at most hinder updates to the vitals for the time we are blocked. 
-- Fixed wrong string comparison when handling categories in legends.</body>
-        <prUpdatedAt>2023-07-17 15:32:21.0 UTC</prUpdatedAt>
+- Fixed wrong string comparison when handling categories in legends.
+
+fixes #1449
+</body>
+        <prUpdatedAt>2023-07-18 09:21:23.0 UTC</prUpdatedAt>
         <headSha>7944168815beaac094f78f238e449e1ba6a80f4d</headSha>
         <headRef>vitals-extremas</headRef>
         <mergeable>true</mergeable>
@@ -25,7 +28,7 @@ Some additional changes were made:
         <userLogin>schmelter-sap</userLogin>
         <htmlUrl>https://github.com/SAP/SapMachine/pull/1448</htmlUrl>
         <labels />
-        <lastCommentCreatedAt>2023-07-17 15:32:20.0 UTC</lastCommentCreatedAt>
+        <lastCommentCreatedAt>2023-07-18 09:21:23.0 UTC</lastCommentCreatedAt>
         <sourceRepoOwner>schmelter-sap</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
