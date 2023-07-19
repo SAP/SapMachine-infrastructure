@@ -29,7 +29,11 @@ JDK_TGZ_NAME=sapmachine-jdk-${VERSION}_${OS_NAME}-${PUBLISH_PLATFORM}_bin.tar.gz
 JDK_TGZ_URL=${BINARY_SOURCE}/sapmachine-jdk_darwin${SOURCE_PLATFORM}/${VERSION}${NOTARIZED_SUFFIX}/sapmachine-jdk_darwin${SOURCE_PLATFORM}-${VERSION}${NOTARIZED_SUFFIX}.tar.gz
 
 JDK_DMG_NAME=sapmachine-jdk-${VERSION}_${OS_NAME}-${PUBLISH_PLATFORM}_bin.dmg
-JDK_DMG_URL=${BINARY_SOURCE}/sapmachine-jdk_darwin${SOURCE_PLATFORM}/${VERSION}${NOTARIZED_SUFFIX}/sapmachine-jdk_darwin${SOURCE_PLATFORM}-${VERSION}${NOTARIZED_SUFFIX}.dmg
+if [ "$SOURCE_PLATFORM" = "x64" ] && [SAPMACHINE_VERSION = "sapmachine-17.0.8"]; then
+  JDK_DMG_URL=${BINARY_SOURCE}/com.sap.sapmachine/${VERSION}${NOTARIZED_SUFFIX}/sapmachine-jdk_darwin${SOURCE_PLATFORM}-${VERSION}${NOTARIZED_SUFFIX}.dmg
+else
+  JDK_DMG_URL=${BINARY_SOURCE}/sapmachine-jdk_darwin${SOURCE_PLATFORM}/${VERSION}${NOTARIZED_SUFFIX}/sapmachine-jdk_darwin${SOURCE_PLATFORM}-${VERSION}${NOTARIZED_SUFFIX}.dmg
+fi
 
 JRE_TGZ_NAME=sapmachine-jre-${VERSION}_${OS_NAME}-${PUBLISH_PLATFORM}_bin.tar.gz
 JRE_TGZ_URL=${BINARY_SOURCE}/sapmachine-jre_darwin${SOURCE_PLATFORM}/${VERSION}${NOTARIZED_SUFFIX}/sapmachine-jre_darwin${SOURCE_PLATFORM}-${VERSION}${NOTARIZED_SUFFIX}.tar.gz
