@@ -1,4 +1,38 @@
 <hudson.model.Queue_-State>
-  <counter>18313</counter>
-  <items />
+  <counter>18418</counter>
+  <items>
+    <hudson.model.Queue_-WaitingItem>
+      <actions>
+        <hudson.model.CauseAction>
+          <causeBag class="linked-hash-map">
+            <entry>
+              <org.jenkinsci.plugins.workflow.support.steps.build.BuildUpstreamCause plugin="pipeline-build-step@496.v2449a_9a_221f2">
+                <upstreamProject>build-22-windows_x86_64-release</upstreamProject>
+                <upstreamUrl>job/build-22-windows_x86_64-release/</upstreamUrl>
+                <upstreamBuild>8</upstreamBuild>
+                <upstreamCauses>
+                  <hudson.model.Cause_-UserIdCause>
+                    <userId>sapmachine</userId>
+                  </hudson.model.Cause_-UserIdCause>
+                </upstreamCauses>
+                <nodeId>185</nodeId>
+              </org.jenkinsci.plugins.workflow.support.steps.build.BuildUpstreamCause>
+              <int>1</int>
+            </entry>
+          </causeBag>
+        </hudson.model.CauseAction>
+        <org.jenkinsci.plugins.workflow.support.steps.build.BuildUpstreamNodeAction plugin="pipeline-build-step@496.v2449a_9a_221f2">
+          <upstreamNodeId>185</upstreamNodeId>
+          <upstreamRunId>build-22-windows_x86_64-release#8</upstreamRunId>
+        </org.jenkinsci.plugins.workflow.support.steps.build.BuildUpstreamNodeAction>
+      </actions>
+      <id>18418</id>
+      <task class="org.jenkinsci.plugins.workflow.job.WorkflowJob">generate-website-data</task>
+      <inQueueSince>1689988788900</inQueueSince>
+      <timestamp>
+        <time>1689988793900</time>
+        <timezone>Etc/UTC</timezone>
+      </timestamp>
+    </hudson.model.Queue_-WaitingItem>
+  </items>
 </hudson.model.Queue_-State>
