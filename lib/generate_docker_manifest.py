@@ -49,7 +49,7 @@ def fill_image_template_ubuntu(git_dir, dockerfiles_subdir, major, dockerpath, d
 
     return Template(template_image).substitute(tags=", ".join(tags), git_commit=git_commit, directory=str.format('{0}/{1}/{2}', dockerfiles_subdir, major, dockerpath))
 
-dockerfile_version_pattern_distroless = re.compile('sapmachine-(\S+)')
+dockerfile_version_pattern_distroless = re.compile('sapmachine-(\d+(?:\.\d+)*)')
 
 def fill_image_template_distroless(git_dir, dockerfiles_subdir, major, dockerpath, dockertag, isLatest, isLatestLts):
     dockerfile_path = join(dockerfiles_subdir, major, dockerpath, 'Dockerfile')

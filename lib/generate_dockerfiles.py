@@ -31,7 +31,7 @@ ENV JAVA_HOME=/usr/lib/jvm/sapmachine-${major}
 CMD ["jshell"]
 '''
 
-dockerfile_template_distroless = '''FROM gcr.io/distroless/java${major}-debian11:${type} as distroless
+dockerfile_template_distroless = '''FROM gcr.io/distroless/java${distrolessvers}-debian11:${type} as distroless
 
 FROM ubuntu as builder
 
@@ -126,7 +126,8 @@ def write_dockerfile_distroless(base_dir, type, major, version_string):
                 type=type,
                 version_string=version_string,
                 bundle='jdk' if type.startswith("debug") else 'jre',
-                debug_path='ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/busybox' if type.startswith("debug") else ''
+                debug_path='ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/busybox' if type.startswith("debug") else '',
+                distrolessvers=major if utils.sapmachine_is_lts(major) and utils.sapmachine_default_major() != major else '-base'
             ))
 
 def process_release(release, infrastructure_tags, dockerfiles_dir, args):
