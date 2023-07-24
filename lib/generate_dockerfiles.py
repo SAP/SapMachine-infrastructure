@@ -13,7 +13,7 @@ from string import Template
 from utils import github_api_request
 from versions import SapMachineTag
 
-dockerfile_template = '''FROM ubuntu:22.04
+dockerfile_template_ubuntu = '''FROM ubuntu:22.04
 
 RUN apt-get update \\
     && apt-get -y --no-install-recommends install ca-certificates gnupg \\
@@ -22,13 +22,51 @@ RUN apt-get update \\
     && chmod 644 /etc/apt/trusted.gpg.d/sapmachine.gpg \\
     && echo "deb http://dist.sapmachine.io/debian/$$(dpkg --print-architecture)/ ./" > /etc/apt/sources.list.d/sapmachine.list \\
     && apt-get update \\
-    && apt-get -y --no-install-recommends install ${version} \\
+    && apt-get -y --no-install-recommends install ${pkg_version} \\
     && apt-get remove -y --purge --autoremove ca-certificates gnupg \\
     && rm -rf "$$GNUPGHOME" /var/lib/apt/lists/*
 
 ENV JAVA_HOME=/usr/lib/jvm/sapmachine-${major}
 
 CMD ["jshell"]
+'''
+
+dockerfile_template_distroless = '''FROM gcr.io/distroless/java${major}-debian11:${type} as distroless
+
+FROM ubuntu as builder
+
+RUN apt-get update && apt-get -y --no-install-recommends install ca-certificates wget
+
+RUN dpkgArch="$$(dpkg --print-architecture)"; \\
+    case "$${dpkgArch}" in \\
+		'amd64') \\
+			url='https://github.com/SAP/SapMachine/releases/download/sapmachine-${version_string}/sapmachine-${bundle}-${version_string}_linux-x64_bin.tar.gz'; \\
+			;; \\
+		'arm64') \\
+			url='https://github.com/SAP/SapMachine/releases/download/sapmachine-${version_string}/sapmachine-${bundle}-${version_string}_linux-aarch64_bin.tar.gz'; \\
+			;; \\
+		'ppc64el') \\
+			url='https://github.com/SAP/SapMachine/releases/download/sapmachine-${version_string}/sapmachine-${bundle}-${version_string}_linux-ppc64le_bin.tar.gz'; \\
+			;; \\
+		*) echo >&2 "error: unsupported architecture '$$dpkgArch'"; exit 1 ;; \\
+	esac; \\
+    wget -O sapmachine.tar.gz $$url --progress=dot:giga
+
+COPY --from=distroless / /distroless
+
+RUN tar xzf sapmachine.tar.gz && \\
+    rm -rf /distroless/etc/java-${major}-openjdk /distroless/usr/lib/jvm/java-${major}-openjdk-amd64 && \\
+    mv sapmachine-${bundle}-${version_string} /distroless/usr/lib/jvm/java-${major}-openjdk-amd64
+
+FROM scratch
+COPY --from=builder /distroless /
+
+${debug_path}
+ENV SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+ENV LANG=C.UTF-8
+ENV JAVA_VERSION=${version_string}
+
+ENTRYPOINT [ "/usr/bin/java", "-jar" ]
 '''
 
 readmefile_template = '''
@@ -70,13 +108,25 @@ docker run -it --rm myapp
 ```
 '''
 
-def write_dockerfile(base_dir, type, major, version_string):
+def write_dockerfile_ubuntu(base_dir, type, major, version_string):
     dockerfile_dir = join(base_dir, type)
     os.makedirs(dockerfile_dir)
     with open(join(dockerfile_dir, 'Dockerfile'), 'w+') as dockerfile:
-            dockerfile.write(Template(dockerfile_template).substitute(
-                version=str.format('sapmachine-{0}-{1}={2}', major, type, version_string),
+            dockerfile.write(Template(dockerfile_template_ubuntu).substitute(
+                pkg_version=str.format('sapmachine-{0}-{1}={2}', major, type, version_string),
                 major=major
+            ))
+
+def write_dockerfile_distroless(base_dir, type, major, version_string):
+    dockerfile_dir = join(base_dir, 'debian11', type)
+    os.makedirs(dockerfile_dir)
+    with open(join(dockerfile_dir, 'Dockerfile'), 'w+') as dockerfile:
+            dockerfile.write(Template(dockerfile_template_distroless).substitute(
+                major=major,
+                type=type,
+                version_string=version_string,
+                bundle='jdk' if type.startswith("debug") else 'jre',
+                debug_path='ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/busybox' if type.startswith("debug") else ''
             ))
 
 def process_release(release, infrastructure_tags, dockerfiles_dir, args):
@@ -86,6 +136,7 @@ def process_release(release, infrastructure_tags, dockerfiles_dir, args):
     skip_tag = False
     major_dir = join(dockerfiles_dir, major)
     ubuntu_dir = join(major_dir, 'ubuntu')
+    distroless_dir = join(major_dir, 'distroless')
 
     for infrastructure_tag in infrastructure_tags:
         if infrastructure_tag['name'] == version_string:
@@ -98,10 +149,18 @@ def process_release(release, infrastructure_tags, dockerfiles_dir, args):
         # Write ubuntu dockerfiles
         utils.remove_if_exists(ubuntu_dir)
         os.makedirs(ubuntu_dir)
-        write_dockerfile(ubuntu_dir, 'jre', major, version_string)
-        write_dockerfile(ubuntu_dir, 'jre-headless', major, version_string)
-        write_dockerfile(ubuntu_dir, 'jdk', major, version_string)
-        write_dockerfile(ubuntu_dir, 'jdk-headless', major, version_string)
+        write_dockerfile_ubuntu(ubuntu_dir, 'jre', major, version_string)
+        write_dockerfile_ubuntu(ubuntu_dir, 'jre-headless', major, version_string)
+        write_dockerfile_ubuntu(ubuntu_dir, 'jdk', major, version_string)
+        write_dockerfile_ubuntu(ubuntu_dir, 'jdk-headless', major, version_string)
+
+        # Write distroless dockerfiles
+        utils.remove_if_exists(distroless_dir)
+        os.makedirs(distroless_dir)
+        write_dockerfile_distroless(distroless_dir, 'latest', major, version_string)
+        write_dockerfile_distroless(distroless_dir, 'nonroot', major, version_string)
+        write_dockerfile_distroless(distroless_dir, 'debug', major, version_string)
+        write_dockerfile_distroless(distroless_dir, 'debug-nonroot', major, version_string)
 
         # Write the readme
         if utils.sapmachine_is_lts(major):
@@ -119,7 +178,8 @@ def process_release(release, infrastructure_tags, dockerfiles_dir, args):
                 version=version_string
             ))
 
-        _, diff, _  = utils.run_cmd("git diff HEAD".split(' '), cwd=dockerfiles_dir, std=True)
+        utils.run_cmd(['git', 'add', '.'], cwd=major_dir)
+        _, diff, _  = utils.run_cmd("git diff HEAD".split(' '), cwd=major_dir, std=True)
         if not diff.strip():
             print(str.format("No changes for {0}", version_string))
             return
@@ -138,10 +198,6 @@ def main(argv=None):
     args = parser.parse_args()
 
     workdir = os.path.realpath(args.workdir)
-    git_dir = join(workdir, 'sapmachine-infrastructure')
-
-    utils.remove_if_exists(workdir)
-    os.makedirs(workdir)
 
     print('Loading SapMachine Release data...')
     releases = utils.get_github_releases()
@@ -187,16 +243,18 @@ def main(argv=None):
         print("Adding stable release to docker_releases")
         docker_releases[stable_major] = stable_release
 
-    utils.git_clone('github.com/SAP/SapMachine-infrastructure', 'master', git_dir)
+    #utils.remove_if_exists(workdir)
+    #os.makedirs(workdir)
+    #utils.git_clone('github.com/SAP/SapMachine-infrastructure', 'master', workdir)
 
-    dockerfiles_dir = join(git_dir, 'dockerfiles', 'official')
+    dockerfiles_dir = join(workdir, 'dockerfiles', 'official')
     removed = []
     for f in os.listdir(dockerfiles_dir):
         if not int(f) in docker_releases:
             utils.remove_if_exists(join(dockerfiles_dir, f))
             removed.append(join(dockerfiles_dir, f))
     if removed != []:
-        utils.git_commit(git_dir, 'remove discontinued versions', removed)
+        utils.git_commit(workdir, 'remove discontinued versions', removed)
 
     for release in docker_releases:
         process_release(docker_releases[release], infrastructure_tags, dockerfiles_dir, args)

@@ -23,12 +23,12 @@ Architectures: amd64, arm64v8, ppc64le
 GitCommit: ${git_commit}
 Directory: ${directory}'''
 
-dockerfile_version_pattern = re.compile('sapmachine-(\d+)-(jdk|jre)(-headless)?=(\S+)')
+dockerfile_version_pattern_ubuntu = re.compile('sapmachine-(\d+)-(jdk|jre)(-headless)?=(\S+)')
 
-def fill_image_template(git_dir, dockerfiles_subdir, major, dockerpath, dockertag, isLatest, isLatestLts):
+def fill_image_template_ubuntu(git_dir, dockerfiles_subdir, major, dockerpath, dockertag, isLatest, isLatestLts):
     dockerfile_path = join(dockerfiles_subdir, major, dockerpath, 'Dockerfile')
     with open(join(git_dir, dockerfile_path), 'r') as dockerfile:
-        version_match = dockerfile_version_pattern.search(dockerfile.read())
+        version_match = dockerfile_version_pattern_ubuntu.search(dockerfile.read())
     version = version_match.group(4)
     _, git_commit, _ = utils.run_cmd(['git', 'log', '-n', '1', '--pretty=format:%H', '--', dockerfile_path], cwd=git_dir, std=True)
     tags = [str.format('{0}-{1}', dockertag, major)]
@@ -39,6 +39,32 @@ def fill_image_template(git_dir, dockerfiles_subdir, major, dockerpath, dockerta
     if isLatestLts:
         tags.append(str.format('{0}-lts', dockertag))
     if dockertag == 'jdk-ubuntu':
+        tags.append(major)
+        if major != version:
+            tags.append(version)
+        if isLatest:
+            tags.append('latest')
+        if isLatestLts:
+            tags.append('lts')
+
+    return Template(template_image).substitute(tags=", ".join(tags), git_commit=git_commit, directory=str.format('{0}/{1}/{2}', dockerfiles_subdir, major, dockerpath))
+
+dockerfile_version_pattern_distroless = re.compile('sapmachine-(\S+)')
+
+def fill_image_template_distroless(git_dir, dockerfiles_subdir, major, dockerpath, dockertag, isLatest, isLatestLts):
+    dockerfile_path = join(dockerfiles_subdir, major, dockerpath, 'Dockerfile')
+    with open(join(git_dir, dockerfile_path), 'r') as dockerfile:
+        version_match = dockerfile_version_pattern_distroless.search(dockerfile.read())
+    version = version_match.group(1)
+    _, git_commit, _ = utils.run_cmd(['git', 'log', '-n', '1', '--pretty=format:%H', '--', dockerfile_path], cwd=git_dir, std=True)
+    tags = [str.format('{0}-{1}', dockertag, major)]
+    if major != version:
+        tags.append(str.format('{0}-{1}', dockertag, version))
+    if isLatest:
+        tags.append(str.format('{0}', dockertag))
+    if isLatestLts:
+        tags.append(str.format('{0}-lts', dockertag))
+    if dockertag == 'jdk-distroless':
         tags.append(major)
         if major != version:
             tags.append(version)
@@ -80,10 +106,15 @@ def main(argv=None):
         isLatest = release == latest
         isLatestLts = release == latest_lts
 
-        images.append(fill_image_template(git_dir, dockerfiles_subdir, release, 'ubuntu/jre-headless', 'jre-headless-ubuntu', isLatest, isLatestLts))
-        images.append(fill_image_template(git_dir, dockerfiles_subdir, release, 'ubuntu/jre', 'jre-ubuntu', isLatest, isLatestLts))
-        images.append(fill_image_template(git_dir, dockerfiles_subdir, release, 'ubuntu/jdk-headless', 'jdk-headless-ubuntu', isLatest, isLatestLts))
-        images.append(fill_image_template(git_dir, dockerfiles_subdir, release, 'ubuntu/jdk', 'jdk-ubuntu', isLatest, isLatestLts))
+        images.append(fill_image_template_ubuntu(git_dir, dockerfiles_subdir, release, 'ubuntu/jre-headless', 'jre-headless-ubuntu', isLatest, isLatestLts))
+        images.append(fill_image_template_ubuntu(git_dir, dockerfiles_subdir, release, 'ubuntu/jre', 'jre-ubuntu', isLatest, isLatestLts))
+        images.append(fill_image_template_ubuntu(git_dir, dockerfiles_subdir, release, 'ubuntu/jdk-headless', 'jdk-headless-ubuntu', isLatest, isLatestLts))
+        images.append(fill_image_template_ubuntu(git_dir, dockerfiles_subdir, release, 'ubuntu/jdk', 'jdk-ubuntu', isLatest, isLatestLts))
+
+        images.append(fill_image_template_distroless(git_dir, dockerfiles_subdir, release, 'distroless/debian11/latest', 'distroless-debian11', isLatest, isLatestLts))
+        images.append(fill_image_template_distroless(git_dir, dockerfiles_subdir, release, 'distroless/debian11/nonroot', 'distroless-debian11-nonroot', isLatest, isLatestLts))
+        images.append(fill_image_template_distroless(git_dir, dockerfiles_subdir, release, 'distroless/debian11/debug', 'distroless-debian11-debug', isLatest, isLatestLts))
+        images.append(fill_image_template_distroless(git_dir, dockerfiles_subdir, release, 'distroless/debian11/debug-nonroot', 'distroless-debian11-debug-nonroot', isLatest, isLatestLts))
 
     with open(manifest, 'w') as manifest_file:
         manifest_file.write(Template(template_manifest).substitute(images='\n\n'.join(images)))
