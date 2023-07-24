@@ -1,4 +1,4 @@
-FROM gcr.io/distroless/java20-debian11:nonroot as distroless
+FROM gcr.io/distroless/java-base-debian11:nonroot as distroless
 
 FROM ubuntu as builder
 

@@ -1,4 +1,4 @@
-FROM gcr.io/distroless/java20-debian11:debug as distroless
+FROM gcr.io/distroless/java-base-debian11:debug as distroless
 
 FROM ubuntu as builder
 
