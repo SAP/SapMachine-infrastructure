@@ -32,20 +32,36 @@ def fill_image_template_ubuntu(git_dir, dockerfiles_subdir, major, dockerpath, d
     version = version_match.group(4)
     _, git_commit, _ = utils.run_cmd(['git', 'log', '-n', '1', '--pretty=format:%H', '--', dockerfile_path], cwd=git_dir, std=True)
     tags = [str.format('{0}-{1}', dockertag, major)]
+    tags.append(str.format('{0}-jammy-{1}', dockertag, major))
+    tags.append(str.format('{0}-22.04-{1}', dockertag, major))
     if major != version:
         tags.append(str.format('{0}-{1}', dockertag, version))
+        tags.append(str.format('{0}-jammy-{1}', dockertag, version))
+        tags.append(str.format('{0}-22.04-{1}', dockertag, version))
     if isLatest:
         tags.append(str.format('{0}', dockertag))
+        tags.append(str.format('{0}-jammy', dockertag))
+        tags.append(str.format('{0}-jammy-22.04', dockertag))
     if isLatestLts:
         tags.append(str.format('{0}-lts', dockertag))
+        tags.append(str.format('{0}-jammy-lts', dockertag))
+        tags.append(str.format('{0}-22.04-lts', dockertag))
     if dockertag == 'jdk-ubuntu':
         tags.append(major)
+        tags.append(str.format('ubuntu-jammy-{0}', major))
+        tags.append(str.format('ubuntu-22.04-{0}', major))
         if major != version:
             tags.append(version)
+            tags.append(str.format('ubuntu-jammy-{0}', version))
+            tags.append(str.format('ubuntu-22.04-{0}', version))
         if isLatest:
             tags.append('latest')
+            tags.append('ubuntu-jammy-latest')
+            tags.append('ubuntu-22.04-latest')
         if isLatestLts:
             tags.append('lts')
+            tags.append('ubuntu-jammy-lts')
+            tags.append('ubuntu-22.04-lts')
 
     return Template(template_image).substitute(tags=", ".join(tags), git_commit=git_commit, directory=str.format('{0}/{1}/{2}', dockerfiles_subdir, major, dockerpath))
 
