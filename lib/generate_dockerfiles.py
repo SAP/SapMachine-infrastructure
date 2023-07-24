@@ -243,9 +243,9 @@ def main(argv=None):
         print("Adding stable release to docker_releases")
         docker_releases[stable_major] = stable_release
 
-    #utils.remove_if_exists(workdir)
-    #os.makedirs(workdir)
-    #utils.git_clone('github.com/SAP/SapMachine-infrastructure', 'master', workdir)
+    utils.remove_if_exists(workdir)
+    os.makedirs(workdir)
+    utils.git_clone('github.com/SAP/SapMachine-infrastructure', 'master', workdir)
 
     dockerfiles_dir = join(workdir, 'dockerfiles', 'official')
     removed = []
