@@ -56,14 +56,19 @@ def fill_image_template_ubuntu(git_dir, dockerfiles_subdir, major, dockerpath, d
             tags.append(str.format('ubuntu-22.04-{0}', version))
         if isLatest:
             tags.append('latest')
-            tags.append('ubuntu-jammy-latest')
-            tags.append('ubuntu-22.04-latest')
+            tags.append('ubuntu-jammy')
+            tags.append('ubuntu-22.04')
         if isLatestLts:
             tags.append('lts')
             tags.append('ubuntu-jammy-lts')
             tags.append('ubuntu-22.04-lts')
 
     return Template(template_image).substitute(tags=", ".join(tags), git_commit=git_commit, directory=str.format('{0}/{1}/{2}', dockerfiles_subdir, major, dockerpath))
+
+template_image_distroless = '''Tags: ${tags}
+Architectures: amd64, arm64, ppc64le
+GitCommit: ${git_commit}
+Directory: ${directory}'''
 
 dockerfile_version_pattern_distroless = re.compile('sapmachine-(\d+(?:\.\d+)*)')
 
@@ -89,7 +94,7 @@ def fill_image_template_distroless(git_dir, dockerfiles_subdir, major, dockerpat
         if isLatestLts:
             tags.append('lts')
 
-    return Template(template_image).substitute(tags=", ".join(tags), git_commit=git_commit, directory=str.format('{0}/{1}/{2}', dockerfiles_subdir, major, dockerpath))
+    return Template(template_image_distroless).substitute(tags=", ".join(tags), git_commit=git_commit, directory=str.format('{0}/{1}/{2}', dockerfiles_subdir, major, dockerpath))
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
