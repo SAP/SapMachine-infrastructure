@@ -66,7 +66,7 @@ def fill_image_template_ubuntu(git_dir, dockerfiles_subdir, major, dockerpath, d
     return Template(template_image).substitute(tags=", ".join(tags), git_commit=git_commit, directory=str.format('{0}/{1}/{2}', dockerfiles_subdir, major, dockerpath))
 
 template_image_distroless = '''Tags: ${tags}
-Architectures: amd64, arm64, ppc64le
+Architectures: amd64, ppc64le
 GitCommit: ${git_commit}
 Directory: ${directory}'''
 
