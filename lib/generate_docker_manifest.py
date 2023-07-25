@@ -66,6 +66,7 @@ def fill_image_template_ubuntu(git_dir, dockerfiles_subdir, major, dockerpath, d
     return Template(template_image).substitute(tags=", ".join(tags), git_commit=git_commit, directory=str.format('{0}/{1}/{2}', dockerfiles_subdir, major, dockerpath))
 
 template_image_distroless = '''Tags: ${tags}
+Architectures: amd64, arm64, ppc64le
 GitCommit: ${git_commit}
 Directory: ${directory}'''
 
@@ -131,10 +132,10 @@ def main(argv=None):
         images.append(fill_image_template_ubuntu(git_dir, dockerfiles_subdir, release, 'ubuntu/jdk-headless', 'jdk-headless-ubuntu', isLatest, isLatestLts))
         images.append(fill_image_template_ubuntu(git_dir, dockerfiles_subdir, release, 'ubuntu/jdk', 'jdk-ubuntu', isLatest, isLatestLts))
 
-        images.append(fill_image_template_distroless(git_dir, dockerfiles_subdir, release, 'distroless/debian11/latest', 'distroless-debian11', isLatest, isLatestLts))
-        images.append(fill_image_template_distroless(git_dir, dockerfiles_subdir, release, 'distroless/debian11/nonroot', 'distroless-debian11-nonroot', isLatest, isLatestLts))
-        images.append(fill_image_template_distroless(git_dir, dockerfiles_subdir, release, 'distroless/debian11/debug', 'distroless-debian11-debug', isLatest, isLatestLts))
-        images.append(fill_image_template_distroless(git_dir, dockerfiles_subdir, release, 'distroless/debian11/debug-nonroot', 'distroless-debian11-debug-nonroot', isLatest, isLatestLts))
+        #images.append(fill_image_template_distroless(git_dir, dockerfiles_subdir, release, 'distroless/debian11/latest', 'distroless-debian11', isLatest, isLatestLts))
+        #images.append(fill_image_template_distroless(git_dir, dockerfiles_subdir, release, 'distroless/debian11/nonroot', 'distroless-debian11-nonroot', isLatest, isLatestLts))
+        #images.append(fill_image_template_distroless(git_dir, dockerfiles_subdir, release, 'distroless/debian11/debug', 'distroless-debian11-debug', isLatest, isLatestLts))
+        #images.append(fill_image_template_distroless(git_dir, dockerfiles_subdir, release, 'distroless/debian11/debug-nonroot', 'distroless-debian11-debug-nonroot', isLatest, isLatestLts))
 
     with open(manifest, 'w') as manifest_file:
         manifest_file.write(Template(template_manifest).substitute(images='\n\n'.join(images)))
