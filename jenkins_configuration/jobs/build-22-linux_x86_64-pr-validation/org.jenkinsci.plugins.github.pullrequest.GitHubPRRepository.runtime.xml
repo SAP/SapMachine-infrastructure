@@ -5,6 +5,38 @@
   <sshUrl>git@github.com:SAP/SapMachine.git</sshUrl>
   <pulls class="concurrent-hash-map">
     <entry>
+      <int>1456</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>1456</number>
+        <issueUpdatedAt>2023-07-25 15:54:43.0 UTC</issueUpdatedAt>
+        <title>ParallelGC: Long Young Pauses of large Gerrit instance</title>
+        <body>I would like to do a downstream backport of https://bugs.openjdk.org/browse/JDK-8310031.
+
+The backport includes prerequisites
+
+JDK-8280030
+JDK-8282094
+
+and adaptations to jdk11.
+
+fixes #1453
+</body>
+        <prUpdatedAt>2023-07-25 15:54:43.0 UTC</prUpdatedAt>
+        <headSha>b9da93683538e1c87c5d665fd42085c83f5477dc</headSha>
+        <headRef>gerrit_parallel_gc_fix</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine11</baseRef>
+        <userEmail>richard.reingruber@sap.com</userEmail>
+        <userLogin>reinrich</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1456</htmlUrl>
+        <labels />
+        <lastCommentCreatedAt>2023-07-25 15:54:43.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>reinrich</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
       <int>1448</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>1448</number>
