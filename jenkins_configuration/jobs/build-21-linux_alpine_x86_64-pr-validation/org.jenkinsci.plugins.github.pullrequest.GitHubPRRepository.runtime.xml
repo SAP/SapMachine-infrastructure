@@ -8,8 +8,8 @@
       <int>1456</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>1456</number>
-        <issueUpdatedAt>2023-07-25 15:54:43.0 UTC</issueUpdatedAt>
-        <title>ParallelGC: Long Young Pauses of large Gerrit instance</title>
+        <issueUpdatedAt>2023-07-26 21:00:14.0 UTC</issueUpdatedAt>
+        <title>SapMachine (11): ParallelGC: Long Young Pauses of large Gerrit instance</title>
         <body>I would like to do a downstream backport of https://bugs.openjdk.org/browse/JDK-8310031.
 
 The backport includes prerequisites
@@ -21,8 +21,8 @@ and adaptations to jdk11.
 
 fixes #1453
 </body>
-        <prUpdatedAt>2023-07-25 15:54:43.0 UTC</prUpdatedAt>
-        <headSha>b9da93683538e1c87c5d665fd42085c83f5477dc</headSha>
+        <prUpdatedAt>2023-07-26 21:00:14.0 UTC</prUpdatedAt>
+        <headSha>d6ddf81e0a82c004c6cb030fb3dc6748a21dff28</headSha>
         <headRef>gerrit_parallel_gc_fix</headRef>
         <mergeable>true</mergeable>
         <baseRef>sapmachine11</baseRef>
@@ -30,38 +30,92 @@ fixes #1453
         <userLogin>reinrich</userLogin>
         <htmlUrl>https://github.com/SAP/SapMachine/pull/1456</htmlUrl>
         <labels />
-        <lastCommentCreatedAt>2023-07-25 15:54:43.0 UTC</lastCommentCreatedAt>
+        <lastCommentCreatedAt>2023-07-26 21:00:14.0 UTC</lastCommentCreatedAt>
         <sourceRepoOwner>reinrich</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
       </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
     </entry>
     <entry>
-      <int>1448</int>
+      <int>1457</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>1448</number>
-        <issueUpdatedAt>2023-07-21 10:43:12.0 UTC</issueUpdatedAt>
-        <title>SapMachine #1449: Store vitals samples for max/min values</title>
-        <body>This stores the extreme samples for specific values. For most values the sample at the maximum is stored, but for some the minimum sample is stored (e.g. free memory). The samples are included at the end of the report.
+        <number>1457</number>
+        <issueUpdatedAt>2023-07-26 12:26:51.0 UTC</issueUpdatedAt>
+        <title>SapMachine (21) #1449: Store vitals samples for max/min values</title>
+        <body>(cherry picked from commit ee6966d6266e6b8d0c3743f0bfb9c7393a695fae)
 
-Some additional changes were made:
-- Fixed small memory leak in the ColumnWidth class.
-- We don't use the temporary pre-allocated buffer when dumping the report but instead use the supplied outputStream directly. Blocking when writing to the stream should at most hinder updates to the vitals for the time we are blocked. 
-- Fixed wrong string comparison when handling categories in legends.
+The description of this pull request goes here.
 
-fixes #1449
+fixes #1449 
+
 </body>
-        <prUpdatedAt>2023-07-21 10:43:12.0 UTC</prUpdatedAt>
-        <headSha>7944168815beaac094f78f238e449e1ba6a80f4d</headSha>
-        <headRef>vitals-extremas</headRef>
+        <prUpdatedAt>2023-07-26 12:26:51.0 UTC</prUpdatedAt>
+        <headSha>fd492547ba4c7fbc9e1ad001e96bfc90aa057bf4</headSha>
+        <headRef>vitals-extremas21</headRef>
         <mergeable>true</mergeable>
-        <baseRef>sapmachine</baseRef>
-        <userEmail>ralf.schmelter@sap.com</userEmail>
-        <userLogin>schmelter-sap</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/1448</htmlUrl>
+        <baseRef>sapmachine21</baseRef>
+        <userEmail>christoph.langer@sap.com</userEmail>
+        <userLogin>RealCLanger</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1457</htmlUrl>
         <labels />
-        <lastCommentCreatedAt>2023-07-18 09:21:23.0 UTC</lastCommentCreatedAt>
-        <sourceRepoOwner>schmelter-sap</sourceRepoOwner>
+        <lastCommentCreatedAt>2023-07-26 12:26:51.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>RealCLanger</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>1458</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>1458</number>
+        <issueUpdatedAt>2023-07-26 16:24:12.0 UTC</issueUpdatedAt>
+        <title>SapMachine (17): ParallelGC: Long Young Pauses of large Gerrit instance</title>
+        <body>I would like to do a downstream backport of https://bugs.openjdk.org/browse/JDK-8310031.
+
+The backport includes prerequisites
+
+JDK-8280030
+JDK-8282094
+
+and adaptations to jdk17.
+
+fixes #1453</body>
+        <prUpdatedAt>2023-07-26 16:24:12.0 UTC</prUpdatedAt>
+        <headSha>40e0a547433b005ff17e38c18b69b4f1acbae72c</headSha>
+        <headRef>gerrit_parallel_gc_fix___17</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine17</baseRef>
+        <userEmail>richard.reingruber@sap.com</userEmail>
+        <userLogin>reinrich</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1458</htmlUrl>
+        <labels />
+        <lastCommentCreatedAt>2023-07-26 13:20:04.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>reinrich</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>1459</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>1459</number>
+        <issueUpdatedAt>2023-07-26 16:24:21.0 UTC</issueUpdatedAt>
+        <title>SapMachine (21): ParallelGC: Long Young Pauses of large Gerrit instance</title>
+        <body>I would like to do a downstream backport of https://bugs.openjdk.org/browse/JDK-8310031.
+
+fixes #1453
+</body>
+        <prUpdatedAt>2023-07-26 16:24:21.0 UTC</prUpdatedAt>
+        <headSha>0039e8deb1e4f87c565f57925fe20c7e921fac2e</headSha>
+        <headRef>gerrit_parallel_gc_fix___21</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine21</baseRef>
+        <userEmail>richard.reingruber@sap.com</userEmail>
+        <userLogin>reinrich</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1459</htmlUrl>
+        <labels />
+        <lastCommentCreatedAt>2023-07-26 14:10:57.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>reinrich</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
       </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
