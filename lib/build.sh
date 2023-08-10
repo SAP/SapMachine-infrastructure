@@ -79,9 +79,9 @@ zip -rq "${WORKSPACE}/test.zip" make/data/unicodedata || true
 zip -rq "${WORKSPACE}/test.zip" make/jdk/src/classes/build/tools/makejavasecurity || true
 zip -rq "${WORKSPACE}/test.zip" src/*/*/legal/ || true
 zip -rq "${WORKSPACE}/test.zip" src/java.base/share/classes/javax/security/auth/ || true
+zip -rq "${WORKSPACE}/test.zip" src/java.base/share/classes/java/lang/ || true
 zip -rq "${WORKSPACE}/test.zip" src/java.base/share/classes/sun/security/provider/ || true
 zip -rq "${WORKSPACE}/test.zip" src/java.base/share/classes/sun/security/tools/ || true
-zip -rq "${WORKSPACE}/test.zip" src/java.base/share/classes/java/lang/ || true
 zip -rq "${WORKSPACE}/test.zip" src/java.base/share/data/blockedcertsconverter/blocked.certs.pem || true
 zip -rq "${WORKSPACE}/test.zip" src/java.base/share/data/currency/CurrencyData.properties || true
 zip -rq "${WORKSPACE}/test.zip" src/java.base/share/data/lsrdata/language-subtag-registry.txt || true
@@ -95,7 +95,7 @@ zip -rq "${WORKSPACE}/test.zip" src/jdk.compiler/share/data/symbols/include.list
 zip -rq "${WORKSPACE}/test.zip" src/jdk.crypto.cryptoki/share/classes/sun/security/pkcs11/SunPKCS11.java || true
 zip -rq "${WORKSPACE}/test.zip" src/jdk.jartool/share/classes/sun/security/tools/jarsigner/Main.java || true
 zip -rq "${WORKSPACE}/test.zip" src/jdk.javadoc/share/classes/jdk/javadoc/doclet/ || true
-zip -rq "${WORKSPACE}/test.zip" src/jdk.javadoc/share/classes/jdk/javadoc/internal/doclets/formats/html/resources/script-dir || true
+zip -rq "${WORKSPACE}/test.zip" src/jdk.javadoc/share/classes/jdk/javadoc/internal/doclets/formats/html/resources || true
 zip -rq "${WORKSPACE}/test.zip" src/jdk.javadoc/share/man || true
 zip -rq "${WORKSPACE}/test.zip" src/jdk.jpackage/*/classes/jdk/jpackage/internal || true
 zip -rq "${WORKSPACE}/test.zip" src/jdk.security.auth/share/classes/com/sun/security/auth/ || true
