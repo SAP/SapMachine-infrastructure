@@ -537,7 +537,7 @@
                         }}
 
                         // Download googletest
-                        sh("SapMachine-infrastructure/lib/git_clone.sh https://github.com/google/googletest gtest {gtest_version|v1.13.0}")
+                        sh("SapMachine-infrastructure/lib/git_clone.sh https://github.com/google/googletest gtest {gtest_version|v1.14.0}")
 
                         // Download jtreg if required
                         script {{
