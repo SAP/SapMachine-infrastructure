@@ -11,13 +11,13 @@
   <description>PR build for SapMachine 22 on linux_x86_64.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
   <properties>
-    <hudson.plugins.jira.JiraProjectProperty plugin="jira@3.10" />
-    <hudson.plugins.buildblocker.BuildBlockerProperty plugin="build-blocker-plugin@1.7.8">
-      <useBuildBlocker>false</useBuildBlocker>
-      <blockLevel>GLOBAL</blockLevel>
-      <scanQueueFor>DISABLED</scanQueueFor>
-      <blockingJobs />
-    </hudson.plugins.buildblocker.BuildBlockerProperty>
+    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty>
+      <abortPrevious>false</abortPrevious>
+    </org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty>
+    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.37.2">
+      <projectUrl>https://github.com/SAP/SapMachine</projectUrl>
+      <displayName />
+    </com.coravy.hudson.plugins.github.GithubProjectProperty>
     <jenkins.model.BuildDiscarderProperty>
       <strategy class="hudson.tasks.LogRotator">
         <daysToKeep>-1</daysToKeep>
@@ -26,13 +26,48 @@
         <artifactNumToKeep>1</artifactNumToKeep>
       </strategy>
     </jenkins.model.BuildDiscarderProperty>
-    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty>
-      <abortPrevious>false</abortPrevious>
-    </org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty>
-    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.37.1">
-      <projectUrl>https://github.com/SAP/SapMachine/</projectUrl>
-      <displayName />
-    </com.coravy.hudson.plugins.github.GithubProjectProperty>
+    <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+      <triggers>
+        <org.jenkinsci.plugins.github.pullrequest.GitHubPRTrigger plugin="github-pullrequest@0.5.0">
+          <spec>H/1 * * * *</spec>
+          <triggerMode>HEAVY_HOOKS</triggerMode>
+          <cancelQueued>true</cancelQueued>
+          <abortRunning>false</abortRunning>
+          <skipFirstRun>false</skipFirstRun>
+          <repoProviders>
+            <com.github.kostyasha.github.integration.generic.repoprovider.GitHubPluginRepoProvider>
+              <cacheConnection>true</cacheConnection>
+              <manageHooks>true</manageHooks>
+              <repoPermission>ADMIN</repoPermission>
+            </com.github.kostyasha.github.integration.generic.repoprovider.GitHubPluginRepoProvider>
+          </repoProviders>
+          <errorsAction>
+            <description>GitHub Pull Requests Trigger Errors</description>
+            <errors class="java.util.Collections$SynchronizedSet" serialization="custom">
+              <java.util.Collections_-SynchronizedCollection>
+                <default>
+                  <c class="set" />
+                  <mutex class="java.util.Collections$SynchronizedSet" reference="../../.." />
+                </default>
+              </java.util.Collections_-SynchronizedCollection>
+            </errors>
+          </errorsAction>
+          <events>
+            <org.jenkinsci.plugins.github.pullrequest.events.impl.GitHubPRCommitEvent />
+            <org.jenkinsci.plugins.github.pullrequest.events.impl.GitHubPRCommentEvent>
+              <comment>retest this please</comment>
+            </org.jenkinsci.plugins.github.pullrequest.events.impl.GitHubPRCommentEvent>
+            <org.jenkinsci.plugins.github.pullrequest.events.impl.GitHubPROpenEvent />
+          </events>
+          <preStatus>false</preStatus>
+          <branchRestriction>
+            <targetBranchList>
+              <string>sapmachine</string>
+            </targetBranchList>
+          </branchRestriction>
+        </org.jenkinsci.plugins.github.pullrequest.GitHubPRTrigger>
+      </triggers>
+    </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
         <hudson.model.StringParameterDefinition>
@@ -50,11 +85,13 @@
         <hudson.model.StringParameterDefinition>
           <name>SAPMACHINE_VERSION</name>
           <description>Either a SapMachine Release Tag or a JDK Major version. If empty, GIT_REF is used.</description>
+          <defaultValue />
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>JDK_BUILD</name>
           <description>Sets the version build number explicitly.</description>
+          <defaultValue />
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
@@ -100,48 +137,6 @@
         </hudson.model.BooleanParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
-    <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
-      <triggers>
-        <org.jenkinsci.plugins.github.pullrequest.GitHubPRTrigger plugin="github-pullrequest@0.5.0">
-          <spec>H/1 * * * *</spec>
-          <triggerMode>HEAVY_HOOKS</triggerMode>
-          <cancelQueued>true</cancelQueued>
-          <abortRunning>false</abortRunning>
-          <skipFirstRun>false</skipFirstRun>
-          <repoProviders>
-            <com.github.kostyasha.github.integration.generic.repoprovider.GitHubPluginRepoProvider>
-              <cacheConnection>true</cacheConnection>
-              <manageHooks>true</manageHooks>
-              <repoPermission>ADMIN</repoPermission>
-            </com.github.kostyasha.github.integration.generic.repoprovider.GitHubPluginRepoProvider>
-          </repoProviders>
-          <errorsAction>
-            <description>GitHub Pull Requests Trigger Errors</description>
-            <errors class="java.util.Collections$SynchronizedSet" serialization="custom">
-              <java.util.Collections_-SynchronizedCollection>
-                <default>
-                  <c class="set" />
-                  <mutex class="java.util.Collections$SynchronizedSet" reference="../../.." />
-                </default>
-              </java.util.Collections_-SynchronizedCollection>
-            </errors>
-          </errorsAction>
-          <events>
-            <org.jenkinsci.plugins.github.pullrequest.events.impl.GitHubPRCommitEvent />
-            <org.jenkinsci.plugins.github.pullrequest.events.impl.GitHubPRCommentEvent>
-              <comment>retest this please</comment>
-            </org.jenkinsci.plugins.github.pullrequest.events.impl.GitHubPRCommentEvent>
-            <org.jenkinsci.plugins.github.pullrequest.events.impl.GitHubPROpenEvent />
-          </events>
-          <preStatus>false</preStatus>
-          <branchRestriction>
-            <targetBranchList>
-              <string>sapmachine</string>
-            </targetBranchList>
-          </branchRestriction>
-        </org.jenkinsci.plugins.github.pullrequest.GitHubPRTrigger>
-      </triggers>
-    </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
   </properties>
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@3731.ve4b_5b_857b_a_d3">
     <script>pipeline {
@@ -196,7 +191,6 @@
                     cd SapMachine-infrastructure
                     (set -ex &amp;&amp; GIT_TERMINAL_PROMPT=0 "$GIT_TOOL" fetch --depth 1 https://github.com/SAP/SapMachine-infrastructure master)
                     (set -ex &amp;&amp; "$GIT_TOOL" checkout --detach FETCH_HEAD)
-                    docker image ls
                 '''
             }
         }
@@ -231,7 +225,7 @@
                 expression { env.VERIFICATION_RESULT != "2" }
             }
             steps {
-                sh("docker image ls &amp;&amp; SapMachine-infrastructure/lib/git_clone.sh $SAPMACHINE_GIT_REPOSITORY SapMachine $GIT_REF $GITHUB_PR_NUMBER")
+                sh("SapMachine-infrastructure/lib/git_clone.sh $SAPMACHINE_GIT_REPOSITORY SapMachine $GIT_REF $GITHUB_PR_NUMBER")
             }
         }
         stage("Prepare Devkit") {
@@ -282,7 +276,7 @@
                 }
 
                 // Download googletest
-                sh("SapMachine-infrastructure/lib/git_clone.sh https://github.com/google/googletest gtest v1.13.0")
+                sh("SapMachine-infrastructure/lib/git_clone.sh https://github.com/google/googletest gtest v1.14.0")
 
                 // Download jtreg if required
                 script {
