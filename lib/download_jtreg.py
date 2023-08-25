@@ -27,7 +27,7 @@ def main(argv=None):
         return -1
 
     if major > 21:
-        url = 'https://github.com/SAP/SapMachine-infrastructure/releases/download/jtreg-7.3/jtreg.zip'
+        url = 'https://github.com/SAP/SapMachine-infrastructure/releases/download/jtreg-7.3.1/jtreg.zip'
     elif major > 19:
         url = 'https://github.com/SAP/SapMachine-infrastructure/releases/download/jtreg-7.2/jtreg.zip'
     else:
