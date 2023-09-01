@@ -23,6 +23,8 @@
            gtest_version: v1.13.0
         - '22'
     platforms: &platforms
+        - aix_ppc64:
+            architecture: aix-ppc64
         - linux_aarch64:
             architecture: linux-aarch64
             debarch: arm64
