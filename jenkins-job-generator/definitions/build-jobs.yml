@@ -691,10 +691,9 @@
         - platform: linux_alpine_x86_64
           major: '11'
         - platform: aix_ppc64
-          major:
-              - '11'
-              - '17'
-              - '20'
+          major: '11'
+          major: '17'
+          major: '20'
     jobs:
         - build-{major}-{platform}-{type_pr}
         - build-{major}-{platform}-{type_snapshot}
