@@ -688,14 +688,14 @@
     type_snapshot: *type_snapshot_build
     type_release: *type_release_build
     exclude:
-        - platform: linux_alpine_x86_64
-          major: '11'
         - platform: aix_ppc64
           major: '11'
         - platform: aix_ppc64
           major: '17'
         - platform: aix_ppc64
           major: '20'
+        - platform: linux_alpine_x86_64
+          major: '11'
     jobs:
         - build-{major}-{platform}-{type_pr}
         - build-{major}-{platform}-{type_snapshot}
