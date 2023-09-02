@@ -2,7 +2,7 @@
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps">
     <script>pipeline {
     agent {
-        label "linux_x86_64"
+        label "aix_ppc64"
     }
     environment {
         ARTIFACTORY_CREDS = credentials('openjdk-artifactory')
@@ -13,7 +13,11 @@
     stages {
         stage("Init") {
             steps {
-                
+                // update GitHub status and initialize PR Verification
+                script {
+                    setGitHubPullRequestStatus context: "validate-pr-21-aix_ppc64", state: 'PENDING'
+                }
+
                 // trigger workspace cleanup
                 cleanWs()
 
@@ -25,27 +29,9 @@
                         env.SAPMACHINE_VERSION = params.SAPMACHINE_VERSION
                     }
 
-                    // this variable, indicating that we run a release build, is needed in some scripts
-                    env.RELEASE_BUILD = "true"
-
-                    // check for conforming SAPMACHINE_VERSION tag and set RELEASE flag accordingly
-                    def m = (env.SAPMACHINE_VERSION =~ /sapmachine-((\d+(\.\d+)*)(\+(\d+))?)$/)
-                    if (m) {
-                        if (m.group(4) == null) {
-                            env.RELEASE = "true"
-                        } else {
-                            env.RELEASE = "false"
-                        }
-                    } else {
-                        error(env.SAPMACHINE_VERSION + " is no valid SapMachine version tag.")
-                    }
-
-                    // when we publish, installer packages are mandatory
-                    if (params.PUBLISH == true) {
-                        env.BUILD_INSTALLER_PACKAGES = true
-                    } else {
-                        env.BUILD_INSTALLER_PACKAGES = params.BUILD_INSTALLER_PACKAGES
-                    }
+                    // initialize some variables
+                    env.RELEASE = "false"
+                    env.NODMG = "true"
                 }
             }
         }
@@ -69,27 +55,38 @@
                 '''
             }
         }
-        
-            
-            
-        stage("Checkout SapMachine Repository") {
+        stage("Verify PR") {
             
             steps {
-                sh("SapMachine-infrastructure/lib/git_clone.sh $SAPMACHINE_GIT_REPOSITORY SapMachine $GIT_REF ")
+                // credentials are needed to avoid rate limit exceedance in verify_pr.py
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
+                    script {
+                        env.COMMENT = ('aix_ppc64' == 'linux_x86_64') ? "-c" : ""
+                        env.VERIFICATION_RESULT = sh(
+                            script: "python3 SapMachine-infrastructure/lib/verify_pr.py -p ${env.GITHUB_PR_NUMBER} ${env.COMMENT}",
+                            returnStatus: true
+                        )
+
+                        if (env.VERIFICATION_RESULT == "0") {
+                            error("Pull Request Verification failed")
+                        }
+                    }
+                }
+            }
+        }
+        stage("Checkout SapMachine Repository") {
+            when {
+                expression { env.VERIFICATION_RESULT != "2" }
+            }
+            steps {
+                sh("SapMachine-infrastructure/lib/git_clone.sh $SAPMACHINE_GIT_REPOSITORY SapMachine $GIT_REF $GITHUB_PR_NUMBER")
             }
         }
         stage("Prepare Devkit") {
-            agent {
-                dockerfile {
-                    dir "SapMachine-infrastructure/dockerfiles/ubuntu_20_04/x86_64"
-                    reuseNode true
-                    label "linux_x86_64"
-                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
-                }
-            }
+            
             when {
                 beforeAgent true
-                expression {  !params.DEVKIT.isEmpty() }
+                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; !params.DEVKIT.isEmpty() }
             }
             steps {
                 script {
@@ -107,15 +104,11 @@
             }
         }
         stage("Download Prerequisites") {
-            agent {
-                dockerfile {
-                    dir "SapMachine-infrastructure/dockerfiles/ubuntu_20_04/x86_64"
-                    reuseNode true
-                    label "linux_x86_64"
-                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
-                }
-            }
             
+            when {
+                beforeAgent true
+                expression { env.VERIFICATION_RESULT != "2" }
+            }
             steps {
                 // Download Boot JDK, Credentials are needed to avoid rate limit exceedance
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
@@ -123,7 +116,7 @@
                 }
 
                 // Download googletest
-                sh("SapMachine-infrastructure/lib/git_clone.sh https://github.com/google/googletest gtest release-1.8.1")
+                sh("SapMachine-infrastructure/lib/git_clone.sh https://github.com/google/googletest gtest v1.13.0")
 
                 // Download jtreg if required
                 script {
@@ -134,15 +127,11 @@
             }
         }
         stage("Build") {
-            agent {
-                dockerfile {
-                    dir "SapMachine-infrastructure/dockerfiles/ubuntu_20_04/x86_64"
-                    reuseNode true
-                    label "linux_x86_64"
-                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
-                }
-            }
             
+            when {
+                beforeAgent true
+                expression { env.VERIFICATION_RESULT != "2" }
+            }
             environment {
                 BOOT_JDK = "${WORKSPACE}/boot_jdk"
             }
@@ -150,23 +139,16 @@
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
                     script {
                         sh("SapMachine-infrastructure/lib/build.sh")
-                        env.ART_VERSION = readFile "${env.WORKSPACE}/javavmversion.txt"
+                        
                     }
                 }
             }
         }
         stage("Run jtreg hotspot") {
-            agent {
-                dockerfile {
-                    dir "SapMachine-infrastructure/dockerfiles/ubuntu_20_04/x86_64"
-                    reuseNode true
-                    label "linux_x86_64"
-                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
-                }
-            }
+            
             when {
                 beforeAgent true
-                expression {  params.RUN_TESTS == true &amp;&amp; params.hotspot_test_groups }
+                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.RUN_TESTS == true &amp;&amp; params.hotspot_test_groups }
             }
             environment {
                 TESTSUITE = 'hotspot'
@@ -191,17 +173,10 @@
             }
         }
         stage("Run jtreg jdk") {
-            agent {
-                dockerfile {
-                    dir "SapMachine-infrastructure/dockerfiles/ubuntu_20_04/x86_64"
-                    reuseNode true
-                    label "linux_x86_64"
-                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
-                }
-            }
+            
             when {
                 beforeAgent true
-                expression {  params.RUN_TESTS == true &amp;&amp; params.jdk_test_groups }
+                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.RUN_TESTS == true &amp;&amp; params.jdk_test_groups }
             }
             environment {
                 TESTSUITE = 'jdk'
@@ -227,17 +202,10 @@
             }
         }
         stage("Run jtreg langtools") {
-            agent {
-                dockerfile {
-                    dir "SapMachine-infrastructure/dockerfiles/ubuntu_20_04/x86_64"
-                    reuseNode true
-                    label "linux_x86_64"
-                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
-                }
-            }
+            
             when {
                 beforeAgent true
-                expression {  params.RUN_TESTS == true &amp;&amp; params.langtools_test_groups }
+                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.RUN_TESTS == true &amp;&amp; params.langtools_test_groups }
             }
             environment {
                 TESTSUITE = 'langtools'
@@ -263,140 +231,56 @@
             }
         }
         
-        stage("Build Debian Packages") {
-            agent {
-                dockerfile {
-                    dir "SapMachine-infrastructure/dockerfiles/ubuntu_20_04/x86_64"
-                    reuseNode true
-                    label "linux_x86_64"
-                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
-                }
-            }
-            when {
-                beforeAgent true
-                expression { env.BUILD_INSTALLER_PACKAGES == "true" }
-            }
-            steps {
-                sh "python3 SapMachine-infrastructure/lib/make_deb.py --tag=${env.SAPMACHINE_VERSION} --architecture=linux-x64"
-            }
-            post {
-                success {
-                    stash includes: '*.deb', name: 'debPackage'
-                    stash includes: 'SapMachine-infrastructure/**', name: 'infra'
-                }
-            }
-        }
-        stage("Build RPM Packages") {
-            agent {
-                dockerfile {
-                    dir "SapMachine-infrastructure/dockerfiles/fedora-rpm"
-                    reuseNode true
-                    label "linux_x86_64"
-                }
-            }
-            when {
-                beforeAgent true
-                expression { env.BUILD_INSTALLER_PACKAGES == "true" }
-            }
-            steps {
-                sh "python3 SapMachine-infrastructure/lib/make_rpm.py --tag=${env.SAPMACHINE_VERSION}"
-            }
-        }
-        stage("Publish Artifactory") {
+        
             
-            steps {
-                // Show the installed version of JFrog CLI.
-                jf '-v'
-
-                // Upload the test archive
-                jf "rt u test.zip sapmachine-mvn/io/sapmachine/build-results/linux_x86_64/${env.ART_VERSION}/test.zip"
+            
+        
+        
+            
+            
                 
-            }
-        }
-        stage("Publish GitHub") {
-            when {
-                expression { params.PUBLISH == true &amp;&amp; !(JOB_NAME ==~ /((\S*)(-macos)(\S*)(-release))/ &amp;&amp; env.RELEASE == "true") }
-            }
-            steps {
-                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
-                    sh "SapMachine-infrastructure/lib/publish.sh"
-                }
-            }
-        }
-        stage("Publish Debian Packages") {
-            agent {
-                label 'agent-local-docker-ubuntu'
-            }
-            when {
-                beforeAgent true
-                expression { params.PUBLISH == true &amp;&amp; env.RELEASE == "true" }
-            }
-            steps {
-                unstash 'infra'
-                unstash 'debPackage'
-                sh "cp -n *.deb /var/pkg/deb/amd64 || true"
-                sh "python3 SapMachine-infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/amd64"
-            }
-        }
+            
         
-        stage("Generate Dockerfiles") {
-            when {
-                expression { params.PUBLISH == true &amp;&amp; env.RELEASE == "true" }
-            }
-            steps {
-                build job: 'generate-dockerfiles', propagate: false, wait: true
-            }
-        }
-        stage("Publish Website Data") {
-            when {
-                expression { params.PUBLISH == true }
-            }
-            steps {
-                build job: 'generate-website-data', propagate: false, wait: false
-            }
-        }
+        
+        
+        
+        
         
             
             
-        stage("Publish CF Java Buildpack Data") {
-            when {
-                expression { params.PUBLISH == true &amp;&amp; env.RELEASE == "true" }
-            }
-            steps {
-                build job: 'generate-cf-java-buildpack-data', propagate: true, wait: true
-            }
-        }
+        
     }
     post {
+        aborted {
+            script {
+                setGitHubPullRequestStatus context: "validate-pr-21-aix_ppc64", state: 'FAILURE', message: 'job aborted'
+            }
+        }
+        failure {
+            script {
+                setGitHubPullRequestStatus context: "validate-pr-21-aix_ppc64", state: 'FAILURE', message: 'build failed'
+            }
+        }
+        unstable {
+            script {
+                setGitHubPullRequestStatus context: "validate-pr-21-aix_ppc64", state: 'FAILURE', message: 'tests failed'
+            }
+        }
         success {
             script {
-                // create a gensrc archive
-                if (params.CREATE_GENSRC_BUNDLE == true) {
-                    sh 'cd SapMachine/build &amp;&amp; cd $(ls) &amp;&amp; zip -rq ${WORKSPACE}/support_gensrc.zip support/gensrc'
-                    archiveArtifacts artifacts: 'support_gensrc.zip'
-                }
-
-                // archive workspace on request
-                if (params.ARCHIVE_WORKSPACE == true) {
-                    sh 'zip -rq workspace.zip .'
-                    archiveArtifacts allowEmptyArchive: true, artifacts: 'workspace.zip'
-                }
+                setGitHubPullRequestStatus context: "validate-pr-21-aix_ppc64", state: 'SUCCESS'
             }
+            
             cleanWs()
         }
-        unsuccessful {
-            script {
-                sh 'zip -rq workspace.zip .'
-                archiveArtifacts allowEmptyArchive: true, artifacts: 'workspace.zip'
-            }
-        }
+        
     }
 }
 </script>
     <sandbox>true</sandbox>
   </definition>
   <actions />
-  <description>Release build for SapMachine 17 on linux_x86_64.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+  <description>PR build for SapMachine 21 on aix_ppc64.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
   <properties>
     <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty />
@@ -412,6 +296,48 @@
         <artifactNumToKeep>1</artifactNumToKeep>
       </strategy>
     </jenkins.model.BuildDiscarderProperty>
+    <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+      <triggers>
+        <org.jenkinsci.plugins.github.pullrequest.GitHubPRTrigger plugin="github-pullrequest@0.4.0">
+          <spec>H/1 * * * *</spec>
+          <triggerMode>HEAVY_HOOKS</triggerMode>
+          <cancelQueued>true</cancelQueued>
+          <abortRunning>false</abortRunning>
+          <skipFirstRun>false</skipFirstRun>
+          <repoProviders>
+            <com.github.kostyasha.github.integration.generic.repoprovider.GitHubPluginRepoProvider>
+              <cacheConnection>true</cacheConnection>
+              <manageHooks>true</manageHooks>
+              <repoPermission>ADMIN</repoPermission>
+            </com.github.kostyasha.github.integration.generic.repoprovider.GitHubPluginRepoProvider>
+          </repoProviders>
+          <errorsAction>
+            <description>GitHub Pull Requests Trigger Errors</description>
+            <errors class="java.util.Collections$SynchronizedSet" serialization="custom">
+              <java.util.Collections_-SynchronizedCollection>
+                <default>
+                  <c class="set" />
+                  <mutex class="java.util.Collections$SynchronizedSet" reference="../../.." />
+                </default>
+              </java.util.Collections_-SynchronizedCollection>
+            </errors>
+          </errorsAction>
+          <events>
+            <org.jenkinsci.plugins.github.pullrequest.events.impl.GitHubPRCommitEvent />
+            <org.jenkinsci.plugins.github.pullrequest.events.impl.GitHubPRCommentEvent>
+              <comment>retest this please</comment>
+            </org.jenkinsci.plugins.github.pullrequest.events.impl.GitHubPRCommentEvent>
+            <org.jenkinsci.plugins.github.pullrequest.events.impl.GitHubPROpenEvent />
+          </events>
+          <preStatus>false</preStatus>
+          <branchRestriction>
+            <targetBranchList>
+              <string>sapmachine21</string>
+            </targetBranchList>
+          </branchRestriction>
+        </org.jenkinsci.plugins.github.pullrequest.GitHubPRTrigger>
+      </triggers>
+    </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
         <hudson.model.StringParameterDefinition>
@@ -423,7 +349,7 @@
         <hudson.model.StringParameterDefinition>
           <name>GIT_REF</name>
           <description>The Git tag, branch or commit to build.</description>
-          <defaultValue>sapmachine17</defaultValue>
+          <defaultValue>sapmachine21</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
@@ -441,19 +367,19 @@
         <hudson.model.StringParameterDefinition>
           <name>SAPMACHINE_ARCHIVE_NAME_PREFIX</name>
           <description>The prefix of the bundle archive.</description>
-          <defaultValue>sapmachine17-linux_x86_64</defaultValue>
+          <defaultValue>sapmachine21-aix_ppc64</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>DEVKIT</name>
           <description>Devkit, could be either a path that locally exists or the GAV coordinates to a tar.gz archive to be downloaded and extracted.</description>
-          <defaultValue>io.sapmachine.build.devkit.linux-x64:devkit-fedora-gcc:19-10.3.0</defaultValue>
+          <defaultValue />
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>EXTRA_CONFIGURE_OPTIONS</name>
           <description>Extra configure options passed directly to configure script.</description>
-          <defaultValue />
+          <defaultValue>--with-debug-level=fastdebug</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
@@ -477,27 +403,7 @@
         <hudson.model.BooleanParameterDefinition>
           <name>RUN_TESTS</name>
           <description>Enable/disable jtreg runs.</description>
-          <defaultValue>false</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
-        <hudson.model.BooleanParameterDefinition>
-          <name>BUILD_INSTALLER_PACKAGES</name>
-          <description>Build platform installer packages, e.g. Windows MSI, Debian packages.</description>
           <defaultValue>true</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
-        <hudson.model.BooleanParameterDefinition>
-          <name>CREATE_GENSRC_BUNDLE</name>
-          <description>Create a bundle with generated source files (gensrc), to be used in e.g. IDE setups.</description>
-          <defaultValue>true</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
-        <hudson.model.BooleanParameterDefinition>
-          <name>PUBLISH</name>
-          <description>When set to true, the resulting bundles will be published to GitHub.</description>
-          <defaultValue>false</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
-        <hudson.model.BooleanParameterDefinition>
-          <name>ARCHIVE_WORKSPACE</name>
-          <description>Archive workspace for inspection after build.</description>
-          <defaultValue>false</defaultValue>
         </hudson.model.BooleanParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>

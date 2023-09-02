@@ -2,7 +2,7 @@
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps">
     <script>pipeline {
     agent {
-        label "linux_x86_64"
+        label "aix_ppc64"
     }
     environment {
         ARTIFACTORY_CREDS = credentials('openjdk-artifactory')
@@ -79,14 +79,7 @@
             }
         }
         stage("Prepare Devkit") {
-            agent {
-                dockerfile {
-                    dir "SapMachine-infrastructure/dockerfiles/ubuntu_20_04/x86_64"
-                    reuseNode true
-                    label "linux_x86_64"
-                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
-                }
-            }
+            
             when {
                 beforeAgent true
                 expression {  !params.DEVKIT.isEmpty() }
@@ -107,14 +100,7 @@
             }
         }
         stage("Download Prerequisites") {
-            agent {
-                dockerfile {
-                    dir "SapMachine-infrastructure/dockerfiles/ubuntu_20_04/x86_64"
-                    reuseNode true
-                    label "linux_x86_64"
-                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
-                }
-            }
+            
             
             steps {
                 // Download Boot JDK, Credentials are needed to avoid rate limit exceedance
@@ -123,7 +109,7 @@
                 }
 
                 // Download googletest
-                sh("SapMachine-infrastructure/lib/git_clone.sh https://github.com/google/googletest gtest release-1.8.1")
+                sh("SapMachine-infrastructure/lib/git_clone.sh https://github.com/google/googletest gtest v1.14.0")
 
                 // Download jtreg if required
                 script {
@@ -134,14 +120,7 @@
             }
         }
         stage("Build") {
-            agent {
-                dockerfile {
-                    dir "SapMachine-infrastructure/dockerfiles/ubuntu_20_04/x86_64"
-                    reuseNode true
-                    label "linux_x86_64"
-                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
-                }
-            }
+            
             
             environment {
                 BOOT_JDK = "${WORKSPACE}/boot_jdk"
@@ -156,14 +135,7 @@
             }
         }
         stage("Run jtreg hotspot") {
-            agent {
-                dockerfile {
-                    dir "SapMachine-infrastructure/dockerfiles/ubuntu_20_04/x86_64"
-                    reuseNode true
-                    label "linux_x86_64"
-                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
-                }
-            }
+            
             when {
                 beforeAgent true
                 expression {  params.RUN_TESTS == true &amp;&amp; params.hotspot_test_groups }
@@ -191,14 +163,7 @@
             }
         }
         stage("Run jtreg jdk") {
-            agent {
-                dockerfile {
-                    dir "SapMachine-infrastructure/dockerfiles/ubuntu_20_04/x86_64"
-                    reuseNode true
-                    label "linux_x86_64"
-                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
-                }
-            }
+            
             when {
                 beforeAgent true
                 expression {  params.RUN_TESTS == true &amp;&amp; params.jdk_test_groups }
@@ -227,14 +192,7 @@
             }
         }
         stage("Run jtreg langtools") {
-            agent {
-                dockerfile {
-                    dir "SapMachine-infrastructure/dockerfiles/ubuntu_20_04/x86_64"
-                    reuseNode true
-                    label "linux_x86_64"
-                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
-                }
-            }
+            
             when {
                 beforeAgent true
                 expression {  params.RUN_TESTS == true &amp;&amp; params.langtools_test_groups }
@@ -263,45 +221,10 @@
             }
         }
         
-        stage("Build Debian Packages") {
-            agent {
-                dockerfile {
-                    dir "SapMachine-infrastructure/dockerfiles/ubuntu_20_04/x86_64"
-                    reuseNode true
-                    label "linux_x86_64"
-                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
-                }
-            }
-            when {
-                beforeAgent true
-                expression { env.BUILD_INSTALLER_PACKAGES == "true" }
-            }
-            steps {
-                sh "python3 SapMachine-infrastructure/lib/make_deb.py --tag=${env.SAPMACHINE_VERSION} --architecture=linux-x64"
-            }
-            post {
-                success {
-                    stash includes: '*.deb', name: 'debPackage'
-                    stash includes: 'SapMachine-infrastructure/**', name: 'infra'
-                }
-            }
-        }
-        stage("Build RPM Packages") {
-            agent {
-                dockerfile {
-                    dir "SapMachine-infrastructure/dockerfiles/fedora-rpm"
-                    reuseNode true
-                    label "linux_x86_64"
-                }
-            }
-            when {
-                beforeAgent true
-                expression { env.BUILD_INSTALLER_PACKAGES == "true" }
-            }
-            steps {
-                sh "python3 SapMachine-infrastructure/lib/make_rpm.py --tag=${env.SAPMACHINE_VERSION}"
-            }
-        }
+        
+            
+            
+        
         stage("Publish Artifactory") {
             
             steps {
@@ -309,7 +232,7 @@
                 jf '-v'
 
                 // Upload the test archive
-                jf "rt u test.zip sapmachine-mvn/io/sapmachine/build-results/linux_x86_64/${env.ART_VERSION}/test.zip"
+                jf "rt u test.zip sapmachine-mvn/io/sapmachine/build-results/aix_ppc64/${env.ART_VERSION}/test.zip"
                 
             }
         }
@@ -323,30 +246,9 @@
                 }
             }
         }
-        stage("Publish Debian Packages") {
-            agent {
-                label 'agent-local-docker-ubuntu'
-            }
-            when {
-                beforeAgent true
-                expression { params.PUBLISH == true &amp;&amp; env.RELEASE == "true" }
-            }
-            steps {
-                unstash 'infra'
-                unstash 'debPackage'
-                sh "cp -n *.deb /var/pkg/deb/amd64 || true"
-                sh "python3 SapMachine-infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/amd64"
-            }
-        }
         
-        stage("Generate Dockerfiles") {
-            when {
-                expression { params.PUBLISH == true &amp;&amp; env.RELEASE == "true" }
-            }
-            steps {
-                build job: 'generate-dockerfiles', propagate: false, wait: true
-            }
-        }
+        
+        
         stage("Publish Website Data") {
             when {
                 expression { params.PUBLISH == true }
@@ -358,14 +260,7 @@
         
             
             
-        stage("Publish CF Java Buildpack Data") {
-            when {
-                expression { params.PUBLISH == true &amp;&amp; env.RELEASE == "true" }
-            }
-            steps {
-                build job: 'generate-cf-java-buildpack-data', propagate: true, wait: true
-            }
-        }
+        
     }
     post {
         success {
@@ -384,19 +279,14 @@
             }
             cleanWs()
         }
-        unsuccessful {
-            script {
-                sh 'zip -rq workspace.zip .'
-                archiveArtifacts allowEmptyArchive: true, artifacts: 'workspace.zip'
-            }
-        }
+        
     }
 }
 </script>
     <sandbox>true</sandbox>
   </definition>
   <actions />
-  <description>Release build for SapMachine 17 on linux_x86_64.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+  <description>Release build for SapMachine 22 on aix_ppc64.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
   <properties>
     <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty />
@@ -423,7 +313,7 @@
         <hudson.model.StringParameterDefinition>
           <name>GIT_REF</name>
           <description>The Git tag, branch or commit to build.</description>
-          <defaultValue>sapmachine17</defaultValue>
+          <defaultValue>sapmachine</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
@@ -441,13 +331,13 @@
         <hudson.model.StringParameterDefinition>
           <name>SAPMACHINE_ARCHIVE_NAME_PREFIX</name>
           <description>The prefix of the bundle archive.</description>
-          <defaultValue>sapmachine17-linux_x86_64</defaultValue>
+          <defaultValue>sapmachine22-aix_ppc64</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>DEVKIT</name>
           <description>Devkit, could be either a path that locally exists or the GAV coordinates to a tar.gz archive to be downloaded and extracted.</description>
-          <defaultValue>io.sapmachine.build.devkit.linux-x64:devkit-fedora-gcc:19-10.3.0</defaultValue>
+          <defaultValue />
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
