@@ -689,6 +689,8 @@
     type_release: *type_release_build
     exclude:
         - platform: aix_ppc64
+          type_pr: 'pr-validation'
+        - platform: aix_ppc64
           major: '11'
         - platform: aix_ppc64
           major: '17'
