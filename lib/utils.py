@@ -567,6 +567,7 @@ def download_asset(asset_url):
 # If it can't be figured out from the inputs, the result is None
 def calc_major(values):
     branch_pattern = re.compile('sapmachine([\d]+)?(-sec)?$')
+    version_pattern = re.compile('(\d+)(\.\d+)?')
     for val in values:
         print("calc_major: checking " + val, file=sys.stderr)
         if val is None:
@@ -578,6 +579,11 @@ def calc_major(values):
         tag = SapMachineTag.from_string(val)
         if not tag is None:
             return tag.get_major()
+
+        match = version_pattern.match(val)
+        if match is not None:
+            print("calc_major: Matched the version pattern " + match.group(), file=sys.stderr)
+            return int(match.group(1))
 
         match = branch_pattern.match(val)
         if match is not None and match.group(1) is not None and match.group(1).isdigit():
