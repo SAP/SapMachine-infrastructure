@@ -50,7 +50,7 @@ if [[ $UNAME == Darwin ]]; then
     NUM_CPUS=`sysctl -n hw.ncpu`
 else
   if [[ $UNAME == AIX ]]; then
-    NUM_CPUS=`lparstat -m 2> /dev/null | grep -o "lcpu=[[0-9]]*" | cut -d "=" -f 2`
+    NUM_CPUS=`lparstat -m 2> /dev/null | grep -o "lcpu=[[0-9]*]*" | cut -d "=" -f 2`
   else
     NUM_CPUS=`grep -c ^processor /proc/cpuinfo`
   fi
