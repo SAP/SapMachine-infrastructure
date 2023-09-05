@@ -5,45 +5,102 @@
   <sshUrl>git@github.com:SAP/SapMachine.git</sshUrl>
   <pulls class="concurrent-hash-map">
     <entry>
-      <int>1486</int>
+      <int>1488</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>1486</number>
-        <issueUpdatedAt>2023-09-01 08:41:59.0 UTC</issueUpdatedAt>
-        <title>Merge to tag jdk-22+13</title>
-        <body>please pull</body>
-        <prUpdatedAt>2023-09-01 08:41:59.0 UTC</prUpdatedAt>
-        <headSha>b22a3fdff7cc157dbba3fae1b7a73364271248c5</headSha>
-        <headRef>pr-jdk-22+13</headRef>
+        <number>1488</number>
+        <issueUpdatedAt>2023-09-04 15:19:42.0 UTC</issueUpdatedAt>
+        <title>SapMachine (21) #1465: Make vitals more configurable</title>
+        <body>plus some test list updates and minor cleanups.
+
+I also cherry-pick the latest GHA enhancements from jdk21u to make GHA testing possible/green.
+
+fixes #1465 
+</body>
+        <prUpdatedAt>2023-09-04 15:19:42.0 UTC</prUpdatedAt>
+        <headSha>9e9068a38007150302edd06eedb6c02200f0995e</headSha>
+        <headRef>updates21</headRef>
         <mergeable>true</mergeable>
-        <baseRef>sapmachine</baseRef>
-        <userLogin>SapMachine</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/1486</htmlUrl>
+        <baseRef>sapmachine21</baseRef>
+        <userEmail>christoph.langer@sap.com</userEmail>
+        <userLogin>RealCLanger</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1488</htmlUrl>
         <labels />
-        <sourceRepoOwner>SAP</sourceRepoOwner>
+        <lastCommentCreatedAt>2023-09-04 12:40:05.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>RealCLanger</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
       </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
     </entry>
     <entry>
-      <int>1487</int>
+      <int>1489</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>1487</number>
-        <issueUpdatedAt>2023-09-01 13:02:29.0 UTC</issueUpdatedAt>
-        <title>SapMachine(11): Compile malloc tracer only for glibc versions &lt; 2.32, and fix tests</title>
-        <body>We should cherry-pick the change to compile malloc tracer only for glibc versions &lt; 2.32 to SapMachine 11 as well to cater for the upcoming bump to Ubuntu 22 in GHA. I made a few minor modifications to the changelist from SapMachine 17.
+        <number>1489</number>
+        <issueUpdatedAt>2023-09-04 16:46:23.0 UTC</issueUpdatedAt>
+        <title>SapMachine (17) #1465: Make vitals more configurable</title>
+        <body>(cherry picked from commit 9d5e210763c1523c248b4427d0333093f489f716)
 
-fixes #1482
+fixes #1465 
 </body>
-        <prUpdatedAt>2023-09-01 13:02:29.0 UTC</prUpdatedAt>
-        <headSha>a8e1e7ce88febee8d12b4768d9b3f32862cbe7ca</headSha>
-        <headRef>sapmachine11-malloctracer</headRef>
+        <prUpdatedAt>2023-09-04 16:46:23.0 UTC</prUpdatedAt>
+        <headSha>38c086b13da5381bf9c0033f5d4619381f84c408</headSha>
+        <headRef>updates17</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine17</baseRef>
+        <userEmail>christoph.langer@sap.com</userEmail>
+        <userLogin>RealCLanger</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1489</htmlUrl>
+        <labels />
+        <lastCommentCreatedAt>2023-09-04 16:46:22.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>RealCLanger</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>1490</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>1490</number>
+        <issueUpdatedAt>2023-09-04 16:50:06.0 UTC</issueUpdatedAt>
+        <title>SapMachine (11) #1465: Make vitals more configurable</title>
+        <body>(cherry picked from commit 9d5e210763c1523c248b4427d0333093f489f716)
+
+fixes #1465
+</body>
+        <prUpdatedAt>2023-09-04 16:50:06.0 UTC</prUpdatedAt>
+        <headSha>dadf4661aff24dce32b26ef369754252d36f32cc</headSha>
+        <headRef>updates11</headRef>
         <mergeable>true</mergeable>
         <baseRef>sapmachine11</baseRef>
         <userEmail>christoph.langer@sap.com</userEmail>
         <userLogin>RealCLanger</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/1487</htmlUrl>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1490</htmlUrl>
         <labels />
-        <lastCommentCreatedAt>2023-09-01 08:24:46.0 UTC</lastCommentCreatedAt>
+        <lastCommentCreatedAt>2023-09-04 16:50:06.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>RealCLanger</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>1491</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>1491</number>
+        <issueUpdatedAt>2023-09-04 18:08:45.0 UTC</issueUpdatedAt>
+        <title>SapMachine 17.0.8 with ParallelGC fix (17.0.8+7)</title>
+        <body>We should create a build of SapMachine 17.0.8 with ParallelGC fix.
+
+fixes #1453
+</body>
+        <prUpdatedAt>2023-09-04 18:08:45.0 UTC</prUpdatedAt>
+        <headSha>182a5628a06c17fa6a7294f82dc291cdbd3583d1</headSha>
+        <headRef>17.0.8-with-gc</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine17</baseRef>
+        <userEmail>christoph.langer@sap.com</userEmail>
+        <userLogin>RealCLanger</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1491</htmlUrl>
+        <labels />
+        <lastCommentCreatedAt>2023-09-04 18:08:45.0 UTC</lastCommentCreatedAt>
         <sourceRepoOwner>RealCLanger</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
