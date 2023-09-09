@@ -45,7 +45,7 @@
   <viewsTabBar class="hudson.views.DefaultViewsTabBar" />
   <myViewsTabBar class="hudson.views.DefaultMyViewsTabBar" />
   <clouds>
-    <hudson.plugins.ec2.EC2Cloud plugin="ec2@2.0.7">
+    <hudson.plugins.ec2.EC2Cloud plugin="ec2@1609.v53b_02a_b_9e52d">
       <name>ec2-SapMachine Cloud</name>
       <useInstanceProfileForCredentials>false</useInstanceProfileForCredentials>
       <roleArn />
@@ -106,6 +106,7 @@
           <nextSubnet>0</nextSubnet>
           <tenancy>Default</tenancy>
           <ebsEncryptRootVolume>DEFAULT</ebsEncryptRootVolume>
+          <metadataSupported>true</metadataSupported>
           <metadataEndpointEnabled>true</metadataEndpointEnabled>
           <metadataTokensRequired>false</metadataTokensRequired>
           <metadataHopsLimit>1</metadataHopsLimit>
@@ -166,6 +167,7 @@
           <nextSubnet>0</nextSubnet>
           <tenancy>Default</tenancy>
           <ebsEncryptRootVolume>DEFAULT</ebsEncryptRootVolume>
+          <metadataSupported>true</metadataSupported>
           <metadataEndpointEnabled>true</metadataEndpointEnabled>
           <metadataTokensRequired>false</metadataTokensRequired>
           <metadataHopsLimit>1</metadataHopsLimit>
@@ -226,6 +228,7 @@
           <nextSubnet>0</nextSubnet>
           <tenancy>Default</tenancy>
           <ebsEncryptRootVolume>DEFAULT</ebsEncryptRootVolume>
+          <metadataSupported>true</metadataSupported>
           <metadataEndpointEnabled>true</metadataEndpointEnabled>
           <metadataTokensRequired>false</metadataTokensRequired>
           <metadataHopsLimit>1</metadataHopsLimit>
