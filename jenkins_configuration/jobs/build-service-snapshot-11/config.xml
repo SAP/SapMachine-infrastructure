@@ -1,13 +1,59 @@
-<flow-definition plugin="workflow-job@1316.vd2290d3341a_f">
-  <actions>
-    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@2.2144.v077a_d1928a_40" />
-    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@2.2144.v077a_d1928a_40">
-      <jobProperties />
-      <triggers />
-      <parameters />
-      <options />
-    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
-  </actions>
+<flow-definition plugin="workflow-job">
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps">
+    <script>pipeline {
+    agent {
+        label 'build_service'
+    }
+    stages {
+        stage("Trigger Builds") {
+            steps {
+                script {
+                    def platforms = [
+                        "linux_aarch64": params.BUILD_LINUX_AARCH64,
+                        
+                        "linux_ppc64le": params.BUILD_LINUX_PPC64LE,
+                        "linux_x86_64": params.BUILD_LINUX_X86_64,
+                        "windows_x86_64": params.BUILD_WINDOWS_X86_64
+                    ]
+
+                    platforms.putAll([
+                        "macos_aarch64": params.BUILD_MACOS_ARM_64,
+                        "macos_x86_64": params.BUILD_MACOS_X86_64])
+
+
+                    for (p in platforms) {
+                        if (p.value) {
+                            build job: 'build-11-' + p.key + '-snapshot',
+                                propagate: false,
+                                wait: false,
+                                parameters: [
+                                    string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
+                                    string(name: 'GIT_REF', value: params.GIT_REF),
+                                    string(name: 'SAPMACHINE_VERSION', value: params.SAPMACHINE_VERSION),
+                                    string(name: 'JDK_BUILD', value: params.JDK_BUILD),
+                                    string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
+                                    string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
+                                    string(name: 'jdk_test_groups', value: params.jdk_test_groups),
+                                    string(name: 'langtools_test_groups', value: params.langtools_test_groups),
+                                    [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
+                                    [$class: 'BooleanParameterValue', name: 'BUILD_INSTALLER_PACKAGES', value: params.BUILD_INSTALLER_PACKAGES],
+                                    [$class: 'BooleanParameterValue', name: 'CREATE_GENSRC_BUNDLE', value: params.CREATE_GENSRC_BUNDLE],
+                                    [$class: 'BooleanParameterValue', name: 'UPLOAD_ARTIFACTORY', value: params.UPLOAD_ARTIFACTORY],
+                                    [$class: 'BooleanParameterValue', name: 'ARCHIVE_WORKSPACE', value: params.ARCHIVE_WORKSPACE]
+                                ]
+                        } else {
+                            println "Skipping build for " + p.key + " (build=" + p.value + ")."
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <actions />
   <description>Start snapshot build for SapMachine 11 on all platorms.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
   <properties>
@@ -127,59 +173,4 @@
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@3731.ve4b_5b_857b_a_d3">
-    <script>pipeline {
-    agent {
-        label 'build_service'
-    }
-    stages {
-        stage("Trigger Builds") {
-            steps {
-                script {
-                    def platforms = [
-                        "linux_aarch64": params.BUILD_LINUX_AARCH64,
-                        
-                        "linux_ppc64le": params.BUILD_LINUX_PPC64LE,
-                        "linux_x86_64": params.BUILD_LINUX_X86_64,
-                        "windows_x86_64": params.BUILD_WINDOWS_X86_64
-                    ]
-
-                    platforms.putAll([
-                        "macos_aarch64": params.BUILD_MACOS_ARM_64,
-                        "macos_x86_64": params.BUILD_MACOS_X86_64])
-
-
-                    for (p in platforms) {
-                        if (p.value) {
-                            build job: 'build-11-' + p.key + '-snapshot',
-                                propagate: false,
-                                wait: false,
-                                parameters: [
-                                    string(name: 'SAPMACHINE_GIT_REPOSITORY', value: params.SAPMACHINE_GIT_REPOSITORY),
-                                    string(name: 'GIT_REF', value: params.GIT_REF),
-                                    string(name: 'SAPMACHINE_VERSION', value: params.SAPMACHINE_VERSION),
-                                    string(name: 'JDK_BUILD', value: params.JDK_BUILD),
-                                    string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
-                                    string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
-                                    string(name: 'jdk_test_groups', value: params.jdk_test_groups),
-                                    string(name: 'langtools_test_groups', value: params.langtools_test_groups),
-                                    [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
-                                    [$class: 'BooleanParameterValue', name: 'BUILD_INSTALLER_PACKAGES', value: params.BUILD_INSTALLER_PACKAGES],
-                                    [$class: 'BooleanParameterValue', name: 'CREATE_GENSRC_BUNDLE', value: params.CREATE_GENSRC_BUNDLE],
-                                    [$class: 'BooleanParameterValue', name: 'UPLOAD_ARTIFACTORY', value: params.UPLOAD_ARTIFACTORY],
-                                    [$class: 'BooleanParameterValue', name: 'ARCHIVE_WORKSPACE', value: params.ARCHIVE_WORKSPACE]
-                                ]
-                        } else {
-                            println "Skipping build for " + p.key + " (build=" + p.value + ")."
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-</script>
-    <sandbox>true</sandbox>
-  </definition>
-  <disabled>false</disabled>
 </flow-definition>

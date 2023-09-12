@@ -2,7 +2,7 @@
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps">
     <script>pipeline {
     agent {
-        label "windows_x86_64"
+        label "aix_ppc64"
     }
     environment {
         ARTIFACTORY_CREDS = credentials('openjdk-artifactory')
@@ -15,7 +15,7 @@
             steps {
                 // update GitHub status and initialize PR Verification
                 script {
-                    setGitHubPullRequestStatus context: "validate-pr-21-windows_x86_64", state: 'PENDING'
+                    setGitHubPullRequestStatus context: "validate-pr-21-aix_ppc64", state: 'PENDING'
                 }
 
                 // trigger workspace cleanup
@@ -61,7 +61,7 @@
                 // credentials are needed to avoid rate limit exceedance in verify_pr.py
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
                     script {
-                        env.COMMENT = ('windows_x86_64' == 'linux_x86_64') ? "-c" : ""
+                        env.COMMENT = ('aix_ppc64' == 'linux_x86_64') ? "-c" : ""
                         env.VERIFICATION_RESULT = sh(
                             script: "python3 SapMachine-infrastructure/lib/verify_pr.py -p ${env.GITHUB_PR_NUMBER} ${env.COMMENT}",
                             returnStatus: true
@@ -253,39 +253,34 @@
     post {
         aborted {
             script {
-                setGitHubPullRequestStatus context: "validate-pr-21-windows_x86_64", state: 'FAILURE', message: 'job aborted'
+                setGitHubPullRequestStatus context: "validate-pr-21-aix_ppc64", state: 'FAILURE', message: 'job aborted'
             }
         }
         failure {
             script {
-                setGitHubPullRequestStatus context: "validate-pr-21-windows_x86_64", state: 'FAILURE', message: 'build failed'
+                setGitHubPullRequestStatus context: "validate-pr-21-aix_ppc64", state: 'FAILURE', message: 'build failed'
             }
         }
         unstable {
             script {
-                setGitHubPullRequestStatus context: "validate-pr-21-windows_x86_64", state: 'FAILURE', message: 'tests failed'
+                setGitHubPullRequestStatus context: "validate-pr-21-aix_ppc64", state: 'FAILURE', message: 'tests failed'
             }
         }
         success {
             script {
-                setGitHubPullRequestStatus context: "validate-pr-21-windows_x86_64", state: 'SUCCESS'
+                setGitHubPullRequestStatus context: "validate-pr-21-aix_ppc64", state: 'SUCCESS'
             }
             
             cleanWs()
         }
-        unsuccessful {
-            script {
-                sh 'zip -rq workspace.zip .'
-                archiveArtifacts allowEmptyArchive: true, artifacts: 'workspace.zip'
-            }
-        }
+        
     }
 }
 </script>
     <sandbox>true</sandbox>
   </definition>
   <actions />
-  <description>PR build for SapMachine 21 on windows_x86_64.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+  <description>PR build for SapMachine 21 on aix_ppc64.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
   <properties>
     <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty />
@@ -372,13 +367,13 @@
         <hudson.model.StringParameterDefinition>
           <name>SAPMACHINE_ARCHIVE_NAME_PREFIX</name>
           <description>The prefix of the bundle archive.</description>
-          <defaultValue>sapmachine21-windows_x86_64</defaultValue>
+          <defaultValue>sapmachine21-aix_ppc64</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>DEVKIT</name>
           <description>Devkit, could be either a path that locally exists or the GAV coordinates to a tar.gz archive to be downloaded and extracted.</description>
-          <defaultValue>io.sapmachine.build.devkit.windows-x64:devkit-vs2019:16.11.13</defaultValue>
+          <defaultValue />
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
