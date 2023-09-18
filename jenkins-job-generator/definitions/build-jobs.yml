@@ -15,9 +15,6 @@
            linux_x86_64_devkit: 'io.sapmachine.build.devkit.linux-x64:devkit-fedora-gcc:19-10.3.0'
            windows_devkit: 'io.sapmachine.build.devkit.windows-x64:devkit-vs2017:15.9.49'
            gtest_version: release-1.8.1
-        - '20':
-           branch_name: sapmachine20
-           gtest_version: release-1.8.1
         - '21':
            branch_name: sapmachine21
            gtest_version: v1.13.0
@@ -692,8 +689,6 @@
           major: '11'
         - platform: aix_ppc64
           major: '17'
-        - platform: aix_ppc64
-          major: '20'
         - platform: linux_alpine_x86_64
           major: '11'
     jobs:
