@@ -31,7 +31,11 @@ fi
 
 # use a devkit, if set
 if [ ! -z $DEVKIT_PATH ]; then
-  _DEVKIT_OPTION="--with-devkit=$DEVKIT_PATH"
+  if [[ $UNAME == Darwin ]]; then
+    _DEVKIT_OPTION="--with-xcode-path=$DEVKIT_PATH"
+  else
+    _DEVKIT_OPTION="--with-devkit=$DEVKIT_PATH"
+  fi
 fi
 
 if [[ $UNAME == Darwin ]]; then
