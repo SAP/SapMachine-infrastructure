@@ -8,7 +8,11 @@ DEVKIT_GROUP_SLASH=`echo $DEVKIT_GROUP | tr . /`
 DEVKIT_ARTEFACT=$2
 DEVKIT_VERSION=$3
 DEVKIT_BASENAME=${DEVKIT_ARTEFACT}-${DEVKIT_VERSION}
-DEVKIT_ARCHIVE=${DEVKIT_BASENAME}.tar.gz
+if [[ $UNAME == Darwin ]]; then
+  DEVKIT_ARCHIVE=${DEVKIT_BASENAME}.xip
+else
+  DEVKIT_ARCHIVE=${DEVKIT_BASENAME}.tar.gz
+fi
 
 # We try to avoid unnecessary work by preparing the build agents with the devkit.
 # However, should the local devkit of the requested version be missing, we'll download and extract it here.
@@ -64,16 +68,30 @@ if [ ! -f ${DEVKIT_ARCHIVE_PATH} ]; then
 fi
 
 echo Extracting ${DEVKIT_ARCHIVE_PATH} to ${DEVKIT_PATH}...
-mkdir ${DEVKIT_PATH}
-pushd ${DEVKIT_PATH}
+if [[ $UNAME == Darwin ]]; then
+  echo cp ${DEVKIT_ARCHIVE_PATH} .
+  cp ${DEVKIT_ARCHIVE_PATH} .
 
-if [[ $UNAME == "Linux" ]]; then
-  tar --no-same-permissions --no-same-owner --strip-components=1 -xzf ${DEVKIT_ARCHIVE_PATH}
+  echo xip -x ${DEVKIT_ARCHIVE}
+  xip -x ${DEVKIT_ARCHIVE}
+
+  echo ls -la
+  ls -la
+
+  echo mv Xcode.app ${DEVKIT_BASENAME}
+  mv Xcode.app ${DEVKIT_BASENAME}
 else
-  tar xzf ${DEVKIT_ARCHIVE_PATH}
+  mkdir ${DEVKIT_PATH}
+  pushd ${DEVKIT_PATH}
+
+  if [[ $UNAME == "Linux" ]]; then
+    tar --no-same-permissions --no-same-owner --strip-components=1 -xzf ${DEVKIT_ARCHIVE_PATH}
+  else
+    tar xzf ${DEVKIT_ARCHIVE_PATH}
+  fi
+  popd
 fi
 
-popd
 echo Extracted devkit.
 
 echo "${DEVKIT_PATH}" > devkitlocation.txt
