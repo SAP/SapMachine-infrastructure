@@ -77,8 +77,8 @@ if [[ $UNAME == Darwin ]]; then
   echo ls -la
   ls -la
 
-  echo mv Xcode.app ${DEVKIT_BASENAME}
-  mv Xcode.app ${DEVKIT_BASENAME}
+  echo mv Xcode.app ${DEVKIT_PATH}
+  mv Xcode.app ${DEVKIT_PATH}
 else
   mkdir ${DEVKIT_PATH}
   pushd ${DEVKIT_PATH}
