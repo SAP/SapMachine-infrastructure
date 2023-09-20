@@ -17,25 +17,22 @@ fi
 # We try to avoid unnecessary work by preparing the build agents with the devkit.
 # However, should the local devkit of the requested version be missing, we'll download and extract it here.
 
-# Here we check if the extracted devkit is present.
-# On our Mac runners we had issues that an already extracted devkit folder went stale, so we don't do this for mac atm.
-if [[ $UNAME != Darwin ]]; then
-  if [[ $UNAME == CYGWIN* ]]; then
-    DEVKIT_PATH="/cygdrive/c/devkits/${DEVKIT_BASENAME}"
-  else
-    DEVKIT_PATH="/opt/devkits/${DEVKIT_BASENAME}"
-  fi
-
-  if [ -d ${DEVKIT_PATH} ]; then
-    echo Devkit directory ${DEVKIT_PATH} exists, using it.
-    echo "${DEVKIT_PATH}" > devkitlocation.txt
-    exit 0
-  fi
+# Check if the devkit is prepared.
+if [[ $UNAME == Darwin ]]; then
+  DEVKIT_PATH=$(cd .. && pwd)"/${DEVKIT_BASENAME}"
+elif [[ $UNAME == CYGWIN* ]]; then
+  DEVKIT_PATH="/cygdrive/c/devkits/${DEVKIT_BASENAME}"
+else
+  DEVKIT_PATH="/opt/devkits/${DEVKIT_BASENAME}"
 fi
 
-# OK, the devkit directory is not there. Do we already have the archive?
-DEVKIT_PATH=$(pwd)"/${DEVKIT_BASENAME}"
+if [ -d ${DEVKIT_PATH} ]; then
+  echo Devkit directory ${DEVKIT_PATH} exists, using it.
+  echo "${DEVKIT_PATH}" > devkitlocation.txt
+  exit 0
+fi
 
+# OK, the devkit directory is not there. Check for the archive and download if necessary.
 if [[ $UNAME == Darwin ]]; then
   DEVKIT_ARCHIVE_PATH=$(cd .. && pwd)"/${DEVKIT_ARCHIVE}"
 elif [[ $UNAME == CYGWIN* ]]; then
@@ -67,6 +64,8 @@ if [ ! -f ${DEVKIT_ARCHIVE_PATH} ]; then
   ${CURL_TOOL} -L -s -o ${DEVKIT_ARCHIVE_PATH} -u ${ARTIFACTORY_CREDS} ${DOWNLOAD_URL}
 fi
 
+# Now extract the devkit.
+#DEVKIT_PATH=$(pwd)"/${DEVKIT_BASENAME}"
 echo Extracting ${DEVKIT_ARCHIVE_PATH} to ${DEVKIT_PATH}...
 if [[ $UNAME == Darwin ]]; then
   echo cp ${DEVKIT_ARCHIVE_PATH} .
@@ -93,5 +92,4 @@ else
 fi
 
 echo Extracted devkit.
-
 echo "${DEVKIT_PATH}" > devkitlocation.txt
