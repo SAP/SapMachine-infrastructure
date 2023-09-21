@@ -9,38 +9,35 @@ DEVKIT_ARTEFACT=$2
 DEVKIT_VERSION=$3
 DEVKIT_BASENAME=${DEVKIT_ARTEFACT}-${DEVKIT_VERSION}
 if [[ $UNAME == Darwin ]]; then
+  PARENT_DIR=$(cd .. && pwd)
   DEVKIT_ARCHIVE=${DEVKIT_BASENAME}.xip
+  DEVKIT_PATH=${PARENT_DIR}/${DEVKIT_BASENAME}
+  DEVKIT_ARCHIVE_PATH=${PARENT_DIR}/${DEVKIT_ARCHIVE}
+elif [[ $UNAME == CYGWIN* ]]; then
+  DEVKIT_ARCHIVE=${DEVKIT_BASENAME}.tar.gz
+  DEVKIT_PATH="/cygdrive/c/devkits/${DEVKIT_BASENAME}"
+  DEVKIT_ARCHIVE_PATH="/cygdrive/c/devkits/${DEVKIT_ARCHIVE}"
 else
   DEVKIT_ARCHIVE=${DEVKIT_BASENAME}.tar.gz
+  DEVKIT_PATH="/opt/devkits/${DEVKIT_BASENAME}"
+  DEVKIT_ARCHIVE_PATH="/opt/devkits/${DEVKIT_ARCHIVE}"
 fi
 
 # We try to avoid unnecessary work by preparing the build agents with the devkit.
 # However, should the local devkit of the requested version be missing, we'll download and extract it here.
 
 # Check if the devkit is prepared.
-if [[ $UNAME == Darwin ]]; then
-  DEVKIT_PATH=$(cd .. && pwd)"/${DEVKIT_BASENAME}"
-elif [[ $UNAME == CYGWIN* ]]; then
-  DEVKIT_PATH="/cygdrive/c/devkits/${DEVKIT_BASENAME}"
-else
-  DEVKIT_PATH="/opt/devkits/${DEVKIT_BASENAME}"
-fi
-
 if [ -d ${DEVKIT_PATH} ]; then
   echo Devkit directory ${DEVKIT_PATH} exists, using it.
   echo "${DEVKIT_PATH}" > devkitlocation.txt
   exit 0
 fi
 
-# OK, the devkit directory is not there. Check for the archive and download if necessary.
-if [[ $UNAME == Darwin ]]; then
-  DEVKIT_ARCHIVE_PATH=$(cd .. && pwd)"/${DEVKIT_ARCHIVE}"
-elif [[ $UNAME == CYGWIN* ]]; then
-  DEVKIT_ARCHIVE_PATH="/cygdrive/c/devkits/${DEVKIT_ARCHIVE}"
-else
-  DEVKIT_ARCHIVE_PATH="/opt/devkits/${DEVKIT_ARCHIVE}"
+if [[ $UNAME != Darwin ]]; then
+  DEVKIT_PATH=$(pwd)"/${DEVKIT_BASENAME}"
 fi
 
+# OK, the devkit directory is not there. Check for the archive and download if necessary.
 if [ ! -f ${DEVKIT_ARCHIVE_PATH} ]; then
   echo Devkit archive ${DEVKIT_ARCHIVE_PATH} does not exist, need to download it.
   if [[ $UNAME != Darwin ]]; then
@@ -65,20 +62,14 @@ if [ ! -f ${DEVKIT_ARCHIVE_PATH} ]; then
 fi
 
 # Now extract the devkit.
-#DEVKIT_PATH=$(pwd)"/${DEVKIT_BASENAME}"
 echo Extracting ${DEVKIT_ARCHIVE_PATH} to ${DEVKIT_PATH}...
 if [[ $UNAME == Darwin ]]; then
-  echo cp ${DEVKIT_ARCHIVE_PATH} .
-  cp ${DEVKIT_ARCHIVE_PATH} .
+  pushd ${PARENT_DIR}
 
-  echo xip -x ${DEVKIT_ARCHIVE}
   xip -x ${DEVKIT_ARCHIVE}
-
-  echo ls -la
-  ls -la
-
-  echo mv Xcode.app ${DEVKIT_PATH}
   mv Xcode.app ${DEVKIT_PATH}
+
+  popd
 else
   mkdir ${DEVKIT_PATH}
   pushd ${DEVKIT_PATH}
@@ -88,6 +79,7 @@ else
   else
     tar xzf ${DEVKIT_ARCHIVE_PATH}
   fi
+
   popd
 fi
 
