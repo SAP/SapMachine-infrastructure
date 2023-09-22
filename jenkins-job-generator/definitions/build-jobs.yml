@@ -22,6 +22,10 @@
     platforms: &platforms
         - aix_ppc64:
             architecture: aix-ppc64
+            publish_artifactory_step: |-
+                steps {{
+                                // Upload the test archive
+                                sh "curl -sSf -u ${{env.ARTIFACTORY_CREDS}} -X PUT -T test.zip https://common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build-results/aix_ppc64/${{env.ART_VERSION}}/test.zip"
         - linux_aarch64:
             architecture: linux-aarch64
             debarch: arm64
@@ -53,6 +57,10 @@
                                 }}
                             }}
                         }}
+            publish_artifactory_step: &publish_artifactory_step |-
+                steps {{
+                                // Upload the test archive
+                                jf "rt u test.zip sapmachine-mvn/io/sapmachine/build-results/{platform}/${{env.ART_VERSION}}/test.zip"
             publish_debian_packages: &publish_debian_packages |-
                 stage("Publish Debian Packages") {{
                             agent {{
@@ -115,6 +123,7 @@
                                 }}
                             }}
                         }}
+            publish_artifactory_step: *publish_artifactory_step
             docker_agent_verify: *docker_agent_alpine_x86_64
             save_workspace_on_error: *save_workspace_on_error
         - linux_ppc64le:
@@ -134,6 +143,7 @@
             build_debian_packages_pre: *build_debian_packages_pre
             docker_agent_debian: *docker_agent_ppc64le
             build_debian_packages_step: *build_debian_packages_step
+            publish_artifactory_step: *publish_artifactory_step
             publish_debian_packages: *publish_debian_packages
             generate_dockerfiles: *generate_dockerfiles
         - linux_x86_64:
@@ -170,6 +180,7 @@
                                 sh "python3 SapMachine-infrastructure/lib/make_rpm.py --tag=${{env.SAPMACHINE_VERSION}}"
                             }}
                         }}
+            publish_artifactory_step: *publish_artifactory_step
             publish_debian_packages: *publish_debian_packages
             publish_cf_data: &publish_cf_data |-
                 stage("Publish CF Java Buildpack Data") {{
@@ -197,9 +208,11 @@
                                 }}
                             }}
                         }}
+            publish_artifactory_step: *publish_artifactory_step
         - macos_aarch64:
             devkit_default: 'io.sapmachine.build.devkit.macos:devkit-xcode:13.1'
             create_brew_casks: *create_brew_casks
+            publish_artifactory_step: *publish_artifactory_step
         - windows_x86_64:
             devkit_default: '{windows_devkit|io.sapmachine.build.devkit.windows-x64:devkit-vs2019:16.11.13}'
             build_windows_installer: |-
@@ -221,6 +234,7 @@
                                 }}
                             }}
                         }}
+            publish_artifactory_step: *publish_artifactory_step
             publish_artifactory_msi: |-
                 // Upload msi Files to Artifactory
                                 script {{
@@ -329,6 +343,7 @@
             docker_agent_alpine: ''
             build_alpine_apk_packages_step: ''
             build_rpm_packages: ''
+            publish_artifactory_step: ''
             publish_artifactory_msi: ''
             publish_debian_packages: ''
             create_brew_casks: ''
@@ -368,13 +383,6 @@
                 when {{
                                 expression {{ params.UPLOAD_ARTIFACTORY == true }}
                             }}
-            publish_artifactory_step: &publish_artifactory_step |-
-                steps {{
-                                // Show the installed version of JFrog CLI.
-                                jf '-v'
-
-                                // Upload the test archive
-                                jf "rt u test.zip sapmachine-mvn/io/sapmachine/build-results/{platform}/${{env.ART_VERSION}}/test.zip"
             publish_artifactory_msi: ''
             publish_artifactory_end: &publish_artifactory_end |-
                 }}
@@ -424,7 +432,6 @@
                                     }}
             get_art_ver: env.ART_VERSION = readFile "${{env.WORKSPACE}}/javavmversion.txt"
             publish_artifactory_pre: *publish_artifactory_pre
-            publish_artifactory_step: *publish_artifactory_step
             publish_artifactory_end: *publish_artifactory_end
             publish_github: |-
                 stage("Publish GitHub") {{
