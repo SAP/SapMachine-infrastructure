@@ -52,8 +52,11 @@ def run_jenkins_jobs(major, tag):
         str.format('build-{0}-windows_x86_64-release', major)
     ]
 
-    if major > 11:
+    if major >= 17:
         build_jobs.append(str.format('build-{0}-linux_alpine_x86_64-release', major))
+
+    if major >= 21:
+        build_jobs.append(str.format('build-{0}-aix_ppc64-release', major))
 
     job_params = {
         'PUBLISH': 'true' ,
