@@ -28,7 +28,7 @@
 
                     for (p in platforms) {
                         if (p.value) {
-                            build job: 'build-21-' + p.key + '-release',
+                            build job: 'build-22-' + p.key + '-release',
                                 propagate: false,
                                 wait: false,
                                 parameters: [
@@ -59,7 +59,7 @@
     <sandbox>true</sandbox>
   </definition>
   <actions />
-  <description>Start release build for SapMachine 21 on all platorms.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+  <description>Start release build for SapMachine 22 on all platorms.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
   <properties>
     <jenkins.model.BuildDiscarderProperty>
@@ -81,7 +81,7 @@
         <hudson.model.StringParameterDefinition>
           <name>GIT_REF</name>
           <description>The Git tag, branch or commit to build.</description>
-          <defaultValue>sapmachine21</defaultValue>
+          <defaultValue>sapmachine</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>

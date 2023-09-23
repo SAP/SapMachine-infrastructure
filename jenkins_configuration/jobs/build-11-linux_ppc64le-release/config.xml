@@ -116,7 +116,7 @@
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@3787.v8f5dcd14a_fa_c">
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@3791.va_c0338ea_b_59c">
     <script>pipeline {
     agent {
         label "linux_ppc64le"
@@ -407,9 +407,6 @@
         stage("Publish Artifactory") {
             
             steps {
-                // Show the installed version of JFrog CLI.
-                jf '-v'
-
                 // Upload the test archive
                 jf "rt u test.zip sapmachine-mvn/io/sapmachine/build-results/linux_ppc64le/${env.ART_VERSION}/test.zip"
                 

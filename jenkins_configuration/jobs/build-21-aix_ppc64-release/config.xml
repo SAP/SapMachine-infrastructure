@@ -228,11 +228,8 @@
         stage("Publish Artifactory") {
             
             steps {
-                // Show the installed version of JFrog CLI.
-                jf '-v'
-
                 // Upload the test archive
-                jf "rt u test.zip sapmachine-mvn/io/sapmachine/build-results/aix_ppc64/${env.ART_VERSION}/test.zip"
+                sh "curl -sSf -u ${env.ARTIFACTORY_CREDS} -X PUT -T test.zip https://common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build-results/aix_ppc64/${env.ART_VERSION}/test.zip"
                 
             }
         }

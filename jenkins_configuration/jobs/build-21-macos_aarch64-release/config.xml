@@ -228,9 +228,6 @@
         stage("Publish Artifactory") {
             
             steps {
-                // Show the installed version of JFrog CLI.
-                jf '-v'
-
                 // Upload the test archive
                 jf "rt u test.zip sapmachine-mvn/io/sapmachine/build-results/macos_aarch64/${env.ART_VERSION}/test.zip"
                 

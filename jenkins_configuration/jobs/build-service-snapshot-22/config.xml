@@ -16,19 +16,14 @@
                         "windows_x86_64": params.BUILD_WINDOWS_X86_64
                     ]
 
-                    // only trigger macos jobs for non-release builds
-                    def tag = params.SAPMACHINE_VERSION.isEmpty() ? params.GIT_REF : params.SAPMACHINE_VERSION
-                    def m = (tag =~ /sapmachine-((\d+(\.\d+)*)(\+(\d+))?)$/)
-                    if (!m || m.group(4) != null) {
-                        platforms.putAll([
-                            "macos_aarch64": params.BUILD_MACOS_ARM_64,
-                            "macos_x86_64": params.BUILD_MACOS_X86_64])
-                    }
+                    platforms.putAll([
+                        "macos_aarch64": params.BUILD_MACOS_ARM_64,
+                        "macos_x86_64": params.BUILD_MACOS_X86_64])
 
 
                     for (p in platforms) {
                         if (p.value) {
-                            build job: 'build-21-' + p.key + '-release',
+                            build job: 'build-22-' + p.key + '-snapshot',
                                 propagate: false,
                                 wait: false,
                                 parameters: [
@@ -43,7 +38,7 @@
                                     [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
                                     [$class: 'BooleanParameterValue', name: 'BUILD_INSTALLER_PACKAGES', value: params.BUILD_INSTALLER_PACKAGES],
                                     [$class: 'BooleanParameterValue', name: 'CREATE_GENSRC_BUNDLE', value: params.CREATE_GENSRC_BUNDLE],
-                                    [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
+                                    [$class: 'BooleanParameterValue', name: 'UPLOAD_ARTIFACTORY', value: params.UPLOAD_ARTIFACTORY],
                                     [$class: 'BooleanParameterValue', name: 'ARCHIVE_WORKSPACE', value: params.ARCHIVE_WORKSPACE]
                                 ]
                         } else {
@@ -59,7 +54,7 @@
     <sandbox>true</sandbox>
   </definition>
   <actions />
-  <description>Start release build for SapMachine 21 on all platorms.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+  <description>Start snapshot build for SapMachine 22 on all platorms.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
   <properties>
     <jenkins.model.BuildDiscarderProperty>
@@ -81,7 +76,7 @@
         <hudson.model.StringParameterDefinition>
           <name>GIT_REF</name>
           <description>The Git tag, branch or commit to build.</description>
-          <defaultValue>sapmachine21</defaultValue>
+          <defaultValue>sapmachine</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
@@ -158,7 +153,7 @@
         <hudson.model.BooleanParameterDefinition>
           <name>RUN_TESTS</name>
           <description>Enable/disable jtreg runs.</description>
-          <defaultValue>false</defaultValue>
+          <defaultValue>true</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>BUILD_INSTALLER_PACKAGES</name>
@@ -171,9 +166,9 @@
           <defaultValue>true</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
-          <name>PUBLISH</name>
-          <description>When set to true, the resulting bundles will be published to GitHub.</description>
-          <defaultValue>false</defaultValue>
+          <name>UPLOAD_ARTIFACTORY</name>
+          <description>Upload build results to artifactory which will trigger testing.</description>
+          <defaultValue>true</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>ARCHIVE_WORKSPACE</name>
