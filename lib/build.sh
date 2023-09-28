@@ -80,6 +80,7 @@ zip -rq "${WORKSPACE}/test.zip" make/data/lsrdata || true
 zip -rq "${WORKSPACE}/test.zip" make/data/publicsuffixlist/VERSION || true
 zip -rq "${WORKSPACE}/test.zip" make/data/tzdata || true
 zip -rq "${WORKSPACE}/test.zip" make/data/unicodedata || true
+zip -rq "${WORKSPACE}/test.zip" make/data/charsetmapping || true
 zip -rq "${WORKSPACE}/test.zip" make/jdk/src/classes/build/tools/makejavasecurity || true
 zip -rq "${WORKSPACE}/test.zip" src/*/*/legal/ || true
 zip -rq "${WORKSPACE}/test.zip" src/java.base/share/classes/javax/security/auth/ || true
