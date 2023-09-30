@@ -8,11 +8,11 @@
       <int>1511</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>1511</number>
-        <issueUpdatedAt>2023-09-29 00:29:54.0 UTC</issueUpdatedAt>
+        <issueUpdatedAt>2023-09-29 13:25:04.0 UTC</issueUpdatedAt>
         <title>Merge to tag jdk-22+17</title>
         <body>please pull</body>
-        <prUpdatedAt>2023-09-29 00:29:54.0 UTC</prUpdatedAt>
-        <headSha>edcc559f09364da3692862e1f3d0636aa8eec1d4</headSha>
+        <prUpdatedAt>2023-09-29 13:25:04.0 UTC</prUpdatedAt>
+        <headSha>41b0f02aa3ccfbf3cd399b8d91123c4f5b2f8a04</headSha>
         <headRef>pr-jdk-22+17</headRef>
         <mergeable>true</mergeable>
         <baseRef>sapmachine</baseRef>
@@ -20,6 +20,34 @@
         <htmlUrl>https://github.com/SAP/SapMachine/pull/1511</htmlUrl>
         <labels />
         <sourceRepoOwner>SAP</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>1513</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>1513</number>
+        <issueUpdatedAt>2023-09-29 15:45:28.0 UTC</issueUpdatedAt>
+        <title>SapMachine #1512: ParallelGC: parallel scanning of large object arrays in old gen during young gc should be disabled by default</title>
+        <body>Introduce new vm option `UseParallelLargeArrayScanning` which controls parallel scanning of large object arrays in the old generation during young collections.
+
+`UseParallelLargeArrayScanning` is disabled by default.
+
+fixes #1512 
+
+</body>
+        <prUpdatedAt>2023-09-29 15:45:28.0 UTC</prUpdatedAt>
+        <headSha>b2d37e6db62fb1ece5791deaeb684c461eee0625</headSha>
+        <headRef>disable_large_array_scanning_by_default</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine</baseRef>
+        <userEmail>richard.reingruber@sap.com</userEmail>
+        <userLogin>reinrich</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1513</htmlUrl>
+        <labels />
+        <lastCommentCreatedAt>2023-09-29 15:14:19.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>reinrich</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
       </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
