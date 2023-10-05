@@ -5,49 +5,51 @@
   <sshUrl>git@github.com:SAP/SapMachine.git</sshUrl>
   <pulls class="concurrent-hash-map">
     <entry>
-      <int>1511</int>
+      <int>1515</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>1511</number>
-        <issueUpdatedAt>2023-10-02 09:18:30.0 UTC</issueUpdatedAt>
-        <title>Merge to tag jdk-22+17</title>
-        <body>please pull</body>
-        <prUpdatedAt>2023-10-02 09:18:30.0 UTC</prUpdatedAt>
-        <headSha>41b0f02aa3ccfbf3cd399b8d91123c4f5b2f8a04</headSha>
-        <headRef>pr-jdk-22+17</headRef>
+        <number>1515</number>
+        <issueUpdatedAt>2023-10-04 14:46:10.0 UTC</issueUpdatedAt>
+        <title>SapMachine (17) #1512: ParallelGC: parallel scanning of large object arrays in old gen during young gc should be disabled by default</title>
+        <body>Backport to SapMachine17.
+
+fixes #1512
+</body>
+        <prUpdatedAt>2023-10-04 14:46:10.0 UTC</prUpdatedAt>
+        <headSha>7026266c856968b1579e8cb1a67563ed75109db4</headSha>
+        <headRef>sapmachinegcflag17</headRef>
         <mergeable>true</mergeable>
-        <baseRef>sapmachine</baseRef>
-        <userLogin>SapMachine</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/1511</htmlUrl>
+        <baseRef>sapmachine17</baseRef>
+        <userEmail>christoph.langer@sap.com</userEmail>
+        <userLogin>RealCLanger</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1515</htmlUrl>
         <labels />
-        <sourceRepoOwner>SAP</sourceRepoOwner>
+        <lastCommentCreatedAt>2023-10-04 13:41:41.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>RealCLanger</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
       </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
     </entry>
     <entry>
-      <int>1513</int>
+      <int>1516</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>1513</number>
-        <issueUpdatedAt>2023-10-02 10:04:16.0 UTC</issueUpdatedAt>
-        <title>SapMachine #1512: ParallelGC: parallel scanning of large object arrays in old gen during young gc should be disabled by default</title>
-        <body>Introduce new vm option `UseParallelLargeArrayScanning` which controls parallel scanning of large object arrays in the old generation during young collections.
+        <number>1516</number>
+        <issueUpdatedAt>2023-10-04 16:26:04.0 UTC</issueUpdatedAt>
+        <title>SapMachine (11) #1512: ParallelGC: parallel scanning of large object arrays in old gen during young gc should be disabled by default</title>
+        <body>Backport to SapMachine11.
 
-`UseParallelLargeArrayScanning` is disabled by default.
-
-fixes #1512 
-
+fixes #1512
 </body>
-        <prUpdatedAt>2023-10-02 10:04:16.0 UTC</prUpdatedAt>
-        <headSha>793457ed0f70ee2c6ac48458d8ee3e3071cee829</headSha>
-        <headRef>disable_large_array_scanning_by_default</headRef>
+        <prUpdatedAt>2023-10-04 16:26:04.0 UTC</prUpdatedAt>
+        <headSha>abfd721535c0b27759bd338f8b1d4d2491856630</headSha>
+        <headRef>sapmachinegcflag11</headRef>
         <mergeable>true</mergeable>
-        <baseRef>sapmachine</baseRef>
-        <userEmail>richard.reingruber@sap.com</userEmail>
-        <userLogin>reinrich</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/1513</htmlUrl>
+        <baseRef>sapmachine11</baseRef>
+        <userEmail>christoph.langer@sap.com</userEmail>
+        <userLogin>RealCLanger</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1516</htmlUrl>
         <labels />
-        <lastCommentCreatedAt>2023-10-02 09:38:48.0 UTC</lastCommentCreatedAt>
-        <sourceRepoOwner>reinrich</sourceRepoOwner>
+        <lastCommentCreatedAt>2023-10-04 15:28:43.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>RealCLanger</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
       </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
