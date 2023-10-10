@@ -25,6 +25,16 @@ extra_bootjdks = [
                 'browser_download_url': 'https://github.com/SAP/SapMachine-infrastructure/releases/download/aixjdk20/sapmachine-jdk-20_aix-ppc64_bin.tar.gz'
             }
         ]
+    },
+    {
+        'prerelease': False,
+        'name': 'sapmachine-21',
+        'assets': [
+            {
+                'name': 'sapmachine-jdk-21_aix-ppc64_bin.tar.gz',
+                'browser_download_url': 'https://github.com/SAP/SapMachine/releases/download/sapmachine-21.0.1%2B1/sapmachine-jdk-21.0.1-eabeta.1_aix-ppc64_bin.tar.gz'
+            }
+        ]
     }
 ]
 
