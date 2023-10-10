@@ -97,8 +97,8 @@
     type_snapshot: *type_snapshot_service
     type_release: *type_release_service
     jobs:
-        - build-service-{type_snapshot}-17
-        - build-service-{type_release}-17
+        - build-service-{type_snapshot}-11
+        - build-service-{type_release}-11
 
 - job-template:
     name: build-service-{type_snapshot}-{major}
