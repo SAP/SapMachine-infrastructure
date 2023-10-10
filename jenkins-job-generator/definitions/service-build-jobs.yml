@@ -85,12 +85,12 @@
         - build-service-{type_release}-{major}
 
 - project:
-    name: service-builds-11
+    name: service-builds-17
     type_snapshot: *type_snapshot_service
     type_release: *type_release_service
     jobs:
-        - build-service-{type_snapshot}-11
-        - build-service-{type_release}-11
+        - build-service-{type_snapshot}-17
+        - build-service-{type_release}-17
 
 - project:
     name: service-builds-11
