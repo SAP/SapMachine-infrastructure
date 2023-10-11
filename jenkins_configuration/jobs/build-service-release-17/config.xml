@@ -9,6 +9,7 @@
             steps {
                 script {
                     def platforms = [
+                        
                         "linux_aarch64": params.BUILD_LINUX_AARCH64,
                         "linux_alpine_x86_64": params.BUILD_LINUX_ALPINE_X86_64,
                         "linux_ppc64le": params.BUILD_LINUX_PPC64LE,

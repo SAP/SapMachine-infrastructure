@@ -9,6 +9,7 @@
             steps {
                 script {
                     def platforms = [
+                        "aix_ppc64": params.BUILD_AIX_PPC64,
                         "linux_aarch64": params.BUILD_LINUX_AARCH64,
                         "linux_alpine_x86_64": params.BUILD_LINUX_ALPINE_X86_64,
                         "linux_ppc64le": params.BUILD_LINUX_PPC64LE,
@@ -91,6 +92,11 @@
           <defaultValue />
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>BUILD_AIX_PPC64</name>
+          <description />
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>BUILD_LINUX_AARCH64</name>
           <description />
