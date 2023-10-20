@@ -56,6 +56,13 @@ def main(argv=None):
 
     boot_jdk_major_min = boot_jdk_major_max - 1
     destination = os.path.realpath(os.getcwd() if args.destination is None else args.destination)
+    boot_jdk_exploded = join(destination, 'boot_jdk')
+    boot_jdk_infofile = join(destination, "bootstrapjdk.txt")
+    if os.path.exists(boot_jdk_infofile):
+        with open(boot_jdk_infofile, "r") as file:
+            current_boot_jdk = file.read()
+            print(str.format("Current Boot JDK: {0}", current_boot_jdk))
+
     releases = utils.get_github_releases()
     system = utils.get_system()
     platform = str.format('{0}-{1}{2}_bin', system, utils.get_arch(), "-musl" if os.path.isfile('/etc/alpine-release') else "")
@@ -86,10 +93,14 @@ def main(argv=None):
                     asset_url = asset['browser_download_url']
 
                     if 'jdk' in asset_name and platform in asset_name and (asset_name.endswith('.tar.gz') or asset_name.endswith('.zip')) and 'symbols' not in asset_name:
+                        if current_boot_jdk is not None and current_boot_jdk == asset_name and os.path.exists(boot_jdk_exploded):
+                            print(str.format("Boot JDK {0} already downloaded.", current_boot_jdk))
+                            return 0
+                        with open(boot_jdk_infofile, "w") as file:
+                            file.write(asset_name)
                         archive_path = join(destination, asset_name)
                         utils.remove_if_exists(archive_path)
                         utils.download_artifact(asset_url, archive_path)
-                        boot_jdk_exploded = join(destination, 'boot_jdk')
                         utils.remove_if_exists(boot_jdk_exploded)
                         os.makedirs(boot_jdk_exploded)
                         utils.extract_archive(archive_path, boot_jdk_exploded, remove_archive=True)
