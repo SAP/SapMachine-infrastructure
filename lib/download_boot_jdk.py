@@ -58,6 +58,7 @@ def main(argv=None):
     destination = os.path.realpath(os.getcwd() if args.destination is None else args.destination)
     boot_jdk_exploded = join(destination, 'boot_jdk')
     boot_jdk_infofile = join(destination, "bootstrapjdk.txt")
+    current_boot_jdk = None
     if os.path.exists(boot_jdk_infofile):
         with open(boot_jdk_infofile, "r") as file:
             current_boot_jdk = file.read()
