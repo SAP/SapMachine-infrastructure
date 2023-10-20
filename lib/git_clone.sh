@@ -15,7 +15,10 @@ fi
 
 "$GIT_TOOL" --version
 "$GIT_TOOL" config --global init.defaultBranch master
-(set -ex && "$GIT_TOOL" init $2)
+if [ ! -d $2 ]; then
+  (set -ex && "$GIT_TOOL" init $2)
+fi
+
 cd $2
 
 # handle branch
