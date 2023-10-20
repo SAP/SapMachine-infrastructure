@@ -26,7 +26,7 @@ fi
 # We try to avoid unnecessary work by preparing the build agents with the devkit.
 # However, should the local devkit of the requested version be missing, we'll download and extract it here.
 
-# Check if the devkit is prepared.
+# Check if the devkit in the well known location exists.
 if [ -d ${DEVKIT_PATH} ]; then
   echo Devkit directory ${DEVKIT_PATH} exists, using it.
   echo "${DEVKIT_PATH}" > devkitlocation.txt
@@ -35,14 +35,24 @@ fi
 
 if [[ $UNAME != Darwin ]]; then
   DEVKIT_PATH=$(pwd)"/${DEVKIT_BASENAME}"
+  # Check once more whether it exists in the workspace.
+  if [ -d ${DEVKIT_PATH} ]; then
+    echo Devkit directory ${DEVKIT_PATH} exists, using it.
+    echo "${DEVKIT_PATH}" > devkitlocation.txt
+    exit 0
+  fi
 fi
 
 # OK, the devkit directory is not there. Check for the archive and download if necessary.
-if [ ! -f ${DEVKIT_ARCHIVE_PATH} ]; then
-  echo Devkit archive ${DEVKIT_ARCHIVE_PATH} does not exist, need to download it.
-  if [[ $UNAME != Darwin ]]; then
+if [[ $UNAME != Darwin ]]; then
+  if [ ! -f ${DEVKIT_ARCHIVE_PATH} ]; then
+    echo Devkit archive ${DEVKIT_ARCHIVE_PATH} does not exist.
     DEVKIT_ARCHIVE_PATH=$(pwd)"/${DEVKIT_ARCHIVE}"
   fi
+fi
+
+if [ ! -f ${DEVKIT_ARCHIVE_PATH} ]; then
+  echo Devkit archive ${DEVKIT_ARCHIVE_PATH} does not exist, need to download it.
 
   if [[ $UNAME == CYGWIN* ]]; then
     CURL_TOOL=/usr/bin/curl
