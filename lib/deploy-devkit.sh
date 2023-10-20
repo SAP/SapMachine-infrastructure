@@ -8,8 +8,8 @@ DEVKIT_GROUP_SLASH=`echo $DEVKIT_GROUP | tr . /`
 DEVKIT_ARTEFACT=$2
 DEVKIT_VERSION=$3
 DEVKIT_BASENAME=${DEVKIT_ARTEFACT}-${DEVKIT_VERSION}
+PARENT_DIR=$(cd .. && pwd)
 if [[ $UNAME == Darwin ]]; then
-  PARENT_DIR=$(cd .. && pwd)
   DEVKIT_ARCHIVE=${DEVKIT_BASENAME}.xip
   DEVKIT_PATH=${PARENT_DIR}/${DEVKIT_BASENAME}
   DEVKIT_ARCHIVE_PATH=${PARENT_DIR}/${DEVKIT_ARCHIVE}
@@ -27,27 +27,26 @@ fi
 # However, should the local devkit of the requested version be missing, we'll download and extract it here.
 
 # Check if the devkit in the well known location exists.
+if [[ $UNAME != Darwin ]]; then
+  if [ -d ${DEVKIT_PATH} ]; then
+    echo Devkit directory ${DEVKIT_PATH} exists, using it.
+    echo "${DEVKIT_PATH}" > devkitlocation.txt
+    exit 0
+  fi
+  DEVKIT_PATH=${PARENT_DIR}/${DEVKIT_BASENAME}
+fi
+
+# Check once more whether it exists in the workspace.
 if [ -d ${DEVKIT_PATH} ]; then
   echo Devkit directory ${DEVKIT_PATH} exists, using it.
   echo "${DEVKIT_PATH}" > devkitlocation.txt
   exit 0
 fi
 
-if [[ $UNAME != Darwin ]]; then
-  DEVKIT_PATH=$(pwd)"/${DEVKIT_BASENAME}"
-  # Check once more whether it exists in the workspace.
-  if [ -d ${DEVKIT_PATH} ]; then
-    echo Devkit directory ${DEVKIT_PATH} exists, using it.
-    echo "${DEVKIT_PATH}" > devkitlocation.txt
-    exit 0
-  fi
-fi
-
 # OK, the devkit directory is not there. Check for the archive and download if necessary.
 if [[ $UNAME != Darwin ]]; then
   if [ ! -f ${DEVKIT_ARCHIVE_PATH} ]; then
-    echo Devkit archive ${DEVKIT_ARCHIVE_PATH} does not exist.
-    DEVKIT_ARCHIVE_PATH=$(pwd)"/${DEVKIT_ARCHIVE}"
+    DEVKIT_ARCHIVE_PATH=${PARENT_DIR}/${DEVKIT_ARCHIVE}
   fi
 fi
 
