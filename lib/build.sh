@@ -121,7 +121,10 @@ cd images
 
 zip -rq "${WORKSPACE}/test.zip" test
 
-cd ../bundles
+cd jdk
+zip -rq "${WORKSPACE}/jdk.zip" .
+
+cd ../../bundles
 
 JDK_NAME=$(ls *jdk-*_bin.*) || true
 if [ -z $JDK_NAME ]; then
