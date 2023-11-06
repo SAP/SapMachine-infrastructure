@@ -28,6 +28,7 @@ else
   cd $REPO_PATH
   git checkout "$REPO"
   git fetch origin
+  git remote prune origin
   git rebase origin/master
 fi
 

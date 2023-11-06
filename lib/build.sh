@@ -31,7 +31,11 @@ fi
 
 # use a devkit, if set
 if [ ! -z $DEVKIT_PATH ]; then
-  _DEVKIT_OPTION="--with-devkit=$DEVKIT_PATH"
+  if [[ $UNAME == Darwin ]]; then
+    _DEVKIT_OPTION="--with-xcode-path=$DEVKIT_PATH"
+  else
+    _DEVKIT_OPTION="--with-devkit=$DEVKIT_PATH"
+  fi
 fi
 
 if [[ $UNAME == Darwin ]]; then
@@ -47,6 +51,8 @@ fi
 if [[ ! -z $JDK_BUILD ]]; then
   _JDK_BUILD=" -b $JDK_BUILD"
 fi
+
+echo "PATH before configure and make: ${PATH}"
 
 # need to do the python call first and the eval in a second step to bail out on $? != 0
 _CONFIGURE_OPTS=$(python3 ../SapMachine-infrastructure/lib/get_configure_opts.py $_GIT_TAG $_JDK_BUILD)
@@ -74,9 +80,11 @@ zip -rq "${WORKSPACE}/test.zip" make/data/lsrdata || true
 zip -rq "${WORKSPACE}/test.zip" make/data/publicsuffixlist/VERSION || true
 zip -rq "${WORKSPACE}/test.zip" make/data/tzdata || true
 zip -rq "${WORKSPACE}/test.zip" make/data/unicodedata || true
+zip -rq "${WORKSPACE}/test.zip" make/data/charsetmapping || true
 zip -rq "${WORKSPACE}/test.zip" make/jdk/src/classes/build/tools/makejavasecurity || true
 zip -rq "${WORKSPACE}/test.zip" src/*/*/legal/ || true
 zip -rq "${WORKSPACE}/test.zip" src/java.base/share/classes/javax/security/auth/ || true
+zip -rq "${WORKSPACE}/test.zip" src/java.base/share/classes/java/lang/ || true
 zip -rq "${WORKSPACE}/test.zip" src/java.base/share/classes/sun/security/provider/ || true
 zip -rq "${WORKSPACE}/test.zip" src/java.base/share/classes/sun/security/tools/ || true
 zip -rq "${WORKSPACE}/test.zip" src/java.base/share/data/blockedcertsconverter/blocked.certs.pem || true
@@ -92,7 +100,7 @@ zip -rq "${WORKSPACE}/test.zip" src/jdk.compiler/share/data/symbols/include.list
 zip -rq "${WORKSPACE}/test.zip" src/jdk.crypto.cryptoki/share/classes/sun/security/pkcs11/SunPKCS11.java || true
 zip -rq "${WORKSPACE}/test.zip" src/jdk.jartool/share/classes/sun/security/tools/jarsigner/Main.java || true
 zip -rq "${WORKSPACE}/test.zip" src/jdk.javadoc/share/classes/jdk/javadoc/doclet/ || true
-zip -rq "${WORKSPACE}/test.zip" src/jdk.javadoc/share/classes/jdk/javadoc/internal/doclets/formats/html/resources/script-dir || true
+zip -rq "${WORKSPACE}/test.zip" src/jdk.javadoc/share/classes/jdk/javadoc/internal/doclets/formats/html/resources || true
 zip -rq "${WORKSPACE}/test.zip" src/jdk.javadoc/share/man || true
 zip -rq "${WORKSPACE}/test.zip" src/jdk.jpackage/*/classes/jdk/jpackage/internal || true
 zip -rq "${WORKSPACE}/test.zip" src/jdk.security.auth/share/classes/com/sun/security/auth/ || true
@@ -113,7 +121,10 @@ cd images
 
 zip -rq "${WORKSPACE}/test.zip" test
 
-cd ../bundles
+cd jdk
+zip -rq "${WORKSPACE}/jdk.zip" .
+
+cd ../../bundles
 
 JDK_NAME=$(ls *jdk-*_bin.*) || true
 if [ -z $JDK_NAME ]; then
@@ -163,6 +174,12 @@ echo "${ARCHIVE_NAME_JRE}" > "${WORKSPACE}/jre_bundle_name.txt"
 echo "${ARCHIVE_NAME_SYMBOLS}" > "${WORKSPACE}/symbols_bundle_name.txt"
 
 if [[ $UNAME == Darwin ]]; then
+
+  if [[ -n "$NODMG" ]]; then
+    echo "Skipping DMG generation."
+    exit 0
+  fi
+
   rm -rf *.dmg
 
   # create dmg
@@ -173,12 +190,12 @@ if [[ $UNAME == Darwin ]]; then
   mkdir -p ${DMG_BASE}
   tar -xzf "${WORKSPACE}/${ARCHIVE_NAME_JDK}" -C ${DMG_BASE}
   hdierror=0
-  hdiutil create -srcfolder ${DMG_BASE} -fs HFS+ -volname ${DMG_NAME} "${WORKSPACE}/${DMG_NAME}.dmg" || hdierror=1
+  hdiutil create -verbose -srcfolder ${DMG_BASE} -fs HFS+ -volname ${DMG_NAME} "${WORKSPACE}/${DMG_NAME}.dmg" || hdierror=1
   if [ $hdierror -ne 0 ]; then
     # We see sometimes errors like "hdiutil: create failed - Resource busy." when invoking it right after tar.
     # Let's retry after sleeping a little while.
-    sleep 30s
-    hdiutil create -srcfolder ${DMG_BASE} -fs HFS+ -volname ${DMG_NAME} "${WORKSPACE}/${DMG_NAME}.dmg"
+    sleep 30
+    hdiutil create -verbose -srcfolder ${DMG_BASE} -fs HFS+ -volname ${DMG_NAME} "${WORKSPACE}/${DMG_NAME}.dmg"
   fi
 
   echo "${DMG_NAME}.dmg" > "${WORKSPACE}/jdk_dmg_name.txt"
@@ -189,12 +206,12 @@ if [[ $UNAME == Darwin ]]; then
   mkdir -p ${DMG_BASE}
   tar -xzf "${WORKSPACE}/${ARCHIVE_NAME_JRE}" -C ${DMG_BASE}
   hdierror=0
-  hdiutil create -srcfolder ${DMG_BASE} -fs HFS+ -volname ${DMG_NAME} "${WORKSPACE}/${DMG_NAME}.dmg" || hdierror=1
+  hdiutil create -verbose -srcfolder ${DMG_BASE} -fs HFS+ -volname ${DMG_NAME} "${WORKSPACE}/${DMG_NAME}.dmg" || hdierror=1
   if [ $hdierror -ne 0 ]; then
     # We see sometimes errors like "hdiutil: create failed - Resource busy." when invoking it right after tar.
     # Let's retry after sleeping a little while.
-    sleep 30s
-    hdiutil create -srcfolder ${DMG_BASE} -fs HFS+ -volname ${DMG_NAME} "${WORKSPACE}/${DMG_NAME}.dmg"
+    sleep 30
+    hdiutil create -verbose -srcfolder ${DMG_BASE} -fs HFS+ -volname ${DMG_NAME} "${WORKSPACE}/${DMG_NAME}.dmg"
   fi
   echo "${DMG_NAME}.dmg" > "${WORKSPACE}/jre_dmg_name.txt"
 fi

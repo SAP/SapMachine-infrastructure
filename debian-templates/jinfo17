@@ -1,0 +1,33 @@
+name=java-${major}-sapmachine
+alias=java-1.${major}.0-sapmachine
+priority=${major}12
+section=main
+
+hl java /usr/lib/jvm/sapmachine-${major}/bin/java
+hl jcmd /usr/lib/jvm/sapmachine-${major}/bin/jcmd
+hl jfr /usr/lib/jvm/sapmachine-${major}/bin/jfr
+hl jinfo /usr/lib/jvm/sapmachine-${major}/bin/jinfo
+hl jmap /usr/lib/jvm/sapmachine-${major}/bin/jmap
+hl jps /usr/lib/jvm/sapmachine-${major}/bin/jps
+hl jrunscript /usr/lib/jvm/sapmachine-${major}/bin/jrunscript
+hl jstack /usr/lib/jvm/sapmachine-${major}/bin/jstack
+hl jstat /usr/lib/jvm/sapmachine-${major}/bin/jstat
+hl keytool /usr/lib/jvm/sapmachine-${major}/bin/keytool
+hl rmiregistry /usr/lib/jvm/sapmachine-${major}/bin/rmiregistry
+jdkhl jar /usr/lib/jvm/sapmachine-${major}/bin/jar
+jdkhl jarsigner /usr/lib/jvm/sapmachine-${major}/bin/jarsigner
+jdkhl javac /usr/lib/jvm/sapmachine-${major}/bin/javac
+jdkhl javadoc /usr/lib/jvm/sapmachine-${major}/bin/javadoc
+jdkhl javap /usr/lib/jvm/sapmachine-${major}/bin/javap
+jdkhl jdb /usr/lib/jvm/sapmachine-${major}/bin/jdb
+jdkhl jdeprscan /usr/lib/jvm/sapmachine-${major}/bin/jdeprscan
+jdkhl jdeps /usr/lib/jvm/sapmachine-${major}/bin/jdeps
+jdkhl jhsdb /usr/lib/jvm/sapmachine-${major}/bin/jhsdb
+jdkhl jimage /usr/lib/jvm/sapmachine-${major}/bin/jimage
+jdkhl jlink /usr/lib/jvm/sapmachine-${major}/bin/jlink
+jdkhl jmod /usr/lib/jvm/sapmachine-${major}/bin/jmod
+jdkhl jpackage /usr/lib/jvm/sapmachine-${major}/bin/jpackage
+jdkhl jshell /usr/lib/jvm/sapmachine-${major}/bin/jshell
+jdkhl jstatd /usr/lib/jvm/sapmachine-${major}/bin/jstatd
+jdkhl serialver /usr/lib/jvm/sapmachine-${major}/bin/serialver
+jdk jconsole /usr/lib/jvm/sapmachine-${major}/bin/jconsole

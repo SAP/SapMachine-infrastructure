@@ -14,38 +14,28 @@ from os.path import join
 from versions import SapMachineTag
 
 # This list is a temporary solution for platforms that we have not yet delivered with SapMachine
-# Currently: Linux Alpine
+# Currently: AIX
 extra_bootjdks = [
     {
         'prerelease': False,
-        'name': 'sapmachine-11.0.16.1',
+        'name': 'sapmachine-20',
         'assets': [
             {
-                'name': 'sapmachine-jdk-11.0.16.1_linux-x64_alpine_bin.tar.gz',
-                'browser_download_url': 'https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.16.1%2B1/OpenJDK11U-jdk_x64_alpine-linux_hotspot_11.0.16.1_1.tar.gz'
+                'name': 'sapmachine-jdk-20_aix-ppc64_bin.tar.gz',
+                'browser_download_url': 'https://github.com/SAP/SapMachine-infrastructure/releases/download/aixjdk20/sapmachine-jdk-20_aix-ppc64_bin.tar.gz'
             }
         ]
     },
     {
         'prerelease': False,
-        'name': 'sapmachine-17.0.4.1',
+        'name': 'sapmachine-21',
         'assets': [
             {
-                'name': 'sapmachine-jdk-17.0.4.1_linux-x64_alpine_bin.tar.gz',
-                'browser_download_url': 'https://github.com/SAP/SapMachine/releases/download/sapmachine-17.0.4.1/sapmachine-jdk-17.0.4.1-beta_linux-x64-musl_bin.tar.gz'
+                'name': 'sapmachine-jdk-21_aix-ppc64_bin.tar.gz',
+                'browser_download_url': 'https://github.com/SAP/SapMachine/releases/download/sapmachine-21.0.1%2B1/sapmachine-jdk-21.0.1-eabeta.1_aix-ppc64_bin.tar.gz'
             }
         ]
-    },
-    {
-        'prerelease': False,
-        'name': 'sapmachine-19',
-        'assets': [
-            {
-                'name': 'sapmachine-jdk-19_linux-x64_alpine_bin.tar.gz',
-                'browser_download_url': 'https://github.com/SAP/SapMachine/releases/download/sapmachine-19/sapmachine-jdk-19-beta_linux-x64-musl_bin.tar.gz'
-            }
-        ]
-    }    
+    }
 ]
 
 def main(argv=None):
@@ -66,16 +56,20 @@ def main(argv=None):
 
     boot_jdk_major_min = boot_jdk_major_max - 1
     destination = os.path.realpath(os.getcwd() if args.destination is None else args.destination)
+    boot_jdk_exploded = join(destination, 'boot_jdk')
+    boot_jdk_infofile = join(destination, "bootstrapjdk.txt")
+    current_boot_jdk = None
+    if os.path.exists(boot_jdk_infofile):
+        with open(boot_jdk_infofile, "r") as file:
+            current_boot_jdk = file.read()
+            print(str.format("Current Boot JDK: {0}", current_boot_jdk))
+
     releases = utils.get_github_releases()
     system = utils.get_system()
-    platform = str.format('{0}-{1}_bin', system, utils.get_arch())
-    # adjust platform name for Alpine Linux
-    if os.path.isfile('/etc/alpine-release'):
-        platform = str.format('{0}-{1}_alpine_bin', system, utils.get_arch())
-    
-    retries = 2
-
+    platform = str.format('{0}-{1}{2}_bin', system, utils.get_arch(), "-musl" if os.path.isfile('/etc/alpine-release') else "")
     print(str.format('detected platform "{0}"', platform))
+
+    retries = 2
 
     releases = extra_bootjdks + releases
 
@@ -100,10 +94,14 @@ def main(argv=None):
                     asset_url = asset['browser_download_url']
 
                     if 'jdk' in asset_name and platform in asset_name and (asset_name.endswith('.tar.gz') or asset_name.endswith('.zip')) and 'symbols' not in asset_name:
+                        if current_boot_jdk is not None and current_boot_jdk == asset_name and os.path.exists(boot_jdk_exploded):
+                            print(str.format("Boot JDK {0} already downloaded.", current_boot_jdk))
+                            return 0
+                        with open(boot_jdk_infofile, "w") as file:
+                            file.write(asset_name)
                         archive_path = join(destination, asset_name)
                         utils.remove_if_exists(archive_path)
                         utils.download_artifact(asset_url, archive_path)
-                        boot_jdk_exploded = join(destination, 'boot_jdk')
                         utils.remove_if_exists(boot_jdk_exploded)
                         os.makedirs(boot_jdk_exploded)
                         utils.extract_archive(archive_path, boot_jdk_exploded, remove_archive=True)

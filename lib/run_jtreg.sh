@@ -49,7 +49,11 @@ TEST_NATIVE_LIB=${JDK_LOCATION}/build/${BUILD_TYPE}/images/test/${TEST_SUITE}/jt
 if [[ $UNAME == Darwin ]]; then
     NUM_CPUS=`sysctl -n hw.ncpu`
 else
+  if [[ $UNAME == AIX ]]; then
+    NUM_CPUS=`lparstat -m 2> /dev/null | grep -o "lcpu=[[0-9]*]*" | cut -d "=" -f 2`
+  else
     NUM_CPUS=`grep -c ^processor /proc/cpuinfo`
+  fi
 fi
 
 CONCURRENCY=`expr $NUM_CPUS / 2`

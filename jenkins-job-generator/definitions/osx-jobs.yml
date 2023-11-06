@@ -30,7 +30,7 @@
             description: 'The SapMachine Release Tag to upload MacOS artifacts for. Should start with "sapmachine-". E.g. "sapmachine-17.0.6".'
         - string:
             name: BINARY_SOURCE
-            default: 'https://common.repositories.cloud.sap/artifactory/naas-deploy-releases-notarization/com/sap/sapmachine'
+            default: 'https://common.repositories.cloud.sap/artifactory/naas-deploy-releases-notarization-maven/com/sap/sapmachine'
             description: 'Artifactory location where SapMachine binaries should be taken from.'
         - string:
             name: SYMBOL_SOURCE

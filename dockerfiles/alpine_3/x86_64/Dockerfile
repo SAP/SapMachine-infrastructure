@@ -25,14 +25,28 @@ make \
 python3 \
 py3-pip \
 sed \
+sudo \
 tar \
 unzip \
 wget \
 zip
 
-RUN adduser --shell /bin/bash --uid 1000 --disabled-password jenkinsa
-RUN adduser --shell /bin/bash --uid 1001 --disabled-password jenkinsb
-RUN adduser --shell /bin/bash --uid 1002 --disabled-password jenkinsc
+# create users and add to abuild group which already exists
+RUN adduser --shell /bin/bash --uid 1000 --ingroup abuild --disabled-password jenkinse
+RUN adduser --shell /bin/bash --uid 50050 --ingroup abuild --disabled-password jenkinsi
+
+# enable the users for abuild-keygen, this needs sudo or doas
+RUN echo "jenkinse ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/jenkinse && chmod 0440 /etc/sudoers.d/jenkinse
+RUN echo "jenkinsi ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/jenkinsi && chmod 0440 /etc/sudoers.d/jenkinsi
+
+# create apk cache location
+RUN mkdir -p /var/cache/distfiles
+RUN chmod a+w /var/cache/distfiles
+
+# prepare the apk keys, precondition for running make-apk.py
+# doas has problems so tell abuild-keygen to use sudo instead
+ENV SUDO=sudo
+RUN abuild-keygen -a -i -n
 
 RUN pip3 install requests
 

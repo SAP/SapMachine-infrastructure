@@ -14,28 +14,27 @@ from os.path import join
 from string import Template
 from versions import SapMachineTag
 
-duplex_cask_template = '''
-cask "sapmachine${CASK_TAG}-${IMAGE_TYPE}" do
+cask_template = '''cask "sapmachine${CASK_TAG}-${IMAGE_TYPE}" do
   version "${CASK_VERSION}"
+  arch arm: "aarch64", intel: "x64"
+  sha256 arm:   "${AARCHSHA256}",
+         intel: "${INTELSHA256}"
 
-  if Hardware::CPU.intel?
-    url "https://github.com/SAP/SapMachine/releases/download/sapmachine-${URL_VERSION1}/sapmachine-${IMAGE_TYPE}-${URL_VERSION2}_${OS_NAME}-x64_bin.dmg",
-         verified: "https://github.com/SAP/SapMachine"
-    sha256 "${INTELSHA256}"
-  else
-    url "https://github.com/SAP/SapMachine/releases/download/sapmachine-${URL_VERSION1}/sapmachine-${IMAGE_TYPE}-${URL_VERSION2}_${OS_NAME}-aarch64_bin.dmg",
-         verified: "https://github.com/SAP/SapMachine"
-    sha256 "${AARCHSHA256}"
-  end
+  url "https://github.com/SAP/SapMachine/releases/download/sapmachine-${URL_VERSION1}/sapmachine-${IMAGE_TYPE}-${URL_VERSION2}_macos-#{arch}_bin.dmg",
+      verified: "github.com/SAP/SapMachine/"
 
-  appcast "https://sap.github.io/SapMachine/latest/#{version.major}"
   name "SapMachine OpenJDK Development Kit"
-  desc "OpenJDK build from SAP"
+  desc "OpenJDK distribution from SAP"
   homepage "https://sapmachine.io/"
 
-  artifact "sapmachine-${IMAGE_TYPE}-#{${RUBY_VERSION}}.${IMAGE_TYPE}", target: "/Library/Java/JavaVirtualMachines/sapmachine-#{version.major}${EA_EXT}${IMAGE_TYPE}"
+  # The version information on the homepage is rendered client-side from the
+  # following JSON file, so we have to check it instead.
+  livecheck do
+    url "https://sap.github.io/SapMachine/assets/data/sapmachine_releases.json"
+    regex(/["']tag["']:\s*["']sapmachine[._-]v?(\d+(?:\.\d+)*)["']/i)
+  end
 
-  uninstall rmdir: "/Library/Java/JavaVirtualMachines"
+  artifact "sapmachine-${IMAGE_TYPE}-#{${RUBY_VERSION}}.${IMAGE_TYPE}", target: "/Library/Java/JavaVirtualMachines/sapmachine-#{version.major}${EA_EXT}${IMAGE_TYPE}"
 end
 '''
 
@@ -155,26 +154,24 @@ def main(argv=None):
     intel_jdk_sha = intel_jdk_sha.split(' ')[0]
     intel_jre_sha = intel_jre_sha.split(' ')[0]
 
-    jdk_cask_content = Template(duplex_cask_template).substitute(
+    jdk_cask_content = Template(cask_template).substitute(
             CASK_TAG = cask_tag,
             IMAGE_TYPE = 'jdk',
             CASK_VERSION = cask_version,
             URL_VERSION1 = url_version1,
             URL_VERSION2 = url_version2,
-            OS_NAME = 'macos',
             INTELSHA256 = intel_jdk_sha,
             AARCHSHA256 = aarch_jdk_sha,
             RUBY_VERSION = ruby_version,
             EA_EXT = ea_ext
     )
 
-    jre_cask_content = Template(duplex_cask_template).substitute(
+    jre_cask_content = Template(cask_template).substitute(
             CASK_TAG = cask_tag,
             IMAGE_TYPE = 'jre',
             CASK_VERSION = cask_version,
             URL_VERSION1 = url_version1,
             URL_VERSION2 = url_version2,
-            OS_NAME = 'macos',
             INTELSHA256 = intel_jre_sha,
             AARCHSHA256 = aarch_jre_sha,
             RUBY_VERSION = ruby_version,

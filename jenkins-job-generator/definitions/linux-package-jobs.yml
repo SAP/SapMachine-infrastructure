@@ -88,13 +88,19 @@
                     }}
                     post {{
                         success {{
-                            archiveArtifacts allowEmptyArchive: true, artifacts: "*.deb"
-                            stash includes: '*.deb', name: 'debPackage'
-                            stash includes: 'SapMachine-infrastructure/**', name: 'infra'
+                            script {{
+                                if (params.PUBLISH == true) {{
+                                    stash includes: '*.deb', name: 'debPackage'
+                                    stash includes: 'SapMachine-infrastructure/**', name: 'infra'
+                                }}
+                            }}
                         }}
                     }}
                 }}
                 stage("Publish") {{
+                    when {{
+                        expression {{ params.PUBLISH == true }}
+                    }}
                     agent {{
                         label 'agent-local-docker-ubuntu'
                     }}

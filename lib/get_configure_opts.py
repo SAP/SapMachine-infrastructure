@@ -91,13 +91,10 @@ def main(argv=None):
         version_pre = ''
     else:
         version_pre = 'ea'
-    
-    # start building Alpine as a regular non-beta shipment in 2023
-    #if utils.get_system() == 'linux' and os.path.isfile('/etc/alpine-release'):
-    #    if not version_pre:
-    #        version_pre = 'beta'
-    #    else:
-    #        version_pre += '-beta'
+
+    # build AIX as beta
+    if utils.get_system() == 'aix':
+        version_pre = 'beta' if not version_pre else version_pre + '-beta'
 
     configure_opts.append(VERSION_PRE_ARG.format(version_pre))
 
@@ -137,7 +134,7 @@ def main(argv=None):
     if 'GTEST_DIR' in os.environ and major >= 15:
         configure_opts.append(GTEST_OPT.format(os.environ['GTEST_DIR']))
 
-    if major >= 17 and utils.get_system() == 'macos' and utils.get_arch() == 'x64' and 'RELEASE_BUILD' in os.environ and os.environ['RELEASE_BUILD'] == "true":
+    if utils.get_system() == 'macos' and utils.get_arch() == 'x64' and 'RELEASE_BUILD' in os.environ and os.environ['RELEASE_BUILD'] == "true":
         configure_opts.append(DISABLE_MAC_CODESIGN_OPT)
 
     print(' '.join(configure_opts))

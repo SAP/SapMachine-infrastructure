@@ -38,8 +38,14 @@ def main(argv=None):
     args = parser.parse_args()
 
     templates_dir = realpath(args.templates_directory)
-
-    tag = SapMachineTag.from_string(args.tag)
+    
+    tagstr = args.tag
+    if tagstr is not None:
+        if not tagstr.startswith("sapmachine-"):
+            tagstr = "sapmachine-" + tagstr
+    
+    tag = SapMachineTag.from_string(tagstr)    
+    print("tag:", tag)
 
     cwd = os.getcwd()
     home = expanduser("~")
@@ -50,6 +56,7 @@ def main(argv=None):
     jdk_dir = join(work_dir, jdk_name)
     jre_dir = join(work_dir, jre_name)
 
+    print("work_dir:", work_dir)
     utils.remove_if_exists(work_dir)
 
     mkdir(work_dir)

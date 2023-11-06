@@ -6,12 +6,14 @@ All rights reserved. Confidential and proprietary.
 import gzip
 import json
 import os
+import pickle
 import platform
 import re
 import requests
 import sys
 import shutil
 import tarfile
+import time
 import zipfile
 
 from os import remove
@@ -23,6 +25,33 @@ from urllib.parse import quote
 from urllib.request import urlopen, Request
 from versions import SapMachineTag
 from zipfile import ZipFile, ZipInfo
+
+def save_dictionary_to_file(dictionary, filename):
+    with open(filename, 'wb') as file:
+        pickle.dump(dictionary, file)
+
+def load_dictionary_from_file(filename):
+    with open(filename, 'rb') as file:
+        dictionary = pickle.load(file)
+    return dictionary
+
+def file_exists_and_is_younger_than_an_hour(filename):
+    if not exists(filename):
+        return False
+
+    one_hour = 60 * 60  # 1 hour in seconds
+
+    # Get the current time
+    current_time = time.time()
+
+    # Get the last modified time of the file
+    file_modified_time = os.path.getmtime(filename)
+
+    # Calculate the time difference
+    time_difference = current_time - file_modified_time
+
+    # Compare the time difference with one hour
+    return time_difference < one_hour
 
 def run_cmd(cmdline, throw=True, cwd=None, env=None, std=False, shell=False):
     import subprocess
@@ -157,10 +186,10 @@ def copytree(source, dest):
         for file in files:
             full_path = join(root, file)
             rel_path = os.path.relpath(root, start=source)
-            dest_path = os.path.join(dest, rel_path, file)
+            dest_path = join(dest, rel_path, file)
             dest_dir = os.path.dirname(dest_path)
 
-            if not os.path.exists(dest_dir):
+            if not exists(dest_dir):
                 os.makedirs(dest_dir)
 
             shutil.copyfile(full_path, dest_path)
@@ -169,7 +198,7 @@ active_releases = None
 def get_active_releases():
     global active_releases
     if active_releases == None:
-        releases_file = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'active_releases.json'))
+        releases_file = os.path.abspath(join(os.path.dirname(__file__), '..', 'active_releases.json'))
         with open(releases_file, 'r') as file:
             active_releases = json.loads(file.read())
 
@@ -262,6 +291,31 @@ def get_active_jmc_branches():
     print('Active JMC branches: %s' % ', '.join(map(str, jmc_branches)))
 
     return jmc_branches
+
+def git_get(repo, ref, target):
+    if platform.system().lower().startswith('cygwin'):
+        git_tool = "/cygdrive/c/Program Files/Git/cmd/git.exe"
+        _, target_mixed, _ = run_cmd(['cygpath', '-m', target], std=True)
+        target_mixed = target_mixed.rstrip()
+    else :
+        git_tool = "git"
+        target_mixed = target
+
+    git_command = [git_tool, '--version']
+    run_cmd(git_command)
+    git_command = [git_tool, 'init', target]
+    run_cmd(git_command)
+    git_command = [git_tool, 'config', 'advice.detachedHead', 'false']
+    run_cmd(git_command, cwd = target)
+    git_command = [git_tool, 'fetch']
+    if 'GIT_USER' in os.environ and 'GIT_PASSWORD' in os.environ:
+        git_command.append(str.format('https://{0}:{1}@{2}', os.environ['GIT_USER'], os.environ['GIT_PASSWORD'], repo))
+    else:
+        git_command.append(str.format('https://{0}', repo))
+    git_command.append(ref)
+    run_cmd(git_command, cwd = target)
+    git_command = [git_tool, 'checkout', 'FETCH_HEAD']
+    run_cmd(git_command, cwd = target)
 
 def git_clone(repo, branch, target):
     if platform.system().lower().startswith('cygwin'):
@@ -424,10 +478,17 @@ def get_github_tags(repository='SapMachine'):
     return github_tags[repository]
 
 github_releases = None
-def get_github_releases():
+def get_github_releases(cache=True):
     global github_releases
-    if github_releases is None:
+    if cache is True and github_releases is not None:
+        return github_releases
+
+    if cache is True and file_exists_and_is_younger_than_an_hour('github_releases.pkl'):
+        github_releases = load_dictionary_from_file('github_releases.pkl')
+    else:
         github_releases = github_api_request('releases', per_page=100)
+        save_dictionary_to_file(github_releases, 'github_releases.pkl')
+
     return github_releases
 
 def sapmachine_asset_base_pattern():
@@ -465,9 +526,9 @@ def get_asset_urls(tag, platform, asset_types=["jdk", "jre"], pattern=None):
     return asset_urls
 
 def sapmachine_tag_is_release(tag):
-    response = github_api_request('releases')
+    releases = get_github_releases()
 
-    for release in response:
+    for release in releases:
         if release['tag_name'] == tag:
             return not release['prerelease']
 
@@ -484,6 +545,8 @@ def get_system():
         return system
 
 def get_arch():
+    if get_system() == "aix":
+        return "ppc64"
     arch = platform.machine().lower()
 
     if arch == 'x86_64' or arch == 'amd64':
@@ -503,7 +566,8 @@ def download_asset(asset_url):
 # Tries to calculate a value for major release from a set of strings that could be a digit, a SapMachine release tag or a sapmachine branch
 # If it can't be figured out from the inputs, the result is None
 def calc_major(values):
-    branch_pattern = re.compile('sapmachine([\d]+)?(-sec)?$')
+    branch_pattern = re.compile('sapmachine(\d+)?(-sec)?$')
+    version_pattern = re.compile('(\d+)(\.\d+)*')
     for val in values:
         print("calc_major: checking " + val, file=sys.stderr)
         if val is None:
@@ -515,6 +579,11 @@ def calc_major(values):
         tag = SapMachineTag.from_string(val)
         if not tag is None:
             return tag.get_major()
+
+        match = version_pattern.match(val)
+        if match is not None:
+            print("calc_major: Matched the version pattern " + match.group(), file=sys.stderr)
+            return int(match.group(1))
 
         match = branch_pattern.match(val)
         if match is not None and match.group(1) is not None and match.group(1).isdigit():

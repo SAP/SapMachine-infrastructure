@@ -1,0 +1,22 @@
+Source: sapmachine-${major}-jre
+Section: java
+Priority: optional
+Maintainer: SapMachine Team <sapmachine@sap.com>
+Build-Depends: debhelper (>=9)
+Standards-Version: 3.9.6
+Homepage: https://sapmachine.io
+Vcs-Git: https://github.com/SAP/sapmachine.git
+Vcs-Browser: https://github.com/SAP/sapmachine
+
+Package: sapmachine-${major}-jre
+Architecture: ${arch}
+Provides: java-runtime,
+  ${provides_packages}
+Replaces: sapmachine-${major}-jre-headless
+Conflicts: sapmachine-${major}-jre-headless, sapmachine-${major}-jdk-headless, sapmachine-${major}-jdk
+Depends:
+  $${shlibs:Depends},
+  $${misc:Depends},
+  libfontconfig1,
+  libnss3 (>= 2:3.17.1)
+Description: SapMachine OpenJDK Runtime

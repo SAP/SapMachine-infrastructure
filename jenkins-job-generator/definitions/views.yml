@@ -2,61 +2,61 @@
     name: 'Snapshot Builds'
     description: 'Snapshot Builds'
     view-type: list
-    regex: 'build-[\d]+-snapshot-.*$|build-service-snapshot-[\d]+$'
+    regex: 'build-[\d]+-.*-snapshot$|build-service-snapshot-[\d]+$'
 
 - view:
     name: 'Release Builds'
     description: 'Release Builds'
     view-type: list
-    regex: 'build-[\d]+-release-.*$|build-service-release-[\d]+$'
+    regex: 'build-[\d]+-release-.*$|build-[\d]+-.*-release$|build-service-release-[\d]+$'
 
 - view:
     name: 'Pull Request Validation Builds '
     description: 'Pull Request Validation Builds'
     view-type: list
-    regex: 'build-[\d]+-pr-validation-.*$|validate-pr-[\d]+$'
+    regex: 'build-[\d]+-.*-pr-validation$|validate-pr-[\d]+$'
 
 - view:
-    name: 'Linux aarch64 Builds'
-    description: 'Linux aarch64 Builds'
+    name: 'Linux alpine-musl Builds'
+    description: 'Linux alpine/musl Builds'
     view-type: list
-    regex: 'build-.*-linux_aarch64$'
+    regex: 'build-[\d]+-linux_alpine_x86_64.*|build-[\d]+-release-linux_alpine_x86_64$'
 
 - view:
-    name: 'Linux Alpine Builds'
-    description: 'Linux aarch64 Builds'
+    name: 'Linux arm64 Builds'
+    description: 'Linux arm64 Builds'
     view-type: list
-    regex: 'build-.*-linux_alpine_x86_64$'
+    regex: 'build-[\d]+-linux_aarch64.*|build-[\d]+-release-linux_aarch64$'
 
 - view:
     name: 'Linux ppc64le Builds'
     description: 'Linux ppc64le Builds'
     view-type: list
-    regex: 'build-.*-linux_ppc64le$'
+    regex: 'build-[\d]+-linux_ppc64le.*|build-[\d]+-release-linux_ppc64le$'
 
 - view:
-    name: 'Linux x86 64 Builds'
-    description: 'Linux x86 64 Builds'
+    name: 'Linux x64 Builds'
+    description: 'Linux x86_64 Builds'
     view-type: list
-    regex: 'build-.*-linux_x86_64$'
+    regex: 'build-[\d]+-linux_x86_64.*|build-[\d]+-release-linux_x86_64$'
 
 - view:
-    name: 'MacOS aarch 64 Builds'
-    description: 'macOS aarch 64 Builds'
+    name: 'MacOS arm64 Builds'
+    description: 'macOS arm64 Builds'
     view-type: list
-    regex: 'build-.*-macos_aarch64$'
+    regex: 'build-[\d]+-macos_aarch64.*|build-[\d]+-release-macos_aarch64$'
 
 - view:
-    name: 'MacOS x86 64 Builds'
-    description: 'macOS x86 64 Builds'
+    name: 'MacOS x64 Builds'
+    description: 'macOS x64 Builds'
     view-type: list
-    regex: 'build-.*-macos_x86_64$'
+    regex: 'build-[\d]+-macos_x86_64.*|build-[\d]+-release-macos_x86_64$'
 
 - view:
-    name: 'Windows x86 64 Builds'
-    description: 'Windows x86 64 Builds'
+    name: 'Windows x64 Builds'
+    description: 'Windows x64 Builds'
     view-type: list
-    regex: 'build-.*-windows_x86_64$'
+    regex: 'build-[\d]+-windows_x86_64.*|build-[\d]+-release-windows_x86_64$'
 
 - view:
     name: 'Infrastructure'
