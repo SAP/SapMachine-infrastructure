@@ -28,7 +28,8 @@ os_description = {
     'macos-aarch64':           { 'ordinal': 6, 'name': 'MacOS aarch64'},
     'macos-aarch64-installer': { 'ordinal': 7, 'name': 'MacOS aarch64 Installer'},
     'windows-x64':             { 'ordinal': 8, 'name': 'Windows x64'},
-    'windows-x64-installer':   { 'ordinal': 9, 'name': 'Windows x64 Installer'}
+    'windows-x64-installer':   { 'ordinal': 9, 'name': 'Windows x64 Installer'},
+    'aix-ppc64':               { 'ordinal': 10, 'name': 'AIX'}
 }
 
 image_type_description = {
