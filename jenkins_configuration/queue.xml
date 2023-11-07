@@ -1,4 +1,29 @@
 <hudson.model.Queue_-State>
-  <counter>23862</counter>
-  <items />
+  <counter>23943</counter>
+  <items>
+    <hudson.model.Queue_-BuildableItem>
+      <actions />
+      <id>23925</id>
+      <task class="org.jenkinsci.plugins.workflow.support.steps.ExecutorStepExecution$PlaceholderTask" plugin="workflow-durable-task-step@1289.v4d3e7b_01546b_">
+        <context class="org.jenkinsci.plugins.workflow.cps.CpsStepContext" plugin="workflow-cps@3802.vd42b_fcf00b_a_c">
+          <executionRef class="org.jenkinsci.plugins.workflow.job.WorkflowRun$Owner" plugin="workflow-job@1348.v32a_a_f150910e">
+            <job>build-async-profiler-official-snapshot-linux_ppc64le</job>
+            <id>468</id>
+          </executionRef>
+          <id>3</id>
+          <bodyHeads />
+          <body class="org.jenkinsci.plugins.workflow.cps.StaticBodyReference" resolves-to="org.jenkinsci.plugins.workflow.cps.HandleBodyReference">
+            <id>1</id>
+          </body>
+          <threadId>0</threadId>
+          <stepDescriptorId>org.jenkinsci.plugins.workflow.support.steps.ExecutorStep</stepDescriptorId>
+        </context>
+        <label>linux_ppc64le</label>
+        <runId>build-async-profiler-official-snapshot-linux_ppc64le#468</runId>
+      </task>
+      <inQueueSince>1699317925728</inQueueSince>
+      <buildableStartMilliseconds>1699317925731</buildableStartMilliseconds>
+      <isPending>false</isPending>
+    </hudson.model.Queue_-BuildableItem>
+  </items>
 </hudson.model.Queue_-State>
