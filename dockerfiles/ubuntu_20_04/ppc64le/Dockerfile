@@ -33,9 +33,14 @@ libxtst-dev \
 make \
 python3 \
 python3-pip \
+tzdata \
 unzip \
 wget \
 zip
+
+# Use German local time in container
+ENV TZ=Europe/Berlin
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # Add some users for ids that are used by jenkins docker containers
 # This is necessary for some things to work, e.g. git config --global
