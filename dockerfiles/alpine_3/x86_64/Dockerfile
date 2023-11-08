@@ -27,9 +27,14 @@ py3-pip \
 sed \
 sudo \
 tar \
+tzdata \
 unzip \
 wget \
 zip
+
+# Use German local time in container
+ENV TZ=Europe/Berlin
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # create users and add to abuild group which already exists
 RUN adduser --shell /bin/bash --uid 1000 --ingroup abuild --disabled-password jenkinse
