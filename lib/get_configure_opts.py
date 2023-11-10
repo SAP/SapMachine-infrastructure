@@ -87,6 +87,9 @@ def main(argv=None):
     elif tag is None:
         print(str.format("Running release build but no tag given, should not happen...", file=sys.stderr))
         return -1
+    elif build_number is None:
+        print(str.format("Running release build but no Build Number given, should not happen...", file=sys.stderr))
+        return -1
     elif tag.is_ga():
         version_pre = ''
     else:
