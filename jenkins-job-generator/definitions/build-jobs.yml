@@ -30,13 +30,20 @@
             architecture: linux-aarch64
             debarch: arm64
             devkit_default: '{linux_aarch64_devkit|io.sapmachine.build.devkit.linux-aarch64:devkit-fedora-gcc:27-11.3.0}'
+            prepare_docker: |-
+                stage("Docker") {{
+                            steps {{
+                                script {{
+                                    docker.build("ubuntu_20_04-arm64", '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\" SapMachine-infrastructure/dockerfiles/ubuntu_20_04/arm64/.')
+                                }}
+                            }}
+                        }}
             docker_agent: &docker_agent_aarch64 |-
                 agent {{
-                                dockerfile {{
-                                    dir "SapMachine-infrastructure/dockerfiles/ubuntu_20_04/arm64"
+                                docker {{
+                                    image "ubuntu_20_04-arm64"
                                     reuseNode true
                                     label "linux_aarch64"
-                                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
                                 }}
                             }}
             docker_agent_verify: *docker_agent_aarch64
@@ -94,10 +101,18 @@
                             }}
                         }}
         - linux_alpine_x86_64:
+            prepare_docker: |-
+                stage("Docker") {{
+                            steps {{
+                                script {{
+                                    docker.build("alpine_3-x86_64", 'SapMachine-infrastructure/dockerfiles/alpine_3/x86_64/.')
+                                }}
+                            }}
+                        }}
             docker_agent: &docker_agent_alpine_x86_64 |-
                 agent {{
-                                dockerfile {{
-                                    dir "SapMachine-infrastructure/dockerfiles/alpine_3/x86_64"
+                                docker {{
+                                    image "alpine_3-x86_64"
                                     reuseNode true
                                     label "linux_alpine_x86_64"
                                 }}
@@ -130,13 +145,20 @@
             architecture: linux-ppc64le
             debarch: ppc64el
             devkit_default: '{linux_ppc64le_devkit|io.sapmachine.build.devkit.linux-ppc64le:devkit-fedora-gcc:27-11.3.0}'
+            prepare_docker: |-
+                stage("Docker") {{
+                            steps {{
+                                script {{
+                                    docker.build("ubuntu_20_04-ppc64le", '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\" SapMachine-infrastructure/dockerfiles/ubuntu_20_04/ppc64le/.')
+                                }}
+                            }}
+                        }}
             docker_agent: &docker_agent_ppc64le |-
                 agent {{
-                                dockerfile {{
-                                    dir "SapMachine-infrastructure/dockerfiles/ubuntu_20_04/ppc64le"
+                                docker {{
+                                    image "ubuntu_20_04-ppc64le"
                                     reuseNode true
                                     label "linux_ppc64le"
-                                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
                                 }}
                             }}
             docker_agent_verify: *docker_agent_ppc64le
@@ -150,13 +172,20 @@
             architecture: linux-x64
             debarch: amd64
             devkit_default: '{linux_x86_64_devkit|io.sapmachine.build.devkit.linux-x64:devkit-fedora-gcc:27-11.3.0}'
+            prepare_docker: |-
+                stage("Docker") {{
+                            steps {{
+                                script {{
+                                    docker.build("ubuntu_20_04_x86_64", '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\" SapMachine-infrastructure/dockerfiles/ubuntu_20_04/x86_64/.')
+                                }}
+                            }}
+                        }}
             docker_agent: &docker_agent_x86_64 |-
                 agent {{
-                                dockerfile {{
-                                    dir "SapMachine-infrastructure/dockerfiles/ubuntu_20_04/x86_64"
+                                docker {{
+                                    image "ubuntu_20_04_x86_64"
                                     reuseNode true
                                     label "linux_x86_64"
-                                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
                                 }}
                             }}
             docker_agent_verify: *docker_agent_x86_64
@@ -504,6 +533,7 @@
                         '''
                     }}
                 }}
+                {prepare_docker|}
                 {verify_pre|}
                     {docker_agent_verify|}
                     {verify_step|}
