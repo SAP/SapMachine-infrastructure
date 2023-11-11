@@ -55,10 +55,17 @@
                 '''
             }
         }
+        stage("Docker") {
+            steps {
+                script {
+                    docker.build("alpine_3-x86_64", 'SapMachine-infrastructure/dockerfiles/alpine_3/x86_64/.')
+                }
+            }
+        }
         stage("Verify PR") {
             agent {
-                dockerfile {
-                    dir "SapMachine-infrastructure/dockerfiles/alpine_3/x86_64"
+                docker {
+                    image "alpine_3-x86_64"
                     reuseNode true
                     label "linux_alpine_x86_64"
                 }
@@ -90,8 +97,8 @@
         }
         stage("Prepare Devkit") {
             agent {
-                dockerfile {
-                    dir "SapMachine-infrastructure/dockerfiles/alpine_3/x86_64"
+                docker {
+                    image "alpine_3-x86_64"
                     reuseNode true
                     label "linux_alpine_x86_64"
                 }
@@ -117,8 +124,8 @@
         }
         stage("Download Prerequisites") {
             agent {
-                dockerfile {
-                    dir "SapMachine-infrastructure/dockerfiles/alpine_3/x86_64"
+                docker {
+                    image "alpine_3-x86_64"
                     reuseNode true
                     label "linux_alpine_x86_64"
                 }
@@ -146,8 +153,8 @@
         }
         stage("Build") {
             agent {
-                dockerfile {
-                    dir "SapMachine-infrastructure/dockerfiles/alpine_3/x86_64"
+                docker {
+                    image "alpine_3-x86_64"
                     reuseNode true
                     label "linux_alpine_x86_64"
                 }
@@ -170,8 +177,8 @@
         }
         stage("Run jtreg hotspot") {
             agent {
-                dockerfile {
-                    dir "SapMachine-infrastructure/dockerfiles/alpine_3/x86_64"
+                docker {
+                    image "alpine_3-x86_64"
                     reuseNode true
                     label "linux_alpine_x86_64"
                 }
@@ -204,8 +211,8 @@
         }
         stage("Run jtreg jdk") {
             agent {
-                dockerfile {
-                    dir "SapMachine-infrastructure/dockerfiles/alpine_3/x86_64"
+                docker {
+                    image "alpine_3-x86_64"
                     reuseNode true
                     label "linux_alpine_x86_64"
                 }
@@ -239,8 +246,8 @@
         }
         stage("Run jtreg langtools") {
             agent {
-                dockerfile {
-                    dir "SapMachine-infrastructure/dockerfiles/alpine_3/x86_64"
+                docker {
+                    image "alpine_3-x86_64"
                     reuseNode true
                     label "linux_alpine_x86_64"
                 }

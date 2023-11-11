@@ -69,6 +69,13 @@
                 '''
             }
         }
+        stage("Docker") {
+            steps {
+                script {
+                    docker.build("ubuntu_20_04-arm64", '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\" SapMachine-infrastructure/dockerfiles/ubuntu_20_04/arm64/.')
+                }
+            }
+        }
         
             
             
@@ -80,11 +87,10 @@
         }
         stage("Prepare Devkit") {
             agent {
-                dockerfile {
-                    dir "SapMachine-infrastructure/dockerfiles/ubuntu_20_04/arm64"
+                docker {
+                    image "ubuntu_20_04-arm64"
                     reuseNode true
                     label "linux_aarch64"
-                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
                 }
             }
             when {
@@ -108,11 +114,10 @@
         }
         stage("Download Prerequisites") {
             agent {
-                dockerfile {
-                    dir "SapMachine-infrastructure/dockerfiles/ubuntu_20_04/arm64"
+                docker {
+                    image "ubuntu_20_04-arm64"
                     reuseNode true
                     label "linux_aarch64"
-                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
                 }
             }
             
@@ -135,11 +140,10 @@
         }
         stage("Build") {
             agent {
-                dockerfile {
-                    dir "SapMachine-infrastructure/dockerfiles/ubuntu_20_04/arm64"
+                docker {
+                    image "ubuntu_20_04-arm64"
                     reuseNode true
                     label "linux_aarch64"
-                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
                 }
             }
             
@@ -157,11 +161,10 @@
         }
         stage("Run jtreg hotspot") {
             agent {
-                dockerfile {
-                    dir "SapMachine-infrastructure/dockerfiles/ubuntu_20_04/arm64"
+                docker {
+                    image "ubuntu_20_04-arm64"
                     reuseNode true
                     label "linux_aarch64"
-                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
                 }
             }
             when {
@@ -192,11 +195,10 @@
         }
         stage("Run jtreg jdk") {
             agent {
-                dockerfile {
-                    dir "SapMachine-infrastructure/dockerfiles/ubuntu_20_04/arm64"
+                docker {
+                    image "ubuntu_20_04-arm64"
                     reuseNode true
                     label "linux_aarch64"
-                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
                 }
             }
             when {
@@ -228,11 +230,10 @@
         }
         stage("Run jtreg langtools") {
             agent {
-                dockerfile {
-                    dir "SapMachine-infrastructure/dockerfiles/ubuntu_20_04/arm64"
+                docker {
+                    image "ubuntu_20_04-arm64"
                     reuseNode true
                     label "linux_aarch64"
-                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
                 }
             }
             when {
@@ -265,11 +266,10 @@
         
         stage("Build Debian Packages") {
             agent {
-                dockerfile {
-                    dir "SapMachine-infrastructure/dockerfiles/ubuntu_20_04/arm64"
+                docker {
+                    image "ubuntu_20_04-arm64"
                     reuseNode true
                     label "linux_aarch64"
-                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
                 }
             }
             when {

@@ -1,20 +1,339 @@
-<flow-definition plugin="workflow-job@1360.vc6700e3136f5">
-  <actions>
-    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@2.2150.v4cfd8916915c" />
-    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@2.2150.v4cfd8916915c">
-      <jobProperties />
-      <triggers />
-      <parameters />
-      <options />
-    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
-  </actions>
+<flow-definition plugin="workflow-job">
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps">
+    <script>pipeline {
+    agent {
+        label "linux_ppc64le"
+    }
+    environment {
+        ARTIFACTORY_CREDS = credentials('openjdk-artifactory')
+    }
+    tools {
+        jfrog 'jfrog-cli'
+    }
+    stages {
+        stage("Init") {
+            steps {
+                // update GitHub status and initialize PR Verification
+                script {
+                    setGitHubPullRequestStatus context: "validate-pr-17-linux_ppc64le", state: 'PENDING'
+                }
+
+                // trigger workspace cleanup
+                cleanWs()
+
+                // check/configure some job parameters
+                script {
+                    if (params.SAPMACHINE_VERSION.isEmpty()) {
+                        env.SAPMACHINE_VERSION = params.GIT_REF
+                    } else {
+                        env.SAPMACHINE_VERSION = params.SAPMACHINE_VERSION
+                    }
+
+                    // initialize some variables
+                    env.RELEASE = "false"
+                    env.NODMG = "true"
+                }
+            }
+        }
+        stage("Checkout Infrastructure Repository") {
+            steps {
+                sh '''#!/bin/bash
+                    set -e
+
+                    if [[ `uname` == CYGWIN* ]]; then
+                      GIT_TOOL="/cygdrive/c/Program Files/Git/cmd/git.exe"
+                    else
+                      GIT_TOOL=git
+                    fi
+
+                    "$GIT_TOOL" --version
+                    "$GIT_TOOL" config --global init.defaultBranch master
+                    (set -ex &amp;&amp; "$GIT_TOOL" init SapMachine-infrastructure)
+                    cd SapMachine-infrastructure
+                    (set -ex &amp;&amp; GIT_TERMINAL_PROMPT=0 "$GIT_TOOL" fetch --depth 1 https://github.com/SAP/SapMachine-infrastructure master)
+                    (set -ex &amp;&amp; "$GIT_TOOL" checkout --detach FETCH_HEAD)
+                '''
+            }
+        }
+        stage("Docker") {
+            steps {
+                script {
+                    docker.build("ubuntu_20_04-ppc64le", '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\" SapMachine-infrastructure/dockerfiles/ubuntu_20_04/ppc64le/.')
+                }
+            }
+        }
+        stage("Verify PR") {
+            agent {
+                docker {
+                    image "ubuntu_20_04-ppc64le"
+                    reuseNode true
+                    label "linux_ppc64le"
+                }
+            }
+            steps {
+                // credentials are needed to avoid rate limit exceedance in verify_pr.py
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
+                    script {
+                        env.COMMENT = ('linux_ppc64le' == 'linux_x86_64') ? "-c" : ""
+                        env.VERIFICATION_RESULT = sh(
+                            script: "python3 SapMachine-infrastructure/lib/verify_pr.py -p ${env.GITHUB_PR_NUMBER} ${env.COMMENT}",
+                            returnStatus: true
+                        )
+
+                        if (env.VERIFICATION_RESULT == "0") {
+                            error("Pull Request Verification failed")
+                        }
+                    }
+                }
+            }
+        }
+        stage("Checkout SapMachine Repository") {
+            when {
+                expression { env.VERIFICATION_RESULT != "2" }
+            }
+            steps {
+                sh("SapMachine-infrastructure/lib/git_clone.sh $SAPMACHINE_GIT_REPOSITORY SapMachine $GIT_REF $GITHUB_PR_NUMBER")
+            }
+        }
+        stage("Prepare Devkit") {
+            agent {
+                docker {
+                    image "ubuntu_20_04-ppc64le"
+                    reuseNode true
+                    label "linux_ppc64le"
+                }
+            }
+            when {
+                beforeAgent true
+                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; !params.DEVKIT.isEmpty() }
+            }
+            steps {
+                script {
+                    String[] gav = params.DEVKIT.split(":");
+                    if (gav.length == 3) {
+                        echo "Extracting devkit from GAV coordinates: \"${params.DEVKIT}\"."
+                        sh("SapMachine-infrastructure/lib/deploy-devkit.sh ${gav[0]} ${gav[1]} ${gav[2]}")
+                        env.DEVKIT_PATH = sh(script: "cat devkitlocation.txt", returnStdout: true).trim()
+                    } else {
+                        echo "Devkit not in GAV notation, assuming path."
+                        env.DEVKIT_PATH = params.DEVKIT;
+                    }
+                    echo "Devkit Path: ${env.DEVKIT_PATH}"
+                }
+            }
+        }
+        stage("Download Prerequisites") {
+            agent {
+                docker {
+                    image "ubuntu_20_04-ppc64le"
+                    reuseNode true
+                    label "linux_ppc64le"
+                }
+            }
+            when {
+                beforeAgent true
+                expression { env.VERIFICATION_RESULT != "2" }
+            }
+            steps {
+                // Download Boot JDK, Credentials are needed to avoid rate limit exceedance
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
+                    sh "python3 SapMachine-infrastructure/lib/download_boot_jdk.py -d `pwd`"
+                }
+
+                // Download googletest
+                sh("SapMachine-infrastructure/lib/git_clone.sh https://github.com/google/googletest gtest release-1.8.1")
+
+                // Download jtreg if required
+                script {
+                    if (params.RUN_TESTS) {
+                        sh "python3 SapMachine-infrastructure/lib/download_jtreg.py"
+                    }
+                }
+            }
+        }
+        stage("Build") {
+            agent {
+                docker {
+                    image "ubuntu_20_04-ppc64le"
+                    reuseNode true
+                    label "linux_ppc64le"
+                }
+            }
+            when {
+                beforeAgent true
+                expression { env.VERIFICATION_RESULT != "2" }
+            }
+            environment {
+                BOOT_JDK = "${WORKSPACE}/boot_jdk"
+            }
+            steps {
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
+                    script {
+                        sh("SapMachine-infrastructure/lib/build.sh")
+                        
+                    }
+                }
+            }
+        }
+        stage("Run jtreg hotspot") {
+            agent {
+                docker {
+                    image "ubuntu_20_04-ppc64le"
+                    reuseNode true
+                    label "linux_ppc64le"
+                }
+            }
+            when {
+                beforeAgent true
+                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.RUN_TESTS == true &amp;&amp; params.hotspot_test_groups }
+            }
+            environment {
+                TESTSUITE = 'hotspot'
+            }
+            steps {
+                sh "bash SapMachine-infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${env.TESTSUITE} ${params.hotspot_test_groups} || true"
+                publishHTML target: [
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: false,
+                    keepAll: true,
+                    reportDir: "test_report_${env.TESTSUITE}",
+                    reportFiles: 'JTreport/index.html',
+                    reportName: "JT Report ${env.TESTSUITE}"
+                ]
+                // persist data for test trend graph
+                junit "test_report_${env.TESTSUITE}/JTwork/**/*.jtr.xml"
+                script {
+                    if (findFiles([glob: 'test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log']).size() &gt; 0) {
+                        archiveArtifacts allowEmptyArchive: true, artifacts: "test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log"
+                    }
+                }
+            }
+        }
+        stage("Run jtreg jdk") {
+            agent {
+                docker {
+                    image "ubuntu_20_04-ppc64le"
+                    reuseNode true
+                    label "linux_ppc64le"
+                }
+            }
+            when {
+                beforeAgent true
+                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.RUN_TESTS == true &amp;&amp; params.jdk_test_groups }
+            }
+            environment {
+                TESTSUITE = 'jdk'
+            }
+            steps {
+                sh "bash SapMachine-infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${env.TESTSUITE} ${params.jdk_test_groups} || true"
+
+                publishHTML target: [
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: false,
+                    keepAll: true,
+                    reportDir: "test_report_${env.TESTSUITE}",
+                    reportFiles: 'JTreport/index.html',
+                    reportName: "JT Report ${env.TESTSUITE}"
+                ]
+                // persist data for test trend graph
+                junit "test_report_${env.TESTSUITE}/JTwork/**/*.jtr.xml"
+                script {
+                    if (findFiles([glob: 'test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log']).size() &gt; 0) {
+                        archiveArtifacts allowEmptyArchive: true, artifacts: "test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log"
+                    }
+                }
+            }
+        }
+        stage("Run jtreg langtools") {
+            agent {
+                docker {
+                    image "ubuntu_20_04-ppc64le"
+                    reuseNode true
+                    label "linux_ppc64le"
+                }
+            }
+            when {
+                beforeAgent true
+                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.RUN_TESTS == true &amp;&amp; params.langtools_test_groups }
+            }
+            environment {
+                TESTSUITE = 'langtools'
+            }
+            steps {
+                sh "bash SapMachine-infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${env.TESTSUITE} ${params.langtools_test_groups} || true"
+
+                publishHTML target: [
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: false,
+                    keepAll: true,
+                    reportDir: "test_report_${env.TESTSUITE}",
+                    reportFiles: 'JTreport/index.html',
+                    reportName: "JT Report ${env.TESTSUITE}"
+                ]
+                // persist data for test trend graph
+                junit "test_report_${env.TESTSUITE}/JTwork/**/*.jtr.xml"
+                script {
+                    if (findFiles([glob: 'test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log']).size() &gt; 0) {
+                        archiveArtifacts allowEmptyArchive: true, artifacts: "test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log"
+                    }
+                }
+            }
+        }
+        
+        
+            
+            
+        
+        
+            
+            
+                
+            
+        
+        
+        
+        
+        
+        
+            
+            
+        
+    }
+    post {
+        aborted {
+            script {
+                setGitHubPullRequestStatus context: "validate-pr-17-linux_ppc64le", state: 'FAILURE', message: 'job aborted'
+            }
+        }
+        failure {
+            script {
+                setGitHubPullRequestStatus context: "validate-pr-17-linux_ppc64le", state: 'FAILURE', message: 'build failed'
+            }
+        }
+        unstable {
+            script {
+                setGitHubPullRequestStatus context: "validate-pr-17-linux_ppc64le", state: 'FAILURE', message: 'tests failed'
+            }
+        }
+        success {
+            script {
+                setGitHubPullRequestStatus context: "validate-pr-17-linux_ppc64le", state: 'SUCCESS'
+            }
+            
+            cleanWs()
+        }
+        
+    }
+}
+</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <actions />
   <description>PR build for SapMachine 17 on linux_ppc64le.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
   <properties>
-    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty>
-      <abortPrevious>false</abortPrevious>
-    </org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty>
-    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.37.3.1">
+    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty />
+    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github">
       <projectUrl>https://github.com/SAP/SapMachine</projectUrl>
       <displayName />
     </com.coravy.hudson.plugins.github.GithubProjectProperty>
@@ -28,7 +347,7 @@
     </jenkins.model.BuildDiscarderProperty>
     <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
       <triggers>
-        <org.jenkinsci.plugins.github.pullrequest.GitHubPRTrigger plugin="github-pullrequest@0.5.0">
+        <org.jenkinsci.plugins.github.pullrequest.GitHubPRTrigger plugin="github-pullrequest@0.4.0">
           <spec>H/1 * * * *</spec>
           <triggerMode>HEAVY_HOOKS</triggerMode>
           <cancelQueued>true</cancelQueued>
@@ -138,334 +457,4 @@
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@3806.va_3a_6988277b_2">
-    <script>pipeline {
-    agent {
-        label "linux_ppc64le"
-    }
-    environment {
-        ARTIFACTORY_CREDS = credentials('openjdk-artifactory')
-    }
-    tools {
-        jfrog 'jfrog-cli'
-    }
-    stages {
-        stage("Init") {
-            steps {
-                // update GitHub status and initialize PR Verification
-                script {
-                    setGitHubPullRequestStatus context: "validate-pr-17-linux_ppc64le", state: 'PENDING'
-                }
-
-                // trigger workspace cleanup
-                cleanWs()
-
-                // check/configure some job parameters
-                script {
-                    if (params.SAPMACHINE_VERSION.isEmpty()) {
-                        env.SAPMACHINE_VERSION = params.GIT_REF
-                    } else {
-                        env.SAPMACHINE_VERSION = params.SAPMACHINE_VERSION
-                    }
-
-                    // initialize some variables
-                    env.RELEASE = "false"
-                    env.NODMG = "true"
-                }
-            }
-        }
-        stage("Checkout Infrastructure Repository") {
-            steps {
-                sh '''#!/bin/bash
-                    set -e
-
-                    if [[ `uname` == CYGWIN* ]]; then
-                      GIT_TOOL="/cygdrive/c/Program Files/Git/cmd/git.exe"
-                    else
-                      GIT_TOOL=git
-                    fi
-
-                    "$GIT_TOOL" --version
-                    "$GIT_TOOL" config --global init.defaultBranch master
-                    (set -ex &amp;&amp; "$GIT_TOOL" init SapMachine-infrastructure)
-                    cd SapMachine-infrastructure
-                    (set -ex &amp;&amp; GIT_TERMINAL_PROMPT=0 "$GIT_TOOL" fetch --depth 1 https://github.com/SAP/SapMachine-infrastructure master)
-                    (set -ex &amp;&amp; "$GIT_TOOL" checkout --detach FETCH_HEAD)
-                '''
-            }
-        }
-        stage("Verify PR") {
-            agent {
-                dockerfile {
-                    dir "SapMachine-infrastructure/dockerfiles/ubuntu_20_04/ppc64le"
-                    reuseNode true
-                    label "linux_ppc64le"
-                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
-                }
-            }
-            steps {
-                // credentials are needed to avoid rate limit exceedance in verify_pr.py
-                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
-                    script {
-                        env.COMMENT = ('linux_ppc64le' == 'linux_x86_64') ? "-c" : ""
-                        env.VERIFICATION_RESULT = sh(
-                            script: "python3 SapMachine-infrastructure/lib/verify_pr.py -p ${env.GITHUB_PR_NUMBER} ${env.COMMENT}",
-                            returnStatus: true
-                        )
-
-                        if (env.VERIFICATION_RESULT == "0") {
-                            error("Pull Request Verification failed")
-                        }
-                    }
-                }
-            }
-        }
-        stage("Checkout SapMachine Repository") {
-            when {
-                expression { env.VERIFICATION_RESULT != "2" }
-            }
-            steps {
-                sh("SapMachine-infrastructure/lib/git_clone.sh $SAPMACHINE_GIT_REPOSITORY SapMachine $GIT_REF $GITHUB_PR_NUMBER")
-            }
-        }
-        stage("Prepare Devkit") {
-            agent {
-                dockerfile {
-                    dir "SapMachine-infrastructure/dockerfiles/ubuntu_20_04/ppc64le"
-                    reuseNode true
-                    label "linux_ppc64le"
-                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
-                }
-            }
-            when {
-                beforeAgent true
-                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; !params.DEVKIT.isEmpty() }
-            }
-            steps {
-                script {
-                    String[] gav = params.DEVKIT.split(":");
-                    if (gav.length == 3) {
-                        echo "Extracting devkit from GAV coordinates: \"${params.DEVKIT}\"."
-                        sh("SapMachine-infrastructure/lib/deploy-devkit.sh ${gav[0]} ${gav[1]} ${gav[2]}")
-                        env.DEVKIT_PATH = sh(script: "cat devkitlocation.txt", returnStdout: true).trim()
-                    } else {
-                        echo "Devkit not in GAV notation, assuming path."
-                        env.DEVKIT_PATH = params.DEVKIT;
-                    }
-                    echo "Devkit Path: ${env.DEVKIT_PATH}"
-                }
-            }
-        }
-        stage("Download Prerequisites") {
-            agent {
-                dockerfile {
-                    dir "SapMachine-infrastructure/dockerfiles/ubuntu_20_04/ppc64le"
-                    reuseNode true
-                    label "linux_ppc64le"
-                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
-                }
-            }
-            when {
-                beforeAgent true
-                expression { env.VERIFICATION_RESULT != "2" }
-            }
-            steps {
-                // Download Boot JDK, Credentials are needed to avoid rate limit exceedance
-                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
-                    sh "python3 SapMachine-infrastructure/lib/download_boot_jdk.py -d `pwd`"
-                }
-
-                // Download googletest
-                sh("SapMachine-infrastructure/lib/git_clone.sh https://github.com/google/googletest gtest release-1.8.1")
-
-                // Download jtreg if required
-                script {
-                    if (params.RUN_TESTS) {
-                        sh "python3 SapMachine-infrastructure/lib/download_jtreg.py"
-                    }
-                }
-            }
-        }
-        stage("Build") {
-            agent {
-                dockerfile {
-                    dir "SapMachine-infrastructure/dockerfiles/ubuntu_20_04/ppc64le"
-                    reuseNode true
-                    label "linux_ppc64le"
-                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
-                }
-            }
-            when {
-                beforeAgent true
-                expression { env.VERIFICATION_RESULT != "2" }
-            }
-            environment {
-                BOOT_JDK = "${WORKSPACE}/boot_jdk"
-            }
-            steps {
-                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
-                    script {
-                        sh("SapMachine-infrastructure/lib/build.sh")
-                        
-                    }
-                }
-            }
-        }
-        stage("Run jtreg hotspot") {
-            agent {
-                dockerfile {
-                    dir "SapMachine-infrastructure/dockerfiles/ubuntu_20_04/ppc64le"
-                    reuseNode true
-                    label "linux_ppc64le"
-                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
-                }
-            }
-            when {
-                beforeAgent true
-                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.RUN_TESTS == true &amp;&amp; params.hotspot_test_groups }
-            }
-            environment {
-                TESTSUITE = 'hotspot'
-            }
-            steps {
-                sh "bash SapMachine-infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${env.TESTSUITE} ${params.hotspot_test_groups} || true"
-                publishHTML target: [
-                    allowMissing: false,
-                    alwaysLinkToLastBuild: false,
-                    keepAll: true,
-                    reportDir: "test_report_${env.TESTSUITE}",
-                    reportFiles: 'JTreport/index.html',
-                    reportName: "JT Report ${env.TESTSUITE}"
-                ]
-                // persist data for test trend graph
-                junit "test_report_${env.TESTSUITE}/JTwork/**/*.jtr.xml"
-                script {
-                    if (findFiles([glob: 'test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log']).size() &gt; 0) {
-                        archiveArtifacts allowEmptyArchive: true, artifacts: "test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log"
-                    }
-                }
-            }
-        }
-        stage("Run jtreg jdk") {
-            agent {
-                dockerfile {
-                    dir "SapMachine-infrastructure/dockerfiles/ubuntu_20_04/ppc64le"
-                    reuseNode true
-                    label "linux_ppc64le"
-                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
-                }
-            }
-            when {
-                beforeAgent true
-                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.RUN_TESTS == true &amp;&amp; params.jdk_test_groups }
-            }
-            environment {
-                TESTSUITE = 'jdk'
-            }
-            steps {
-                sh "bash SapMachine-infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${env.TESTSUITE} ${params.jdk_test_groups} || true"
-
-                publishHTML target: [
-                    allowMissing: false,
-                    alwaysLinkToLastBuild: false,
-                    keepAll: true,
-                    reportDir: "test_report_${env.TESTSUITE}",
-                    reportFiles: 'JTreport/index.html',
-                    reportName: "JT Report ${env.TESTSUITE}"
-                ]
-                // persist data for test trend graph
-                junit "test_report_${env.TESTSUITE}/JTwork/**/*.jtr.xml"
-                script {
-                    if (findFiles([glob: 'test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log']).size() &gt; 0) {
-                        archiveArtifacts allowEmptyArchive: true, artifacts: "test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log"
-                    }
-                }
-            }
-        }
-        stage("Run jtreg langtools") {
-            agent {
-                dockerfile {
-                    dir "SapMachine-infrastructure/dockerfiles/ubuntu_20_04/ppc64le"
-                    reuseNode true
-                    label "linux_ppc64le"
-                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
-                }
-            }
-            when {
-                beforeAgent true
-                expression { env.VERIFICATION_RESULT != "2" &amp;&amp; params.RUN_TESTS == true &amp;&amp; params.langtools_test_groups }
-            }
-            environment {
-                TESTSUITE = 'langtools'
-            }
-            steps {
-                sh "bash SapMachine-infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${env.TESTSUITE} ${params.langtools_test_groups} || true"
-
-                publishHTML target: [
-                    allowMissing: false,
-                    alwaysLinkToLastBuild: false,
-                    keepAll: true,
-                    reportDir: "test_report_${env.TESTSUITE}",
-                    reportFiles: 'JTreport/index.html',
-                    reportName: "JT Report ${env.TESTSUITE}"
-                ]
-                // persist data for test trend graph
-                junit "test_report_${env.TESTSUITE}/JTwork/**/*.jtr.xml"
-                script {
-                    if (findFiles([glob: 'test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log']).size() &gt; 0) {
-                        archiveArtifacts allowEmptyArchive: true, artifacts: "test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log"
-                    }
-                }
-            }
-        }
-        
-        
-            
-            
-        
-        
-            
-            
-                
-            
-        
-        
-        
-        
-        
-        
-            
-            
-        
-    }
-    post {
-        aborted {
-            script {
-                setGitHubPullRequestStatus context: "validate-pr-17-linux_ppc64le", state: 'FAILURE', message: 'job aborted'
-            }
-        }
-        failure {
-            script {
-                setGitHubPullRequestStatus context: "validate-pr-17-linux_ppc64le", state: 'FAILURE', message: 'build failed'
-            }
-        }
-        unstable {
-            script {
-                setGitHubPullRequestStatus context: "validate-pr-17-linux_ppc64le", state: 'FAILURE', message: 'tests failed'
-            }
-        }
-        success {
-            script {
-                setGitHubPullRequestStatus context: "validate-pr-17-linux_ppc64le", state: 'SUCCESS'
-            }
-            
-            cleanWs()
-        }
-        
-    }
-}
-</script>
-    <sandbox>true</sandbox>
-  </definition>
-  <disabled>false</disabled>
 </flow-definition>
