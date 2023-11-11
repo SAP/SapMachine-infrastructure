@@ -1,5 +1,5 @@
 '''
-Copyright (c) 2001-2020 by SAP SE, Walldorf, Germany.
+Copyright (c) 2001-2023 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
@@ -81,7 +81,7 @@ class Tag:
     def is_ga(self):
         return self.ga
 
-    # Prints the tag details, can be used for debugging
+    # Prints the tag details, can be used for debugging.
     def print_details(self, indent = ''):
         print(str.format('{0}{1}: {2}', indent, self.__class__.__name__, self.as_string()))
         print(str.format('{0}  version string: {1}', indent, self.get_version_string()))
@@ -98,18 +98,17 @@ class Tag:
     def is_same_update_version(self, other):
         return self.version[:3] == other.version[:3]
 
+    # Build numbers are only compared, if both tags have one.
     def is_greater_than(self, other):
         if self.version > other.version:
             return True
         elif self.version < other.version:
             return False
 
-        self_build_number = self.build_number if self.build_number is not None else -1
-        other_build_number = other.build_number if other.build_number is not None else -1
-        if self_build_number > other_build_number:
-            return True
-        else:
+        if (self.build_number is None or other.build_number is None):
             return False
+
+        return self.build_number > other.build_number
 
     # Creates a new tag Object of the same type (e.g. JDK or SapMachine) from the match value.
     def get_new_tag_of_same_type(self, match):

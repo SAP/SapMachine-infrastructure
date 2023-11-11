@@ -1,5 +1,5 @@
 '''
-Copyright (c) 2018-2022 by SAP SE, Walldorf, Germany.
+Copyright (c) 2018-2023 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 import os
@@ -173,7 +173,7 @@ def check_for_untagged_ga(merge_commit_id, jdk_tag, tags_of_merge_commit):
     # create sapmachine tag
     create_sapmachine_tag(ga_tag, merge_commit_id)
 
-    # make sure the last tag before the GA tag has been built
+    # make sure the last OpenJDK tag before GA has been tagged as SapMachine ea and has been built
     make_sure_last_non_ga_is_tagged(ga_tag, merge_commit_id)
 
 def tag_and_run_buildjob():
@@ -228,7 +228,7 @@ def tag_and_run_buildjob():
         create_sapmachine_tag(jdk_tag, merge_commit_id)
 
         if jdk_tag.is_ga():
-            # when the tag is a GA tag and the last non-ga tag was not yet tagged, we tag it to the same commit and build it
+            # when the tag marks a SapMachine release (non ea) and the last OpenJDK build tag was not yet SapMachine ea tagged, we tag it as SapMachine ea and build it.
             make_sure_last_non_ga_is_tagged(jdk_tag, merge_commit_id)
         else:
             # build the new tag (EA release)
