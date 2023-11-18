@@ -48,18 +48,45 @@
       <int>1538</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>1538</number>
-        <issueUpdatedAt>2023-11-17 00:30:05.0 UTC</issueUpdatedAt>
+        <issueUpdatedAt>2023-11-17 21:14:09.0 UTC</issueUpdatedAt>
         <title>Merge to tag jdk-22+24</title>
         <body>please pull</body>
-        <prUpdatedAt>2023-11-17 00:30:05.0 UTC</prUpdatedAt>
-        <headSha>ffa35d8cf181cfbcb54497e997dbd18a9b62b97e</headSha>
+        <prUpdatedAt>2023-11-17 21:14:09.0 UTC</prUpdatedAt>
+        <headSha>02d74b10eb4621eb20553fb53d28686fbf22c531</headSha>
         <headRef>pr-jdk-22+24</headRef>
-        <mergeable>false</mergeable>
+        <mergeable>true</mergeable>
         <baseRef>sapmachine</baseRef>
         <userLogin>SapMachine</userLogin>
         <htmlUrl>https://github.com/SAP/SapMachine/pull/1538</htmlUrl>
         <labels />
         <sourceRepoOwner>SAP</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>1539</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>1539</number>
+        <issueUpdatedAt>2023-11-17 21:26:30.0 UTC</issueUpdatedAt>
+        <title>Merge public changes of OpenJDK 21.0.2 into SapMachine</title>
+        <body>Update sapmachine21 code branch with OpenJDK 21u head for 21.0.2.
+
+This change also cherry-picks the backport of [JDK-8310031](https://bugs.openjdk.org/browse/JDK-8310031), which is planned in OpenJDK only for 21.0.3.
+
+fixes #1507
+</body>
+        <prUpdatedAt>2023-11-17 21:26:30.0 UTC</prUpdatedAt>
+        <headSha>d001f95572d021ad7bcec5161a77d780c199f0dd</headSha>
+        <headRef>sapmachine21.0.2-preparation</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine21</baseRef>
+        <userEmail>christoph.langer@sap.com</userEmail>
+        <userLogin>RealCLanger</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1539</htmlUrl>
+        <labels />
+        <lastCommentCreatedAt>2023-11-17 21:26:28.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>RealCLanger</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
       </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
