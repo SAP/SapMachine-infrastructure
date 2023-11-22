@@ -1,5 +1,5 @@
 <ns0:web-app xmlns:ns0="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" version="3.1" metadata-complete="true">
-  <ns0:display-name>Jenkins v2.414.3</ns0:display-name>
+  <ns0:display-name>Jenkins v2.426.1</ns0:display-name>
   <ns0:description>Build management system</ns0:description>
 
   <ns0:servlet>
@@ -52,6 +52,11 @@
     <ns0:async-supported>true</ns0:async-supported>
   </ns0:filter>
   <ns0:filter>
+    <ns0:filter-name>error-attribute-filter</ns0:filter-name>
+    <ns0:filter-class>jenkins.ErrorAttributeFilter</ns0:filter-class>
+    <ns0:async-supported>true</ns0:async-supported>
+  </ns0:filter>
+  <ns0:filter>
     <ns0:filter-name>plugins-filter</ns0:filter-name>
     <ns0:filter-class>hudson.util.PluginServletFilter</ns0:filter-class>
     <ns0:async-supported>true</ns0:async-supported>
@@ -81,6 +86,10 @@
   </ns0:filter-mapping>
   <ns0:filter-mapping>
     <ns0:filter-name>csrf-filter</ns0:filter-name>
+    <ns0:url-pattern>/*</ns0:url-pattern>
+  </ns0:filter-mapping>
+  <ns0:filter-mapping>
+    <ns0:filter-name>error-attribute-filter</ns0:filter-name>
     <ns0:url-pattern>/*</ns0:url-pattern>
   </ns0:filter-mapping>
   <ns0:filter-mapping>
@@ -177,6 +186,10 @@
   <ns0:error-page>
     <ns0:exception-type>java.lang.Throwable</ns0:exception-type>
     <ns0:location>/oops</ns0:location>
+  </ns0:error-page>
+  <ns0:error-page>
+    <ns0:error-code>404</ns0:error-code>
+    <ns0:location>/404</ns0:location>
   </ns0:error-page>
 
   <ns0:session-config>
