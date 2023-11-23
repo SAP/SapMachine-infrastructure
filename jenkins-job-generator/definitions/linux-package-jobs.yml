@@ -131,6 +131,7 @@
     defaults: 'linux_package_global'
     sandbox: true
     project-type: pipeline
+    sandbox: true
     concurrent: false
     properties:
         - build-discarder:
@@ -164,6 +165,7 @@
     name: rpm-package
     description: 'Build RPM package on Linux x86_64.'
     project-type: pipeline
+    sandbox: true
     concurrent: false
     properties:
         - build-discarder:
