@@ -45,7 +45,7 @@ def main(argv=None):
             tagstr = "sapmachine-" + tagstr
     
     tag = SapMachineTag.from_string(tagstr)    
-    print("tag:", tag)
+    print("SapMachine tag: ", tag.as_string())
 
     cwd = os.getcwd()
     home = expanduser("~")
