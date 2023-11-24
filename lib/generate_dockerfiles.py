@@ -31,6 +31,25 @@ ENV JAVA_HOME=/usr/lib/jvm/sapmachine-${major}
 CMD ["jshell"]
 '''
 
+dockerfile_template_ubuntu_latest = '''FROM ubuntu:23.10
+
+RUN apt-get update \\
+    && apt-get -y --no-install-recommends install ca-certificates gnupg \\
+    && export GNUPGHOME="$$(mktemp -d)" \\
+    && gpg --no-default-keyring --keyring gnupg-ring:/etc/apt/trusted.gpg.d/sapmachine.gpg --batch --keyserver hkps://keys.openpgp.org --recv-keys CACB9FE09150307D1D22D82962754C3B3ABCFE23 \\
+    && chmod 644 /etc/apt/trusted.gpg.d/sapmachine.gpg \\
+    && echo "deb http://dist.sapmachine.io/debian/$$(dpkg --print-architecture)/ ./" > /etc/apt/sources.list.d/sapmachine.list \\
+    && apt-get update \\
+    && apt-get -y --no-install-recommends install ${pkg_version} \\
+    && apt-get remove -y --purge --autoremove ca-certificates gnupg \\
+    && rm -rf "$$GNUPGHOME" /var/lib/apt/lists/*
+
+ENV JAVA_HOME=/usr/lib/jvm/sapmachine-${major}
+
+CMD ["jshell"]
+'''
+
+
 dockerfile_template_distroless = '''FROM gcr.io/distroless/java${distrolessvers}-debian11:${type} as distroless
 
 FROM ubuntu as builder
@@ -117,6 +136,15 @@ def write_dockerfile_ubuntu(base_dir, type, major, version_string):
                 major=major
             ))
 
+def write_dockerfile_ubuntu_latest(base_dir, type, major, version_string):
+    dockerfile_dir = join(base_dir, type)
+    os.makedirs(dockerfile_dir)
+    with open(join(dockerfile_dir, 'Dockerfile'), 'w+') as dockerfile:
+            dockerfile.write(Template(dockerfile_template_ubuntu_latest).substitute(
+                pkg_version=str.format('sapmachine-{0}-{1}={2}', major, type, version_string),
+                major=major
+            ))
+
 def write_dockerfile_distroless(base_dir, type, major, version_string):
     dockerfile_dir = join(base_dir, 'debian11', type)
     os.makedirs(dockerfile_dir)
@@ -137,6 +165,7 @@ def process_release(release, infrastructure_tags, dockerfiles_dir, args):
     skip_tag = False
     major_dir = join(dockerfiles_dir, major)
     ubuntu_dir = join(major_dir, 'ubuntu')
+    ubuntu_latest_dir = join(major_dir, 'ubuntu_latest')
     distroless_dir = join(major_dir, 'distroless')
 
     for infrastructure_tag in infrastructure_tags:
@@ -147,7 +176,15 @@ def process_release(release, infrastructure_tags, dockerfiles_dir, args):
               break
 
     if not skip_tag:
-        # Write ubuntu dockerfiles
+        # Write ubuntu short term release dockerfiles
+        utils.remove_if_exists(ubuntu_latest_dir)
+        os.makedirs(ubuntu_latest_dir)
+        write_dockerfile_ubuntu_latest(ubuntu_latest_dir, 'jre', major, version_string)
+        write_dockerfile_ubuntu_latest(ubuntu_latest_dir, 'jre-headless', major, version_string)
+        write_dockerfile_ubuntu_latest(ubuntu_latest_dir, 'jdk', major, version_string)
+        write_dockerfile_ubuntu_latest(ubuntu_latest_dir, 'jdk-headless', major, version_string)
+
+        # Write ubuntu LTS dockerfiles
         utils.remove_if_exists(ubuntu_dir)
         os.makedirs(ubuntu_dir)
         write_dockerfile_ubuntu(ubuntu_dir, 'jre', major, version_string)
