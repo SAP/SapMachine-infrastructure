@@ -1,5 +1,5 @@
 '''
-Copyright (c) 2017-2022 by SAP SE, Walldorf, Germany.
+Copyright (c) 2017-2023 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
@@ -45,7 +45,7 @@ def main(argv=None):
             tagstr = "sapmachine-" + tagstr
     
     tag = SapMachineTag.from_string(tagstr)    
-    print("SapMachine tag: ", tag.as_string())
+    print("SapMachine tag:", tag.as_string())
 
     cwd = os.getcwd()
     home = expanduser("~")
@@ -74,7 +74,7 @@ def main(argv=None):
 
     rmtree(work_dir)
 
-    apk_files = glob.glob(join(home, 'packages', 'apk_work','*', '*.apk'))
+    apk_files = glob.glob(join(home, 'packages', 'apk_work', '*', '*.apk'))
 
     for apk_file in apk_files:
         copy(apk_file, cwd)
