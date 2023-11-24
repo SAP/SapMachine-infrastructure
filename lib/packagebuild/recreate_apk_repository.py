@@ -25,15 +25,10 @@ def main(argv=None):
     keyfile = basename(args.key)
     keydir = dirname(args.key)
 
-    cmd = str.format('apk index -o {0}/APKINDEX.tar.gz {1}/*.apk',
-        repository,
-        repository)
+    cmd = str.format('apk index -o {0}/APKINDEX.tar.gz {1}/*.apk', repository, repository)
     utils.run_cmd(cmd, shell=True)
 
-    cmd = str.format('abuild-sign -k {0}/{1} {2}/APKINDEX.tar.gz',
-        keydir,
-        keyfile,
-        repository)
+    cmd = str.format('abuild-sign -k {0}/{1} {2}/APKINDEX.tar.gz', keydir, keyfile, repository)
     utils.run_cmd(cmd, shell=True)
 
     return 0
