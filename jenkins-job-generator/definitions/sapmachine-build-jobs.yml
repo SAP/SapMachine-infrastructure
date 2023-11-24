@@ -55,11 +55,11 @@
                                 expression {{ env.BUILD_INSTALLER_PACKAGES == "true" }}
                             }}
                             steps {{
-                                sh "python3 SapMachine-infrastructure/lib/packagebuild/make_deb.py --tag=${{env.SAPMACHINE_VERSION}} --architecture={architecture|}"
+                                sh 'python3 SapMachine-infrastructure/lib/packagebuild/make_deb.py --tag=$SAPMACHINE_VERSION --architecture={architecture}'
                             }}
                             post {{
                                 success {{
-                                    stash includes: '*.deb', name: 'debPackage'
+                                    stash includes: '*.deb', name: 'debPackages'
                                     stash includes: 'SapMachine-infrastructure/**', name: 'infra'
                                 }}
                             }}
@@ -79,9 +79,9 @@
                             }}
                             steps {{
                                 unstash 'infra'
-                                unstash 'debPackage'
-                                sh "cp -n *.deb /var/pkg/deb/{debarch|} || true"
-                                sh "python3 SapMachine-infrastructure/lib/packagebuild/recreate_deb_repository.py -s -r /var/pkg/deb/{debarch|}"
+                                unstash 'debPackages'
+                                sh 'cp -n *.deb /var/pkg/deb/{debarch|} || true'
+                                sh 'python3 SapMachine-infrastructure/lib/packagebuild/recreate_deb_repository.py -s -r /var/pkg/deb/{debarch}'
                             }}
                         }}
             generate_dockerfiles: &generate_dockerfiles |-
@@ -125,15 +125,15 @@
                                 expression {{ env.BUILD_INSTALLER_PACKAGES == "true" }}
                             }}
                             steps {{
-                                sh "id"
-                                sh "getent group abuild"
-                                sh "cat /etc/group"
-                                sh "SUDO=sudo abuild-keygen -a -i -n"
-                                sh "sudo -g abuild python3 SapMachine-infrastructure/lib/packagebuild/make_apk.py -t ${{env.SAPMACHINE_VERSION}} -d SapMachine-infrastructure/alpine-templates"
+                                withCredentials([file(credentialsId: 'sapmachine-apk.rsa', variable: 'apkrsa'),
+                                                file(credentialsId: 'sapmachine-apk.rsa.pub', variable: 'apkrsapub')]) {{
+                                    sh 'SapMachine-infrastructure/lib/packagebuild/prepare_apk_build.sh'
+                                }}
+                                sh 'sudo -g abuild python3 SapMachine-infrastructure/lib/packagebuild/make_apk.py -t $SAPMACHINE_VERSION -d SapMachine-infrastructure/alpine-templates'
                             }}
                             post {{
                                 success {{
-                                    stash includes: '*.apk', name: 'apkPackage'
+                                    stash includes: '*.apk', name: 'apkPackages'
                                     stash includes: 'SapMachine-infrastructure/**', name: 'infra'
                                 }}
                             }}
@@ -206,7 +206,7 @@
                                 expression {{ env.BUILD_INSTALLER_PACKAGES == "true" }}
                             }}
                             steps {{
-                                sh "python3 SapMachine-infrastructure/lib/packagebuild/make_rpm.py --tag=${{env.SAPMACHINE_VERSION}}"
+                                sh 'python3 SapMachine-infrastructure/lib/packagebuild/make_rpm.py --tag=$SAPMACHINE_VERSION"
                             }}
                         }}
             publish_artifactory_step: *publish_artifactory_step

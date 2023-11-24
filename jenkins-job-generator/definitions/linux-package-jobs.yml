@@ -83,14 +83,14 @@
                     steps {{
                         // credentials are needed to avoid rate limit exceedance
                         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
-                            sh "python3 SapMachine-infrastructure/lib/packagebuild/make_deb.py --tag=${{params.GIT_TAG_NAME}} --download --architecture={architecture}"
+                            sh 'python3 SapMachine-infrastructure/lib/packagebuild/make_deb.py --tag=$GIT_TAG_NAME --download --architecture={architecture}'
                         }}
                     }}
                     post {{
                         success {{
                             script {{
                                 if (params.PUBLISH == true) {{
-                                    stash includes: '*.deb', name: 'debPackage'
+                                    stash includes: '*.deb', name: 'debPackages'
                                     stash includes: 'SapMachine-infrastructure/**', name: 'infra'
                                 }}
                             }}
@@ -106,9 +106,9 @@
                     }}
                     steps {{
                         unstash 'infra'
-                        unstash 'debPackage'
-                        sh "cp -n *.deb /var/pkg/deb/{debarch} || true"
-                        sh "python3 SapMachine-infrastructure/lib/packagebuild/recreate_deb_repository.py -s -r /var/pkg/deb/{debarch}"
+                        unstash 'debPackages'
+                        sh 'cp -n *.deb /var/pkg/deb/{debarch} || true'
+                        sh 'python3 SapMachine-infrastructure/lib/packagebuild/recreate_deb_repository.py -s -r /var/pkg/deb/{debarch}'
                     }}
                 }}
             }}
@@ -150,7 +150,7 @@
                 }}
                 stage("Recreate") {{
                     steps {{
-                        sh "python3 SapMachine-infrastructure/lib/packagebuild/recreate_deb_repository.py -s -r /var/pkg/deb/{debarch}"
+                        sh 'python3 SapMachine-infrastructure/lib/packagebuild/recreate_deb_repository.py -s -r /var/pkg/deb/{debarch}'
                     }}
                 }}
             }}
@@ -201,7 +201,7 @@
                     }
                     steps {
                         sh 'rm -f *.rpm'
-                        sh "/usr/bin/python3 SapMachine-infrastructure/lib/packagebuild/make_rpm.py --tag=${params.GIT_TAG_NAME}" --download
+                        sh '/usr/bin/python3 SapMachine-infrastructure/lib/packagebuild/make_rpm.py --tag=$GIT_TAG_NAME --download'
                     }
                     post {
                         success {
@@ -222,7 +222,7 @@
                     }
                     steps {
                         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
-                            sh "SapMachine-infrastructure/lib/publish_rpm.sh"
+                            sh 'SapMachine-infrastructure/lib/publish_rpm.sh'
                         }
                     }
                 }
@@ -273,8 +273,6 @@
                         }
                     }
                     steps {
-                        sh "id"
-                        sh "getent group abuild"
                         withCredentials([file(credentialsId: 'sapmachine-apk.rsa', variable: 'apkrsa'),
                                          file(credentialsId: 'sapmachine-apk.rsa.pub', variable: 'apkrsapub')]) {
                             sh 'SapMachine-infrastructure/lib/packagebuild/prepare_apk_build.sh'
@@ -302,8 +300,8 @@
                     steps {
                         unstash 'infra'
                         unstash 'apkPackages'
-                        sh "cp -n *.apk /var/pkg/apk/x86_64 || true"
-                        sh "python3 SapMachine-infrastructure/lib/packagebuild/recreate_apk_repository.py -r /var/pkg/apk/x86_64 -k /var/pkg/apk/keys/sapmachine@sap.com-5a673212.rsa"
+                        sh 'cp -n *.apk /var/pkg/apk/x86_64 || true'
+                        sh 'python3 SapMachine-infrastructure/lib/packagebuild/recreate_apk_repository.py -r /var/pkg/apk/x86_64 -k /var/pkg/apk/keys/sapmachine@sap.com-5a673212.rsa'
                     }
                 }
             }
