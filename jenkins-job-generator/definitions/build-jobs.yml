@@ -55,7 +55,7 @@
                                 expression {{ env.BUILD_INSTALLER_PACKAGES == "true" }}
                             }}
                             steps {{
-                                sh "python3 SapMachine-infrastructure/lib/make_deb.py --tag=${{env.SAPMACHINE_VERSION}} --architecture={architecture|}"
+                                sh "python3 SapMachine-infrastructure/lib/packagebuild/make_deb.py --tag=${{env.SAPMACHINE_VERSION}} --architecture={architecture|}"
                             }}
                             post {{
                                 success {{
@@ -81,7 +81,7 @@
                                 unstash 'infra'
                                 unstash 'debPackage'
                                 sh "cp -n *.deb /var/pkg/deb/{debarch|} || true"
-                                sh "python3 SapMachine-infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/{debarch|}"
+                                sh "python3 SapMachine-infrastructure/lib/packagebuild/recreate_deb_repository.py -s -r /var/pkg/deb/{debarch|}"
                             }}
                         }}
             generate_dockerfiles: &generate_dockerfiles |-
@@ -129,7 +129,7 @@
                                 sh "getent group abuild"
                                 sh "cat /etc/group"
                                 sh "SUDO=sudo abuild-keygen -a -i -n"
-                                sh "sudo -g abuild python3 SapMachine-infrastructure/lib/make_apk.py -t ${{env.SAPMACHINE_VERSION}} -d SapMachine-infrastructure/alpine-templates"
+                                sh "sudo -g abuild python3 SapMachine-infrastructure/lib/packagebuild/make_apk.py -t ${{env.SAPMACHINE_VERSION}} -d SapMachine-infrastructure/alpine-templates"
                             }}
                             post {{
                                 success {{
@@ -206,7 +206,7 @@
                                 expression {{ env.BUILD_INSTALLER_PACKAGES == "true" }}
                             }}
                             steps {{
-                                sh "python3 SapMachine-infrastructure/lib/make_rpm.py --tag=${{env.SAPMACHINE_VERSION}}"
+                                sh "python3 SapMachine-infrastructure/lib/packagebuild/make_rpm.py --tag=${{env.SAPMACHINE_VERSION}}"
                             }}
                         }}
             publish_artifactory_step: *publish_artifactory_step
@@ -232,7 +232,7 @@
                             steps {{
                                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
                                     lock('MacBrewCaskGenerationSynchronizer') {{
-                                        sh "python3 SapMachine-infrastructure/lib/make_cask.py -t $SAPMACHINE_VERSION"
+                                        sh "python3 SapMachine-infrastructure/lib/packagebuild/make_cask.py -t $SAPMACHINE_VERSION"
                                     }}
                                 }}
                             }}
@@ -257,8 +257,8 @@
                                         jdk_bundle_name = jdk_bundle_name.trim()
                                         jre_bundle_name = jre_bundle_name.trim()
 
-                                        sh "python3 SapMachine-infrastructure/lib/make_msi.py --sapmachine-directory=`pwd`/SapMachine --asset=${{jdk_bundle_name}}"
-                                        sh "python3 SapMachine-infrastructure/lib/make_msi.py --sapmachine-directory=`pwd`/SapMachine --jre --asset=${{jre_bundle_name}}"
+                                        sh "python3 SapMachine-infrastructure/lib/packagebuild/make_msi.py --sapmachine-directory=`pwd`/SapMachine --asset=${{jdk_bundle_name}}"
+                                        sh "python3 SapMachine-infrastructure/lib/packagebuild/make_msi.py --sapmachine-directory=`pwd`/SapMachine --jre --asset=${{jre_bundle_name}}"
                                     }}
                                 }}
                             }}

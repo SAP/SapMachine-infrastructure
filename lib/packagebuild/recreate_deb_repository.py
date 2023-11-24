@@ -1,5 +1,5 @@
 '''
-Copyright (c) 2001-2017 by SAP SE, Walldorf, Germany.
+Copyright (c) 2017-2023 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
@@ -7,6 +7,9 @@ import argparse
 import datetime
 import os
 import sys
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
 import utils
 
 from os.path import join

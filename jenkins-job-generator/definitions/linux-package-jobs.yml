@@ -83,7 +83,7 @@
                     steps {{
                         // credentials are needed to avoid rate limit exceedance
                         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
-                            sh "python3 SapMachine-infrastructure/lib/make_deb.py --tag=${{params.GIT_TAG_NAME}} --download --architecture={architecture}"
+                            sh "python3 SapMachine-infrastructure/lib/packagebuild/make_deb.py --tag=${{params.GIT_TAG_NAME}} --download --architecture={architecture}"
                         }}
                     }}
                     post {{
@@ -108,7 +108,7 @@
                         unstash 'infra'
                         unstash 'debPackage'
                         sh "cp -n *.deb /var/pkg/deb/{debarch} || true"
-                        sh "python3 SapMachine-infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/{debarch}"
+                        sh "python3 SapMachine-infrastructure/lib/packagebuild/recreate_deb_repository.py -s -r /var/pkg/deb/{debarch}"
                     }}
                 }}
             }}
@@ -150,7 +150,7 @@
                 }}
                 stage("Recreate") {{
                     steps {{
-                        sh "python3 SapMachine-infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/{debarch}"
+                        sh "python3 SapMachine-infrastructure/lib/packagebuild/recreate_deb_repository.py -s -r /var/pkg/deb/{debarch}"
                     }}
                 }}
             }}
@@ -201,7 +201,7 @@
                     }
                     steps {
                         sh 'rm -f *.rpm'
-                        sh "/usr/bin/python3 SapMachine-infrastructure/lib/make_rpm.py --tag=${params.GIT_TAG_NAME}" --download
+                        sh "/usr/bin/python3 SapMachine-infrastructure/lib/packagebuild/make_rpm.py --tag=${params.GIT_TAG_NAME}" --download
                     }
                     post {
                         success {

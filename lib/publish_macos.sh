@@ -36,5 +36,5 @@ python3 SapMachine-infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -
 python3 SapMachine-infrastructure/lib/github_publish.py -t $SAPMACHINE_VERSION -a "${SYMBOLS_TGZ_SUM}"
 
 if [ "$PUBLISH_CASKS" == true ]; then
-    python3 SapMachine-infrastructure/lib/make_cask.py -t $SAPMACHINE_VERSION
+    python3 SapMachine-infrastructure/lib/packagebuild/make_cask.py -t $SAPMACHINE_VERSION
 fi

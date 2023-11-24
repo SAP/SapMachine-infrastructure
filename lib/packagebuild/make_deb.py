@@ -10,6 +10,9 @@ import glob
 import os
 import re
 import sys
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
 import utils
 
 from os import mkdir

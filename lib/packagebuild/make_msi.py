@@ -1,5 +1,5 @@
 '''
-Copyright (c) 2018-2022 by SAP SE, Walldorf, Germany.
+Copyright (c) 2018-2023 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
@@ -8,10 +8,13 @@ import glob
 import os
 import shutil
 import sys
-import utils
 import uuid
 # seems this needs module pyyaml
 import yaml
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
+import utils
 
 from os.path import join
 from string import Template
