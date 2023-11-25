@@ -12,7 +12,7 @@
         }
         stage("Recreate") {
             steps {
-                sh "python3 SapMachine-infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/arm64"
+                sh 'python3 SapMachine-infrastructure/lib/packagebuild/recreate_deb_repository.py -s -r /var/pkg/deb/arm64'
             }
         }
     }

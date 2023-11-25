@@ -20,7 +20,7 @@
             }
             steps {
                 sh 'rm -f *.rpm'
-                sh "/usr/bin/python3 SapMachine-infrastructure/lib/make_rpm.py --tag=${params.GIT_TAG_NAME}" --download
+                sh '/usr/bin/python3 SapMachine-infrastructure/lib/packagebuild/make_rpm.py --tag=$GIT_TAG_NAME --download'
             }
             post {
                 success {
@@ -41,7 +41,7 @@
             }
             steps {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
-                    sh "SapMachine-infrastructure/lib/publish_rpm.sh"
+                    sh 'SapMachine-infrastructure/lib/publish_rpm.sh'
                 }
             }
         }

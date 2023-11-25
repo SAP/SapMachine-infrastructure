@@ -5,39 +5,13 @@
   <sshUrl>git@github.com:SAP/SapMachine.git</sshUrl>
   <pulls class="concurrent-hash-map">
     <entry>
-      <int>1541</int>
-      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>1541</number>
-        <issueUpdatedAt>2023-11-22 20:50:04.0 UTC</issueUpdatedAt>
-        <title>Fix incorrect handling of invalid values in vitals extremas</title>
-        <body>This fixes treating invalid values as extremas in the vitals code. Additionally we make sure to properly zero-terminate the buffer used for proc file reading, so invalid values are less likely.
-
-fixes #1540
-
-</body>
-        <prUpdatedAt>2023-11-22 20:50:04.0 UTC</prUpdatedAt>
-        <headSha>0497017458676e742cecc63888da84750a087a80</headSha>
-        <headRef>vitals_extrema_fix</headRef>
-        <mergeable>true</mergeable>
-        <baseRef>sapmachine</baseRef>
-        <userEmail>ralf.schmelter@sap.com</userEmail>
-        <userLogin>schmelter-sap</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/1541</htmlUrl>
-        <labels />
-        <lastCommentCreatedAt>2023-11-22 17:46:55.0 UTC</lastCommentCreatedAt>
-        <sourceRepoOwner>schmelter-sap</sourceRepoOwner>
-        <state>OPEN</state>
-        <inBadState>false</inBadState>
-      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-    </entry>
-    <entry>
       <int>1543</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>1543</number>
-        <issueUpdatedAt>2023-11-23 00:30:19.0 UTC</issueUpdatedAt>
+        <issueUpdatedAt>2023-11-24 19:49:49.0 UTC</issueUpdatedAt>
         <title>Merge to tag jdk-22+25</title>
         <body>please pull</body>
-        <prUpdatedAt>2023-11-23 00:30:19.0 UTC</prUpdatedAt>
+        <prUpdatedAt>2023-11-24 19:49:49.0 UTC</prUpdatedAt>
         <headSha>e47cf611c9490225e50a548787cbba66ab147058</headSha>
         <headRef>pr-jdk-22+25</headRef>
         <mergeable>true</mergeable>
@@ -45,30 +19,8 @@ fixes #1540
         <userLogin>SapMachine</userLogin>
         <htmlUrl>https://github.com/SAP/SapMachine/pull/1543</htmlUrl>
         <labels />
+        <lastCommentCreatedAt>2023-11-24 19:49:48.0 UTC</lastCommentCreatedAt>
         <sourceRepoOwner>SAP</sourceRepoOwner>
-        <state>OPEN</state>
-        <inBadState>false</inBadState>
-      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-    </entry>
-    <entry>
-      <int>1545</int>
-      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>1545</number>
-        <issueUpdatedAt>2023-11-23 08:49:05.0 UTC</issueUpdatedAt>
-        <title>Run wiki update task regularly</title>
-        <body>fixes #1544
-</body>
-        <prUpdatedAt>2023-11-23 08:49:05.0 UTC</prUpdatedAt>
-        <headSha>8b91f327a8a593b05699a809847b21a51d3855a7</headSha>
-        <headRef>sapmachine</headRef>
-        <mergeable>true</mergeable>
-        <baseRef>sapmachine</baseRef>
-        <userEmail>me@mostlynerdless.de</userEmail>
-        <userLogin>parttimenerd</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/1545</htmlUrl>
-        <labels />
-        <lastCommentCreatedAt>2023-11-23 08:49:03.0 UTC</lastCommentCreatedAt>
-        <sourceRepoOwner>parttimenerd</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
       </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>

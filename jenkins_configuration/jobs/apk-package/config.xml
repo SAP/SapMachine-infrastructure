@@ -1,0 +1,103 @@
+<flow-definition plugin="workflow-job@1360.vc6700e3136f5">
+  <actions>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@2.2151.ve32c9d209a_3f" />
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@2.2151.ve32c9d209a_3f">
+      <jobProperties />
+      <triggers />
+      <parameters />
+      <options />
+    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
+  </actions>
+  <description>Build an APK package on Alpine Linux x86_64.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty>
+      <abortPrevious>false</abortPrevious>
+    </org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty>
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>-1</daysToKeep>
+        <numToKeep>20</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>1</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>GIT_TAG_NAME</name>
+          <description>The Git tag to create an apk package from.</description>
+          <defaultValue />
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>PUBLISH</name>
+          <description>When set to true, the resulting packages will be published.</description>
+          <defaultValue>false</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@3806.va_3a_6988277b_2">
+    <script>pipeline {
+    agent {
+        label "linux_alpine_x86_64"
+    }
+    stages {
+        stage("Checkout Infrastructure Repository") {
+            steps {
+                checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+            }
+        }
+        stage("Build") {
+            agent {
+                dockerfile {
+                    dir "SapMachine-infrastructure/dockerfiles/alpine_3/x86_64"
+                    reuseNode true
+                    label "linux_alpine_x86_64"
+                }
+            }
+            steps {
+                withCredentials([file(credentialsId: 'sapmachine-apk.rsa', variable: 'apkrsa'),
+                                 file(credentialsId: 'sapmachine-apk.rsa.pub', variable: 'apkrsapub')]) {
+                    sh 'SapMachine-infrastructure/lib/packagebuild/prepare_apk_build.sh'
+                }
+                sh 'sudo -g abuild python3 SapMachine-infrastructure/lib/packagebuild/make_apk.py -t ${GIT_TAG_NAME} -d SapMachine-infrastructure/alpine-templates'
+            }
+            post {
+                success {
+                    script {
+                        if (params.PUBLISH == true) {
+                            stash includes: '*.apk', name: 'apkPackages'
+                            stash includes: 'SapMachine-infrastructure/**', name: 'infra'
+                        }
+                    }
+                }
+            }
+        }
+        stage("Publish") {
+            when {
+                expression { params.PUBLISH == true }
+            }
+            agent {
+                label 'agent-local-docker-ubuntu'
+            }
+            steps {
+                unstash 'infra'
+                unstash 'apkPackages'
+                sh 'cp -n *.apk /var/pkg/apk/x86_64 || true'
+                sh 'python3 SapMachine-infrastructure/lib/packagebuild/recreate_apk_repository.py -r /var/pkg/apk/x86_64 -k /var/pkg/apk/keys/sapmachine@sap.com-5a673212.rsa'
+            }
+        }
+    }
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}
+</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <disabled>false</disabled>
+</flow-definition>

@@ -12,7 +12,7 @@
         }
         stage("Recreate") {
             steps {
-                sh "python3 SapMachine-infrastructure/lib/recreate_deb_repository.py -s -r /var/pkg/deb/ppc64el"
+                sh 'python3 SapMachine-infrastructure/lib/packagebuild/recreate_deb_repository.py -s -r /var/pkg/deb/ppc64el'
             }
         }
     }

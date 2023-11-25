@@ -113,7 +113,7 @@
             steps {
                 // Download Boot JDK, Credentials are needed to avoid rate limit exceedance
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
-                    sh "python3 SapMachine-infrastructure/lib/download_boot_jdk.py -d `pwd`"
+                    sh 'python3 SapMachine-infrastructure/lib/download_boot_jdk.py -d `pwd`'
                 }
 
                 // Download googletest
@@ -122,7 +122,7 @@
                 // Download jtreg if required
                 script {
                     if (params.RUN_TESTS) {
-                        sh "python3 SapMachine-infrastructure/lib/download_jtreg.py"
+                        sh 'python3 SapMachine-infrastructure/lib/download_jtreg.py'
                     }
                 }
             }
@@ -155,7 +155,7 @@
                 TESTSUITE = 'hotspot'
             }
             steps {
-                sh "bash SapMachine-infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${env.TESTSUITE} ${params.hotspot_test_groups} || true"
+                sh 'bash SapMachine-infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s $TESTSUITE $hotspot_test_groups || true'
                 publishHTML target: [
                     allowMissing: false,
                     alwaysLinkToLastBuild: false,
@@ -183,7 +183,7 @@
                 TESTSUITE = 'jdk'
             }
             steps {
-                sh "bash SapMachine-infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${env.TESTSUITE} ${params.jdk_test_groups} || true"
+                sh 'bash SapMachine-infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s $TESTSUITE $jdk_test_groups || true'
 
                 publishHTML target: [
                     allowMissing: false,
@@ -212,7 +212,7 @@
                 TESTSUITE = 'langtools'
             }
             steps {
-                sh "bash SapMachine-infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s ${env.TESTSUITE} ${params.langtools_test_groups} || true"
+                sh 'bash SapMachine-infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s $TESTSUITE $langtools_test_groups || true'
 
                 publishHTML target: [
                     allowMissing: false,
