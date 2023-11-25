@@ -609,7 +609,7 @@
                         TESTSUITE = 'hotspot'
                     }}
                     steps {{
-                        sh 'bash SapMachine-infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s $TESTSUITE $hotspot_test_groups || true'
+                        sh 'bash SapMachine-infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s $TESTSUITE "$hotspot_test_groups" || true'
                         publishHTML target: [
                             allowMissing: false,
                             alwaysLinkToLastBuild: false,
@@ -637,7 +637,7 @@
                         TESTSUITE = 'jdk'
                     }}
                     steps {{
-                        sh 'bash SapMachine-infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s $TESTSUITE $jdk_test_groups || true'
+                        sh 'bash SapMachine-infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s $TESTSUITE "$jdk_test_groups" || true'
 
                         publishHTML target: [
                             allowMissing: false,
@@ -666,7 +666,7 @@
                         TESTSUITE = 'langtools'
                     }}
                     steps {{
-                        sh 'bash SapMachine-infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s $TESTSUITE $langtools_test_groups || true'
+                        sh 'bash SapMachine-infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s $TESTSUITE "$langtools_test_groups" || true'
 
                         publishHTML target: [
                             allowMissing: false,
