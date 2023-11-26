@@ -155,7 +155,7 @@
                 TESTSUITE = 'hotspot'
             }
             steps {
-                sh 'bash SapMachine-infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s $TESTSUITE $hotspot_test_groups || true'
+                sh 'bash SapMachine-infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s $TESTSUITE "$hotspot_test_groups" || true'
                 publishHTML target: [
                     allowMissing: false,
                     alwaysLinkToLastBuild: false,
@@ -183,7 +183,7 @@
                 TESTSUITE = 'jdk'
             }
             steps {
-                sh 'bash SapMachine-infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s $TESTSUITE $jdk_test_groups || true'
+                sh 'bash SapMachine-infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s $TESTSUITE "$jdk_test_groups" || true'
 
                 publishHTML target: [
                     allowMissing: false,
@@ -212,7 +212,7 @@
                 TESTSUITE = 'langtools'
             }
             steps {
-                sh 'bash SapMachine-infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s $TESTSUITE $langtools_test_groups || true'
+                sh 'bash SapMachine-infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s $TESTSUITE "$langtools_test_groups" || true'
 
                 publishHTML target: [
                     allowMissing: false,
@@ -403,7 +403,7 @@
         <hudson.model.StringParameterDefinition>
           <name>langtools_test_groups</name>
           <description>Select the test group for jtreg langtools tests. Empty means disabled.</description>
-          <defaultValue>"jdk tools lib"</defaultValue>
+          <defaultValue>jdk tools lib</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
