@@ -81,7 +81,7 @@
                                 unstash 'infra'
                                 unstash 'debPackages'
                                 sh 'cp -n *.deb /var/pkg/deb/{debarch|} || true'
-                                sh 'python3 SapMachine-infrastructure/lib/packagebuild/recreate_deb_repository.py -s -r /var/pkg/deb/{debarch|}'
+                                sh 'python3 SapMachine-infrastructure/lib/packagebuild/resign_deb_repository.py -s -r /var/pkg/deb/{debarch|}'
                             }}
                         }}
             generate_dockerfiles: &generate_dockerfiles |-

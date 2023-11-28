@@ -108,7 +108,7 @@
                         unstash 'infra'
                         unstash 'debPackages'
                         sh 'cp -n *.deb /var/pkg/deb/{debarch} || true'
-                        sh 'python3 SapMachine-infrastructure/lib/packagebuild/recreate_deb_repository.py -s -r /var/pkg/deb/{debarch}'
+                        sh 'python3 SapMachine-infrastructure/lib/packagebuild/resign_deb_repository.py -s -r /var/pkg/deb/{debarch}'
                     }}
                 }}
             }}
@@ -148,9 +148,9 @@
                         checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
                     }}
                 }}
-                stage("Recreate") {{
+                stage("Resign") {{
                     steps {{
-                        sh 'python3 SapMachine-infrastructure/lib/packagebuild/recreate_deb_repository.py -s -r /var/pkg/deb/{debarch}'
+                        sh 'python3 SapMachine-infrastructure/lib/packagebuild/resign_deb_repository.py -s -r /var/pkg/deb/{debarch}'
                     }}
                 }}
             }}
@@ -295,13 +295,13 @@
                         expression { params.PUBLISH == true }
                     }
                     agent {
-                        label 'agent-local-docker-ubuntu'
+                        label 'agent-local-docker-alpine'
                     }
                     steps {
                         unstash 'infra'
                         unstash 'apkPackages'
                         sh 'cp -n *.apk /var/pkg/apk/x86_64 || true'
-                        sh 'python3 SapMachine-infrastructure/lib/packagebuild/recreate_apk_repository.py -r /var/pkg/apk/x86_64 -k /var/pkg/apk/keys/sapmachine@sap.com-5a673212.rsa'
+                        sh 'python3 SapMachine-infrastructure/lib/packagebuild/resign_apk_repository.py -r /var/pkg/apk/x86_64 -k /var/pkg/apk/keys/sapmachine@sap.com-5a673212.rsa'
                     }
                 }
             }
