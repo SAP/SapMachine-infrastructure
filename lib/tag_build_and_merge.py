@@ -271,7 +271,8 @@ def main(argv=None):
 
         # checkout and update branch
         utils.run_cmd(str.format('git checkout {0}', sapmachine_branch[0]).split(' '))
-        utils.run_cmd(['git', 'pull'])
+        utils.run_cmd(['git', 'fetch', '--prune'])
+        utils.run_cmd(str.format('git reset --hard origin/{0}', sapmachine_branch[0]).split(' '))
 
         # find the latest OpenJDK merge commit and make sure it's correctly sapmachine-tagged
         tag_and_run_buildjob()
