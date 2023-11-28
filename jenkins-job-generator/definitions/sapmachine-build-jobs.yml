@@ -25,7 +25,7 @@
             publish_artifactory_step: |-
                 steps {{
                                 // Upload the test archive
-                                sh 'curl -sSf -u $ARTIFACTORY_CREDS -X PUT -T test.zip https://common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build-results/aix_ppc64/${{env.ART_VERSION}}/test.zip'
+                                sh 'curl -sSf -u $ARTIFACTORY_CREDS -X PUT -T test.zip https://common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build-results/aix_ppc64/${{ART_VERSION}}/test.zip'
         - linux_aarch64:
             architecture: linux-aarch64
             debarch: arm64
