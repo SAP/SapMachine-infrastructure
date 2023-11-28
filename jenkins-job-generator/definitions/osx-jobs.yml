@@ -60,18 +60,18 @@
                         ARTIFACTORY_CREDS = credentials('openjdk-artifactory')
                     }}
                     steps {{
-                        sh "SapMachine-infrastructure/lib/download_macos.sh {publish_platform}"
+                        sh 'SapMachine-infrastructure/lib/download_macos.sh {publish_platform}'
                     }}
                 }}
                 stage("Verify") {{
                     steps {{
-                        sh "python3 SapMachine-infrastructure/lib/verify_macos_artifacts.py --tag=${{params.SAPMACHINE_VERSION}} --platform={publish_platform}"
+                        sh 'python3 SapMachine-infrastructure/lib/verify_macos_artifacts.py --tag=${{SAPMACHINE_VERSION}} --platform={publish_platform}'
                     }}
                 }}
                 stage("Publish GitHub") {{
                     steps {{
                         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
-                            sh "SapMachine-infrastructure/lib/publish_macos.sh {publish_platform}"
+                            sh 'SapMachine-infrastructure/lib/publish_macos.sh {publish_platform}'
                         }}
                     }}
                 }}
@@ -92,6 +92,7 @@
     name: update-cask
     description: 'This project is generated. Do not modify manually.'
     project-type: pipeline
+    sandbox: true
     concurrent: false
     properties:
         - build-discarder:
@@ -117,7 +118,7 @@
                     steps {
                         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
                             lock('MacBrewCaskGenerationSynchronizer') {
-                                sh "python3 SapMachine-infrastructure/lib/packagebuild/make_cask.py -t ${params.SAPMACHINE_VERSION}"
+                                sh 'python3 SapMachine-infrastructure/lib/packagebuild/make_cask.py -t ${SAPMACHINE_VERSION}'
                             }
                         }
                     }
