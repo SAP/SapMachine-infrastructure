@@ -10,9 +10,9 @@
                 checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
             }
         }
-        stage("Recreate") {
+        stage("Resign") {
             steps {
-                sh 'python3 SapMachine-infrastructure/lib/packagebuild/recreate_deb_repository.py -s -r /var/pkg/deb/ppc64el'
+                sh 'python3 SapMachine-infrastructure/lib/packagebuild/resign_deb_repository.py -s -r /var/pkg/deb/ppc64el'
             }
         }
     }

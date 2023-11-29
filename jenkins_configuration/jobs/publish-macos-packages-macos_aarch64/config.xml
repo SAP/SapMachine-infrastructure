@@ -15,18 +15,18 @@
                 ARTIFACTORY_CREDS = credentials('openjdk-artifactory')
             }
             steps {
-                sh "SapMachine-infrastructure/lib/download_macos.sh aarch64"
+                sh 'SapMachine-infrastructure/lib/download_macos.sh aarch64'
             }
         }
         stage("Verify") {
             steps {
-                sh "python3 SapMachine-infrastructure/lib/verify_macos_artifacts.py --tag=${params.SAPMACHINE_VERSION} --platform=aarch64"
+                sh 'python3 SapMachine-infrastructure/lib/verify_macos_artifacts.py --tag=${SAPMACHINE_VERSION} --platform=aarch64'
             }
         }
         stage("Publish GitHub") {
             steps {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
-                    sh "SapMachine-infrastructure/lib/publish_macos.sh aarch64"
+                    sh 'SapMachine-infrastructure/lib/publish_macos.sh aarch64'
                 }
             }
         }
