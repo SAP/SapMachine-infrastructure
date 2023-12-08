@@ -95,10 +95,6 @@ def main(argv=None):
     else:
         version_pre = 'ea'
 
-    # build AIX as beta
-    if utils.get_system() == 'aix':
-        version_pre = 'beta' if not version_pre else version_pre + '-beta'
-
     configure_opts.append(VERSION_PRE_ARG.format(version_pre))
 
     # set version opt

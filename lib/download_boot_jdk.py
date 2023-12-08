@@ -18,16 +18,6 @@ from versions import SapMachineTag
 extra_bootjdks = [
     {
         'prerelease': False,
-        'name': 'sapmachine-20',
-        'assets': [
-            {
-                'name': 'sapmachine-jdk-20_aix-ppc64_bin.tar.gz',
-                'browser_download_url': 'https://github.com/SAP/SapMachine-infrastructure/releases/download/aixjdk20/sapmachine-jdk-20_aix-ppc64_bin.tar.gz'
-            }
-        ]
-    },
-    {
-        'prerelease': False,
         'name': 'sapmachine-21',
         'assets': [
             {
