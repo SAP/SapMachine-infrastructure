@@ -5,18 +5,38 @@
   <sshUrl>git@github.com:SAP/SapMachine.git</sshUrl>
   <pulls class="concurrent-hash-map">
     <entry>
+      <int>1570</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>1570</number>
+        <issueUpdatedAt>2023-12-13 00:33:59.0 UTC</issueUpdatedAt>
+        <title>Merge to tag jdk-23+1</title>
+        <body>please pull</body>
+        <prUpdatedAt>2023-12-13 00:33:59.0 UTC</prUpdatedAt>
+        <headSha>519ecd352a66633589f160db7390647d90e36b99</headSha>
+        <headRef>pr-jdk-23+1</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine</baseRef>
+        <userLogin>SapMachine</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1570</htmlUrl>
+        <labels />
+        <sourceRepoOwner>SAP</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
       <int>1551</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>1551</number>
-        <issueUpdatedAt>2023-12-11 13:03:21.0 UTC</issueUpdatedAt>
+        <issueUpdatedAt>2023-12-12 16:25:16.0 UTC</issueUpdatedAt>
         <title>New malloc trace implementation</title>
         <body>This change implements a malloc trace without using the now deprecated glibc malloc hooks. This means the feature is now available on musl-based system and MacOsX too. In addition it can also track memory reclamation, so it can track the currently alive memory.
 
 fixes #1550
 
 </body>
-        <prUpdatedAt>2023-12-11 13:03:21.0 UTC</prUpdatedAt>
-        <headSha>a6ba35a633416af9e6fa35cd8c49faa8efafbb4c</headSha>
+        <prUpdatedAt>2023-12-12 16:25:16.0 UTC</prUpdatedAt>
+        <headSha>4e7d996a120c1b7938d3c46bb6c7e2063f2b77a3</headSha>
         <headRef>malloc_hook_replacement</headRef>
         <mergeable>true</mergeable>
         <baseRef>sapmachine</baseRef>
@@ -24,7 +44,7 @@ fixes #1550
         <userLogin>schmelter-sap</userLogin>
         <htmlUrl>https://github.com/SAP/SapMachine/pull/1551</htmlUrl>
         <labels />
-        <lastCommentCreatedAt>2023-12-11 13:03:19.0 UTC</lastCommentCreatedAt>
+        <lastCommentCreatedAt>2023-12-12 16:25:14.0 UTC</lastCommentCreatedAt>
         <sourceRepoOwner>schmelter-sap</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
