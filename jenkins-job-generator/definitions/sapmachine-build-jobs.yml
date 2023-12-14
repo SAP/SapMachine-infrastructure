@@ -230,13 +230,9 @@
                 stage("Prepare signing") {{
                             steps {{
                                 withCredentials([file(credentialsId: 'MacOSCodesignSAP', variable: 'signcertp2'),
-                                                string(credentialsId: 'MacOSCodesignSAP-Password', variable: 'signcertpass'),
-                                                string(credentialsId: 'MacOSCodeSignUnlockPW', variable: 'unlockpass')]) {{
+                                                string(credentialsId: 'MacOSCodesignSAP-Password', variable: 'signcertpass')]) {{
                                     sh '''#!/bin/bash
                                         security import $signcertp2 -k ~/Library/Keychains/login.keychain -P $signcertpass
-                                        echo $?
-                                        security unlock-keychain -p $unlockpass ~/Library/Keychains/login.keychain
-                                        echo $?
                                     '''
                                 }}
                             }}
@@ -612,7 +608,8 @@
                         BOOT_JDK = "${{WORKSPACE}}/boot_jdk"
                     }}
                     steps {{
-                        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
+                        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD'],
+                                         string(credentialsId: 'MacOSCodeSignUnlockPW', variable: 'unlockpass')]) {{
                             script {{
                                 sh("SapMachine-infrastructure/lib/build.sh")
                                 {get_art_ver|}
