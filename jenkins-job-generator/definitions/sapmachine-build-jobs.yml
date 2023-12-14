@@ -226,6 +226,21 @@
             save_workspace_on_error: *save_workspace_on_error
         - macos_x86_64:
             devkit_default: 'io.sapmachine.build.devkit.macos:devkit-xcode:13.1'
+            prepare_signing: &prepare_signing |-
+                stage("Prepare signing") {{
+                            steps {{
+                                withCredentials([file(credentialsId: 'MacOSCodesignSAP', variable: 'signcertp2'),
+                                                string(credentialsId: 'MacOSCodesignSAP-Password', variable: 'signcertpass'),
+                                                string(credentialsId: 'MacOSCodeSignUnlockPW', variable: 'unlockpass')]) {{
+                                    sh '''#!/bin/bash
+                                        security import $signcertp2 -k ~/Library/Keychains/login.keychain -P $signcertpass
+                                        echo $?
+                                        security unlock-keychain -p $unlockpass ~/Library/Keychains/login.keychain
+                                        echo $?
+                                    '''
+                                }}
+                            }}
+                        }}
             create_brew_casks: &create_brew_casks |-
                 stage("Create Brew Casks") {{
                             when {{
@@ -242,6 +257,7 @@
             publish_artifactory_step: *publish_artifactory_step
         - macos_aarch64:
             devkit_default: 'io.sapmachine.build.devkit.macos:devkit-xcode:13.1'
+            prepare_signing: *prepare_signing
             create_brew_casks: *create_brew_casks
             publish_artifactory_step: *publish_artifactory_step
         - windows_x86_64:
@@ -366,6 +382,7 @@
                                 beforeAgent true
                                 expression {{ env.VERIFICATION_RESULT != "2" }}
                             }}
+            prepare_signing: ''
             build_windows_installer: ''
             build_debian_packages_pre: ''
             docker_agent_debian: ''
@@ -409,6 +426,7 @@
                                     env.ART_VERSION = "snapshot-{major}-" + (new java.text.SimpleDateFormat("yyyyMMddHHmmss")).format(new Date())
                                     env.RELEASE = "false"
                                     env.NODMG = "true"
+            prepare_signing: ''
             publish_artifactory_pre: &publish_artifactory_pre 'stage("Publish Artifactory") {{'
             publish_artifactory_when: |-
                 when {{
@@ -586,6 +604,7 @@
                         }}
                     }}
                 }}
+                {prepare_signing|}
                 stage("Build") {{
                     {docker_agent|}
                     {verification_when_docker|}
