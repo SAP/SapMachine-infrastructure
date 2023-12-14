@@ -21,8 +21,8 @@ VENDOR_NAME_ARG =           '"--with-vendor-name=SAP SE"'
 VENDOR_URL_ARG =            '--with-vendor-url=https://sapmachine.io/'
 VENDOR_BUG_URL_ARG =        '--with-vendor-bug-url=https://github.com/SAP/SapMachine/issues/new'
 VENDOR_VM_BUG_URL_ARG =     '--with-vendor-vm-bug-url=https://github.com/SAP/SapMachine/issues/new'
-GTEST_OPT =                 '--with-gtest={0}'
-DISABLE_MAC_CODESIGN_OPT =  '--without-macosx-codesign'
+OPT_GTEST =                 '--with-gtest={0}'
+OPT_MAC_CODESIGN =          '--with-macosx-codesign-identity="Developer ID Application: SAP SE (7R5ZEU67FQ)"'
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
@@ -131,10 +131,11 @@ def main(argv=None):
 
     # set gtest option
     if 'GTEST_DIR' in os.environ and major >= 15:
-        configure_opts.append(GTEST_OPT.format(os.environ['GTEST_DIR']))
+        configure_opts.append(OPT_GTEST.format(os.environ['GTEST_DIR']))
 
-    if utils.get_system() == 'macos' and utils.get_arch() == 'x64' and 'RELEASE_BUILD' in os.environ and os.environ['RELEASE_BUILD'] == "true":
-        configure_opts.append(DISABLE_MAC_CODESIGN_OPT)
+    # set MacOS codesigning options
+    if utils.get_system() == 'macos' and 'RELEASE_BUILD' in os.environ and os.environ['RELEASE_BUILD'] == "true":
+        configure_opts.append(OPT_MAC_CODESIGN)
 
     print(' '.join(configure_opts))
 
