@@ -38,12 +38,14 @@ if [ ! -z $DEVKIT_PATH ]; then
   fi
 fi
 
+_UNLOCK_MACOS_KEYCHAIN=(true)
 if [[ $UNAME == Darwin ]]; then
   _CONFIGURE_OS_OPTIONS="--with-macosx-bundle-name-base=SapMachine --with-macosx-bundle-id-base=com.sap.openjdk"
   if [[ $RELEASE_BUILD == true ]]; then
-    _UNLOCK_MACOS_KEYCHAIN="security unlock-keychain -p $unlockpass ~/Library/Keychains/login.keychain &&"
+    _UNLOCK_MACOS_KEYCHAIN=(security unlock-keychain -p $unlockpass ~/Library/Keychains/login.keychain)
   fi
 fi
+
 if [[ $UNAME == CYGWIN* ]]; then
   _CONFIGURE_OS_OPTIONS="--with-jdk-rc-name=SapMachine --with-external-symbols-in-bundles=public"
 fi
@@ -61,7 +63,7 @@ echo "PATH before configure and make: ${PATH}"
 _CONFIGURE_OPTS=$(python3 ../SapMachine-infrastructure/lib/get_configure_opts.py $_GIT_TAG $_JDK_BUILD)
 eval _CONFIGURE_OPTS=(${_CONFIGURE_OPTS})
 
-(set -x && $_UNLOCK_MACOS_KEYCHAIN
+(set -x && ${_UNLOCK_MACOS_KEYCHAIN[@]} &&
 bash ./configure \
 --with-boot-jdk=$BOOT_JDK \
 "${_CONFIGURE_OPTS[@]}" \
