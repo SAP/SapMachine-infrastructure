@@ -104,6 +104,7 @@
                 }
             }
         }
+        
         stage("Build") {
             
             
@@ -111,7 +112,8 @@
                 BOOT_JDK = "${WORKSPACE}/boot_jdk"
             }
             steps {
-                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD'],
+                                 string(credentialsId: 'MacOSCodeSignUnlockPW', variable: 'unlockpass')]) {
                     script {
                         sh("SapMachine-infrastructure/lib/build.sh")
                         
@@ -351,7 +353,7 @@
         <hudson.model.StringParameterDefinition>
           <name>langtools_test_groups</name>
           <description>Select the test group for jtreg langtools tests. Empty means disabled.</description>
-          <defaultValue>jdk tools lib</defaultValue>
+          <defaultValue>:tier1</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
