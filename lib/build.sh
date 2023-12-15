@@ -73,7 +73,7 @@ $_CONFIGURE_OS_OPTIONS \
 --with-freetype=bundled \
 $EXTRA_CONFIGURE_OPTIONS)
 
-(set -x && $_UNLOCK_MACOS_KEYCHAIN make JOBS=12 product-bundles legacy-bundles test-image)
+(set -x && ${_UNLOCK_MACOS_KEYCHAIN[@]} && make JOBS=12 product-bundles legacy-bundles test-image)
 
 if [[ -f ${WORKSPACE}/test.zip ]]; then
   rm "${WORKSPACE}/test.zip"
