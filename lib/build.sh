@@ -41,9 +41,9 @@ fi
 _UNLOCK_MACOS_KEYCHAIN=(true)
 if [[ $UNAME == Darwin ]]; then
   _CONFIGURE_OS_OPTIONS="--with-macosx-bundle-name-base=SapMachine --with-macosx-bundle-id-base=com.sap.openjdk"
-  if [[ $RELEASE_BUILD == true ]]; then
-    _UNLOCK_MACOS_KEYCHAIN=(security unlock-keychain -p $unlockpass ~/Library/Keychains/login.keychain)
-  fi
+  #if [[ $RELEASE_BUILD == true ]]; then
+  #  _UNLOCK_MACOS_KEYCHAIN=(security unlock-keychain -p $unlockpass ~/Library/Keychains/login.keychain)
+  #fi
 fi
 
 if [[ $UNAME == CYGWIN* ]]; then
