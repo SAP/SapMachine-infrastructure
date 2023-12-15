@@ -24,10 +24,10 @@
     platforms: &platforms
         - aix_ppc64:
             architecture: aix-ppc64
-            publish_artifactory_step: |-
+            publish_artifactory_step:  &publish_artifactory_step |-
                 steps {{
                                 // Upload the test archive
-                                sh 'curl -sSf -u $ARTIFACTORY_CREDS -X PUT -T test.zip https://common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build-results/aix_ppc64/${{ART_VERSION}}/test.zip'
+                                sh 'curl -sSf -u $ARTIFACTORY_CREDS -X PUT -T test.zip https://common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build-results/{platform}/${{ART_VERSION}}/test.zip'
         - linux_aarch64:
             architecture: linux-aarch64
             debarch: arm64
@@ -66,10 +66,6 @@
                                 }}
                             }}
                         }}
-            publish_artifactory_step: &publish_artifactory_step |-
-                steps {{
-                                // Upload the test archive
-                                jf "rt u test.zip sapmachine-mvn/io/sapmachine/build-results/{platform}/${{env.ART_VERSION}}/test.zip"
             publish_debian_packages: &publish_debian_packages |-
                 stage("Publish Debian Packages") {{
                             agent {{
@@ -477,6 +473,10 @@
                                     }}
             get_art_ver: env.ART_VERSION = readFile "${{env.WORKSPACE}}/javavmversion.txt"
             publish_artifactory_pre: *publish_artifactory_pre
+            publish_artifactory_when: |-
+                when {{
+                                expression {{ params.UPLOAD_ARTIFACTORY == true || params.PUBLISH == true }}
+                            }}
             publish_artifactory_end: *publish_artifactory_end
             publish_github: |-
                 stage("Publish GitHub") {{
@@ -882,7 +882,7 @@
         - bool:
             name: UPLOAD_ARTIFACTORY
             default: true
-            description: 'Upload build results to artifactory which will trigger testing.'
+            description: 'Upload build results to Artifactory which will trigger testing.'
         - bool:
             name: ARCHIVE_WORKSPACE
             default: false
@@ -956,9 +956,13 @@
             default: true
             description: 'Create a bundle with generated source files (gensrc), to be used in e.g. IDE setups.'
         - bool:
+            name: UPLOAD_ARTIFACTORY
+            default: false
+            description: 'Upload build results to Artifactory which will trigger testing.'
+        - bool:
             name: PUBLISH
             default: false
-            description: 'When set to true, the resulting bundles will be published to GitHub.'
+            description: 'When set to true, the resulting bundles will be published to GitHub. This implies uploading to Artifactory.'
         - bool:
             name: ARCHIVE_WORKSPACE
             default: false
