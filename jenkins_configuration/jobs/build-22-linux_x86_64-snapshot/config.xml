@@ -294,7 +294,7 @@
             }
             steps {
                 // Upload the test archive
-                jf "rt u test.zip sapmachine-mvn/io/sapmachine/build-results/linux_x86_64/${env.ART_VERSION}/test.zip"
+                sh 'curl -sSf -u $ARTIFACTORY_CREDS -X PUT -T test.zip https://common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build-results/linux_x86_64/${ART_VERSION}/test.zip'
                 
             }
         }
@@ -432,7 +432,7 @@
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>UPLOAD_ARTIFACTORY</name>
-          <description>Upload build results to artifactory which will trigger testing.</description>
+          <description>Upload build results to Artifactory which will trigger testing.</description>
           <defaultValue>true</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.BooleanParameterDefinition>

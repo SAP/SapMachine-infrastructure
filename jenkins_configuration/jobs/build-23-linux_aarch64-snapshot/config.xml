@@ -277,9 +277,7 @@
             when {
                 expression { params.UPLOAD_ARTIFACTORY == true }
             }
-            steps {
-                // Upload the test archive
-                jf "rt u test.zip sapmachine-mvn/io/sapmachine/build-results/linux_aarch64/${env.ART_VERSION}/test.zip"
+            
                 
             }
         }
@@ -417,7 +415,7 @@
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>UPLOAD_ARTIFACTORY</name>
-          <description>Upload build results to artifactory which will trigger testing.</description>
+          <description>Upload build results to Artifactory which will trigger testing.</description>
           <defaultValue>true</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.BooleanParameterDefinition>

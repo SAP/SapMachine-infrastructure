@@ -290,10 +290,12 @@
         }
         
         stage("Publish Artifactory") {
-            
+            when {
+                expression { params.UPLOAD_ARTIFACTORY == true || params.PUBLISH == true }
+            }
             steps {
                 // Upload the test archive
-                jf "rt u test.zip sapmachine-mvn/io/sapmachine/build-results/linux_ppc64le/${env.ART_VERSION}/test.zip"
+                sh 'curl -sSf -u $ARTIFACTORY_CREDS -X PUT -T test.zip https://common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build-results/linux_ppc64le/${ART_VERSION}/test.zip'
                 
             }
         }
@@ -462,8 +464,13 @@
           <defaultValue>true</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
+          <name>UPLOAD_ARTIFACTORY</name>
+          <description>Upload build results to Artifactory which will trigger testing.</description>
+          <defaultValue>false</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
           <name>PUBLISH</name>
-          <description>When set to true, the resulting bundles will be published to GitHub.</description>
+          <description>When set to true, the resulting bundles will be published to GitHub. This implies uploading to Artifactory.</description>
           <defaultValue>false</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
