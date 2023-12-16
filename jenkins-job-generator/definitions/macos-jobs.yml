@@ -90,19 +90,18 @@
 
 - job:
     name: update-cask
-    description: 'This project is generated. Do not modify manually.'
+    description: 'Updates SapMachine Homebrew Casks.'
     project-type: pipeline
     sandbox: true
     concurrent: false
     properties:
         - build-discarder:
-            num-to-keep: 20
-            artifact-num-to-keep: 5
+            num-to-keep: 10
     parameters:
         - string:
             name: SAPMACHINE_VERSION
             default: ''
-            description: 'The SapMachine Release Tag to publish casks for.'
+            description: 'The SapMachine version to publish casks for.'
     dsl: |
         pipeline {
             agent {
@@ -120,6 +119,42 @@
                             lock('MacBrewCaskGenerationSynchronizer') {
                                 sh 'python3 SapMachine-infrastructure/lib/packagebuild/make_cask.py -t ${SAPMACHINE_VERSION}'
                             }
+                        }
+                    }
+                }
+            }
+            post {
+                always {
+                    cleanWs deleteDirs: true, disableDeferredWipeout: true
+                }
+            }
+        }
+
+- job:
+    name: import-macos-signing-certificate
+    description: 'Imports the signing certificate on a MacOS node.'
+    project-type: pipeline
+    sandbox: true
+    concurrent: false
+    properties:
+        - build-discarder:
+            num-to-keep: 10
+    parameters:
+        - string:
+            name: NODE
+            default: ''
+            description: 'The node to import the signing certificate on.'
+    dsl: |
+        pipeline {
+            agent {
+                label '${NODE}'
+            }
+            stages {
+                stage('Import certificates') {
+                    steps {
+                        withCredentials([file(credentialsId: 'MacOSCodesignSAP', variable: 'signcertp2'),
+                                        string(credentialsId: 'MacOSCodesignSAP-Password', variable: 'signcertpass')]) {
+                            sh 'security import $signcertp2 -k ~/Library/Keychains/login.keychain -P $signcertpass'
                         }
                     }
                 }
