@@ -141,13 +141,13 @@
             num-to-keep: 10
     parameters:
         - string:
-            name: NODE
+            name: BUILDNODE
             default: ''
             description: 'The node to import the signing certificate on.'
     dsl: |
         pipeline {
             agent {
-                label '${NODE}'
+                label "${BUILDNODE}"
             }
             stages {
                 stage('Import certificates') {
