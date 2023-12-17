@@ -120,16 +120,6 @@
                 }
             }
         }
-        stage("Prepare signing") {
-            steps {
-                withCredentials([file(credentialsId: 'MacOSCodesignSAP', variable: 'signcertp2'),
-                                string(credentialsId: 'MacOSCodesignSAP-Password', variable: 'signcertpass')]) {
-                    sh '''#!/bin/bash
-                        security import $signcertp2 -k ~/Library/Keychains/login.keychain -P $signcertpass
-                    '''
-                }
-            }
-        }
         stage("Build") {
             
             

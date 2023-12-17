@@ -8,16 +8,12 @@
       <options />
     </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
   </actions>
-  <description>Test MacOS KeyChain stuff</description>
+  <description>Imports the signing certificate on a MacOS node.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
   <properties>
-    <hudson.plugins.jira.JiraProjectProperty plugin="jira@3.12" />
-    <hudson.plugins.buildblocker.BuildBlockerProperty plugin="build-blocker-plugin@1.7.9">
-      <useBuildBlocker>false</useBuildBlocker>
-      <blockLevel>GLOBAL</blockLevel>
-      <scanQueueFor>DISABLED</scanQueueFor>
-      <blockingJobs />
-    </hudson.plugins.buildblocker.BuildBlockerProperty>
+    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty>
+      <abortPrevious>false</abortPrevious>
+    </org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty>
     <jenkins.model.BuildDiscarderProperty>
       <strategy class="hudson.tasks.LogRotator">
         <daysToKeep>-1</daysToKeep>
@@ -26,35 +22,40 @@
         <artifactNumToKeep>-1</artifactNumToKeep>
       </strategy>
     </jenkins.model.BuildDiscarderProperty>
-    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty>
-      <abortPrevious>false</abortPrevious>
-    </org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>BUILDNODE</name>
+          <description>The node to import the signing certificate on.</description>
+          <defaultValue />
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
   </properties>
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@3821.v9d3888c583b_1">
     <script>pipeline {
     agent {
-        label "macos_aarch64"
+        label "${BUILDNODE}"
     }
     stages {
-        stage("Test") {
+        stage('Import certificates') {
             steps {
                 withCredentials([file(credentialsId: 'MacOSCodesignSAP', variable: 'signcertp2'),
-                                 string(credentialsId: 'MacOSCodesignSAP-Password', variable: 'signcertpass'),
-                                 string(credentialsId: 'MacOSCodeSignUnlockPW', variable: 'unlockpass')]) {
-                    sh '''#!/bin/bash
-                        security import $signcertp2 -k ~/Library/Keychains/login.keychain -P $signcertpass
-                        echo $?
-                        security unlock-keychain -p $unlockpass ~/Library/Keychains/login.keychain
-                        echo $?
-                    '''
+                                string(credentialsId: 'MacOSCodesignSAP-Password', variable: 'signcertpass')]) {
+                    sh 'security import $signcertp2 -k ~/Library/Keychains/login.keychain -P $signcertpass'
                 }
             }
+        }
+    }
+    post {
+        always {
+            cleanWs deleteDirs: true, disableDeferredWipeout: true
         }
     }
 }
 </script>
     <sandbox>true</sandbox>
   </definition>
-  <triggers />
   <disabled>false</disabled>
 </flow-definition>
