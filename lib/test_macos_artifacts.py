@@ -3,15 +3,14 @@ Copyright (c) 2023 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
+import argparse
+import glob
 import os
+import re
 import requests
-import tarfile
 import shutil
 import subprocess
-import glob
-import argparse
-import re
-
+import tarfile
 
 def download_from_artifactory(u, dname):
     chunk_size = 16777216
@@ -22,7 +21,6 @@ def download_from_artifactory(u, dname):
                 for chunk in r.iter_content(chunk_size):
                     if chunk:
                         f.write(chunk)
-
 
 def test_platform(version, urlPrefix, nameMod, platform, type, suffix):
     v = version.removeprefix("sapmachine-")
@@ -35,13 +33,11 @@ def test_platform(version, urlPrefix, nameMod, platform, type, suffix):
         file.extractall('./destination')
         p = glob.glob("./destination/*/Contents/Home/bin/java")
         if p:
-            err = subprocess.run([p[0], "-version"],
-                                 capture_output=True, text=True).stderr
+            err = subprocess.run([p[0], "-version"], capture_output=True, text=True).stderr
             pattern = re.compile(r'openjdk (version ")?(?P<version>[\.\d]+)')
             print("java -version output:", err.replace('\n', '\\n'))
             m = pattern.match(err)
             assert m and m.group('version'), 'could not extract version from line: '+err
-
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--urlPrefix', '-u', help='The prefix of the url from where to download the artifacts',
@@ -62,5 +58,4 @@ for version in args.versions:
     for platform in args.platform:
         for type in args.type:
             for suffix in args.suffix:
-                version and test_platform(version[0], args.urlPrefix, args.nameMod,
-                              platform, type, suffix)
+                version and test_platform(version[0], args.urlPrefix, args.nameMod, platform, type, suffix)
