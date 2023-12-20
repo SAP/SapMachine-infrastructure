@@ -19,19 +19,6 @@ from versions import SapMachineTag
 sapMachinePushURL= str.format('https://{0}:{1}@github.com/SAP/SapMachine.git',
     os.environ['GIT_USER'], os.environ['GIT_PASSWORD'])
 
-os_description = {
-    'linux-ppc64le':           { 'ordinal': 1, 'name': 'Linux ppc64le' },
-    'linux-x64':               { 'ordinal': 2, 'name': 'Linux x64' },
-    'linux-aarch64':           { 'ordinal': 3, 'name': 'Linux aarch64' },
-    'macos-x64':               { 'ordinal': 4, 'name': 'MacOS x64'},
-    'macos-x64-installer':     { 'ordinal': 5, 'name': 'MacOS x64 Installer'},
-    'macos-aarch64':           { 'ordinal': 6, 'name': 'MacOS aarch64'},
-    'macos-aarch64-installer': { 'ordinal': 7, 'name': 'MacOS aarch64 Installer'},
-    'windows-x64':             { 'ordinal': 8, 'name': 'Windows x64'},
-    'windows-x64-installer':   { 'ordinal': 9, 'name': 'Windows x64 Installer'},
-    'aix-ppc64':               { 'ordinal': 10, 'name': 'AIX'}
-}
-
 image_type_description = {
     'jdk':  { 'ordinal': 1, 'name': 'JDK' },
     'jre':  { 'ordinal': 2, 'name': 'JRE' },
@@ -173,9 +160,6 @@ def push_to_git(files):
     if commits:
         utils.run_cmd(str.format('git push {0}', sapMachinePushURL).split(' '), cwd=local_repo)
 
-def sapmachine_checksum_pattern():
-    return utils.sapmachine_asset_base_pattern() + '(|\.msi\.|\.dmg\.|\.)(sha256\.txt)$'
-
 def main(argv=None):
     print("Querying GitHub for SapMachine releases...")
     sys.stdout.flush()
@@ -183,7 +167,7 @@ def main(argv=None):
     print("Done.")
 
     asset_pattern = re.compile(utils.sapmachine_asset_pattern())
-    checksum_pattern = re.compile(sapmachine_checksum_pattern())
+    checksum_pattern = re.compile(utils.sapmachine_checksum_pattern())
 
     release_dict = {}
     for release in releases:
@@ -316,9 +300,6 @@ def main(argv=None):
 
     for image_type in image_type_description:
         json_root['imageTypes'].append({'key': image_type, 'value': image_type_description[image_type]['name'], 'ordinal': image_type_description[image_type]['ordinal']})
-
-    for os in os_description:
-        json_root['os'].append({'key': os, 'value': os_description[os]['name'], 'ordinal': os_description[os]['ordinal']})
 
     files.append({
         'operation' : FileOperation.ADD_FILE,

@@ -497,6 +497,9 @@ def sapmachine_asset_base_pattern():
 def sapmachine_asset_pattern():
     return sapmachine_asset_base_pattern() + '(\.tar\.gz|\.zip|\.msi|\.dmg)$'
 
+def sapmachine_checksum_pattern():
+    return sapmachine_asset_base_pattern() + '(|\.msi\.|\.dmg\.|\.)(sha256\.txt)$'
+
 def get_asset_urls(tag, platform, asset_types=["jdk", "jre"], pattern=None):
     asset_urls = {}
     try:
