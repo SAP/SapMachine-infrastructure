@@ -198,7 +198,7 @@ active_releases = None
 def get_active_releases():
     global active_releases
     if active_releases == None:
-        releases_file = os.path.abspath(join(os.path.dirname(__file__), '..', 'active_releases.json'))
+        releases_file = os.path.abspath(join(os.path.dirname(__file__), '..', 'releases.json'))
         with open(releases_file, 'r') as file:
             active_releases = json.loads(file.read())
 
