@@ -194,24 +194,29 @@ def copytree(source, dest):
 
             shutil.copyfile(full_path, dest_path)
 
-active_releases = None
-def get_active_releases():
-    global active_releases
-    if active_releases == None:
+release_info = None
+def read_release_info():
+    global release_info
+    if release_info == None:
         releases_file = os.path.abspath(join(os.path.dirname(__file__), '..', 'releases.json'))
         with open(releases_file, 'r') as file:
-            active_releases = json.loads(file.read())
+            release_info = json.loads(file.read())
 
 def sapmachine_default_major():
-    get_active_releases()
-    return active_releases['head_release']
+    read_release_info()
+    return release_info['head_release']
+
+def sapmachine_dev_releases():
+    read_release_info()
+    return release_info['dev_releases']
+
+def sapmachine_active_releases():
+    read_release_info()
+    return release_info['active_releases']
 
 def sapmachine_is_lts(major):
-    get_active_releases()
-    major_as_int = major
-    if not isinstance(major, int):
-        major_as_int = int(major)
-    return major_as_int in active_releases['lts_releases']
+    read_release_info()
+    return (major if isinstance(major, int) else int(major)) in release_info['lts_releases']
 
 def sapmachine_version_pattern():
     return 'build ((\d+)((\.(\d+))*)?)'
@@ -498,7 +503,7 @@ def sapmachine_asset_pattern():
     return sapmachine_asset_base_pattern() + '(\.tar\.gz|\.zip|\.msi|\.dmg)$'
 
 def sapmachine_checksum_pattern():
-    return sapmachine_asset_base_pattern() + '(|\.msi\.|\.dmg\.|\.)(sha256\.txt)$'
+    return sapmachine_asset_base_pattern() + '((|\.msi\.|\.dmg\.|\.)(sha256\.txt)|(\.sha256\.dmg\.txt))$'
 
 def get_asset_urls(tag, platform, asset_types=["jdk", "jre"], pattern=None):
     asset_urls = {}

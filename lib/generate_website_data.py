@@ -264,7 +264,6 @@ def main(argv=None):
             if skipped:
                 print("  skipped because not identified as archive or no checksum found")
 
-
     files = []
 
     # reduce releases dictionary by removing obsolete versions
@@ -289,7 +288,6 @@ def main(argv=None):
     json_root = {
         'majors':[],
         'imageTypes':[],
-        'os':[],
         'assets':{}
     }
 
@@ -332,7 +330,7 @@ def main(argv=None):
                             checksum = str(json_root['assets'][major]['checksums'][k][imageType][platform])
                         except KeyError:
                             checksum = "not available"
-                            
+
                         files.append({
                             'operation' : FileOperation.ADD_FILE,
                             'location': join('latest', str(major), str(platform), str(imageType), 'index.md'),
