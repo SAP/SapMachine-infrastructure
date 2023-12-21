@@ -136,7 +136,13 @@ def write_template_file(filename, data):
 
 class Loggerich:
     last_len = 0
+
+    def __init__(self, args):
+        self.args = args
+
     def log_status(self, text):
+        if self.args.no_status:
+            return
         if self.last_len == 0:
             self.status_text = text
             self.last_len = len(self.status_text)
@@ -167,7 +173,7 @@ class Generator:
 
     def __init__(self, args):
         self.args = args
-        self.loggerich = Loggerich()
+        self.loggerich = Loggerich(args)
 
     def setup_git(self):
         self.loggerich.log_status("Syncing GitHub SapMachine/gh-pages...")
@@ -624,6 +630,7 @@ def main(argv=None):
     parser.add_argument('-t', '--tag', help='rebuild data for a certain release/build, e.g. "sapmachine-17", "sapmachine-11.0.18", "sapmachine-22+26", ... In that case, GitHub Release information is queried only for the specified tag', metavar='TAG')
     parser.add_argument('-s', '--scratch-data', action='store_true', help='clear existing release data and rebuild everything. The default is to update existing data. Does not work in conjunction with "--tag"')
     parser.add_argument('--dry-run', action='store_true', help='no git push')
+    parser.add_argument('--no-status', action='store_true', help='no git push')
     parser.add_argument('-v', '--verbose', action='store_true', help='enable verbose mode')
     args = parser.parse_args()
 

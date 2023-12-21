@@ -36,9 +36,9 @@
                             lock('WebSiteDataGenerationSynchronizer') {
                                 sh '''
                                     if [ -z "$SAPMACHINE_VERSION" ]; then
-                                        python3 SapMachine-infrastructure/lib/generate_release_data.py -o git
+                                        python3 SapMachine-infrastructure/lib/generate_release_data.py --no-status -o git
                                     else
-                                        python3 SapMachine-infrastructure/lib/generate_release_data.py -o git -t ${SAPMACHINE_VERSION}
+                                        python3 SapMachine-infrastructure/lib/generate_release_data.py --no-status -o git -t ${SAPMACHINE_VERSION}
                                     fi
                                 '''
                             }
