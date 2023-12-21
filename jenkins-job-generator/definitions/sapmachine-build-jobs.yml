@@ -66,6 +66,7 @@
                                 }}
                             }}
                         }}
+            publish_artifactory_step: *publish_artifactory_step
             publish_debian_packages: &publish_debian_packages |-
                 stage("Publish Debian Packages") {{
                             agent {{
