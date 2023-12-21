@@ -476,13 +476,17 @@
                                 }}
                             }}
                         }}
-            publish_website_data: |-
-                stage("Publish Website Data") {{
+            publish_release_data: |-
+                stage("Publish Release Data") {{
                             when {{
                                 expression {{ params.PUBLISH == true }}
                             }}
                             steps {{
-                                build job: 'generate-website-data', propagate: false, wait: false
+                                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
+                                    lock('ReleaseDataGenerationLock') {{
+                                        sh 'python3 SapMachine-infrastructure/lib/generate_release_data.py --no-status -o git -t $SAPMACHINE_VERSION'
+                                    }}
+                                }}
                             }}
                         }}
             archive: *archive
@@ -702,7 +706,7 @@
                 {publish_debian_packages|}
                 {create_brew_casks|}
                 {generate_dockerfiles|}
-                {publish_website_data|}
+                {publish_release_data|}
                 {build_alpine_apk_packages_pre|}
                     {docker_agent_alpine|}
                     {build_alpine_apk_packages_step|}
