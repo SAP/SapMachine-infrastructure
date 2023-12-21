@@ -1,5 +1,5 @@
 '''
-Copyright (c) 2023 by SAP SE, Walldorf, Germany.
+Copyright (c) 2018-2023 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
@@ -10,15 +10,85 @@ import re
 import sys
 import utils
 
+from enum import Enum
+from os.path import join
+from string import Template
 from urllib.error import HTTPError
 from urllib.request import urlopen, Request
 from versions import SapMachineTag
 from collections import OrderedDict
 
+sapMachinePushURL= str.format('https://{0}:{1}@github.com/SAP/SapMachine.git',
+    os.environ['GIT_USER'], os.environ['GIT_PASSWORD'])
+
 imageTypes = [
     {"key": "jdk", "value": "JDK", "ordinal": 1},
     {"key": "jre", "value": "JRE", "ordinal": 2}
 ]
+
+latest_overall_template = '''---
+layout: default
+title: Latest SapMachine Release
+redirect_to:
+  - ${url}
+---
+'''
+
+latest_template = '''---
+layout: default
+title: Latest SapMachine ${major} Release
+redirect_to:
+  - ${url}
+---
+'''
+
+latest_template_download = '''---
+layout: default
+title: Latest SapMachine ${major} Release for ${platform}
+checksum: ${checksum}
+redirect_to:
+  - ${url}
+---
+'''
+
+class FileOperation(Enum):
+    ADD_FILE = 1
+    REMOVE_DIR = 2
+
+def push_to_git(files):
+    local_repo = join(os.getcwd(), 'gh-pages')
+    if not os.path.exists(local_repo):
+        utils.run_cmd("git clone --branch gh-pages --single-branch https://github.com/SAP/SapMachine.git gh-pages".split(' '))
+    else:
+        utils.run_cmd("git pull origin gh-pages".split(' '), cwd=local_repo)
+
+    addFile = False
+    commits = False
+    for _file in files:
+        location = join(local_repo, _file['location'])
+
+        if _file['operation'] == FileOperation.ADD_FILE:
+            if not os.path.exists(os.path.dirname(location)):
+                os.makedirs(os.path.dirname(location))
+            if not os.path.isfile(location):
+                addFile = True
+            with open(location, 'w+') as out:
+                out.write(_file['data'])
+            _, diff, _  = utils.run_cmd("git diff".split(' '), cwd=local_repo, std=True)
+            if diff.strip():
+                utils.git_commit(local_repo, _file['commit_message'], [_file['location']])
+                commits = True
+            elif addFile:
+                utils.git_commit(local_repo, _file['commit_message'], [location])
+                commits = True
+
+        elif _file['operation'] == FileOperation.REMOVE_DIR:
+            if os.path.exists(location):
+                print("remove dir: ", _file['commit_message'])
+                utils.run_cmd(['git', 'rm', '-r', _file['location']], cwd=local_repo, std=True)
+
+    #if commits:
+    #    utils.run_cmd(str.format('git push {0}', sapMachinePushURL).split(' '), cwd=local_repo)
 
 # custom version comparator
 def custom_version_comparator(item):
@@ -394,7 +464,7 @@ class Generator:
         with open(self.all_releases, 'w') as output_file:
             json.dump(self.sm_releases, output_file, indent=2)
 
-    def generate_latest_releases_json(self):
+    def generate_sapmachine_releases_json(self):
         majors = []
         assets = OrderedDict()
         for major in utils.sapmachine_dev_releases():
@@ -417,16 +487,99 @@ class Generator:
         json_root['assets'] = assets
 
         # Save data
-        with open('sapmachine-latest.json', 'w') as output_file:
-            json.dump(json_root, output_file, indent=2)
+        #with open('sapmachine-latest.json', 'w') as output_file:
+        #    json.dump(json_root, output_file, indent=2)
+        push_to_git([{
+            'operation': FileOperation.ADD_FILE,
+            'location': join('assets', 'data', 'sapmachine_releases.json'),
+            'data': json.dumps(json_root, indent=2) + '\n',
+            'commit_message': 'Update release data'
+        }])
+
+    def create_latest_links(self):
+        files = []
+        wrote_latest = False
+        for major in self.majors:
+            if int(major) in utils.sapmachine_active_releases():
+                latest_data = None
+                for builds in self.sm_releases[major]['updates'].values():
+                    for tag_data in builds.values():
+                        if tag_data['ea'] != 'true':
+                            latest_data = tag_data
+                            break
+                    if latest_data is not None:
+                        break
+
+                if latest_data is None:
+                    break
+
+                if not wrote_latest:
+                    files.append({
+                        'operation': FileOperation.ADD_FILE,
+                        'location': join('latest', 'index.md'),
+                        'data': Template(latest_overall_template).substitute(url = latest_data['url']),
+                        'commit_message': f"Update latest link for SapMachine"
+                    })
+                    wrote_latest = True
+
+                files.append({
+                    'operation': FileOperation.ADD_FILE,
+                    'location': join('latest', major, 'index.md'),
+                    'data': Template(latest_template).substitute(major = major,url = latest_data['url']),
+                    'commit_message': f"Update latest link for SapMachine {major}"
+                })
+
+                for platform, archives in latest_data['assets']['jdk'].items():
+                    for archive_type, archive_data in archives.items():
+                        real_platform = platform + '-installer' if archive_type in ['dmg', 'msi'] else platform
+                        files.append({
+                            'operation': FileOperation.ADD_FILE,
+                            'location': join('latest', major, real_platform, 'jdk', 'index.md'),
+                            'data': Template(latest_template_download).substitute(
+                                major = major,
+                                platform = real_platform,
+                                checksum = 'sha256 ' + archive_data['checksum'],
+                                url = archive_data['url']
+                            ),
+                            'commit_message': f"Update latest link for SapMachine {major}, {real_platform}/jdk"
+                        })
+
+                for platform, archives in latest_data['assets']['jre'].items():
+                    for archive_type, archive_data in archives.items():
+                        real_platform = platform + '-installer' if archive_type in ['dmg', 'msi'] else platform
+                        files.append({
+                            'operation': FileOperation.ADD_FILE,
+                            'location': join('latest', major, real_platform, 'jre', 'index.md'),
+                            'data': Template(latest_template_download).substitute(
+                                major = major,
+                                platform = real_platform,
+                                checksum = 'sha256 ' + archive_data['checksum'],
+                                url = archive_data['url']
+                            ),
+                            'commit_message': f"Update latest link for SapMachine {major}, {real_platform}/jre"
+                        })
+
+            elif os.path.exists(join('latest', major)):
+                files.append({
+                    'operation': FileOperation.REMOVE_DIR,
+                    'location': join('latest', major),
+                    'data': '',
+                    'commit_message': f"Delete outdated latest link directory for SapMachine {major}"
+                })
+
+        push_to_git(files)
+
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
-    parser.add_argument('-o', '--output', default='sapmachine-releases', help='file name prefix to generate output files containing SapMachine release information', metavar='OUTPUT_PREFIX')
-    parser.add_argument('-i', '--input_file', help='input file that contains the results of the GitHub Release API call in json format (optional)', metavar='INPUT_FILE')
-    parser.add_argument('-m', '--major', help='only update data for a certain major version', metavar='MAJOR')
-    parser.add_argument('-r', '--reload_tag', help='reload data for a certain tag', metavar='TAG')
-    parser.add_argument('-s', '--scratch', action='store_true', help='ignore output files if they already exist. The default is to update existing files')
+    parser.add_argument('-o', '--output', choices=['files', 'github'], default='files', help='output target, either "files" or "github". The latter means that changes are pushed to their location in SapMachine GitHub repo, branch gh-pages. Default is "files"', metavar='OUTPUT_TARGET')
+    parser.add_argument('--output_prefix', default='sapmachine-releases', help='file name prefix to generate output files containing SapMachine release information. Only used when "--output files" is set. Default is "sapmachine-releases"', metavar='OUTPUT_PREFIX')
+    parser.add_argument('-i', '--input', choices=['github', 'files'], default='github', help='input source, can be either "github" or "files". Default is "github". For "files", an input file is needed that contains the results of the GitHub Release API call in json format. The default name would be "github-releases.json" and can be modified with option "--input_file"', metavar='INPUT_SOURCE')
+    parser.add_argument('--input_file', default='github-releases.json', help='input file that contains the results of the GitHub Release API call in json format (optional)', metavar='INPUT_FILE')
+    parser.add_argument('-m', '--major', help='rebuild data for a certain major version, e.g. "21", "17"...', metavar='MAJOR')
+    parser.add_argument('-u', '--update', help='rebuild data for a certain update version, e.g. "21", "17.0.3"...', metavar='UPDATE')
+    parser.add_argument('-t', '--tag', help='rebuild data for a certain release/build, e.g. "sapmachine-17", "sapmachine-11.0.18", "sapmachine-22+26", ... In that case, GitHub Release information is queried only for the specified tag', metavar='TAG')
+    parser.add_argument('-s', '--scratch_data', action='store_true', help='Clear existing release data and rebuild everything. The default is to update existing data. Does not work in conjunction with "--tag"')
     parser.add_argument('-v', '--verbose', action='store_true', help='enable verbose mode')
     args = parser.parse_args()
 
@@ -440,7 +593,9 @@ def main(argv=None):
 
     generator.iterate_releases()
 
-    generator.generate_latest_releases_json()
+    generator.generate_sapmachine_releases_json()
+
+    generator.create_latest_links()
 
     return 0
 
