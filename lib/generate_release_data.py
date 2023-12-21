@@ -12,6 +12,7 @@ import utils
 
 from enum import Enum
 from os.path import join
+from shutil import rmtree
 from string import Template
 from urllib.error import HTTPError
 from urllib.request import urlopen, Request
@@ -54,41 +55,6 @@ redirect_to:
 class FileOperation(Enum):
     ADD_FILE = 1
     REMOVE_DIR = 2
-
-def push_to_git(files):
-    local_repo = join(os.getcwd(), 'gh-pages')
-    if not os.path.exists(local_repo):
-        utils.run_cmd("git clone --branch gh-pages --single-branch https://github.com/SAP/SapMachine.git gh-pages".split(' '))
-    else:
-        utils.run_cmd("git pull origin gh-pages".split(' '), cwd=local_repo)
-
-    addFile = False
-    commits = False
-    for _file in files:
-        location = join(local_repo, _file['location'])
-
-        if _file['operation'] == FileOperation.ADD_FILE:
-            if not os.path.exists(os.path.dirname(location)):
-                os.makedirs(os.path.dirname(location))
-            if not os.path.isfile(location):
-                addFile = True
-            with open(location, 'w+') as out:
-                out.write(_file['data'])
-            _, diff, _  = utils.run_cmd("git diff".split(' '), cwd=local_repo, std=True)
-            if diff.strip():
-                utils.git_commit(local_repo, _file['commit_message'], [_file['location']])
-                commits = True
-            elif addFile:
-                utils.git_commit(local_repo, _file['commit_message'], [location])
-                commits = True
-
-        elif _file['operation'] == FileOperation.REMOVE_DIR:
-            if os.path.exists(location):
-                print("remove dir: ", _file['commit_message'])
-                utils.run_cmd(['git', 'rm', '-r', _file['location']], cwd=local_repo, std=True)
-
-    #if commits:
-    #    utils.run_cmd(str.format('git push {0}', sapMachinePushURL).split(' '), cwd=local_repo)
 
 # custom version comparator
 def custom_version_comparator(item):
@@ -158,10 +124,41 @@ def process_major_release(major_updates_data, assets, id, ea):
             if build_data['ea'] != ('true' if ea else 'false'):
                 continue
             loop_through_build_assets(build, build_data, 'jdk', platforms_jdk, releases, checksums)
-            print(f"Build: {build}")
             loop_through_build_assets(build, build_data, 'jre', platforms_jre, releases, checksums)
     if releases:
         assets[id] = {'releases': releases, 'checksums': checksums}
+
+def write_template_file(filename, data):
+    if not os.path.exists(os.path.dirname(filename)):
+        os.makedirs(os.path.dirname(filename))
+    with open(filename, 'w') as output_file:
+        output_file.write(data)
+
+class Loggerich:
+    last_len = 0
+    def log_status(self, text):
+        if self.last_len == 0:
+            self.status_text = text
+            self.last_len = len(self.status_text)
+        else:
+            self.status_text = text.ljust(self.last_len)
+            self.last_len = len(text)
+
+        print(self.status_text, end = '\r')
+
+    def clear_status(self):
+        if self.last_len > 0:
+            self.status_text = "".ljust(self.last_len)
+            self.last_len = 0
+            print(self.status_text, end = '\r')
+
+    def log(self, text):
+        if self.last_len == 0:
+            print(text)
+        else:
+            text = text.ljust(self.last_len)
+            print(text)
+            print(self.status_text, end='\r')
 
 class Generator:
     last_len = 0
@@ -170,63 +167,155 @@ class Generator:
 
     def __init__(self, args):
         self.args = args
+        self.loggerich = Loggerich()
 
-    def load_sapmachine_releases(self):
-        # Load existing data or scratch
-        self.all_releases = self.args.output + "-all.json"
-        if self.args.scratch or not os.path.exists(self.all_releases):
-            print(f"Creating release data files with prefix {self.args.output}.", end='')
+    def setup_git(self):
+        self.loggerich.log_status("Syncing GitHub SapMachine/gh-pages...")
+        self.local_repo = join(os.getcwd(), 'gh-pages')
+        if not os.path.exists(self.local_repo):
+            rc, out, err = utils.run_cmd("git clone --branch gh-pages --single-branch https://github.com/SAP/SapMachine.git gh-pages".split(' '), std=True, quiet=True)
+            if rc != 0:
+                self.loggerich.clear_status()
+                self.loggerich.log(f"Error cloning git repo. stdout:\n{out}\nstderr:\n{err}")
+                sys.exit(-1)
+        else:
+            rc, out, err = utils.run_cmd("git fetch origin gh-pages".split(' '), cwd=self.local_repo, std=True, quiet=True)
+            if rc != 0:
+                self.loggerich.clear_status()
+                self.loggerich.log(f"Error fetching git repo. stdout:\n{out}\nstderr:\n{err}")
+                sys.exit(-1)
+            rc, out, err = utils.run_cmd("git reset --hard origin/gh-pages".split(' '), cwd=self.local_repo, std=True, quiet=True)
+            if rc != 0:
+                self.loggerich.clear_status()
+                self.loggerich.log(f"Error resetting git repo. stdout:\n{out}\nstderr:\n{err}")
+                sys.exit(-1)
+
+        self.loggerich.log("Synced GitHub SapMachine/gh-pages")
+        self.loggerich.clear_status()
+
+    def push_to_git(self):
+        utils.run_cmd(['git', 'add', '.'], cwd=self.local_repo)
+        _, diff, _ = utils.run_cmd("git diff HEAD".split(' '), cwd=self.local_repo, std=True)
+        if not diff.strip():
+            self.loggerich.log("No changes to commit.")
+            return
+
+        if self.args.tag is None:
+            utils.git_commit(self.local_repo, 'Update release data', '.')
+        else:
+            utils.git_commit(self.local_repo, f"Update release data for {self.args.tag}", '.')
+
+        if not self.args.dry_run:
+            utils.run_cmd(str.format('git push {0}', sapMachinePushURL).split(' '), cwd=self.local_repo)
+
+    def update_status(self):
+        if not hasattr(self, 'tags') or self.tags is None:
+            status_text = "Processing..."
+        elif not hasattr(self, 'asset_name') or self.asset_name is None:
+            status_text = f"Processing release {self.tags} ({self.release_count}/{self.number_of_releases})..."
+        else:
+            status_text = f"Processing release {self.tags} ({self.release_count}/{self.number_of_releases}): {self.asset_name}..."
+
+        self.loggerich.log_status(status_text)
+
+    # Load sapmachine release data according to options
+    def load_sapmachine_release_data(self):
+        if self.args.output == 'files':
+            self.output_dir = os.getcwd()
+            self.output_dir_latest = self.output_dir
+        else:
+            self.output_dir = join(self.local_repo, 'assets', 'data')
+            self.output_dir_latest = self.local_repo
+        self.all_releases_file = join(self.output_dir, self.args.output_prefix + "-all.json")
+
+        # Check if we need or have to start completely from scratch
+        self.scratch_all = self.args.scratch_data and self.args.major is None and self.args.update is None and self.args.tag is None
+        if not os.path.exists(self.all_releases_file) or (self.scratch_all):
+            if self.args.output == 'git':
+                self.loggerich.log(f"Creating release data files in git repository ({self.output_dir}), prefix: {self.args.output_prefix}.")
+            else:
+                self.loggerich.log(f"Creating release data files in {self.output_dir}, prefix: {self.args.output_prefix}.")
             self.sm_releases = {}
+            return
+
+        # Load existing data
+        if self.args.output == 'git':
+            self.loggerich.log(f"Updating release data files in git repository ({self.output_dir}), prefix: {self.args.output_prefix}.")
         else:
-            print(f"Updating release data files with prefix {self.args.output}.", end='')
-            with open(self.all_releases, 'r') as file:
-                self.sm_releases = json.load(file)
+            self.loggerich.log(f"Updating release data files in {self.output_dir}, prefix: {self.args.output_prefix}.")
+        with open(self.all_releases_file, 'r') as file:
+            self.sm_releases = json.load(file)
 
-    def load_github_releases(self):
-        # Load input data from GitHub or file
-        if self.args.input_file is None:
-            print(" Source: GitHub.")
-            self.log_status(status_text="Querying GitHub API...")
-            self.gh_releases = utils.github_api_request('releases', per_page=300)
+        # Clear out data of particular major, update or tag, if requested
+        if self.args.scratch_data:
+            if self.args.major is not None:
+                if self.args.major in self.sm_releases:
+                    del self.sm_releases[self.args.major]
+                    self.loggerich.log(f"Removed previous data for major release \"{self.args.major}\".")
+                else:
+                    self.loggerich.log(f"Major release \"{self.args.major}\" not found in data.")
 
-            # Save data
-            with open('github-releases.json', 'w') as output_file:
-                json.dump(self.gh_releases, output_file, indent=2)
+            if self.args.update is not None:
+                major = str(list(map(int, self.args.update.split('.')))[0])
+                if major in self.sm_releases:
+                    if 'updates' in self.sm_releases[major] and self.args.update in self.sm_releases[major]['updates']:
+                        del self.sm_releases[major]['updates'][self.args.update]
+                        self.loggerich.log(f"Removed previous data for update release \"{self.args.update}\".")
+                    else:
+                        self.loggerich.log(f"Update {self.args.update} not found in data.")
+                else:
+                    self.loggerich.log(f"Major release \"{major}\" for update {self.args.update} not found in data.")
 
+            if self.args.tag is not None:
+                tag = SapMachineTag.from_string(self.args.tag)
+                major = str(tag.get_major())
+                if major in self.sm_releases:
+                    update = tag.get_version_string_without_build()
+                    if 'updates' in self.sm_releases[major] and update in self.sm_releases[major]['updates']:
+                        if self.args.tag in self.sm_releases[major]['updates'][update]:
+                            del self.sm_releases[major]['updates'][update][self.args.tag]
+                            self.loggerich.log(f"Removed previous data for tag \"{self.args.tag}\".")
+                        else:
+                            self.loggerich.log(f"Tag {self.args.tag} not found in data.")
+                    else:
+                        self.loggerich.log(f"Update {update} for tag {self.args.tag} not found in data.")
+                else:
+                    self.loggerich.log(f"Major release \"{major}\" for tag {self.args.tag} not found in data.")
+
+    def load_github_release_data(self):
+        if self.args.input == 'github':
+            # Load input data from GitHub and store to file
+            self.loggerich.log("Data Source: GitHub.")
+            if self.args.tag is None:
+                self.loggerich.log_status("Querying GitHub API...")
+                self.gh_releases = utils.github_api_request('releases', per_page=300)
+                if self.args.store_github_data:
+                    self.loggerich.log_status(f"Storing results to {self.args.github_data_file}...")
+                    with open(self.args.github_data_file, 'w') as output_file:
+                        json.dump(self.gh_releases, output_file, indent=2)
+            else:
+                self.loggerich.log_status("Querying GitHub API...")
+                self.gh_releases = [utils.github_api_request(f"releases/tags/{self.args.tag}")]
+                self.loggerich.log(f"Loaded release {self.args.tag} from GitHub")
+            self.loggerich.clear_status()
         else:
-            print(f" Source: {self.args.input_file}.")
-            with open(self.args.input_file, 'r') as file:
+            # Load input data from file
+            self.loggerich.log(f"Data Source: {self.args.github_data_file}.")
+            if not os.path.exists(self.args.github_data_file):
+                self.loggerich.log(f"File {self.args.github_data_file} does not exist.")
+                sys.exit(-1)
+            with open(self.args.github_data_file, 'r') as file:
                 self.gh_releases = json.load(file)
         self.number_of_releases = len(self.gh_releases)
-
-    def log_status(self, text = None, status_text = None, done = False):
-        if status_text is None:
-            if not hasattr(self, 'tags') or self.tags is None:
-                status_text = "Processing..."
-            elif not hasattr(self, 'asset_name') or self.asset_name is None:
-                status_text = f"Processing release {self.tags} ({self.release_count}/{self.number_of_releases})..."
-            else:
-                status_text = f"Processing release {self.tags} ({self.release_count}/{self.number_of_releases}): {self.asset_name}..."
-
-        if text is None:
-            new_len = len(status_text)
-            status_text = status_text.ljust(self.last_len)
-            self.last_len = new_len if done is False else 0
-        else:
-            text = text.ljust(self.last_len)
-            self.last_len = len(status_text) if done is False else 0
-            print(text)
-
-        print(status_text, end = '\r' if done is False else None)
 
     def get_major(self, release):
         self.tags = release['tag_name']
         if self.tags is None:
-            self.log_status(f"Release {release['html_url']} does not have a tag, skipping.")
+            self.loggerich.log(f"Release {release['html_url']} does not have a tag, skipping.")
             self.release_count += 1
             return
 
-        self.log_status()
+        self.update_status()
 
         tag = SapMachineTag.from_string(self.tags)
         self.majors.add(str(tag.get_major()))
@@ -234,14 +323,14 @@ class Generator:
     def do_release(self, release, restrict_major=None):
         self.tags = release['tag_name']
         if self.tags is None:
-            self.log_status(f"Release {release['html_url']} does not have a tag, skipping.")
+            self.loggerich.log(f"Release {release['html_url']} does not have a tag, skipping.")
             self.release_count += 1
             return
 
-        self.log_status()
+        self.update_status()
 
         if not 'assets' in release or not isinstance(release['assets'], list) :
-            self.log_status(f"Release {self.tags} has no assets, skipping.")
+            self.loggerich.log(f"Release {self.tags} has no assets, skipping.")
             self.release_count += 1
             return
 
@@ -270,7 +359,7 @@ class Generator:
             d_updates[update] = d_update
 
         d_build = d_update.get(self.tags, None)
-        if d_build is None or self.tags == self.args.reload_tag:
+        if d_build is None:
             d_build = {}
             d_update[self.tags] = d_build
 
@@ -293,7 +382,7 @@ class Generator:
 
         for asset in release['assets']:
             self.asset_name = asset['name']
-            self.log_status()
+            self.update_status()
 
             is_asset = False
             match = self.asset_pattern.match(self.asset_name)
@@ -307,14 +396,14 @@ class Generator:
                 platform = checksum_match.group(3)
             elif 'symbols' in self.asset_name:
                 if self.args.verbose:
-                    self.log_status(f"Skipped {self.asset_name} because it is a symbol archive or checksum.")
+                    self.loggerich.log(f"Skipped {self.asset_name} because it is a symbol archive or checksum.")
                 continue
             elif 'rpm' in self.asset_name:
                 if self.args.verbose:
-                    self.log_status(f"Skipped {self.asset_name} because it is an rpm archive or checksum.")
+                    self.loggerich.log(f"Skipped {self.asset_name} because it is an rpm archive or checksum.")
                 continue
             else:
-                self.log_status(f"Skipped {self.asset_name} because it is no viable archive or checksum.")
+                self.loggerich.log(f"Skipped {self.asset_name} because it is no viable archive or checksum.")
                 continue
 
             if platform == 'osx-x64':
@@ -325,7 +414,7 @@ class Generator:
 
             if is_asset:
                 if self.args.verbose:
-                    self.log_status(f"{self.asset_name} is an archive file for {platform}.")
+                    self.loggerich.log(f"{self.asset_name} is an archive file for {platform}.")
             else:
                 if self.asset_name.endswith('dmg.sha256.txt') or self.asset_name.endswith('msi.sha256.txt'):
                     self.asset_name = self.asset_name[:-len('.sha256.txt')]
@@ -336,7 +425,7 @@ class Generator:
 
             d_type = d_jdks if image_type == 'jdk' else d_jres if image_type == 'jre' else None
             if d_type is None:
-                self.log_status(f"Image Type {image_type} is unknown.")
+                self.loggerich.log(f"Image Type {image_type} is unknown.")
                 continue
 
             if platform in d_type.keys():
@@ -354,7 +443,7 @@ class Generator:
             elif self.asset_name.endswith('dmg'):
                 asset_type = 'dmg'
             else:
-                self.log_status(f"{self.asset_name} is an unsupported asset type.")
+                self.loggerich.log(f"{self.asset_name} is an unsupported asset type.")
                 continue
 
             if asset_type in d_platform:
@@ -365,7 +454,7 @@ class Generator:
 
             if 'name' in d_asset:
                 if d_asset['name'] != self.asset_name:
-                    self.log_status(f"{self.asset_name} does not match existing name {d_asset['name']} of {self.tags}.")
+                    self.loggerich.log(f"{self.asset_name} does not match existing name {d_asset['name']} of {self.tags}.")
                     break
             else:
                 d_asset['name'] = self.asset_name
@@ -381,39 +470,24 @@ class Generator:
                         response = response.read()
                         checksum = str(response[:64].decode())
                         if self.args.verbose:
-                            self.log_status(f"Downloaded checksum for {self.asset_name}: {checksum}")
+                            self.loggerich.log(f"Downloaded checksum for {self.asset_name}: {checksum}")
 
                         d_asset['checksum'] = checksum
 
                     except HTTPError as httpError:
-                        self.log_status(f"Checksum file for {self.asset_name} could not be downloaded from {asset['browser_download_url']}: {httpError.code} ({httpError.reason})")
+                        self.loggerich.log(f"Checksum file for {self.asset_name} could not be downloaded from {asset['browser_download_url']}: {httpError.code} ({httpError.reason})")
 
         if not d_jdks:
             del d_assets['jdk']
         if not d_jres:
             del d_assets['jre']
 
-        # if we just update data, we return here.
-        # otherwise we better save data after every release to allow for interruption
+        # if we build up data from scratch, we should save here and there to allow for interruption
+        if self.scratch_all and self.release_count % 10 == 0:
+            with open(self.all_releases_file, 'w') as output_file:
+                json.dump(self.sm_releases, output_file, indent=2)
+
         self.release_count += 1
-        if not self.args.scratch:
-            return
-
-        # sort updates
-        d_updates = dict(sorted(d_updates.items(), key=custom_version_comparator, reverse=True))
-        d_major['updates'] = d_updates
-
-        # sort builds, use custom comparator that moves ga builds on top
-        d_update = dict(sorted(d_update.items(), key=custom_tags_comparator, reverse=True))
-        d_updates[update] = d_update
-
-        # Save data to files
-        with open(self.all_releases, 'w') as output_file:
-            json.dump(self.sm_releases, output_file, indent=2)
-
-        major_releases = self.args.output + f"-{major}.json"
-        with open(major_releases, 'w') as output_file:
-            json.dump(d_major, output_file, indent=2)
 
     def get_majors(self):
         self.release_count = 1
@@ -421,7 +495,7 @@ class Generator:
         for release in self.gh_releases:
             self.get_major(release)
 
-        print(f"Majors found: {sorted(self.majors)}")
+        self.loggerich.log(f"Majors found: {sorted(self.majors)}")
 
     def iterate_releases(self):
         self.release_count = 1
@@ -430,21 +504,18 @@ class Generator:
                 for release in self.gh_releases:
                     self.do_release(release, self.args.major)
             else:
-                print(f"Major version {self.args.major} does not exist.")
+                self.loggerich.log(f"Major version {self.args.major} does not exist.")
         else:
             for release in self.gh_releases:
                 self.do_release(release)
 
-        self.log_status(status_text="Done processing releases.", done=True)
-
-        # when we had rebuilt from scratch, we can leave here. Otherwise we have to sort and save
-        if self.args.scratch:
-            return
+        self.loggerich.log("Done processing releases.")
+        self.loggerich.log_status("Sorting and saving release data...")
 
         # sort majors
         self.sm_releases = dict(sorted(self.sm_releases.items(), reverse=True))
 
-        # sort releases and save each one
+        # sort and save data below each major
         for major in self.majors:
             # sort updates
             d_updates = dict(sorted(self.sm_releases[major]['updates'].items(), key=custom_version_comparator, reverse=True))
@@ -452,25 +523,27 @@ class Generator:
 
             # sort builds, use custom comparator that moves ga builds on top
             for update, d_update in d_updates.items():
-                d_update = dict(sorted(d_update.items(), key=custom_tags_comparator, reverse=True))
-                d_updates[update] = d_update
+                d_updates[update] = dict(sorted(d_update.items(), key=custom_tags_comparator, reverse=True))
 
             # save release
-            major_releases = self.args.output + f"-{major}.json"
-            with open(major_releases, 'w') as output_file:
+            release_file = join(self.output_dir, self.args.output_prefix + f"-{major}.json")
+            with open(release_file, 'w') as output_file:
                 json.dump(self.sm_releases[major], output_file, indent=2)
 
-        # Save all data
-        with open(self.all_releases, 'w') as output_file:
+        # save all releases
+        with open(self.all_releases_file, 'w') as output_file:
             json.dump(self.sm_releases, output_file, indent=2)
 
+        self.loggerich.log("Sorted and saved release data.")
+        self.loggerich.clear_status()
+
     def generate_sapmachine_releases_json(self):
+        self.loggerich.log_status("Creating sapmachine_releases.json...")
         majors = []
         assets = OrderedDict()
         for major in utils.sapmachine_dev_releases():
             id = str(major) + "-ea"
             majors.append({'id': id, 'label': f"SapMachine {major}", 'lts': True if utils.sapmachine_is_lts(major) else False, 'ea': True})
-            print(f"Id: {id}")
             process_major_release(self.sm_releases[str(major)]['updates'].values(), assets, id, True)
 
         for major in utils.sapmachine_active_releases():
@@ -487,19 +560,17 @@ class Generator:
         json_root['assets'] = assets
 
         # Save data
-        #with open('sapmachine-latest.json', 'w') as output_file:
-        #    json.dump(json_root, output_file, indent=2)
-        push_to_git([{
-            'operation': FileOperation.ADD_FILE,
-            'location': join('assets', 'data', 'sapmachine_releases.json'),
-            'data': json.dumps(json_root, indent=2) + '\n',
-            'commit_message': 'Update release data'
-        }])
+        with open(join(self.output_dir, 'sapmachine_releases.json'), 'w') as output_file:
+            json.dump(json_root, output_file, indent=2)
+            output_file.write('\n')
+
+        self.loggerich.log("Created sapmachine_releases.json.")
+        self.loggerich.clear_status()
 
     def create_latest_links(self):
-        files = []
+        self.loggerich.log_status("Creating latest links...")
         wrote_latest = False
-        for major in self.majors:
+        for major in sorted(self.majors, reverse=True):
             if int(major) in utils.sapmachine_active_releases():
                 latest_data = None
                 for builds in self.sm_releases[major]['updates'].values():
@@ -514,80 +585,63 @@ class Generator:
                     break
 
                 if not wrote_latest:
-                    files.append({
-                        'operation': FileOperation.ADD_FILE,
-                        'location': join('latest', 'index.md'),
-                        'data': Template(latest_overall_template).substitute(url = latest_data['url']),
-                        'commit_message': f"Update latest link for SapMachine"
-                    })
+                    write_template_file(join(self.output_dir_latest, 'latest', 'index.md'),
+                                        Template(latest_overall_template).substitute(url = latest_data['url']))
                     wrote_latest = True
 
-                files.append({
-                    'operation': FileOperation.ADD_FILE,
-                    'location': join('latest', major, 'index.md'),
-                    'data': Template(latest_template).substitute(major = major,url = latest_data['url']),
-                    'commit_message': f"Update latest link for SapMachine {major}"
-                })
+                write_template_file(join(self.output_dir_latest, 'latest', major, 'index.md'),
+                                    Template(latest_overall_template).substitute(url = latest_data['url']))
 
                 for platform, archives in latest_data['assets']['jdk'].items():
                     for archive_type, archive_data in archives.items():
                         real_platform = platform + '-installer' if archive_type in ['dmg', 'msi'] else platform
-                        files.append({
-                            'operation': FileOperation.ADD_FILE,
-                            'location': join('latest', major, real_platform, 'jdk', 'index.md'),
-                            'data': Template(latest_template_download).substitute(
-                                major = major,
-                                platform = real_platform,
-                                checksum = 'sha256 ' + archive_data['checksum'],
-                                url = archive_data['url']
-                            ),
-                            'commit_message': f"Update latest link for SapMachine {major}, {real_platform}/jdk"
-                        })
+                        write_template_file(join(self.output_dir_latest, 'latest', major, real_platform, 'jdk', 'index.md'),
+                                            Template(latest_template_download).substitute(
+                                                major = major,
+                                                platform = real_platform,
+                                                checksum = 'sha256 ' + archive_data['checksum'],
+                                                url = archive_data['url']))
 
                 for platform, archives in latest_data['assets']['jre'].items():
                     for archive_type, archive_data in archives.items():
                         real_platform = platform + '-installer' if archive_type in ['dmg', 'msi'] else platform
-                        files.append({
-                            'operation': FileOperation.ADD_FILE,
-                            'location': join('latest', major, real_platform, 'jre', 'index.md'),
-                            'data': Template(latest_template_download).substitute(
-                                major = major,
-                                platform = real_platform,
-                                checksum = 'sha256 ' + archive_data['checksum'],
-                                url = archive_data['url']
-                            ),
-                            'commit_message': f"Update latest link for SapMachine {major}, {real_platform}/jre"
-                        })
+                        write_template_file(join(self.output_dir_latest, 'latest', major, real_platform, 'jre', 'index.md'),
+                                            Template(latest_template_download).substitute(
+                                                major = major,
+                                                platform = real_platform,
+                                                checksum = 'sha256 ' + archive_data['checksum'],
+                                                url = archive_data['url']))
 
-            elif os.path.exists(join('latest', major)):
-                files.append({
-                    'operation': FileOperation.REMOVE_DIR,
-                    'location': join('latest', major),
-                    'data': '',
-                    'commit_message': f"Delete outdated latest link directory for SapMachine {major}"
-                })
-
-        push_to_git(files)
-
+            elif os.path.exists(join(self.output_dir_latest, 'latest', major)):
+                rmtree(join(self.output_dir_latest, 'latest', major))
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
-    parser.add_argument('-o', '--output', choices=['files', 'github'], default='files', help='output target, either "files" or "github". The latter means that changes are pushed to their location in SapMachine GitHub repo, branch gh-pages. Default is "files"', metavar='OUTPUT_TARGET')
-    parser.add_argument('--output_prefix', default='sapmachine-releases', help='file name prefix to generate output files containing SapMachine release information. Only used when "--output files" is set. Default is "sapmachine-releases"', metavar='OUTPUT_PREFIX')
-    parser.add_argument('-i', '--input', choices=['github', 'files'], default='github', help='input source, can be either "github" or "files". Default is "github". For "files", an input file is needed that contains the results of the GitHub Release API call in json format. The default name would be "github-releases.json" and can be modified with option "--input_file"', metavar='INPUT_SOURCE')
-    parser.add_argument('--input_file', default='github-releases.json', help='input file that contains the results of the GitHub Release API call in json format (optional)', metavar='INPUT_FILE')
+    parser.add_argument('-o', '--output', choices=['files', 'git'], default='files', help='output target, either "files" or "git". The latter means that changes are pushed to their location in SapMachine git repo, branch gh-pages. Default is "files"', metavar='OUTPUT_TARGET')
+    parser.add_argument('--output-prefix', default='sapmachine-releases', help='file name prefix to generate output files containing SapMachine release information. Only used when "--output files" is set. Default is "sapmachine-releases"', metavar='OUTPUT_PREFIX')
+    parser.add_argument('-i', '--input', choices=['github', 'file'], default='github', help='input source, can be either "github" or "file". Default is "github". For "file", an input file is needed that contains the results of the GitHub Release API call in json format. The default name would be "github-releases.json" and can be modified with option "--input-file"', metavar='INPUT_SOURCE')
+    parser.add_argument('--github-data-file', default='github-releases.json', help='input file that contains the results of the GitHub Release API call in json format (optional). Default: "github-releases.json"', metavar='DATA_FILE')
+    parser.add_argument('--store-github-data', action='store_true', help='stores queried GitHub data in DATA_FILE')
     parser.add_argument('-m', '--major', help='rebuild data for a certain major version, e.g. "21", "17"...', metavar='MAJOR')
     parser.add_argument('-u', '--update', help='rebuild data for a certain update version, e.g. "21", "17.0.3"...', metavar='UPDATE')
     parser.add_argument('-t', '--tag', help='rebuild data for a certain release/build, e.g. "sapmachine-17", "sapmachine-11.0.18", "sapmachine-22+26", ... In that case, GitHub Release information is queried only for the specified tag', metavar='TAG')
-    parser.add_argument('-s', '--scratch_data', action='store_true', help='Clear existing release data and rebuild everything. The default is to update existing data. Does not work in conjunction with "--tag"')
+    parser.add_argument('-s', '--scratch-data', action='store_true', help='clear existing release data and rebuild everything. The default is to update existing data. Does not work in conjunction with "--tag"')
+    parser.add_argument('--dry-run', action='store_true', help='no git push')
     parser.add_argument('-v', '--verbose', action='store_true', help='enable verbose mode')
     args = parser.parse_args()
 
+    if sum(1 for var in [args.major, args.update, args.tag] if var is not None) > 1:
+        print(f"You can speficy at most one out of options '--major', '--update', --'tag'")
+        return -1
+
     generator = Generator(args)
 
-    generator.load_sapmachine_releases()
+    if args.output == 'git':
+        generator.setup_git()
 
-    generator.load_github_releases()
+    generator.load_sapmachine_release_data()
+
+    generator.load_github_release_data()
 
     generator.get_majors()
 
@@ -596,6 +650,9 @@ def main(argv=None):
     generator.generate_sapmachine_releases_json()
 
     generator.create_latest_links()
+
+    if args.output == 'git':
+        generator.push_to_git()
 
     return 0
 

@@ -53,10 +53,11 @@ def file_exists_and_is_younger_than_an_hour(filename):
     # Compare the time difference with one hour
     return time_difference < one_hour
 
-def run_cmd(cmdline, throw=True, cwd=None, env=None, std=False, shell=False):
+def run_cmd(cmdline, throw=True, cwd=None, env=None, std=False, shell=False, quiet=False):
     import subprocess
 
-    print(str.format('Calling {0}', cmdline))
+    if not quiet:
+        print(str.format('Calling {0}', cmdline))
     if std:
         subproc = subprocess.Popen(cmdline, cwd=cwd, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=shell)
         out, err = subproc.communicate()

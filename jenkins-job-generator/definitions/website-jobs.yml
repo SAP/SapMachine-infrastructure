@@ -7,6 +7,11 @@
     properties:
         - build-discarder:
             num-to-keep: 40
+    parameters:
+        - string:
+            name: SAPMACHINE_VERSION
+            default: ''
+            description: 'The SapMachine version to update data. If empty, all releases are scanned.'
     dsl: |
         pipeline {
             agent {
@@ -20,18 +25,26 @@
                 }
                 stage('Generate Data') {
                     agent {
-                          dockerfile {
-                              dir "SapMachine-infrastructure/dockerfiles/infrastructure"
-                              reuseNode true
-                              label "website"
-                          }
-                      }
-                      steps {
-                          withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
-                              sh "python3 SapMachine-infrastructure/lib/generate_website_data.py"
-                          }
-                      }
-                  }
+                        dockerfile {
+                            dir "SapMachine-infrastructure/dockerfiles/infrastructure"
+                            reuseNode true
+                            label "website"
+                        }
+                    }
+                    steps {
+                        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
+                            lock('WebSiteDataGenerationSynchronizer') {
+                                sh '''
+                                    if [[ -z $SAPMACHINE_VERSION ]]; then
+                                        python3 SapMachine-infrastructure/lib/generate_release_data.py
+                                    else
+                                        python3 SapMachine-infrastructure/lib/generate_release_data.py -t ${SAPMACHINE_VERSION}
+                                    fi
+                                '''
+                            }
+                        }
+                    }
+                }
             }
             post {
                 always {
