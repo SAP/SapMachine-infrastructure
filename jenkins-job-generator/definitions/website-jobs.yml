@@ -35,10 +35,10 @@
                         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
                             lock('WebSiteDataGenerationSynchronizer') {
                                 sh '''
-                                    if [[ -z $SAPMACHINE_VERSION ]]; then
-                                        python3 SapMachine-infrastructure/lib/generate_release_data.py
+                                    if [ -z "$SAPMACHINE_VERSION" ]; then
+                                        python3 SapMachine-infrastructure/lib/generate_release_data.py -o git
                                     else
-                                        python3 SapMachine-infrastructure/lib/generate_release_data.py -t ${SAPMACHINE_VERSION}
+                                        python3 SapMachine-infrastructure/lib/generate_release_data.py -o git -t ${SAPMACHINE_VERSION}
                                     fi
                                 '''
                             }

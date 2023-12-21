@@ -144,7 +144,7 @@ class Loggerich:
             self.status_text = text.ljust(self.last_len)
             self.last_len = len(text)
 
-        print(self.status_text, end = '\r')
+        print(self.status_text, end = '\r', flush=True)
 
     def clear_status(self):
         if self.last_len > 0:
@@ -154,11 +154,11 @@ class Loggerich:
 
     def log(self, text):
         if self.last_len == 0:
-            print(text)
+            print(text, flush=True)
         else:
             text = text.ljust(self.last_len)
             print(text)
-            print(self.status_text, end='\r')
+            print(self.status_text, end='\r', flush=True)
 
 class Generator:
     last_len = 0
@@ -312,10 +312,7 @@ class Generator:
         self.tags = release['tag_name']
         if self.tags is None:
             self.loggerich.log(f"Release {release['html_url']} does not have a tag, skipping.")
-            self.release_count += 1
             return
-
-        self.update_status()
 
         tag = SapMachineTag.from_string(self.tags)
         self.majors.add(str(tag.get_major()))
