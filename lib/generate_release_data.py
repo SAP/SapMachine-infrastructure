@@ -320,8 +320,7 @@ class Generator:
             self.loggerich.log(f"Release {release['html_url']} does not have a tag, skipping.")
             return
 
-        tag = SapMachineTag.from_string(self.tags)
-        self.majors.add(str(tag.get_major()))
+        self.majors.add(str(SapMachineTag.from_string(self.tags).get_major()))
 
     def do_release(self, release, restrict_major=None):
         self.tags = release['tag_name']
@@ -573,7 +572,7 @@ class Generator:
     def create_latest_links(self):
         self.loggerich.log_status("Creating latest links...")
         wrote_latest = False
-        for major in sorted(self.majors, reverse=True):
+        for major in sorted(self.sm_releases.keys(), reverse=True):
             if int(major) in utils.sapmachine_active_releases():
                 latest_data = None
                 for builds in self.sm_releases[major]['updates'].values():
