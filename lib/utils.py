@@ -21,6 +21,7 @@ from os.path import exists
 from os.path import join
 from shutil import move
 from shutil import rmtree
+from urllib.error import HTTPError
 from urllib.parse import quote
 from urllib.request import urlopen, Request
 from versions import SapMachineTag
@@ -482,6 +483,17 @@ def get_github_tags(repository='SapMachine'):
     if repository not in github_tags.keys() or github_tags[repository] is None:
         github_tags[repository] = github_api_request('tags', repository=repository, per_page=300)
     return github_tags[repository]
+
+def get_sapmachine_releases(major = None):
+    rel_url = f"https://sap.github.io/SapMachine/assets/data/sapmachine-releases-{'all' if major is None else str(major)}.json"
+    request = Request(rel_url)
+    try:
+        data = str(urlopen(request).read().decode())
+        return json.loads(data) if major is None else {str(major): json.loads(data)}
+
+    except HTTPError as httpError:
+        print(f"Could not download release data from {rel_url}: {httpError.code} ({httpError.reason})")
+        return {}
 
 github_releases = None
 def get_github_releases(cache=True):

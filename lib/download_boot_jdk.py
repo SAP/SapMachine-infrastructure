@@ -13,38 +13,25 @@ import utils
 from os.path import join
 from versions import SapMachineTag
 
-# This list is a temporary solution for platforms that we have not yet delivered with SapMachine
-# Currently: AIX
-extra_bootjdks = [
-    {
-        'prerelease': False,
-        'name': 'sapmachine-21',
-        'assets': [
-            {
-                'name': 'sapmachine-jdk-21_aix-ppc64_bin.tar.gz',
-                'browser_download_url': 'https://github.com/SAP/SapMachine/releases/download/sapmachine-21.0.1%2B1/sapmachine-jdk-21.0.1-eabeta.1_aix-ppc64_bin.tar.gz'
-            }
-        ]
-    }
-]
-
 def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('-m', '--major', help='the SapMachine major version to build', metavar='MAJOR')
     parser.add_argument('-d', '--destination', help='the download destination', metavar='DIR')
     args = parser.parse_args()
 
-    version_input = []
-    if 'SAPMACHINE_VERSION' in os.environ:
-        version_input.append(os.environ['SAPMACHINE_VERSION'])
-    if 'GIT_REF' in os.environ:
-        version_input.append(os.environ['GIT_REF'])
-    boot_jdk_major_max = utils.calc_major(filter(None, version_input)) if args.major is None else int(args.major)
-    if boot_jdk_major_max is None:
-        print("Could not detect major version")
-        return -1
+    if args.major is not None:
+        major = int(args.major)
+    else:
+        version_input = []
+        if 'SAPMACHINE_VERSION' in os.environ:
+            version_input.append(os.environ['SAPMACHINE_VERSION'])
+        if 'GIT_REF' in os.environ:
+            version_input.append(os.environ['GIT_REF'])
+        major = utils.calc_major(filter(None, version_input))
+        if major is None:
+            print("Could not detect major version")
+            return -1
 
-    boot_jdk_major_min = boot_jdk_major_max - 1
     destination = os.path.realpath(os.getcwd() if args.destination is None else args.destination)
     boot_jdk_exploded = join(destination, 'boot_jdk')
     boot_jdk_infofile = join(destination, "bootstrapjdk.txt")
@@ -52,73 +39,77 @@ def main(argv=None):
     if os.path.exists(boot_jdk_infofile):
         with open(boot_jdk_infofile, "r") as file:
             current_boot_jdk = file.read()
-            print(str.format("Current Boot JDK: {0}", current_boot_jdk))
+            print(f"Current Boot JDK: {current_boot_jdk}")
 
-    releases = utils.get_github_releases()
     system = utils.get_system()
-    platform = str.format('{0}-{1}{2}_bin', system, utils.get_arch(), "-musl" if os.path.isfile('/etc/alpine-release') else "")
-    print(str.format('detected platform "{0}"', platform))
+    platform = f"{system}-{utils.get_arch()}{'-musl' if os.path.isfile('/etc/alpine-release') else ''}"
+    print(f"Detected platform: {platform}")
 
-    retries = 2
+    # Look for latest GA build. If none available, get latest EA build.
+    ga = False
+    asset_name = None
+    asset_url = None
+    for l_major in map(str, range(major, major - 1, -1)):
+        sapmachine_releases = utils.get_sapmachine_releases(args.major)
+        if not l_major in sapmachine_releases:
+            continue
 
-    releases = extra_bootjdks + releases
+        if not 'updates' in sapmachine_releases[l_major]:
+            continue
 
-    while retries > 0:
-        for release in releases:
+        for d_updates in sapmachine_releases[l_major].values():
+            for d_builds in d_updates.values():
+                for d_build in d_builds.values():
+                    if asset_name is not None and d_build['ea'] == 'true':
+                        continue
+                    if 'assets' not in d_build or 'jdk' not in d_build['assets'] or platform not in d_build['assets']['jdk']:
+                        continue
+                    for archive_type in d_build['assets']['jdk'][platform]:
+                        if archive_type in ['tar.gz', 'zip']:
+                            asset_name = d_build['assets']['jdk'][platform][archive_type]['name']
+                            asset_url = d_build['assets']['jdk'][platform][archive_type]['url']
+                            break
+                    if d_build['ea'] != 'true':
+                        ga = True
+                        break
+                if ga: break
+            if ga: break
+        if ga: break
 
-            if release['prerelease']:
-                continue
+    print(f"Identified Boot JDK {asset_name}, url: {asset_url}")
 
-            tag = SapMachineTag.from_string(release['name'])
+    if current_boot_jdk is not None and current_boot_jdk == asset_name and os.path.exists(boot_jdk_exploded):
+        print(f"Boot JDK {current_boot_jdk} already downloaded.")
+        return 0
 
-            if tag is None:
-                print(str.format("SapMachine release {0} not recognized", release['name']))
-                continue
-            major = tag.get_major()
+    archive_path = join(destination, asset_name)
+    utils.remove_if_exists(archive_path)
+    utils.download_artifact(asset_url, archive_path)
+    utils.remove_if_exists(boot_jdk_exploded)
+    os.makedirs(boot_jdk_exploded)
+    utils.extract_archive(archive_path, boot_jdk_exploded, remove_archive=True)
 
-            if major <= boot_jdk_major_max and major >= boot_jdk_major_min:
-                assets = release['assets']
+    sapmachine_folder = [f for f_ in [glob.glob(join(boot_jdk_exploded, e)) for e in ('sapmachine*', 'jdk*')] for f in f_]
 
-                for asset in assets:
-                    asset_name = asset['name']
-                    asset_url = asset['browser_download_url']
+    if sapmachine_folder is not None:
+        sapmachine_folder = sapmachine_folder[0]
+        files = os.listdir(sapmachine_folder)
 
-                    if 'jdk' in asset_name and platform in asset_name and (asset_name.endswith('.tar.gz') or asset_name.endswith('.zip')) and 'symbols' not in asset_name:
-                        if current_boot_jdk is not None and current_boot_jdk == asset_name and os.path.exists(boot_jdk_exploded):
-                            print(str.format("Boot JDK {0} already downloaded.", current_boot_jdk))
-                            return 0
-                        with open(boot_jdk_infofile, "w") as file:
-                            file.write(asset_name)
-                        archive_path = join(destination, asset_name)
-                        utils.remove_if_exists(archive_path)
-                        utils.download_artifact(asset_url, archive_path)
-                        utils.remove_if_exists(boot_jdk_exploded)
-                        os.makedirs(boot_jdk_exploded)
-                        utils.extract_archive(archive_path, boot_jdk_exploded, remove_archive=True)
+        for f in files:
+            shutil.move(join(sapmachine_folder, f), boot_jdk_exploded)
 
-                        sapmachine_folder = [f for f_ in [glob.glob(join(boot_jdk_exploded, e)) for e in ('sapmachine*', 'jdk*')] for f in f_]
+        utils.remove_if_exists(sapmachine_folder)
 
-                        if sapmachine_folder is not None:
-                            sapmachine_folder = sapmachine_folder[0]
-                            files = os.listdir(sapmachine_folder)
+        if system == 'osx' or system == 'macos':
+            files = os.listdir(join(boot_jdk_exploded, 'Contents', 'Home'))
 
-                            for f in files:
-                                shutil.move(join(sapmachine_folder, f), boot_jdk_exploded)
+            for f in files:
+                shutil.move(join(boot_jdk_exploded, 'Contents', 'Home', f), boot_jdk_exploded)
 
-                            utils.remove_if_exists(sapmachine_folder)
+            utils.remove_if_exists(join(boot_jdk_exploded, 'Contents'))
 
-                            if system == 'osx' or system == 'macos':
-                                files = os.listdir(join(boot_jdk_exploded, 'Contents', 'Home'))
-
-                                for f in files:
-                                    shutil.move(join(boot_jdk_exploded, 'Contents', 'Home', f), boot_jdk_exploded)
-
-                                utils.remove_if_exists(join(boot_jdk_exploded, 'Contents'))
-
-                        return 0
-        retries -= 1
-        if retries == 1:
-            boot_jdk_major_min = boot_jdk_major_max - 2
+    with open(boot_jdk_infofile, "w") as file:
+        file.write(asset_name)
 
     # if we return here, we couldn't download a suitable Boot JDK
     print("Returning without finding suitable Boot JDK.")
