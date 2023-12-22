@@ -3,7 +3,6 @@
     type_snapshot: &type_snapshot_service
         - snapshot:
             type: snapshot
-            release_option_param: "[$class: 'BooleanParameterValue', name: 'UPLOAD_ARTIFACTORY', value: params.UPLOAD_ARTIFACTORY],"
             trigger_macos_builds: |
                 platforms.putAll([
                                         "macos_aarch64": params.BUILD_MACOS_ARM_64,
@@ -62,7 +61,8 @@
                                             [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
                                             [$class: 'BooleanParameterValue', name: 'BUILD_INSTALLER_PACKAGES', value: params.BUILD_INSTALLER_PACKAGES],
                                             [$class: 'BooleanParameterValue', name: 'CREATE_GENSRC_BUNDLE', value: params.CREATE_GENSRC_BUNDLE],
-                                            {release_option_param}
+                                            [$class: 'BooleanParameterValue', name: 'UPLOAD_ARTIFACTORY', value: params.UPLOAD_ARTIFACTORY],
+                                            {release_option_param|}
                                             [$class: 'BooleanParameterValue', name: 'ARCHIVE_WORKSPACE', value: params.ARCHIVE_WORKSPACE]
                                         ]
                                 }} else {{
@@ -445,9 +445,13 @@
             default: true
             description: 'Create a bundle with generated source files (gensrc), to be used in e.g. IDE setups.'
         - bool:
+            name: UPLOAD_ARTIFACTORY
+            default: false
+            description: 'Upload build results to Artifactory which will trigger testing.'
+        - bool:
             name: PUBLISH
             default: false
-            description: 'When set to true, the resulting bundles will be published to GitHub.'
+            description: 'When set to true, the resulting bundles will be published to GitHub. This implies uploading to Artifactory.'
         - bool:
             name: ARCHIVE_WORKSPACE
             default: false
@@ -533,9 +537,13 @@
             default: true
             description: 'Create a bundle with generated source files (gensrc), to be used in e.g. IDE setups.'
         - bool:
+            name: UPLOAD_ARTIFACTORY
+            default: false
+            description: 'Upload build results to Artifactory which will trigger testing.'
+        - bool:
             name: PUBLISH
             default: false
-            description: 'When set to true, the resulting bundles will be published to GitHub.'
+            description: 'When set to true, the resulting bundles will be published to GitHub. This implies uploading to Artifactory.'
         - bool:
             name: ARCHIVE_WORKSPACE
             default: false
@@ -617,9 +625,13 @@
             default: true
             description: 'Create a bundle with generated source files (gensrc), to be used in e.g. IDE setups.'
         - bool:
+            name: UPLOAD_ARTIFACTORY
+            default: false
+            description: 'Upload build results to Artifactory which will trigger testing.'
+        - bool:
             name: PUBLISH
             default: false
-            description: 'When set to true, the resulting bundles will be published to GitHub.'
+            description: 'When set to true, the resulting bundles will be published to GitHub. This implies uploading to Artifactory.'
         - bool:
             name: ARCHIVE_WORKSPACE
             default: false

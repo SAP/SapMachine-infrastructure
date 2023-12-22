@@ -59,6 +59,7 @@ def run_jenkins_jobs(major, tag):
         build_jobs.append(str.format('build-{0}-aix_ppc64-release', major))
 
     job_params = {
+        'UPLOAD_ARTIFACTORY': 'true',
         'PUBLISH': 'true' ,
         'RELEASE': 'false',
         'GIT_REF': tag
