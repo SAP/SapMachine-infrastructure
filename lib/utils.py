@@ -111,13 +111,13 @@ class SafeZipFile(ZipFile):
 def extract_archive(archive, target, remove_archive=False):
     if archive.endswith('.zip'):
         with SafeZipFile(archive) as zip_ref:
-            print((str.format('Extracting zip archive {0} ...', archive)))
+            print(f"Extracting zip archive {archive}...")
             zip_ref.extractall(target)
 
         if remove_archive:
             remove(archive)
     elif archive.endswith('tar.gz'):
-        print((str.format('Extracting tar.gz archive {0} ...', archive)))
+        print(f"Extracting tar.gz archive {archive}...")
         with tarfile.open(archive, 'r') as tar_ref:
             tar_ref.extractall(target)
 
@@ -131,7 +131,7 @@ def download_artifact(url, target):
         remove(target)
 
     with open(target, 'wb') as file:
-        print((str.format('Downloading {0} ...', url)))
+        print(f"Downloading {url}...")
         file.write(urlopen(url).read())
 
 def make_tgz_archive(src, dest, arcname=None):

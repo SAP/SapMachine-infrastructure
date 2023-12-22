@@ -49,8 +49,8 @@ def main(argv=None):
     ga = False
     asset_name = None
     asset_url = None
-    for l_major in map(str, range(major, major - 1, -1)):
-        sapmachine_releases = utils.get_sapmachine_releases(args.major)
+    for l_major in map(str, range(major, major - 3, -1)):
+        sapmachine_releases = utils.get_sapmachine_releases(l_major)
         if not l_major in sapmachine_releases:
             continue
 
@@ -58,6 +58,8 @@ def main(argv=None):
             continue
 
         for d_updates in sapmachine_releases[l_major].values():
+            if not isinstance(d_updates, dict):
+                continue
             for d_builds in d_updates.values():
                 for d_build in d_builds.values():
                     if asset_name is not None and d_build['ea'] == 'true':
@@ -69,12 +71,17 @@ def main(argv=None):
                             asset_name = d_build['assets']['jdk'][platform][archive_type]['name']
                             asset_url = d_build['assets']['jdk'][platform][archive_type]['url']
                             break
-                    if d_build['ea'] != 'true':
+                    if d_build['ea'] == 'false':
                         ga = True
                         break
                 if ga: break
             if ga: break
         if ga: break
+
+    # return if we can't find a suitable Boot JDK
+    if asset_name is None:
+        print("Could not find a suitable Boot JDK.")
+        return -1
 
     print(f"Identified Boot JDK {asset_name}, url: {asset_url}")
 
@@ -110,10 +117,6 @@ def main(argv=None):
 
     with open(boot_jdk_infofile, "w") as file:
         file.write(asset_name)
-
-    # if we return here, we couldn't download a suitable Boot JDK
-    print("Returning without finding suitable Boot JDK.")
-    return -1
 
 if __name__ == "__main__":
     sys.exit(main())
