@@ -291,7 +291,9 @@
             when {
                 expression { params.UPLOAD_ARTIFACTORY == true || params.PUBLISH == true }
             }
-            
+            steps {
+                // Upload the test archive
+                sh 'curl -sSf -u $ARTIFACTORY_CREDS -X PUT -T test.zip https://common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build-results/linux_aarch64/${ART_VERSION}/test.zip'
                 
             }
         }
@@ -329,12 +331,16 @@
                 build job: 'generate-dockerfiles', propagate: false, wait: true
             }
         }
-        stage("Publish Website Data") {
+        stage("Publish Release Data") {
             when {
                 expression { params.PUBLISH == true }
             }
             steps {
-                build job: 'generate-website-data', propagate: false, wait: false
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
+                    lock('ReleaseDataGenerationLock') {
+                        sh 'python3 SapMachine-infrastructure/lib/generate_release_data.py --no-status -o git -t $SAPMACHINE_VERSION'
+                    }
+                }
             }
         }
         

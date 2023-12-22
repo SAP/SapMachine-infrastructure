@@ -275,7 +275,9 @@
             when {
                 expression { params.UPLOAD_ARTIFACTORY == true }
             }
-            
+            steps {
+                // Upload the test archive
+                sh 'curl -sSf -u $ARTIFACTORY_CREDS -X PUT -T test.zip https://common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build-results/linux_aarch64/${ART_VERSION}/test.zip'
                 
             }
         }
