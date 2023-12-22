@@ -42,7 +42,7 @@
                                     if [ -n "$SAPMACHINE_VERSION" ]; then
                                         _TAG_OPTION="-t ${SAPMACHINE_VERSION}"
                                     fi
-                                    if [ "$SCRATCH_DATA" == "true"]; then
+                                    if [ "$SCRATCH_DATA" == "true" ]; then
                                         _SCRATCH_OPTION="-s"
                                     fi
                                     python3 SapMachine-infrastructure/lib/generate_release_data.py --no-status -o git $_TAG_OPTION $_SCRATCH_OPTION
