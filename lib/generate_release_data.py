@@ -526,6 +526,13 @@ class Generator:
 
             # sort builds, use custom comparator that moves ga builds on top
             for update, d_update in d_updates.items():
+                for build_data in d_update.values():
+                    if 'assets' in build_data:
+                        if 'jdk' in build_data['assets']:
+                            build_data['assets']['jdk'] = dict(sorted(build_data['assets']['jdk'].items()))
+                        if 'jre' in build_data['assets']:
+                            build_data['assets']['jre'] = dict(sorted(build_data['assets']['jre'].items()))
+
                 d_updates[update] = dict(sorted(d_update.items(), key=custom_tags_comparator, reverse=True))
 
             # save release
