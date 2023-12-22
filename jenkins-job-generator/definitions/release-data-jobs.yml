@@ -1,12 +1,12 @@
 - job:
-    name: generate-website-data
-    description: 'Update dynamic website data.'
+    name: generate-release-data
+    description: 'Update release data.'
     project-type: pipeline
     sandbox: true
     concurrent: false
     properties:
         - build-discarder:
-            num-to-keep: 40
+            num-to-keep: 20
     parameters:
         - string:
             name: SAPMACHINE_VERSION
@@ -19,7 +19,7 @@
     dsl: |
         pipeline {
             agent {
-                label "website"
+                label "infrastructure"
             }
             stages {
                 stage("Checkout Infrastructure Repository") {
@@ -27,12 +27,12 @@
                         checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-infrastructure']], userRemoteConfigs: [[url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
                     }
                 }
-                stage('Generate Data') {
+                stage('Publish Release Data') {
                     agent {
                         dockerfile {
                             dir "SapMachine-infrastructure/dockerfiles/infrastructure"
                             reuseNode true
-                            label "website"
+                            label "infrastructure"
                         }
                     }
                     steps {
@@ -52,47 +52,6 @@
                         }
                     }
                 }
-            }
-            post {
-                always {
-                    cleanWs()
-                }
-            }
-        }
-- job:
-    name: generate-website-data-jmc
-    description: 'Update dynamic website data for jmc.'
-    project-type: pipeline
-    sandbox: true
-    concurrent: false
-    properties:
-        - build-discarder:
-            num-to-keep: 40
-    dsl: |
-        pipeline {
-            agent {
-                label "website"
-            }
-            stages {
-                stage("Checkout Infrastructure Repository") {
-                    steps {
-                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-infrastructure']], userRemoteConfigs: [[url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
-                    }
-                }
-                stage('Generate Data') {
-                    agent {
-                          dockerfile {
-                              dir "SapMachine-infrastructure/dockerfiles/infrastructure"
-                              reuseNode true
-                              label "website"
-                          }
-                      }
-                      steps {
-                          withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
-                              sh "python3 SapMachine-infrastructure/lib/generate_website_data_jmc.py"
-                          }
-                      }
-                  }
             }
             post {
                 always {

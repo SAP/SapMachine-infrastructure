@@ -63,9 +63,7 @@
     description: 'Infrastructure related jobs'
     view-type: list
     job-name:
-        - async-prof-repo-update
-        - generate-website-data
-        - generate-website-data-jmc
+        - generate-release-data
         - jenkins-configuration-backup
         - jenkins-configuration-restore
         - jenkins-job-generator
@@ -110,10 +108,14 @@
     name: 'Async Profiler'
     description: 'Async Profiler Builds and other related jobs'
     view-type: list
+    job-name:
+        - async-prof-repo-update
     regex: 'build-async-profiler-.*'
 
 - view:
     name: 'JMC'
     description: 'JMC Builds and other related jobs'
     view-type: list
+    job-name:
+        - generate-release-data-jmc
     regex: '.*jmc.*'

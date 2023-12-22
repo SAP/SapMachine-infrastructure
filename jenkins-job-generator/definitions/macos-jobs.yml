@@ -65,7 +65,7 @@
                 }}
                 stage("Verify") {{
                     steps {{
-                        sh 'python3 SapMachine-infrastructure/lib/verify_macos_artifacts.py --tag=${{SAPMACHINE_VERSION}} --platform={publish_platform}'
+                        sh 'python3 SapMachine-infrastructure/lib/verify_macos_artifacts.py --tag=$SAPMACHINE_VERSION --platform={publish_platform}'
                     }}
                 }}
                 stage("Publish GitHub") {{
@@ -75,9 +75,13 @@
                         }}
                     }}
                 }}
-                stage("Publish Website Data") {{
+                stage("Publish Release Data") {{
                     steps {{
-                        build job: 'generate-website-data', propagate: false, wait: false
+                        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
+                            lock('ReleaseDataGenerationLock') {{
+                                sh 'python3 SapMachine-infrastructure/lib/generate_release_data.py --no-status -o git -t $SAPMACHINE_VERSION'
+                            }}
+                        }}
                     }}
                 }}
             }}
