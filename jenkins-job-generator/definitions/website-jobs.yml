@@ -12,7 +12,7 @@
             name: SAPMACHINE_VERSION
             default: ''
             description: 'The SapMachine version to update data. If empty, all releases are scanned.'
-        - sbool:
+        - bool:
             name: SCRATCH_DATA
             default: false
             description: 'The data is rebuild from scratch. Either all or the part of the specified SapMachine version only.'
