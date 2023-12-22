@@ -202,10 +202,15 @@ class Generator:
             self.loggerich.log("No changes to commit.")
             return
 
-        if self.args.tag is None:
-            utils.git_commit(self.local_repo, 'Update release data', '.')
+        if self.args.tag is not None:
+            commit_message = f"Update release data for release {self.args.tag}"
+        elif self.args.update is not None:
+            commit_message = f"Update release data for update version {self.args.update}"
+        elif self.args.major is not None:
+            commit_message = f"Update release data for major version {self.args.major}"
         else:
-            utils.git_commit(self.local_repo, f"Update release data for {self.args.tag}", '.')
+            commit_message= 'Update release data'
+        utils.git_commit(self.local_repo, commit_message, '.')
 
         if not self.args.dry_run:
             utils.run_cmd(str.format('git push {0}', sapMachinePushURL).split(' '), cwd=self.local_repo)
