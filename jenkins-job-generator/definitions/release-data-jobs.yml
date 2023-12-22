@@ -9,13 +9,21 @@
             num-to-keep: 20
     parameters:
         - string:
+            name: MAJOR
+            default: ''
+            description: 'The SapMachine major version to update data for (optional).'
+        - string:
+            name: UPDATE
+            default: ''
+            description: 'The SapMachine update version to update data for (optional).'
+        - string:
             name: SAPMACHINE_VERSION
             default: ''
-            description: 'The SapMachine version to update data. If empty, all releases are scanned.'
+            description: 'The SapMachine version to update data for (optional).'
         - bool:
             name: SCRATCH_DATA
             default: false
-            description: 'The data is rebuild from scratch. Either all or the part of the specified SapMachine version only.'
+            description: 'If selected, the data is rebuild from scratch. Either all of it or parts, as specified by the other parameters'
     dsl: |
         pipeline {
             agent {
@@ -40,13 +48,19 @@
                             lock('ReleaseDataGenerationLock') {
                                 sh '''#!/bin/bash
                                     set -ex
+                                    if [ -n "$MAJOR" ]; then
+                                        _MAJOR_OPTION="-m ${MAJOR}"
+                                    fi
+                                    if [ -n "$UPDATE" ]; then
+                                        _UPDATE_OPTION="-u ${UPDATE}"
+                                    fi
                                     if [ -n "$SAPMACHINE_VERSION" ]; then
                                         _TAG_OPTION="-t ${SAPMACHINE_VERSION}"
                                     fi
                                     if [ "$SCRATCH_DATA" == "true" ]; then
                                         _SCRATCH_OPTION="-s"
                                     fi
-                                    python3 SapMachine-infrastructure/lib/generate_release_data.py --no-status -o git $_TAG_OPTION $_SCRATCH_OPTION
+                                    python3 SapMachine-infrastructure/lib/generate_release_data.py --no-status -o git $_MAJOR_OPTION $_UPDATE_OPTION $_TAG_OPTION $_SCRATCH_OPTION
                                 '''
                             }
                         }
