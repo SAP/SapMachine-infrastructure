@@ -52,10 +52,6 @@ redirect_to:
 ---
 '''
 
-class FileOperation(Enum):
-    ADD_FILE = 1
-    REMOVE_DIR = 2
-
 # custom version comparator
 def custom_version_comparator(item):
     version = list(map(int, item[0].split('.')))
@@ -131,8 +127,8 @@ def process_major_release(major_updates_data, assets, id, ea):
 def write_template_file(filename, data):
     if not os.path.exists(os.path.dirname(filename)):
         os.makedirs(os.path.dirname(filename))
-    with open(filename, 'w') as output_file:
-        output_file.write(data)
+    with open(filename, 'bw') as output_file:
+        output_file.write(data.encode('utf-8'))
 
 class Loggerich:
     last_len = 0
@@ -297,8 +293,8 @@ class Generator:
                 self.gh_releases = utils.github_api_request('releases', per_page=300)
                 if self.args.store_github_data:
                     self.loggerich.log_status(f"Storing results to {self.args.github_data_file}...")
-                    with open(self.args.github_data_file, 'w') as output_file:
-                        json.dump(self.gh_releases, output_file, indent=2)
+                    with open(self.args.github_data_file, 'bw') as output_file:
+                        output_file.write(json.dumps(self.gh_releases, indent=2).encode('utf-8'))
             else:
                 self.loggerich.log_status("Querying GitHub API...")
                 self.gh_releases = [utils.github_api_request(f"releases/tags/{self.args.tag}")]
@@ -486,8 +482,8 @@ class Generator:
 
         # if we build up data from scratch, we should save here and there to allow for interruption
         if self.scratch_all and self.release_count % 10 == 0:
-            with open(self.all_releases_file, 'w') as output_file:
-                json.dump(self.sm_releases, output_file, indent=2)
+            with open(self.all_releases_file, 'bw') as output_file:
+                output_file.write(json.dumps(self.sm_releases, indent=2).encode('utf-8'))
 
         self.release_count += 1
 
@@ -529,12 +525,12 @@ class Generator:
 
             # save release
             release_file = join(self.output_dir, self.args.output_prefix + f"-{major}.json")
-            with open(release_file, 'w') as output_file:
-                json.dump(self.sm_releases[major], output_file, indent=2)
+            with open(release_file, 'bw') as output_file:
+                output_file.write(json.dumps(self.sm_releases[major], indent=2).encode('utf-8'))
 
         # save all releases
-        with open(self.all_releases_file, 'w') as output_file:
-            json.dump(self.sm_releases, output_file, indent=2)
+        with open(self.all_releases_file, 'bw') as output_file:
+            output_file.write(json.dumps(self.sm_releases, indent=2).encode('utf-8'))
 
         self.loggerich.log("Sorted and saved release data.")
         self.loggerich.clear_status()
@@ -562,9 +558,8 @@ class Generator:
         json_root['assets'] = assets
 
         # Save data
-        with open(join(self.output_dir, 'sapmachine_releases.json'), 'w') as output_file:
-            json.dump(json_root, output_file, indent=2)
-            output_file.write('\n')
+        with open(join(self.output_dir, 'sapmachine_releases.json'), 'bw') as output_file:
+            output_file.write(json.dumps(json_root, indent=2).encode('utf-8') + b'\n')
 
         self.loggerich.log("Created sapmachine_releases.json.")
         self.loggerich.clear_status()
