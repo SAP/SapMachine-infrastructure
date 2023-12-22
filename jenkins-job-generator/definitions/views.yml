@@ -70,7 +70,6 @@
         - jtreg
         - repository-update-and-tag
         - upload-ossrh
-        - publish-windows-msi
     regex: '(build-devkit-.*)'
 
 - view:
@@ -99,10 +98,12 @@
         - generate-dockerfiles
 
 - view:
-    name: 'Linux Packages'
-    description: 'Linux Package jobs'
+    name: 'Packages'
+    description: 'Jobs related to installer packages'
     view-type: list
-    regex: '(resign-debian-repository-.*|build-debian-package-.*|rpm-package|apk-package)'
+    job-name:
+        - publish-windows-msi
+    regex: '(resign-debian-repository-.*|build-debian-package-.*|rpm-package|apk-package|publish-macos-packages-.*)'
 
 - view:
     name: 'Async Profiler'
