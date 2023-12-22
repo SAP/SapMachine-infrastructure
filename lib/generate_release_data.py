@@ -557,7 +557,10 @@ class Generator:
         json_root['imageTypes'] = imageTypes
         json_root['assets'] = assets
 
-        # Save data
+        # Save data - new file
+        with open(join(self.output_dir, 'sapmachine-releases-website.json'), 'bw') as output_file:
+            output_file.write(json.dumps(json_root, indent=2).encode('utf-8') + b'\n')
+        # Save data - old file to be deprecated
         with open(join(self.output_dir, 'sapmachine_releases.json'), 'bw') as output_file:
             output_file.write(json.dumps(json_root, indent=2).encode('utf-8') + b'\n')
 
