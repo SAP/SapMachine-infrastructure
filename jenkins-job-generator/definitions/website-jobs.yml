@@ -39,6 +39,8 @@
                         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
                             lock('ReleaseDataGenerationLock') {
                                 sh '''
+                                    #!/bin/bash
+                                    set -ex
                                     if [ -n "$SAPMACHINE_VERSION" ]; then
                                         _TAG_OPTION="-t ${SAPMACHINE_VERSION}"
                                     fi
