@@ -12,6 +12,10 @@
             name: SAPMACHINE_VERSION
             default: ''
             description: 'The SapMachine version to update data. If empty, all releases are scanned.'
+        - sbool:
+            name: SCRATCH_DATA
+            default: false
+            description: 'The data is rebuild from scratch. Either all or the part of the specified SapMachine version only.'
     dsl: |
         pipeline {
             agent {
@@ -35,11 +39,13 @@
                         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
                             lock('ReleaseDataGenerationLock') {
                                 sh '''
-                                    if [ -z "$SAPMACHINE_VERSION" ]; then
-                                        python3 SapMachine-infrastructure/lib/generate_release_data.py --no-status -o git
-                                    else
-                                        python3 SapMachine-infrastructure/lib/generate_release_data.py --no-status -o git -t ${SAPMACHINE_VERSION}
+                                    if [ -n "$SAPMACHINE_VERSION" ]; then
+                                        _TAG_OPTION="-t ${SAPMACHINE_VERSION}"
                                     fi
+                                    if [ "$SCRATCH_DATA" == "true"]; then
+                                        _SCRATCH_OPTION="-s"
+                                    fi
+                                    python3 SapMachine-infrastructure/lib/generate_release_data.py --no-status -o git $_TAG_OPTION $_SCRATCH_OPTION
                                 '''
                             }
                         }
