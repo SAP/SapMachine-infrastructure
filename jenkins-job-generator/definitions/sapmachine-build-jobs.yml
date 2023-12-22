@@ -930,7 +930,7 @@
             description: 'Select the test group for jtreg jdk tests. Empty means disabled.'
         - string:
             name: langtools_test_groups
-            default: 'jdk tools lib'
+            default: ':tier1'
             description: 'Select the test group for jtreg langtools tests. Empty means disabled.'
         - bool:
             name: RUN_TESTS
