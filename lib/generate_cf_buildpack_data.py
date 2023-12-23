@@ -1,5 +1,5 @@
 '''
-Copyright (c) 2018-2022 by SAP SE, Walldorf, Germany.
+Copyright (c) 2018-2023 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
@@ -32,9 +32,7 @@ def write_index_yaml(assets, cf_18_lines, target):
             index_yaml.write(str.format("{0}: {1}\n", version, assets[version]))
 
 def main(argv=None):
-    # Since SapMachine has no release 8, we add the OpenJDK 8 versions from CF to our index.yml
-
-    releases = utils.get_github_releases()
+    releases = utils.github_api_request('releases', per_page=300)
     if releases is None:
         print("Could not get releases from GitHub")
         sys.exit(-1)
@@ -78,15 +76,18 @@ def main(argv=None):
     local_repo = join(os.getcwd(), 'gh-pages')
     utils.git_clone('github.com/SAP/SapMachine.git', 'gh-pages', local_repo)
     
+    # Since SapMachine has no release 8, we add the OpenJDK 8 versions from CF to our index.yml
     cf_bionic18_lines = download_cf_yaml("https://java-buildpack.cloudfoundry.org/openjdk/bionic/x86_64/index.yml")
     write_index_yaml(asset_map_jre, cf_bionic18_lines, join(local_repo, 'assets', 'cf', 'jre', 'linux', 'x86_64'))
     write_index_yaml(asset_map_jdk, cf_bionic18_lines, join(local_repo, 'assets', 'cf', 'jdk', 'linux', 'x86_64'))
     write_index_yaml(asset_map_jre, cf_bionic18_lines, join(local_repo, 'assets', 'cf', 'jre', 'bionic', 'x86_64'))
     write_index_yaml(asset_map_jdk, cf_bionic18_lines, join(local_repo, 'assets', 'cf', 'jdk', 'bionic', 'x86_64'))
     
+    # Since SapMachine has no release 8, we add the OpenJDK 8 versions from CF to our index.yml
     cf_jammy18_lines = download_cf_yaml("https://java-buildpack.cloudfoundry.org/openjdk/jammy/x86_64/index.yml")
     write_index_yaml(asset_map_jre, cf_jammy18_lines, join(local_repo, 'assets', 'cf', 'jre', 'jammy', 'x86_64'))
     write_index_yaml(asset_map_jdk, cf_jammy18_lines, join(local_repo, 'assets', 'cf', 'jdk', 'jammy', 'x86_64'))
+
     utils.git_commit(local_repo, 'Update version list for Cloud Foundry buildpacks', ['assets'])
     utils.git_push(local_repo)
     utils.remove_if_exists(local_repo)
