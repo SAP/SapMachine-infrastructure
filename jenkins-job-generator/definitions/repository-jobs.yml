@@ -2,6 +2,7 @@
     name: repository-update-and-tag
     description: 'Update SapMachine repository from OpenJDK, tag and build SapMachine releases and create OpenJDK merge PRs.'
     project-type: pipeline
+    sandbox: true
     concurrent: false
     properties:
         - build-discarder:
@@ -97,6 +98,7 @@
     name: async-prof-repo-update
     description: 'Update Async Profiler repository.'
     project-type: pipeline
+    sandbox: true
     concurrent: false
     properties:
         - build-discarder:
