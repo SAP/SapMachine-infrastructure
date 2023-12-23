@@ -495,20 +495,6 @@ def get_sapmachine_releases(major = None):
         print(f"Could not download release data from {rel_url}: {httpError.code} ({httpError.reason})")
         return {}
 
-github_releases = None
-def get_github_releases(cache=True):
-    global github_releases
-    if cache is True and github_releases is not None:
-        return github_releases
-
-    if cache is True and file_exists_and_is_younger_than_an_hour('github_releases.pkl'):
-        github_releases = load_dictionary_from_file('github_releases.pkl')
-    else:
-        github_releases = github_api_request('releases', per_page=100)
-        save_dictionary_to_file(github_releases, 'github_releases.pkl')
-
-    return github_releases
-
 def sapmachine_asset_base_pattern():
     return '[^-]+-([^-]+)-([^_]+)_([^_]+)_bin'
 
@@ -547,11 +533,13 @@ def get_asset_urls(tag, platform, asset_types=["jdk", "jre"], pattern=None):
     return asset_urls
 
 def sapmachine_tag_is_release(tag):
-    releases = get_github_releases()
+    try:
+        release = github_api_request(f"releases/tags/{tag}")
+    except HTTPError as httpError:
+        return False
 
-    for release in releases:
-        if release['tag_name'] == tag:
-            return not release['prerelease']
+    if release['tag_name'] == tag:
+        return not release['prerelease']
 
     return False
 

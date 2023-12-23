@@ -215,7 +215,12 @@ class Generator:
                         output_file.write(json.dumps(self.gh_releases, indent=2).encode('utf-8'))
             else:
                 self.loggerich.log_status("Querying GitHub API...")
-                self.gh_releases = [utils.github_api_request(f"releases/tags/{self.args.tag}")]
+                try:
+                    self.gh_releases = [utils.github_api_request(f"releases/tags/{self.args.tag}")]
+                except HTTPError as httpError:
+                    self.loggerich.log(f"Tag {self.args.tag} could not be obtained: {httpError.code} ({httpError.reason})")
+                    sys.exit(-1)
+
                 self.loggerich.log(f"Loaded release {self.args.tag} from GitHub")
             self.loggerich.clear_status()
         else:

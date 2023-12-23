@@ -13,13 +13,6 @@ import utils
 from urllib.error import HTTPError
 from urllib.parse import quote
 
-def lookup_github_release(tag, cache=True):
-    for release in utils.get_github_releases(cache):
-        if release['tag_name'] == tag:
-            return release['id'], release['upload_url']
-
-    return None, None
-
 def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('-t', '--tag', help='the SapMachine tag', metavar='MAJOR', required=True)
@@ -43,7 +36,13 @@ def main(argv=None):
             asset_mime_type = asset_mime_type[0]
             print(str.format('Detected mime-type: "{0}"', asset_mime_type))
 
-    release_id, upload_url = lookup_github_release(tag)
+    try:
+        release = utils.github_api_request(f"releases/tags/{tag}")
+        release_id = release['id']
+        upload_url = release['upload_url']
+    except HTTPError as httpError:
+        print(f"Release {tag} does not seem to exist: {httpError.code} ({httpError.reason})")
+        release_id = upload_url = None
 
     if release_id is None:
         # release does not exist yet -> create it
@@ -52,15 +51,17 @@ def main(argv=None):
             response = utils.github_api_request('releases', data=data, method='POST', content_type='application/json')
             release_id = response['id']
             upload_url = response['upload_url']
-            print(str.format('Created release "{0}"', tag))
+            print(f"Created release \"{tag}\"")
         except HTTPError as http_err:
-            print(str.format('Error creating release "{0}". Maybe it exists now already, check...', tag))
-            release_id, upload_url = lookup_github_release(tag, cache=False)
-            if release_id is None:
-                print(str.format('Nope, must be something else. POST error: {}', http_err))
+            print(f"Error creating release \"{tag}\". Maybe it exists now, check...")
+            try:
+                release = utils.github_api_request(f"releases/tags/{tag}")
+                release_id = release['id']
+                upload_url = release['upload_url']
+                print(f"Yes, release id: {release_id}")
+            except HTTPError as httpError:
+                print(f"Nope, must be something else: {httpError.code} ({httpError.reason})")
                 return 1
-            else:
-                print(str.format('Yes, release id: {}', release_id))
 
     if asset is not None:
         # asset file is specified (-a)
