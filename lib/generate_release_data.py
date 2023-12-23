@@ -19,9 +19,6 @@ from urllib.request import urlopen, Request
 from versions import SapMachineTag
 from collections import OrderedDict
 
-sapMachinePushURL= str.format('https://{0}:{1}@github.com/SAP/SapMachine.git',
-    os.environ['GIT_USER'], os.environ['GIT_PASSWORD'])
-
 imageTypes = [
     {"key": "jdk", "value": "JDK", "ordinal": 1},
     {"key": "jre", "value": "JRE", "ordinal": 2}
@@ -62,73 +59,6 @@ def custom_version_comparator(item):
 def custom_tags_comparator(item):
     tag = SapMachineTag.from_string(item[0])
     return 2 if tag.is_ga() else 1, tag.version[0], tag.version[1], tag.version[2], tag.version[3], tag.version[4], tag.get_build_number()
-
-def lookup_or_create_build_dict_in_sapmachine_latest(buildtag, releases, checksums):
-    # Lookup build dict
-    d_release = None
-    d_checksum = None
-    for build_data in releases:
-        if build_data['tag'] == buildtag:
-            d_release = build_data
-            break
-
-    if d_release is None:
-        d_release = {}
-        d_release['tag'] = buildtag
-        d_release['jdk'] = {}
-        d_release['jre'] = {}
-        releases.append(d_release)
-        d_checksum = {}
-        d_checksum['tag'] = buildtag
-        d_checksum['jdk'] = {}
-        d_checksum['jre'] = {}
-        checksums.append(d_checksum)
-        return d_release, d_checksum
-
-    for build_data in checksums:
-        if build_data['tag'] == buildtag:
-            d_checksum = build_data
-            break
-
-    return d_release, d_checksum
-
-def loop_through_build_assets(build, build_data, imageType, handled_platforms, releases, checksums):
-    d_release = d_checksum = None
-    for platform, archives in build_data['assets'][imageType].items():
-        for archive_type, archive_data in archives.items():
-            real_platform = platform + '-installer' if archive_type in ['dmg', 'msi'] else platform
-            if real_platform in handled_platforms:
-                continue
-
-            # Lookup release and checksum dict for a build
-            if d_release is None:
-                d_release, d_checksum = lookup_or_create_build_dict_in_sapmachine_latest(build, releases, checksums)
-
-            # insert info
-            d_release[imageType][real_platform] = archive_data['url']
-            if 'checksum' in archive_data:
-                d_checksum[imageType][real_platform] = "sha256 " + archive_data['checksum']
-            handled_platforms.add(real_platform)
-
-def process_major_release(major_updates_data, assets, id, ea):
-    releases = []
-    checksums = []
-    platforms_jdk = set()
-    platforms_jre = set()
-    for builds in major_updates_data:
-        for build, build_data in builds.items():
-            if build_data['ea'] != ('true' if ea else 'false'):
-                continue
-            loop_through_build_assets(build, build_data, 'jdk', platforms_jdk, releases, checksums)
-            loop_through_build_assets(build, build_data, 'jre', platforms_jre, releases, checksums)
-    if releases:
-        assets[id] = {'releases': releases, 'checksums': checksums}
-
-def write_template_file(filename, data):
-    if not os.path.exists(os.path.dirname(filename)):
-        os.makedirs(os.path.dirname(filename))
-    with open(filename, 'bw') as output_file:
-        output_file.write(data.encode('utf-8'))
 
 class Loggerich:
     last_len = 0
@@ -195,33 +125,17 @@ class Generator:
         self.loggerich.log("Synced GitHub SapMachine/gh-pages")
         self.loggerich.clear_status()
 
-    def push_to_git(self):
-        utils.run_cmd(['git', 'add', '.'], cwd=self.local_repo)
-        _, diff, _ = utils.run_cmd("git diff HEAD".split(' '), cwd=self.local_repo, std=True)
-        if not diff.strip():
-            self.loggerich.log("No changes to commit.")
-            return
-
-        if self.args.tag is not None:
-            commit_message = f"Update release data for release {self.args.tag}"
-        elif self.args.update is not None:
-            commit_message = f"Update release data for update version {self.args.update}"
-        elif self.args.major is not None:
-            commit_message = f"Update release data for major version {self.args.major}"
-        else:
-            commit_message= 'Update release data'
-        utils.git_commit(self.local_repo, commit_message, '.')
-
         if not self.args.dry_run:
+            sapMachinePushURL= str.format('https://{0}:{1}@github.com/SAP/SapMachine.git', os.environ['GIT_USER'], os.environ['GIT_PASSWORD'])
             utils.run_cmd(str.format('git push {0}', sapMachinePushURL).split(' '), cwd=self.local_repo)
 
     def update_status(self):
-        if not hasattr(self, 'tags') or self.tags is None:
+        if not hasattr(self, 'cur_tag') or self.cur_tag is None:
             status_text = "Processing..."
         elif not hasattr(self, 'asset_name') or self.asset_name is None:
-            status_text = f"Processing release {self.tags} ({self.release_count}/{self.number_of_releases})..."
+            status_text = f"Processing release {self.cur_tag} ({self.release_count}/{self.number_of_releases})..."
         else:
-            status_text = f"Processing release {self.tags} ({self.release_count}/{self.number_of_releases}): {self.asset_name}..."
+            status_text = f"Processing release {self.cur_tag} ({self.release_count}/{self.number_of_releases}): {self.asset_name}..."
 
         self.loggerich.log_status(status_text)
 
@@ -254,40 +168,43 @@ class Generator:
             self.sm_releases = json.load(file)
 
         # Clear out data of particular major, update or tag, if requested
-        if self.args.scratch_data:
-            if self.args.major is not None:
-                if self.args.major in self.sm_releases:
-                    del self.sm_releases[self.args.major]
-                    self.loggerich.log(f"Removed previous data for major release \"{self.args.major}\".")
+        if self.args.major is not None:
+            self.major = self.args.major
+            if self.args.scratch_data:
+                if self.major in self.sm_releases:
+                    del self.sm_releases[self.major]
+                    self.loggerich.log(f"Removed previous data for major release \"{self.major}\".")
                 else:
-                    self.loggerich.log(f"Major release \"{self.args.major}\" not found in data.")
+                    self.loggerich.log(f"Major release \"{self.major}\" not found in data.")
 
-            if self.args.update is not None:
-                major = str(list(map(int, self.args.update.split('.')))[0])
-                if major in self.sm_releases:
-                    if 'updates' in self.sm_releases[major] and self.args.update in self.sm_releases[major]['updates']:
-                        del self.sm_releases[major]['updates'][self.args.update]
+        if self.args.update is not None:
+            self.major = str(list(map(int, self.args.update.split('.')))[0])
+            if self.args.scratch_data:
+                if self.major in self.sm_releases:
+                    if 'updates' in self.sm_releases[self.major] and self.args.update in self.sm_releases[self.major]['updates']:
+                        del self.sm_releases[self.major]['updates'][self.args.update]
                         self.loggerich.log(f"Removed previous data for update release \"{self.args.update}\".")
                     else:
                         self.loggerich.log(f"Update {self.args.update} not found in data.")
                 else:
-                    self.loggerich.log(f"Major release \"{major}\" for update {self.args.update} not found in data.")
+                    self.loggerich.log(f"Major release \"{self.major}\" for update {self.args.update} not found in data.")
 
-            if self.args.tag is not None:
-                tag = SapMachineTag.from_string(self.args.tag)
-                major = str(tag.get_major())
-                if major in self.sm_releases:
+        if self.args.tag is not None:
+            tag = SapMachineTag.from_string(self.args.tag)
+            self.major = str(tag.get_major())
+            if self.args.scratch_data:
+                if self.major in self.sm_releases:
                     update = tag.get_version_string_without_build()
-                    if 'updates' in self.sm_releases[major] and update in self.sm_releases[major]['updates']:
-                        if self.args.tag in self.sm_releases[major]['updates'][update]:
-                            del self.sm_releases[major]['updates'][update][self.args.tag]
+                    if 'updates' in self.sm_releases[self.major] and update in self.sm_releases[self.major]['updates']:
+                        if self.args.tag in self.sm_releases[self.major]['updates'][update]:
+                            del self.sm_releases[self.major]['updates'][update][self.args.tag]
                             self.loggerich.log(f"Removed previous data for tag \"{self.args.tag}\".")
                         else:
                             self.loggerich.log(f"Tag {self.args.tag} not found in data.")
                     else:
                         self.loggerich.log(f"Update {update} for tag {self.args.tag} not found in data.")
                 else:
-                    self.loggerich.log(f"Major release \"{major}\" for tag {self.args.tag} not found in data.")
+                    self.loggerich.log(f"Major release \"{self.major}\" for tag {self.args.tag} not found in data.")
 
     def load_github_release_data(self):
         if self.args.input == 'github':
@@ -313,19 +230,23 @@ class Generator:
                 sys.exit(-1)
             with open(self.args.github_data_file, 'r') as file:
                 self.gh_releases = json.load(file)
+
+        # count some data
+        self.release_count = 1
         self.number_of_releases = len(self.gh_releases)
-
-    def get_major(self, release):
-        self.tags = release['tag_name']
-        if self.tags is None:
-            self.loggerich.log(f"Release {release['html_url']} does not have a tag, skipping.")
-            return
-
-        self.majors.add(str(SapMachineTag.from_string(self.tags).get_major()))
+        self.majors_in_gh_data = set()
+        for release in self.gh_releases:
+            self.cur_tag = release['tag_name']
+            if self.cur_tag is None:
+                self.loggerich.log(f"Release {release['html_url']} does not have a tag, skipping.")
+                continue
+            self.majors_in_gh_data.add(str(SapMachineTag.from_string(self.cur_tag).get_major()))
+        self.majors_in_gh_data = sorted(self.majors_in_gh_data)
+        self.loggerich.log(f"Major versions on GitHub: {self.majors_in_gh_data}")
 
     def do_release(self, release, restrict_major=None):
-        self.tags = release['tag_name']
-        if self.tags is None:
+        self.cur_tag = release['tag_name']
+        if self.cur_tag is None:
             self.loggerich.log(f"Release {release['html_url']} does not have a tag, skipping.")
             self.release_count += 1
             return
@@ -333,11 +254,11 @@ class Generator:
         self.update_status()
 
         if not 'assets' in release or not isinstance(release['assets'], list) :
-            self.loggerich.log(f"Release {self.tags} has no assets, skipping.")
+            self.loggerich.log(f"Release {self.cur_tag} has no assets, skipping.")
             self.release_count += 1
             return
 
-        tag = SapMachineTag.from_string(self.tags)
+        tag = SapMachineTag.from_string(self.cur_tag)
         major = str(tag.get_major())
 
         if restrict_major is not None and major != restrict_major:
@@ -361,10 +282,10 @@ class Generator:
             d_update = {}
             d_updates[update] = d_update
 
-        d_build = d_update.get(self.tags, None)
+        d_build = d_update.get(self.cur_tag, None)
         if d_build is None:
             d_build = {}
-            d_update[self.tags] = d_build
+            d_update[self.cur_tag] = d_build
 
         d_build['url'] = release['html_url']
         d_build['ea'] = str(tag.get_build_number() is not None).lower()
@@ -457,7 +378,7 @@ class Generator:
 
             if 'name' in d_asset:
                 if d_asset['name'] != self.asset_name:
-                    self.loggerich.log(f"{self.asset_name} does not match existing name {d_asset['name']} of {self.tags}.")
+                    self.loggerich.log(f"{self.asset_name} does not match existing name {d_asset['name']} of {self.cur_tag}.")
                     break
             else:
                 d_asset['name'] = self.asset_name
@@ -492,25 +413,17 @@ class Generator:
 
         self.release_count += 1
 
-    def get_majors(self):
-        self.release_count = 1
-        self.majors = set()
-        for release in self.gh_releases:
-            self.get_major(release)
-
-        self.loggerich.log(f"Majors found: {sorted(self.majors)}")
-
     def iterate_releases(self):
         self.release_count = 1
-        if self.args.major is not None:
-            if self.args.major in self.majors:
-                for release in self.gh_releases:
-                    self.do_release(release, self.args.major)
-            else:
-                self.loggerich.log(f"Major version {self.args.major} does not exist.")
-        else:
+        if not hasattr(self, 'major'):
             for release in self.gh_releases:
                 self.do_release(release)
+        else:
+            if self.major in self.majors_in_gh_data:
+                for release in self.gh_releases:
+                    self.do_release(release, self.major)
+            else:
+                self.loggerich.log(f"Major version {self.major} does not exist.")
 
         self.loggerich.log("Done processing releases.")
         self.loggerich.log_status("Sorting and saving release data...")
@@ -519,7 +432,7 @@ class Generator:
         self.sm_releases = dict(sorted(self.sm_releases.items(), reverse=True))
 
         # sort and save data below each major
-        for major in self.majors:
+        for major in self.majors_in_gh_data if not hasattr(self, 'major') else [self.major]:
             # sort updates
             d_updates = dict(sorted(self.sm_releases[major]['updates'].items(), key=custom_version_comparator, reverse=True))
             self.sm_releases[major]['updates'] = d_updates
@@ -547,37 +460,204 @@ class Generator:
         self.loggerich.log("Sorted and saved release data.")
         self.loggerich.clear_status()
 
-    def generate_sapmachine_releases_json(self):
-        self.loggerich.log_status("Creating sapmachine_releases.json...")
+    def loop_through_build_assets_latest(self, build, build_data, handled_platforms_jdk, handled_platforms_jre, releases):
+        jdks = {}
+        for platform, archives in build_data['assets']['jdk'].items():
+            for archive_type, archive_data in archives.items():
+                real_platform = platform + '-installer' if archive_type in ['dmg', 'msi'] else platform
+                if real_platform in handled_platforms_jdk:
+                    continue
+
+                # insert info
+                jdks[real_platform] = {'url': archive_data['url'], 'checksum': "sha256 " + archive_data['checksum']}
+
+                handled_platforms_jdk.add(real_platform)
+
+        jres = {}
+        for platform, archives in build_data['assets']['jre'].items():
+            for archive_type, archive_data in archives.items():
+                real_platform = platform + '-installer' if archive_type in ['dmg', 'msi'] else platform
+                if real_platform in handled_platforms_jre:
+                    continue
+
+                # insert info
+                jres[real_platform] = {'url': archive_data['url'], 'checksum': "sha256 " + archive_data['checksum']}
+
+                handled_platforms_jre.add(real_platform)
+
+        if not jdks and not jres:
+            return
+        d_build = {'tag': build}
+        if jdks:
+            d_build['jdk'] = jdks
+        if jres:
+            d_build['jre'] = jres
+        releases.append(d_build)
+
+    def process_major_release_latest(self, major_updates_data, d_major, ea):
+        releases = []
+        platforms_jdk = set()
+        platforms_jre = set()
+        for builds in major_updates_data:
+            for build, build_data in builds.items():
+                if build_data['ea'] != ('true' if ea else 'false'):
+                    continue
+                self.loop_through_build_assets_latest(build, build_data, platforms_jdk, platforms_jre, releases)
+        if releases:
+            d_major['releases'] = releases
+
+    # generate a json file containing the latest supported versions
+    def generate_sapmachine_releases_json_latest(self):
+        self.loggerich.log_status(f"Creating {self.args.output_prefix}-latest.json...")
+        json_root = OrderedDict()
+        for major in utils.sapmachine_dev_releases():
+            id = str(major) + "-ea"
+            d_major = {'label': f"SapMachine {major}", 'lts': True if utils.sapmachine_is_lts(major) else False, 'ea': True}
+            self.process_major_release_latest(self.sm_releases[str(major)]['updates'].values(), d_major, True)
+            json_root[id] = d_major
+
+        for major in utils.sapmachine_active_releases():
+            id = str(major) + "-ea"
+            d_major = {'label': f"SapMachine {major}", 'lts': True if utils.sapmachine_is_lts(major) else False, 'ea': True}
+            self.process_major_release_latest(self.sm_releases[str(major)]['updates'].values(), d_major, True)
+            json_root[id] = d_major
+            id = str(major)
+            d_major = {'label': f"SapMachine {major}", 'lts': True if utils.sapmachine_is_lts(major) else False, 'ea': False}
+            self.process_major_release_latest(self.sm_releases[str(major)]['updates'].values(), d_major, False)
+            json_root[id] = d_major
+
+        with open(join(self.output_dir, self.args.output_prefix + f"-latest.json"), 'bw') as output_file:
+            output_file.write(json.dumps(json_root, indent=2).encode('utf-8') + b'\n')
+
+        self.loggerich.log(f"Created {self.args.output_prefix}-latest.json.")
+        self.loggerich.clear_status()
+
+    def lookup_or_create_build_dict_in_sapmachine_latest(self, buildtag, releases, checksums):
+        # Lookup build dict
+        d_release = None
+        d_checksum = None
+        for build_data in releases:
+            if build_data['tag'] == buildtag:
+                d_release = build_data
+                break
+
+        if d_release is None:
+            d_release = {}
+            d_release['tag'] = buildtag
+            d_release['jdk'] = {}
+            d_release['jre'] = {}
+            releases.append(d_release)
+            if not checksums is None:
+                d_checksum = {}
+                d_checksum['tag'] = buildtag
+                d_checksum['jdk'] = {}
+                d_checksum['jre'] = {}
+                checksums.append(d_checksum)
+            return d_release, d_checksum
+
+        if not checksums is None:
+            for build_data in checksums:
+                if build_data['tag'] == buildtag:
+                    d_checksum = build_data
+                    break
+
+        return d_release, d_checksum
+
+    def loop_through_build_assets(self, build, build_data, imageType, handled_platforms, releases, checksums):
+        d_release = d_checksum = None
+        for platform, archives in build_data['assets'][imageType].items():
+            for archive_type, archive_data in archives.items():
+                real_platform = platform + '-installer' if archive_type in ['dmg', 'msi'] else platform
+                if real_platform in handled_platforms:
+                    continue
+
+                # Lookup release and checksum dict for a build
+                if d_release is None:
+                    d_release, d_checksum = self.lookup_or_create_build_dict_in_sapmachine_latest(build, releases, checksums)
+
+                # insert info
+                d_release[imageType][real_platform] = archive_data['url']
+                if d_checksum is not None and 'checksum' in archive_data:
+                    d_checksum[imageType][real_platform] = "sha256 " + archive_data['checksum']
+                handled_platforms.add(real_platform)
+
+    def process_major_release(self, major_updates_data, assets, id, ea, generate_checksums=False):
+        releases = []
+        checksums = [] if generate_checksums else None
+        platforms_jdk = set()
+        platforms_jre = set()
+        for builds in major_updates_data:
+            for build, build_data in builds.items():
+                if build_data['ea'] != ('true' if ea else 'false'):
+                    continue
+                self.loop_through_build_assets(build, build_data, 'jdk', platforms_jdk, releases, checksums)
+                self.loop_through_build_assets(build, build_data, 'jre', platforms_jre, releases, checksums)
+        if releases:
+            assets[id] = {'releases': releases, 'checksums': checksums} if generate_checksums else {'releases': releases}
+
+    # generate a json file containing download information for the website
+    def generate_sapmachine_releases_json_website(self):
+        self.loggerich.log_status(f"Creating {self.args.output_prefix}-website.json...")
         majors = []
         assets = OrderedDict()
         for major in utils.sapmachine_dev_releases():
             id = str(major) + "-ea"
             majors.append({'id': id, 'label': f"SapMachine {major}", 'lts': True if utils.sapmachine_is_lts(major) else False, 'ea': True})
-            process_major_release(self.sm_releases[str(major)]['updates'].values(), assets, id, True)
+            self.process_major_release(self.sm_releases[str(major)]['updates'].values(), assets, id, True)
 
         for major in utils.sapmachine_active_releases():
             id = str(major) + "-ea"
             majors.append({'id': id, 'label': f"SapMachine {major}", 'lts': True if utils.sapmachine_is_lts(major) else False, 'ea': True})
-            process_major_release(self.sm_releases[str(major)]['updates'].values(), assets, id, True)
+            self.process_major_release(self.sm_releases[str(major)]['updates'].values(), assets, id, True)
             id = str(major)
             majors.append({'id': id, 'label': f"SapMachine {major}", 'lts': True if utils.sapmachine_is_lts(major) else False, 'ea': False})
-            process_major_release(self.sm_releases[str(major)]['updates'].values(), assets, id, False)
+            self.process_major_release(self.sm_releases[str(major)]['updates'].values(), assets, id, False)
 
         json_root = {}
         json_root['majors'] = majors
         json_root['imageTypes'] = imageTypes
         json_root['assets'] = assets
 
-        # Save data - new file
-        with open(join(self.output_dir, 'sapmachine-releases-website.json'), 'bw') as output_file:
+        with open(join(self.output_dir, self.args.output_prefix + f"-website.json"), 'bw') as output_file:
             output_file.write(json.dumps(json_root, indent=2).encode('utf-8') + b'\n')
-        # Save data - old file to be deprecated
+
+        self.loggerich.log(f"Created {self.args.output_prefix}-website.json.")
+        self.loggerich.clear_status()
+
+    # generate the old sapmachine_releases.json. Deprecated, to be removed.
+    def generate_sapmachine_releases_json_legacy(self):
+        self.loggerich.log_status("Creating sapmachine_releases.json...")
+        majors = []
+        assets = OrderedDict()
+        for major in utils.sapmachine_dev_releases():
+            id = str(major) + "-ea"
+            majors.append({'id': id, 'label': f"SapMachine {major}", 'lts': True if utils.sapmachine_is_lts(major) else False, 'ea': True})
+            self.process_major_release(self.sm_releases[str(major)]['updates'].values(), assets, id, True, generate_checksums=True)
+
+        for major in utils.sapmachine_active_releases():
+            id = str(major) + "-ea"
+            majors.append({'id': id, 'label': f"SapMachine {major}", 'lts': True if utils.sapmachine_is_lts(major) else False, 'ea': True})
+            self.process_major_release(self.sm_releases[str(major)]['updates'].values(), assets, id, True, generate_checksums=True)
+            id = str(major)
+            majors.append({'id': id, 'label': f"SapMachine {major}", 'lts': True if utils.sapmachine_is_lts(major) else False, 'ea': False})
+            self.process_major_release(self.sm_releases[str(major)]['updates'].values(), assets, id, False, generate_checksums=True)
+
+        json_root = {}
+        json_root['majors'] = majors
+        json_root['imageTypes'] = imageTypes
+        json_root['assets'] = assets
+
         with open(join(self.output_dir, 'sapmachine_releases.json'), 'bw') as output_file:
             output_file.write(json.dumps(json_root, indent=2).encode('utf-8') + b'\n')
 
         self.loggerich.log("Created sapmachine_releases.json.")
         self.loggerich.clear_status()
+
+    def write_template_file(self, filename, data):
+        if not os.path.exists(os.path.dirname(filename)):
+            os.makedirs(os.path.dirname(filename))
+        with open(filename, 'bw') as output_file:
+            output_file.write(data.encode('utf-8'))
 
     def create_latest_links(self):
         self.loggerich.log_status("Creating latest links...")
@@ -597,17 +677,17 @@ class Generator:
                     break
 
                 if not wrote_latest:
-                    write_template_file(join(self.output_dir_latest, 'latest', 'index.md'),
+                    self.write_template_file(join(self.output_dir_latest, 'latest', 'index.md'),
                                         Template(latest_overall_template).substitute(url = latest_data['url']))
                     wrote_latest = True
 
-                write_template_file(join(self.output_dir_latest, 'latest', major, 'index.md'),
+                self.write_template_file(join(self.output_dir_latest, 'latest', major, 'index.md'),
                                     Template(latest_overall_template).substitute(url = latest_data['url']))
 
                 for platform, archives in latest_data['assets']['jdk'].items():
                     for archive_type, archive_data in archives.items():
                         real_platform = platform + '-installer' if archive_type in ['dmg', 'msi'] else platform
-                        write_template_file(join(self.output_dir_latest, 'latest', major, real_platform, 'jdk', 'index.md'),
+                        self.write_template_file(join(self.output_dir_latest, 'latest', major, real_platform, 'jdk', 'index.md'),
                                             Template(latest_template_download).substitute(
                                                 major = major,
                                                 platform = real_platform,
@@ -617,7 +697,7 @@ class Generator:
                 for platform, archives in latest_data['assets']['jre'].items():
                     for archive_type, archive_data in archives.items():
                         real_platform = platform + '-installer' if archive_type in ['dmg', 'msi'] else platform
-                        write_template_file(join(self.output_dir_latest, 'latest', major, real_platform, 'jre', 'index.md'),
+                        self.write_template_file(join(self.output_dir_latest, 'latest', major, real_platform, 'jre', 'index.md'),
                                             Template(latest_template_download).substitute(
                                                 major = major,
                                                 platform = real_platform,
@@ -626,6 +706,23 @@ class Generator:
 
             elif os.path.exists(join(self.output_dir_latest, 'latest', major)):
                 rmtree(join(self.output_dir_latest, 'latest', major))
+
+    def push_to_git(self):
+        utils.run_cmd(['git', 'add', '.'], cwd=self.local_repo)
+        _, diff, _ = utils.run_cmd("git diff HEAD".split(' '), cwd=self.local_repo, std=True)
+        if not diff.strip():
+            self.loggerich.log("No changes to commit.")
+            return
+
+        if self.args.tag is not None:
+            commit_message = f"Update release data for release {self.args.tag}"
+        elif self.args.update is not None:
+            commit_message = f"Update release data for update version {self.args.update}"
+        elif self.args.major is not None:
+            commit_message = f"Update release data for major version {self.args.major}"
+        else:
+            commit_message= 'Update release data'
+        utils.git_commit(self.local_repo, commit_message, '.')
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
@@ -656,11 +753,13 @@ def main(argv=None):
 
     generator.load_github_release_data()
 
-    generator.get_majors()
-
     generator.iterate_releases()
 
-    generator.generate_sapmachine_releases_json()
+    generator.generate_sapmachine_releases_json_latest()
+
+    generator.generate_sapmachine_releases_json_website()
+
+    generator.generate_sapmachine_releases_json_legacy()
 
     generator.create_latest_links()
 
