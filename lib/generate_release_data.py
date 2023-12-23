@@ -125,10 +125,6 @@ class Generator:
         self.loggerich.log("Synced GitHub SapMachine/gh-pages")
         self.loggerich.clear_status()
 
-        if not self.args.dry_run:
-            sapMachinePushURL= str.format('https://{0}:{1}@github.com/SAP/SapMachine.git', os.environ['GIT_USER'], os.environ['GIT_PASSWORD'])
-            utils.run_cmd(str.format('git push {0}', sapMachinePushURL).split(' '), cwd=self.local_repo)
-
     def update_status(self):
         if not hasattr(self, 'cur_tag') or self.cur_tag is None:
             status_text = "Processing..."
@@ -723,6 +719,10 @@ class Generator:
         else:
             commit_message= 'Update release data'
         utils.git_commit(self.local_repo, commit_message, '.')
+
+        if not self.args.dry_run:
+            sapMachinePushURL= str.format('https://{0}:{1}@github.com/SAP/SapMachine.git', os.environ['GIT_USER'], os.environ['GIT_PASSWORD'])
+            utils.run_cmd(str.format('git push {0}', sapMachinePushURL).split(' '), cwd=self.local_repo)
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
