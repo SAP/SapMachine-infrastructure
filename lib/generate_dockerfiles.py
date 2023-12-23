@@ -238,7 +238,7 @@ def main(argv=None):
     workdir = os.path.realpath(args.workdir)
 
     print('Loading SapMachine Release data...')
-    releases = utils.get_github_releases()
+    releases = utils.github_api_request('releases', per_page=300)
     print('Loading SapMachine-infrastructure tags...')
     infrastructure_tags = utils.get_github_tags(repository='SapMachine-infrastructure')
     docker_releases = {}
