@@ -4,6 +4,8 @@ All rights reserved. Confidential and proprietary.
 '''
 
 import argparse
+import json
+import os
 import sys
 import utils
 
@@ -18,6 +20,9 @@ def main(argv=None):
     parser.add_argument('-r', '--test-all-releases', default=False, help='List latest releases', action='store_true')
     parser.add_argument('-v', '--jvm', help='Test a VM', metavar='VM Path')
     parser.add_argument('-s', '--version-string', help='Test a VM version String', metavar='Version String')
+    parser.add_argument('-i', '--input', choices=['github', 'file'], default='github', help='input source, can be either "github" or "file". Default is "github". For "file", an input file is needed that contains the results of the GitHub Release API call in json format. The default name would be "github-releases.json" and can be modified with option "--input-file"', metavar='INPUT_SOURCE')
+    parser.add_argument('--github-data-file', default='github-releases.json', help='input file that contains the results of the GitHub Release API call in json format (optional). Default: "github-releases.json"', metavar='DATA_FILE')
+    parser.add_argument('--store-github-data', action='store_true', help='stores queried GitHub data in DATA_FILE')
     args = parser.parse_args()
 
     if args.tag:
@@ -69,7 +74,23 @@ def main(argv=None):
                         latest_non_ga.print_details(indent = '  ')
 
     if args.test_all_releases:
-        releases = utils.get_github_releases()
+        if args.input == 'github':
+            # Load input data from GitHub and store to file
+            print("Querying GitHub API...")
+            releases = utils.github_api_request('releases', per_page=300)
+            if args.store_github_data:
+                print(f"Storing results to {args.github_data_file}...")
+                with open(args.github_data_file, 'bw') as output_file:
+                    output_file.write(json.dumps(releases, indent=2).encode('utf-8'))
+        else:
+            # Load input data from file
+            print(f"Data Source: {args.github_data_file}.")
+            if not os.path.exists(args.github_data_file):
+                print(f"File {args.github_data_file} does not exist.")
+                sys.exit(-1)
+            with open(args.github_data_file, 'r') as file:
+                releases = json.load(file)
+
         if releases is None:
             print("Could not get releases from GitHub")
             sys.exit(-1)
