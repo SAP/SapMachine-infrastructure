@@ -33,7 +33,7 @@
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@3821.v9d3888c583b_1">
     <script>pipeline {
     agent {
-        label 'cloud_foundry'
+          label 'infrastructure'
     }
     stages {
         stage("Checkout Infrastructure Repository") {
@@ -46,7 +46,7 @@
                 dockerfile {
                     dir 'SapMachine-infrastructure/dockerfiles/infrastructure'
                     reuseNode true
-                    label "cloud_foundry"
+                    label "infrastructure"
                 }
             }
             steps {

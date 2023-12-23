@@ -32,34 +32,34 @@
   </properties>
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@3821.v9d3888c583b_1">
     <script>pipeline {
-      agent {
-          label 'cloud_foundry'
-      }
-      stages {
-          stage("Checkout Infrastructure Repository") {
-              steps {
-                  checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
-              }
-          }
-          stage('Test') {
-              agent {
-                  dockerfile {
-                      label 'cloud_foundry'
-                      dir 'SapMachine-infrastructure/dockerfiles/infrastructure'
-                      reuseNode true
-                  }
-              }
-              steps {
-                  sh "python3 SapMachine-infrastructure/lib/test_cf_buildpack_data.py"
-              }
-          }
-      }
-      post {
-          always {
-              cleanWs()
-          }
-      }
-  }
+    agent {
+        label 'infrastructure'
+    }
+    stages {
+        stage("Checkout Infrastructure Repository") {
+            steps {
+                checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+            }
+        }
+        stage('Test') {
+            agent {
+                dockerfile {
+                    label 'infrastructure'
+                    dir 'SapMachine-infrastructure/dockerfiles/infrastructure'
+                    reuseNode true
+                }
+            }
+            steps {
+                sh "python3 SapMachine-infrastructure/lib/test_cf_buildpack_data.py"
+            }
+        }
+    }
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}
 </script>
     <sandbox>true</sandbox>
   </definition>

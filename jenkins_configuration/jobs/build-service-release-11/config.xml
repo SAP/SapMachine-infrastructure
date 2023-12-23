@@ -44,6 +44,7 @@
                                     [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
                                     [$class: 'BooleanParameterValue', name: 'BUILD_INSTALLER_PACKAGES', value: params.BUILD_INSTALLER_PACKAGES],
                                     [$class: 'BooleanParameterValue', name: 'CREATE_GENSRC_BUNDLE', value: params.CREATE_GENSRC_BUNDLE],
+                                    [$class: 'BooleanParameterValue', name: 'UPLOAD_ARTIFACTORY', value: params.UPLOAD_ARTIFACTORY],
                                     [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
                                     [$class: 'BooleanParameterValue', name: 'ARCHIVE_WORKSPACE', value: params.ARCHIVE_WORKSPACE]
                                 ]
@@ -167,8 +168,13 @@
           <defaultValue>true</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
+          <name>UPLOAD_ARTIFACTORY</name>
+          <description>Upload build results to Artifactory which will trigger testing.</description>
+          <defaultValue>false</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
           <name>PUBLISH</name>
-          <description>When set to true, the resulting bundles will be published to GitHub.</description>
+          <description>When set to true, the resulting bundles will be published to GitHub. This implies uploading to Artifactory.</description>
           <defaultValue>false</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.BooleanParameterDefinition>

@@ -356,14 +356,11 @@
       <properties class="hudson.model.View$PropertyList" />
       <jobNames>
         <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator" />
-        <string>async-prof-repo-update</string>
-        <string>generate-website-data</string>
-        <string>generate-website-data-jmc</string>
+        <string>generate-release-data</string>
         <string>jenkins-configuration-backup</string>
         <string>jenkins-configuration-restore</string>
         <string>jenkins-job-generator</string>
         <string>jtreg</string>
-        <string>publish-windows-msi</string>
         <string>repository-update-and-tag</string>
         <string>upload-ossrh</string>
       </jobNames>
@@ -430,29 +427,6 @@
     </listView>
     <listView>
       <owner class="hudson" reference="../../.." />
-      <name>Linux Packages</name>
-      <description>Linux Package jobs&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
-      <filterExecutors>false</filterExecutors>
-      <filterQueue>false</filterQueue>
-      <properties class="hudson.model.View$PropertyList" />
-      <jobNames>
-        <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator" />
-      </jobNames>
-      <jobFilters />
-      <columns>
-        <hudson.views.StatusColumn />
-        <hudson.views.WeatherColumn />
-        <hudson.views.JobColumn />
-        <hudson.views.LastSuccessColumn />
-        <hudson.views.LastFailureColumn />
-        <hudson.views.LastDurationColumn />
-        <hudson.views.BuildButtonColumn />
-      </columns>
-      <includeRegex>(resign-debian-repository-.*|build-debian-package-.*|rpm-package|apk-package)</includeRegex>
-      <recurse>false</recurse>
-    </listView>
-    <listView>
-      <owner class="hudson" reference="../../.." />
       <name>Async Profiler</name>
       <description>Async Profiler Builds and other related jobs&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
       <filterExecutors>false</filterExecutors>
@@ -460,6 +434,7 @@
       <properties class="hudson.model.View$PropertyList" />
       <jobNames>
         <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator" />
+        <string>async-prof-repo-update</string>
       </jobNames>
       <jobFilters />
       <columns>
@@ -483,6 +458,7 @@
       <properties class="hudson.model.View$PropertyList" />
       <jobNames>
         <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator" />
+        <string>generate-release-data-jmc</string>
       </jobNames>
       <jobFilters />
       <columns>
@@ -658,6 +634,30 @@
         <hudson.views.BuildButtonColumn />
       </columns>
       <includeRegex>build-[\d]+-windows_x86_64.*|build-[\d]+-release-windows_x86_64$</includeRegex>
+      <recurse>false</recurse>
+    </listView>
+    <listView>
+      <owner class="hudson" reference="../../.." />
+      <name>Packages</name>
+      <description>Jobs related to installer packages&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <properties class="hudson.model.View$PropertyList" />
+      <jobNames>
+        <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator" />
+        <string>publish-windows-msi</string>
+      </jobNames>
+      <jobFilters />
+      <columns>
+        <hudson.views.StatusColumn />
+        <hudson.views.WeatherColumn />
+        <hudson.views.JobColumn />
+        <hudson.views.LastSuccessColumn />
+        <hudson.views.LastFailureColumn />
+        <hudson.views.LastDurationColumn />
+        <hudson.views.BuildButtonColumn />
+      </columns>
+      <includeRegex>(resign-debian-repository-.*|build-debian-package-.*|rpm-package|apk-package|publish-macos-packages-.*)</includeRegex>
       <recurse>false</recurse>
     </listView>
   </views>
