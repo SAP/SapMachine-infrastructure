@@ -282,7 +282,7 @@
     dsl: |
         pipeline {
             agent {
-                label "repository"
+                label 'infrastructure'
             }
             stages {
                 stage("Init") {
@@ -339,7 +339,7 @@
     dsl: |
         pipeline {
             agent {
-                label "infrastructure"
+                label 'infrastructure'
             }
             stages {
                 stage("Checkout Infrastructure Repository") {
@@ -352,7 +352,7 @@
                         dockerfile {
                             dir "SapMachine-infrastructure/dockerfiles/infrastructure"
                             reuseNode true
-                            label "infrastructure"
+                            label 'infrastructure'
                         }
                     }
                     steps {
