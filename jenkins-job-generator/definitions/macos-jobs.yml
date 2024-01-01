@@ -165,7 +165,7 @@
                 stage('Setup notarization credentials') {
                     steps {
                         withCredentials([string(credentialsId: 'Notarization-AppleID', variable: 'appleid'),
-                                         string(credentialsId: 'Notarization-Pwassword', variable: 'notpass'),
+                                         string(credentialsId: 'Notarization-Password', variable: 'notpass'),
                                          string(credentialsId: 'Notarization-Team', variable: 'notteam')]) {
                             sh 'xcrun notarytool store-credentials sapmachine-notarization --apple-id $appleid --password $notpass --team-id $notteam'
                         }
