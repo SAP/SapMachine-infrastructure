@@ -187,7 +187,7 @@ if [[ $UNAME == Darwin ]]; then
 
   # JDK
   if [ "$RELEASE_BUILD" == true ]; then
-    xcrun notarytool submit "$ARCHIVE_NAME_JDK" --force --keychain-profile "sapmachine-notarization" --wait
+    xcrun notarytool submit "${WORKSPACE}/${ARCHIVE_NAME_JDK}" --force --keychain-profile "sapmachine-notarization" --wait
   fi
   DMG_NAME_JDK=$(basename ${ARCHIVE_NAME_JDK} .tar.gz)
   rm -rf ${DMG_NOTARIZE_BASE}
@@ -205,15 +205,15 @@ if [[ $UNAME == Darwin ]]; then
 
   if [ "$RELEASE_BUILD" == true ]; then
     xcrun stapler staple "${DMG_NOTARIZE_BASE}/*"
-    rm $ARCHIVE_NAME_JDK
-    tar -czf $ARCHIVE_NAME_JDK -C ${DMG_NOTARIZE_BASE} .
-    xcrun notarytool submit "${DMG_NAME_JDK}.dmg" --keychain-profile "sapmachine-notarization" --wait
-    xcrun stapler staple "${DMG_NAME_JDK}.dmg"
+    rm "${WORKSPACE}/${ARCHIVE_NAME_JDK}"
+    tar -czf "${WORKSPACE}/${ARCHIVE_NAME_JDK}" -C ${DMG_NOTARIZE_BASE} .
+    xcrun notarytool submit "${WORKSPACE}/${DMG_NAME_JDK}.dmg" --keychain-profile "sapmachine-notarization" --wait
+    xcrun stapler staple "${WORKSPACE}/${DMG_NAME_JDK}.dmg"
   fi
 
   # JRE
   if [ "$RELEASE_BUILD" == true ]; then
-    xcrun notarytool submit "$ARCHIVE_NAME_JRE" --force --keychain-profile "sapmachine-notarization" --wait
+    xcrun notarytool submit "${WORKSPACE}/$ARCHIVE_NAME_JRE" --force --keychain-profile "sapmachine-notarization" --wait
   fi
   DMG_NAME_JRE=$(basename ${ARCHIVE_NAME_JRE} .tar.gz)
   rm -rf ${DMG_NOTARIZE_BASE}
@@ -232,9 +232,9 @@ if [[ $UNAME == Darwin ]]; then
   # Notarize if doing a release build
   if [ "$RELEASE_BUILD" == true ]; then
     xcrun stapler staple "${DMG_NOTARIZE_BASE}/*"
-    rm $ARCHIVE_NAME_JRE
-    tar -czf $ARCHIVE_NAME_JRE -C ${DMG_NOTARIZE_BASE} .
-    xcrun notarytool submit "${DMG_NAME_JRE}.dmg" --keychain-profile "sapmachine-notarization" --wait
-    xcrun stapler staple "${DMG_NAME_JRE}.dmg"
+    rm "${WORKSPACE}/${ARCHIVE_NAME_JRE}"
+    tar -czf "${WORKSPACE}/${ARCHIVE_NAME_JRE}" -C ${DMG_NOTARIZE_BASE} .
+    xcrun notarytool submit "${WORKSPACE}/${DMG_NAME_JRE}.dmg" --keychain-profile "sapmachine-notarization" --wait
+    xcrun stapler staple "${WORKSPACE}/${DMG_NAME_JRE}.dmg"
   fi
 fi
