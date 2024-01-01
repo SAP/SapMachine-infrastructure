@@ -162,8 +162,6 @@
                         }
                     }
                 }
-            }
-            stages {
                 stage('Setup notarization credentials') {
                     steps {
                         withCredentials([string(credentialsId: 'Notarization-AppleID', variable: 'appleid'),
