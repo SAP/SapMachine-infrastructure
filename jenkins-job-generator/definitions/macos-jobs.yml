@@ -135,8 +135,8 @@
         }
 
 - job:
-    name: import-macos-signing-certificate
-    description: 'Imports the signing certificate on a MacOS node.'
+    name: prepare-macos-signing
+    description: 'Prepares a MacOS node for singing and notarization.'
     project-type: pipeline
     sandbox: true
     concurrent: false
@@ -147,18 +147,29 @@
         - string:
             name: BUILDNODE
             default: ''
-            description: 'The node to import the signing certificate on.'
+            description: 'The node to prepare for signing and notarization.'
     dsl: |
         pipeline {
             agent {
                 label "${BUILDNODE}"
             }
             stages {
-                stage('Import certificates') {
+                stage('Import signing certificate') {
                     steps {
                         withCredentials([file(credentialsId: 'MacOSCodesignSAP', variable: 'signcertp2'),
-                                        string(credentialsId: 'MacOSCodesignSAP-Password', variable: 'signcertpass')]) {
+                                         string(credentialsId: 'MacOSCodesignSAP-Password', variable: 'signcertpass')]) {
                             sh 'security import $signcertp2 -k ~/Library/Keychains/login.keychain -P $signcertpass'
+                        }
+                    }
+                }
+            }
+            stages {
+                stage('Setup notarization credentials') {
+                    steps {
+                        withCredentials([string(credentialsId: 'Notarization-AppleID', variable: 'appleid'),
+                                         string(credentialsId: 'Notarization-Pwassword', variable: 'notpass'),
+                                         string(credentialsId: 'Notarization-Team', variable: 'notteam')]) {
+                            sh 'xcrun notarytool store-credentials sapmachine-notarization --apple-id $appleid --password $notpass --team-id $notteam'
                         }
                     }
                 }
