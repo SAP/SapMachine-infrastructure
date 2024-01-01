@@ -123,6 +123,7 @@ cd images
 zip -rq "${WORKSPACE}/test.zip" test
 
 cd jdk
+
 zip -rq "${WORKSPACE}/jdk.zip" .
 
 cd ../../bundles
@@ -175,44 +176,65 @@ echo "${ARCHIVE_NAME_JRE}" > "${WORKSPACE}/jre_bundle_name.txt"
 echo "${ARCHIVE_NAME_SYMBOLS}" > "${WORKSPACE}/symbols_bundle_name.txt"
 
 if [[ $UNAME == Darwin ]]; then
-
   if [[ -n "$NODMG" ]]; then
-    echo "Skipping DMG generation."
+    echo "Skipping Notarization and DMG generation."
     exit 0
   fi
 
+  # Prepare
   rm -rf *.dmg
+  DMG_NOTARIZE_BASE="${WORKSPACE}/dmg_notarize_base"
 
-  # create dmg
-  DMG_BASE="${WORKSPACE}/dmg_base"
-  # jdk
-  DMG_NAME=$(basename ${ARCHIVE_NAME_JDK} .tar.gz)
-  rm -rf ${DMG_BASE}
-  mkdir -p ${DMG_BASE}
-  tar -xzf "${WORKSPACE}/${ARCHIVE_NAME_JDK}" -C ${DMG_BASE}
+  # JDK
+  if [ "$RELEASE_BUILD" == true ]; then
+    xcrun notarytool submit "$ARCHIVE_NAME_JDK" --force --keychain-profile "sapmachine-notarization" --wait
+  fi
+  DMG_NAME_JDK=$(basename ${ARCHIVE_NAME_JDK} .tar.gz)
+  rm -rf ${DMG_NOTARIZE_BASE}
+  mkdir -p ${DMG_NOTARIZE_BASE}
+  tar -xzf "${WORKSPACE}/${ARCHIVE_NAME_JDK}" -C ${DMG_NOTARIZE_BASE}
   hdierror=0
-  hdiutil create -verbose -srcfolder ${DMG_BASE} -fs HFS+ -volname ${DMG_NAME} "${WORKSPACE}/${DMG_NAME}.dmg" || hdierror=1
+  hdiutil create -verbose -srcfolder ${DMG_NOTARIZE_BASE} -fs HFS+ -volname ${DMG_NAME_JDK} "${WORKSPACE}/${DMG_NAME_JDK}.dmg" || hdierror=1
   if [ $hdierror -ne 0 ]; then
     # We see sometimes errors like "hdiutil: create failed - Resource busy." when invoking it right after tar.
     # Let's retry after sleeping a little while.
     sleep 30
-    hdiutil create -verbose -srcfolder ${DMG_BASE} -fs HFS+ -volname ${DMG_NAME} "${WORKSPACE}/${DMG_NAME}.dmg"
+    hdiutil create -verbose -srcfolder ${DMG_NOTARIZE_BASE} -fs HFS+ -volname ${DMG_NAME_JDK} "${WORKSPACE}/${DMG_NAME_JDK}.dmg"
+  fi
+  echo "${DMG_NAME_JDK}.dmg" > "${WORKSPACE}/jdk_dmg_name.txt"
+
+  if [ "$RELEASE_BUILD" == true ]; then
+    xcrun stapler staple "${DMG_NOTARIZE_BASE}/*"
+    rm $ARCHIVE_NAME_JDK
+    tar -czf $ARCHIVE_NAME_JDK -C ${DMG_NOTARIZE_BASE} .
+    xcrun notarytool submit "${DMG_NAME_JDK}.dmg" --keychain-profile "sapmachine-notarization" --wait
+    xcrun stapler staple "${DMG_NAME_JDK}.dmg"
   fi
 
-  echo "${DMG_NAME}.dmg" > "${WORKSPACE}/jdk_dmg_name.txt"
-
-  # jre
-  DMG_NAME=$(basename ${ARCHIVE_NAME_JRE} .tar.gz)
-  rm -rf ${DMG_BASE}
-  mkdir -p ${DMG_BASE}
-  tar -xzf "${WORKSPACE}/${ARCHIVE_NAME_JRE}" -C ${DMG_BASE}
+  # JRE
+  if [ "$RELEASE_BUILD" == true ]; then
+    xcrun notarytool submit "$ARCHIVE_NAME_JRE" --force --keychain-profile "sapmachine-notarization" --wait
+  fi
+  DMG_NAME_JRE=$(basename ${ARCHIVE_NAME_JRE} .tar.gz)
+  rm -rf ${DMG_NOTARIZE_BASE}
+  mkdir -p ${DMG_NOTARIZE_BASE}
+  tar -xzf "${WORKSPACE}/${ARCHIVE_NAME_JRE}" -C ${DMG_NOTARIZE_BASE}
   hdierror=0
-  hdiutil create -verbose -srcfolder ${DMG_BASE} -fs HFS+ -volname ${DMG_NAME} "${WORKSPACE}/${DMG_NAME}.dmg" || hdierror=1
+  hdiutil create -verbose -srcfolder ${DMG_NOTARIZE_BASE} -fs HFS+ -volname ${DMG_NAME_JRE} "${WORKSPACE}/${DMG_NAME_JRE}.dmg" || hdierror=1
   if [ $hdierror -ne 0 ]; then
     # We see sometimes errors like "hdiutil: create failed - Resource busy." when invoking it right after tar.
     # Let's retry after sleeping a little while.
     sleep 30
-    hdiutil create -verbose -srcfolder ${DMG_BASE} -fs HFS+ -volname ${DMG_NAME} "${WORKSPACE}/${DMG_NAME}.dmg"
+    hdiutil create -verbose -srcfolder ${DMG_NOTARIZE_BASE} -fs HFS+ -volname ${DMG_NAME_JRE} "${WORKSPACE}/${DMG_NAME_JRE}.dmg"
   fi
-  echo "${DMG_NAME}.dmg" > "${WORKSPACE}/jre_dmg_name.txt"
+  echo "${DMG_NAME_JRE}.dmg" > "${WORKSPACE}/jre_dmg_name.txt"
+
+  # Notarize if doing a release build
+  if [ "$RELEASE_BUILD" == true ]; then
+    xcrun stapler staple "${DMG_NOTARIZE_BASE}/*"
+    rm $ARCHIVE_NAME_JRE
+    tar -czf $ARCHIVE_NAME_JRE -C ${DMG_NOTARIZE_BASE} .
+    xcrun notarytool submit "${DMG_NAME_JRE}.dmg" --keychain-profile "sapmachine-notarization" --wait
+    xcrun stapler staple "${DMG_NAME_JRE}.dmg"
+  fi
 fi
