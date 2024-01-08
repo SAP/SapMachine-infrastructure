@@ -168,7 +168,7 @@
                         withCredentials([string(credentialsId: 'Notarization-AppleID', variable: 'appleid'),
                                          string(credentialsId: 'Notarization-Password', variable: 'notpass'),
                                          string(credentialsId: 'Notarization-Team', variable: 'notteam'),
-                                         string(credentialsId: 'MacOSCodeSignUnlockPW', variable: 'unlockpass')]) {
+                                         string(credentialsId: 'MacOSKeyChainUnlockPW', variable: 'unlockpass')]) {
                             sh '''#!/bin/bash
                               security unlock-keychain -p $unlockpass ~/Library/Keychains/login.keychain
                               xcrun notarytool store-credentials sapmachine-notarization --apple-id $appleid --password $notpass --team-id $notteam'''
