@@ -187,6 +187,7 @@ if [[ $UNAME == Darwin ]]; then
 
   # JDK
   if [ "$RELEASE_BUILD" == true ]; then
+    security unlock-keychain -p $unlockpass ~/Library/Keychains/login.keychain
     xcrun notarytool submit "${WORKSPACE}/${ARCHIVE_NAME_JDK}" --force --keychain-profile "sapmachine-notarization" --wait
   fi
   DMG_NAME_JDK=$(basename ${ARCHIVE_NAME_JDK} .tar.gz)
