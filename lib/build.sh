@@ -188,7 +188,7 @@ if [[ $UNAME == Darwin ]]; then
   # JDK
   if [ "$RELEASE_BUILD" == true ]; then
     security unlock-keychain -p $unlockpass ~/Library/Keychains/login.keychain
-    xcrun notarytool submit "${WORKSPACE}/${ARCHIVE_NAME_JDK}" --force --keychain-profile "sapmachine-notarization" --wait
+    xcrun notarytool submit -v --force --keychain-profile "sapmachine-notarization" --wait "${WORKSPACE}/${ARCHIVE_NAME_JDK}"
   fi
   DMG_NAME_JDK=$(basename ${ARCHIVE_NAME_JDK} .tar.gz)
   rm -rf ${DMG_NOTARIZE_BASE}
@@ -205,7 +205,8 @@ if [[ $UNAME == Darwin ]]; then
   echo "${DMG_NAME_JDK}.dmg" > "${WORKSPACE}/jdk_dmg_name.txt"
 
   if [ "$RELEASE_BUILD" == true ]; then
-    xcrun stapler staple "${DMG_NOTARIZE_BASE}/*"
+    ARCHIVESUBDIR=${DMG_NOTARIZE_BASE}/*
+    xcrun stapler staple ${DMG_NOTARIZE_BASE}/*
     rm "${WORKSPACE}/${ARCHIVE_NAME_JDK}"
     tar -czf "${WORKSPACE}/${ARCHIVE_NAME_JDK}" -C ${DMG_NOTARIZE_BASE} .
     xcrun notarytool submit "${WORKSPACE}/${DMG_NAME_JDK}.dmg" --keychain-profile "sapmachine-notarization" --wait
