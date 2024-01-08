@@ -236,10 +236,23 @@
                                 }}
                             }}
                         }}
+            sign_and_notarize: &sign_and_notarize |-
+                stage("Sign and notarize artefacts") {{
+                            when {{
+                                expression {{ params.PUBLISH == true && JOB_NAME ==~ /((\S*)(-macos)(\S*)(-release))/ }}
+                            }}
+                            steps {{
+                                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD'],
+                                                 string(credentialsId: 'MacOSKeyChainUnlockPW', variable: 'unlockpass')]) {{
+                                    sh("SapMachine-infrastructure/lib/sign_notarize.sh")
+                                }}
+                            }}
+                        }}
             publish_artifactory_step: *publish_artifactory_step
         - macos_aarch64:
             devkit_default: 'io.sapmachine.build.devkit.macos:devkit-xcode:13.1'
             create_brew_casks: *create_brew_casks
+            sign_and_notarize: *sign_and_notarize
             publish_artifactory_step: *publish_artifactory_step
         - windows_x86_64:
             devkit_default: '{windows_devkit|io.sapmachine.build.devkit.windows-x64:devkit-vs2019:16.11.13}'
@@ -375,6 +388,7 @@
             publish_artifactory_msi: ''
             publish_debian_packages: ''
             create_brew_casks: ''
+            sign_and_notarize: ''
             generate_dockerfiles: ''
             publish_cf_data: ''
             post_code: |-
@@ -417,6 +431,7 @@
                         }}
             publish_debian_packages: ''
             create_brew_casks: ''
+            sign_and_notarize: ''
             generate_dockerfiles: ''
             publish_cf_data: ''
             archive: &archive |-
@@ -706,6 +721,7 @@
                 {publish_github|}
                 {publish_debian_packages|}
                 {create_brew_casks|}
+                {sign_and_notarize|}
                 {generate_dockerfiles|}
                 {publish_release_data|}
                 {build_alpine_apk_packages_pre|}
