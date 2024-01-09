@@ -1,19 +1,46 @@
-<flow-definition plugin="workflow-job@1385.vb_58b_86ea_fff1">
-  <actions>
-    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@2.2151.ve32c9d209a_3f" />
-    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@2.2151.ve32c9d209a_3f">
-      <jobProperties />
-      <triggers />
-      <parameters />
-      <options />
-    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
-  </actions>
+<flow-definition plugin="workflow-job">
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps">
+    <script>pipeline {
+    agent {
+        label "${BUILDNODE}"
+    }
+    stages {
+        stage('Import signing certificate') {
+            steps {
+                withCredentials([file(credentialsId: 'MacOSCodesignSAP', variable: 'signcertp2'),
+                                 string(credentialsId: 'MacOSCodesignSAP-Password', variable: 'signcertpass')]) {
+                    sh '''#!/bin/bash
+                      security import $signcertp2 -k ~/Library/Keychains/login.keychain -P $signcertpass'''
+                }
+            }
+        }
+        stage('Setup notarization credentials') {
+            steps {
+                withCredentials([string(credentialsId: 'Notarization-AppleID', variable: 'appleid'),
+                                 string(credentialsId: 'Notarization-Password', variable: 'notpass'),
+                                 string(credentialsId: 'Notarization-Team', variable: 'notteam'),
+                                 string(credentialsId: 'MacOSKeyChainUnlockPW', variable: 'unlockpass')]) {
+                    sh '''#!/bin/bash
+                      security unlock-keychain -p $unlockpass ~/Library/Keychains/login.keychain
+                      xcrun notarytool store-credentials sapmachine-notarization --apple-id $appleid --password $notpass --team-id $notteam'''
+                }
+            }
+        }
+    }
+    post {
+        always {
+            cleanWs deleteDirs: true, disableDeferredWipeout: true
+        }
+    }
+}
+</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <actions />
   <description>Prepares a MacOS node for singing and notarization.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
   <properties>
-    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty>
-      <abortPrevious>false</abortPrevious>
-    </org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty>
+    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty />
     <jenkins.model.BuildDiscarderProperty>
       <strategy class="hudson.tasks.LogRotator">
         <daysToKeep>-1</daysToKeep>
@@ -33,38 +60,4 @@
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@3826.v3b_5707fe44da_">
-    <script>pipeline {
-    agent {
-        label "${BUILDNODE}"
-    }
-    stages {
-        stage('Import signing certificate') {
-            steps {
-                withCredentials([file(credentialsId: 'MacOSCodesignSAP', variable: 'signcertp2'),
-                                 string(credentialsId: 'MacOSCodesignSAP-Password', variable: 'signcertpass')]) {
-                    sh 'security import $signcertp2 -k ~/Library/Keychains/login.keychain -P $signcertpass'
-                }
-            }
-        }
-        stage('Setup notarization credentials') {
-            steps {
-                withCredentials([string(credentialsId: 'Notarization-AppleID', variable: 'appleid'),
-                                 string(credentialsId: 'Notarization-Password', variable: 'notpass'),
-                                 string(credentialsId: 'Notarization-Team', variable: 'notteam')]) {
-                    sh 'xcrun notarytool store-credentials sapmachine-notarization --apple-id $appleid --password $notpass --team-id $notteam'
-                }
-            }
-        }
-    }
-    post {
-        always {
-            cleanWs deleteDirs: true, disableDeferredWipeout: true
-        }
-    }
-}
-</script>
-    <sandbox>true</sandbox>
-  </definition>
-  <disabled>false</disabled>
 </flow-definition>
