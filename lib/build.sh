@@ -59,6 +59,9 @@ echo "PATH before configure and make: ${PATH}"
 _CONFIGURE_OPTS=$(python3 ../SapMachine-infrastructure/lib/get_configure_opts.py $_GIT_TAG $_JDK_BUILD)
 eval _CONFIGURE_OPTS=(${_CONFIGURE_OPTS})
 
+ac_prog_cc_stdc=yes
+ac_prog_cxx_stdcxx=yes
+
 (set -x &&
 bash ./configure \
 --with-boot-jdk=$BOOT_JDK \
