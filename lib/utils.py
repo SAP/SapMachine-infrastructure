@@ -154,6 +154,14 @@ def download_file(url, target):
     else:
         raise Exception(f"Download failed. Status code: {response.status_code}")
 
+def download_text(url):
+    headers = {'Authorization': str.format('token {0}', os.environ['GIT_PASSWORD']) } if 'GIT_PASSWORD' in os.environ else None
+    response = requests.get(url, headers=headers)
+    if response.status_code == 200:
+        return response.text
+    else:
+        raise Exception(f"Request failed. Status code: {response.status_code}")
+
 def download_asset(asset_url):
     headers = {'Authorization': str.format('token {0}', os.environ['GIT_PASSWORD']) } if 'GIT_PASSWORD' in os.environ else None
     response = requests.get(asset_url, headers=headers)
@@ -511,6 +519,7 @@ def get_github_tags(repository='SapMachine'):
 
 def get_sapmachine_releases(major = None):
     rel_url = f"https://sap.github.io/SapMachine/assets/data/sapmachine-releases-{'all' if major is None else str(major)}.json"
+    return json.loads(download_text(rel_url)) if major is None else {str(major): json.loads(download_text(rel_url))}
     request = Request(rel_url)
     try:
         data = str(urlopen(request).read().decode())
