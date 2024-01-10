@@ -160,25 +160,6 @@
                 }
             }
         }
-        stage("SignAndNotarize") {
-            agent {
-                docker {
-                    image "ubuntu_20_04-arm64"
-                    reuseNode true
-                    label "linux_aarch64"
-                }
-            }
-            
-            steps {
-                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD'],
-                                 string(credentialsId: 'MacOSKeyChainUnlockPW', variable: 'unlockpass')]) {
-                    script {
-                        sh("SapMachine-infrastructure/lib/sign_notarize.sh")
-                        env.ART_VERSION = readFile "${env.WORKSPACE}/javavmversion.txt"
-                    }
-                }
-            }
-        }
         stage("Run jtreg hotspot") {
             agent {
                 docker {
