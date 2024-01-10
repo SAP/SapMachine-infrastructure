@@ -91,7 +91,7 @@ def main(argv=None):
 
     archive_path = join(destination, asset_name)
     utils.remove_if_exists(archive_path)
-    utils.download_artifact(asset_url, archive_path)
+    utils.download_file(asset_url, archive_path)
     utils.remove_if_exists(boot_jdk_exploded)
     os.makedirs(boot_jdk_exploded)
     utils.extract_archive(archive_path, boot_jdk_exploded, remove_archive=True)
