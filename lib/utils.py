@@ -10,8 +10,9 @@ import pickle
 import platform
 import re
 import requests
-import sys
 import shutil
+import ssl
+import sys
 import tarfile
 import time
 import zipfile
@@ -136,6 +137,7 @@ def download_artifact(url, target):
         file.write(urlopen(url).read())
 
 def download_file(url, target):
+    print(f"OpenSSL version used by Python: {ssl.OPENSSL_VERSION}")
     print(f"Downloading {url} to {target}...")
 
     if exists(target):
@@ -155,6 +157,7 @@ def download_file(url, target):
         raise Exception(f"Download failed. Status code: {response.status_code}")
 
 def download_text(url):
+    print(f"OpenSSL version used by Python: {ssl.OPENSSL_VERSION}")
     headers = {'Authorization': str.format('token {0}', os.environ['GIT_PASSWORD']) } if 'GIT_PASSWORD' in os.environ else None
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
