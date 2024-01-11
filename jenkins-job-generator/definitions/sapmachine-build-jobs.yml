@@ -26,8 +26,9 @@
             architecture: aix-ppc64
             publish_artifactory_step:  &publish_artifactory_step |-
                 steps {{
-                                // Upload the test archive
+                                // Upload the test and jdk archive
                                 sh 'curl -sSf -u $ARTIFACTORY_CREDS -X PUT -T test.zip https://common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build-results/{platform}/${{ART_VERSION}}/test.zip'
+                                sh 'curl -sSf -u $ARTIFACTORY_CREDS -X PUT -T jdk.zip https://common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build-results/{platform}/${{ART_VERSION}}/jdk.zip'
         - linux_aarch64:
             architecture: linux-aarch64
             debarch: arm64
