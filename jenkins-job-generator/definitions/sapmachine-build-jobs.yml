@@ -619,6 +619,7 @@
                         }}
                     }}
                 }}
+                {sign_and_notarize|}
                 stage("Run jtreg hotspot") {{
                     {docker_agent|}
                     when {{
@@ -718,7 +719,6 @@
                 {publish_github|}
                 {publish_debian_packages|}
                 {create_brew_casks|}
-                {sign_and_notarize|}
                 {generate_dockerfiles|}
                 {publish_release_data|}
                 {build_alpine_apk_packages_pre|}
