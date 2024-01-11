@@ -5,26 +5,27 @@
   <sshUrl>git@github.com:SAP/SapMachine.git</sshUrl>
   <pulls class="concurrent-hash-map">
     <entry>
-      <int>1579</int>
+      <int>1584</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>1579</number>
-        <issueUpdatedAt>2023-12-30 06:09:55.0 UTC</issueUpdatedAt>
-        <title>SapMachine (17) #1502: Cherry-Pick fixes for zeroing out console input</title>
-        <body>Cherry-pick 17u backport of [JDK-8320798](https://bugs.openjdk.org/browse/JDK-8320798)
+        <number>1584</number>
+        <issueUpdatedAt>2024-01-10 15:16:54.0 UTC</issueUpdatedAt>
+        <title>SapMachine #1583: Include more info in exception used in vitals tests</title>
+        <body>We need to see the output which doesn't include the expected message.
 
-fixes #1502
+fixes #1583
+
 </body>
-        <prUpdatedAt>2023-12-30 06:09:55.0 UTC</prUpdatedAt>
-        <headSha>4268a479fa83177ab0be3ac8f09f1b3fae328fa9</headSha>
-        <headRef>jline17</headRef>
+        <prUpdatedAt>2024-01-10 15:16:54.0 UTC</prUpdatedAt>
+        <headSha>f54e300b572e20c998be65390842f1c34f023fad</headSha>
+        <headRef>better_test_msg</headRef>
         <mergeable>true</mergeable>
-        <baseRef>sapmachine17</baseRef>
-        <userEmail>christoph.langer@sap.com</userEmail>
-        <userLogin>RealCLanger</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/1579</htmlUrl>
+        <baseRef>sapmachine</baseRef>
+        <userEmail>ralf.schmelter@sap.com</userEmail>
+        <userLogin>schmelter-sap</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1584</htmlUrl>
         <labels />
-        <lastCommentCreatedAt>2023-12-30 06:09:54.0 UTC</lastCommentCreatedAt>
-        <sourceRepoOwner>RealCLanger</sourceRepoOwner>
+        <lastCommentCreatedAt>2024-01-10 13:04:09.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>schmelter-sap</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
       </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
@@ -33,14 +34,14 @@ fixes #1502
       <int>1580</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>1580</number>
-        <issueUpdatedAt>2023-12-29 13:58:38.0 UTC</issueUpdatedAt>
+        <issueUpdatedAt>2024-01-10 06:19:15.0 UTC</issueUpdatedAt>
         <title>SapMachine (11) #1502: Cherry-Pick fixes for zeroing out console input</title>
         <body>Cherry-pick 11u backport of [JDK-8320798](https://bugs.openjdk.org/browse/JDK-8320798)
 
 fixes #1502
 </body>
-        <prUpdatedAt>2023-12-29 13:58:38.0 UTC</prUpdatedAt>
-        <headSha>dff5cf1931228d2afe44bac160c76b28579567f7</headSha>
+        <prUpdatedAt>2024-01-10 06:19:15.0 UTC</prUpdatedAt>
+        <headSha>1a738368d9a2fc7166fa893dc96fce23edaaa493</headSha>
         <headRef>jline11</headRef>
         <mergeable>true</mergeable>
         <baseRef>sapmachine11</baseRef>
@@ -48,48 +49,8 @@ fixes #1502
         <userLogin>RealCLanger</userLogin>
         <htmlUrl>https://github.com/SAP/SapMachine/pull/1580</htmlUrl>
         <labels />
-        <lastCommentCreatedAt>2023-12-29 13:38:08.0 UTC</lastCommentCreatedAt>
+        <lastCommentCreatedAt>2024-01-10 06:19:14.0 UTC</lastCommentCreatedAt>
         <sourceRepoOwner>RealCLanger</sourceRepoOwner>
-        <state>OPEN</state>
-        <inBadState>false</inBadState>
-      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-    </entry>
-    <entry>
-      <int>1581</int>
-      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>1581</number>
-        <issueUpdatedAt>2024-01-05 00:30:01.0 UTC</issueUpdatedAt>
-        <title>Merge to tag jdk-23+4</title>
-        <body>please pull</body>
-        <prUpdatedAt>2024-01-05 00:30:01.0 UTC</prUpdatedAt>
-        <headSha>13c11487f7126a370d9ce8e62f661ea83eedefe6</headSha>
-        <headRef>pr-jdk-23+4</headRef>
-        <mergeable>true</mergeable>
-        <baseRef>sapmachine</baseRef>
-        <userLogin>SapMachine</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/1581</htmlUrl>
-        <labels />
-        <sourceRepoOwner>SAP</sourceRepoOwner>
-        <state>OPEN</state>
-        <inBadState>false</inBadState>
-      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-    </entry>
-    <entry>
-      <int>1582</int>
-      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>1582</number>
-        <issueUpdatedAt>2024-01-05 00:30:14.0 UTC</issueUpdatedAt>
-        <title>Merge to tag jdk-22+30</title>
-        <body>please pull</body>
-        <prUpdatedAt>2024-01-05 00:30:14.0 UTC</prUpdatedAt>
-        <headSha>b8c88a3e9129bd2f976a8c7631d754fed0765324</headSha>
-        <headRef>pr-jdk-22+30</headRef>
-        <mergeable>true</mergeable>
-        <baseRef>sapmachine22</baseRef>
-        <userLogin>SapMachine</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/1582</htmlUrl>
-        <labels />
-        <sourceRepoOwner>SAP</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
       </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
