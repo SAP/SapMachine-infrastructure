@@ -115,6 +115,7 @@ images/jdk/bin/java PropertyPrinter.java > ${WORKSPACE}/javavmversion.txt
 rm PropertyPrinter.java
 
 zip -rq "${WORKSPACE}/test.zip" spec.gmk
+zip -rq "${WORKSPACE}/jdk.zip" spec.gmk
 zip -rq "${WORKSPACE}/test.zip" images/jdk/release
 zip -rq "${WORKSPACE}/test.zip" bundles/*jdk-*_bin.* bundles/*jdk-*_bin-debug.*
 
