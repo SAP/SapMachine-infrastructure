@@ -241,7 +241,7 @@
                 stage("Notarize") {{
                             steps {{
                                 withCredentials([string(credentialsId: 'MacOSKeyChainUnlockPW', variable: 'unlockpass')]) {{
-                                    sh("SapMachine-infrastructure/lib/sign_notarize.sh")
+                                    sh("SapMachine-infrastructure/lib/notarize.sh")
                                 }}
                             }}
                         }}
