@@ -1,6 +1,19 @@
 #!/bin/bash
 set -ex
 
+# send's a notarization request and prints info and log for that request
+notarize() {
+  xcrun notarytool submit --force --keychain-profile "sapmachine-notarization" --output=json --wait "$1" >notaryout
+  rc=$?
+  id=$(grep -o '"id":"[^"]*"' notaryout | cut -d':' -f2)
+  echo "notarytool: submitting $1 resulted in rc=$rc, id=$id"
+  echo "notarytool: info"
+  xcrun notarytool info --keychain-profile "sapmachine-notarization" --output=json $id
+  echo "notarytool: log"
+  xcrun notarytool log --keychain-profile "sapmachine-notarization" --output=json $id
+  return $rc
+}
+
 if [[ -z $WORKSPACE ]]; then
   WORKSPACE=$PWD
 fi
@@ -47,7 +60,7 @@ DMG_NOTARIZE_BASE="${WORKSPACE}/dmg_notarize_base"
 # JDK
 if [ "$RELEASE_BUILD" == true ]; then
   security unlock-keychain -p $unlockpass ~/Library/Keychains/login.keychain
-  xcrun notarytool submit --force --keychain-profile "sapmachine-notarization" --wait "${WORKSPACE}/${ARCHIVE_NAME_JDK}"
+  id=$(notarize "${WORKSPACE}/${ARCHIVE_NAME_JDK}")
 fi
 DMG_NAME_JDK=$(basename ${ARCHIVE_NAME_JDK} .tar.gz)
 rm -rf ${DMG_NOTARIZE_BASE}
@@ -67,13 +80,13 @@ if [ "$RELEASE_BUILD" == true ]; then
   xcrun stapler staple ${DMG_NOTARIZE_BASE}/*
   rm "${WORKSPACE}/${ARCHIVE_NAME_JDK}"
   tar -czf "${WORKSPACE}/${ARCHIVE_NAME_JDK}" -C ${DMG_NOTARIZE_BASE} .
-  xcrun notarytool submit --keychain-profile "sapmachine-notarization" --wait "${WORKSPACE}/${DMG_NAME_JDK}.dmg"
+  id=$(notarize "${WORKSPACE}/${DMG_NAME_JDK}")
   xcrun stapler staple "${WORKSPACE}/${DMG_NAME_JDK}.dmg"
 fi
 
 # JRE
 if [ "$RELEASE_BUILD" == true ]; then
-  xcrun notarytool submit --force --keychain-profile "sapmachine-notarization" --wait "${WORKSPACE}/$ARCHIVE_NAME_JRE"
+  id=$(notarize "${WORKSPACE}/${ARCHIVE_NAME_JRE}")
 fi
 DMG_NAME_JRE=$(basename ${ARCHIVE_NAME_JRE} .tar.gz)
 rm -rf ${DMG_NOTARIZE_BASE}
@@ -94,6 +107,6 @@ if [ "$RELEASE_BUILD" == true ]; then
   xcrun stapler staple ${DMG_NOTARIZE_BASE}/*
   rm "${WORKSPACE}/${ARCHIVE_NAME_JRE}"
   tar -czf "${WORKSPACE}/${ARCHIVE_NAME_JRE}" -C ${DMG_NOTARIZE_BASE} .
-  xcrun notarytool submit --keychain-profile "sapmachine-notarization" --wait "${WORKSPACE}/${DMG_NAME_JRE}.dmg"
+  id=$(notarize "${WORKSPACE}/${DMG_NAME_JRE}.dmg")
   xcrun stapler staple "${WORKSPACE}/${DMG_NAME_JRE}.dmg"
 fi
