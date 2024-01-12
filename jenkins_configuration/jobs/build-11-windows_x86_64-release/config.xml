@@ -136,6 +136,7 @@
                 }
             }
         }
+        
         stage("Run jtreg hotspot") {
             
             when {
@@ -249,8 +250,9 @@
                 expression { params.UPLOAD_ARTIFACTORY == true || params.PUBLISH == true }
             }
             steps {
-                // Upload the test archive
+                // Upload the test and jdk archive
                 sh 'curl -sSf -u $ARTIFACTORY_CREDS -X PUT -T test.zip https://common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build-results/windows_x86_64/${ART_VERSION}/test.zip'
+                sh 'curl -sSf -u $ARTIFACTORY_CREDS -X PUT -T jdk.zip https://common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build-results/windows_x86_64/${ART_VERSION}/jdk.zip'
                 // Upload msi Files to Artifactory
                 script {
                     if (env.RELEASE == "true") {
