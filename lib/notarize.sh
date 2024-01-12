@@ -3,14 +3,14 @@ set -ex
 
 # send's a notarization request and prints info and log for that request
 notarize() {
-  xcrun notarytool submit --force --keychain-profile "sapmachine-notarization" --output-format=json --wait "$1" >notaryout
+  xcrun notarytool submit --force --keychain-profile "notarytool-password" --output-format=json --wait "$1" >notaryout
   rc=$?
-  id=$(grep -o '"id":"[^"]*"' notaryout | cut -d':' -f2)
+  id=$(grep -o '"id":"[^"]*"' notaryout | cut -d'"' -f4)
   echo "notarytool: submitting $1 resulted in rc=$rc, id=$id"
   echo "notarytool: info"
-  xcrun notarytool info --keychain-profile "sapmachine-notarization" --output-format=json $id
+  xcrun notarytool info --keychain-profile "notarytool-password" --output-format=json $id
   echo "notarytool: log"
-  xcrun notarytool log --keychain-profile "sapmachine-notarization" --output-format=json $id
+  xcrun notarytool log --keychain-profile "notarytool-password" --output-format=json $id
   return $rc
 }
 
