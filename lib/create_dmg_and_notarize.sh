@@ -3,7 +3,7 @@ set -ex
 
 # sends a notarization request and prints info and log for that request
 notarize() {
-  notaryout=`xcrun notarytool submit $2 --keychain-profile "$KEYCHAIN_PROFILE" --output-format=json --wait "$1"`
+  notaryout=$(xcrun notarytool submit $2 --keychain-profile "$KEYCHAIN_PROFILE" --output-format=json --wait "$1" | tee /dev/tty)
   rc=$?
   echo $notaryout
   id=$(echo "$notaryout" | grep -o '"id":"[^"]*"' | cut -d'"' -f4)
@@ -54,18 +54,16 @@ fi
 # Prepare
 rm -rf *.dmg
 DMG_NOTARIZE_BASE="${WORKSPACE}/dmg_notarize_base"
+security unlock-keychain -p $unlockpass ~/Library/Keychains/login.keychain
 
 # JDK
-if [ "$RELEASE_BUILD" == true ]; then
-  security unlock-keychain -p $unlockpass ~/Library/Keychains/login.keychain
-  id=$(notarize "${WORKSPACE}/${ARCHIVE_NAME_JDK}" "--force")
-fi
+id=$(notarize "${WORKSPACE}/${ARCHIVE_NAME_JDK}" "--force")
 DMG_NAME_JDK=$(basename ${ARCHIVE_NAME_JDK} .tar.gz)
 rm -rf ${DMG_NOTARIZE_BASE}
 mkdir -p ${DMG_NOTARIZE_BASE}
 tar -xzf "${WORKSPACE}/${ARCHIVE_NAME_JDK}" -C ${DMG_NOTARIZE_BASE}
 hdierror=0
-hdiutil create -verbose -srcfolder ${DMG_NOTARIZE_BASE} -fs HFS+ -volname ${DMG_NAME_JDK} "${WORKSPACE}/${DMG_NAME_JDK}.dmg" || hdierror=1
+hdiutil create -srcfolder ${DMG_NOTARIZE_BASE} -fs HFS+ -volname ${DMG_NAME_JDK} "${WORKSPACE}/${DMG_NAME_JDK}.dmg" || hdierror=1
 if [ $hdierror -ne 0 ]; then
   # We see sometimes errors like "hdiutil: create failed - Resource busy." when invoking it right after tar.
   # Let's retry after sleeping a little while.
@@ -74,24 +72,20 @@ if [ $hdierror -ne 0 ]; then
 fi
 echo "${DMG_NAME_JDK}.dmg" > "${WORKSPACE}/jdk_dmg_name.txt"
 
-if [ "$RELEASE_BUILD" == true ]; then
-  xcrun stapler staple ${DMG_NOTARIZE_BASE}/*
-  rm "${WORKSPACE}/${ARCHIVE_NAME_JDK}"
-  tar -czf "${WORKSPACE}/${ARCHIVE_NAME_JDK}" -C ${DMG_NOTARIZE_BASE} .
-  id=$(notarize "${WORKSPACE}/${DMG_NAME_JDK}")
-  xcrun stapler staple "${WORKSPACE}/${DMG_NAME_JDK}.dmg"
-fi
+xcrun stapler staple ${DMG_NOTARIZE_BASE}/*
+rm "${WORKSPACE}/${ARCHIVE_NAME_JDK}"
+tar -czf "${WORKSPACE}/${ARCHIVE_NAME_JDK}" -C ${DMG_NOTARIZE_BASE} .
+id=$(notarize "${WORKSPACE}/${DMG_NAME_JDK}")
+xcrun stapler staple "${WORKSPACE}/${DMG_NAME_JDK}.dmg"
 
 # JRE
-if [ "$RELEASE_BUILD" == true ]; then
-  id=$(notarize "${WORKSPACE}/${ARCHIVE_NAME_JRE}" "--force")
-fi
+id=$(notarize "${WORKSPACE}/${ARCHIVE_NAME_JRE}" "--force")
 DMG_NAME_JRE=$(basename ${ARCHIVE_NAME_JRE} .tar.gz)
 rm -rf ${DMG_NOTARIZE_BASE}
 mkdir -p ${DMG_NOTARIZE_BASE}
 tar -xzf "${WORKSPACE}/${ARCHIVE_NAME_JRE}" -C ${DMG_NOTARIZE_BASE}
 hdierror=0
-hdiutil create -verbose -srcfolder ${DMG_NOTARIZE_BASE} -fs HFS+ -volname ${DMG_NAME_JRE} "${WORKSPACE}/${DMG_NAME_JRE}.dmg" || hdierror=1
+hdiutil create -srcfolder ${DMG_NOTARIZE_BASE} -fs HFS+ -volname ${DMG_NAME_JRE} "${WORKSPACE}/${DMG_NAME_JRE}.dmg" || hdierror=1
 if [ $hdierror -ne 0 ]; then
   # We see sometimes errors like "hdiutil: create failed - Resource busy." when invoking it right after tar.
   # Let's retry after sleeping a little while.
@@ -101,10 +95,8 @@ fi
 echo "${DMG_NAME_JRE}.dmg" > "${WORKSPACE}/jre_dmg_name.txt"
 
 # Notarize if doing a release build
-if [ "$RELEASE_BUILD" == true ]; then
-  xcrun stapler staple ${DMG_NOTARIZE_BASE}/*
-  rm "${WORKSPACE}/${ARCHIVE_NAME_JRE}"
-  tar -czf "${WORKSPACE}/${ARCHIVE_NAME_JRE}" -C ${DMG_NOTARIZE_BASE} .
-  id=$(notarize "${WORKSPACE}/${DMG_NAME_JRE}.dmg")
-  xcrun stapler staple "${WORKSPACE}/${DMG_NAME_JRE}.dmg"
-fi
+xcrun stapler staple ${DMG_NOTARIZE_BASE}/*
+rm "${WORKSPACE}/${ARCHIVE_NAME_JRE}"
+tar -czf "${WORKSPACE}/${ARCHIVE_NAME_JRE}" -C ${DMG_NOTARIZE_BASE} .
+id=$(notarize "${WORKSPACE}/${DMG_NAME_JRE}.dmg")
+xcrun stapler staple "${WORKSPACE}/${DMG_NAME_JRE}.dmg"
