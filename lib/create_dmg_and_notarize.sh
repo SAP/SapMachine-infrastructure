@@ -3,17 +3,19 @@ set -ex
 
 # send's a notarization request and prints info and log for that request
 notarize() {
-  notaryout=`xcrun notarytool submit $2 --keychain-profile "sapmachine-notarization" --output-format=json --wait "$1"`
+  notaryout=`xcrun notarytool submit $2 --keychain-profile "$KEYCHAIN_PROFILE" --output-format=json --wait "$1"`
   rc=$?
-  cat $notaryout
-  id=$(grep -o '"id":"[^"]*"' $notaryout | cut -d'"' -f4)
+  echo $notaryout
+  id=$(echo "$notaryout" | grep -o '"id":"[^"]*"' | cut -d'"' -f4)
   echo "notarytool: submitting $1 resulted in rc=$rc, id=$id"
   echo "notarytool: info"
-  xcrun notarytool info --keychain-profile "sapmachine-notarization" --output-format=json $id
+  xcrun notarytool info --keychain-profile "$KEYCHAIN_PROFILE" --output-format=json $id
   echo "notarytool: log"
-  xcrun notarytool log --keychain-profile "sapmachine-notarization" --output-format=json $id
+  xcrun notarytool log --keychain-profile "$KEYCHAIN_PROFILE" --output-format=json $id
   return $rc
 }
+
+KEYCHAIN_PROFILE=sapmachine-notarization
 
 if [[ -z $WORKSPACE ]]; then
   WORKSPACE=$PWD
