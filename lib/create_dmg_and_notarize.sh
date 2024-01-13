@@ -48,11 +48,6 @@ else
   ARCHIVE_NAME_SYMBOLS="$(echo $SYMBOLS_BUNDLE_NAME | sed 's/\+/\./')"
 fi
 
-if [[ -n "$NODMG" ]]; then
-  echo "Skipping Notarization and DMG generation."
-  exit 0
-fi
-
 # Prepare
 rm -rf *.dmg
 DMG_NOTARIZE_BASE="${WORKSPACE}/dmg_notarize_base"
