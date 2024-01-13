@@ -3,9 +3,10 @@ set -ex
 
 # send's a notarization request and prints info and log for that request
 notarize() {
-  xcrun notarytool submit --force --keychain-profile "notarytool-password" --output-format=json --wait "$1" >notaryout
+  notaryout=`xcrun notarytool submit $2 --keychain-profile "notarytool-password" --output-format=json --wait "$1"`
   rc=$?
-  id=$(grep -o '"id":"[^"]*"' notaryout | cut -d'"' -f4)
+  cat $notaryout
+  id=$(grep -o '"id":"[^"]*"' $notaryout | cut -d'"' -f4)
   echo "notarytool: submitting $1 resulted in rc=$rc, id=$id"
   echo "notarytool: info"
   xcrun notarytool info --keychain-profile "notarytool-password" --output-format=json $id
@@ -55,7 +56,7 @@ DMG_NOTARIZE_BASE="${WORKSPACE}/dmg_notarize_base"
 # JDK
 if [ "$RELEASE_BUILD" == true ]; then
   security unlock-keychain -p $unlockpass ~/Library/Keychains/login.keychain
-  id=$(notarize "${WORKSPACE}/${ARCHIVE_NAME_JDK}")
+  id=$(notarize "${WORKSPACE}/${ARCHIVE_NAME_JDK}" "--force")
 fi
 DMG_NAME_JDK=$(basename ${ARCHIVE_NAME_JDK} .tar.gz)
 rm -rf ${DMG_NOTARIZE_BASE}
@@ -81,7 +82,7 @@ fi
 
 # JRE
 if [ "$RELEASE_BUILD" == true ]; then
-  id=$(notarize "${WORKSPACE}/${ARCHIVE_NAME_JRE}")
+  id=$(notarize "${WORKSPACE}/${ARCHIVE_NAME_JRE}" "--force")
 fi
 DMG_NAME_JRE=$(basename ${ARCHIVE_NAME_JRE} .tar.gz)
 rm -rf ${DMG_NOTARIZE_BASE}
