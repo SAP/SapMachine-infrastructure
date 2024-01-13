@@ -1,5 +1,6 @@
 #!/bin/bash
-set -ex
+#set -ex
+set -e
 
 # Send notarization request and wait for completion. If unsuccessful, print request log and exit with error.
 KEYCHAIN_PROFILE=sapmachine-notarization

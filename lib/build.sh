@@ -1,5 +1,6 @@
 #!/bin/bash
-set -ex
+#set -ex
+set -e
 
 if [[ -z $WORKSPACE ]]; then
   WORKSPACE=$PWD
@@ -58,6 +59,11 @@ echo "PATH before configure and make: ${PATH}"
 # need to do the python call first and the eval in a second step to bail out on $? != 0
 _CONFIGURE_OPTS=$(python3 ../SapMachine-infrastructure/lib/get_configure_opts.py $_GIT_TAG $_JDK_BUILD)
 eval _CONFIGURE_OPTS=(${_CONFIGURE_OPTS})
+
+# unlock keychain on mac
+if [[ $UNAME == Darwin ]]; then
+  security unlock-keychain -p $unlockpass ~/Library/Keychains/login.keychain
+fi
 
 (set -x &&
 bash ./configure \
@@ -175,4 +181,3 @@ fi
 echo "${ARCHIVE_NAME_JDK}" > "${WORKSPACE}/jdk_bundle_name.txt"
 echo "${ARCHIVE_NAME_JRE}" > "${WORKSPACE}/jre_bundle_name.txt"
 echo "${ARCHIVE_NAME_SYMBOLS}" > "${WORKSPACE}/symbols_bundle_name.txt"
-
