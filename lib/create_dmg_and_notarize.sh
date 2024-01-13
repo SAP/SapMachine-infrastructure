@@ -75,7 +75,7 @@ echo "${DMG_NAME_JDK}.dmg" > "${WORKSPACE}/jdk_dmg_name.txt"
 xcrun stapler staple ${DMG_NOTARIZE_BASE}/*
 rm "${WORKSPACE}/${ARCHIVE_NAME_JDK}"
 tar -czf "${WORKSPACE}/${ARCHIVE_NAME_JDK}" -C ${DMG_NOTARIZE_BASE} .
-id=$(notarize "${WORKSPACE}/${DMG_NAME_JDK}")
+id=$(notarize "${WORKSPACE}/${DMG_NAME_JDK}.dmg")
 xcrun stapler staple "${WORKSPACE}/${DMG_NAME_JDK}.dmg"
 
 # JRE
