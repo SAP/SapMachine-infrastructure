@@ -1,7 +1,7 @@
 #!/bin/bash
 set -ex
 
-# send's a notarization request and prints info and log for that request
+# sends a notarization request and prints info and log for that request
 notarize() {
   notaryout=`xcrun notarytool submit $2 --keychain-profile "$KEYCHAIN_PROFILE" --output-format=json --wait "$1"`
   rc=$?
