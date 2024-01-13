@@ -3,16 +3,23 @@ set -ex
 
 # sends a notarization request and prints info and log for that request
 notarize() {
-  notaryout=$(xcrun notarytool submit $2 --keychain-profile "$KEYCHAIN_PROFILE" --output-format=json --wait "$1" | tee /dev/tty)
-  rc=$?
+  rm noutf | true
+  xcrun notarytool submit $2 --keychain-profile "$KEYCHAIN_PROFILE" --output-format=json --wait "$1" | tee noutf
+  rc=${PIPESTATUS[0]}
+  notaryout=$(cat noutf)
+  rm noutf
   echo $notaryout
   id=$(echo "$notaryout" | grep -o '"id":"[^"]*"' | cut -d'"' -f4)
-  echo "notarytool: submitting $1 resulted in rc=$rc, id=$id"
-  echo "notarytool: info"
-  xcrun notarytool info --keychain-profile "$KEYCHAIN_PROFILE" --output-format=json $id
-  echo "notarytool: log"
-  xcrun notarytool log --keychain-profile "$KEYCHAIN_PROFILE" --output-format=json $id
-  return $rc
+  status=$(echo "$notaryout" | grep -o '"status":"[^"]*"' | cut -d'"' -f4)
+  echo "notarytool: submitting $1 resulted in $status (id=$id)"
+  if [[ $rc -eq 0 && $status == "Accepted" ]]; then
+    echo "Notarization successful."
+    return 0
+  else
+    echo "Notarization unsuccessful. Printing Log."
+    xcrun notarytool log --keychain-profile "$KEYCHAIN_PROFILE" --output-format=json $id
+    return 1
+  fi
 }
 
 KEYCHAIN_PROFILE=sapmachine-notarization
@@ -57,7 +64,10 @@ DMG_NOTARIZE_BASE="${WORKSPACE}/dmg_notarize_base"
 security unlock-keychain -p $unlockpass ~/Library/Keychains/login.keychain
 
 # JDK
-id=$(notarize "${WORKSPACE}/${ARCHIVE_NAME_JDK}" "--force")
+if notarize "${WORKSPACE}/${ARCHIVE_NAME_JDK}" "--force"; then
+  return 1
+fi
+
 DMG_NAME_JDK=$(basename ${ARCHIVE_NAME_JDK} .tar.gz)
 rm -rf ${DMG_NOTARIZE_BASE}
 mkdir -p ${DMG_NOTARIZE_BASE}
@@ -75,11 +85,17 @@ echo "${DMG_NAME_JDK}.dmg" > "${WORKSPACE}/jdk_dmg_name.txt"
 xcrun stapler staple ${DMG_NOTARIZE_BASE}/*
 rm "${WORKSPACE}/${ARCHIVE_NAME_JDK}"
 tar -czf "${WORKSPACE}/${ARCHIVE_NAME_JDK}" -C ${DMG_NOTARIZE_BASE} .
-id=$(notarize "${WORKSPACE}/${DMG_NAME_JDK}.dmg")
+if notarize "${WORKSPACE}/${DMG_NAME_JDK}.dmg"; then
+  return 1
+fi
+
 xcrun stapler staple "${WORKSPACE}/${DMG_NAME_JDK}.dmg"
 
 # JRE
-id=$(notarize "${WORKSPACE}/${ARCHIVE_NAME_JRE}" "--force")
+if notarize "${WORKSPACE}/${ARCHIVE_NAME_JRE}" "--force"; then
+  return 1
+fi
+
 DMG_NAME_JRE=$(basename ${ARCHIVE_NAME_JRE} .tar.gz)
 rm -rf ${DMG_NOTARIZE_BASE}
 mkdir -p ${DMG_NOTARIZE_BASE}
@@ -98,5 +114,7 @@ echo "${DMG_NAME_JRE}.dmg" > "${WORKSPACE}/jre_dmg_name.txt"
 xcrun stapler staple ${DMG_NOTARIZE_BASE}/*
 rm "${WORKSPACE}/${ARCHIVE_NAME_JRE}"
 tar -czf "${WORKSPACE}/${ARCHIVE_NAME_JRE}" -C ${DMG_NOTARIZE_BASE} .
-id=$(notarize "${WORKSPACE}/${DMG_NAME_JRE}.dmg")
+if notarize "${WORKSPACE}/${DMG_NAME_JRE}.dmg"; then
+  return 1
+fi
 xcrun stapler staple "${WORKSPACE}/${DMG_NAME_JRE}.dmg"
