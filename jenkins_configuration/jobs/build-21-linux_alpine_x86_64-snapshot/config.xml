@@ -29,7 +29,6 @@
                     env.BUILD_INSTALLER_PACKAGES = params.BUILD_INSTALLER_PACKAGES
                     env.ART_VERSION = "snapshot-21-" + (new java.text.SimpleDateFormat("yyyyMMddHHmmss")).format(new Date())
                     env.RELEASE = "false"
-                    env.NODMG = "true"
                 }
             }
         }

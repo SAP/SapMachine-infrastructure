@@ -258,10 +258,10 @@
                 }
             }
         }
-        stage("Sign and Notarize") {
+        stage("Create DMG and Notarize") {
             steps {
                 withCredentials([string(credentialsId: 'MacOSKeyChainUnlockPW', variable: 'unlockpass')]) {
-                    sh("SapMachine-infrastructure/lib/sign_notarize.sh")
+                    sh("SapMachine-infrastructure/lib/create_dmg_and_notarize.sh")
                 }
             }
         }
