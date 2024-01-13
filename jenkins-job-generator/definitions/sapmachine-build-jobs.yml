@@ -238,7 +238,7 @@
                             }}
                         }}
             dmg_and_notarize: &dmg_and_notarize |-
-                stage("Create DMG and Notarize") {{
+                stage("DMG and Notarize") {{
                             steps {{
                                 withCredentials([string(credentialsId: 'MacOSKeyChainUnlockPW', variable: 'unlockpass')]) {{
                                     sh("SapMachine-infrastructure/lib/create_dmg_and_notarize.sh")
