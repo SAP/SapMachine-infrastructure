@@ -99,7 +99,7 @@ if [ -z $JDK_NAME ]; then
   JDK_NAME=$(ls *jdk-*_bin-debug.*)
 fi
 if [[ $JDK_NAME = sapmachine-* ]]; then
-  SAPMACHINE_BUNDLE_PREFIX="sapmachine-"
+  SAPMACHINE_BUNDLE_PREFIX=sapmachine-
 fi
 read JDK_VERSION JDK_SUFFIX<<< $(echo $JDK_NAME | sed $SEDFLAGS 's/'"${SAPMACHINE_BUNDLE_PREFIX}"'jdk-([0-9]+((\.[0-9]+))*)(.*)/ \1 \4 /p')
 JDK_BUNDLE_NAME="${SAPMACHINE_BUNDLE_PREFIX}jdk-${JDK_VERSION}${JDK_SUFFIX}"
@@ -107,7 +107,7 @@ JRE_BUNDLE_NAME="${SAPMACHINE_BUNDLE_PREFIX}jre-${JDK_VERSION}${JDK_SUFFIX}"
 SYMBOLS_BUNDLE_NAME=$(ls *_bin-*symbols.*)
 
 shopt -s nullglob
-for file in "${WORKSPACE}/${SAPMACHINE_BUNDLE_PREFIX}jdk-*" "${WORKSPACE}/${SAPMACHINE_BUNDLE_PREFIX}jre-*"; do
+for file in "${WORKSPACE}/${SAPMACHINE_BUNDLE_PREFIX}jdk-"* "${WORKSPACE}/${SAPMACHINE_BUNDLE_PREFIX}jre-"*; do
   rm "$file"
 done
 shopt -u nullglob
