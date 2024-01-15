@@ -5,7 +5,7 @@ set -e
 # Send notarization request and wait for completion. If unsuccessful, print request log and exit with error.
 KEYCHAIN_PROFILE=sapmachine-notarization
 notarize() {
-  notaryout=$(xcrun notarytool submit $2 --keychain-profile "$KEYCHAIN_PROFILE" --output-format=json --wait "$1")
+  notaryout=$(set -x && xcrun notarytool submit $2 --keychain-profile "$KEYCHAIN_PROFILE" --output-format=json --wait "$1")
   rc=$?
   echo $notaryout
   id=$(echo "$notaryout" | grep -o '"id":"[^"]*"' | cut -d'"' -f4)
@@ -61,12 +61,11 @@ DMG_NAME_JDK=$(basename ${ARCHIVE_NAME_JDK} .tar.gz)
 rm -rf ${DMG_NOTARIZE_BASE}
 mkdir -p ${DMG_NOTARIZE_BASE}
 tar -xzf "${WORKSPACE}/${ARCHIVE_NAME_JDK}" -C ${DMG_NOTARIZE_BASE}
-hdierror=0
-hdiutil create -srcfolder ${DMG_NOTARIZE_BASE} -fs HFS+ -volname ${DMG_NAME_JDK} "${WORKSPACE}/${DMG_NAME_JDK}.dmg" || hdierror=1
-if [ $hdierror -ne 0 ]; then
+(set -x && hdiutil create -srcfolder ${DMG_NOTARIZE_BASE} -fs HFS+ -volname ${DMG_NAME_JDK} "${WORKSPACE}/${DMG_NAME_JDK}.dmg" || return 1)
+if [ $? -ne 0 ]; then
   # Sometimes we see errors like "hdiutil: create failed - Resource busy." Let's retry once after sleeping a little while.
   sleep 30
-  hdiutil create -verbose -srcfolder ${DMG_NOTARIZE_BASE} -fs HFS+ -volname ${DMG_NAME_JDK} "${WORKSPACE}/${DMG_NAME_JDK}.dmg"
+  (set -x && hdiutil create -verbose -srcfolder ${DMG_NOTARIZE_BASE} -fs HFS+ -volname ${DMG_NAME_JDK} "${WORKSPACE}/${DMG_NAME_JDK}.dmg")
 fi
 echo "${DMG_NAME_JDK}.dmg" > "${WORKSPACE}/jdk_dmg_name.txt"
 xcrun stapler staple ${DMG_NOTARIZE_BASE}/*
@@ -81,12 +80,11 @@ DMG_NAME_JRE=$(basename ${ARCHIVE_NAME_JRE} .tar.gz)
 rm -rf ${DMG_NOTARIZE_BASE}
 mkdir -p ${DMG_NOTARIZE_BASE}
 tar -xzf "${WORKSPACE}/${ARCHIVE_NAME_JRE}" -C ${DMG_NOTARIZE_BASE}
-hdierror=0
-hdiutil create -srcfolder ${DMG_NOTARIZE_BASE} -fs HFS+ -volname ${DMG_NAME_JRE} "${WORKSPACE}/${DMG_NAME_JRE}.dmg" || hdierror=1
-if [ $hdierror -ne 0 ]; then
+(set -x && hdiutil create -srcfolder ${DMG_NOTARIZE_BASE} -fs HFS+ -volname ${DMG_NAME_JRE} "${WORKSPACE}/${DMG_NAME_JRE}.dmg" || return 1)
+if [ $? -ne 0 ]; then
   # Sometimes we see errors like "hdiutil: create failed - Resource busy." Let's retry once after sleeping a little while.
   sleep 30
-  hdiutil create -verbose -srcfolder ${DMG_NOTARIZE_BASE} -fs HFS+ -volname ${DMG_NAME_JRE} "${WORKSPACE}/${DMG_NAME_JRE}.dmg"
+  (set -x && hdiutil create -verbose -srcfolder ${DMG_NOTARIZE_BASE} -fs HFS+ -volname ${DMG_NAME_JRE} "${WORKSPACE}/${DMG_NAME_JRE}.dmg")
 fi
 echo "${DMG_NAME_JRE}.dmg" > "${WORKSPACE}/jre_dmg_name.txt"
 xcrun stapler staple ${DMG_NOTARIZE_BASE}/*
