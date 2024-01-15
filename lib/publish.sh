@@ -1,5 +1,6 @@
 #!/bin/bash
-set -ex
+#set -ex
+set -e
 
 UNAME=`uname`
 
