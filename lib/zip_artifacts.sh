@@ -1,6 +1,7 @@
 #!/bin/bash
 #set -ex
 set -e
+shopt -s nullglob
 
 if [[ -z $WORKSPACE ]]; then
   WORKSPACE=$PWD
@@ -106,11 +107,9 @@ JDK_BUNDLE_NAME="${SAPMACHINE_BUNDLE_PREFIX}jdk-${JDK_VERSION}${JDK_SUFFIX}"
 JRE_BUNDLE_NAME="${SAPMACHINE_BUNDLE_PREFIX}jre-${JDK_VERSION}${JDK_SUFFIX}"
 SYMBOLS_BUNDLE_NAME=$(ls *_bin-*symbols.*)
 
-shopt -s nullglob
 for file in "${WORKSPACE}/${SAPMACHINE_BUNDLE_PREFIX}jdk-"* "${WORKSPACE}/${SAPMACHINE_BUNDLE_PREFIX}jre-"*; do
   rm "$file"
 done
-shopt -u nullglob
 
 cp ${JDK_BUNDLE_NAME} "${WORKSPACE}"
 cp ${JRE_BUNDLE_NAME} "${WORKSPACE}"
