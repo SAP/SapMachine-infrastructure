@@ -64,9 +64,7 @@ eval _CONFIGURE_OPTS=(${_CONFIGURE_OPTS})
 if [[ $UNAME == Darwin ]]; then
   touch cstest
   echo "Testing codesign call..."
-  codesign -s "Developer ID Application: SAP SE (7R5ZEU67FQ)" cstest
-  rc=$?
-  echo "codesign returned $rc."
+  codesign -s "Developer ID Application: SAP SE (7R5ZEU67FQ)" cstest || echo "codesign returned error."
   rm cstest
 fi
 
