@@ -703,7 +703,6 @@
                         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
                             script {{
                                 sh("SapMachine-infrastructure/lib/build.sh")
-                                {get_art_ver|}
                             }}
                         }}
                     }}
@@ -714,6 +713,7 @@
                     steps {{
                         script {{
                             sh("SapMachine-infrastructure/lib/zip_artifacts.sh")
+                            {get_art_ver|}
                         }}
                     }}
                 }}

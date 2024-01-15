@@ -77,4 +77,8 @@ $_CONFIGURE_OS_OPTIONS \
 --with-freetype=bundled \
 $EXTRA_CONFIGURE_OPTIONS)
 
-(set -x && make JOBS=12 product-bundles legacy-bundles test-image)
+if [ "$RELEASE_BUILD" != true ]; then
+  _TEST_IMAGE_OPT=" test-image"
+fi
+
+(set -x && make JOBS=12 product-bundles legacy-bundles$_TEST_IMAGE_OPT)
