@@ -3,13 +3,10 @@ set -ex
 
 UNAME=`uname`
 
-PRE_RELEASE_OPT="-p"
 if [ "$RELEASE" == true ]; then
   PRE_RELEASE_OPT=""
-
-  if [[ $UNAME == Darwin ]]; then
-    exit 0
-  fi
+else
+  PRE_RELEASE_OPT="-p"
 fi
 
 if [[ -z $SAPMACHINE_GIT_REPOSITORY ]]; then
