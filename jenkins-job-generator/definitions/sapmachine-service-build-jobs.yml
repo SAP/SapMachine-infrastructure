@@ -3,7 +3,11 @@
     type_snapshot: &type_snapshot_service
         - snapshot:
             type: snapshot
-            tests_option_param: "[$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],"
+            tests_option_param: |-
+                string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
+                string(name: 'jdk_test_groups', value: params.jdk_test_groups),
+                string(name: 'langtools_test_groups', value: params.langtools_test_groups),
+                [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
             trigger_macos_builds: |
                 platforms.putAll([
                                         "macos_aarch64": params.BUILD_MACOS_ARM_64,
@@ -56,9 +60,6 @@
                                             string(name: 'SAPMACHINE_VERSION', value: params.SAPMACHINE_VERSION),
                                             string(name: 'JDK_BUILD', value: params.JDK_BUILD),
                                             string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
-                                            string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
-                                            string(name: 'jdk_test_groups', value: params.jdk_test_groups),
-                                            string(name: 'langtools_test_groups', value: params.langtools_test_groups),
                                             {tests_option_param|}
                                             [$class: 'BooleanParameterValue', name: 'BUILD_INSTALLER_PACKAGES', value: params.BUILD_INSTALLER_PACKAGES],
                                             [$class: 'BooleanParameterValue', name: 'CREATE_GENSRC_BUNDLE', value: params.CREATE_GENSRC_BUNDLE],
@@ -421,18 +422,6 @@
             name: EXTRA_CONFIGURE_OPTIONS
             default: '{extra_configure_options|}'
             description: 'Extra configure options passed directly to configure script.'
-        - string:
-            name: hotspot_test_groups
-            default: ':tier1'
-            description: 'Select the test group for jtreg hotspot tests. Empty means disabled.'
-        - string:
-            name: jdk_test_groups
-            default: ':tier1'
-            description: 'Select the test group for jtreg jdk tests. Empty means disabled.'
-        - string:
-            name: langtools_test_groups
-            default: '"jdk tools lib"'
-            description: 'Select the test group for jtreg langtools tests. Empty means disabled.'
         - bool:
             name: BUILD_INSTALLER_PACKAGES
             default: true
@@ -509,18 +498,6 @@
             name: EXTRA_CONFIGURE_OPTIONS
             default: '{extra_configure_options|}'
             description: 'Extra configure options passed directly to configure script.'
-        - string:
-            name: hotspot_test_groups
-            default: ':tier1'
-            description: 'Select the test group for jtreg hotspot tests. Empty means disabled.'
-        - string:
-            name: jdk_test_groups
-            default: ':tier1'
-            description: 'Select the test group for jtreg jdk tests. Empty means disabled.'
-        - string:
-            name: langtools_test_groups
-            default: '"jdk tools lib"'
-            description: 'Select the test group for jtreg langtools tests. Empty means disabled.'
         - bool:
             name: BUILD_INSTALLER_PACKAGES
             default: true
@@ -593,18 +570,6 @@
             name: EXTRA_CONFIGURE_OPTIONS
             default: '{extra_configure_options|}'
             description: 'Extra configure options passed directly to configure script.'
-        - string:
-            name: hotspot_test_groups
-            default: ':tier1'
-            description: 'Select the test group for jtreg hotspot tests. Empty means disabled.'
-        - string:
-            name: jdk_test_groups
-            default: ':tier1'
-            description: 'Select the test group for jtreg jdk tests. Empty means disabled.'
-        - string:
-            name: langtools_test_groups
-            default: '"jdk tools lib"'
-            description: 'Select the test group for jtreg langtools tests. Empty means disabled.'
         - bool:
             name: BUILD_INSTALLER_PACKAGES
             default: true

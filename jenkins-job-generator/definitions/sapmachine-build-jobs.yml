@@ -949,18 +949,6 @@
             name: EXTRA_CONFIGURE_OPTIONS
             default: '{extra_configure_options|}'
             description: 'Extra configure options passed directly to configure script.'
-        - string:
-            name: hotspot_test_groups
-            default: ':tier1'
-            description: 'Select the test group for jtreg hotspot tests. Empty means disabled.'
-        - string:
-            name: jdk_test_groups
-            default: ':tier1'
-            description: 'Select the test group for jtreg jdk tests. Empty means disabled.'
-        - string:
-            name: langtools_test_groups
-            default: ':tier1'
-            description: 'Select the test group for jtreg langtools tests. Empty means disabled.'
         - bool:
             name: BUILD_INSTALLER_PACKAGES
             default: true
