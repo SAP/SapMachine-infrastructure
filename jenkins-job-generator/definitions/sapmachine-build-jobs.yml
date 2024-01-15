@@ -372,6 +372,95 @@
                                 beforeAgent true
                                 expression {{ env.VERIFICATION_RESULT != "2" }}
                             }}
+            run_jtreg_hotspot: |-
+                stage("Run jtreg hotspot") {{
+                            {docker_agent|}
+                            when {{
+                                beforeAgent true
+                                expression {{ {verification_switch|} params.RUN_TESTS == true && params.hotspot_test_groups }}
+                            }}
+                            environment {{
+                                TESTSUITE = 'hotspot'
+                            }}
+                            steps {{
+                                sh 'bash SapMachine-infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s $TESTSUITE "$hotspot_test_groups" || true'
+                                publishHTML target: [
+                                    allowMissing: false,
+                                    alwaysLinkToLastBuild: false,
+                                    keepAll: true,
+                                    reportDir: "test_report_${{env.TESTSUITE}}",
+                                    reportFiles: 'JTreport/index.html',
+                                    reportName: "JT Report ${{env.TESTSUITE}}"
+                                ]
+                                // persist data for test trend graph
+                                junit "test_report_${{env.TESTSUITE}}/JTwork/**/*.jtr.xml"
+                                script {{
+                                    if (findFiles([glob: 'test_report_${{env.TESTSUITE}}/JTwork/**/hs_err_pid*.log']).size() > 0) {{
+                                        archiveArtifacts allowEmptyArchive: true, artifacts: "test_report_${{env.TESTSUITE}}/JTwork/**/hs_err_pid*.log"
+                                    }}
+                                }}
+                            }}
+                        }}
+            run_jtreg_jdk: |-
+                stage("Run jtreg jdk") {{
+                            {docker_agent|}
+                            when {{
+                                beforeAgent true
+                                expression {{ {verification_switch|} params.RUN_TESTS == true && params.jdk_test_groups }}
+                            }}
+                            environment {{
+                                TESTSUITE = 'jdk'
+                            }}
+                            steps {{
+                                sh 'bash SapMachine-infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s $TESTSUITE "$jdk_test_groups" || true'
+
+                                publishHTML target: [
+                                    allowMissing: false,
+                                    alwaysLinkToLastBuild: false,
+                                    keepAll: true,
+                                    reportDir: "test_report_${{env.TESTSUITE}}",
+                                    reportFiles: 'JTreport/index.html',
+                                    reportName: "JT Report ${{env.TESTSUITE}}"
+                                ]
+                                // persist data for test trend graph
+                                junit "test_report_${{env.TESTSUITE}}/JTwork/**/*.jtr.xml"
+                                script {{
+                                    if (findFiles([glob: 'test_report_${{env.TESTSUITE}}/JTwork/**/hs_err_pid*.log']).size() > 0) {{
+                                        archiveArtifacts allowEmptyArchive: true, artifacts: "test_report_${{env.TESTSUITE}}/JTwork/**/hs_err_pid*.log"
+                                    }}
+                                }}
+                            }}
+                        }}
+            run_jtreg_langtools: |-
+                stage("Run jtreg langtools") {{
+                            {docker_agent|}
+                            when {{
+                                beforeAgent true
+                                expression {{ {verification_switch|} params.RUN_TESTS == true && params.langtools_test_groups }}
+                            }}
+                            environment {{
+                                TESTSUITE = 'langtools'
+                            }}
+                            steps {{
+                                sh 'bash SapMachine-infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s $TESTSUITE "$langtools_test_groups" || true'
+
+                                publishHTML target: [
+                                    allowMissing: false,
+                                    alwaysLinkToLastBuild: false,
+                                    keepAll: true,
+                                    reportDir: "test_report_${{env.TESTSUITE}}",
+                                    reportFiles: 'JTreport/index.html',
+                                    reportName: "JT Report ${{env.TESTSUITE}}"
+                                ]
+                                // persist data for test trend graph
+                                junit "test_report_${{env.TESTSUITE}}/JTwork/**/*.jtr.xml"
+                                script {{
+                                    if (findFiles([glob: 'test_report_${{env.TESTSUITE}}/JTwork/**/hs_err_pid*.log']).size() > 0) {{
+                                        archiveArtifacts allowEmptyArchive: true, artifacts: "test_report_${{env.TESTSUITE}}/JTwork/**/hs_err_pid*.log"
+                                    }}
+                                }}
+                            }}
+                        }}
             build_windows_installer: ''
             build_debian_packages_pre: ''
             docker_agent_debian: ''
@@ -415,6 +504,9 @@
                                     env.BUILD_INSTALLER_PACKAGES = params.BUILD_INSTALLER_PACKAGES
                                     env.ART_VERSION = "snapshot-{major}-" + (new java.text.SimpleDateFormat("yyyyMMddHHmmss")).format(new Date())
                                     env.RELEASE = "false"
+            run_jtreg_hotspot: &run_jtreg_hotspot
+            run_jtreg_jdk: &run_jtreg_jdk
+            run_jtreg_langtools: &run_jtreg_langtools
             publish_artifactory_pre: &publish_artifactory_pre 'stage("Publish Artifactory") {{'
             publish_artifactory_when: |-
                 when {{
@@ -618,92 +710,9 @@
                     }}
                 }}
                 {bundle_and_notarize|}
-                stage("Run jtreg hotspot") {{
-                    {docker_agent|}
-                    when {{
-                        beforeAgent true
-                        expression {{ {verification_switch|} params.RUN_TESTS == true && params.hotspot_test_groups }}
-                    }}
-                    environment {{
-                        TESTSUITE = 'hotspot'
-                    }}
-                    steps {{
-                        sh 'bash SapMachine-infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s $TESTSUITE "$hotspot_test_groups" || true'
-                        publishHTML target: [
-                            allowMissing: false,
-                            alwaysLinkToLastBuild: false,
-                            keepAll: true,
-                            reportDir: "test_report_${{env.TESTSUITE}}",
-                            reportFiles: 'JTreport/index.html',
-                            reportName: "JT Report ${{env.TESTSUITE}}"
-                        ]
-                        // persist data for test trend graph
-                        junit "test_report_${{env.TESTSUITE}}/JTwork/**/*.jtr.xml"
-                        script {{
-                            if (findFiles([glob: 'test_report_${{env.TESTSUITE}}/JTwork/**/hs_err_pid*.log']).size() > 0) {{
-                                archiveArtifacts allowEmptyArchive: true, artifacts: "test_report_${{env.TESTSUITE}}/JTwork/**/hs_err_pid*.log"
-                            }}
-                        }}
-                    }}
-                }}
-                stage("Run jtreg jdk") {{
-                    {docker_agent|}
-                    when {{
-                        beforeAgent true
-                        expression {{ {verification_switch|} params.RUN_TESTS == true && params.jdk_test_groups }}
-                    }}
-                    environment {{
-                        TESTSUITE = 'jdk'
-                    }}
-                    steps {{
-                        sh 'bash SapMachine-infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s $TESTSUITE "$jdk_test_groups" || true'
-
-                        publishHTML target: [
-                            allowMissing: false,
-                            alwaysLinkToLastBuild: false,
-                            keepAll: true,
-                            reportDir: "test_report_${{env.TESTSUITE}}",
-                            reportFiles: 'JTreport/index.html',
-                            reportName: "JT Report ${{env.TESTSUITE}}"
-                        ]
-                        // persist data for test trend graph
-                        junit "test_report_${{env.TESTSUITE}}/JTwork/**/*.jtr.xml"
-                        script {{
-                            if (findFiles([glob: 'test_report_${{env.TESTSUITE}}/JTwork/**/hs_err_pid*.log']).size() > 0) {{
-                                archiveArtifacts allowEmptyArchive: true, artifacts: "test_report_${{env.TESTSUITE}}/JTwork/**/hs_err_pid*.log"
-                            }}
-                        }}
-                    }}
-                }}
-                stage("Run jtreg langtools") {{
-                    {docker_agent|}
-                    when {{
-                        beforeAgent true
-                        expression {{ {verification_switch|} params.RUN_TESTS == true && params.langtools_test_groups }}
-                    }}
-                    environment {{
-                        TESTSUITE = 'langtools'
-                    }}
-                    steps {{
-                        sh 'bash SapMachine-infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s $TESTSUITE "$langtools_test_groups" || true'
-
-                        publishHTML target: [
-                            allowMissing: false,
-                            alwaysLinkToLastBuild: false,
-                            keepAll: true,
-                            reportDir: "test_report_${{env.TESTSUITE}}",
-                            reportFiles: 'JTreport/index.html',
-                            reportName: "JT Report ${{env.TESTSUITE}}"
-                        ]
-                        // persist data for test trend graph
-                        junit "test_report_${{env.TESTSUITE}}/JTwork/**/*.jtr.xml"
-                        script {{
-                            if (findFiles([glob: 'test_report_${{env.TESTSUITE}}/JTwork/**/hs_err_pid*.log']).size() > 0) {{
-                                archiveArtifacts allowEmptyArchive: true, artifacts: "test_report_${{env.TESTSUITE}}/JTwork/**/hs_err_pid*.log"
-                            }}
-                        }}
-                    }}
-                }}
+                {run_jtreg_hotspot|}
+                {run_jtreg_jdk|}
+                {run_jtreg_langtools|}
                 {build_windows_installer|}
                 {build_debian_packages_pre|}
                     {docker_agent_debian|}
@@ -944,10 +953,6 @@
             name: langtools_test_groups
             default: ':tier1'
             description: 'Select the test group for jtreg langtools tests. Empty means disabled.'
-        - bool:
-            name: RUN_TESTS
-            default: false
-            description: 'Enable/disable jtreg runs.'
         - bool:
             name: BUILD_INSTALLER_PACKAGES
             default: true

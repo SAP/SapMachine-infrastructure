@@ -3,6 +3,7 @@
     type_snapshot: &type_snapshot_service
         - snapshot:
             type: snapshot
+            tests_option_param: "[$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],"
             trigger_macos_builds: |
                 platforms.putAll([
                                         "macos_aarch64": params.BUILD_MACOS_ARM_64,
@@ -10,7 +11,7 @@
     type_release: &type_release_service
         - release:
             type: release
-            release_option_param: "[$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],"
+            publish_option_param: "[$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],"
             trigger_macos_builds: |
                 // only trigger macos jobs for non-release builds
                                     def tag = params.SAPMACHINE_VERSION.isEmpty() ? params.GIT_REF : params.SAPMACHINE_VERSION
@@ -58,11 +59,11 @@
                                             string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
                                             string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                                             string(name: 'langtools_test_groups', value: params.langtools_test_groups),
-                                            [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
+                                            {tests_option_param|}
                                             [$class: 'BooleanParameterValue', name: 'BUILD_INSTALLER_PACKAGES', value: params.BUILD_INSTALLER_PACKAGES],
                                             [$class: 'BooleanParameterValue', name: 'CREATE_GENSRC_BUNDLE', value: params.CREATE_GENSRC_BUNDLE],
                                             [$class: 'BooleanParameterValue', name: 'UPLOAD_ARTIFACTORY', value: params.UPLOAD_ARTIFACTORY],
-                                            {release_option_param|}
+                                            {publish_option_param|}
                                             [$class: 'BooleanParameterValue', name: 'ARCHIVE_WORKSPACE', value: params.ARCHIVE_WORKSPACE]
                                         ]
                                 }} else {{
@@ -433,10 +434,6 @@
             default: '"jdk tools lib"'
             description: 'Select the test group for jtreg langtools tests. Empty means disabled.'
         - bool:
-            name: RUN_TESTS
-            default: false
-            description: 'Enable/disable jtreg runs.'
-        - bool:
             name: BUILD_INSTALLER_PACKAGES
             default: true
             description: 'Build platform installer packages, e.g. Windows MSI, Debian packages.'
@@ -525,10 +522,6 @@
             default: '"jdk tools lib"'
             description: 'Select the test group for jtreg langtools tests. Empty means disabled.'
         - bool:
-            name: RUN_TESTS
-            default: false
-            description: 'Enable/disable jtreg runs.'
-        - bool:
             name: BUILD_INSTALLER_PACKAGES
             default: true
             description: 'Build platform installer packages, e.g. Windows MSI, Debian packages.'
@@ -612,10 +605,6 @@
             name: langtools_test_groups
             default: '"jdk tools lib"'
             description: 'Select the test group for jtreg langtools tests. Empty means disabled.'
-        - bool:
-            name: RUN_TESTS
-            default: false
-            description: 'Enable/disable jtreg runs.'
         - bool:
             name: BUILD_INSTALLER_PACKAGES
             default: true
