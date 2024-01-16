@@ -151,120 +151,33 @@
                 BOOT_JDK = "${WORKSPACE}/boot_jdk"
             }
             steps {
-                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD'],
-                                 string(credentialsId: 'MacOSKeyChainUnlockPW', variable: 'unlockpass')]) {
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
                     script {
                         sh("SapMachine-infrastructure/lib/build.sh")
-                        env.ART_VERSION = readFile "${env.WORKSPACE}/javavmversion.txt"
                     }
+                }
+            }
+        }
+        stage("Zip Artifacts") {
+            agent {
+                docker {
+                    image "alpine_3-x86_64"
+                    reuseNode true
+                    label "linux_alpine_x86_64"
+                }
+            }
+            
+            steps {
+                script {
+                    sh("SapMachine-infrastructure/lib/zip_artifacts.sh")
+                    env.ART_VERSION = readFile "${env.WORKSPACE}/javavmversion.txt"
                 }
             }
         }
         
-        stage("Run jtreg hotspot") {
-            agent {
-                docker {
-                    image "alpine_3-x86_64"
-                    reuseNode true
-                    label "linux_alpine_x86_64"
-                }
-            }
-            when {
-                beforeAgent true
-                expression {  params.RUN_TESTS == true &amp;&amp; params.hotspot_test_groups }
-            }
-            environment {
-                TESTSUITE = 'hotspot'
-            }
-            steps {
-                sh 'bash SapMachine-infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s $TESTSUITE "$hotspot_test_groups" || true'
-                publishHTML target: [
-                    allowMissing: false,
-                    alwaysLinkToLastBuild: false,
-                    keepAll: true,
-                    reportDir: "test_report_${env.TESTSUITE}",
-                    reportFiles: 'JTreport/index.html',
-                    reportName: "JT Report ${env.TESTSUITE}"
-                ]
-                // persist data for test trend graph
-                junit "test_report_${env.TESTSUITE}/JTwork/**/*.jtr.xml"
-                script {
-                    if (findFiles([glob: 'test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log']).size() &gt; 0) {
-                        archiveArtifacts allowEmptyArchive: true, artifacts: "test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log"
-                    }
-                }
-            }
-        }
-        stage("Run jtreg jdk") {
-            agent {
-                docker {
-                    image "alpine_3-x86_64"
-                    reuseNode true
-                    label "linux_alpine_x86_64"
-                }
-            }
-            when {
-                beforeAgent true
-                expression {  params.RUN_TESTS == true &amp;&amp; params.jdk_test_groups }
-            }
-            environment {
-                TESTSUITE = 'jdk'
-            }
-            steps {
-                sh 'bash SapMachine-infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s $TESTSUITE "$jdk_test_groups" || true'
-
-                publishHTML target: [
-                    allowMissing: false,
-                    alwaysLinkToLastBuild: false,
-                    keepAll: true,
-                    reportDir: "test_report_${env.TESTSUITE}",
-                    reportFiles: 'JTreport/index.html',
-                    reportName: "JT Report ${env.TESTSUITE}"
-                ]
-                // persist data for test trend graph
-                junit "test_report_${env.TESTSUITE}/JTwork/**/*.jtr.xml"
-                script {
-                    if (findFiles([glob: 'test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log']).size() &gt; 0) {
-                        archiveArtifacts allowEmptyArchive: true, artifacts: "test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log"
-                    }
-                }
-            }
-        }
-        stage("Run jtreg langtools") {
-            agent {
-                docker {
-                    image "alpine_3-x86_64"
-                    reuseNode true
-                    label "linux_alpine_x86_64"
-                }
-            }
-            when {
-                beforeAgent true
-                expression {  params.RUN_TESTS == true &amp;&amp; params.langtools_test_groups }
-            }
-            environment {
-                TESTSUITE = 'langtools'
-            }
-            steps {
-                sh 'bash SapMachine-infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s $TESTSUITE "$langtools_test_groups" || true'
-
-                publishHTML target: [
-                    allowMissing: false,
-                    alwaysLinkToLastBuild: false,
-                    keepAll: true,
-                    reportDir: "test_report_${env.TESTSUITE}",
-                    reportFiles: 'JTreport/index.html',
-                    reportName: "JT Report ${env.TESTSUITE}"
-                ]
-                // persist data for test trend graph
-                junit "test_report_${env.TESTSUITE}/JTwork/**/*.jtr.xml"
-                script {
-                    if (findFiles([glob: 'test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log']).size() &gt; 0) {
-                        archiveArtifacts allowEmptyArchive: true, artifacts: "test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log"
-                    }
-                }
-            }
-        }
+        
+        
+        
         
         
             
@@ -291,9 +204,6 @@
                 }
             }
         }
-        
-        
-        
         stage("Publish Release Data") {
             when {
                 expression { params.PUBLISH == true }
@@ -306,6 +216,9 @@
                 }
             }
         }
+        
+        
+        
         stage("Build Alpine apk Packages") {
             agent {
                 docker {
@@ -423,29 +336,6 @@
           <defaultValue />
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>hotspot_test_groups</name>
-          <description>Select the test group for jtreg hotspot tests. Empty means disabled.</description>
-          <defaultValue>:tier1</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>jdk_test_groups</name>
-          <description>Select the test group for jtreg jdk tests. Empty means disabled.</description>
-          <defaultValue>:tier1</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>langtools_test_groups</name>
-          <description>Select the test group for jtreg langtools tests. Empty means disabled.</description>
-          <defaultValue>:tier1</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.BooleanParameterDefinition>
-          <name>RUN_TESTS</name>
-          <description>Enable/disable jtreg runs.</description>
-          <defaultValue>false</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>BUILD_INSTALLER_PACKAGES</name>
           <description>Build platform installer packages, e.g. Windows MSI, Debian packages.</description>

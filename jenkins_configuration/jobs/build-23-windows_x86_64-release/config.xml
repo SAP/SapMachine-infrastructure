@@ -1,5 +1,104 @@
-<flow-definition plugin="workflow-job">
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps">
+<flow-definition plugin="workflow-job@1385.vb_58b_86ea_fff1">
+  <actions>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@2.2151.ve32c9d209a_3f" />
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@2.2151.ve32c9d209a_3f">
+      <jobProperties />
+      <triggers />
+      <parameters />
+      <options />
+    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
+  </actions>
+  <description>Release build for SapMachine 23 on windows_x86_64.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty>
+      <abortPrevious>false</abortPrevious>
+    </org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty>
+    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.37.3.1">
+      <projectUrl>https://github.com/SAP/SapMachine</projectUrl>
+      <displayName />
+    </com.coravy.hudson.plugins.github.GithubProjectProperty>
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>-1</daysToKeep>
+        <numToKeep>20</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>1</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>SAPMACHINE_GIT_REPOSITORY</name>
+          <description>The Git repository to use.</description>
+          <defaultValue>https://github.com/SAP/SapMachine</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>GIT_REF</name>
+          <description>The Git tag, branch or commit to build.</description>
+          <defaultValue>sapmachine</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>SAPMACHINE_VERSION</name>
+          <description>Either a SapMachine Release Tag or a JDK Major version. If empty, GIT_REF is used.</description>
+          <defaultValue />
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>JDK_BUILD</name>
+          <description>Sets the version build number explicitly.</description>
+          <defaultValue />
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>SAPMACHINE_ARCHIVE_NAME_PREFIX</name>
+          <description>The prefix of the bundle archive.</description>
+          <defaultValue>sapmachine23-windows_x86_64</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>DEVKIT</name>
+          <description>Devkit, could be either a path that locally exists or the GAV coordinates to a tar.gz archive to be downloaded and extracted.</description>
+          <defaultValue>io.sapmachine.build.devkit.windows-x64:devkit-vs2019:16.11.13</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>EXTRA_CONFIGURE_OPTIONS</name>
+          <description>Extra configure options passed directly to configure script.</description>
+          <defaultValue />
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>BUILD_INSTALLER_PACKAGES</name>
+          <description>Build platform installer packages, e.g. Windows MSI, Debian packages.</description>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>CREATE_GENSRC_BUNDLE</name>
+          <description>Create a bundle with generated source files (gensrc), to be used in e.g. IDE setups.</description>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>UPLOAD_ARTIFACTORY</name>
+          <description>Upload build results to Artifactory which will trigger testing.</description>
+          <defaultValue>false</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>PUBLISH</name>
+          <description>When set to true, the resulting bundles will be published to GitHub. This implies uploading to Artifactory.</description>
+          <defaultValue>false</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>ARCHIVE_WORKSPACE</name>
+          <description>Archive workspace for inspection after build.</description>
+          <defaultValue>false</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@3826.v3b_5707fe44da_">
     <script>pipeline {
     agent {
         label "windows_x86_64"
@@ -127,102 +226,27 @@
                 BOOT_JDK = "${WORKSPACE}/boot_jdk"
             }
             steps {
-                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD'],
-                                 string(credentialsId: 'MacOSKeyChainUnlockPW', variable: 'unlockpass')]) {
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
                     script {
                         sh("SapMachine-infrastructure/lib/build.sh")
-                        env.ART_VERSION = readFile "${env.WORKSPACE}/javavmversion.txt"
                     }
+                }
+            }
+        }
+        stage("Zip Artifacts") {
+            
+            
+            steps {
+                script {
+                    sh("SapMachine-infrastructure/lib/zip_artifacts.sh")
+                    env.ART_VERSION = readFile "${env.WORKSPACE}/javavmversion.txt"
                 }
             }
         }
         
-        stage("Run jtreg hotspot") {
-            
-            when {
-                beforeAgent true
-                expression {  params.RUN_TESTS == true &amp;&amp; params.hotspot_test_groups }
-            }
-            environment {
-                TESTSUITE = 'hotspot'
-            }
-            steps {
-                sh 'bash SapMachine-infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s $TESTSUITE "$hotspot_test_groups" || true'
-                publishHTML target: [
-                    allowMissing: false,
-                    alwaysLinkToLastBuild: false,
-                    keepAll: true,
-                    reportDir: "test_report_${env.TESTSUITE}",
-                    reportFiles: 'JTreport/index.html',
-                    reportName: "JT Report ${env.TESTSUITE}"
-                ]
-                // persist data for test trend graph
-                junit "test_report_${env.TESTSUITE}/JTwork/**/*.jtr.xml"
-                script {
-                    if (findFiles([glob: 'test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log']).size() &gt; 0) {
-                        archiveArtifacts allowEmptyArchive: true, artifacts: "test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log"
-                    }
-                }
-            }
-        }
-        stage("Run jtreg jdk") {
-            
-            when {
-                beforeAgent true
-                expression {  params.RUN_TESTS == true &amp;&amp; params.jdk_test_groups }
-            }
-            environment {
-                TESTSUITE = 'jdk'
-            }
-            steps {
-                sh 'bash SapMachine-infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s $TESTSUITE "$jdk_test_groups" || true'
-
-                publishHTML target: [
-                    allowMissing: false,
-                    alwaysLinkToLastBuild: false,
-                    keepAll: true,
-                    reportDir: "test_report_${env.TESTSUITE}",
-                    reportFiles: 'JTreport/index.html',
-                    reportName: "JT Report ${env.TESTSUITE}"
-                ]
-                // persist data for test trend graph
-                junit "test_report_${env.TESTSUITE}/JTwork/**/*.jtr.xml"
-                script {
-                    if (findFiles([glob: 'test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log']).size() &gt; 0) {
-                        archiveArtifacts allowEmptyArchive: true, artifacts: "test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log"
-                    }
-                }
-            }
-        }
-        stage("Run jtreg langtools") {
-            
-            when {
-                beforeAgent true
-                expression {  params.RUN_TESTS == true &amp;&amp; params.langtools_test_groups }
-            }
-            environment {
-                TESTSUITE = 'langtools'
-            }
-            steps {
-                sh 'bash SapMachine-infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s $TESTSUITE "$langtools_test_groups" || true'
-
-                publishHTML target: [
-                    allowMissing: false,
-                    alwaysLinkToLastBuild: false,
-                    keepAll: true,
-                    reportDir: "test_report_${env.TESTSUITE}",
-                    reportFiles: 'JTreport/index.html',
-                    reportName: "JT Report ${env.TESTSUITE}"
-                ]
-                // persist data for test trend graph
-                junit "test_report_${env.TESTSUITE}/JTwork/**/*.jtr.xml"
-                script {
-                    if (findFiles([glob: 'test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log']).size() &gt; 0) {
-                        archiveArtifacts allowEmptyArchive: true, artifacts: "test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log"
-                    }
-                }
-            }
-        }
+        
+        
+        
         stage("Build Windows Installer") {
             when {
                 expression { env.BUILD_INSTALLER_PACKAGES == "true" }
@@ -278,9 +302,6 @@
                 }
             }
         }
-        
-        
-        
         stage("Publish Release Data") {
             when {
                 expression { params.PUBLISH == true }
@@ -293,6 +314,9 @@
                 }
             }
         }
+        
+        
+        
         
             
             
@@ -326,116 +350,5 @@
 </script>
     <sandbox>true</sandbox>
   </definition>
-  <actions />
-  <description>Release build for SapMachine 23 on windows_x86_64.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
-  <keepDependencies>false</keepDependencies>
-  <properties>
-    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty />
-    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github">
-      <projectUrl>https://github.com/SAP/SapMachine</projectUrl>
-      <displayName />
-    </com.coravy.hudson.plugins.github.GithubProjectProperty>
-    <jenkins.model.BuildDiscarderProperty>
-      <strategy class="hudson.tasks.LogRotator">
-        <daysToKeep>-1</daysToKeep>
-        <numToKeep>20</numToKeep>
-        <artifactDaysToKeep>-1</artifactDaysToKeep>
-        <artifactNumToKeep>1</artifactNumToKeep>
-      </strategy>
-    </jenkins.model.BuildDiscarderProperty>
-    <hudson.model.ParametersDefinitionProperty>
-      <parameterDefinitions>
-        <hudson.model.StringParameterDefinition>
-          <name>SAPMACHINE_GIT_REPOSITORY</name>
-          <description>The Git repository to use.</description>
-          <defaultValue>https://github.com/SAP/SapMachine</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>GIT_REF</name>
-          <description>The Git tag, branch or commit to build.</description>
-          <defaultValue>sapmachine</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>SAPMACHINE_VERSION</name>
-          <description>Either a SapMachine Release Tag or a JDK Major version. If empty, GIT_REF is used.</description>
-          <defaultValue />
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>JDK_BUILD</name>
-          <description>Sets the version build number explicitly.</description>
-          <defaultValue />
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>SAPMACHINE_ARCHIVE_NAME_PREFIX</name>
-          <description>The prefix of the bundle archive.</description>
-          <defaultValue>sapmachine23-windows_x86_64</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>DEVKIT</name>
-          <description>Devkit, could be either a path that locally exists or the GAV coordinates to a tar.gz archive to be downloaded and extracted.</description>
-          <defaultValue>io.sapmachine.build.devkit.windows-x64:devkit-vs2019:16.11.13</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>EXTRA_CONFIGURE_OPTIONS</name>
-          <description>Extra configure options passed directly to configure script.</description>
-          <defaultValue />
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>hotspot_test_groups</name>
-          <description>Select the test group for jtreg hotspot tests. Empty means disabled.</description>
-          <defaultValue>:tier1</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>jdk_test_groups</name>
-          <description>Select the test group for jtreg jdk tests. Empty means disabled.</description>
-          <defaultValue>:tier1</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>langtools_test_groups</name>
-          <description>Select the test group for jtreg langtools tests. Empty means disabled.</description>
-          <defaultValue>:tier1</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.BooleanParameterDefinition>
-          <name>RUN_TESTS</name>
-          <description>Enable/disable jtreg runs.</description>
-          <defaultValue>false</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
-        <hudson.model.BooleanParameterDefinition>
-          <name>BUILD_INSTALLER_PACKAGES</name>
-          <description>Build platform installer packages, e.g. Windows MSI, Debian packages.</description>
-          <defaultValue>true</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
-        <hudson.model.BooleanParameterDefinition>
-          <name>CREATE_GENSRC_BUNDLE</name>
-          <description>Create a bundle with generated source files (gensrc), to be used in e.g. IDE setups.</description>
-          <defaultValue>true</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
-        <hudson.model.BooleanParameterDefinition>
-          <name>UPLOAD_ARTIFACTORY</name>
-          <description>Upload build results to Artifactory which will trigger testing.</description>
-          <defaultValue>false</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
-        <hudson.model.BooleanParameterDefinition>
-          <name>PUBLISH</name>
-          <description>When set to true, the resulting bundles will be published to GitHub. This implies uploading to Artifactory.</description>
-          <defaultValue>false</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
-        <hudson.model.BooleanParameterDefinition>
-          <name>ARCHIVE_WORKSPACE</name>
-          <description>Archive workspace for inspection after build.</description>
-          <defaultValue>false</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
-      </parameterDefinitions>
-    </hudson.model.ParametersDefinitionProperty>
-  </properties>
+  <disabled>false</disabled>
 </flow-definition>
