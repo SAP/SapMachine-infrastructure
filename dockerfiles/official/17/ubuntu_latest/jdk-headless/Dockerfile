@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM ubuntu:23.10
 
 RUN apt-get update \
     && apt-get -y --no-install-recommends install ca-certificates gnupg \
@@ -7,7 +7,7 @@ RUN apt-get update \
     && chmod 644 /etc/apt/trusted.gpg.d/sapmachine.gpg \
     && echo "deb http://dist.sapmachine.io/debian/$(dpkg --print-architecture)/ ./" > /etc/apt/sources.list.d/sapmachine.list \
     && apt-get update \
-    && apt-get -y --no-install-recommends install sapmachine-17-jdk=17.0.10 \
+    && apt-get -y --no-install-recommends install sapmachine-17-jdk-headless=17.0.10 \
     && apt-get remove -y --purge --autoremove ca-certificates gnupg \
     && rm -rf "$GNUPGHOME" /var/lib/apt/lists/*
 
