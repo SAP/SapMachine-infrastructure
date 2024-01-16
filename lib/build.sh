@@ -61,11 +61,15 @@ _CONFIGURE_OPTS=$(python3 ../SapMachine-infrastructure/lib/get_configure_opts.py
 eval _CONFIGURE_OPTS=(${_CONFIGURE_OPTS})
 
 # test/trace call to codesign to have some indication of potential problems
-if [[ $UNAME == Darwin ]]; then
-  touch cstest
+if [[ $UNAME == Darwin ]] && [[ $RELEASE_BUILD == true]]; then
   echo "Testing codesign call..."
-  codesign -s "Developer ID Application: SAP SE (7R5ZEU67FQ)" cstest || echo "codesign returned error."
+  touch cstest
+  codesign -s "Developer ID Application: SAP SE (7R5ZEU67FQ)" cstest || echo codesignerror=true
   rm cstest
+  if [[ $codesignerror ]]; then
+    echo "Failed."
+    exit 1
+  fi
 fi
 
 (set -x && bash ./configure \
