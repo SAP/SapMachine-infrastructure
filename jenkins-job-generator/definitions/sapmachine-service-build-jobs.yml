@@ -8,23 +8,10 @@
                 string(name: 'jdk_test_groups', value: params.jdk_test_groups),
                 string(name: 'langtools_test_groups', value: params.langtools_test_groups),
                 [$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
-            trigger_macos_builds: |
-                platforms.putAll([
-                                        "macos_aarch64": params.BUILD_MACOS_ARM_64,
-                                        "macos_x86_64": params.BUILD_MACOS_X86_64])
     type_release: &type_release_service
         - release:
             type: release
             publish_option_param: "[$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],"
-            trigger_macos_builds: |
-                // only trigger macos jobs for non-release builds
-                                    def tag = params.SAPMACHINE_VERSION.isEmpty() ? params.GIT_REF : params.SAPMACHINE_VERSION
-                                    def m = (tag =~ /sapmachine-((\d+(\.\d+)*)(\+(\d+))?)$/)
-                                    if (!m || m.group(4) != null) {{
-                                        platforms.putAll([
-                                            "macos_aarch64": params.BUILD_MACOS_ARM_64,
-                                            "macos_x86_64": params.BUILD_MACOS_X86_64])
-                                    }}
     majors: &majors_service
         - '21':
             branch_name: sapmachine21
@@ -44,10 +31,10 @@
                                 {linux_alpine_include|}
                                 "linux_ppc64le": params.BUILD_LINUX_PPC64LE,
                                 "linux_x86_64": params.BUILD_LINUX_X86_64,
+                                "macos_aarch64": params.BUILD_MACOS_ARM_64,
+                                "macos_x86_64": params.BUILD_MACOS_X86_64,
                                 "windows_x86_64": params.BUILD_WINDOWS_X86_64
                             ]
-
-                            {trigger_macos_builds|}
 
                             for (p in platforms) {{
                                 if (p.value) {{
