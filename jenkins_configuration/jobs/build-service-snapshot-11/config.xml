@@ -14,13 +14,10 @@
                         
                         "linux_ppc64le": params.BUILD_LINUX_PPC64LE,
                         "linux_x86_64": params.BUILD_LINUX_X86_64,
+                        "macos_aarch64": params.BUILD_MACOS_ARM_64,
+                        "macos_x86_64": params.BUILD_MACOS_X86_64,
                         "windows_x86_64": params.BUILD_WINDOWS_X86_64
                     ]
-
-                    platforms.putAll([
-                        "macos_aarch64": params.BUILD_MACOS_ARM_64,
-                        "macos_x86_64": params.BUILD_MACOS_X86_64])
-
 
                     for (p in platforms) {
                         if (p.value) {
