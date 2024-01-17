@@ -64,9 +64,9 @@ eval _CONFIGURE_OPTS=(${_CONFIGURE_OPTS})
 if [ "$UNAME" = Darwin ] && [ "$RELEASE_BUILD" = true ]; then
   echo "Testing codesign call..."
   touch cstest
-  codesign -s "Developer ID Application: SAP SE (7R5ZEU67FQ)" cstest || echo codesignerror=true
+  codesign -s "Developer ID Application: SAP SE (7R5ZEU67FQ)" cstest || codesignerror=true
   rm cstest
-  if [[ $codesignerror ]]; then
+  if [[ ! -z $codesignerror ]]; then
     echo "Failed."
     exit 1
   fi
