@@ -226,9 +226,6 @@
             devkit_default: 'io.sapmachine.build.devkit.macos:devkit-xcode:13.1'
             update_brew_casks: &update_brew_casks |-
                 stage("Update Brew Casks") {{
-                            when {{
-                                expression {{ params.PUBLISH == true && JOB_NAME ==~ /((\S*)(-macos)(\S*)(-release))/ && env.RELEASE != "true" }}
-                            }}
                             steps {{
                                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
                                     lock('MacBrewCaskGenerationSynchronizer') {{
@@ -569,9 +566,6 @@
             publish_artifactory_end: *publish_artifactory_end
             publish_github: |-
                 stage("Publish GitHub") {{
-                            when {{
-                                expression {{ params.PUBLISH == true && !(JOB_NAME ==~ /((\S*)(-macos)(\S*)(-release))/ && env.RELEASE == "true") }}
-                            }}
                             steps {{
                                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
                                     sh 'SapMachine-infrastructure/lib/publish.sh'
