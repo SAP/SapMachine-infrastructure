@@ -30,10 +30,9 @@ cask_template = '''cask "sapmachine${CASK_TAG}-${IMAGE_TYPE}" do
   desc "OpenJDK distribution from SAP"
   homepage "https://sapmachine.io/"
 
-  # The version information on the homepage is rendered client-side from the
-  # following JSON file, so we have to check it instead.
+  # Check for latest version in SapMachine release data.
   livecheck do
-    url "https://sap.github.io/SapMachine/assets/data/sapmachine_releases.json"
+    url "https://sap.github.io/SapMachine/assets/data/sapmachine-releases-latest.json"
     regex(/["']tag["']:\s*["']sapmachine[._-]v?(\d+(?:\.\d+)*)["']/i)
   end
 
