@@ -270,9 +270,6 @@
             }
         }
         stage("Publish GitHub") {
-            when {
-                expression { params.PUBLISH == true &amp;&amp; !(JOB_NAME ==~ /((\S*)(-macos)(\S*)(-release))/ &amp;&amp; env.RELEASE == "true") }
-            }
             steps {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
                     sh 'SapMachine-infrastructure/lib/publish.sh'
@@ -293,9 +290,6 @@
         }
         
         stage("Update Brew Casks") {
-            when {
-                expression { params.PUBLISH == true &amp;&amp; JOB_NAME ==~ /((\S*)(-macos)(\S*)(-release))/ &amp;&amp; env.RELEASE != "true" }
-            }
             steps {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
                     lock('MacBrewCaskGenerationSynchronizer') {
