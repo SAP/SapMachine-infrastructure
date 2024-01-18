@@ -20,7 +20,7 @@
     dsl: |
         pipeline {
             agent {
-                label "repository"
+                label 'infrastructure'
             }
             stages {
                 stage("Checkout Infrastructure Repository") {
