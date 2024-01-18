@@ -19,6 +19,11 @@ if [[ $MAJOR_VERSION == 11 ]]; then
 else
     sed -i "s/\${skip.musl}/false/g" upload_pom.xml
 fi
+if [[ $MAJOR_VERSION -lt 21 ]]; then
+    sed -i "s/\${skip.aix}/true/g" upload_pom.xml
+else
+    sed -i "s/\${skip.aix}/false/g" upload_pom.xml
+fi
 mvn -B --no-transfer-progress --settings $OSSRH_SETTINGS_XML -f upload_pom.xml clean deploy
 
 cp -f ../SapMachine-infrastructure/lib/ossrh/upload_pom.xml .
