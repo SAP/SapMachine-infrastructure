@@ -45,6 +45,10 @@
 		<skip.musl>false</skip.musl>
 	</properties>
 
+	<properties>
+		<skip.aix>false</skip.aix>
+	</properties>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -123,6 +127,17 @@
 						<configuration>
 							<url>https://github.com/SAP/SapMachine/releases/download/sapmachine-${project.version}/${project.artifactId}-${project.version}_linux-x64-musl_bin.tar.gz</url>
 							<skip>${skip.musl}</skip>
+						</configuration>
+					</execution>
+					<execution>
+						<id>https://github.com/SAP/SapMachine/releases/download/sapmachine-${project.version}/${project.artifactId}-${project.version}_aix-ppc64_bin.tar.gz</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>wget</goal>
+						</goals>
+						<configuration>
+							<url>https://github.com/SAP/SapMachine/releases/download/sapmachine-${project.version}/${project.artifactId}-${project.version}_aix-ppc64_bin.tar.gz</url>
+							<skip>${skip.aix}</skip>
 						</configuration>
 					</execution>
 					<execution>
@@ -215,6 +230,23 @@
 								<artifact>
 									<file>${project.build.directory}/${project.artifactId}-${project.version}_linux-x64-musl_bin.tar.gz</file>
 									<classifier>linux-x64-musl</classifier>
+									<type>tar.gz</type>
+								</artifact>
+							</artifacts>
+						</configuration>
+					</execution>
+					<execution>
+						<id>attach-artifacts-aix</id>
+						<phase>package</phase>
+						<goals>
+							<goal>attach-artifact</goal>
+						</goals>
+						<configuration>
+							<skipAttach>${skip.aix}</skipAttach>
+							<artifacts>
+								<artifact>
+									<file>${project.build.directory}/${project.artifactId}-${project.version}_aix-ppc64_bin.tar.gz</file>
+									<classifier>aix-ppc64</classifier>
 									<type>tar.gz</type>
 								</artifact>
 							</artifacts>
