@@ -2,6 +2,7 @@
     name: upload-ossrh
     description: 'Upload SapMachine artefacts to OSSRH (Maven Central).'
     project-type: pipeline
+    sandbox: true
     concurrent: false
     parameters:
         - string:
