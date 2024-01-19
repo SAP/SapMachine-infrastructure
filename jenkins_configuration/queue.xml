@@ -1,4 +1,29 @@
 <hudson.model.Queue_-State>
-  <counter>3598</counter>
-  <items />
+  <counter>3678</counter>
+  <items>
+    <hudson.model.Queue_-BuildableItem>
+      <actions />
+      <id>3662</id>
+      <task class="org.jenkinsci.plugins.workflow.support.steps.ExecutorStepExecution$PlaceholderTask" plugin="workflow-durable-task-step@1313.vcb_970b_d2a_fb_3">
+        <context class="org.jenkinsci.plugins.workflow.cps.CpsStepContext" plugin="workflow-cps@3826.v3b_5707fe44da_">
+          <executionRef class="org.jenkinsci.plugins.workflow.job.WorkflowRun$Owner" plugin="workflow-job@1385.vb_58b_86ea_fff1">
+            <job>build-22-aix_ppc64-pr-validation</job>
+            <id>66</id>
+          </executionRef>
+          <id>3</id>
+          <bodyHeads />
+          <body class="org.jenkinsci.plugins.workflow.cps.StaticBodyReference" resolves-to="org.jenkinsci.plugins.workflow.cps.HandleBodyReference">
+            <id>1</id>
+          </body>
+          <threadId>0</threadId>
+          <stepDescriptorId>org.jenkinsci.plugins.workflow.support.steps.ExecutorStep</stepDescriptorId>
+        </context>
+        <label>aix_ppc64</label>
+        <runId>build-22-aix_ppc64-pr-validation#66</runId>
+      </task>
+      <inQueueSince>1705624253548</inQueueSince>
+      <buildableStartMilliseconds>1705624253557</buildableStartMilliseconds>
+      <isPending>false</isPending>
+    </hudson.model.Queue_-BuildableItem>
+  </items>
 </hudson.model.Queue_-State>

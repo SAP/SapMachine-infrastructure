@@ -2,7 +2,7 @@
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps">
     <script>pipeline {
     agent {
-        label "repository"
+        label 'infrastructure'
     }
     stages {
         stage("Checkout Infrastructure Repository") {
