@@ -501,6 +501,17 @@
                                     env.BUILD_INSTALLER_PACKAGES = params.BUILD_INSTALLER_PACKAGES
                                     env.ART_VERSION = "snapshot-{major}-" + (new java.text.SimpleDateFormat("yyyyMMddHHmmss")).format(new Date())
                                     env.RELEASE = "false"
+            zip_artifacts: &zip_artifacts |-
+                stage("Zip Artifacts") {{
+                                {docker_agent|}
+                                {verification_when_docker|}
+                                steps {{
+                                    script {{
+                                        sh("SapMachine-infrastructure/lib/zip_artifacts.sh")
+                                        {get_art_ver|}
+                                    }}
+                                }}
+                            }}
             run_jtreg_hotspot: &run_jtreg_hotspot
             run_jtreg_jdk: &run_jtreg_jdk
             run_jtreg_langtools: &run_jtreg_langtools
@@ -557,6 +568,7 @@
                                     }} else {{
                                         env.BUILD_INSTALLER_PACKAGES = params.BUILD_INSTALLER_PACKAGES
                                     }}
+            zip_artifacts: *zip_artifacts
             get_art_ver: env.ART_VERSION = readFile "${{env.WORKSPACE}}/javavmversion.txt"
             publish_artifactory_pre: *publish_artifactory_pre
             publish_artifactory_when: |-
@@ -701,16 +713,7 @@
                         }}
                     }}
                 }}
-                stage("Zip Artifacts") {{
-                    {docker_agent|}
-                    {verification_when_docker|}
-                    steps {{
-                        script {{
-                            sh("SapMachine-infrastructure/lib/zip_artifacts.sh")
-                            {get_art_ver|}
-                        }}
-                    }}
-                }}
+                {zip_artifacts|}
                 {bundle_and_notarize|}
                 {run_jtreg_hotspot|}
                 {run_jtreg_jdk|}
