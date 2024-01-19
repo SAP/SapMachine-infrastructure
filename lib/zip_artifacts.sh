@@ -95,10 +95,7 @@ echo "Processing bundles..."
 
 cd ../../bundles
 
-JDK_NAME=$(ls *jdk-*_bin.*) || true
-if [[ -z $JDK_NAME ]]; then
-  JDK_NAME=$(ls *jdk-*_bin-debug.*)
-fi
+JDK_NAME=$(find . \( -name "*jdk-*_bin.*" -o -name "*jdk-*_bin-debug.*" \) -exec basename {} \;)
 if [[ $JDK_NAME = sapmachine-* ]]; then
   SAPMACHINE_BUNDLE_PREFIX=sapmachine-
 fi
