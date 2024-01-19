@@ -1,6 +1,6 @@
 #!/bin/bash
-#set -ex
-set -e
+set -ex
+#set -e
 shopt -s nullglob
 
 if [[ -z $WORKSPACE ]]; then
@@ -96,7 +96,7 @@ echo "Processing bundles..."
 cd ../../bundles
 
 JDK_NAME=$(ls *jdk-*_bin.*) || true
-if [ -z $JDK_NAME ]; then
+if [[ -z $JDK_NAME ]]; then
   JDK_NAME=$(ls *jdk-*_bin-debug.*)
 fi
 if [[ $JDK_NAME = sapmachine-* ]]; then
