@@ -1,6 +1,6 @@
 #!/bin/bash
-set -ex
-#set -e
+#set -ex
+set -e
 shopt -s nullglob
 
 if [[ -z $WORKSPACE ]]; then
