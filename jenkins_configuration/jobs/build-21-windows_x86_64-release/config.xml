@@ -135,15 +135,15 @@
             }
         }
         stage("Zip Artifacts") {
-            
-            
-            steps {
-                script {
-                    sh("SapMachine-infrastructure/lib/zip_artifacts.sh")
-                    env.ART_VERSION = readFile "${env.WORKSPACE}/javavmversion.txt"
+                
+                
+                steps {
+                    script {
+                        sh("SapMachine-infrastructure/lib/zip_artifacts.sh")
+                        env.ART_VERSION = readFile "${env.WORKSPACE}/javavmversion.txt"
+                    }
                 }
             }
-        }
         
         
         

@@ -142,21 +142,21 @@
             }
         }
         stage("Zip Artifacts") {
-            agent {
+                agent {
                 docker {
                     image "alpine_3-x86_64"
                     reuseNode true
                     label "linux_alpine_x86_64"
                 }
             }
-            
-            steps {
-                script {
-                    sh("SapMachine-infrastructure/lib/zip_artifacts.sh")
-                    
+                
+                steps {
+                    script {
+                        sh("SapMachine-infrastructure/lib/zip_artifacts.sh")
+                        
+                    }
                 }
             }
-        }
         
         None
         None

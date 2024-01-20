@@ -312,25 +312,7 @@
                 }
             }
         }
-        stage("Zip Artifacts") {
-            agent {
-                docker {
-                    image "ubuntu_20_04-ppc64le"
-                    reuseNode true
-                    label "linux_ppc64le"
-                }
-            }
-            when {
-                beforeAgent true
-                expression { env.VERIFICATION_RESULT != "2" }
-            }
-            steps {
-                script {
-                    sh("SapMachine-infrastructure/lib/zip_artifacts.sh")
-                    
-                }
-            }
-        }
+        
         
         stage("Run jtreg hotspot") {
             agent {
