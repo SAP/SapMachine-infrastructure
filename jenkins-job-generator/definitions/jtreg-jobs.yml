@@ -2,6 +2,7 @@
     name: 'jtreg'
     description: 'Build jtreg.'
     project-type: pipeline
+    sandbox: true
     concurrent: false
     properties:
         - build-discarder:
