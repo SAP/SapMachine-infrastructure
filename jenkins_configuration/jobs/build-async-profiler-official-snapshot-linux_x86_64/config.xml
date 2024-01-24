@@ -1,7 +1,7 @@
 <flow-definition plugin="workflow-job@1385.vb_58b_86ea_fff1">
   <actions>
-    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@2.2151.ve32c9d209a_3f" />
-    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@2.2151.ve32c9d209a_3f">
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@2.2175.v76a_fff0a_2618" />
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@2.2175.v76a_fff0a_2618">
       <jobProperties />
       <triggers />
       <parameters />
@@ -69,7 +69,7 @@
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@3826.v3b_5707fe44da_">
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@3837.v305192405b_c0">
     <script>pipeline {
     agent {
         label "linux_x86_64"
