@@ -48,21 +48,21 @@
       <int>1594</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>1594</number>
-        <issueUpdatedAt>2024-01-29 12:32:40.0 UTC</issueUpdatedAt>
+        <issueUpdatedAt>2024-01-30 13:37:36.0 UTC</issueUpdatedAt>
         <title>Create native version of jcmd</title>
         <body>This is aa simple C-base implementation of jcmd. Apart from only taking a pid, it offers the same features, but uses much less memory (and starts vastly faster).
 
 Here is what a jcmd has to do:
-- Check if /tmp/.java_pid&lt;pid&gt; exists.
-- If not create /tmp/.attach_pid&lt;pid&gt; and send a SIGQUIT to the given pid. This starts the attach thread in the VM, which then creates the /tmp/.java_pid&lt;pid&gt; socket for communication.
-- Connect to the /tmp/.java_pid&lt;pid&gt; file socket and write a command consisting of some scaffolding and the parameters to jcmd.
+- Check if /tmp/.java_pid\&lt;pid&gt; exists.
+- If not create /tmp/.attach_pid\&lt;pid&gt; and send a SIGQUIT to the given pid. This starts the attach thread in the VM, which then creates the /tmp/.java_pid\&lt;pid&gt; socket for communication.
+- Connect to the /tmp/.java_pid\&lt;pid&gt; file socket and write a command consisting of some scaffolding and the parameters to jcmd.
 - Write the received output from the file socket to stdout (omitting the result code returned as the first line).
 
 fixes #1593
 
 </body>
-        <prUpdatedAt>2024-01-29 12:32:40.0 UTC</prUpdatedAt>
-        <headSha>66eb9ea0bd2867874c13688a71f6484590d6e88c</headSha>
+        <prUpdatedAt>2024-01-30 13:37:36.0 UTC</prUpdatedAt>
+        <headSha>0072f11057cb9461896a7f861090fbc8c4f33b15</headSha>
         <headRef>leanjcmd</headRef>
         <mergeable>true</mergeable>
         <baseRef>sapmachine</baseRef>
@@ -80,15 +80,15 @@ fixes #1593
       <int>1551</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>1551</number>
-        <issueUpdatedAt>2024-01-29 08:47:54.0 UTC</issueUpdatedAt>
+        <issueUpdatedAt>2024-01-30 14:53:01.0 UTC</issueUpdatedAt>
         <title>New malloc trace implementation</title>
         <body>This change implements a malloc trace without using the now deprecated glibc malloc hooks. This means the feature is now available on musl-based system and MacOsX too. In addition it can also track memory reclamation, so it can track the currently alive memory.
 
 fixes #1550
 
 </body>
-        <prUpdatedAt>2024-01-29 08:47:54.0 UTC</prUpdatedAt>
-        <headSha>00108968c38894f7e161a0eeb72294244b51eb18</headSha>
+        <prUpdatedAt>2024-01-30 14:53:01.0 UTC</prUpdatedAt>
+        <headSha>c84e942c09ff9231750845310241e1c765bf84bf</headSha>
         <headRef>malloc_hook_replacement</headRef>
         <mergeable>true</mergeable>
         <baseRef>sapmachine</baseRef>
@@ -96,7 +96,7 @@ fixes #1550
         <userLogin>schmelter-sap</userLogin>
         <htmlUrl>https://github.com/SAP/SapMachine/pull/1551</htmlUrl>
         <labels />
-        <lastCommentCreatedAt>2024-01-26 17:01:07.0 UTC</lastCommentCreatedAt>
+        <lastCommentCreatedAt>2024-01-30 14:52:59.0 UTC</lastCommentCreatedAt>
         <sourceRepoOwner>schmelter-sap</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
