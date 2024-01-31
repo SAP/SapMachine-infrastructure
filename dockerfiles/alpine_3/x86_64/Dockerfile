@@ -24,6 +24,7 @@ linux-headers \
 make \
 python3 \
 py3-pip \
+py3-requests \
 sed \
 sudo \
 tar \
@@ -47,8 +48,6 @@ RUN echo "jenkinsi ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/jenkinsi && chmod 04
 # create apk cache location
 RUN mkdir -p /var/cache/distfiles
 RUN chmod a+w /var/cache/distfiles
-
-RUN pip3 install requests
 
 ADD https://raw.githubusercontent.com/tstuefe/tinyreaper/master/tinyreaper.c /tmp
 RUN gcc /tmp/tinyreaper.c -o /opt/tinyreaper && \
