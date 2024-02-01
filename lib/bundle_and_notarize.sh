@@ -5,7 +5,7 @@ set -e
 # Send notarization request and wait for completion. If unsuccessful, print request log and exit with error.
 KEYCHAIN_PROFILE=sapmachine-notarization
 notarize() {
-  notaryout=$(set -x && xcrun notarytool submit $2 --keychain-profile "$KEYCHAIN_PROFILE" --output-format=json --wait "$1")
+  notaryout=$(set -x && xcrun notarytool submit $2 --verbose --keychain-profile "$KEYCHAIN_PROFILE" --output-format=json --wait "$1")
   rc=$?
   echo $notaryout
   id=$(echo "$notaryout" | grep -o '"id":"[^"]*"' | cut -d'"' -f4)
