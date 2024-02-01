@@ -5,51 +5,11 @@
   <sshUrl>git@github.com:SAP/SapMachine.git</sshUrl>
   <pulls class="concurrent-hash-map">
     <entry>
-      <int>1591</int>
-      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>1591</number>
-        <issueUpdatedAt>2024-01-26 00:29:59.0 UTC</issueUpdatedAt>
-        <title>Merge to tag jdk-23+7</title>
-        <body>please pull</body>
-        <prUpdatedAt>2024-01-26 00:29:59.0 UTC</prUpdatedAt>
-        <headSha>6d36eb78ad781ecd80d66d1319921a8746820394</headSha>
-        <headRef>pr-jdk-23+7</headRef>
-        <mergeable>true</mergeable>
-        <baseRef>sapmachine</baseRef>
-        <userLogin>SapMachine</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/1591</htmlUrl>
-        <labels />
-        <sourceRepoOwner>SAP</sourceRepoOwner>
-        <state>OPEN</state>
-        <inBadState>false</inBadState>
-      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-    </entry>
-    <entry>
-      <int>1592</int>
-      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>1592</number>
-        <issueUpdatedAt>2024-01-26 00:30:12.0 UTC</issueUpdatedAt>
-        <title>Merge to tag jdk-22+33</title>
-        <body>please pull</body>
-        <prUpdatedAt>2024-01-26 00:30:12.0 UTC</prUpdatedAt>
-        <headSha>23301d57760a58aed9d8c11a2afcd6f05684a66e</headSha>
-        <headRef>pr-jdk-22+33</headRef>
-        <mergeable>true</mergeable>
-        <baseRef>sapmachine22</baseRef>
-        <userLogin>SapMachine</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/1592</htmlUrl>
-        <labels />
-        <sourceRepoOwner>SAP</sourceRepoOwner>
-        <state>OPEN</state>
-        <inBadState>false</inBadState>
-      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-    </entry>
-    <entry>
       <int>1594</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>1594</number>
-        <issueUpdatedAt>2024-01-30 13:37:36.0 UTC</issueUpdatedAt>
-        <title>Create native version of jcmd</title>
+        <issueUpdatedAt>2024-01-31 08:10:54.0 UTC</issueUpdatedAt>
+        <title>Implement a lean alternative for jcmd</title>
         <body>This is aa simple C-base implementation of jcmd. Apart from only taking a pid, it offers the same features, but uses much less memory (and starts vastly faster).
 
 Here is what a jcmd has to do:
@@ -61,7 +21,7 @@ Here is what a jcmd has to do:
 fixes #1593
 
 </body>
-        <prUpdatedAt>2024-01-30 13:37:36.0 UTC</prUpdatedAt>
+        <prUpdatedAt>2024-01-31 08:10:54.0 UTC</prUpdatedAt>
         <headSha>0072f11057cb9461896a7f861090fbc8c4f33b15</headSha>
         <headRef>leanjcmd</headRef>
         <mergeable>true</mergeable>
@@ -70,8 +30,68 @@ fixes #1593
         <userLogin>schmelter-sap</userLogin>
         <htmlUrl>https://github.com/SAP/SapMachine/pull/1594</htmlUrl>
         <labels />
-        <lastCommentCreatedAt>2024-01-29 12:32:39.0 UTC</lastCommentCreatedAt>
+        <lastCommentCreatedAt>2024-01-31 08:10:54.0 UTC</lastCommentCreatedAt>
         <sourceRepoOwner>schmelter-sap</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>1596</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>1596</number>
+        <issueUpdatedAt>2024-02-01 00:31:08.0 UTC</issueUpdatedAt>
+        <title>Merge to tag jdk-21.0.3+1</title>
+        <body>please pull</body>
+        <prUpdatedAt>2024-02-01 00:31:08.0 UTC</prUpdatedAt>
+        <headSha>2518d2039f0191761b9c7da6378fb95e0cdd13a1</headSha>
+        <headRef>pr-jdk-21.0.3+1</headRef>
+        <mergeable>false</mergeable>
+        <baseRef>sapmachine21</baseRef>
+        <userLogin>SapMachine</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1596</htmlUrl>
+        <labels />
+        <sourceRepoOwner>SAP</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>1597</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>1597</number>
+        <issueUpdatedAt>2024-02-01 00:31:58.0 UTC</issueUpdatedAt>
+        <title>Merge to tag jdk-17.0.11+1</title>
+        <body>please pull</body>
+        <prUpdatedAt>2024-02-01 00:31:58.0 UTC</prUpdatedAt>
+        <headSha>5e8883e533c9f0027f2981e9a59fe27f9211725c</headSha>
+        <headRef>pr-jdk-17.0.11+1</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine17</baseRef>
+        <userLogin>SapMachine</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1597</htmlUrl>
+        <labels />
+        <sourceRepoOwner>SAP</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>1598</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>1598</number>
+        <issueUpdatedAt>2024-02-01 00:32:18.0 UTC</issueUpdatedAt>
+        <title>Merge to tag jdk-11.0.23+1</title>
+        <body>please pull</body>
+        <prUpdatedAt>2024-02-01 00:32:18.0 UTC</prUpdatedAt>
+        <headSha>4fe0b836be216eb6b8a1316cbbfaba2286165846</headSha>
+        <headRef>pr-jdk-11.0.23+1</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine11</baseRef>
+        <userLogin>SapMachine</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1598</htmlUrl>
+        <labels />
+        <sourceRepoOwner>SAP</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
       </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
@@ -80,15 +100,15 @@ fixes #1593
       <int>1551</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>1551</number>
-        <issueUpdatedAt>2024-01-30 14:53:01.0 UTC</issueUpdatedAt>
+        <issueUpdatedAt>2024-01-31 12:27:31.0 UTC</issueUpdatedAt>
         <title>New malloc trace implementation</title>
         <body>This change implements a malloc trace without using the now deprecated glibc malloc hooks. This means the feature is now available on musl-based system and MacOsX too. In addition it can also track memory reclamation, so it can track the currently alive memory.
 
 fixes #1550
 
 </body>
-        <prUpdatedAt>2024-01-30 14:53:01.0 UTC</prUpdatedAt>
-        <headSha>c84e942c09ff9231750845310241e1c765bf84bf</headSha>
+        <prUpdatedAt>2024-01-31 12:27:31.0 UTC</prUpdatedAt>
+        <headSha>3c1d3a7cd8d12539e697d1a71dd0942b25bb5b6e</headSha>
         <headRef>malloc_hook_replacement</headRef>
         <mergeable>true</mergeable>
         <baseRef>sapmachine</baseRef>
@@ -96,7 +116,7 @@ fixes #1550
         <userLogin>schmelter-sap</userLogin>
         <htmlUrl>https://github.com/SAP/SapMachine/pull/1551</htmlUrl>
         <labels />
-        <lastCommentCreatedAt>2024-01-30 14:52:59.0 UTC</lastCommentCreatedAt>
+        <lastCommentCreatedAt>2024-01-31 12:27:29.0 UTC</lastCommentCreatedAt>
         <sourceRepoOwner>schmelter-sap</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
