@@ -62,7 +62,8 @@ eval _CONFIGURE_OPTS=(${_CONFIGURE_OPTS})
 
 # test/trace call to codesign to have some indication of potential problems
 if [ "$UNAME" = Darwin ] && [ "$RELEASE_BUILD" = true ]; then
-  echo "Testing codesign call..."
+  echo "Unlocking keychain and testing codesign availability..."
+  security unlock-keychain -p $unlockpass ~/Library/Keychains/login.keychain
   touch cstest
   codesign -s "Developer ID Application: SAP SE (7R5ZEU67FQ)" cstest || codesignerror=true
   rm cstest
