@@ -1,6 +1,6 @@
 <hudson.plugins.ec2.EC2Slave plugin="ec2@1648.vf3d852e00486">
-  <name>EC2 (ec2-SapMachine Cloud) - Windows Client (i-09f64da6ee2a20fbb)</name>
-  <remoteFS>C:\jenkins_work</remoteFS>
+  <name>EC2 (ec2-SapMachine Cloud) - Linux x86_64 Client (i-07e8ce941e276a66e)</name>
+  <remoteFS>/home/ubuntu/client_home</remoteFS>
   <numExecutors>1</numExecutors>
   <mode>EXCLUSIVE</mode>
   <retentionStrategy class="hudson.plugins.ec2.EC2RetentionStrategy">
@@ -8,13 +8,13 @@
     <idleTerminationMinutes>2</idleTerminationMinutes>
   </retentionStrategy>
   <launcher class="hudson.plugins.ec2.ssh.EC2UnixLauncher" />
-  <label>windows_x86_64</label>
+  <label>linux_x86_64 linux_alpine_x86_64</label>
   <nodeProperties />
-  <instanceId>i-09f64da6ee2a20fbb</instanceId>
+  <instanceId>i-07e8ce941e276a66e</instanceId>
   <initScript />
-  <tmpDir>C:\temp</tmpDir>
-  <remoteAdmin>jenkins</remoteAdmin>
-  <templateDescription>Windows Client</templateDescription>
+  <tmpDir />
+  <remoteAdmin>ubuntu</remoteAdmin>
+  <templateDescription>Linux x86_64 Client</templateDescription>
   <javaPath>java</javaPath>
   <jvmopts />
   <stopOnTerminate>false</stopOnTerminate>
@@ -22,16 +22,16 @@
   <isConnected>false</isConnected>
   <tags class="linked-list">
     <hudson.plugins.ec2.EC2Tag>
+      <name>jenkins_server_url</name>
+      <value>https://ci.sapmachine.io/</value>
+    </hudson.plugins.ec2.EC2Tag>
+    <hudson.plugins.ec2.EC2Tag>
       <name>Name</name>
-      <value>Dynamic Windows Client</value>
+      <value>Dynamic Linux x86_64 Client</value>
     </hudson.plugins.ec2.EC2Tag>
     <hudson.plugins.ec2.EC2Tag>
       <name>jenkins_slave_type</name>
-      <value>demand_Windows Client</value>
-    </hudson.plugins.ec2.EC2Tag>
-    <hudson.plugins.ec2.EC2Tag>
-      <name>jenkins_server_url</name>
-      <value>https://ci.sapmachine.io/</value>
+      <value>demand_Linux x86_64 Client</value>
     </hudson.plugins.ec2.EC2Tag>
   </tags>
   <cloudName>ec2-SapMachine Cloud</cloudName>
@@ -40,7 +40,7 @@
     <slaveCommandPrefix />
     <slaveCommandSuffix />
     <sshPort>22</sshPort>
-    <bootDelay>5</bootDelay>
+    <bootDelay />
   </amiType>
   <maxTotalUses>-1</maxTotalUses>
   <tenancy>Default</tenancy>
@@ -48,5 +48,5 @@
   <metadataEndpointEnabled>true</metadataEndpointEnabled>
   <metadataTokensRequired>false</metadataTokensRequired>
   <metadataHopsLimit>1</metadataHopsLimit>
-  <launchTimeout>600</launchTimeout>
+  <launchTimeout>2147483647</launchTimeout>
 </hudson.plugins.ec2.EC2Slave>

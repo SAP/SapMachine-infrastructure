@@ -46,11 +46,7 @@
             <errors class="java.util.Collections$SynchronizedSet" serialization="custom">
               <java.util.Collections_-SynchronizedCollection>
                 <default>
-                  <c class="set">
-                    <com.github.kostyasha.github.integration.generic.errors.impl.GitHubRepoProviderError>
-                      <description>Can't find repo provider for build-23-macos_x86_64-pr-validation.&lt;br/&gt; All providers failed: [org.jenkinsci.plugins.github.internal.GHPluginConfigException: GitHubPluginRepoProvider can't find appropriate client for github repo &lt;GitHubRepositoryName[host=github.com,username=SAP,repository=SapMachine]&gt;. Probably you didn't configure 'GitHub Plugin' global 'GitHub Server Settings' or there is no tokenswith ADMIN access to this repository.]</description>
-                    </com.github.kostyasha.github.integration.generic.errors.impl.GitHubRepoProviderError>
-                  </c>
+                  <c class="set" />
                   <mutex class="java.util.Collections$SynchronizedSet" reference="../../.." />
                 </default>
               </java.util.Collections_-SynchronizedCollection>
@@ -142,7 +138,7 @@
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@3837.v305192405b_c0">
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@3853.vb_a_490d892963">
     <script>pipeline {
     agent {
         label "macos_x86_64"
@@ -279,7 +275,8 @@
                 BOOT_JDK = "${WORKSPACE}/boot_jdk"
             }
             steps {
-                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD'],
+                                 string(credentialsId: 'MacOSKeyChainUnlockPW', variable: 'unlockpass')]) {
                     script {
                         sh("SapMachine-infrastructure/lib/build.sh")
                     }
