@@ -181,58 +181,58 @@
             default: false
             description: 'When set to true, the resulting RPMs will be published to GitHub.'
     dsl: |
-        pipeline {
-            agent {
+        pipeline {{
+            agent {{
                 label "linux_x86_64"
-            }
-            stages {
-                stage("Checkout Infrastructure Repository") {
-                    steps {
+            }}
+            stages {{
+                stage("Checkout Infrastructure Repository") {{
+                    steps {{
                         checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
-                    }
-                }
-                stage("Build") {
-                    agent {
-                        dockerfile {
+                    }}
+                }}
+                stage("Build") {{
+                    agent {{
+                        dockerfile {{
                             dir "SapMachine-infrastructure/dockerfiles/fedora-rpm"
                             reuseNode true
                             label "linux_x86_64"
-                        }
-                    }
-                    steps {
+                        }}
+                    }}
+                    steps {{
                         sh 'rm -f *.rpm'
                         sh '/usr/bin/python3 SapMachine-infrastructure/lib/packagebuild/make_rpm.py --tag=$GIT_TAG_NAME --download'
-                    }
-                    post {
-                        success {
+                    }}
+                    post {{
+                        success {{
                             archiveArtifacts allowEmptyArchive: true, artifacts: "*.rpm"
-                        }
-                    }
-                }
-                stage("Publish") {
-                    when {
-                        expression { params.PUBLISH == true }
-                    }
-                    agent {
-                        dockerfile {
+                        }}
+                    }}
+                }}
+                stage("Publish") {{
+                    when {{
+                        expression {{ params.PUBLISH == true }}
+                    }}
+                    agent {{
+                        dockerfile {{
                             dir "SapMachine-infrastructure/dockerfiles/infrastructure"
                             reuseNode true
                             label "linux_x86_64"
-                        }
-                    }
-                    steps {
-                        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
+                        }}
+                    }}
+                    steps {{
+                        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
                             sh 'SapMachine-infrastructure/lib/publish_rpm.sh'
-                        }
-                    }
-                }
-            }
-            post {
-                always {
+                        }}
+                    }}
+                }}
+            }}
+            post {{
+                always {{
                     cleanWs()
-                }
-            }
-        }
+                }}
+            }}
+        }}
 
 - job:
     name: apk-package
@@ -254,60 +254,60 @@
             default: false
             description: 'When set to true, the resulting packages will be published.'
     dsl: |
-        pipeline {
-            agent {
+        pipeline {{
+            agent {{
                 label "linux_alpine_x86_64"
-            }
-            stages {
-                stage("Checkout Infrastructure Repository") {
-                    steps {
+            }}
+            stages {{
+                stage("Checkout Infrastructure Repository") {{
+                    steps {{
                         checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
-                    }
-                }
-                stage("Build") {
-                    agent {
-                        dockerfile {
+                    }}
+                }}
+                stage("Build") {{
+                    agent {{
+                        dockerfile {{
                             dir "SapMachine-infrastructure/dockerfiles/alpine_3/x86_64"
                             reuseNode true
                             label "linux_alpine_x86_64"
-                        }
-                    }
-                    steps {
+                        }}
+                    }}
+                    steps {{
                         withCredentials([file(credentialsId: 'sapmachine-apk.rsa', variable: 'apkrsa'),
-                                         file(credentialsId: 'sapmachine-apk.rsa.pub', variable: 'apkrsapub')]) {
+                                         file(credentialsId: 'sapmachine-apk.rsa.pub', variable: 'apkrsapub')]) {{
                             sh 'SapMachine-infrastructure/lib/packagebuild/prepare_apk_build.sh'
-                        }
-                        sh 'sudo -g abuild python3 SapMachine-infrastructure/lib/packagebuild/make_apk.py -t ${GIT_TAG_NAME} -d SapMachine-infrastructure/alpine-templates'
-                    }
-                    post {
-                        success {
-                            script {
-                                if (params.PUBLISH == true) {
+                        }}
+                        sh 'sudo -g abuild python3 SapMachine-infrastructure/lib/packagebuild/make_apk.py -t ${{GIT_TAG_NAME}} -d SapMachine-infrastructure/alpine-templates'
+                    }}
+                    post {{
+                        success {{
+                            script {{
+                                if (params.PUBLISH == true) {{
                                     stash includes: '*.apk', name: 'apkPackages'
                                     stash includes: 'SapMachine-infrastructure/**', name: 'infra'
-                                }
-                            }
-                        }
-                    }
-                }
-                stage("Publish") {
-                    when {
-                        expression { params.PUBLISH == true }
-                    }
-                    agent {
+                                }}
+                            }}
+                        }}
+                    }}
+                }}
+                stage("Publish") {{
+                    when {{
+                        expression {{ params.PUBLISH == true }}
+                    }}
+                    agent {{
                         label 'agent-local-docker-alpine'
-                    }
-                    steps {
+                    }}
+                    steps {{
                         unstash 'infra'
                         unstash 'apkPackages'
                         sh 'cp -n *.apk /var/pkg/apk/x86_64 || true'
                         sh 'python3 SapMachine-infrastructure/lib/packagebuild/resign_apk_repository.py -r /var/pkg/apk/x86_64 -k /var/pkg/apk/keys/sapmachine@sap.com-5a673212.rsa'
-                    }
-                }
-            }
-            post {
-                always {
+                    }}
+                }}
+            }}
+            post {{
+                always {{
                     cleanWs()
-                }
-            }
-        }
+                }}
+            }}
+        }}
