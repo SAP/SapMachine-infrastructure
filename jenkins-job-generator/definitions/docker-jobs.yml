@@ -8,36 +8,36 @@
         - build-discarder:
             num-to-keep: 50
     dsl: |
-        pipeline {
-            agent {
+        pipeline {{
+            agent {{
                 label 'infrastructure'
-            }
-            stages {
-                stage("Checkout Infrastructure Repository") {
-                    steps {
+            }}
+            stages {{
+                stage("Checkout Infrastructure Repository") {{
+                    steps {{
                         checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
-                    }
-                }
-                stage('Generate Manifest') {
-                    agent {
-                        dockerfile {
+                    }}
+                }}
+                stage('Generate Manifest') {{
+                    agent {{
+                        dockerfile {{
                             dir "SapMachine-infrastructure/dockerfiles/infrastructure"
                             reuseNode true
                             label 'infrastructure'
-                        }
-                    }
-                    steps {
+                        }}
+                    }}
+                    steps {{
                         sh "python3 SapMachine-infrastructure/lib/generate_docker_manifest.py"
                         archiveArtifacts 'sapmachine'
-                    }
-                }
-            }
-            post {
-                cleanup {
+                    }}
+                }}
+            }}
+            post {{
+                cleanup {{
                     cleanWs deleteDirs: true, disableDeferredWipeout: true
-                }
-            }
-        }
+                }}
+            }}
+        }}
 
 - job:
     name: generate-dockerfiles
@@ -54,41 +54,41 @@
             default: false
             description: 'Force recreation of dockerfiles, even if latest versions are already tagged.'
     dsl: |
-        pipeline {
-            agent {
+        pipeline {{
+            agent {{
                 label 'infrastructure'
-            }
-            stages {
-                stage("Checkout Infrastructure Repository") {
-                    steps {
+            }}
+            stages {{
+                stage("Checkout Infrastructure Repository") {{
+                    steps {{
                         checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
-                    }
-                }
-                stage('Generate Dockerfiles') {
-                    agent {
-                        dockerfile {
+                    }}
+                }}
+                stage('Generate Dockerfiles') {{
+                    agent {{
+                        dockerfile {{
                             dir "SapMachine-infrastructure/dockerfiles/infrastructure"
                             reuseNode true
                             label 'infrastructure'
-                        }
-                    }
-                    steps {
-                        script {
-                            if (params.FORCE == true) {
+                        }}
+                    }}
+                    steps {{
+                        script {{
+                            if (params.FORCE == true) {{
                                 env.FORCE_REGENERATE=" --force"
-                            } else {
+                            }} else {{
                                 env.FORCE_REGENERATE=""
-                            }
-                        }
-                        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
+                            }}
+                        }}
+                        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
                             sh "cd SapMachine-infrastructure && python3 lib/generate_dockerfiles.py $FORCE_REGENERATE"
-                        }
-                    }
-                }
-            }
-            post {
-                cleanup {
+                        }}
+                    }}
+                }}
+            }}
+            post {{
+                cleanup {{
                     cleanWs deleteDirs: true, disableDeferredWipeout: true
-                }
-            }
-        }
+                }}
+            }}
+        }}
