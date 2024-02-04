@@ -107,32 +107,32 @@
             default: ''
             description: 'The SapMachine version to publish casks for.'
     dsl: |
-        pipeline {
-            agent {
+        pipeline {{
+            agent {{
                 label 'macos_x86_64'
-            }
-            stages {
-                stage("Checkout Infrastructure Repository") {
-                    steps {
+            }}
+            stages {{
+                stage("Checkout Infrastructure Repository") {{
+                    steps {{
                         checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
-                    }
-                }
-                stage('Create Brew Casks') {
-                    steps {
-                        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
-                            lock('MacBrewCaskGenerationSynchronizer') {
+                    }}
+                }}
+                stage('Create Brew Casks') {{
+                    steps {{
+                        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
+                            lock('MacBrewCaskGenerationSynchronizer') {{
                                 sh 'python3 SapMachine-infrastructure/lib/packagebuild/make_cask.py -t ${SAPMACHINE_VERSION}'
-                            }
-                        }
-                    }
-                }
-            }
-            post {
-                always {
+                            }}
+                        }}
+                    }}
+                }}
+            }}
+            post {{
+                always {{
                     cleanWs deleteDirs: true, disableDeferredWipeout: true
-                }
-            }
-        }
+                }}
+            }}
+        }}
 
 - job:
     name: prepare-macos-signing
@@ -149,36 +149,36 @@
             default: ''
             description: 'The node to prepare for signing and notarization.'
     dsl: |
-        pipeline {
-            agent {
+        pipeline {{
+            agent {{
                 label "${BUILDNODE}"
-            }
-            stages {
-                stage('Import signing certificate') {
-                    steps {
+            }}
+            stages {{
+                stage('Import signing certificate') {{
+                    steps {{
                         withCredentials([file(credentialsId: 'MacOSCodesignSAP', variable: 'signcertp2'),
-                                         string(credentialsId: 'MacOSCodesignSAP-Password', variable: 'signcertpass')]) {
+                                         string(credentialsId: 'MacOSCodesignSAP-Password', variable: 'signcertpass')]) {{
                             sh '''#!/bin/bash
                               security import $signcertp2 -k ~/Library/Keychains/login.keychain -P $signcertpass'''
-                        }
-                    }
-                }
-                stage('Setup notarization credentials') {
-                    steps {
+                        }}
+                    }}
+                }}
+                stage('Setup notarization credentials') {{
+                    steps {{
                         withCredentials([string(credentialsId: 'Notarization-AppleID', variable: 'appleid'),
                                          string(credentialsId: 'Notarization-Password', variable: 'notpass'),
                                          string(credentialsId: 'Notarization-Team', variable: 'notteam'),
-                                         string(credentialsId: 'MacOSKeyChainUnlockPW', variable: 'unlockpass')]) {
+                                         string(credentialsId: 'MacOSKeyChainUnlockPW', variable: 'unlockpass')]) {{
                             sh '''#!/bin/bash
                               security unlock-keychain -p $unlockpass ~/Library/Keychains/login.keychain
                               xcrun notarytool store-credentials sapmachine-notarization --apple-id $appleid --password $notpass --team-id $notteam'''
-                        }
-                    }
-                }
-            }
-            post {
-                always {
+                        }}
+                    }}
+                }}
+            }}
+            post {{
+                always {{
                     cleanWs deleteDirs: true, disableDeferredWipeout: true
-                }
-            }
-        }
+                }}
+            }}
+        }}
