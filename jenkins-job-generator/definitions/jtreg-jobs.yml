@@ -20,68 +20,68 @@
           default: '99'
           description: 'Manually set the JTREG build number. Only used when TAG parameter does not contain a build number.'
     dsl: |
-        pipeline {
-            agent {
+        pipeline {{
+            agent {{
                 label 'linux_x86_64'
-            }
-            stages {
-                stage("Checkout Infrastructure Repository") {
-                    steps {
+            }}
+            stages {{
+                stage("Checkout Infrastructure Repository") {{
+                    steps {{
                         checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
-                    }
-                }
-                stage("Checkout JTReg") {
-                    steps {
+                    }}
+                }}
+                stage("Checkout JTReg") {{
+                    steps {{
                         checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'jtreg']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/openjdk/jtreg.git']]]
-                    }
-                }
-                stage('Build') {
-                    agent {
-                        dockerfile {
+                    }}
+                }}
+                stage('Build') {{
+                    agent {{
+                        dockerfile {{
                             label 'linux_x86_64'
                             dir "SapMachine-infrastructure/dockerfiles/jtreg-build"
                             reuseNode true
-                        }
-                    }
-                    steps {
-                        script {
+                        }}
+                    }}
+                    steps {{
+                        script {{
                             def jtregVersion
                             def jtregBuild
-                            if (params.TAG == "master") {
+                            if (params.TAG == "master") {{
                                 jtregVersion = 99 // just a dummy
                                 jtregBuild = params.BUILD_NUMBER
-                            } else {
+                            }} else {{
                                 def match = params.TAG =~ /jtreg-*(([0-9]+)(\.[0-9]+)*)((\+|-b)([0-9]+))*/
                                 jtregVersion = match[0][1]
                                 jtregMajor = match[0][2]
                                 jtregBuild = match[0][6]
-                                if (jtregBuild == null) {
+                                if (jtregBuild == null) {{
                                     jtregBuild = "1"
-                                }
-                            }
-                            if (jtregMajor.toFloat() < 6) {
+                                }}
+                            }}
+                            if (jtregMajor.toFloat() < 6) {{
                                 env.BUILD_SCRIPT = "build-all.sh"
                                 env.BUILD_VERSION = jtregVersion
                                 env.BUILD_NUMBER = 'b'+jtregBuild
                                 env.VM_OPT = ""
-                            } else {
+                            }} else {{
                                 env.BUILD_SCRIPT = "build.sh"
                                 env.JTREG_BUILD_NUMBER = jtregBuild
                                 env.VM_OPT = "--jdk"
-                            }
-                        }
-                        sh "cd jtreg && git checkout ${params.TAG} && bash make/${BUILD_SCRIPT} ${VM_OPT} /usr/lib/jvm"
-                    }
-                    post {
-                        success {
+                            }}
+                        }}
+                        sh "cd jtreg && git checkout ${{params.TAG}} && bash make/${{BUILD_SCRIPT}} ${{VM_OPT}} /usr/lib/jvm"
+                    }}
+                    post {{
+                        success {{
                             archiveArtifacts allowEmptyArchive: true, artifacts: 'jtreg/build/images/jtreg.zip'
-                        }
-                    }
-                }
-            }
-            post {
-                always {
+                        }}
+                    }}
+                }}
+            }}
+            post {{
+                always {{
                     cleanWs deleteDirs: true, disableDeferredWipeout: true
-                }
-            }
-        }
+                }}
+            }}
+        }}
