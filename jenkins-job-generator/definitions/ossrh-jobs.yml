@@ -7,14 +7,14 @@
     parameters:
         - string:
             name: VERSION
-            description: "The version to publish. E.g. '11.0.14'"
+            description: "The version to publish. E.g. 11.0.14"
     dsl: |
         pipeline {
             agent {
                 label 'infrastructure'
             }
             stages {
-                stage("Checkout Infrastructure Repository") {
+                stage('Checkout Infrastructure Repository') {
                     steps {
                         checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-infrastructure']], userRemoteConfigs: [[url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
                     }
