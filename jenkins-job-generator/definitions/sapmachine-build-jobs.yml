@@ -512,9 +512,9 @@
                                     }}
                                 }}
                             }}
-            run_jtreg_hotspot: &run_jtreg_hotspot
-            run_jtreg_jdk: &run_jtreg_jdk
-            run_jtreg_langtools: &run_jtreg_langtools
+            run_jtreg_hotspot: *run_jtreg_hotspot
+            run_jtreg_jdk: *run_jtreg_jdk
+            run_jtreg_langtools: *run_jtreg_langtools
             publish_artifactory_pre: &publish_artifactory_pre 'stage("Publish Artifactory") {{'
             publish_artifactory_when: |-
                 when {{
