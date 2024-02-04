@@ -25,51 +25,51 @@
             default: false
             description: 'If selected, the data is rebuild from scratch. Either all of it or parts, as specified by the other parameters'
     dsl: |
-        pipeline {
-            agent {
+        pipeline {{
+            agent {{
                 label "infrastructure"
-            }
-            stages {
-                stage("Checkout Infrastructure Repository") {
-                    steps {
+            }}
+            stages {{
+                stage("Checkout Infrastructure Repository") {{
+                    steps {{
                         checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-infrastructure']], userRemoteConfigs: [[url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
-                    }
-                }
-                stage('Publish Release Data') {
-                    agent {
-                        dockerfile {
+                    }}
+                }}
+                stage('Publish Release Data') {{
+                    agent {{
+                        dockerfile {{
                             dir "SapMachine-infrastructure/dockerfiles/infrastructure"
                             reuseNode true
                             label "infrastructure"
-                        }
-                    }
-                    steps {
-                        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
-                            lock('ReleaseDataGenerationLock') {
+                        }}
+                    }}
+                    steps {{
+                        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
+                            lock('ReleaseDataGenerationLock') {{
                                 sh '''#!/bin/bash
                                     set -ex
                                     if [ -n "$MAJOR" ]; then
-                                        _MAJOR_OPTION="-m ${MAJOR}"
+                                        _MAJOR_OPTION="-m ${{MAJOR}}"
                                     fi
                                     if [ -n "$UPDATE" ]; then
-                                        _UPDATE_OPTION="-u ${UPDATE}"
+                                        _UPDATE_OPTION="-u ${{UPDATE}}"
                                     fi
                                     if [ -n "$SAPMACHINE_VERSION" ]; then
-                                        _TAG_OPTION="-t ${SAPMACHINE_VERSION}"
+                                        _TAG_OPTION="-t ${{SAPMACHINE_VERSION}}"
                                     fi
                                     if [ "$SCRATCH_DATA" == "true" ]; then
                                         _SCRATCH_OPTION="-s"
                                     fi
                                     python3 SapMachine-infrastructure/lib/generate_release_data.py --no-status -o git $_MAJOR_OPTION $_UPDATE_OPTION $_TAG_OPTION $_SCRATCH_OPTION
                                 '''
-                            }
-                        }
-                    }
-                }
-            }
-            post {
-                always {
+                            }}
+                        }}
+                    }}
+                }}
+            }}
+            post {{
+                always {{
                     cleanWs()
-                }
-            }
-        }
+                }}
+            }}
+        }}
