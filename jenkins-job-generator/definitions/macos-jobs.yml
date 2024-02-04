@@ -121,7 +121,7 @@
                     steps {{
                         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
                             lock('MacBrewCaskGenerationSynchronizer') {{
-                                sh 'python3 SapMachine-infrastructure/lib/packagebuild/make_cask.py -t ${SAPMACHINE_VERSION}'
+                                sh 'python3 SapMachine-infrastructure/lib/packagebuild/make_cask.py -t ${{SAPMACHINE_VERSION}}'
                             }}
                         }}
                     }}
