@@ -9,7 +9,6 @@
             name: VERSION
             description: "The version to publish. E.g. 11.0.14"
     dsl: |
-        pipeline {
             agent {
                 label 'infrastructure'
             }
@@ -40,4 +39,3 @@
                     cleanWs()
                 }
             }
-        }
