@@ -369,7 +369,7 @@
                                 beforeAgent true
                                 expression {{ env.VERIFICATION_RESULT != "2" }}
                             }}
-            run_jtreg_hotspot: |-
+            run_jtreg_hotspot: &run_jtreg_hotspot |-
                 stage("Run jtreg hotspot") {{
                             {docker_agent|}
                             when {{
@@ -398,7 +398,7 @@
                                 }}
                             }}
                         }}
-            run_jtreg_jdk: |-
+            run_jtreg_jdk: &run_jtreg_jdk |-
                 stage("Run jtreg jdk") {{
                             {docker_agent|}
                             when {{
@@ -428,7 +428,7 @@
                                 }}
                             }}
                         }}
-            run_jtreg_langtools: |-
+            run_jtreg_langtools: &run_jtreg_langtools |-
                 stage("Run jtreg langtools") {{
                             {docker_agent|}
                             when {{
@@ -512,9 +512,9 @@
                                     }}
                                 }}
                             }}
-            run_jtreg_hotspot: &run_jtreg_hotspot
-            run_jtreg_jdk: &run_jtreg_jdk
-            run_jtreg_langtools: &run_jtreg_langtools
+            run_jtreg_hotspot: *run_jtreg_hotspot
+            run_jtreg_jdk: *run_jtreg_jdk
+            run_jtreg_langtools: *run_jtreg_langtools
             publish_artifactory_pre: &publish_artifactory_pre 'stage("Publish Artifactory") {{'
             publish_artifactory_when: |-
                 when {{
