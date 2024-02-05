@@ -160,7 +160,7 @@
                                          string(credentialsId: 'MacOSCodesignSAP-Password', variable: 'signcertpass'),
                                          string(credentialsId: 'MacOSKeyChainUnlockPW2', variable: 'unlockpass')]) {{
                             sh '''#!/bin/bash
-                              security unlock-keychain -p '$unlockpass' ~/Library/Keychains/login.keychain
+                              security unlock-keychain -p $unlockpass ~/Library/Keychains/login.keychain
                               security import $signcertp2 -k ~/Library/Keychains/login.keychain -P $signcertpass'''
                         }}
                     }}
@@ -172,7 +172,7 @@
                                          string(credentialsId: 'Notarization-Team', variable: 'notteam'),
                                          string(credentialsId: 'MacOSKeyChainUnlockPW2', variable: 'unlockpass')]) {{
                             sh '''#!/bin/bash
-                              security unlock-keychain -p '$unlockpass' ~/Library/Keychains/login.keychain
+                              security unlock-keychain -p $unlockpass ~/Library/Keychains/login.keychain
                               xcrun notarytool store-credentials sapmachine-notarization --apple-id $appleid --password $notpass --team-id $notteam'''
                         }}
                     }}
