@@ -159,9 +159,110 @@
                 }
             }
         
-        None
-        None
-        None
+        stage("Run jtreg hotspot") {
+            agent {
+                docker {
+                    image "alpine_3-x86_64"
+                    reuseNode true
+                    label "linux_alpine_x86_64"
+                }
+            }
+            when {
+                beforeAgent true
+                expression {  params.RUN_TESTS == true &amp;&amp; params.hotspot_test_groups }
+            }
+            environment {
+                TESTSUITE = 'hotspot'
+            }
+            steps {
+                sh 'bash SapMachine-infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s $TESTSUITE "$hotspot_test_groups" || true'
+                publishHTML target: [
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: false,
+                    keepAll: true,
+                    reportDir: "test_report_${env.TESTSUITE}",
+                    reportFiles: 'JTreport/index.html',
+                    reportName: "JT Report ${env.TESTSUITE}"
+                ]
+                // persist data for test trend graph
+                junit "test_report_${env.TESTSUITE}/JTwork/**/*.jtr.xml"
+                script {
+                    if (findFiles([glob: 'test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log']).size() &gt; 0) {
+                        archiveArtifacts allowEmptyArchive: true, artifacts: "test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log"
+                    }
+                }
+            }
+        }
+        stage("Run jtreg jdk") {
+            agent {
+                docker {
+                    image "alpine_3-x86_64"
+                    reuseNode true
+                    label "linux_alpine_x86_64"
+                }
+            }
+            when {
+                beforeAgent true
+                expression {  params.RUN_TESTS == true &amp;&amp; params.jdk_test_groups }
+            }
+            environment {
+                TESTSUITE = 'jdk'
+            }
+            steps {
+                sh 'bash SapMachine-infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s $TESTSUITE "$jdk_test_groups" || true'
+
+                publishHTML target: [
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: false,
+                    keepAll: true,
+                    reportDir: "test_report_${env.TESTSUITE}",
+                    reportFiles: 'JTreport/index.html',
+                    reportName: "JT Report ${env.TESTSUITE}"
+                ]
+                // persist data for test trend graph
+                junit "test_report_${env.TESTSUITE}/JTwork/**/*.jtr.xml"
+                script {
+                    if (findFiles([glob: 'test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log']).size() &gt; 0) {
+                        archiveArtifacts allowEmptyArchive: true, artifacts: "test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log"
+                    }
+                }
+            }
+        }
+        stage("Run jtreg langtools") {
+            agent {
+                docker {
+                    image "alpine_3-x86_64"
+                    reuseNode true
+                    label "linux_alpine_x86_64"
+                }
+            }
+            when {
+                beforeAgent true
+                expression {  params.RUN_TESTS == true &amp;&amp; params.langtools_test_groups }
+            }
+            environment {
+                TESTSUITE = 'langtools'
+            }
+            steps {
+                sh 'bash SapMachine-infrastructure/lib/run_jtreg.sh -l `pwd`/SapMachine -h `pwd`/jtreg/jtreg -s $TESTSUITE "$langtools_test_groups" || true'
+
+                publishHTML target: [
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: false,
+                    keepAll: true,
+                    reportDir: "test_report_${env.TESTSUITE}",
+                    reportFiles: 'JTreport/index.html',
+                    reportName: "JT Report ${env.TESTSUITE}"
+                ]
+                // persist data for test trend graph
+                junit "test_report_${env.TESTSUITE}/JTwork/**/*.jtr.xml"
+                script {
+                    if (findFiles([glob: 'test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log']).size() &gt; 0) {
+                        archiveArtifacts allowEmptyArchive: true, artifacts: "test_report_${env.TESTSUITE}/JTwork/**/hs_err_pid*.log"
+                    }
+                }
+            }
+        }
         
         
             

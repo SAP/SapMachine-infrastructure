@@ -1,35 +1,33 @@
 <flow-definition plugin="workflow-job">
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps">
-    <script>pipeline {
-    agent {
-        label 'infrastructure'
+    <script>agent {
+    label 'infrastructure'
+}
+stages {
+    stage('Checkout Infrastructure Repository') {
+        steps {
+            checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-infrastructure']], userRemoteConfigs: [[url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+        }
     }
-    stages {
-        stage("Checkout Infrastructure Repository") {
-            steps {
-                checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-infrastructure']], userRemoteConfigs: [[url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+    stage('Upload') {
+        agent {
+            dockerfile {
+                dir "SapMachine-infrastructure/dockerfiles/ossrh-upload"
+                reuseNode true
+                label 'infrastructure'
             }
         }
-        stage('Upload') {
-            agent {
-                dockerfile {
-                    dir "SapMachine-infrastructure/dockerfiles/ossrh-upload"
-                    reuseNode true
-                    label 'infrastructure'
-                }
-            }
-            steps {
-                withCredentials([file(credentialsId: 'SapMachine-secret-gpg-key', variable: 'GPGSEC'),
-                                 file(credentialsId: 'OSSRH_SETTINGS', variable: 'OSSRH_SETTINGS_XML')]) {
-                    sh 'SapMachine-infrastructure/lib/ossrh/upload.sh'
-                }
+        steps {
+            withCredentials([file(credentialsId: 'SapMachine-secret-gpg-key', variable: 'GPGSEC'),
+                             file(credentialsId: 'OSSRH_SETTINGS', variable: 'OSSRH_SETTINGS_XML')]) {
+                sh 'SapMachine-infrastructure/lib/ossrh/upload.sh'
             }
         }
     }
-    post {
-        always {
-            cleanWs()
-        }
+}
+post {
+    always {
+        cleanWs()
     }
 }
 </script>
