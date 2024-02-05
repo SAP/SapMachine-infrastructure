@@ -154,13 +154,19 @@
                 label "${{BUILDNODE}}"
             }}
             stages {{
+                stage('Unlock keychain') {{
+                    steps {{
+                        withCredentials([string(credentialsId: 'MacOSKeyChainUnlockPW', variable: 'unlockpass')]) {{
+                            sh '''#!/bin/bash
+                              security unlock-keychain -p $unlockpass ~/Library/Keychains/login.keychain
+                        }}
+                    }}
+                }}
                 stage('Import signing certificate') {{
                     steps {{
                         withCredentials([file(credentialsId: 'MacOSCodesignSAP', variable: 'signcertp2'),
-                                         string(credentialsId: 'MacOSCodesignSAP-Password', variable: 'signcertpass'),
-                                         string(credentialsId: 'MacOSKeyChainUnlockPW2', variable: 'unlockpass')]) {{
+                                         string(credentialsId: 'MacOSCodesignSAP-Password', variable: 'signcertpass')]) {{
                             sh '''#!/bin/bash
-                              security unlock-keychain -p $unlockpass ~/Library/Keychains/login.keychain
                               security import $signcertp2 -k ~/Library/Keychains/login.keychain -P $signcertpass'''
                         }}
                     }}
@@ -169,10 +175,8 @@
                     steps {{
                         withCredentials([string(credentialsId: 'Notarization-AppleID', variable: 'appleid'),
                                          string(credentialsId: 'Notarization-Password', variable: 'notpass'),
-                                         string(credentialsId: 'Notarization-Team', variable: 'notteam'),
-                                         string(credentialsId: 'MacOSKeyChainUnlockPW2', variable: 'unlockpass')]) {{
+                                         string(credentialsId: 'Notarization-Team', variable: 'notteam')]) {{
                             sh '''#!/bin/bash
-                              security unlock-keychain -p $unlockpass ~/Library/Keychains/login.keychain
                               xcrun notarytool store-credentials sapmachine-notarization --apple-id $appleid --password $notpass --team-id $notteam'''
                         }}
                     }}
