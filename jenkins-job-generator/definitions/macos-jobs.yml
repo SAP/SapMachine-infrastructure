@@ -158,7 +158,7 @@
                     steps {{
                         withCredentials([string(credentialsId: 'MacOSKeyChainUnlockPW', variable: 'unlockpass')]) {{
                             sh '''#!/bin/bash
-                              security unlock-keychain -p $unlockpass ~/Library/Keychains/login.keychain
+                              security unlock-keychain -p $unlockpass ~/Library/Keychains/login.keychain'''
                         }}
                     }}
                 }}
