@@ -65,7 +65,7 @@ if [ "$UNAME" = Darwin ] && [ "$RELEASE_BUILD" = true ]; then
   echo "Unlocking keychain and testing codesign availability..."
   security unlock-keychain -p $unlockpass ~/Library/Keychains/login.keychain
   touch cstest
-  codesign -s "Developer ID Application: SAP SE (7R5ZEU67FQ)" cstest || codesignerror=true
+  codesign --verbose -s "Developer ID Application: SAP SE (7R5ZEU67FQ)" cstest || codesignerror=true
   rm cstest
   if [[ ! -z $codesignerror ]]; then
     echo "Failed."
