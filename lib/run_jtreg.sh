@@ -48,15 +48,22 @@ TEST_NATIVE_LIB=${JDK_LOCATION}/build/${BUILD_TYPE}/images/test/${TEST_SUITE}/jt
 
 if [[ $UNAME == Darwin ]]; then
     NUM_CPUS=`sysctl -n hw.ncpu`
-else
-  if [[ $UNAME == AIX ]]; then
+elif [[ $UNAME == AIX ]]; then
     NUM_CPUS=`lparstat -m 2> /dev/null | grep -o "lcpu=[[0-9]*]*" | cut -d "=" -f 2`
-  else
+else
     NUM_CPUS=`grep -c ^processor /proc/cpuinfo`
-  fi
 fi
 
-CONCURRENCY=`expr $NUM_CPUS / 2`
+# Use half number of CPUs on AIX because OSUOSL machine lacks resources for more
+if [[ $UNAME == AIX ]]; then
+    CONCURRENCY=`expr $NUM_CPUS / 2`
+else
+    CONCURRENCY=$NUM_CPUS
+fi
+
+# Use half number of CPUs for langtools suite because http://openjdk.java.net/jtreg/concurrency.html suggests this
+CONCURRENCY_LANGTOOLS=`expr $NUM_CPUS / 2`
+
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 chmod +x ${JT_HOME}/bin/jtreg
@@ -75,25 +82,23 @@ else
   JTREG_CMD="${JT_HOME}/bin/jtreg"
 fi
 
-# Use full concurrency and agentvm to let the tests pass as fast as possible.
 if [ "${TEST_SUITE}" == "hotspot" ]; then
     ${JTREG_CMD} -dir:${JDK_LOCATION}/test/${TEST_SUITE}/jtreg -xml -verbose:summary -nativepath:${TEST_NATIVE_LIB} \
-     -exclude:${JDK_LOCATION}/test/${TEST_SUITE}/jtreg/ProblemList.txt \
-     -conc:${NUM_CPUS} -vmoption:-Xmx384m -w:test_report_${TEST_SUITE}/JTwork -r:test_report_${TEST_SUITE}/JTreport \
-     -a -ignore:quiet -timeoutFactor:5 -agentvm -javaoption:-Djava.awt.headless=true "-k:(!ignore)&(!stress)&(!headful)&(!intermittent)" "-e:ProgramFiles(x86)" -testjdk:${TEST_JDK} ${TEST_GROUPS}
+    -exclude:${JDK_LOCATION}/test/${TEST_SUITE}/jtreg/ProblemList.txt \
+    -conc:${CONCURRENCY} -vmoption:-Xmx384m -w:test_report_${TEST_SUITE}/JTwork -r:test_report_${TEST_SUITE}/JTreport \
+    -a -ignore:quiet -timeoutFactor:5 -agentvm -javaoption:-Djava.awt.headless=true "-k:(!ignore)&(!stress)&(!headful)&(!intermittent)" "-e:ProgramFiles(x86)" -testjdk:${TEST_JDK} ${TEST_GROUPS}
 fi
 
 if [ "${TEST_SUITE}" == "jdk" ]; then
     ${JTREG_CMD} -dir:${JDK_LOCATION}/test/${TEST_SUITE} -xml -verbose:summary -nativepath:${TEST_NATIVE_LIB} \
     -exclude:${JDK_LOCATION}/test/${TEST_SUITE}/ProblemList.txt \
-    -conc:${NUM_CPUS} -vmoption:-Xmx384m -w:test_report_${TEST_SUITE}/JTwork -r:test_report_${TEST_SUITE}/JTreport \
+    -conc:${CONCURRENCY} -vmoption:-Xmx384m -w:test_report_${TEST_SUITE}/JTwork -r:test_report_${TEST_SUITE}/JTreport \
     -a -ignore:quiet -timeoutFactor:5 -agentvm -javaoption:-Djava.awt.headless=true "-k:(!headful)&(!printer)&(!intermittent)" -testjdk:${TEST_JDK} ${TEST_GROUPS}
 fi
 
-# Only use half number of CPUs because http://openjdk.java.net/jtreg/concurrency.html states the concurrency should be half the number of available CPUs.
 if [ "${TEST_SUITE}" == "langtools" ]; then
     ${JTREG_CMD} -dir:${JDK_LOCATION}/test/${TEST_SUITE} -xml -verbose:summary \
     -exclude:${JDK_LOCATION}/test/${TEST_SUITE}/ProblemList.txt \
-    -conc:${CONCURRENCY} -vmoption:-Xmx768m -w:test_report_${TEST_SUITE}/JTwork -r:test_report_${TEST_SUITE}/JTreport \
+    -conc:${CONCURRENCY_LANGTOOLS} -vmoption:-Xmx768m -w:test_report_${TEST_SUITE}/JTwork -r:test_report_${TEST_SUITE}/JTreport \
     -a -ignore:quiet -timeoutFactor:5 -agentvm "-k:(!headful)&(!intermittent)" -testjdk:${TEST_JDK} ${TEST_GROUPS}
 fi
