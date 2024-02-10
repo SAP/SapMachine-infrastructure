@@ -8,11 +8,11 @@
       <int>1604</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>1604</number>
-        <issueUpdatedAt>2024-02-09 00:30:41.0 UTC</issueUpdatedAt>
+        <issueUpdatedAt>2024-02-09 06:29:29.0 UTC</issueUpdatedAt>
         <title>Merge to tag jdk-23+9</title>
         <body>please pull</body>
-        <prUpdatedAt>2024-02-09 00:30:41.0 UTC</prUpdatedAt>
-        <headSha>1fb9e3d674229a2f1b464a09986ad055191966fe</headSha>
+        <prUpdatedAt>2024-02-09 06:29:29.0 UTC</prUpdatedAt>
+        <headSha>e7090d0ea47439a05b03b56f0b146465402f1860</headSha>
         <headRef>pr-jdk-23+9</headRef>
         <mergeable>true</mergeable>
         <baseRef>sapmachine</baseRef>
@@ -80,15 +80,15 @@ fixes #1593
       <int>1551</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>1551</number>
-        <issueUpdatedAt>2024-02-08 15:01:19.0 UTC</issueUpdatedAt>
+        <issueUpdatedAt>2024-02-09 20:34:27.0 UTC</issueUpdatedAt>
         <title>New malloc trace implementation</title>
         <body>This change implements a malloc trace without using the now deprecated glibc malloc hooks. This means the feature is now available on musl-based system and MacOsX too. In addition it can also track memory reclamation, so it can track the currently alive memory.
 
 fixes #1550
 
 </body>
-        <prUpdatedAt>2024-02-08 15:01:19.0 UTC</prUpdatedAt>
-        <headSha>63ebabfb7ee6114e6fdadb1193216fac46031bfb</headSha>
+        <prUpdatedAt>2024-02-09 20:34:27.0 UTC</prUpdatedAt>
+        <headSha>271bb1d5a67d2d00be516b891ad7d95757529c2b</headSha>
         <headRef>malloc_hook_replacement</headRef>
         <mergeable>true</mergeable>
         <baseRef>sapmachine</baseRef>
@@ -96,28 +96,8 @@ fixes #1550
         <userLogin>schmelter-sap</userLogin>
         <htmlUrl>https://github.com/SAP/SapMachine/pull/1551</htmlUrl>
         <labels />
-        <lastCommentCreatedAt>2024-02-06 16:30:25.0 UTC</lastCommentCreatedAt>
+        <lastCommentCreatedAt>2024-02-09 20:34:25.0 UTC</lastCommentCreatedAt>
         <sourceRepoOwner>schmelter-sap</sourceRepoOwner>
-        <state>OPEN</state>
-        <inBadState>false</inBadState>
-      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-    </entry>
-    <entry>
-      <int>1599</int>
-      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>1599</number>
-        <issueUpdatedAt>2024-02-08 16:25:40.0 UTC</issueUpdatedAt>
-        <title>Merge to tag jdk-23+8</title>
-        <body>please pull</body>
-        <prUpdatedAt>2024-02-08 16:25:40.0 UTC</prUpdatedAt>
-        <headSha>0b099d105436ecd7369c98596177b48d4f1f5274</headSha>
-        <headRef>pr-jdk-23+8</headRef>
-        <mergeable>true</mergeable>
-        <baseRef>sapmachine</baseRef>
-        <userLogin>SapMachine</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/1599</htmlUrl>
-        <labels />
-        <sourceRepoOwner>SAP</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
       </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
