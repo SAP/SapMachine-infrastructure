@@ -29,11 +29,8 @@
                                 expression {{ params.BASE_OS_VERSION == "19" }}
                             }}
                             steps {{
-                                // Show the installed version of JFrog CLI.
-                                jf '-v'
-
                                 // Download rpms archive
-                                jf "rt dl sapmachine-mvn/io/sapmachine/build/devkit/linux-ppc64le/rpms/7/rpms-7.tar.gz --flat"
+                                sh 'curl -L -s -u ${{ARTIFACTORY_CREDS}} https://common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build/devkit/linux-ppc64le/rpms/7/rpms-7.tar.gz'
 
                                 // Extract it
                                 sh "mkdir -p SapMachine/build/devkit/download/rpms/ppc64le-linux-gnu-Fedora_19 && cd SapMachine/build/devkit/download/rpms/ppc64le-linux-gnu-Fedora_19 && tar --no-same-permissions --no-same-owner -xzf ${{WORKSPACE}}/rpms-7.tar.gz"
@@ -94,9 +91,6 @@
             agent {{
                 label "{platform}"
             }}
-            tools {{
-                jfrog 'jfrog-cli'
-            }}
             stages {{
                 stage("Checkout Infrastructure Repository") {{
                     steps {{
@@ -124,11 +118,8 @@
                 }}
                 stage("Upload Artifactory") {{
                     steps {{
-                        // Show the installed version of JFrog CLI.
-                        jf '-v'
-
                         // Upload devkit archive
-                        jf "rt u SapMachine/build/devkit/result/*.tar.gz sapmachine-mvn/io/sapmachine/build/devkit/{artarch}/devkit-fedora-gcc/${{BASE_OS_VERSION}}-${{GCC_VERSION}}/devkit-fedora-gcc-${{BASE_OS_VERSION}}-${{GCC_VERSION}}.tar.gz"
+                        sh 'curl -sSf -u $ARTIFACTORY_CREDS -X PUT -T SapMachine/build/devkit/result/*.tar.gz https://common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build/devkit/{artarch}/devkit-fedora-gcc/${{BASE_OS_VERSION}}-${{GCC_VERSION}}/devkit-fedora-gcc-${{BASE_OS_VERSION}}-${{GCC_VERSION}}.tar.gz'
                     }}
                 }}
             }}

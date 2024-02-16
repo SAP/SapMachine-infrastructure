@@ -280,8 +280,11 @@
                                         def jdk_msi_name = jdk_bundle_name.trim().replace(".zip", ".msi")
                                         def jre_msi_name = jre_bundle_name.trim().replace(".zip", ".msi")
 
-                                        jf "rt u ${{jdk_msi_name}} sapmachine-mvn/io/sapmachine/build-results/{platform}/${{env.ART_VERSION}}/${{jdk_msi_name}}"
-                                        jf "rt u ${{jre_msi_name}} sapmachine-mvn/io/sapmachine/build-results/{platform}/${{env.ART_VERSION}}/${{jre_msi_name}}"
+                                        def jdk_curl_call = 'curl -sSf -u $ARTIFACTORY_CREDS -X PUT -T ' + jdk_msi_name + ' https://common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build-results/{platform}/${{ART_VERSION}}/' + jdk_msi_name
+                                        def jre_curl_call = 'curl -sSf -u $ARTIFACTORY_CREDS -X PUT -T ' + jre_msi_name + ' https://common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build-results/{platform}/${{ART_VERSION}}/' + jre_msi_name
+
+                                        sh jdk_curl_call
+                                        sh jre_curl_call
                                     }}
                                 }}
             save_workspace_on_error: *save_workspace_on_error
@@ -605,9 +608,6 @@
             }}
             environment {{
                 ARTIFACTORY_CREDS = credentials('openjdk-artifactory')
-            }}
-            tools {{
-                jfrog 'jfrog-cli'
             }}
             stages {{
                 stage("Init") {{
