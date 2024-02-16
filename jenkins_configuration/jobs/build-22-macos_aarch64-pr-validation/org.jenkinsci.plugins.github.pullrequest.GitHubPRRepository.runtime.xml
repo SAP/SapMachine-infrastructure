@@ -97,17 +97,37 @@ fixes #1593
       </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
     </entry>
     <entry>
+      <int>1610</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>1610</number>
+        <issueUpdatedAt>2024-02-16 00:30:35.0 UTC</issueUpdatedAt>
+        <title>Merge to tag jdk-23+10</title>
+        <body>please pull</body>
+        <prUpdatedAt>2024-02-16 00:30:35.0 UTC</prUpdatedAt>
+        <headSha>8cb9b479c529c058aee50f83920db650b0c18045</headSha>
+        <headRef>pr-jdk-23+10</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine</baseRef>
+        <userLogin>SapMachine</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1610</htmlUrl>
+        <labels />
+        <sourceRepoOwner>SAP</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
       <int>1551</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>1551</number>
-        <issueUpdatedAt>2024-02-14 10:31:21.0 UTC</issueUpdatedAt>
+        <issueUpdatedAt>2024-02-15 11:22:01.0 UTC</issueUpdatedAt>
         <title>New malloc trace implementation</title>
         <body>This change implements a malloc trace without using the now deprecated glibc malloc hooks. This means the feature is now available on musl-based system and MacOsX too. In addition it can also track memory reclamation, so it can track the currently alive memory.
 
 fixes #1550
 
 </body>
-        <prUpdatedAt>2024-02-14 10:31:21.0 UTC</prUpdatedAt>
+        <prUpdatedAt>2024-02-15 11:22:01.0 UTC</prUpdatedAt>
         <headSha>271bb1d5a67d2d00be516b891ad7d95757529c2b</headSha>
         <headRef>malloc_hook_replacement</headRef>
         <mergeable>true</mergeable>
@@ -116,7 +136,7 @@ fixes #1550
         <userLogin>schmelter-sap</userLogin>
         <htmlUrl>https://github.com/SAP/SapMachine/pull/1551</htmlUrl>
         <labels />
-        <lastCommentCreatedAt>2024-02-09 20:34:25.0 UTC</lastCommentCreatedAt>
+        <lastCommentCreatedAt>2024-02-15 11:22:00.0 UTC</lastCommentCreatedAt>
         <sourceRepoOwner>schmelter-sap</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
