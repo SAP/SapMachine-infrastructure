@@ -4,8 +4,8 @@
     agent {
         label "linux_x86_64"
     }
-    tools {
-        jfrog 'jfrog-cli'
+    environment {
+        ARTIFACTORY_CREDS = credentials('openjdk-artifactory')
     }
     stages {
         stage("Checkout Infrastructure Repository") {
@@ -46,11 +46,8 @@
         }
         stage("Upload Artifactory") {
             steps {
-                // Show the installed version of JFrog CLI.
-                jf '-v'
-
                 // Upload devkit archive
-                jf "rt u SapMachine/build/devkit/result/*.tar.gz sapmachine-mvn/io/sapmachine/build/devkit/linux-x64/devkit-fedora-gcc/${BASE_OS_VERSION}-${GCC_VERSION}/devkit-fedora-gcc-${BASE_OS_VERSION}-${GCC_VERSION}.tar.gz"
+                sh 'curl -sSf -u $ARTIFACTORY_CREDS -X PUT -T SapMachine/build/devkit/result/*.tar.gz https://common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build/devkit/linux-x64/devkit-fedora-gcc/${BASE_OS_VERSION}-${GCC_VERSION}/devkit-fedora-gcc-${BASE_OS_VERSION}-${GCC_VERSION}.tar.gz'
             }
         }
     }

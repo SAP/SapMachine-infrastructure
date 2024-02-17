@@ -106,9 +106,6 @@
     environment {
         ARTIFACTORY_CREDS = credentials('openjdk-artifactory')
     }
-    tools {
-        jfrog 'jfrog-cli'
-    }
     stages {
         stage("Init") {
             steps {
