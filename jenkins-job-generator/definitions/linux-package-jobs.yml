@@ -66,9 +66,6 @@
             agent {{
                 label "{platform}"
             }}
-            environment {{
-                ARTIFACTORY_CREDS = credentials('openjdk-artifactory')
-            }}
             stages {{
                 stage("Checkout Infrastructure Repository") {{
                     steps {{

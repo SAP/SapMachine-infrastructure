@@ -27,8 +27,10 @@
             publish_artifactory_step:  &publish_artifactory_step |-
                 steps {{
                                 // Upload the test and jdk archive
-                                sh 'curl -sSf -u $ARTIFACTORY_CREDS -X PUT -T test.zip https://common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build-results/{platform}/${{ART_VERSION}}/test.zip'
-                                sh 'curl -sSf -u $ARTIFACTORY_CREDS -X PUT -T jdk.zip https://common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build-results/{platform}/${{ART_VERSION}}/jdk.zip'
+                                withCredentials([usernameColonPassword(credentialsId: 'openjdk-artifactory', variable: 'ARTIFACTORY_CREDS')]) {{
+                                    sh 'curl -sSf -u $ARTIFACTORY_CREDS -X PUT -T test.zip https://common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build-results/{platform}/${{ART_VERSION}}/test.zip'
+                                    sh 'curl -sSf -u $ARTIFACTORY_CREDS -X PUT -T jdk.zip https://common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build-results/{platform}/${{ART_VERSION}}/jdk.zip'
+                                }}
         - linux_aarch64:
             architecture: linux-aarch64
             debarch: arm64
@@ -248,8 +250,10 @@
                                         def jdk_msi_name = jdk_bundle_name.trim().replace(".zip", ".msi")
                                         def jre_msi_name = jre_bundle_name.trim().replace(".zip", ".msi")
 
-                                        def jdk_curl_call = 'curl -sSf -u $ARTIFACTORY_CREDS -X PUT -T ' + jdk_msi_name + ' https://common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build-results/{platform}/${{ART_VERSION}}/' + jdk_msi_name
-                                        def jre_curl_call = 'curl -sSf -u $ARTIFACTORY_CREDS -X PUT -T ' + jre_msi_name + ' https://common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build-results/{platform}/${{ART_VERSION}}/' + jre_msi_name
+                                        withCredentials([usernameColonPassword(credentialsId: 'openjdk-artifactory', variable: 'ARTIFACTORY_CREDS')]) {{
+                                            def jdk_curl_call = 'curl -sSf -u $ARTIFACTORY_CREDS -X PUT -T ' + jdk_msi_name + ' https://common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build-results/{platform}/${{ART_VERSION}}/' + jdk_msi_name
+                                            def jre_curl_call = 'curl -sSf -u $ARTIFACTORY_CREDS -X PUT -T ' + jre_msi_name + ' https://common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build-results/{platform}/${{ART_VERSION}}/' + jre_msi_name
+                                        }}
 
                                         sh jdk_curl_call
                                         sh jre_curl_call
@@ -574,9 +578,6 @@
             agent {{
                 label "{platform}"
             }}
-            environment {{
-                ARTIFACTORY_CREDS = credentials('openjdk-artifactory')
-            }}
             stages {{
                 stage("Init") {{
                     steps {{
@@ -636,7 +637,9 @@
                             String[] gav = params.DEVKIT.split(":");
                             if (gav.length == 3) {{
                                 echo "Extracting devkit from GAV coordinates: \"${{params.DEVKIT}}\"."
-                                sh("SapMachine-infrastructure/lib/deploy-devkit.sh ${{gav[0]}} ${{gav[1]}} ${{gav[2]}}")
+                                withCredentials([usernameColonPassword(credentialsId: 'openjdk-artifactory', variable: 'ARTIFACTORY_CREDS')]) {{
+                                    sh("SapMachine-infrastructure/lib/deploy-devkit.sh ${{gav[0]}} ${{gav[1]}} ${{gav[2]}}")
+                                }}
                                 env.DEVKIT_PATH = sh(script: "cat devkitlocation.txt", returnStdout: true).trim()
                             }} else {{
                                 echo "Devkit not in GAV notation, assuming path."

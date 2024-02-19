@@ -29,11 +29,9 @@
                     }}
                 }}
                 stage("Download and Publish") {{
-                    environment {{
-                        ARTIFACTORY_CREDS = credentials('openjdk-artifactory')
-                    }}
                     steps {{
-                        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
+                        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD'],
+                                         usernameColonPassword(credentialsId: 'openjdk-artifactory', variable: 'ARTIFACTORY_CREDS')]) {{
                             sh "SapMachine-infrastructure/lib/download_and_publish_msi.sh"
                         }}
                     }}

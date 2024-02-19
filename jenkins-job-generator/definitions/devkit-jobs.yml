@@ -30,7 +30,9 @@
                             }}
                             steps {{
                                 // Download rpms archive
-                                sh 'curl -L -s -o rpms-7.tar.gz -u ${{ARTIFACTORY_CREDS}} https://common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build/devkit/linux-ppc64le/rpms/7/rpms-7.tar.gz'
+                                withCredentials([usernameColonPassword(credentialsId: 'openjdk-artifactory', variable: 'ARTIFACTORY_CREDS')]) {{
+                                    sh 'curl -L -s -o rpms-7.tar.gz -u ${{ARTIFACTORY_CREDS}} https://common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build/devkit/linux-ppc64le/rpms/7/rpms-7.tar.gz'
+                                }}
 
                                 // Extract it
                                 sh "mkdir -p SapMachine/build/devkit/download/rpms/ppc64le-linux-gnu-Fedora_19 && cd SapMachine/build/devkit/download/rpms/ppc64le-linux-gnu-Fedora_19 && tar --no-same-permissions --no-same-owner -xzf ${{WORKSPACE}}/rpms-7.tar.gz"
@@ -91,9 +93,6 @@
             agent {{
                 label '{platform}'
             }}
-            environment {{
-                ARTIFACTORY_CREDS = credentials('openjdk-artifactory')
-            }}
             stages {{
                 stage("Checkout Infrastructure Repository") {{
                     steps {{
@@ -122,7 +121,9 @@
                 stage("Upload Artifactory") {{
                     steps {{
                         // Upload devkit archive
-                        sh 'curl -sSf -u $ARTIFACTORY_CREDS -X PUT -T SapMachine/build/devkit/result/*.tar.gz https://common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build/devkit/{artarch}/devkit-fedora-gcc/${{BASE_OS_VERSION}}-${{GCC_VERSION}}/devkit-fedora-gcc-${{BASE_OS_VERSION}}-${{GCC_VERSION}}.tar.gz'
+                        withCredentials([usernameColonPassword(credentialsId: 'openjdk-artifactory', variable: 'ARTIFACTORY_CREDS')]) {{
+                            sh 'curl -sSf -u $ARTIFACTORY_CREDS -X PUT -T SapMachine/build/devkit/result/*.tar.gz https://common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build/devkit/{artarch}/devkit-fedora-gcc/${{BASE_OS_VERSION}}-${{GCC_VERSION}}/devkit-fedora-gcc-${{BASE_OS_VERSION}}-${{GCC_VERSION}}.tar.gz'
+                        }}
                     }}
                 }}
             }}
