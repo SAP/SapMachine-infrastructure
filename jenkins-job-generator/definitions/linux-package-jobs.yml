@@ -6,11 +6,10 @@
             debarch: arm64
             docker_agent: |-
                 agent {{
-                                dockerfile {{
-                                    dir "SapMachine-infrastructure/dockerfiles/ubuntu_20_04/arm64"
+                                docker {{
+                                    image 'ubuntu_20_04-arm64'
                                     reuseNode true
-                                    label "{platform}"
-                                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
+                                    label '{platform}'
                                 }}
                             }}
         - linux_ppc64le:
@@ -18,11 +17,10 @@
             debarch: ppc64el
             docker_agent: |-
                 agent {{
-                                dockerfile {{
-                                    dir "SapMachine-infrastructure/dockerfiles/ubuntu_20_04/ppc64le"
+                                docker {{
+                                    image 'ubuntu_20_04-ppc64le'
                                     reuseNode true
-                                    label "{platform}"
-                                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
+                                    label '{platform}'
                                 }}
                             }}
         - linux_x86_64:
@@ -30,11 +28,10 @@
             debarch: amd64
             docker_agent: |-
                 agent {{
-                                dockerfile {{
-                                    dir "SapMachine-infrastructure/dockerfiles/ubuntu_20_04/x86_64"
+                                docker {{
+                                    image 'ubuntu_20_04-x86_64'
                                     reuseNode true
-                                    label "{platform}"
-                                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
+                                    label '{platform}'
                                 }}
                             }}
 
@@ -127,9 +124,8 @@
 
 - job-template:
     name: resign-debian-repository-{platform}
-    description: 'Resign debian repository on {platform}.'
     defaults: 'linux_package_global'
-    sandbox: true
+    description: 'Resign debian repository on {platform}.'
     project-type: pipeline
     sandbox: true
     concurrent: false
@@ -183,7 +179,7 @@
     dsl: |
         pipeline {{
             agent {{
-                label "linux_x86_64"
+                label 'linux_x86_64'
             }}
             stages {{
                 stage("Checkout Infrastructure Repository") {{
@@ -193,10 +189,10 @@
                 }}
                 stage("Build") {{
                     agent {{
-                        dockerfile {{
-                            dir "SapMachine-infrastructure/dockerfiles/fedora-rpm"
+                        docker {{
+                            image 'fedora-rpm-x86_64'
                             reuseNode true
-                            label "linux_x86_64"
+                            label 'linux_x86_64'
                         }}
                     }}
                     steps {{
@@ -214,10 +210,10 @@
                         expression {{ params.PUBLISH == true }}
                     }}
                     agent {{
-                        dockerfile {{
-                            dir "SapMachine-infrastructure/dockerfiles/infrastructure"
+                        docker {{
+                            image 'infrastructure-x86_64'
                             reuseNode true
-                            label "linux_x86_64"
+                            label 'linux_x86_64'
                         }}
                     }}
                     steps {{
@@ -256,7 +252,7 @@
     dsl: |
         pipeline {{
             agent {{
-                label "linux_alpine_x86_64"
+                label 'linux_alpine_x86_64'
             }}
             stages {{
                 stage("Checkout Infrastructure Repository") {{
@@ -266,10 +262,10 @@
                 }}
                 stage("Build") {{
                     agent {{
-                        dockerfile {{
-                            dir "SapMachine-infrastructure/dockerfiles/alpine_3/x86_64"
+                        docker {{
+                            image 'alpine_3-x86_64'
                             reuseNode true
-                            label "linux_alpine_x86_64"
+                            label 'linux_alpine_x86_64'
                         }}
                     }}
                     steps {{

@@ -13,30 +13,35 @@
         - 'sap':
            branch_name: sap
     platforms: &platforms
+        - linux_aarch64:
+            docker_agent: |
+                agent {{
+                    docker {{
+                        image 'async-build-arm64'
+                        reuseNode true
+                        label '{platform}'
+                    }}
+                }}
         - linux_x86_64:
             docker_agent: |
                 agent {{
-                    dockerfile {{
-                        dir "SapMachine-infrastructure/dockerfiles/async/ppc64le"
+                    docker {{
+                        image 'async-build-x86_64'
                         reuseNode true
-                        label "{platform}"
+                        label '{platform}'
                     }}
                 }}
         - linux_ppc64le:
             docker_agent: |
                 agent {{
-                    dockerfile {{
-                        dir "SapMachine-infrastructure/dockerfiles/async/x86_64"
+                    docker {{
+                        image 'async-build-ppc64le'
                         reuseNode true
-                        label "{platform}"
+                        label '{platform}'
                     }}
                 }}
-        - macos_x86_64:
-            docker_agent: ''
-        - macos_aarch64:
-            docker_agent: ''
-        - linux_aarch64:
-            docker_agent: ''
+        - macos_x86_64
+        - macos_aarch64
     build_types: &build_types
         - snapshot
         - release
@@ -114,7 +119,7 @@
                     }}
                 }}
                 stage('Download Prerequisites') {{
-                    {docker_agent}
+                    {docker_agent|}
                     when {{
                         expression {{ env.VERIFICATION_RESULT != "2" }}
                     }}
@@ -125,7 +130,7 @@
                     }}
                 }}
                 stage("Build") {{
-                    {docker_agent}
+                    {docker_agent|}
                     when {{
                         beforeAgent true
                         expression {{ env.VERIFICATION_RESULT != "2" }}

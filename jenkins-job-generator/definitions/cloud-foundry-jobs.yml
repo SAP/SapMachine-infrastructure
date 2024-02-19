@@ -12,7 +12,7 @@
     dsl: |
         pipeline {{
             agent {{
-                  label 'infrastructure'
+                label 'infrastructure'
             }}
             stages {{
                 stage("Checkout Infrastructure Repository") {{
@@ -22,10 +22,10 @@
                 }}
                 stage('Generate') {{
                     agent {{
-                        dockerfile {{
-                            dir 'SapMachine-infrastructure/dockerfiles/infrastructure'
+                        docker {{
+                            image 'infrastructure-x86_64'
                             reuseNode true
-                            label "infrastructure"
+                            label 'infrastructure'
                         }}
                     }}
                     steps {{
@@ -66,10 +66,10 @@
                 }}
                 stage('Test') {{
                     agent {{
-                        dockerfile {{
-                            label 'infrastructure'
-                            dir 'SapMachine-infrastructure/dockerfiles/infrastructure'
+                        docker {{
+                            image 'infrastructure-x86_64'
                             reuseNode true
+                            label 'infrastructure'
                         }}
                     }}
                     steps {{

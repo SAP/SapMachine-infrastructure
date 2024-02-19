@@ -20,8 +20,8 @@
                 }}
                 stage('Generate Manifest') {{
                     agent {{
-                        dockerfile {{
-                            dir "SapMachine-infrastructure/dockerfiles/infrastructure"
+                        docker {{
+                            image 'infrastructure-x86_64'
                             reuseNode true
                             label 'infrastructure'
                         }}
@@ -66,8 +66,8 @@
                 }}
                 stage('Generate Dockerfiles') {{
                     agent {{
-                        dockerfile {{
-                            dir "SapMachine-infrastructure/dockerfiles/infrastructure"
+                        docker {{
+                            image 'infrastructure-x86_64'
                             reuseNode true
                             label 'infrastructure'
                         }}

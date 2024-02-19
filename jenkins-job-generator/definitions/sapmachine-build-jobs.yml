@@ -33,20 +33,12 @@
             architecture: linux-aarch64
             debarch: arm64
             devkit_default: '{linux_aarch64_devkit|io.sapmachine.build.devkit.linux-aarch64:devkit-fedora-gcc:27-11.3.0}'
-            prepare_docker: |-
-                stage("Docker") {{
-                            steps {{
-                                script {{
-                                    docker.build("ubuntu_20_04-arm64", '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\" SapMachine-infrastructure/dockerfiles/ubuntu_20_04/arm64/.')
-                                }}
-                            }}
-                        }}
             docker_agent: &docker_agent_aarch64 |-
                 agent {{
                                 docker {{
-                                    image "ubuntu_20_04-arm64"
+                                    image 'ubuntu_20_04-arm64'
                                     reuseNode true
-                                    label "linux_aarch64"
+                                    label '{platform}'
                                 }}
                             }}
             docker_agent_verify: *docker_agent_aarch64
@@ -101,20 +93,12 @@
                             }}
                         }}
         - linux_alpine_x86_64:
-            prepare_docker: |-
-                stage("Docker") {{
-                            steps {{
-                                script {{
-                                    docker.build("alpine_3-x86_64", 'SapMachine-infrastructure/dockerfiles/alpine_3/x86_64/.')
-                                }}
-                            }}
-                        }}
             docker_agent: &docker_agent_alpine_x86_64 |-
                 agent {{
                                 docker {{
-                                    image "alpine_3-x86_64"
+                                    image 'alpine_3-x86_64'
                                     reuseNode true
-                                    label "linux_alpine_x86_64"
+                                    label '{platform}'
                                 }}
                             }}
             build_alpine_apk_packages_pre: &build_alpine_apk_packages_pre 'stage("Build Alpine apk Packages") {{'
@@ -145,20 +129,12 @@
             architecture: linux-ppc64le
             debarch: ppc64el
             devkit_default: '{linux_ppc64le_devkit|io.sapmachine.build.devkit.linux-ppc64le:devkit-fedora-gcc:27-11.3.0}'
-            prepare_docker: |-
-                stage("Docker") {{
-                            steps {{
-                                script {{
-                                    docker.build("ubuntu_20_04-ppc64le", '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\" SapMachine-infrastructure/dockerfiles/ubuntu_20_04/ppc64le/.')
-                                }}
-                            }}
-                        }}
             docker_agent: &docker_agent_ppc64le |-
                 agent {{
                                 docker {{
-                                    image "ubuntu_20_04-ppc64le"
+                                    image 'ubuntu_20_04-ppc64le'
                                     reuseNode true
-                                    label "linux_ppc64le"
+                                    label '{platform}'
                                 }}
                             }}
             docker_agent_verify: *docker_agent_ppc64le
@@ -172,20 +148,12 @@
             architecture: linux-x64
             debarch: amd64
             devkit_default: '{linux_x86_64_devkit|io.sapmachine.build.devkit.linux-x64:devkit-fedora-gcc:27-11.3.0}'
-            prepare_docker: |-
-                stage("Docker") {{
-                            steps {{
-                                script {{
-                                    docker.build("ubuntu_20_04_x86_64", '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\" SapMachine-infrastructure/dockerfiles/ubuntu_20_04/x86_64/.')
-                                }}
-                            }}
-                        }}
             docker_agent: &docker_agent_x86_64 |-
                 agent {{
                                 docker {{
-                                    image "ubuntu_20_04_x86_64"
+                                    image 'ubuntu_20_04-x86_64'
                                     reuseNode true
-                                    label "linux_x86_64"
+                                    label '{platform}'
                                 }}
                             }}
             docker_agent_verify: *docker_agent_x86_64
@@ -195,10 +163,10 @@
             build_rpm_packages: |-
                 stage("Build RPM Packages") {{
                             agent {{
-                                dockerfile {{
-                                    dir "SapMachine-infrastructure/dockerfiles/fedora-rpm"
+                                docker {{
+                                    image 'fedora-rpm-x86_64'
                                     reuseNode true
-                                    label "linux_x86_64"
+                                    label '{platform}'
                                 }}
                             }}
                             when {{
@@ -648,7 +616,6 @@
                         '''
                     }}
                 }}
-                {prepare_docker|}
                 {verify_pre|}
                     {docker_agent_verify|}
                     {verify_step|}

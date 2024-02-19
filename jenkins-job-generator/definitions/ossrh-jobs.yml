@@ -20,8 +20,8 @@
                 }}
                 stage('Upload') {{
                     agent {{
-                        dockerfile {{
-                            dir "SapMachine-infrastructure/dockerfiles/ossrh-upload"
+                        docker {{
+                            image 'ossrh-upload-x86_64'
                             reuseNode true
                             label 'infrastructure'
                         }}

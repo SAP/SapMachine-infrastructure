@@ -37,10 +37,10 @@
                 }}
                 stage('Build') {{
                     agent {{
-                        dockerfile {{
-                            label 'linux_x86_64'
-                            dir "SapMachine-infrastructure/dockerfiles/jtreg-build"
+                        docker {{
+                            image 'jtreg-build-x86_64'
                             reuseNode true
+                            label 'linux_x86_64'
                         }}
                     }}
                     steps {{

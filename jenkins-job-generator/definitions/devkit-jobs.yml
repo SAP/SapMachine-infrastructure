@@ -6,10 +6,10 @@
             base_os_version_default: '21'
             docker_agent: |-
                 agent {{
-                                dockerfile {{
-                                    dir "SapMachine-infrastructure/devkits/dockerfiles/arm64"
+                                docker {{
+                                    image 'ubuntu_20_04-arm64'
                                     reuseNode true
-                                    label "{platform}"
+                                    label '{platform}'
                                 }}
                             }}
         - linux_ppc64le:
@@ -17,10 +17,10 @@
             base_os_version_default: '19'
             docker_agent: |-
                 agent {{
-                                dockerfile {{
-                                    dir "SapMachine-infrastructure/devkits/dockerfiles/ppc64le"
+                                docker {{
+                                    image 'ubuntu_20_04-ppc64le'
                                     reuseNode true
-                                    label "{platform}"
+                                    label '{platform}'
                                 }}
                             }}
             prepare_rpm_packages: |-
@@ -41,10 +41,10 @@
             base_os_version_default: '12'
             docker_agent: |-
                 agent {{
-                                dockerfile {{
-                                    dir "SapMachine-infrastructure/devkits/dockerfiles/x86_64"
+                                docker {{
+                                    image 'ubuntu_20_04-x86_64'
                                     reuseNode true
-                                    label "{platform}"
+                                    label '{platform}'
                                 }}
                             }}
 
@@ -89,7 +89,7 @@
     dsl: |
         pipeline {{
             agent {{
-                label "{platform}"
+                label '{platform}'
             }}
             environment {{
                 ARTIFACTORY_CREDS = credentials('openjdk-artifactory')

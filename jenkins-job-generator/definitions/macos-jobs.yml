@@ -151,7 +151,7 @@
     dsl: |
         pipeline {{
             agent {{
-                label "${{BUILDNODE}}"
+                label '${{BUILDNODE}}'
             }}
             stages {{
                 stage('Unlock keychain') {{
