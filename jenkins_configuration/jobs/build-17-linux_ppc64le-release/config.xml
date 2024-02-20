@@ -1,20 +1,287 @@
-<flow-definition plugin="workflow-job@1385.vb_58b_86ea_fff1">
-  <actions>
-    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@2.2175.v76a_fff0a_2618" />
-    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@2.2175.v76a_fff0a_2618">
-      <jobProperties />
-      <triggers />
-      <parameters />
-      <options />
-    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
-  </actions>
+<flow-definition plugin="workflow-job">
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps">
+    <script>pipeline {
+    agent {
+        label "linux_ppc64le"
+    }
+    stages {
+        stage("Init") {
+            steps {
+                
+                // trigger workspace cleanup
+                cleanWs()
+
+                // check/configure some job parameters
+                script {
+                    if (params.SAPMACHINE_VERSION.isEmpty()) {
+                        env.SAPMACHINE_VERSION = params.GIT_REF
+                    } else {
+                        env.SAPMACHINE_VERSION = params.SAPMACHINE_VERSION
+                    }
+
+                    // this variable, indicating that we run a release build, is needed in some scripts
+                    env.RELEASE_BUILD = "true"
+
+                    // check for conforming SAPMACHINE_VERSION tag and set RELEASE flag accordingly
+                    def m = (env.SAPMACHINE_VERSION =~ /sapmachine-((\d+(\.\d+)*)(\+(\d+))?)$/)
+                    if (m) {
+                        if (m.group(4) == null) {
+                            env.RELEASE = "true"
+                        } else {
+                            env.RELEASE = "false"
+                        }
+                    } else {
+                        error(env.SAPMACHINE_VERSION + " is no valid SapMachine version tag.")
+                    }
+
+                    // when we publish, installer packages are mandatory
+                    if (params.PUBLISH == true) {
+                        env.BUILD_INSTALLER_PACKAGES = true
+                    } else {
+                        env.BUILD_INSTALLER_PACKAGES = params.BUILD_INSTALLER_PACKAGES
+                    }
+                }
+            }
+        }
+        stage("Checkout Infrastructure Repository") {
+            steps {
+                sh '''#!/bin/bash
+                    set -e
+
+                    if [[ `uname` == CYGWIN* ]]; then
+                      GIT_TOOL="/cygdrive/c/Program Files/Git/cmd/git.exe"
+                    else
+                      GIT_TOOL=git
+                    fi
+
+                    "$GIT_TOOL" --version
+                    "$GIT_TOOL" config --global init.defaultBranch master
+                    (set -ex &amp;&amp; "$GIT_TOOL" init SapMachine-infrastructure)
+                    cd SapMachine-infrastructure
+                    (set -ex &amp;&amp; GIT_TERMINAL_PROMPT=0 "$GIT_TOOL" fetch --depth 1 https://github.com/SAP/SapMachine-infrastructure master)
+                    (set -ex &amp;&amp; "$GIT_TOOL" checkout --detach FETCH_HEAD)
+                '''
+            }
+        }
+        
+            
+            
+        stage("Checkout SapMachine Repository") {
+            
+            steps {
+                sh("SapMachine-infrastructure/lib/git_clone.sh $SAPMACHINE_GIT_REPOSITORY SapMachine $GIT_REF ")
+            }
+        }
+        stage("Prepare Devkit") {
+            agent {
+                docker {
+                    image 'ubuntu_20_04-ppc64le'
+                    reuseNode true
+                    label 'linux_ppc64le'
+                }
+            }
+            when {
+                beforeAgent true
+                expression {  !params.DEVKIT.isEmpty() }
+            }
+            steps {
+                script {
+                    String[] gav = params.DEVKIT.split(":");
+                    if (gav.length == 3) {
+                        echo "Extracting devkit from GAV coordinates: \"${params.DEVKIT}\"."
+                        withCredentials([usernameColonPassword(credentialsId: 'openjdk-artifactory', variable: 'ARTIFACTORY_CREDS')]) {
+                            sh("SapMachine-infrastructure/lib/deploy-devkit.sh ${gav[0]} ${gav[1]} ${gav[2]}")
+                        }
+                        env.DEVKIT_PATH = sh(script: "cat devkitlocation.txt", returnStdout: true).trim()
+                    } else {
+                        echo "Devkit not in GAV notation, assuming path."
+                        env.DEVKIT_PATH = params.DEVKIT;
+                    }
+                    echo "Devkit Path: ${env.DEVKIT_PATH}"
+                }
+            }
+        }
+        stage("Download Prerequisites") {
+            agent {
+                docker {
+                    image 'ubuntu_20_04-ppc64le'
+                    reuseNode true
+                    label 'linux_ppc64le'
+                }
+            }
+            
+            steps {
+                // Download Boot JDK, Credentials are needed to avoid rate limit exceedance
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
+                    sh 'python3 SapMachine-infrastructure/lib/download_boot_jdk.py -d `pwd`'
+                }
+
+                // Download googletest
+                sh("SapMachine-infrastructure/lib/git_clone.sh https://github.com/google/googletest gtest release-1.8.1")
+
+                // Download jtreg if required
+                script {
+                    if (params.RUN_TESTS) {
+                        sh 'python3 SapMachine-infrastructure/lib/download_jtreg.py'
+                    }
+                }
+            }
+        }
+        stage("Build") {
+            agent {
+                docker {
+                    image 'ubuntu_20_04-ppc64le'
+                    reuseNode true
+                    label 'linux_ppc64le'
+                }
+            }
+            
+            environment {
+                BOOT_JDK = "${WORKSPACE}/boot_jdk"
+            }
+            steps {
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD'],
+                                 string(credentialsId: 'MacOSKeyChainUnlockPW', variable: 'unlockpass')]) {
+                    script {
+                        sh("SapMachine-infrastructure/lib/build.sh")
+                    }
+                }
+            }
+        }
+        stage("Zip Artifacts") {
+                agent {
+                docker {
+                    image 'ubuntu_20_04-ppc64le'
+                    reuseNode true
+                    label 'linux_ppc64le'
+                }
+            }
+                
+                steps {
+                    script {
+                        sh("SapMachine-infrastructure/lib/zip_artifacts.sh")
+                        env.ART_VERSION = readFile "${env.WORKSPACE}/javavmversion.txt"
+                    }
+                }
+            }
+        
+        
+        
+        
+        
+        stage("Build Debian Packages") {
+            agent {
+                docker {
+                    image 'ubuntu_20_04-ppc64le'
+                    reuseNode true
+                    label 'linux_ppc64le'
+                }
+            }
+            when {
+                beforeAgent true
+                expression { env.BUILD_INSTALLER_PACKAGES == "true" }
+            }
+            steps {
+                sh 'python3 SapMachine-infrastructure/lib/packagebuild/make_deb.py --tag=$SAPMACHINE_VERSION --architecture=linux-ppc64le'
+            }
+            post {
+                success {
+                    stash includes: '*.deb', name: 'debPackages'
+                    stash includes: 'SapMachine-infrastructure/**', name: 'infra'
+                }
+            }
+        }
+        
+        stage("Publish Artifactory") {
+            when {
+                expression { params.UPLOAD_ARTIFACTORY == true || params.PUBLISH == true }
+            }
+            steps {
+                // Upload the test and jdk archive
+                withCredentials([usernameColonPassword(credentialsId: 'openjdk-artifactory', variable: 'ARTIFACTORY_CREDS')]) {
+                    sh 'curl -sSf -u $ARTIFACTORY_CREDS -X PUT -T test.zip https://common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build-results/linux_ppc64le/${ART_VERSION}/test.zip'
+                    sh 'curl -sSf -u $ARTIFACTORY_CREDS -X PUT -T jdk.zip https://common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build-results/linux_ppc64le/${ART_VERSION}/jdk.zip'
+                }
+                
+            }
+        }
+        stage("Publish GitHub") {
+            steps {
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
+                    sh 'SapMachine-infrastructure/lib/publish.sh'
+                }
+            }
+        }
+        stage("Publish Release Data") {
+            when {
+                expression { params.PUBLISH == true }
+            }
+            steps {
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
+                    lock('ReleaseDataGenerationLock') {
+                        sh 'python3 SapMachine-infrastructure/lib/generate_release_data.py --no-status -o git -t $SAPMACHINE_VERSION'
+                    }
+                }
+            }
+        }
+        stage("Publish Debian Packages") {
+            agent {
+                label 'agent-local-docker-ubuntu'
+            }
+            when {
+                beforeAgent true
+                expression { params.PUBLISH == true &amp;&amp; env.RELEASE == "true" }
+            }
+            steps {
+                unstash 'infra'
+                unstash 'debPackages'
+                sh 'cp -n *.deb /var/pkg/deb/ppc64el || true'
+                sh 'python3 SapMachine-infrastructure/lib/packagebuild/resign_deb_repository.py -s -r /var/pkg/deb/ppc64el'
+            }
+        }
+        
+        stage("Generate Dockerfiles") {
+            when {
+                expression { params.PUBLISH == true &amp;&amp; env.RELEASE == "true" }
+            }
+            steps {
+                build job: 'generate-dockerfiles', propagate: false, wait: true
+            }
+        }
+        
+            
+            
+        
+    }
+    post {
+        success {
+            script {
+                // create a gensrc archive
+                if (params.CREATE_GENSRC_BUNDLE == true) {
+                    sh 'cd SapMachine/build &amp;&amp; cd $(ls) &amp;&amp; zip -rq ${WORKSPACE}/support_gensrc.zip support/gensrc'
+                    archiveArtifacts artifacts: 'support_gensrc.zip'
+                }
+
+                // archive workspace on request
+                if (params.ARCHIVE_WORKSPACE == true) {
+                    sh 'zip -rq workspace.zip .'
+                    archiveArtifacts allowEmptyArchive: true, artifacts: 'workspace.zip'
+                }
+            }
+            cleanWs()
+        }
+        
+    }
+}
+</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <actions />
   <description>Release build for SapMachine 17 on linux_ppc64le.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
   <properties>
-    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty>
-      <abortPrevious>false</abortPrevious>
-    </org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty>
-    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.37.3.1">
+    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty />
+    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github">
       <projectUrl>https://github.com/SAP/SapMachine</projectUrl>
       <displayName />
     </com.coravy.hudson.plugins.github.GithubProjectProperty>
@@ -98,288 +365,4 @@
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@3853.vb_a_490d892963">
-    <script>pipeline {
-    agent {
-        label "linux_ppc64le"
-    }
-    environment {
-        ARTIFACTORY_CREDS = credentials('openjdk-artifactory')
-    }
-    stages {
-        stage("Init") {
-            steps {
-                
-                // trigger workspace cleanup
-                cleanWs()
-
-                // check/configure some job parameters
-                script {
-                    if (params.SAPMACHINE_VERSION.isEmpty()) {
-                        env.SAPMACHINE_VERSION = params.GIT_REF
-                    } else {
-                        env.SAPMACHINE_VERSION = params.SAPMACHINE_VERSION
-                    }
-
-                    // this variable, indicating that we run a release build, is needed in some scripts
-                    env.RELEASE_BUILD = "true"
-
-                    // check for conforming SAPMACHINE_VERSION tag and set RELEASE flag accordingly
-                    def m = (env.SAPMACHINE_VERSION =~ /sapmachine-((\d+(\.\d+)*)(\+(\d+))?)$/)
-                    if (m) {
-                        if (m.group(4) == null) {
-                            env.RELEASE = "true"
-                        } else {
-                            env.RELEASE = "false"
-                        }
-                    } else {
-                        error(env.SAPMACHINE_VERSION + " is no valid SapMachine version tag.")
-                    }
-
-                    // when we publish, installer packages are mandatory
-                    if (params.PUBLISH == true) {
-                        env.BUILD_INSTALLER_PACKAGES = true
-                    } else {
-                        env.BUILD_INSTALLER_PACKAGES = params.BUILD_INSTALLER_PACKAGES
-                    }
-                }
-            }
-        }
-        stage("Checkout Infrastructure Repository") {
-            steps {
-                sh '''#!/bin/bash
-                    set -e
-
-                    if [[ `uname` == CYGWIN* ]]; then
-                      GIT_TOOL="/cygdrive/c/Program Files/Git/cmd/git.exe"
-                    else
-                      GIT_TOOL=git
-                    fi
-
-                    "$GIT_TOOL" --version
-                    "$GIT_TOOL" config --global init.defaultBranch master
-                    (set -ex &amp;&amp; "$GIT_TOOL" init SapMachine-infrastructure)
-                    cd SapMachine-infrastructure
-                    (set -ex &amp;&amp; GIT_TERMINAL_PROMPT=0 "$GIT_TOOL" fetch --depth 1 https://github.com/SAP/SapMachine-infrastructure master)
-                    (set -ex &amp;&amp; "$GIT_TOOL" checkout --detach FETCH_HEAD)
-                '''
-            }
-        }
-        stage("Docker") {
-            steps {
-                script {
-                    docker.build("ubuntu_20_04-ppc64le", '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\" SapMachine-infrastructure/dockerfiles/ubuntu_20_04/ppc64le/.')
-                }
-            }
-        }
-        
-            
-            
-        stage("Checkout SapMachine Repository") {
-            
-            steps {
-                sh("SapMachine-infrastructure/lib/git_clone.sh $SAPMACHINE_GIT_REPOSITORY SapMachine $GIT_REF ")
-            }
-        }
-        stage("Prepare Devkit") {
-            agent {
-                docker {
-                    image "ubuntu_20_04-ppc64le"
-                    reuseNode true
-                    label "linux_ppc64le"
-                }
-            }
-            when {
-                beforeAgent true
-                expression {  !params.DEVKIT.isEmpty() }
-            }
-            steps {
-                script {
-                    String[] gav = params.DEVKIT.split(":");
-                    if (gav.length == 3) {
-                        echo "Extracting devkit from GAV coordinates: \"${params.DEVKIT}\"."
-                        sh("SapMachine-infrastructure/lib/deploy-devkit.sh ${gav[0]} ${gav[1]} ${gav[2]}")
-                        env.DEVKIT_PATH = sh(script: "cat devkitlocation.txt", returnStdout: true).trim()
-                    } else {
-                        echo "Devkit not in GAV notation, assuming path."
-                        env.DEVKIT_PATH = params.DEVKIT;
-                    }
-                    echo "Devkit Path: ${env.DEVKIT_PATH}"
-                }
-            }
-        }
-        stage("Download Prerequisites") {
-            agent {
-                docker {
-                    image "ubuntu_20_04-ppc64le"
-                    reuseNode true
-                    label "linux_ppc64le"
-                }
-            }
-            
-            steps {
-                // Download Boot JDK, Credentials are needed to avoid rate limit exceedance
-                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
-                    sh 'python3 SapMachine-infrastructure/lib/download_boot_jdk.py -d `pwd`'
-                }
-
-                // Download googletest
-                sh("SapMachine-infrastructure/lib/git_clone.sh https://github.com/google/googletest gtest release-1.8.1")
-
-                // Download jtreg if required
-                script {
-                    if (params.RUN_TESTS) {
-                        sh 'python3 SapMachine-infrastructure/lib/download_jtreg.py'
-                    }
-                }
-            }
-        }
-        stage("Build") {
-            agent {
-                docker {
-                    image "ubuntu_20_04-ppc64le"
-                    reuseNode true
-                    label "linux_ppc64le"
-                }
-            }
-            
-            environment {
-                BOOT_JDK = "${WORKSPACE}/boot_jdk"
-            }
-            steps {
-                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD'],
-                                 string(credentialsId: 'MacOSKeyChainUnlockPW', variable: 'unlockpass')]) {
-                    script {
-                        sh("SapMachine-infrastructure/lib/build.sh")
-                    }
-                }
-            }
-        }
-        stage("Zip Artifacts") {
-                agent {
-                docker {
-                    image "ubuntu_20_04-ppc64le"
-                    reuseNode true
-                    label "linux_ppc64le"
-                }
-            }
-                
-                steps {
-                    script {
-                        sh("SapMachine-infrastructure/lib/zip_artifacts.sh")
-                        env.ART_VERSION = readFile "${env.WORKSPACE}/javavmversion.txt"
-                    }
-                }
-            }
-        
-        
-        
-        
-        
-        stage("Build Debian Packages") {
-            agent {
-                docker {
-                    image "ubuntu_20_04-ppc64le"
-                    reuseNode true
-                    label "linux_ppc64le"
-                }
-            }
-            when {
-                beforeAgent true
-                expression { env.BUILD_INSTALLER_PACKAGES == "true" }
-            }
-            steps {
-                sh 'python3 SapMachine-infrastructure/lib/packagebuild/make_deb.py --tag=$SAPMACHINE_VERSION --architecture=linux-ppc64le'
-            }
-            post {
-                success {
-                    stash includes: '*.deb', name: 'debPackages'
-                    stash includes: 'SapMachine-infrastructure/**', name: 'infra'
-                }
-            }
-        }
-        
-        stage("Publish Artifactory") {
-            when {
-                expression { params.UPLOAD_ARTIFACTORY == true || params.PUBLISH == true }
-            }
-            steps {
-                // Upload the test and jdk archive
-                sh 'curl -sSf -u $ARTIFACTORY_CREDS -X PUT -T test.zip https://common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build-results/linux_ppc64le/${ART_VERSION}/test.zip'
-                sh 'curl -sSf -u $ARTIFACTORY_CREDS -X PUT -T jdk.zip https://common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build-results/linux_ppc64le/${ART_VERSION}/jdk.zip'
-                
-            }
-        }
-        stage("Publish GitHub") {
-            steps {
-                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
-                    sh 'SapMachine-infrastructure/lib/publish.sh'
-                }
-            }
-        }
-        stage("Publish Release Data") {
-            when {
-                expression { params.PUBLISH == true }
-            }
-            steps {
-                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {
-                    lock('ReleaseDataGenerationLock') {
-                        sh 'python3 SapMachine-infrastructure/lib/generate_release_data.py --no-status -o git -t $SAPMACHINE_VERSION'
-                    }
-                }
-            }
-        }
-        stage("Publish Debian Packages") {
-            agent {
-                label 'agent-local-docker-ubuntu'
-            }
-            when {
-                beforeAgent true
-                expression { params.PUBLISH == true &amp;&amp; env.RELEASE == "true" }
-            }
-            steps {
-                unstash 'infra'
-                unstash 'debPackages'
-                sh 'cp -n *.deb /var/pkg/deb/ppc64el || true'
-                sh 'python3 SapMachine-infrastructure/lib/packagebuild/resign_deb_repository.py -s -r /var/pkg/deb/ppc64el'
-            }
-        }
-        
-        stage("Generate Dockerfiles") {
-            when {
-                expression { params.PUBLISH == true &amp;&amp; env.RELEASE == "true" }
-            }
-            steps {
-                build job: 'generate-dockerfiles', propagate: false, wait: true
-            }
-        }
-        
-            
-            
-        
-    }
-    post {
-        success {
-            script {
-                // create a gensrc archive
-                if (params.CREATE_GENSRC_BUNDLE == true) {
-                    sh 'cd SapMachine/build &amp;&amp; cd $(ls) &amp;&amp; zip -rq ${WORKSPACE}/support_gensrc.zip support/gensrc'
-                    archiveArtifacts artifacts: 'support_gensrc.zip'
-                }
-
-                // archive workspace on request
-                if (params.ARCHIVE_WORKSPACE == true) {
-                    sh 'zip -rq workspace.zip .'
-                    archiveArtifacts allowEmptyArchive: true, artifacts: 'workspace.zip'
-                }
-            }
-            cleanWs()
-        }
-        
-    }
-}
-</script>
-    <sandbox>true</sandbox>
-  </definition>
-  <disabled>false</disabled>
 </flow-definition>

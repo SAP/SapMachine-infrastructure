@@ -2,7 +2,7 @@
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps">
     <script>pipeline {
     agent {
-        label "linux_alpine_x86_64"
+        label 'linux_alpine_x86_64'
     }
     stages {
         stage("Checkout Infrastructure Repository") {
@@ -12,10 +12,10 @@
         }
         stage("Build") {
             agent {
-                dockerfile {
-                    dir "SapMachine-infrastructure/dockerfiles/alpine_3/x86_64"
+                docker {
+                    image 'alpine_3-x86_64'
                     reuseNode true
-                    label "linux_alpine_x86_64"
+                    label 'linux_alpine_x86_64'
                 }
             }
             steps {

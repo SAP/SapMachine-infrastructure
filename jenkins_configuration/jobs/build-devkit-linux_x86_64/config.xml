@@ -2,10 +2,7 @@
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps">
     <script>pipeline {
     agent {
-        label "linux_x86_64"
-    }
-    environment {
-        ARTIFACTORY_CREDS = credentials('openjdk-artifactory')
+        label 'linux_x86_64'
     }
     stages {
         stage("Checkout Infrastructure Repository") {
@@ -15,10 +12,10 @@
         }
         stage("Checkout SapMachine Repository") {
             agent {
-                dockerfile {
-                    dir "SapMachine-infrastructure/devkits/dockerfiles/x86_64"
+                docker {
+                    image 'ubuntu_20_04-x86_64'
                     reuseNode true
-                    label "linux_x86_64"
+                    label 'linux_x86_64'
                 }
             }
             steps {
@@ -34,10 +31,10 @@
         
         stage("Build") {
             agent {
-                dockerfile {
-                    dir "SapMachine-infrastructure/devkits/dockerfiles/x86_64"
+                docker {
+                    image 'ubuntu_20_04-x86_64'
                     reuseNode true
-                    label "linux_x86_64"
+                    label 'linux_x86_64'
                 }
             }
             steps {
@@ -47,7 +44,9 @@
         stage("Upload Artifactory") {
             steps {
                 // Upload devkit archive
-                sh 'curl -sSf -u $ARTIFACTORY_CREDS -X PUT -T SapMachine/build/devkit/result/*.tar.gz https://common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build/devkit/linux-x64/devkit-fedora-gcc/${BASE_OS_VERSION}-${GCC_VERSION}/devkit-fedora-gcc-${BASE_OS_VERSION}-${GCC_VERSION}.tar.gz'
+                withCredentials([usernameColonPassword(credentialsId: 'openjdk-artifactory', variable: 'ARTIFACTORY_CREDS')]) {
+                    sh 'curl -sSf -u $ARTIFACTORY_CREDS -X PUT -T SapMachine/build/devkit/result/*.tar.gz https://common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build/devkit/linux-x64/devkit-fedora-gcc/${BASE_OS_VERSION}-${GCC_VERSION}/devkit-fedora-gcc-${BASE_OS_VERSION}-${GCC_VERSION}.tar.gz'
+                }
             }
         }
     }

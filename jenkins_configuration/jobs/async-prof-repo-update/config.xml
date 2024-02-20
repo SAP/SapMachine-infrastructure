@@ -48,8 +48,8 @@
         }
         stage('Merge') {
             agent {
-                dockerfile {
-                    dir "SapMachine-infrastructure/dockerfiles/infrastructure"
+                docker {
+                    image 'infrastructure-x86_64'
                     reuseNode true
                     label 'infrastructure'
                 }
@@ -67,8 +67,8 @@
         }
         stage('Check Release') {
             agent {
-                dockerfile {
-                    dir "SapMachine-infrastructure/dockerfiles/infrastructure"
+                docker {
+                    image 'infrastructure-x86_64'
                     reuseNode true
                     label 'infrastructure'
                 }

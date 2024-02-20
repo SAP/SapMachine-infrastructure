@@ -47,7 +47,6 @@
   <myViewsTabBar class="hudson.views.DefaultMyViewsTabBar" />
   <clouds>
     <hudson.plugins.ec2.EC2Cloud plugin="ec2@1648.vf3d852e00486">
-      <actions />
       <name>ec2-SapMachine Cloud</name>
       <useInstanceProfileForCredentials>false</useInstanceProfileForCredentials>
       <roleArn />
@@ -57,7 +56,7 @@
       <instanceCap>12</instanceCap>
       <templates>
         <hudson.plugins.ec2.SlaveTemplate>
-          <ami>ami-0385560eb6d9430c3</ami>
+          <ami>ami-0363fdf33c4b3a0a6</ami>
           <description>Linux x86_64 Client</description>
           <zone>us-east-1d</zone>
           <securityGroups>JenkinsLinuxSlave</securityGroups>
@@ -118,7 +117,7 @@
           <connectUsingPublicIp>false</connectUsingPublicIp>
         </hudson.plugins.ec2.SlaveTemplate>
         <hudson.plugins.ec2.SlaveTemplate>
-          <ami>ami-0cb302694f5235f24</ami>
+          <ami>ami-09a59df7b84e8786b</ami>
           <description>Windows Client</description>
           <zone>us-east-1d</zone>
           <securityGroups>JenkinsWindowsClient</securityGroups>
@@ -179,7 +178,7 @@
           <connectUsingPublicIp>false</connectUsingPublicIp>
         </hudson.plugins.ec2.SlaveTemplate>
         <hudson.plugins.ec2.SlaveTemplate>
-          <ami>ami-046d4e053ca40100a</ami>
+          <ami>ami-0ca56e078babcf825</ami>
           <description>Linux aarch64 Client</description>
           <zone>us-east-1d</zone>
           <securityGroups>JenkinsLinuxSlave</securityGroups>
@@ -374,7 +373,7 @@
         <hudson.views.LastDurationColumn />
         <hudson.views.BuildButtonColumn />
       </columns>
-      <includeRegex>(build-devkit-.*)</includeRegex>
+      <includeRegex>(build-containers-.*|build-devkit-.*)</includeRegex>
       <recurse>false</recurse>
     </listView>
     <listView>

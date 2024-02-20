@@ -4,9 +4,6 @@
     agent {
         label "linux_aarch64"
     }
-    environment {
-        ARTIFACTORY_CREDS = credentials('openjdk-artifactory')
-    }
     stages {
         stage("Checkout Infrastructure Repository") {
             steps {
@@ -15,11 +12,10 @@
         }
         stage("Build") {
             agent {
-                dockerfile {
-                    dir "SapMachine-infrastructure/dockerfiles/ubuntu_20_04/arm64"
+                docker {
+                    image 'ubuntu_20_04-arm64'
                     reuseNode true
-                    label "linux_aarch64"
-                    additionalBuildArgs '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\"'
+                    label 'linux_aarch64'
                 }
             }
             steps {

@@ -4,9 +4,6 @@
     agent {
         label "aix_ppc64"
     }
-    environment {
-        ARTIFACTORY_CREDS = credentials('openjdk-artifactory')
-    }
     stages {
         stage("Init") {
             steps {
@@ -50,7 +47,6 @@
             }
         }
         
-        
             
             
         stage("Checkout SapMachine Repository") {
@@ -70,7 +66,9 @@
                     String[] gav = params.DEVKIT.split(":");
                     if (gav.length == 3) {
                         echo "Extracting devkit from GAV coordinates: \"${params.DEVKIT}\"."
-                        sh("SapMachine-infrastructure/lib/deploy-devkit.sh ${gav[0]} ${gav[1]} ${gav[2]}")
+                        withCredentials([usernameColonPassword(credentialsId: 'openjdk-artifactory', variable: 'ARTIFACTORY_CREDS')]) {
+                            sh("SapMachine-infrastructure/lib/deploy-devkit.sh ${gav[0]} ${gav[1]} ${gav[2]}")
+                        }
                         env.DEVKIT_PATH = sh(script: "cat devkitlocation.txt", returnStdout: true).trim()
                     } else {
                         echo "Devkit not in GAV notation, assuming path."
@@ -223,8 +221,10 @@
             }
             steps {
                 // Upload the test and jdk archive
-                sh 'curl -sSf -u $ARTIFACTORY_CREDS -X PUT -T test.zip https://common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build-results/aix_ppc64/${ART_VERSION}/test.zip'
-                sh 'curl -sSf -u $ARTIFACTORY_CREDS -X PUT -T jdk.zip https://common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build-results/aix_ppc64/${ART_VERSION}/jdk.zip'
+                withCredentials([usernameColonPassword(credentialsId: 'openjdk-artifactory', variable: 'ARTIFACTORY_CREDS')]) {
+                    sh 'curl -sSf -u $ARTIFACTORY_CREDS -X PUT -T test.zip https://common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build-results/aix_ppc64/${ART_VERSION}/test.zip'
+                    sh 'curl -sSf -u $ARTIFACTORY_CREDS -X PUT -T jdk.zip https://common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build-results/aix_ppc64/${ART_VERSION}/jdk.zip'
+                }
                 
             }
         }

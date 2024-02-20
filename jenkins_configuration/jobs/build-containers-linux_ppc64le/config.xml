@@ -1,0 +1,106 @@
+<flow-definition plugin="workflow-job">
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps">
+    <script>pipeline {
+    agent {
+        label "${BUILDNODE}"
+    }
+    stages {
+        stage("Checkout Infrastructure Repository") {
+            steps {
+                checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+            }
+        }
+        stage("Build Ubuntu container") {
+            steps {
+                withCredentials([usernameColonPassword(credentialsId: 'openjdk-artifactory', variable: 'ARTIFACTORY_CREDS')]) {
+                    script {
+                        def pull = params.PULL == true ? '--pull ' : ''
+                        def no_cache = params.NO_CACHE == true ? '--no-cache ' : ''
+                        docker.build('ubuntu_20_04-ppc64le', pull + no_cache + '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\" SapMachine-infrastructure/dockerfiles/ubuntu_20_04/ppc64le/.')
+                    }
+                }
+            }
+        }
+        stage("Build Async build container") {
+            steps {
+                script {
+                    def pull = params.PULL == true ? '--pull ' : ''
+                    def no_cache = params.NO_CACHE == true ? '--no-cache ' : ''
+                    docker.build('async-build-ppc64le', pull + no_cache + 'SapMachine-infrastructure/dockerfiles/async/ppc64le/.')
+                }
+            }
+        }
+        stage("Build Devkit build container") {
+            steps {
+                script {
+                    def pull = params.PULL == true ? '--pull ' : ''
+                    def no_cache = params.NO_CACHE == true ? '--no-cache ' : ''
+                    docker.build('devkit-build-ppc64le', pull + no_cache + 'SapMachine-infrastructure/devkits/dockerfiles/ppc64le/.')
+                }
+            }
+        }
+        
+        
+        
+        
+        
+        
+        stage("Prune images") {
+            steps {
+                script {
+                    sh 'docker image prune -f'
+                }
+            }
+        }
+        stage("Prune builder") {
+            steps {
+                script {
+                    sh 'docker builder prune -f'
+                }
+            }
+        }
+    }
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}
+</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <actions />
+  <description>Build build containers for linux_ppc64le.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty />
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>-1</daysToKeep>
+        <numToKeep>10</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>-1</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>BUILDNODE</name>
+          <description>The node to run docker build on.</description>
+          <defaultValue>agent-linux-ppc64le-1</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>PULL</name>
+          <description>Set docker build option --pull</description>
+          <defaultValue>false</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>NO_CACHE</name>
+          <description>Set docker build option --no-cache</description>
+          <defaultValue>false</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+</flow-definition>

@@ -94,10 +94,10 @@
         }
         stage('Download Prerequisites') {
             agent {
-    dockerfile {
-        dir "SapMachine-infrastructure/dockerfiles/async/ppc64le"
+    docker {
+        image 'async-build-x86_64'
         reuseNode true
-        label "linux_x86_64"
+        label 'linux_x86_64'
     }
 }
 
@@ -112,10 +112,10 @@
         }
         stage("Build") {
             agent {
-    dockerfile {
-        dir "SapMachine-infrastructure/dockerfiles/async/ppc64le"
+    docker {
+        image 'async-build-x86_64'
         reuseNode true
-        label "linux_x86_64"
+        label 'linux_x86_64'
     }
 }
 

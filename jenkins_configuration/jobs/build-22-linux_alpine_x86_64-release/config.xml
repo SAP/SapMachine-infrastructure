@@ -4,9 +4,6 @@
     agent {
         label "linux_alpine_x86_64"
     }
-    environment {
-        ARTIFACTORY_CREDS = credentials('openjdk-artifactory')
-    }
     stages {
         stage("Init") {
             steps {
@@ -66,13 +63,6 @@
                 '''
             }
         }
-        stage("Docker") {
-            steps {
-                script {
-                    docker.build("alpine_3-x86_64", 'SapMachine-infrastructure/dockerfiles/alpine_3/x86_64/.')
-                }
-            }
-        }
         
             
             
@@ -85,9 +75,9 @@
         stage("Prepare Devkit") {
             agent {
                 docker {
-                    image "alpine_3-x86_64"
+                    image 'alpine_3-x86_64'
                     reuseNode true
-                    label "linux_alpine_x86_64"
+                    label 'linux_alpine_x86_64'
                 }
             }
             when {
@@ -99,7 +89,9 @@
                     String[] gav = params.DEVKIT.split(":");
                     if (gav.length == 3) {
                         echo "Extracting devkit from GAV coordinates: \"${params.DEVKIT}\"."
-                        sh("SapMachine-infrastructure/lib/deploy-devkit.sh ${gav[0]} ${gav[1]} ${gav[2]}")
+                        withCredentials([usernameColonPassword(credentialsId: 'openjdk-artifactory', variable: 'ARTIFACTORY_CREDS')]) {
+                            sh("SapMachine-infrastructure/lib/deploy-devkit.sh ${gav[0]} ${gav[1]} ${gav[2]}")
+                        }
                         env.DEVKIT_PATH = sh(script: "cat devkitlocation.txt", returnStdout: true).trim()
                     } else {
                         echo "Devkit not in GAV notation, assuming path."
@@ -112,9 +104,9 @@
         stage("Download Prerequisites") {
             agent {
                 docker {
-                    image "alpine_3-x86_64"
+                    image 'alpine_3-x86_64'
                     reuseNode true
-                    label "linux_alpine_x86_64"
+                    label 'linux_alpine_x86_64'
                 }
             }
             
@@ -138,9 +130,9 @@
         stage("Build") {
             agent {
                 docker {
-                    image "alpine_3-x86_64"
+                    image 'alpine_3-x86_64'
                     reuseNode true
-                    label "linux_alpine_x86_64"
+                    label 'linux_alpine_x86_64'
                 }
             }
             
@@ -159,9 +151,9 @@
         stage("Zip Artifacts") {
                 agent {
                 docker {
-                    image "alpine_3-x86_64"
+                    image 'alpine_3-x86_64'
                     reuseNode true
-                    label "linux_alpine_x86_64"
+                    label 'linux_alpine_x86_64'
                 }
             }
                 
@@ -187,8 +179,10 @@
             }
             steps {
                 // Upload the test and jdk archive
-                sh 'curl -sSf -u $ARTIFACTORY_CREDS -X PUT -T test.zip https://common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build-results/linux_alpine_x86_64/${ART_VERSION}/test.zip'
-                sh 'curl -sSf -u $ARTIFACTORY_CREDS -X PUT -T jdk.zip https://common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build-results/linux_alpine_x86_64/${ART_VERSION}/jdk.zip'
+                withCredentials([usernameColonPassword(credentialsId: 'openjdk-artifactory', variable: 'ARTIFACTORY_CREDS')]) {
+                    sh 'curl -sSf -u $ARTIFACTORY_CREDS -X PUT -T test.zip https://common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build-results/linux_alpine_x86_64/${ART_VERSION}/test.zip'
+                    sh 'curl -sSf -u $ARTIFACTORY_CREDS -X PUT -T jdk.zip https://common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build-results/linux_alpine_x86_64/${ART_VERSION}/jdk.zip'
+                }
                 
             }
         }
@@ -217,9 +211,9 @@
         stage("Build Alpine apk Packages") {
             agent {
                 docker {
-                    image "alpine_3-x86_64"
+                    image 'alpine_3-x86_64'
                     reuseNode true
-                    label "linux_alpine_x86_64"
+                    label 'linux_alpine_x86_64'
                 }
             }
             when {

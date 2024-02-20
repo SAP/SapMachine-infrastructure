@@ -4,9 +4,6 @@
     agent {
         label "linux_x86_64"
     }
-    environment {
-        ARTIFACTORY_CREDS = credentials('openjdk-artifactory')
-    }
     stages {
         stage("Init") {
             steps {
@@ -51,19 +48,12 @@
                 '''
             }
         }
-        stage("Docker") {
-            steps {
-                script {
-                    docker.build("ubuntu_20_04_x86_64", '--build-arg ARTIFACTORY_CREDS=\"$ARTIFACTORY_CREDS\" SapMachine-infrastructure/dockerfiles/ubuntu_20_04/x86_64/.')
-                }
-            }
-        }
         stage("Verify PR") {
             agent {
                 docker {
-                    image "ubuntu_20_04_x86_64"
+                    image 'ubuntu_20_04-x86_64'
                     reuseNode true
-                    label "linux_x86_64"
+                    label 'linux_x86_64'
                 }
             }
             steps {
@@ -94,9 +84,9 @@
         stage("Prepare Devkit") {
             agent {
                 docker {
-                    image "ubuntu_20_04_x86_64"
+                    image 'ubuntu_20_04-x86_64'
                     reuseNode true
-                    label "linux_x86_64"
+                    label 'linux_x86_64'
                 }
             }
             when {
@@ -108,7 +98,9 @@
                     String[] gav = params.DEVKIT.split(":");
                     if (gav.length == 3) {
                         echo "Extracting devkit from GAV coordinates: \"${params.DEVKIT}\"."
-                        sh("SapMachine-infrastructure/lib/deploy-devkit.sh ${gav[0]} ${gav[1]} ${gav[2]}")
+                        withCredentials([usernameColonPassword(credentialsId: 'openjdk-artifactory', variable: 'ARTIFACTORY_CREDS')]) {
+                            sh("SapMachine-infrastructure/lib/deploy-devkit.sh ${gav[0]} ${gav[1]} ${gav[2]}")
+                        }
                         env.DEVKIT_PATH = sh(script: "cat devkitlocation.txt", returnStdout: true).trim()
                     } else {
                         echo "Devkit not in GAV notation, assuming path."
@@ -121,9 +113,9 @@
         stage("Download Prerequisites") {
             agent {
                 docker {
-                    image "ubuntu_20_04_x86_64"
+                    image 'ubuntu_20_04-x86_64'
                     reuseNode true
-                    label "linux_x86_64"
+                    label 'linux_x86_64'
                 }
             }
             when {
@@ -150,9 +142,9 @@
         stage("Build") {
             agent {
                 docker {
-                    image "ubuntu_20_04_x86_64"
+                    image 'ubuntu_20_04-x86_64'
                     reuseNode true
-                    label "linux_x86_64"
+                    label 'linux_x86_64'
                 }
             }
             when {
@@ -176,9 +168,9 @@
         stage("Run jtreg hotspot") {
             agent {
                 docker {
-                    image "ubuntu_20_04_x86_64"
+                    image 'ubuntu_20_04-x86_64'
                     reuseNode true
-                    label "linux_x86_64"
+                    label 'linux_x86_64'
                 }
             }
             when {
@@ -210,9 +202,9 @@
         stage("Run jtreg jdk") {
             agent {
                 docker {
-                    image "ubuntu_20_04_x86_64"
+                    image 'ubuntu_20_04-x86_64'
                     reuseNode true
-                    label "linux_x86_64"
+                    label 'linux_x86_64'
                 }
             }
             when {
@@ -245,9 +237,9 @@
         stage("Run jtreg langtools") {
             agent {
                 docker {
-                    image "ubuntu_20_04_x86_64"
+                    image 'ubuntu_20_04-x86_64'
                     reuseNode true
-                    label "linux_x86_64"
+                    label 'linux_x86_64'
                 }
             }
             when {

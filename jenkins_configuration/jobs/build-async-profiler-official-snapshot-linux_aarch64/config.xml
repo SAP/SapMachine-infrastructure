@@ -93,7 +93,14 @@
             }
         }
         stage('Download Prerequisites') {
-            
+            agent {
+    docker {
+        image 'async-build-arm64'
+        reuseNode true
+        label 'linux_aarch64'
+    }
+}
+
             when {
                 expression { env.VERIFICATION_RESULT != "2" }
             }
@@ -104,7 +111,14 @@
             }
         }
         stage("Build") {
-            
+            agent {
+    docker {
+        image 'async-build-arm64'
+        reuseNode true
+        label 'linux_aarch64'
+    }
+}
+
             when {
                 beforeAgent true
                 expression { env.VERIFICATION_RESULT != "2" }
