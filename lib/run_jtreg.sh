@@ -58,7 +58,8 @@ fi
 if [[ $UNAME == AIX ]]; then
     CONCURRENCY=`expr $NUM_CPUS / 2`
 else
-    CONCURRENCY=$NUM_CPUS
+    #CONCURRENCY=$NUM_CPUS
+    CONCURRENCY=`expr $NUM_CPUS / 2`
 fi
 
 # Use half number of CPUs for langtools suite because http://openjdk.java.net/jtreg/concurrency.html suggests this
