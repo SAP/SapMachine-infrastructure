@@ -8,6 +8,7 @@
   <hudson.node__monitors.DiskSpaceMonitor>
     <ignored>false</ignored>
     <freeSpaceThreshold>5GB</freeSpaceThreshold>
+    <freeSpaceWarningThreshold>10GB</freeSpaceWarningThreshold>
   </hudson.node__monitors.DiskSpaceMonitor>
   <hudson.node__monitors.SwapSpaceMonitor>
     <ignored>false</ignored>
@@ -15,6 +16,7 @@
   <hudson.node__monitors.TemporarySpaceMonitor>
     <ignored>false</ignored>
     <freeSpaceThreshold>1GB</freeSpaceThreshold>
+    <freeSpaceWarningThreshold>2GB</freeSpaceWarningThreshold>
   </hudson.node__monitors.TemporarySpaceMonitor>
   <hudson.node__monitors.ResponseTimeMonitor>
     <ignored>false</ignored>
