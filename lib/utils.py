@@ -254,7 +254,7 @@ def sapmachine_is_lts(major):
     return (major if isinstance(major, int) else int(major)) in release_info['lts_releases']
 
 def sapmachine_version_pattern():
-    return 'build ((\d+)((\.(\d+))*)?)'
+    return r'build ((\d+)((\.(\d+))*)?)'
 
 def sapmachine_version_components(version_in):
     pattern = re.compile(sapmachine_version_pattern())
@@ -270,7 +270,7 @@ def sapmachine_version_components(version_in):
     return version, major
 
 def sapmachine_branch_pattern():
-    return 'sapmachine([\d]+)?(-sec)?$'
+    return r'sapmachine([\d]+)?(-sec)?$'
 
 def get_active_sapmachine_branches():
     sapmachine_latest = 0
@@ -303,7 +303,7 @@ def get_active_sapmachine_branches():
     return sapmachine_branches
 
 def jmc_branch_pattern():
-    return 'sap([\d]+)?$'
+    return r'sap([\d]+)?$'
 
 def get_active_jmc_branches():
     jmc_latest = 0
@@ -455,7 +455,7 @@ def github_api_request(api=None, url=None, owner='SAP', repository='SapMachine',
 
     load_next = True
     result = None
-    link_pattern = re.compile('(<([^>]*)>; rel=\"prev\",\s*)?(<([^>]*)>; rel=\"next\",\s)?')
+    link_pattern = re.compile(r'(<([^>]*)>; rel=\"prev\",\s*)?(<([^>]*)>; rel=\"next\",\s)?')
 
     while load_next:
         if url is None:
@@ -533,10 +533,10 @@ def sapmachine_asset_base_pattern():
     return '[^-]+-([^-]+)-([^_]+)_([^_]+)_bin'
 
 def sapmachine_asset_pattern():
-    return sapmachine_asset_base_pattern() + '(\.tar\.gz|\.zip|\.msi|\.dmg)$'
+    return sapmachine_asset_base_pattern() + r'(\.tar\.gz|\.zip|\.msi|\.dmg)$'
 
 def sapmachine_checksum_pattern():
-    return sapmachine_asset_base_pattern() + '((|\.msi\.|\.dmg\.|\.)(sha256\.txt)|(\.sha256\.dmg\.txt))$'
+    return sapmachine_asset_base_pattern() + r'((|\.msi\.|\.dmg\.|\.)(sha256\.txt)|(\.sha256\.dmg\.txt))$'
 
 def get_asset_urls(tag, platform, asset_types=["jdk", "jre"], pattern=None):
     asset_urls = {}
@@ -602,8 +602,8 @@ def get_arch():
 # Tries to calculate a value for major release from a set of strings that could be a digit, a SapMachine release tag or a sapmachine branch
 # If it can't be figured out from the inputs, the result is None
 def calc_major(values):
-    branch_pattern = re.compile('sapmachine(\d+)?(-sec)?$')
-    version_pattern = re.compile('(\d+)(\.\d+)*')
+    branch_pattern = re.compile(r'sapmachine(\d+)?(-sec)?$')
+    version_pattern = re.compile(r'(\d+)(\.\d+)*')
     for val in values:
         print("calc_major: checking " + val, file=sys.stderr)
         if val is None:

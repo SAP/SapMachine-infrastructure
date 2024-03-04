@@ -1,5 +1,5 @@
 '''
-Copyright (c) 2001-2023 by SAP SE, Walldorf, Germany.
+Copyright (c) 2001-2024 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
@@ -153,7 +153,7 @@ class Tag:
 # jdk-12.0.2-ga
 # jdk-12+7
 class JDKTag(Tag):
-    tag_pattern = re.compile('jdk-((\d+(\.\d+)*)(\+(\d+))?)(-ga)?$')
+    tag_pattern = re.compile(r'jdk-((\d+(\.\d+)*)(\+(\d+))?)(-ga)?$')
 
     @staticmethod
     def from_string(string):
@@ -188,7 +188,7 @@ class JDKTag(Tag):
 # is only kept for compatibility. It is not used any more. If we find a Sap Version of -nn, a possible
 # 5th digit in the verison part takes precedence.
 class SapMachineTag(Tag):
-    tag_pattern = re.compile('sapmachine-((\d+(\.\d+)*)(\+(\d+))?)(-(\d+))?(\-(\S+))?$')
+    tag_pattern = re.compile(r'sapmachine-((\d+(\.\d+)*)(\+(\d+))?)(-(\d+))?(\-(\S+))?$')
 
     @staticmethod
     def from_string(string):

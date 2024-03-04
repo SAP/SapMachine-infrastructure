@@ -1,5 +1,5 @@
 '''
-Copyright (c) 2018-2023 by SAP SE, Walldorf, Germany.
+Copyright (c) 2018-2024 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
