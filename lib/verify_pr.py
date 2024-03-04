@@ -12,9 +12,9 @@ from utils import github_api_request
 org = 'SAP'
 repository = 'SapMachine'
 
-commit_message_pattern_sapmachine = '^SapMachine #([0-9]+):\s(.+)(([\n|\r\n].*)*)$'
-commit_message_pattern_openjdk = '^([0-9]+):\s(.+)(([\n|\r\n].*)*)$'
-pull_request_description_pattern = '^((.*[\n|\r\n])*)fixes #([0-9]+)\s*$'
+commit_message_pattern_sapmachine = r'^SapMachine #([0-9]+):\s(.+)(([\n|\r\n].*)*)$'
+commit_message_pattern_openjdk = r'^([0-9]+):\s(.+)(([\n|\r\n].*)*)$'
+pull_request_description_pattern = r'^((.*[\n|\r\n])*)fixes #([0-9]+)\s*$'
 
 pr_author_exception_list = [ 'SapMachine' ]
 
