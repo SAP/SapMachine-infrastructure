@@ -129,7 +129,7 @@
             }}
             post {{
                 always {{
-                    cleanWs deleteDirs: true, disableDeferredWipeout: true
+                    cleanWs()
                 }}
             }}
         }}
@@ -184,7 +184,7 @@
             }}
             post {{
                 always {{
-                    cleanWs deleteDirs: true, disableDeferredWipeout: true
+                    cleanWs()
                 }}
             }}
         }}

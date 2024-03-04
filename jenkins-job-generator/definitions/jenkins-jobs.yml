@@ -1,14 +1,12 @@
 - job:
-    name: jenkins-job-generator
-    description: 'Generate/Update Jenkins jobs from templates.'
+    name: jenkins-job-generator-trigger
+    description: 'Trigger generation of Jenkins jobs. Needed because pipeline jobs can not be triggered easily by GitHub pushes.'
     project-type: freestyle
+    sandbox: true
     concurrent: false
-    node: infrastructure
     properties:
         - build-discarder:
-            num-to-keep: 20
-        - github:
-            url: 'https://github.com/SAP/SapMachine-infrastructure'
+            num-to-keep: 5
     scm:
         - git:
             url: 'https://github.com/SAP/SapMachine-infrastructure'
@@ -18,17 +16,53 @@
                 - 'jenkins-job-generator/.*'
     triggers:
         - github
-    wrappers:
-        - credentials-binding:
-            - username-password-separated:
-                credential-id: SapMachine-github
-                username: JENKINS_USER
-                password: JENKINS_PASSWORD
-        - docker-custom-build-env:
-            image-type: 'dockerfile'
-            context-path: 'dockerfiles/infrastructure'
     builders:
-        - shell: "export HOME=$WORKSPACE_TMP && cd jenkins-job-generator && jenkins-jobs --conf jenkins_jobs_default.ini --user ${{JENKINS_USER}} --password ${{JENKINS_PASSWORD}} update --delete-old ./definitions"
+        - trigger-builds:
+            - project: "jenkins-job-generator"
+
+- job:
+    name: jenkins-job-generator
+    description: 'Generate/Update Jenkins jobs from templates'
+    project-type: pipeline
+    sandbox: true
+    concurrent: false
+    properties:
+        - build-discarder:
+            num-to-keep: 10
+    dsl: |
+        pipeline {{
+            agent {{
+                node {{
+                    label 'infrastructure'
+                }}
+            }}
+            stages {{
+                stage("Checkout Infrastructure Repository") {{
+                    steps {{
+                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+                    }}
+                }}
+                stage('Generate Jenkins Jobs') {{
+                    agent {{
+                        docker {{
+                            image 'infrastructure-x86_64'
+                            reuseNode true
+                            label 'infrastructure'
+                        }}
+                    }}
+                    steps {{
+                        withCredentials([usernamePassword(credentialsId: 'SapMachine-github', usernameVariable: 'JENKINS_USER', passwordVariable: 'JENKINS_PASSWORD')]) {{
+                            sh('export HOME=$WORKSPACE_TMP && cd SapMachine-infrastructure/jenkins-job-generator && jenkins-jobs --conf jenkins_jobs.ini --user ${{JENKINS_USER}} --password ${{JENKINS_PASSWORD}} update --delete-old ./definitions')
+                        }}
+                    }}
+                }}
+            }}
+            post {{
+                cleanup {{
+                    cleanWs()
+                }}
+            }}
+        }}
 
 - job:
     name: jenkins-configuration-backup
@@ -69,7 +103,7 @@
             }}
             post {{
                 cleanup {{
-                    cleanWs deleteDirs: true, disableDeferredWipeout: true
+                    cleanWs()
                 }}
             }}
         }}
@@ -109,7 +143,7 @@
             }}
             post {{
                 cleanup {{
-                    cleanWs deleteDirs: true, disableDeferredWipeout: true
+                    cleanWs()
                 }}
             }}
         }}

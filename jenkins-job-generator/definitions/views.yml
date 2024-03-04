@@ -62,24 +62,21 @@
     name: 'Infrastructure'
     description: 'Infrastructure related jobs'
     view-type: list
+    regex: '(build-containers-.*|jenkins-job-generator.*|jenkins-configuration.*|build-devkit-.*)'
     job-name:
         - generate-release-data
-        - jenkins-configuration-backup
-        - jenkins-configuration-restore
-        - jenkins-job-generator
         - jtreg
         - repository-update-and-tag
         - upload-ossrh
-    regex: '(build-containers-.*|build-devkit-.*)'
 
 - view:
     name: 'MacOS'
     description: 'MacOS related jobs'
     view-type: list
+    regex: '(publish-macos-packages-.*)'
     job-name:
         - update-cask
         - prepare-macos-signing
-    regex: '(publish-macos-packages-.*)'
 
 - view:
     name: 'Cloud Foundry Java Buildpack'
@@ -101,22 +98,22 @@
     name: 'Packages'
     description: 'Jobs related to installer packages'
     view-type: list
+    regex: '(resign-debian-repository-.*|build-debian-package-.*|rpm-package|apk-package|publish-macos-packages-.*)'
     job-name:
         - publish-windows-msi
-    regex: '(resign-debian-repository-.*|build-debian-package-.*|rpm-package|apk-package|publish-macos-packages-.*)'
 
 - view:
     name: 'Async Profiler'
     description: 'Async Profiler Builds and other related jobs'
     view-type: list
+    regex: 'build-async-profiler-.*'
     job-name:
         - async-prof-repo-update
-    regex: 'build-async-profiler-.*'
 
 - view:
     name: 'JMC'
     description: 'JMC Builds and other related jobs'
     view-type: list
+    regex: '.*jmc.*'
     job-name:
         - generate-release-data-jmc
-    regex: '.*jmc.*'
