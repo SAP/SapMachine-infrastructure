@@ -357,9 +357,6 @@
       <jobNames>
         <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator" />
         <string>generate-release-data</string>
-        <string>jenkins-configuration-backup</string>
-        <string>jenkins-configuration-restore</string>
-        <string>jenkins-job-generator</string>
         <string>jtreg</string>
         <string>repository-update-and-tag</string>
         <string>upload-ossrh</string>
@@ -374,7 +371,7 @@
         <hudson.views.LastDurationColumn />
         <hudson.views.BuildButtonColumn />
       </columns>
-      <includeRegex>(build-containers-.*|build-devkit-.*)</includeRegex>
+      <includeRegex>(build-containers-.*|jenkins-job-generator.*|jenkins-configuration.*|build-devkit-.*)</includeRegex>
       <recurse>false</recurse>
     </listView>
     <listView>

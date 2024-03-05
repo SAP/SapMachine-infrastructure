@@ -1,94 +1,53 @@
-<project>
+<flow-definition plugin="workflow-job">
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps">
+    <script>pipeline {
+    agent {
+        node {
+            label 'infrastructure'
+        }
+    }
+    stages {
+        stage("Checkout Infrastructure Repository") {
+            steps {
+                checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
+            }
+        }
+        stage('Generate Jenkins Jobs') {
+            agent {
+                docker {
+                    image 'infrastructure-x86_64'
+                    reuseNode true
+                    label 'infrastructure'
+                }
+            }
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'SapMachine-github', usernameVariable: 'JENKINS_USER', passwordVariable: 'JENKINS_PASSWORD')]) {
+                    sh('export HOME=$WORKSPACE_TMP &amp;&amp; cd SapMachine-infrastructure/jenkins-job-generator &amp;&amp; jenkins-jobs --conf jenkins_jobs_default.ini --user ${JENKINS_USER} --password ${JENKINS_PASSWORD} update --delete-old ./definitions')
+                }
+            }
+        }
+    }
+    post {
+        cleanup {
+            cleanWs()
+        }
+    }
+}
+</script>
+    <sandbox>true</sandbox>
+  </definition>
   <actions />
-  <description>Generate/Update Jenkins jobs from templates.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+  <description>Generate/Update Jenkins jobs from templates&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
-  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
-  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
-  <concurrentBuild>false</concurrentBuild>
-  <assignedNode>infrastructure</assignedNode>
-  <canRoam>false</canRoam>
   <properties>
+    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty />
     <jenkins.model.BuildDiscarderProperty>
       <strategy class="hudson.tasks.LogRotator">
         <daysToKeep>-1</daysToKeep>
-        <numToKeep>20</numToKeep>
+        <numToKeep>10</numToKeep>
         <artifactDaysToKeep>-1</artifactDaysToKeep>
         <artifactNumToKeep>-1</artifactNumToKeep>
       </strategy>
     </jenkins.model.BuildDiscarderProperty>
-    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github">
-      <projectUrl>https://github.com/SAP/SapMachine-infrastructure</projectUrl>
-      <displayName />
-    </com.coravy.hudson.plugins.github.GithubProjectProperty>
   </properties>
-  <scm class="hudson.plugins.git.GitSCM">
-    <configVersion>2</configVersion>
-    <userRemoteConfigs>
-      <hudson.plugins.git.UserRemoteConfig>
-        <name>origin</name>
-        <refspec>+refs/heads/*:refs/remotes/origin/*</refspec>
-        <url>https://github.com/SAP/SapMachine-infrastructure</url>
-      </hudson.plugins.git.UserRemoteConfig>
-    </userRemoteConfigs>
-    <branches>
-      <hudson.plugins.git.BranchSpec>
-        <name>master</name>
-      </hudson.plugins.git.BranchSpec>
-    </branches>
-    <disableSubmodules>false</disableSubmodules>
-    <recursiveSubmodules>false</recursiveSubmodules>
-    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
-    <remotePoll>false</remotePoll>
-    <gitTool>Default</gitTool>
-    <submoduleCfg class="list" />
-    <reference />
-    <gitConfigName />
-    <gitConfigEmail />
-    <extensions>
-      <hudson.plugins.git.extensions.impl.PathRestriction>
-        <includedRegions>jenkins-job-generator/.*</includedRegions>
-      </hudson.plugins.git.extensions.impl.PathRestriction>
-      <hudson.plugins.git.extensions.impl.WipeWorkspace />
-    </extensions>
-  </scm>
-  <triggers class="vector">
-    <com.cloudbees.jenkins.GitHubPushTrigger>
-      <spec />
-    </com.cloudbees.jenkins.GitHubPushTrigger>
-  </triggers>
-  <builders>
-    <hudson.tasks.Shell>
-      <command>export HOME=$WORKSPACE_TMP &amp;&amp; cd jenkins-job-generator &amp;&amp; jenkins-jobs --conf jenkins_jobs_default.ini --user ${JENKINS_USER} --password ${JENKINS_PASSWORD} update --delete-old ./definitions</command>
-    </hudson.tasks.Shell>
-  </builders>
-  <publishers />
-  <buildWrappers>
-    <org.jenkinsci.plugins.credentialsbinding.impl.SecretBuildWrapper>
-      <bindings>
-        <org.jenkinsci.plugins.credentialsbinding.impl.UsernamePasswordMultiBinding>
-          <usernameVariable>JENKINS_USER</usernameVariable>
-          <passwordVariable>JENKINS_PASSWORD</passwordVariable>
-          <credentialsId>SapMachine-github</credentialsId>
-        </org.jenkinsci.plugins.credentialsbinding.impl.UsernamePasswordMultiBinding>
-      </bindings>
-    </org.jenkinsci.plugins.credentialsbinding.impl.SecretBuildWrapper>
-    <com.cloudbees.jenkins.plugins.okidocki.DockerBuildWrapper plugin="docker-custom-build-environment">
-      <selector class="com.cloudbees.jenkins.plugins.okidocki.DockerfileImageSelector">
-        <contextPath>dockerfiles/infrastructure</contextPath>
-        <dockerfile>Dockerfile</dockerfile>
-      </selector>
-      <dockerInstallation>Default</dockerInstallation>
-      <dockerHost plugin="docker-commons" />
-      <dockerRegistryCredentials />
-      <volumes class="empty-list" />
-      <forcePull>false</forcePull>
-      <privileged>false</privileged>
-      <verbose>false</verbose>
-      <group />
-      <command>/bin/cat</command>
-      <net>bridge</net>
-      <memory />
-      <cpu />
-    </com.cloudbees.jenkins.plugins.okidocki.DockerBuildWrapper>
-  </buildWrappers>
-</project>
+</flow-definition>
