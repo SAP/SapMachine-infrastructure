@@ -1,5 +1,5 @@
 '''
-Copyright (c) 2017-2023 by SAP SE, Walldorf, Germany.
+Copyright (c) 2017-2024 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
@@ -144,17 +144,10 @@ def main(argv=None):
         print(str.format('Not all platforms ready yet, jre missing for tag {0}', tag.as_string()))
         sys.exit(0)
 
-    aarch_jdk_sha, code1 = utils.download_asset(aarch_urls["jdk"])
-    aarch_jre_sha, code2 = utils.download_asset(aarch_urls["jre"])
-    intel_jdk_sha, code3 = utils.download_asset(intel_urls["jdk"])
-    intel_jre_sha, code4 = utils.download_asset(intel_urls["jre"])
-    if code1 != 200 or code2 != 200 or code3 != 200 or code4 != 200:
-        print('Download failed')
-        sys.exit(1)
-    aarch_jdk_sha = aarch_jdk_sha.split(' ')[0]
-    aarch_jre_sha = aarch_jre_sha.split(' ')[0]
-    intel_jdk_sha = intel_jdk_sha.split(' ')[0]
-    intel_jre_sha = intel_jre_sha.split(' ')[0]
+    aarch_jdk_sha = utils.download_text(aarch_urls["jdk"]).split(' ')[0]
+    aarch_jre_sha = utils.download_text(aarch_urls["jre"]).split(' ')[0]
+    intel_jdk_sha = utils.download_text(intel_urls["jdk"]).split(' ')[0]
+    intel_jre_sha = utils.download_text(intel_urls["jre"]).split(' ')[0]
 
     jdk_cask_content = Template(cask_template).substitute(
             CASK_TAG = cask_tag,

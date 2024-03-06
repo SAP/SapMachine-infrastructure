@@ -126,7 +126,6 @@ def extract_archive(archive, target, remove_archive=False):
     else:
         move(archive, target)
 
-# ToDo: The following two methods need some unification
 def download_file(url, target):
     print(f"Downloading {url} to {target}...")
 
@@ -150,12 +149,7 @@ def download_text(url):
     if response.status_code == 200:
         return response.text
     else:
-        raise Exception(f"Request failed. Status code: {response.status_code}")
-
-def download_asset(asset_url):
-    headers = {'Authorization': str.format('token {0}', os.environ['GIT_PASSWORD']) } if 'GIT_PASSWORD' in os.environ else None
-    response = requests.get(asset_url, headers=headers)
-    return response.text, response.status_code
+        raise Exception(f"Downloading {url} failed: {response.status_code}")
 
 def make_tgz_archive(src, dest, arcname=None):
     if exists(dest):
