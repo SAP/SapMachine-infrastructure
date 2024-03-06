@@ -1,5 +1,5 @@
 '''
-Copyright (c) 2019-2022 by SAP SE, Walldorf, Germany.
+Copyright (c) 2019-2024 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
@@ -46,7 +46,9 @@ exception_list = [
     'openjdk/jdk18u',
     'openjdk/jdk19',
     'openjdk/jdk19u',
-    'openjdk/jdk20'
+    'openjdk/jdk20',
+    'openjdk/jdk20u',
+    'openjdk/jdk21'
 ]
 
 def test_repositories(scm_base, repository_base, repository_suffix = ''):
