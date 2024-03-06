@@ -1,5 +1,5 @@
 '''
-Copyright (c) 2017-2023 by SAP SE, Walldorf, Germany.
+Copyright (c) 2017-2024 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
@@ -103,7 +103,7 @@ def main(argv=None):
         src_dir = join(work_dir, 'sapmachine_master')
         utils.git_clone('github.com/SAP/SapMachine', args.tag, src_dir)
         jdk_archive = join(work_dir, jdk_url.rsplit('/', 1)[-1])
-        utils.download_artifact(jdk_url, jdk_archive)
+        utils.download_file(jdk_url, jdk_archive)
     else:
         src_dir = join(cwd, 'SapMachine')
         jdk_archive = join(cwd, bundle_name)

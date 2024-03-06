@@ -1,5 +1,5 @@
 '''
-Copyright (c) 2021-2022 by SAP SE, Walldorf, Germany.
+Copyright (c) 2021-2024 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
@@ -37,7 +37,7 @@ def main(argv=None):
 
     archive_path = join(dir, 'jtreg.zip')
     utils.remove_if_exists(archive_path)
-    utils.download_artifact(url, archive_path)
+    utils.download_file(url, archive_path)
     path = join(dir, 'jtreg')
     utils.remove_if_exists(path)
     os.makedirs(path)

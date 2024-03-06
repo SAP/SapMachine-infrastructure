@@ -126,15 +126,7 @@ def extract_archive(archive, target, remove_archive=False):
     else:
         move(archive, target)
 
-# ToDo: The following three methods need some unification
-def download_artifact(url, target):
-    if exists(target):
-        remove(target)
-
-    with open(target, 'wb') as file:
-        print(f"Downloading {url}...")
-        file.write(urlopen(url).read())
-
+# ToDo: The following two methods need some unification
 def download_file(url, target):
     print(f"Downloading {url} to {target}...")
 
@@ -144,15 +136,13 @@ def download_file(url, target):
     headers = {'Authorization': str.format('token {0}', os.environ['GIT_PASSWORD']) } if 'GIT_PASSWORD' in os.environ else None
     response = requests.get(url, headers=headers, stream=True)
 
-    # Check if the request was successful (status code 200)
     if response.status_code == 200:
         with open(target, 'wb') as file:
             # Iterate over the content in chunks to avoid loading the entire file into memory
             for chunk in response.iter_content(chunk_size=512):
                 file.write(chunk)
-        print(f"Successfully finished downloading.")
     else:
-        raise Exception(f"Download failed. Status code: {response.status_code}")
+        raise Exception(f"Download failed: {response.status_code}")
 
 def download_text(url):
     headers = {'Authorization': str.format('token {0}', os.environ['GIT_PASSWORD']) } if 'GIT_PASSWORD' in os.environ else None
