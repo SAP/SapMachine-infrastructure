@@ -504,14 +504,6 @@ def get_github_tags(repository='SapMachine'):
 def get_sapmachine_releases(major = None):
     rel_url = f"https://sap.github.io/SapMachine/assets/data/sapmachine-releases-{'all' if major is None else str(major)}.json"
     return json.loads(download_text(rel_url)) if major is None else {str(major): json.loads(download_text(rel_url))}
-    request = Request(rel_url)
-    try:
-        data = str(urlopen(request).read().decode())
-        return json.loads(data) if major is None else {str(major): json.loads(data)}
-
-    except HTTPError as httpError:
-        print(f"Could not download release data from {rel_url}: {httpError.code} ({httpError.reason})")
-        return {}
 
 def sapmachine_asset_base_pattern():
     return '[^-]+-([^-]+)-([^_]+)_([^_]+)_bin'
