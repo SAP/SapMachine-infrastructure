@@ -1,5 +1,5 @@
 '''
-Copyright (c) 2018-2023 by SAP SE, Walldorf, Germany.
+Copyright (c) 2018-2024 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
@@ -10,12 +10,10 @@ import re
 import sys
 import utils
 
-from enum import Enum
 from os.path import join
 from shutil import rmtree
 from string import Template
 from urllib.error import HTTPError
-from urllib.request import urlopen, Request
 from versions import SapMachineTag
 from collections import OrderedDict
 
@@ -389,18 +387,13 @@ class Generator:
             else:
                 checksum = d_asset.get('checksum', None)
                 if checksum is None:
-                    request = Request(asset['browser_download_url'])
                     try:
-                        response = urlopen(request)
-                        response = response.read()
-                        checksum = str(response[:64].decode())
+                        checksum = utils.download_text(asset['browser_download_url'])[:64]
                         if self.args.verbose:
                             self.loggerich.log(f"Downloaded checksum for {self.asset_name}: {checksum}")
-
                         d_asset['checksum'] = checksum
-
-                    except HTTPError as httpError:
-                        self.loggerich.log(f"Checksum file for {self.asset_name} could not be downloaded from {asset['browser_download_url']}: {httpError.code} ({httpError.reason})")
+                    except Exception as e:
+                        self.loggerich.log(f"Checksum file for {self.asset_name} could not be downloaded: {e}")
 
         if not d_jdks:
             del d_assets['jdk']
