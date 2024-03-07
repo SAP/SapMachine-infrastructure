@@ -52,7 +52,7 @@
                     }}
                     steps {{
                         withCredentials([usernamePassword(credentialsId: 'SapMachine-github', usernameVariable: 'JENKINS_USER', passwordVariable: 'JENKINS_PASSWORD')]) {{
-                            sh('export HOME=$WORKSPACE_TMP && cd SapMachine-infrastructure/jenkins-job-generator && jenkins-jobs --conf jenkins_jobs_default.ini --user ${{JENKINS_USER}} --password ${{JENKINS_PASSWORD}} update --delete-old ./definitions')
+                            sh('export HOME=$WORKSPACE_TMP && cd SapMachine-infrastructure/jenkins-job-generator && jenkins-jobs --conf jenkins_jobs.ini --user ${{JENKINS_USER}} --password ${{JENKINS_PASSWORD}} update --delete-old ./definitions')
                         }}
                     }}
                 }}
