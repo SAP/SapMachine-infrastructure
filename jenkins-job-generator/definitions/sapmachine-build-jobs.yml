@@ -183,6 +183,14 @@
             save_workspace_on_error: *save_workspace_on_error
         - macos_x86_64:
             devkit_default: 'io.sapmachine.build.devkit.macos:devkit-xcode:13.1'
+            bundle_and_notarize: &bundle_and_notarize |-
+                stage("Bundle and Notarize") {{
+                            steps {{
+                                withCredentials([string(credentialsId: 'MacOSKeyChainUnlockPW', variable: 'unlockpass')]) {{
+                                    sh("SapMachine-infrastructure/lib/bundle_and_notarize.sh")
+                                }}
+                            }}
+                        }}
             update_brew_casks: &update_brew_casks |-
                 stage("Update Brew Casks") {{
                             steps {{
@@ -193,18 +201,10 @@
                                 }}
                             }}
                         }}
-            bundle_and_notarize: &bundle_and_notarize |-
-                stage("Bundle and Notarize") {{
-                            steps {{
-                                withCredentials([string(credentialsId: 'MacOSKeyChainUnlockPW', variable: 'unlockpass')]) {{
-                                    sh("SapMachine-infrastructure/lib/bundle_and_notarize.sh")
-                                }}
-                            }}
-                        }}
         - macos_aarch64:
             devkit_default: 'io.sapmachine.build.devkit.macos:devkit-xcode:13.1'
-            update_brew_casks: *update_brew_casks
             bundle_and_notarize: *bundle_and_notarize
+            update_brew_casks: *update_brew_casks
         - windows_x86_64:
             devkit_default: '{windows_devkit|io.sapmachine.build.devkit.windows-x64:devkit-vs2019:16.11.13}'
             build_windows_installer: |-
@@ -330,6 +330,7 @@
                                 beforeAgent true
                                 expression {{ env.VERIFICATION_RESULT != "2" }}
                             }}
+            bundle_and_notarize: ''
             run_jtreg_hotspot: &run_jtreg_hotspot |-
                 stage("Run jtreg hotspot") {{
                             {docker_agent|}
@@ -430,7 +431,6 @@
             publish_artifactory_msi: ''
             publish_debian_packages: ''
             update_brew_casks: ''
-            bundle_and_notarize: ''
             generate_dockerfiles: ''
             publish_cf_data: ''
             post_code: |-
@@ -472,6 +472,7 @@
                                     }}
                                 }}
                             }}
+            bundle_and_notarize: ''
             run_jtreg_hotspot: *run_jtreg_hotspot
             run_jtreg_jdk: *run_jtreg_jdk
             run_jtreg_langtools: *run_jtreg_langtools
@@ -493,7 +494,6 @@
                         }}
             publish_debian_packages: ''
             update_brew_casks: ''
-            bundle_and_notarize: ''
             generate_dockerfiles: ''
             publish_cf_data: ''
             archive: &archive |-
@@ -535,8 +535,8 @@
                                     }} else {{
                                         env.BUILD_INSTALLER_PACKAGES = params.BUILD_INSTALLER_PACKAGES
                                     }}
-            zip_artifacts: *zip_artifacts
             get_art_ver: env.ART_VERSION = readFile "${{env.WORKSPACE}}/javavmversion.txt"
+            zip_artifacts: *zip_artifacts
             publish_artifactory_pre: *publish_artifactory_pre
             publish_artifactory_when: |-
                 when {{
@@ -672,7 +672,7 @@
                         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD'],
                                          string(credentialsId: 'MacOSKeyChainUnlockPW', variable: 'unlockpass')]) {{
                             script {{
-                                sh("SapMachine-infrastructure/lib/build.sh")
+                                sh('SapMachine-infrastructure/lib/build.sh')
                             }}
                         }}
                     }}
