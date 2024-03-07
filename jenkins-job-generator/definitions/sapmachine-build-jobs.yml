@@ -38,7 +38,7 @@
                             }}
             docker_agent_verify: *docker_agent_aarch64
             build_debian_packages_pre: &build_debian_packages_pre 'stage("Build Debian Packages") {{'
-            docker_agent_debian: *docker_agent_aarch64
+            docker_agent_debian_packages: *docker_agent_aarch64
             build_debian_packages_step: &build_debian_packages_step |-
                 when {{
                                 beforeAgent true
@@ -95,9 +95,9 @@
                                     label '{platform}'
                                 }}
                             }}
-            build_alpine_apk_packages_pre: &build_alpine_apk_packages_pre 'stage("Build Alpine apk Packages") {{'
-            docker_agent_alpine: *docker_agent_alpine_x86_64
-            build_alpine_apk_packages_step: &build_alpine_apk_packages_step |-
+            build_alpine_packages_pre: &build_alpine_packages_pre 'stage("Build Alpine apk Packages") {{'
+            docker_agent_alpine_packages: *docker_agent_alpine_x86_64
+            build_alpine_packages_step: &build_alpine_packages_step |-
                 when {{
                                 beforeAgent true
                                 expression {{ env.BUILD_INSTALLER_PACKAGES == "true" }}
@@ -132,7 +132,7 @@
                             }}
             docker_agent_verify: *docker_agent_ppc64le
             build_debian_packages_pre: *build_debian_packages_pre
-            docker_agent_debian: *docker_agent_ppc64le
+            docker_agent_debian_packages: *docker_agent_ppc64le
             build_debian_packages_step: *build_debian_packages_step
             publish_debian_packages: *publish_debian_packages
             generate_dockerfiles: *generate_dockerfiles
@@ -150,7 +150,7 @@
                             }}
             docker_agent_verify: *docker_agent_x86_64
             build_debian_packages_pre: *build_debian_packages_pre
-            docker_agent_debian: *docker_agent_x86_64
+            docker_agent_debian_packages: *docker_agent_x86_64
             build_debian_packages_step: *build_debian_packages_step
             build_rpm_packages: |-
                 stage("Build RPM Packages") {{
@@ -421,11 +421,11 @@
                         }}
             build_windows_installer: ''
             build_debian_packages_pre: ''
-            docker_agent_debian: ''
+            docker_agent_debian_packages: ''
             build_debian_packages_step: ''
-            build_alpine_apk_packages_pre: ''
-            docker_agent_alpine: ''
-            build_alpine_apk_packages_step: ''
+            build_alpine_packages_pre: ''
+            docker_agent_alpine_packages: ''
+            build_alpine_packages_step: ''
             build_rpm_packages: ''
             publish_artifactory_msi: ''
             publish_debian_packages: ''
@@ -684,9 +684,12 @@
                 {run_jtreg_langtools|}
                 {build_windows_installer|}
                 {build_debian_packages_pre|}
-                    {docker_agent_debian|}
+                    {docker_agent_debian_packages|}
                     {build_debian_packages_step|}
                 {build_rpm_packages|}
+                {build_alpine_packages_pre|}
+                    {docker_agent_alpine_packages|}
+                    {build_alpine_packages_step|}
                 {publish_artifactory_pre|}
                     {publish_artifactory_when|}
                     {publish_artifactory_step|}
@@ -697,9 +700,6 @@
                 {publish_debian_packages|}
                 {update_brew_casks|}
                 {generate_dockerfiles|}
-                {build_alpine_apk_packages_pre|}
-                    {docker_agent_alpine|}
-                    {build_alpine_apk_packages_step|}
                 {publish_cf_data|}
             }}
             post {{

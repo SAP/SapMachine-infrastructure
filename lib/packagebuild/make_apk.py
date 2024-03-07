@@ -1,5 +1,5 @@
 '''
-Copyright (c) 2017-2023 by SAP SE, Walldorf, Germany.
+Copyright (c) 2017-2024 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
@@ -41,12 +41,12 @@ def main(argv=None):
     args = parser.parse_args()
 
     templates_dir = realpath(args.templates_directory)
-    
+
     tagstr = args.tag
     if tagstr is not None:
         if not tagstr.startswith("sapmachine-"):
             tagstr = "sapmachine-" + tagstr
-    
+
     tag = SapMachineTag.from_string(tagstr)    
     print("SapMachine tag:", tag.as_string())
 
