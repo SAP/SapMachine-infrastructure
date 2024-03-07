@@ -433,7 +433,7 @@ def git_push_tag(dir, tag_name, force=False):
     else:
         run_cmd(['git', 'push', 'origin', tag_name], cwd=dir)
 
-def github_api_request(api=None, url=None, owner='SAP', repository='SapMachine', data=None, method='GET', per_page=None, content_type=None, url_parameter=[]):
+def github_api_request(api=None, url=None, owner='SAP', repository='SapMachine', github_api_prefix='https://api.github.com/', data=None, method='GET', per_page=None, content_type=None, url_parameter=[]):
     if api is None and url is None:
         return None
 
@@ -448,7 +448,7 @@ def github_api_request(api=None, url=None, owner='SAP', repository='SapMachine',
                 url_parameter.append(str.format('per_page={0}', per_page))
             if len(url_parameter) > 0:
                 url_parameter_string = '?' + '&'.join(url_parameter)
-            url = str.format('https://api.github.com/repos/{0}/{1}/{2}{3}', owner, repository, api, url_parameter_string)
+            url = str.format('{0}/repos/{1}/{2}/{3}{4}', github_api_prefix, owner, repository, api, url_parameter_string)
 
         if type(data) == str:
             data = data.encode('utf-8')
