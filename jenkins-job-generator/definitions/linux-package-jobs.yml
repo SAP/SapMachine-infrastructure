@@ -271,7 +271,7 @@
                             sh 'SapMachine-infrastructure/lib/packagebuild/prepare_apk_build.sh'
                         }}
                         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
-                            sh 'sudo -g abuild python3 SapMachine-infrastructure/lib/packagebuild/make_apk.py -t ${{GIT_TAG_NAME}} -d --templates-directory SapMachine-infrastructure/alpine-templates'
+                            sh 'sudo -E -g abuild python3 SapMachine-infrastructure/lib/packagebuild/make_apk.py -t ${{GIT_TAG_NAME}} -d --templates-directory SapMachine-infrastructure/alpine-templates'
                         }}
                     }}
                     post {{
