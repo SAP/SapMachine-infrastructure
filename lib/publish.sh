@@ -15,7 +15,7 @@ if [[ -z $SAPMACHINE_GIT_REPOSITORY ]]; then
 fi
 
 if [[ -z $GITHUB_API_URL ]]; then
-  if [[ $SAPMACHINE_GIT_REPOSITORY == "*//github.com/*" ]]; then
+  if [[ $SAPMACHINE_GIT_REPOSITORY == *github.com* ]]; then
     GITHUB_API_URL="https://api.github.com"
     echo "GitHub API URL set to $GITHUB_API_URL"
   else
