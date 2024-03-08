@@ -20,7 +20,7 @@ pr_author_exception_list = [ 'SapMachine' ]
 
 # validate an issue by issue id
 def validate_issue(issue_id):
-    issue = github_api_request(str.format('issues/{0}', issue_id))
+    issue = github_api_request(f'issues/{issue_id}')
 
     # check whether the issue exists
     if issue is None:
@@ -117,7 +117,7 @@ def main(argv=None):
     args = parser.parse_args()
 
     # request the pull request information
-    pull_request = github_api_request(str.format('pulls/{0}', args.pull_request))
+    pull_request = github_api_request(f'pulls/{args.pull_request}')
 
     comments_url = pull_request['comments_url']
     pr_author = pull_request['user']['login']
@@ -147,7 +147,7 @@ def main(argv=None):
             github_api_request(url=comments_url, data=create_success_comment(pr_author), method='POST')
 
     # check wether the complete validation has to run
-    pull_request_files = github_api_request(str.format('pulls/{0}/files', args.pull_request))
+    pull_request_files = github_api_request(f'pulls/{args.pull_request}/files')
 
     roots_requiring_verification = ['make', 'src', 'test', 'Makefile', 'configure', '.github']
     requires_verification = False
