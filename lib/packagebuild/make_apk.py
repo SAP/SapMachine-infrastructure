@@ -36,10 +36,6 @@ def generate_configuration(templates_dir, target_dir, package_name, version, pac
                 archive_url=archive_url,
                 archive_name=archive_name))
 
-    with open(join(target_dir, 'APKBUILD'), 'r') as file:
-        print('APKBUILD content:')
-        print(file.read())
-
 def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('-t', '--tag', help='the tag to create the alpine packages from', metavar='TAG', required=True)
@@ -79,30 +75,31 @@ def main(argv=None):
             major = bundle_name_match.group(2)
     else:
         major = tag.get_major()
-        if args.download:
-            urls = utils.get_asset_urls(tag, 'linux-x64-musl')
-            jre_source = urls['jre']
-            jdk_source = urls['jdk']
-        else:
-            jre_source = cwd + "/" + jre_bundle_name
-            jdk_source = cwd + "/" + jdk_bundle_name
+
+    jre_name = f'sapmachine-{major}-jre'
+    jre_dir = join(work_dir, jre_name)
+    print(f"JRE dir: {jre_dir}")
+    mkdir(jre_dir)
+
+    jdk_name = f'sapmachine-{major}-jdk'
+    jdk_dir = join(work_dir, jdk_name)
+    print(f"JDK dir: {jdk_dir}")
+    mkdir(jdk_dir)
+
+    if args.download:
+        urls = utils.get_asset_urls(tag, 'linux-x64-musl')
+        jre_source = urls['jre']
+        jdk_source = urls['jdk']
+    else:
+        jre_source = jre_bundle_name
+        copy(jre_bundle_name, jre_dir + '/' + jre_bundle_name)
+        jdk_source = jdk_bundle_name
+        copy(jdk_bundle_name, jdk_dir + '/' + jdk_bundle_name)
 
     templates_dir = realpath(args.templates_directory)
 
-    jre_name = f'sapmachine-{major}-jre'
-    jdk_name = f'sapmachine-{major}-jdk'
-    jre_dir = join(work_dir, jre_name)
-    jdk_dir = join(work_dir, jdk_name)
-
-    mkdir(jre_dir)
-    mkdir(jdk_dir)
-
-    print(f"JRE dir: {jre_dir}")
-    copy(jre_bundle_name, jre_dir + '/' + jre_bundle_name)
-    generate_configuration(templates_dir, jre_dir, jre_name, tag.get_version_string(), '0', 'The SapMachine Java Runtime Environment', jre_bundle_name)
-    print(f"JDK dir: {jdk_dir}")
-    copy(jdk_bundle_name, jdk_dir + '/' + jdk_bundle_name)
-    generate_configuration(templates_dir, jdk_dir, jdk_name, tag.get_version_string(), '0', 'The SapMachine Java Development Kit', jdk_bundle_name)
+    generate_configuration(templates_dir, jre_dir, jre_name, tag.get_version_string(), '0', 'The SapMachine Java Runtime Environment', jre_source)
+    generate_configuration(templates_dir, jdk_dir, jdk_name, tag.get_version_string(), '0', 'The SapMachine Java Development Kit', jdk_source)
 
     utils.run_cmd(['abuild', 'checksum'], cwd=jre_dir)
     utils.run_cmd(['abuild', 'checksum'], cwd=jdk_dir)
