@@ -242,7 +242,7 @@
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD'],
                                  string(credentialsId: 'MacOSKeyChainUnlockPW', variable: 'unlockpass')]) {
                     script {
-                        sh("SapMachine-infrastructure/lib/build.sh")
+                        sh('SapMachine-infrastructure/lib/build.sh')
                     }
                 }
             }
@@ -272,6 +272,32 @@
             
             
         
+        stage("Build Alpine apk Packages") {
+            agent {
+                docker {
+                    image 'alpine_3-x86_64'
+                    reuseNode true
+                    label 'linux_alpine_x86_64'
+                }
+            }
+            when {
+                beforeAgent true
+                expression { env.BUILD_INSTALLER_PACKAGES == "true" }
+            }
+            steps {
+                withCredentials([file(credentialsId: 'sapmachine-apk.rsa', variable: 'apkrsa'),
+                                file(credentialsId: 'sapmachine-apk.rsa.pub', variable: 'apkrsapub')]) {
+                    sh 'SapMachine-infrastructure/lib/packagebuild/prepare_apk_build.sh'
+                }
+                sh 'sudo -g abuild python3 SapMachine-infrastructure/lib/packagebuild/make_apk.py -t $SAPMACHINE_VERSION -d SapMachine-infrastructure/alpine-templates'
+            }
+            post {
+                success {
+                    stash includes: '*.apk', name: 'apkPackages'
+                    stash includes: 'SapMachine-infrastructure/**', name: 'infra'
+                }
+            }
+        }
         stage("Publish Artifactory") {
             when {
                 expression { params.UPLOAD_ARTIFACTORY == true || params.PUBLISH == true }
@@ -307,32 +333,6 @@
         
         
         
-        stage("Build Alpine apk Packages") {
-            agent {
-                docker {
-                    image 'alpine_3-x86_64'
-                    reuseNode true
-                    label 'linux_alpine_x86_64'
-                }
-            }
-            when {
-                beforeAgent true
-                expression { env.BUILD_INSTALLER_PACKAGES == "true" }
-            }
-            steps {
-                withCredentials([file(credentialsId: 'sapmachine-apk.rsa', variable: 'apkrsa'),
-                                file(credentialsId: 'sapmachine-apk.rsa.pub', variable: 'apkrsapub')]) {
-                    sh 'SapMachine-infrastructure/lib/packagebuild/prepare_apk_build.sh'
-                }
-                sh 'sudo -g abuild python3 SapMachine-infrastructure/lib/packagebuild/make_apk.py -t $SAPMACHINE_VERSION -d SapMachine-infrastructure/alpine-templates'
-            }
-            post {
-                success {
-                    stash includes: '*.apk', name: 'apkPackages'
-                    stash includes: 'SapMachine-infrastructure/**', name: 'infra'
-                }
-            }
-        }
         
     }
     post {

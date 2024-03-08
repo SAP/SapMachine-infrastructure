@@ -125,7 +125,7 @@
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD'],
                                  string(credentialsId: 'MacOSKeyChainUnlockPW', variable: 'unlockpass')]) {
                     script {
-                        sh("SapMachine-infrastructure/lib/build.sh")
+                        sh('SapMachine-infrastructure/lib/build.sh')
                     }
                 }
             }
@@ -155,6 +155,9 @@
             
             
         
+        
+            
+            
         stage("Publish Artifactory") {
             when {
                 expression { params.UPLOAD_ARTIFACTORY == true || params.PUBLISH == true }
@@ -198,9 +201,6 @@
             }
         }
         
-        
-            
-            
         
     }
     post {

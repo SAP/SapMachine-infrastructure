@@ -273,7 +273,7 @@
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD'],
                                  string(credentialsId: 'MacOSKeyChainUnlockPW', variable: 'unlockpass')]) {
                     script {
-                        sh("SapMachine-infrastructure/lib/build.sh")
+                        sh('SapMachine-infrastructure/lib/build.sh')
                     }
                 }
             }
@@ -374,6 +374,9 @@
         
             
             
+        
+            
+            
                 
             
         
@@ -381,9 +384,6 @@
         
         
         
-        
-            
-            
         
     }
     post {
