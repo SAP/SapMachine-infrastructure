@@ -108,23 +108,23 @@ def main(argv=None):
     if not args.download:
         bundle_name_file = join(cwd, 'jre_bundle_name.txt')
         if not isfile(bundle_name_file):
-            print(str.format("Bundle name file \"{0}\" does not exist. I don't know what to package", bundle_name_file))
+            print(f"Bundle name file \"{bundle_name_file}\" does not exist. I don't know what to package")
             return -1
         with open(bundle_name_file, 'r') as file:
             jre_bundle_name = file.read().rstrip()
-        print(str.format("JRE bundle name: {0}", jre_bundle_name))
+        print(f"JRE bundle name: {jre_bundle_name}")
         bundle_name_file = join(cwd, 'jdk_bundle_name.txt')
         if not isfile(bundle_name_file):
-            print(str.format("Bundle name file \"{0}\" does not exist. I don't know what to package", bundle_name_file))
+            print(f"Bundle name file \"{bundle_name_file}\" does not exist. I don't know what to package")
             return -1
         with open(bundle_name_file, 'r') as file:
             jdk_bundle_name = file.read().rstrip()
-        print(str.format("JDK bundle name: {0}", jdk_bundle_name))
+        print(f"JDK bundle name: {jdk_bundle_name}")
 
     tag = SapMachineTag.from_string(args.tag)
     if tag is None:
         if args.download:
-            print(str.format("Passed tag \"{0}\" is invalid. I don't know what to download!", args.tag))
+            print(f"Passed tag \"{args.tag}\" is invalid. I don't know what to download!")
             return -1
         else:
             bundle_name_match = re.compile('sapmachine-\w+-((\d+)(\.\d+)*).*').match(jdk_bundle_name)

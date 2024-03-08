@@ -270,7 +270,7 @@
                                          file(credentialsId: 'sapmachine-apk.rsa.pub', variable: 'apkrsapub')]) {{
                             sh 'SapMachine-infrastructure/lib/packagebuild/prepare_apk_build.sh'
                         }}
-                        sh 'sudo -g abuild python3 SapMachine-infrastructure/lib/packagebuild/make_apk.py -t ${{GIT_TAG_NAME}} -d SapMachine-infrastructure/alpine-templates'
+                        sh 'sudo -g abuild python3 SapMachine-infrastructure/lib/packagebuild/make_apk.py -t ${{GIT_TAG_NAME}} -d --templates-directory SapMachine-infrastructure/alpine-templates'
                     }}
                     post {{
                         success {{

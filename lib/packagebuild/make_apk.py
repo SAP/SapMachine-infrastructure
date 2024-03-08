@@ -6,6 +6,7 @@ All rights reserved. Confidential and proprietary.
 import argparse
 import glob
 import os
+import re
 import sys
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
@@ -16,6 +17,7 @@ from os import mkdir
 from os.path import expanduser
 from os.path import join
 from os.path import realpath
+from os.path import isfile
 from shutil import copy
 from shutil import rmtree
 from string import Template
@@ -37,47 +39,74 @@ def generate_configuration(templates_dir, target_dir, package_name, version, pac
 def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('-t', '--tag', help='the tag to create the alpine packages from', metavar='TAG', required=True)
-    parser.add_argument('-d', '--templates-directory', help='specify the templates directory', metavar='DIR', required=True)
+    parser.add_argument('-d', '--download', help='Download artifact and clone git repo', action='store_true')
+    parser.add_argument('--templates-directory', help='specify the templates directory', metavar='DIR', required=True)
     args = parser.parse_args()
+
+    cwd = os.getcwd()
+    work_dir = join(cwd, 'apk_work')
+    print("work_dir:", work_dir)
+    utils.remove_if_exists(work_dir)
+    mkdir(work_dir)
+
+    if not args.download:
+        bundle_name_file = join(cwd, 'jre_bundle_name.txt')
+        if not isfile(bundle_name_file):
+            print(f"Bundle name file \"{bundle_name_file}\" does not exist. I don't know what to package")
+            return -1
+        with open(bundle_name_file, 'r') as file:
+            jre_bundle_name = file.read().rstrip()
+        print(f"JRE bundle name: {jre_bundle_name}")
+        bundle_name_file = join(cwd, 'jdk_bundle_name.txt')
+        if not isfile(bundle_name_file):
+            print(f"Bundle name file \"{bundle_name_file}\" does not exist. I don't know what to package")
+            return -1
+        with open(bundle_name_file, 'r') as file:
+            jdk_bundle_name = file.read().rstrip()
+        print(f"JDK bundle name: {jdk_bundle_name}")
+
+    tag = SapMachineTag.from_string(args.tag)
+    if tag is None:
+        if args.download:
+            print(f"Passed tag \"{args.tag}\" is invalid. I don't know what to download!")
+            return -1
+        else:
+            bundle_name_match = re.compile('sapmachine-\w+-((\d+)(\.\d+)*).*').match(jdk_bundle_name)
+            major = bundle_name_match.group(2)
+    else:
+        major = tag.get_major()
+        if args.download:
+            urls = utils.get_asset_urls(tag, 'linux-x64-musl')
+            jre_source = urls['jre']
+            jdk_source = urls['jdk']
+        else:
+            jre_source = cwd + "/" + jre_bundle_name
+            jdk_source = cwd + "/" + jdk_bundle_name
 
     templates_dir = realpath(args.templates_directory)
 
-    tagstr = args.tag
-    if tagstr is not None:
-        if not tagstr.startswith("sapmachine-"):
-            tagstr = "sapmachine-" + tagstr
-
-    tag = SapMachineTag.from_string(tagstr)    
-    print("SapMachine tag:", tag.as_string())
-
-    cwd = os.getcwd()
-    home = expanduser("~")
-    work_dir = join(cwd, 'apk_work')
-    urls = utils.get_asset_urls(tag, 'linux-x64-musl')
-    jdk_name = str.format('sapmachine-{0}-jdk', tag.get_major())
-    jre_name = str.format('sapmachine-{0}-jre', tag.get_major())
-    jdk_dir = join(work_dir, jdk_name)
+    jre_name = f'sapmachine-{major}-jre'
+    jdk_name = f'sapmachine-{major}-jdk'
     jre_dir = join(work_dir, jre_name)
+    jdk_dir = join(work_dir, jdk_name)
 
-    print("work_dir:", work_dir)
-    utils.remove_if_exists(work_dir)
-
-    mkdir(work_dir)
-    mkdir(jdk_dir)
     mkdir(jre_dir)
+    mkdir(jdk_dir)
 
-    generate_configuration(templates_dir, jdk_dir, jdk_name, tag.get_version_string(), '0', 'The SapMachine Java Development Kit', urls["jdk"])
-    generate_configuration(templates_dir, jre_dir, jre_name, tag.get_version_string(), '0', 'The SapMachine Java Runtime Environment', urls["jre"])
+    print(f"JRE Source: {jre_source}")
+    generate_configuration(templates_dir, jre_dir, jre_name, tag.get_version_string(), '0', 'The SapMachine Java Runtime Environment', jre_source)
+    print(f"JDK Source: {jdk_source}")
+    generate_configuration(templates_dir, jdk_dir, jdk_name, tag.get_version_string(), '0', 'The SapMachine Java Development Kit', jdk_source)
 
-    utils.run_cmd(['abuild', 'checksum'], cwd=jdk_dir)
     utils.run_cmd(['abuild', 'checksum'], cwd=jre_dir)
+    utils.run_cmd(['abuild', 'checksum'], cwd=jdk_dir)
 
-    utils.run_cmd(['abuild', '-r', '-K'], cwd=jdk_dir)
     utils.run_cmd(['abuild', '-r', '-K'], cwd=jre_dir)
+    utils.run_cmd(['abuild', '-r', '-K'], cwd=jdk_dir)
 
     rmtree(work_dir)
 
-    apk_files = glob.glob(join(home, 'packages', 'apk_work', '*', '*.apk'))
+    apk_files = glob.glob(join(expanduser("~"), 'packages', 'apk_work', '*', '*.apk'))
 
     for apk_file in apk_files:
         copy(apk_file, cwd)
