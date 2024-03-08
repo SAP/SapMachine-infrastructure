@@ -23,7 +23,7 @@ from shutil import rmtree
 from string import Template
 from versions import SapMachineTag
 
-def generate_configuration(templates_dir, target_dir, package_name, version, package_release, description, archive_url):
+def generate_configuration(src_dir, templates_dir, target_dir, package_name, version, package_release, description, archive_url):
     archive_name = archive_url.rsplit('/', 1)[-1]
 
     with open(join(templates_dir, 'APKBUILD'), 'r') as apkbuild_template:
@@ -33,8 +33,13 @@ def generate_configuration(templates_dir, target_dir, package_name, version, pac
                 package_version=version.replace('+', '.').replace('-', '.'),
                 package_release=package_release,
                 package_description=description,
+                source_dir=src_dir,
                 archive_url=archive_url,
                 archive_name=archive_name))
+
+    with open(join(target_dir, 'APKBUILD'), 'r') as file:
+        print('APKBUILD content:')
+        print(file.read())
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
@@ -88,15 +93,21 @@ def main(argv=None):
     jre_name = f'sapmachine-{major}-jre'
     jdk_name = f'sapmachine-{major}-jdk'
     jre_dir = join(work_dir, jre_name)
+    jre_src_dir = join(jre_dir, 'src')
     jdk_dir = join(work_dir, jdk_name)
+    jdk_src_dir = join(jdk_dir, 'src')
 
     mkdir(jre_dir)
+    mkdir(jre_src_dir)
     mkdir(jdk_dir)
+    mkdir(jdk_src_dir)
 
-    print(f"JRE Source: {jre_source}")
-    generate_configuration(templates_dir, jre_dir, jre_name, tag.get_version_string(), '0', 'The SapMachine Java Runtime Environment', jre_source)
-    print(f"JDK Source: {jdk_source}")
-    generate_configuration(templates_dir, jdk_dir, jdk_name, tag.get_version_string(), '0', 'The SapMachine Java Development Kit', jdk_source)
+    print(f"JRE Sourcedir: {jre_src_dir}")
+    copy(jre_bundle_name, jre_src_dir + '/' + jre_bundle_name)
+    generate_configuration(jre_src_dir, templates_dir, jre_dir, jre_name, tag.get_version_string(), '0', 'The SapMachine Java Runtime Environment', jre_bundle_name)
+    print(f"JDK Sourcedir: {jdk_src_dir}")
+    copy(jdk_bundle_name, jdk_src_dir + '/' + jdk_bundle_name)
+    generate_configuration(jdk_src_dir, templates_dir, jdk_dir, jdk_name, tag.get_version_string(), '0', 'The SapMachine Java Development Kit', jdk_bundle_name)
 
     utils.run_cmd(['abuild', 'checksum'], cwd=jre_dir)
     utils.run_cmd(['abuild', 'checksum'], cwd=jdk_dir)
