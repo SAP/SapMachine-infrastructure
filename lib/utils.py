@@ -433,23 +433,20 @@ def git_push_tag(dir, tag_name, force=False):
     else:
         run_cmd(['git', 'push', 'origin', tag_name], cwd=dir)
 
-def github_api_request(api=None, url=None, owner='SAP', repository='SapMachine', github_api_prefix='https://api.github.com/', data=None, method='GET', per_page=None, content_type=None, url_parameter=[]):
+def github_api_request(api=None, url=None, github_api_url='https://api.github.com', github_org='SAP', repository='SapMachine', data=None, method='GET', per_page=None, content_type=None, url_parameter=[]):
     if api is None and url is None:
         return None
 
+    if url is None:
+        if per_page is not None:
+            url_parameter.append(str.format('per_page={0}', per_page))
+        url_parameter_string = '?' + '&'.join(url_parameter) if len(url_parameter) > 0 else ''
+        url = f'{github_api_url}/repos/{github_org}/{repository}/{api}{url_parameter_string}'
     load_next = True
     result = None
-    link_pattern = re.compile(r'(<([^>]*)>; rel=\"prev\",\s*)?(<([^>]*)>; rel=\"next\",\s)?')
+    link_pattern = None
 
     while load_next:
-        if url is None:
-            url_parameter_string = ''
-            if per_page is not None:
-                url_parameter.append(str.format('per_page={0}', per_page))
-            if len(url_parameter) > 0:
-                url_parameter_string = '?' + '&'.join(url_parameter)
-            url = str.format('{0}/repos/{1}/{2}/{3}{4}', github_api_prefix, owner, repository, api, url_parameter_string)
-
         if type(data) == str:
             data = data.encode('utf-8')
 
@@ -481,6 +478,8 @@ def github_api_request(api=None, url=None, owner='SAP', repository='SapMachine',
             result.extend(json.loads(response))
 
         if link is not None and method == 'GET':
+            if link_pattern is None:
+                link_pattern = re.compile(r'(<([^>]*)>; rel=\"prev\",\s*)?(<([^>]*)>; rel=\"next\",\s)?')
             match = re.search(link_pattern, link)
 
             if match is not None:
@@ -517,7 +516,7 @@ def sapmachine_checksum_pattern():
 def get_asset_urls(tag, platform, asset_types=["jdk", "jre"], pattern=None):
     asset_urls = {}
     try:
-        release = github_api_request(str.format('releases/tags/{0}', quote(tag.as_string())), per_page=100)
+        release = github_api_request(f'releases/tags/{quote(tag.as_string())}', per_page=100)
 
         if 'assets' in release:
             asset_pattern = re.compile(sapmachine_asset_base_pattern() + pattern if pattern else sapmachine_asset_pattern())
@@ -544,7 +543,7 @@ def get_asset_urls(tag, platform, asset_types=["jdk", "jre"], pattern=None):
 
 def sapmachine_tag_is_release(tag):
     try:
-        release = github_api_request(f"releases/tags/{tag}")
+        release = github_api_request(f'releases/tags/{tag}')
     except HTTPError as httpError:
         return False
 

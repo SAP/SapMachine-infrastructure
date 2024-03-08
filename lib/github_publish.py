@@ -1,5 +1,5 @@
 '''
-Copyright (c) 2018-2023 by SAP SE, Walldorf, Germany.
+Copyright (c) 2018-2024 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
@@ -38,7 +38,7 @@ def main(argv=None):
             print(str.format('Detected mime-type: "{0}"', asset_mime_type))
 
     try:
-        release = utils.github_api_request(f"releases/tags/{tag}", github_api_prefix=args.github)
+        release = utils.github_api_request(f"releases/tags/{tag}", github_api_url=args.github)
         release_id = release['id']
         upload_url = release['upload_url']
     except HTTPError as httpError:
@@ -49,14 +49,14 @@ def main(argv=None):
         # release does not exist yet -> create it
         data = json.dumps({ "tag_name": tag, "name": tag, "body": args.description, "draft": False, "prerelease": args.prerelease })
         try:
-            response = utils.github_api_request('releases', github_api_prefix=args.github, data=data, method='POST', content_type='application/json')
+            response = utils.github_api_request('releases', github_api_url=args.github, data=data, method='POST', content_type='application/json')
             release_id = response['id']
             upload_url = response['upload_url']
             print(f"Created release \"{tag}\"")
         except HTTPError as http_err:
             print(f"Error creating release \"{tag}\". Maybe it exists now, check...")
             try:
-                release = utils.github_api_request(f"releases/tags/{tag}", github_api_prefix=args.github)
+                release = utils.github_api_request(f"releases/tags/{tag}", github_api_url=args.github)
                 release_id = release['id']
                 upload_url = release['upload_url']
                 print(f"Yes, release id: {release_id}")
@@ -68,7 +68,7 @@ def main(argv=None):
         # asset file is specified (-a)
 
         # first check wether the asset already exists
-        for gh_asset in utils.github_api_request(str.format('releases/{0}/assets', release_id), per_page=50, github_api_prefix=args.github):
+        for gh_asset in utils.github_api_request(f'releases/{release_id}/assets', github_api_url=args.github, per_page=50):
             if gh_asset['name'] == asset_name:
                 # asset already exists -> skip
                 print(str.format('Error: Asset "{0}" already exists.', asset_name))
@@ -87,7 +87,7 @@ def main(argv=None):
             try:
                 # upload the asset file
                 print(str.format('Uploading asset "{0}" with a length of {1} bytes...', asset_name, str(asset_length)))
-                utils.github_api_request(url=upload_url, data=asset_data, method='POST', content_type=asset_mime_type, github_api_prefix=args.github)
+                utils.github_api_request(url=upload_url, data=asset_data, method='POST', content_type=asset_mime_type)
                 return 0
             except IOError as e:
                 # _type, value, _traceback = sys.exc_info()

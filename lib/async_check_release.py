@@ -1,5 +1,5 @@
 '''
-Copyright (c) 2001-2021 by SAP SE, Walldorf, Germany.
+Copyright (c) 2001-2024 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
@@ -9,38 +9,21 @@ import utils
 
 def main(argv=None):    
     upstream_releases = utils.github_api_request(api='releases',
-                                                 url=None,
-                                                 owner='jvm-profiling-tools',
+                                                 github_org='jvm-profiling-tools',
                                                  repository='async-profiler',
-                                                 data=None,
-                                                 method='GET',
-                                                 per_page=100,
-                                                 content_type=None,
-                                                 url_parameter=[])
+                                                 per_page=100)
     sap_releases = utils.github_api_request(api='releases',
-                                            url=None,
-                                            owner='SAP',
                                             repository='async-profiler',
-                                            data=None,
-                                            method='GET',
-                                            per_page=100,
-                                            content_type=None,
-                                            url_parameter=[])
+                                            per_page=100)
     sap_tags = utils.github_api_request(api='tags',
-                                        url=None, owner='SAP',
                                         repository='async-profiler',
-                                        data=None, method='GET',
-                                        per_page=100,
-                                        content_type=None,
-                                        url_parameter=[])
+                                        per_page=100)
 
     for release in reversed(upstream_releases):
         tag = release['tag_name']
         if [x for x in sap_releases if x['tag_name'] == tag] == [] and [x for x in sap_tags if x['name'] == tag] != []:
             data = json.dumps({ "tag_name": tag, "name": release['name'], "body": release['body']})
             response = utils.github_api_request(api='releases',
-                                                url=None,
-                                                owner='SAP',
                                                 repository='async-profiler',
                                                 data=data,
                                                 method='POST',

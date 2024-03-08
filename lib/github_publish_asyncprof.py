@@ -1,5 +1,5 @@
 '''
-Copyright (c) 2001-2021 by SAP SE, Walldorf, Germany.
+Copyright (c) 2001-2024 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
@@ -34,15 +34,7 @@ def main(argv=None):
         asset_mime_type = asset_mime_type[0]
         print(str.format('detected mime-type "{0}"', asset_mime_type))
 
-    releases = utils.github_api_request(api='releases',
-                                        url=None,
-                                        owner='SAP',
-                                        repository='async-profiler',
-                                        data=None,
-                                        method='GET',
-                                        per_page=100,
-                                        content_type=None,
-                                        url_parameter=[])
+    releases = utils.github_api_request(api='releases', repository='async-profiler', per_page=100)
 
     release_id = None
     upload_url = None
@@ -62,7 +54,7 @@ def main(argv=None):
         asset file is specified (-a)
         first check wether the asset already exists
         '''
-        gh_assets = utils.github_api_request(api=str.format('releases/{0}/assets', release_id), url=None, owner='SAP', repository='async-profiler', data=None, method='GET', per_page=50, content_type=None, url_parameter=[])
+        gh_assets = utils.github_api_request(api=f'releases/{release_id}/assets', repository='async-profiler', per_page=50)
 
         for gh_asset in gh_assets:
             if gh_asset['name'] == asset_name:
