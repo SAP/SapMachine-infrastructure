@@ -108,7 +108,6 @@
                                     sh 'SapMachine-infrastructure/lib/packagebuild/prepare_apk_build.sh'
                                 }}
                                 sh 'sudo -g abuild python3 SapMachine-infrastructure/lib/packagebuild/make_apk.py -t $SAPMACHINE_VERSION --templates-directory SapMachine-infrastructure/alpine-templates'
-                                sh 'ls -la | grep apk'
                             }}
                             post {{
                                 success {{
