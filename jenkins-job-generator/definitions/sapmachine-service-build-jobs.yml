@@ -15,7 +15,9 @@
     majors: &majors_service
         - '21':
             branch_name: sapmachine21
-        - '22'
+        - '22':
+            branch_name: sapmachine22
+        - '23'
     build_service_dsl: &build_service_dsl |
         pipeline {{
             agent {{
