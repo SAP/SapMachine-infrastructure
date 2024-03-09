@@ -1,12 +1,12 @@
 - view:
-    name: 'Snapshot Builds'
-    description: 'Snapshot Builds'
+    name: 'SapMachine Snapshot'
+    description: 'SapMachine Snapshot Builds'
     view-type: list
     regex: 'build-[\d]+-.*-snapshot$|build-service-snapshot-[\d]+$'
 
 - view:
-    name: 'Release Builds'
-    description: 'Release Builds'
+    name: 'SapMachine Release'
+    description: 'SapMachine Release Builds'
     view-type: list
     regex: 'build-[\d]+-release-.*$|build-[\d]+-.*-release$|build-service-release-[\d]+$'
 
