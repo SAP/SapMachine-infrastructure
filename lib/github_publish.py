@@ -19,11 +19,12 @@ def main(argv=None):
     parser.add_argument('-d', '--description', default='', help='the description of the release', required=False)
     parser.add_argument('-p', '--prerelease', help='this is a pre-release', action='store_true', default=False)
     parser.add_argument('-a', '--asset', help='the asset to upload', metavar='ASSET', required=False)
-    parser.add_argument('-g', '--github', default='https://api.github.com', help='the github api url to be used', metavar='GITHUB', required=False)
+    parser.add_argument('-g', '--github', default='https://api.github.com', help='the github api url', metavar='GITHUB', required=False)
+    parser.add_argument('-o', '--github-org', default='SAP', help='the github org', metavar='GITHUB', required=False)
     args = parser.parse_args()
 
     try:
-        release = utils.github_api_request(f"releases/tags/{args.tag}", github_api_url=args.github)
+        release = utils.github_api_request(f"releases/tags/{args.tag}", github_api_url=args.github, github_org=args.github_org)
         release_id = release['id']
         upload_url = release['upload_url']
     except HTTPError as httpError:
@@ -34,14 +35,14 @@ def main(argv=None):
         # release does not exist yet -> create it
         data = json.dumps({ "tag_name": args.tag, "name": args.tag, "body": args.description, "draft": False, "prerelease": args.prerelease })
         try:
-            response = utils.github_api_request('releases', github_api_url=args.github, data=data, method='POST', content_type='application/json')
+            response = utils.github_api_request('releases', github_api_url=args.github, github_org=args.github_org, data=data, method='POST', content_type='application/json')
             release_id = response['id']
             upload_url = response['upload_url']
             print(f"Created release \"{args.tag}\"")
         except HTTPError as http_err:
             print(f"Error creating release \"{args.tag}\". Maybe it exists now, check...")
             try:
-                release = utils.github_api_request(f"releases/tags/{args.tag}", github_api_url=args.github)
+                release = utils.github_api_request(f"releases/tags/{args.tag}", github_api_url=args.github, github_org=args.github_org)
                 release_id = release['id']
                 upload_url = release['upload_url']
                 print(f"Yes, release id: {release_id}")
@@ -63,7 +64,7 @@ def main(argv=None):
             print(f'Detected mime-type of {args.asset}: {asset_mime_type}')
 
         # first check wether the asset already exists
-        for gh_asset in utils.github_api_request(f'releases/{release_id}/assets', github_api_url=args.github, per_page=50):
+        for gh_asset in utils.github_api_request(f'releases/{release_id}/assets', github_api_url=args.github, github_org=args.github_org, per_page=50):
             if gh_asset['name'] == asset_name:
                 # asset already exists -> skip
                 print(f'Error: Asset "{asset_name}" already exists.')
