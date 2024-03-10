@@ -3,6 +3,11 @@
 set -e
 
 UNAME=`uname`
+if [[ $UNAME == Darwin ]]; then
+    SEDFLAGS='-En'
+else
+    SEDFLAGS='-rn'
+fi
 
 if [[ -z $SAPMACHINE_VERSION ]]; then
   echo "SAPMACHINE_VERSION not set"
@@ -32,9 +37,9 @@ python3 SapMachine-infrastructure/lib/github_publish.py -t ${SAPMACHINE_VERSION}
 ARCHIVE_NAME_JDK="$(cat jdk_bundle_name.txt)"
 ARCHIVE_NAME_JRE="$(cat jre_bundle_name.txt)"
 ARCHIVE_NAME_SYMBOLS="$(cat symbols_bundle_name.txt)"
-ARCHIVE_SUM_JDK="$(echo $ARCHIVE_NAME_JDK | sed 's/tar\.gz\|zip/sha256\.txt/')"
-ARCHIVE_SUM_JRE="$(echo $ARCHIVE_NAME_JRE | sed 's/tar\.gz\|zip/sha256\.txt/')"
-ARCHIVE_SUM_SYMBOLS="$(echo $ARCHIVE_NAME_SYMBOLS | sed 's/tar\.gz/sha256\.txt/')"
+ARCHIVE_SUM_JDK="$(echo $ARCHIVE_NAME_JDK | sed $SEDFLAGS 's/tar\.gz\|zip/sha256\.txt/')"
+ARCHIVE_SUM_JRE="$(echo $ARCHIVE_NAME_JRE | sed $SEDFLAGS 's/tar\.gz\|zip/sha256\.txt/')"
+ARCHIVE_SUM_SYMBOLS="$(echo $ARCHIVE_NAME_SYMBOLS | sed $SEDFLAGS 's/tar\.gz/sha256\.txt/')"
 
 shasum -a 256 $ARCHIVE_NAME_JDK > $ARCHIVE_SUM_JDK
 shasum -a 256 $ARCHIVE_NAME_JRE > $ARCHIVE_SUM_JRE
@@ -58,8 +63,8 @@ if [ $UNAME == Darwin ]; then
   DMG_NAME_JDK="$(cat jdk_dmg_name.txt)"
   DMG_NAME_JRE="$(cat jre_dmg_name.txt)"
 
-  DMG_SUM_JDK="$(echo $DMG_NAME_JDK | sed 's/dmg/dmg\.sha256\.txt/')"
-  DMG_SUM_JRE="$(echo $DMG_NAME_JRE | sed 's/dmg/dmg\.sha256\.txt/')"
+  DMG_SUM_JDK="$(echo $DMG_NAME_JDK | sed $SEDFLAGS 's/dmg/dmg\.sha256\.txt/')"
+  DMG_SUM_JRE="$(echo $DMG_NAME_JRE | sed $SEDFLAGS 's/dmg/dmg\.sha256\.txt/')"
 
   shasum -a 256 $DMG_NAME_JDK > $DMG_SUM_JDK
   shasum -a 256 $DMG_NAME_JRE > $DMG_SUM_JRE

@@ -7,11 +7,6 @@ if [[ -z $WORKSPACE ]]; then
 fi
 
 UNAME=`uname`
-if [[ $UNAME == Darwin ]]; then
-    SEDFLAGS='-En'
-else
-    SEDFLAGS='-rn'
-fi
 
 if [[ $UNAME == CYGWIN* ]]; then
   WORKSPACE=$(cygpath -u "${WORKSPACE}")
