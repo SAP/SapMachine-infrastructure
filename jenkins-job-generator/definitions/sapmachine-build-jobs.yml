@@ -239,10 +239,10 @@
                                         withCredentials([usernameColonPassword(credentialsId: 'openjdk-artifactory', variable: 'ARTIFACTORY_CREDS')]) {{
                                             def jdk_curl_call = 'curl -sSf -u $ARTIFACTORY_CREDS -X PUT -T ' + jdk_msi_name + ' https://common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build-results/{platform}/${{ART_VERSION}}/' + jdk_msi_name
                                             def jre_curl_call = 'curl -sSf -u $ARTIFACTORY_CREDS -X PUT -T ' + jre_msi_name + ' https://common.repositories.cloud.sap/artifactory/sapmachine-mvn/io/sapmachine/build-results/{platform}/${{ART_VERSION}}/' + jre_msi_name
-                                        }}
 
-                                        sh jdk_curl_call
-                                        sh jre_curl_call
+                                            sh jdk_curl_call
+                                            sh jre_curl_call
+                                        }}
                                     }}
                                 }}
             save_workspace_on_error: *save_workspace_on_error
