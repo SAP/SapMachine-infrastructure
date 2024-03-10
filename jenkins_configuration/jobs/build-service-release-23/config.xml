@@ -21,7 +21,7 @@
 
                     for (p in platforms) {
                         if (p.value) {
-                            build job: 'build-21-' + p.key + '-snapshot',
+                            build job: 'build-23-' + p.key + '-release',
                                 propagate: false,
                                 wait: false,
                                 parameters: [
@@ -30,14 +30,11 @@
                                     string(name: 'SAPMACHINE_VERSION', value: params.SAPMACHINE_VERSION),
                                     string(name: 'JDK_BUILD', value: params.JDK_BUILD),
                                     string(name: 'EXTRA_CONFIGURE_OPTIONS', value: params.EXTRA_CONFIGURE_OPTIONS),
-                                    string(name: 'hotspot_test_groups', value: params.hotspot_test_groups),
-string(name: 'jdk_test_groups', value: params.jdk_test_groups),
-string(name: 'langtools_test_groups', value: params.langtools_test_groups),
-[$class: 'BooleanParameterValue', name: 'RUN_TESTS', value: params.RUN_TESTS],
+                                    
                                     [$class: 'BooleanParameterValue', name: 'BUILD_INSTALLER_PACKAGES', value: params.BUILD_INSTALLER_PACKAGES],
                                     [$class: 'BooleanParameterValue', name: 'CREATE_GENSRC_BUNDLE', value: params.CREATE_GENSRC_BUNDLE],
                                     [$class: 'BooleanParameterValue', name: 'UPLOAD_ARTIFACTORY', value: params.UPLOAD_ARTIFACTORY],
-                                    
+                                    [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH],
                                     [$class: 'BooleanParameterValue', name: 'ARCHIVE_WORKSPACE', value: params.ARCHIVE_WORKSPACE]
                                 ]
                         } else {
@@ -53,7 +50,7 @@ string(name: 'langtools_test_groups', value: params.langtools_test_groups),
     <sandbox>true</sandbox>
   </definition>
   <actions />
-  <description>Start snapshot build for SapMachine 21 on all platorms.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+  <description>Start release build for SapMachine 23 on all platorms.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
   <properties>
     <jenkins.model.BuildDiscarderProperty>
@@ -75,7 +72,7 @@ string(name: 'langtools_test_groups', value: params.langtools_test_groups),
         <hudson.model.StringParameterDefinition>
           <name>GIT_REF</name>
           <description>The Git tag, branch or commit to build.</description>
-          <defaultValue>sapmachine21</defaultValue>
+          <defaultValue>sapmachine</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
@@ -136,29 +133,6 @@ string(name: 'langtools_test_groups', value: params.langtools_test_groups),
           <defaultValue />
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>hotspot_test_groups</name>
-          <description>Select the test group for jtreg hotspot tests. Empty means disabled.</description>
-          <defaultValue>:tier1</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>jdk_test_groups</name>
-          <description>Select the test group for jtreg jdk tests. Empty means disabled.</description>
-          <defaultValue>:tier1</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>langtools_test_groups</name>
-          <description>Select the test group for jtreg langtools tests. Empty means disabled.</description>
-          <defaultValue>:tier1</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.BooleanParameterDefinition>
-          <name>RUN_TESTS</name>
-          <description>Enable/disable jtreg runs.</description>
-          <defaultValue>true</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>BUILD_INSTALLER_PACKAGES</name>
           <description>Build platform installer packages, e.g. Windows MSI, Debian packages.</description>
@@ -171,8 +145,13 @@ string(name: 'langtools_test_groups', value: params.langtools_test_groups),
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>UPLOAD_ARTIFACTORY</name>
-          <description>Upload build results to artifactory which will trigger testing.</description>
-          <defaultValue>true</defaultValue>
+          <description>Upload build results to Artifactory which will trigger testing.</description>
+          <defaultValue>false</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>PUBLISH</name>
+          <description>When set to true, the resulting bundles will be published to GitHub. This implies uploading to Artifactory.</description>
+          <defaultValue>false</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>ARCHIVE_WORKSPACE</name>

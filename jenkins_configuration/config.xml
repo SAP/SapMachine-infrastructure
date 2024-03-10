@@ -303,52 +303,6 @@
     </listView>
     <listView>
       <owner class="hudson" reference="../../.." />
-      <name>Snapshot Builds</name>
-      <description>Snapshot Builds&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
-      <filterExecutors>false</filterExecutors>
-      <filterQueue>false</filterQueue>
-      <properties class="hudson.model.View$PropertyList" />
-      <jobNames>
-        <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator" />
-      </jobNames>
-      <jobFilters />
-      <columns>
-        <hudson.views.StatusColumn />
-        <hudson.views.WeatherColumn />
-        <hudson.views.JobColumn />
-        <hudson.views.LastSuccessColumn />
-        <hudson.views.LastFailureColumn />
-        <hudson.views.LastDurationColumn />
-        <hudson.views.BuildButtonColumn />
-      </columns>
-      <includeRegex>build-[\d]+-.*-snapshot$|build-service-snapshot-[\d]+$</includeRegex>
-      <recurse>false</recurse>
-    </listView>
-    <listView>
-      <owner class="hudson" reference="../../.." />
-      <name>Release Builds</name>
-      <description>Release Builds&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
-      <filterExecutors>false</filterExecutors>
-      <filterQueue>false</filterQueue>
-      <properties class="hudson.model.View$PropertyList" />
-      <jobNames>
-        <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator" />
-      </jobNames>
-      <jobFilters />
-      <columns>
-        <hudson.views.StatusColumn />
-        <hudson.views.WeatherColumn />
-        <hudson.views.JobColumn />
-        <hudson.views.LastSuccessColumn />
-        <hudson.views.LastFailureColumn />
-        <hudson.views.LastDurationColumn />
-        <hudson.views.BuildButtonColumn />
-      </columns>
-      <includeRegex>build-[\d]+-release-.*$|build-[\d]+-.*-release$|build-service-release-[\d]+$</includeRegex>
-      <recurse>false</recurse>
-    </listView>
-    <listView>
-      <owner class="hudson" reference="../../.." />
       <name>Infrastructure</name>
       <description>Infrastructure related jobs&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
       <filterExecutors>false</filterExecutors>
@@ -655,6 +609,52 @@
         <hudson.views.BuildButtonColumn />
       </columns>
       <includeRegex>(resign-debian-repository-.*|build-debian-package-.*|rpm-package|apk-package|publish-macos-packages-.*)</includeRegex>
+      <recurse>false</recurse>
+    </listView>
+    <listView>
+      <owner class="hudson" reference="../../.." />
+      <name>SapMachine Release</name>
+      <description>SapMachine Release Builds&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <properties class="hudson.model.View$PropertyList" />
+      <jobNames>
+        <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator" />
+      </jobNames>
+      <jobFilters />
+      <columns>
+        <hudson.views.StatusColumn />
+        <hudson.views.WeatherColumn />
+        <hudson.views.JobColumn />
+        <hudson.views.LastSuccessColumn />
+        <hudson.views.LastFailureColumn />
+        <hudson.views.LastDurationColumn />
+        <hudson.views.BuildButtonColumn />
+      </columns>
+      <includeRegex>build-[\d]+-release-.*$|build-[\d]+-.*-release$|build-service-release-[\d]+$</includeRegex>
+      <recurse>false</recurse>
+    </listView>
+    <listView>
+      <owner class="hudson" reference="../../.." />
+      <name>SapMachine Snapshot</name>
+      <description>SapMachine Snapshot Builds&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <properties class="hudson.model.View$PropertyList" />
+      <jobNames>
+        <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator" />
+      </jobNames>
+      <jobFilters />
+      <columns>
+        <hudson.views.StatusColumn />
+        <hudson.views.WeatherColumn />
+        <hudson.views.JobColumn />
+        <hudson.views.LastSuccessColumn />
+        <hudson.views.LastFailureColumn />
+        <hudson.views.LastDurationColumn />
+        <hudson.views.BuildButtonColumn />
+      </columns>
+      <includeRegex>build-[\d]+-.*-snapshot$|build-service-snapshot-[\d]+$</includeRegex>
       <recurse>false</recurse>
     </listView>
   </views>

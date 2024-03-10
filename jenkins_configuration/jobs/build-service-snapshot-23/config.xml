@@ -21,7 +21,7 @@
 
                     for (p in platforms) {
                         if (p.value) {
-                            build job: 'build-21-' + p.key + '-snapshot',
+                            build job: 'build-23-' + p.key + '-snapshot',
                                 propagate: false,
                                 wait: false,
                                 parameters: [
@@ -53,7 +53,7 @@ string(name: 'langtools_test_groups', value: params.langtools_test_groups),
     <sandbox>true</sandbox>
   </definition>
   <actions />
-  <description>Start snapshot build for SapMachine 21 on all platorms.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+  <description>Start snapshot build for SapMachine 23 on all platorms.&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
   <properties>
     <jenkins.model.BuildDiscarderProperty>
@@ -75,7 +75,7 @@ string(name: 'langtools_test_groups', value: params.langtools_test_groups),
         <hudson.model.StringParameterDefinition>
           <name>GIT_REF</name>
           <description>The Git tag, branch or commit to build.</description>
-          <defaultValue>sapmachine21</defaultValue>
+          <defaultValue>sapmachine</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
