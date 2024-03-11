@@ -3,11 +3,11 @@ set -ex
 #set -e
 
 UNAME=`uname`
-if [[ $UNAME == Darwin ]]; then
-    SEDFLAGS='-E'
-else
-    SEDFLAGS='-r'
-fi
+#if [[ $UNAME == Darwin ]]; then
+#    SEDFLAGS='-E'
+#else
+#    SEDFLAGS='-r'
+#fi
 
 if [[ -z $SAPMACHINE_VERSION ]]; then
   echo "SAPMACHINE_VERSION not set"
