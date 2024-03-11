@@ -4,9 +4,9 @@ set -ex
 
 UNAME=`uname`
 if [[ $UNAME == Darwin ]]; then
-    SEDFLAGS='-En'
+    SEDFLAGS='-E'
 else
-    SEDFLAGS='-rn'
+    SEDFLAGS='-r'
 fi
 
 if [[ -z $SAPMACHINE_VERSION ]]; then
@@ -37,8 +37,8 @@ python3 SapMachine-infrastructure/lib/github_publish.py -t ${SAPMACHINE_VERSION}
 ARCHIVE_NAME_JDK="$(cat jdk_bundle_name.txt)"
 ARCHIVE_NAME_JRE="$(cat jre_bundle_name.txt)"
 ARCHIVE_NAME_SYMBOLS="$(cat symbols_bundle_name.txt)"
-ARCHIVE_SUM_JDK="$(echo $ARCHIVE_NAME_JDK | sed $SEDFLAGS 's/tar\.gz\|zip/sha256\.txt/')"
-ARCHIVE_SUM_JRE="$(echo $ARCHIVE_NAME_JRE | sed $SEDFLAGS 's/tar\.gz\|zip/sha256\.txt/')"
+ARCHIVE_SUM_JDK="$(echo $ARCHIVE_NAME_JDK | sed $SEDFLAGS 's/tar\.gz|zip/sha256\.txt/')"
+ARCHIVE_SUM_JRE="$(echo $ARCHIVE_NAME_JRE | sed $SEDFLAGS 's/tar\.gz|zip/sha256\.txt/')"
 ARCHIVE_SUM_SYMBOLS="$(echo $ARCHIVE_NAME_SYMBOLS | sed $SEDFLAGS 's/tar\.gz/sha256\.txt/')"
 
 shasum -a 256 $ARCHIVE_NAME_JDK > $ARCHIVE_SUM_JDK
