@@ -14,7 +14,7 @@ if [ ! -z $GIT_USER ]; then
 fi
 
 "$GIT_TOOL" --version
-"$GIT_TOOL" config --global init.defaultBranch master
+"$GIT_TOOL" config --global init.defaultBranch master | true
 if [ ! -d $2 ]; then
   (set -ex && "$GIT_TOOL" init $2)
 fi
