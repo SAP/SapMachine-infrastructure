@@ -3,15 +3,15 @@
 set -e
 shopt -s nullglob
 
-if [[ -z $WORKSPACE ]]; then
-  WORKSPACE=$PWD
-fi
-
 UNAME=`uname`
 if [[ $UNAME == Darwin ]]; then
-    SEDFLAGS='-En'
+    SEDFLAGS='-E'
 else
-    SEDFLAGS='-rn'
+    SEDFLAGS='-r'
+fi
+
+if [[ -z $WORKSPACE ]]; then
+  WORKSPACE=$PWD
 fi
 
 if [[ $UNAME == CYGWIN* ]]; then
@@ -98,7 +98,7 @@ JDK_NAME=$(find . \( -name "*jdk-*_bin.*" -o -name "*jdk-*_bin-debug.*" \) -exec
 if [[ $JDK_NAME = sapmachine-* ]]; then
   SAPMACHINE_BUNDLE_PREFIX=sapmachine-
 fi
-read JDK_VERSION JDK_SUFFIX<<< $(echo $JDK_NAME | sed $SEDFLAGS 's/'"${SAPMACHINE_BUNDLE_PREFIX}"'jdk-([0-9]+((\.[0-9]+))*)(.*)/ \1 \4 /p')
+read JDK_VERSION JDK_SUFFIX<<< $(echo $JDK_NAME | sed $SEDFLAGS 's/'"${SAPMACHINE_BUNDLE_PREFIX}"'jdk-([0-9]+((\.[0-9]+))*)(.*)/ \1 \4 /')
 JDK_BUNDLE_NAME="${SAPMACHINE_BUNDLE_PREFIX}jdk-${JDK_VERSION}${JDK_SUFFIX}"
 JRE_BUNDLE_NAME="${SAPMACHINE_BUNDLE_PREFIX}jre-${JDK_VERSION}${JDK_SUFFIX}"
 SYMBOLS_BUNDLE_NAME=$(ls *_bin-*symbols.*)
