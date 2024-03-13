@@ -93,7 +93,7 @@ fi
 if [ "${TEST_SUITE}" == "jdk" ]; then
     ${JTREG_CMD} -dir:${JDK_LOCATION}/test/${TEST_SUITE} -xml -verbose:summary -nativepath:${TEST_NATIVE_LIB} \
     -exclude:${JDK_LOCATION}/test/${TEST_SUITE}/ProblemList.txt \
-    -conc:${CONCURRENCY} -vmoption:-Xmx512m -w:test_report_${TEST_SUITE}/JTwork -r:test_report_${TEST_SUITE}/JTreport \
+    -conc:${CONCURRENCY} -vmoption:-Xmx384m -w:test_report_${TEST_SUITE}/JTwork -r:test_report_${TEST_SUITE}/JTreport \
     -a -ignore:quiet -timeoutFactor:5 -agentvm -javaoption:-Djava.awt.headless=true "-k:(!headful)&(!printer)&(!intermittent)" -testjdk:${TEST_JDK} ${TEST_GROUPS}
 fi
 
