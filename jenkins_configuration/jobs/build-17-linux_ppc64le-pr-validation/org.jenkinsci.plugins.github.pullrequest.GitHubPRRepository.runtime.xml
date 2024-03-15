@@ -37,18 +37,65 @@ fixes #1593
       </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
     </entry>
     <entry>
+      <int>1628</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>1628</number>
+        <issueUpdatedAt>2024-03-14 13:57:05.0 UTC</issueUpdatedAt>
+        <title>Update gc.jfc and gc_details.jfc</title>
+        <body>- Add new/missing events.
+- Enable helpful events missing in gc.jfc.
+- Disable event jdk.GCPhaseParallel that is too detailed(occupy 85% of the recording in case of G1GC) and not that helpful in gc.jfc
+
+fixes #1627 
+
+</body>
+        <prUpdatedAt>2024-03-14 13:57:05.0 UTC</prUpdatedAt>
+        <headSha>631608c70c22ed1fcfc29de4a87c045855e8415e</headSha>
+        <headRef>gc_profile</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine</baseRef>
+        <userLogin>ansteiner</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1628</htmlUrl>
+        <labels />
+        <lastCommentCreatedAt>2024-03-14 13:11:00.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>ansteiner</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
+      <int>1629</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>1629</number>
+        <issueUpdatedAt>2024-03-15 00:46:10.0 UTC</issueUpdatedAt>
+        <title>Merge to tag jdk-23+14</title>
+        <body>please pull</body>
+        <prUpdatedAt>2024-03-15 00:46:10.0 UTC</prUpdatedAt>
+        <headSha>6f2676dc5f09d350c359f906b07f6f6d0d17f030</headSha>
+        <headRef>pr-jdk-23+14</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine</baseRef>
+        <userLogin>SapMachine</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1629</htmlUrl>
+        <labels />
+        <sourceRepoOwner>SAP</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
       <int>1551</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>1551</number>
-        <issueUpdatedAt>2024-03-11 13:42:51.0 UTC</issueUpdatedAt>
+        <issueUpdatedAt>2024-03-14 15:37:31.0 UTC</issueUpdatedAt>
         <title>New malloc trace implementation</title>
         <body>This change implements a malloc trace without using the now deprecated glibc malloc hooks. This means the feature is now available on musl-based system and MacOsX too. In addition it can also track memory reclamation, so it can track the currently alive memory.
 
 fixes #1550
 
 </body>
-        <prUpdatedAt>2024-03-11 13:42:51.0 UTC</prUpdatedAt>
-        <headSha>0ac96f80670f85fabf820c3bc905f8f85727343d</headSha>
+        <prUpdatedAt>2024-03-14 15:37:31.0 UTC</prUpdatedAt>
+        <headSha>2f952c13f6dcac60a0434c24d3bf151c9d42ba79</headSha>
         <headRef>malloc_hook_replacement</headRef>
         <mergeable>true</mergeable>
         <baseRef>sapmachine</baseRef>
@@ -56,7 +103,7 @@ fixes #1550
         <userLogin>schmelter-sap</userLogin>
         <htmlUrl>https://github.com/SAP/SapMachine/pull/1551</htmlUrl>
         <labels />
-        <lastCommentCreatedAt>2024-03-11 13:42:49.0 UTC</lastCommentCreatedAt>
+        <lastCommentCreatedAt>2024-03-14 15:37:29.0 UTC</lastCommentCreatedAt>
         <sourceRepoOwner>schmelter-sap</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
