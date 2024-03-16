@@ -8,8 +8,8 @@
       <int>1594</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>1594</number>
-        <issueUpdatedAt>2024-01-31 08:10:54.0 UTC</issueUpdatedAt>
-        <title>Implement a lean alternative for jcmd</title>
+        <issueUpdatedAt>2024-03-15 07:06:33.0 UTC</issueUpdatedAt>
+        <title>SapMachine #1593: Implement a lean alternative for jcmd</title>
         <body>This is aa simple C-base implementation of jcmd. Apart from only taking a pid, it offers the same features, but uses much less memory (and starts vastly faster).
 
 Here is what a jcmd has to do:
@@ -21,7 +21,7 @@ Here is what a jcmd has to do:
 fixes #1593
 
 </body>
-        <prUpdatedAt>2024-01-31 08:10:54.0 UTC</prUpdatedAt>
+        <prUpdatedAt>2024-03-15 07:06:33.0 UTC</prUpdatedAt>
         <headSha>0072f11057cb9461896a7f861090fbc8c4f33b15</headSha>
         <headRef>leanjcmd</headRef>
         <mergeable>true</mergeable>
@@ -37,41 +37,14 @@ fixes #1593
       </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
     </entry>
     <entry>
-      <int>1628</int>
-      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>1628</number>
-        <issueUpdatedAt>2024-03-14 13:57:05.0 UTC</issueUpdatedAt>
-        <title>Update gc.jfc and gc_details.jfc</title>
-        <body>- Add new/missing events.
-- Enable helpful events missing in gc.jfc.
-- Disable event jdk.GCPhaseParallel that is too detailed(occupy 85% of the recording in case of G1GC) and not that helpful in gc.jfc
-
-fixes #1627 
-
-</body>
-        <prUpdatedAt>2024-03-14 13:57:05.0 UTC</prUpdatedAt>
-        <headSha>631608c70c22ed1fcfc29de4a87c045855e8415e</headSha>
-        <headRef>gc_profile</headRef>
-        <mergeable>true</mergeable>
-        <baseRef>sapmachine</baseRef>
-        <userLogin>ansteiner</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/1628</htmlUrl>
-        <labels />
-        <lastCommentCreatedAt>2024-03-14 13:11:00.0 UTC</lastCommentCreatedAt>
-        <sourceRepoOwner>ansteiner</sourceRepoOwner>
-        <state>OPEN</state>
-        <inBadState>false</inBadState>
-      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-    </entry>
-    <entry>
       <int>1629</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>1629</number>
-        <issueUpdatedAt>2024-03-15 00:46:10.0 UTC</issueUpdatedAt>
+        <issueUpdatedAt>2024-03-15 06:48:15.0 UTC</issueUpdatedAt>
         <title>Merge to tag jdk-23+14</title>
         <body>please pull</body>
-        <prUpdatedAt>2024-03-15 00:46:10.0 UTC</prUpdatedAt>
-        <headSha>6f2676dc5f09d350c359f906b07f6f6d0d17f030</headSha>
+        <prUpdatedAt>2024-03-15 06:48:15.0 UTC</prUpdatedAt>
+        <headSha>f1d28b01ffa97a245c27096825a28f5ca1e86cfb</headSha>
         <headRef>pr-jdk-23+14</headRef>
         <mergeable>true</mergeable>
         <baseRef>sapmachine</baseRef>
@@ -87,15 +60,15 @@ fixes #1627
       <int>1551</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>1551</number>
-        <issueUpdatedAt>2024-03-14 15:37:31.0 UTC</issueUpdatedAt>
-        <title>New malloc trace implementation</title>
+        <issueUpdatedAt>2024-03-15 08:58:35.0 UTC</issueUpdatedAt>
+        <title>SapMachine #1550: New malloc trace implementation</title>
         <body>This change implements a malloc trace without using the now deprecated glibc malloc hooks. This means the feature is now available on musl-based system and MacOsX too. In addition it can also track memory reclamation, so it can track the currently alive memory.
 
 fixes #1550
 
 </body>
-        <prUpdatedAt>2024-03-14 15:37:31.0 UTC</prUpdatedAt>
-        <headSha>2f952c13f6dcac60a0434c24d3bf151c9d42ba79</headSha>
+        <prUpdatedAt>2024-03-15 08:58:35.0 UTC</prUpdatedAt>
+        <headSha>7001a872d0f1d882c958dc0f756d6a894c0b6685</headSha>
         <headRef>malloc_hook_replacement</headRef>
         <mergeable>true</mergeable>
         <baseRef>sapmachine</baseRef>
@@ -103,7 +76,7 @@ fixes #1550
         <userLogin>schmelter-sap</userLogin>
         <htmlUrl>https://github.com/SAP/SapMachine/pull/1551</htmlUrl>
         <labels />
-        <lastCommentCreatedAt>2024-03-14 15:37:29.0 UTC</lastCommentCreatedAt>
+        <lastCommentCreatedAt>2024-03-15 08:58:34.0 UTC</lastCommentCreatedAt>
         <sourceRepoOwner>schmelter-sap</sourceRepoOwner>
         <state>OPEN</state>
         <inBadState>false</inBadState>
