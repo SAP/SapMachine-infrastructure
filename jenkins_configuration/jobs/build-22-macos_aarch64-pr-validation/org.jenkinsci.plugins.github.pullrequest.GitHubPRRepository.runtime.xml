@@ -5,10 +5,35 @@
   <sshUrl>git@github.com:SAP/SapMachine.git</sshUrl>
   <pulls class="concurrent-hash-map">
     <entry>
+      <int>1632</int>
+      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+        <number>1632</number>
+        <issueUpdatedAt>2024-03-18 21:41:21.0 UTC</issueUpdatedAt>
+        <title>SapMachine #1544: Fix wiki action</title>
+        <body>Again.
+
+Fixes #1544
+</body>
+        <prUpdatedAt>2024-03-18 21:41:21.0 UTC</prUpdatedAt>
+        <headSha>4e716c57a72b6ca8bdc97cceaba552c4793a1fbe</headSha>
+        <headRef>fix-wiki-action</headRef>
+        <mergeable>true</mergeable>
+        <baseRef>sapmachine</baseRef>
+        <userEmail>me@mostlynerdless.de</userEmail>
+        <userLogin>parttimenerd</userLogin>
+        <htmlUrl>https://github.com/SAP/SapMachine/pull/1632</htmlUrl>
+        <labels />
+        <lastCommentCreatedAt>2024-03-18 21:36:03.0 UTC</lastCommentCreatedAt>
+        <sourceRepoOwner>parttimenerd</sourceRepoOwner>
+        <state>OPEN</state>
+        <inBadState>false</inBadState>
+      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
+    </entry>
+    <entry>
       <int>1594</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>1594</number>
-        <issueUpdatedAt>2024-03-15 07:06:33.0 UTC</issueUpdatedAt>
+        <issueUpdatedAt>2024-03-18 14:41:27.0 UTC</issueUpdatedAt>
         <title>SapMachine #1593: Implement a lean alternative for jcmd</title>
         <body>This is aa simple C-base implementation of jcmd. Apart from only taking a pid, it offers the same features, but uses much less memory (and starts vastly faster).
 
@@ -21,7 +46,7 @@ Here is what a jcmd has to do:
 fixes #1593
 
 </body>
-        <prUpdatedAt>2024-03-15 07:06:33.0 UTC</prUpdatedAt>
+        <prUpdatedAt>2024-03-18 14:41:27.0 UTC</prUpdatedAt>
         <headSha>0072f11057cb9461896a7f861090fbc8c4f33b15</headSha>
         <headRef>leanjcmd</headRef>
         <mergeable>true</mergeable>
@@ -37,38 +62,18 @@ fixes #1593
       </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
     </entry>
     <entry>
-      <int>1629</int>
-      <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-        <number>1629</number>
-        <issueUpdatedAt>2024-03-15 06:48:15.0 UTC</issueUpdatedAt>
-        <title>Merge to tag jdk-23+14</title>
-        <body>please pull</body>
-        <prUpdatedAt>2024-03-15 06:48:15.0 UTC</prUpdatedAt>
-        <headSha>f1d28b01ffa97a245c27096825a28f5ca1e86cfb</headSha>
-        <headRef>pr-jdk-23+14</headRef>
-        <mergeable>true</mergeable>
-        <baseRef>sapmachine</baseRef>
-        <userLogin>SapMachine</userLogin>
-        <htmlUrl>https://github.com/SAP/SapMachine/pull/1629</htmlUrl>
-        <labels />
-        <sourceRepoOwner>SAP</sourceRepoOwner>
-        <state>OPEN</state>
-        <inBadState>false</inBadState>
-      </org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
-    </entry>
-    <entry>
       <int>1551</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>1551</number>
-        <issueUpdatedAt>2024-03-15 08:58:35.0 UTC</issueUpdatedAt>
+        <issueUpdatedAt>2024-03-18 14:41:28.0 UTC</issueUpdatedAt>
         <title>SapMachine #1550: New malloc trace implementation</title>
         <body>This change implements a malloc trace without using the now deprecated glibc malloc hooks. This means the feature is now available on musl-based system and MacOsX too. In addition it can also track memory reclamation, so it can track the currently alive memory.
 
 fixes #1550
 
 </body>
-        <prUpdatedAt>2024-03-15 08:58:35.0 UTC</prUpdatedAt>
-        <headSha>7001a872d0f1d882c958dc0f756d6a894c0b6685</headSha>
+        <prUpdatedAt>2024-03-18 14:41:28.0 UTC</prUpdatedAt>
+        <headSha>68c9cb327b01807b9da5cf0fef45fa971821e1c9</headSha>
         <headRef>malloc_hook_replacement</headRef>
         <mergeable>true</mergeable>
         <baseRef>sapmachine</baseRef>
