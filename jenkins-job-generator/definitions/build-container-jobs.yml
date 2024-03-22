@@ -40,16 +40,6 @@
                                 }}
                             }}
                         }}
-            build_container_ossrh: |-
-                stage("Build OSSRH upload container") {{
-                            steps {{
-                                script {{
-                                    def pull = params.PULL == true ? '--pull ' : ''
-                                    def no_cache = params.NO_CACHE == true ? '--no-cache ' : ''
-                                    docker.build('ossrh-upload-{arch}', pull + no_cache + 'SapMachine-infrastructure/dockerfiles/ossrh-upload/.')
-                                }}
-                            }}
-                        }}
             build_container_rpm: |-
                 stage("Build RPM container") {{
                             steps {{
@@ -143,7 +133,6 @@
                 {build_container_alpine|}
                 {build_container_infrastructure|}
                 {build_container_jtreg|}
-                {build_container_ossrh|}
                 {build_container_rpm|}
                 {build_container_jmc|}
                 stage("Prune images") {{
@@ -207,6 +196,15 @@
                             def pull = params.PULL == true ? '--pull ' : ''
                             def no_cache = params.NO_CACHE == true ? '--no-cache ' : ''
                             docker.build('infrastructure-x86_64', pull + no_cache + 'SapMachine-infrastructure/dockerfiles/infrastructure/.')
+                        }}
+                    }}
+                }}
+                stage("Build OSSRH upload container") {{
+                    steps {{
+                        script {{
+                            def pull = params.PULL == true ? '--pull ' : ''
+                            def no_cache = params.NO_CACHE == true ? '--no-cache ' : ''
+                            docker.build('ossrh-upload-x86_64', pull + no_cache + 'SapMachine-infrastructure/dockerfiles/ossrh-upload/.')
                         }}
                     }}
                 }}
