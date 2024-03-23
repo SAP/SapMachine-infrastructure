@@ -1,46 +1,4 @@
 <hudson.model.Queue_-State>
-  <counter>3664</counter>
-  <items>
-    <hudson.model.Queue_-BlockedItem>
-      <actions>
-        <hudson.model.CauseAction>
-          <causeBag class="linked-hash-map">
-            <entry>
-              <hudson.triggers.TimerTrigger_-TimerTriggerCause />
-              <int>1</int>
-            </entry>
-          </causeBag>
-        </hudson.model.CauseAction>
-      </actions>
-      <id>3662</id>
-      <task class="org.jenkinsci.plugins.workflow.job.WorkflowJob">async-prof-repo-update</task>
-      <inQueueSince>1711068300056</inQueueSince>
-      <buildableStartMilliseconds>1711068300059</buildableStartMilliseconds>
-      <outer-class>queue</outer-class>
-    </hudson.model.Queue_-BlockedItem>
-    <hudson.model.Queue_-BuildableItem>
-      <actions />
-      <id>3646</id>
-      <task class="org.jenkinsci.plugins.workflow.support.steps.ExecutorStepExecution$PlaceholderTask" plugin="workflow-durable-task-step@1331.vc8c2fed35334">
-        <context class="org.jenkinsci.plugins.workflow.cps.CpsStepContext" plugin="workflow-cps@3883.vb_3ff2a_e3eea_f">
-          <executionRef class="org.jenkinsci.plugins.workflow.job.WorkflowRun$Owner" plugin="workflow-job@1400.v7fd111b_ec82f">
-            <job>build-async-profiler-official-snapshot-macos_aarch64</job>
-            <id>568</id>
-          </executionRef>
-          <id>3</id>
-          <bodyHeads />
-          <body class="org.jenkinsci.plugins.workflow.cps.StaticBodyReference" resolves-to="org.jenkinsci.plugins.workflow.cps.HandleBodyReference">
-            <id>1</id>
-          </body>
-          <threadId>0</threadId>
-          <stepDescriptorId>org.jenkinsci.plugins.workflow.support.steps.ExecutorStep</stepDescriptorId>
-        </context>
-        <label>macos_aarch64</label>
-        <runId>build-async-profiler-official-snapshot-macos_aarch64#568</runId>
-      </task>
-      <inQueueSince>1710981921727</inQueueSince>
-      <buildableStartMilliseconds>1710981921739</buildableStartMilliseconds>
-      <isPending>false</isPending>
-    </hudson.model.Queue_-BuildableItem>
-  </items>
+  <counter>3803</counter>
+  <items />
 </hudson.model.Queue_-State>

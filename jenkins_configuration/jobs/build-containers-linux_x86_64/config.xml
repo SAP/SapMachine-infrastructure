@@ -66,15 +66,6 @@
                 }
             }
         }
-        stage("Build OSSRH upload container") {
-            steps {
-                script {
-                    def pull = params.PULL == true ? '--pull ' : ''
-                    def no_cache = params.NO_CACHE == true ? '--no-cache ' : ''
-                    docker.build('ossrh-upload-x86_64', pull + no_cache + 'SapMachine-infrastructure/dockerfiles/ossrh-upload/.')
-                }
-            }
-        }
         stage("Build RPM container") {
             steps {
                 script {
