@@ -271,7 +271,7 @@ def get_active_sapmachine_branches():
             # found sapmachine branch
             major = int(match.group(1))
             # ignore inactive ones
-            if major < 11 or (major > 11 and major < 17):
+            if major < 22 and major != 11 and major != 17 and major != 21:
                 continue
             sapmachine_branches.append([branch['name'], major])
             sapmachine_latest = max(sapmachine_latest, major)
