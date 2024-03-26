@@ -40,15 +40,15 @@ fixes #1593
       <int>1551</int>
       <org.jenkinsci.plugins.github.pullrequest.GitHubPRPullRequest>
         <number>1551</number>
-        <issueUpdatedAt>2024-03-22 13:19:20.0 UTC</issueUpdatedAt>
+        <issueUpdatedAt>2024-03-25 16:13:20.0 UTC</issueUpdatedAt>
         <title>SapMachine #1550: New malloc trace implementation</title>
         <body>This change implements a malloc trace without using the now deprecated glibc malloc hooks. This means the feature is now available on musl-based system and MacOsX too. In addition it can also track memory reclamation, so it can track the currently alive memory.
 
 fixes #1550
 
 </body>
-        <prUpdatedAt>2024-03-22 13:19:20.0 UTC</prUpdatedAt>
-        <headSha>d4d762a876ad482e5b81614188b53b597d34d6ca</headSha>
+        <prUpdatedAt>2024-03-25 16:13:20.0 UTC</prUpdatedAt>
+        <headSha>2a7cc4bb39c085ea250d09974d1795268cc8f501</headSha>
         <headRef>malloc_hook_replacement</headRef>
         <mergeable>true</mergeable>
         <baseRef>sapmachine</baseRef>
