@@ -64,7 +64,6 @@ def main(argv=None):
 
         # the commit is not contained in a SAP JMC branch or a PR branch
         # create a pull request branch and a pull request.
-        print('Commit isch ned drin, mer brare e pr')
         create_jmc_pr(latest_commit_hash, sap_branch[0])
 
     return 0
