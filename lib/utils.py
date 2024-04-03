@@ -126,13 +126,13 @@ def extract_archive(archive, target, remove_archive=False):
     else:
         move(archive, target)
 
-def download_file(url, target):
+def download_file(url, target, add_headers=None):
     print(f"Downloading {url} to {target}...")
 
     if exists(target):
         remove(target)
 
-    headers = {'Authorization': str.format('token {0}', os.environ['GIT_PASSWORD']) } if 'GIT_PASSWORD' in os.environ else None
+    headers = add_headers | {'Authorization': str.format('token {0}', os.environ['GIT_PASSWORD']) } if 'GIT_PASSWORD' in os.environ else None
     response = requests.get(url, headers=headers, stream=True)
 
     if response.status_code == 200:
@@ -142,6 +142,14 @@ def download_file(url, target):
                 file.write(chunk)
     else:
         raise Exception(f"Download failed: {response.status_code}")
+
+def download_github_release_assets(release_name, api='https://api.github.com', org='SAP', repo='SapMachine', destination='tmp'):
+    if not os.path.exists(destination):
+        os.makedirs(destination)
+
+    assets = github_api_request(api=f"releases/tags/{release_name}", github_api_url=api, github_org=org, repository=repo)
+    for asset in assets["assets"]:
+        download_file(asset["url"], os.path.join(destination, asset["name"]), {'Accept': 'application/octet-stream'})
 
 def download_text(url):
     headers = {'Authorization': str.format('token {0}', os.environ['GIT_PASSWORD']) } if 'GIT_PASSWORD' in os.environ else None
