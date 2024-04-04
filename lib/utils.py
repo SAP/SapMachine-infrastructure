@@ -126,13 +126,15 @@ def extract_archive(archive, target, remove_archive=False):
     else:
         move(archive, target)
 
-def download_file(url, target, add_headers=None):
+def download_file(url, target, headers={}):
     print(f"Downloading {url} to {target}...")
 
     if exists(target):
         remove(target)
 
-    headers = add_headers | {'Authorization': str.format('token {0}', os.environ['GIT_PASSWORD']) } if 'GIT_PASSWORD' in os.environ else None
+    if 'GIT_PASSWORD' in os.environ and 'Authorization' not in headers:
+        headers['Authorization'] = f'token {os.environ['GIT_PASSWORD']}'
+
     response = requests.get(url, headers=headers, stream=True)
 
     if response.status_code == 200:
