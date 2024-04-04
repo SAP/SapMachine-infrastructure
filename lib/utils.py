@@ -133,7 +133,7 @@ def download_file(url, target, headers={}):
         remove(target)
 
     if 'GIT_PASSWORD' in os.environ and 'Authorization' not in headers:
-        headers['Authorization'] = f'token {os.environ['GIT_PASSWORD']}'
+        headers['Authorization'] = f"token {os.environ['GIT_PASSWORD']}"
 
     response = requests.get(url, headers=headers, stream=True)
 
