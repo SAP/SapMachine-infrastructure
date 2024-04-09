@@ -837,7 +837,11 @@
         - string:
             name: EXTRA_CONFIGURE_OPTIONS
             default: '{extra_configure_options|}'
-            description: 'Extra configure options passed directly to configure script.'
+            description: 'Extra options passed to configure call.'
+        - string:
+            name: EXTRA_MAKE_OPTIONS
+            default: ''
+            description: 'Extra options passed to make call.'
         - string:
             name: hotspot_test_groups
             default: ':tier1'
@@ -913,7 +917,11 @@
         - string:
             name: EXTRA_CONFIGURE_OPTIONS
             default: '{extra_configure_options|}'
-            description: 'Extra configure options passed directly to configure script.'
+            description: 'Extra options passed to configure call.'
+        - string:
+            name: EXTRA_MAKE_OPTIONS
+            default: ''
+            description: 'Extra options passed to make call.'
         - bool:
             name: BUILD_INSTALLER_PACKAGES
             default: true
