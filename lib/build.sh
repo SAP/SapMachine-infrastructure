@@ -77,4 +77,4 @@ $_CONFIGURE_OS_OPTIONS \
 --with-freetype=bundled \
 $EXTRA_CONFIGURE_OPTIONS)
 
-(set -x && make JOBS=12 product-bundles legacy-bundles test-image)
+(set -x && make $EXTRA_MAKE_OPTIONS product-bundles legacy-bundles test-image)
