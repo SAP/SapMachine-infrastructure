@@ -154,7 +154,7 @@ def download_github_release_assets(release_name, api='https://api.github.com', o
         download_file(asset["url"], os.path.join(destination, asset["name"]), {'Accept': 'application/octet-stream'})
 
 def download_text(url):
-    headers = {'Authorization': str.format('token {0}', os.environ['GIT_PASSWORD']) } if 'GIT_PASSWORD' in os.environ else None
+    headers = {'Authorization': f"token {os.environ['GIT_PASSWORD']}" } if 'GIT_PASSWORD' in os.environ else None
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
         return response.text
@@ -343,9 +343,9 @@ def git_get(repo, ref, target):
     run_cmd(git_command, cwd = target)
     git_command = [git_tool, 'fetch']
     if 'GIT_USER' in os.environ and 'GIT_PASSWORD' in os.environ:
-        git_command.append(str.format('https://{0}:{1}@{2}', os.environ['GIT_USER'], os.environ['GIT_PASSWORD'], repo))
+        git_command.append(f"https://{os.environ['GIT_USER']}:{os.environ['GIT_PASSWORD']}@{repo}")
     else:
-        git_command.append(str.format('https://{0}', repo))
+        git_command.append(f"https://{repo}")
     git_command.append(ref)
     run_cmd(git_command, cwd = target)
     git_command = [git_tool, 'checkout', 'FETCH_HEAD']
@@ -364,10 +364,10 @@ def git_clone(repo, branch, target):
     run_cmd(git_command)
     git_command = [git_tool, 'clone', '--single-branch', '-b', branch]
     if 'GIT_USER' in os.environ and 'GIT_PASSWORD' in os.environ:
-        git_command.append(str.format('https://{0}:{1}@{2}', os.environ['GIT_USER'], os.environ['GIT_PASSWORD'], repo))
-        git_fix_remote_command = [git_tool, 'remote', 'set-url', 'origin', str.format('https://{0}', repo)]
+        git_command.append(f"https://{os.environ['GIT_USER']}:{os.environ['GIT_PASSWORD']}@{repo}")
+        git_fix_remote_command = [git_tool, 'remote', 'set-url', 'origin', f"https://{repo}"]
     else:
-        git_command.append(str.format('https://{0}', repo))
+        git_command.append(f"https://{repo}")
         git_fix_remote_command = None
     git_command.append(target_mixed)
 
@@ -425,7 +425,7 @@ def git_push(dir):
 
         if 'GIT_USER' in os.environ and 'GIT_PASSWORD' in os.environ:
             _, giturl, _ = run_cmd(['git', 'config', '--get', 'remote.origin.url'], cwd=dir, std=True)
-            pushurl = str.format('https://{0}:{1}@{2}', os.environ['GIT_USER'], os.environ['GIT_PASSWORD'], giturl.rstrip().split("//")[1])
+            pushurl = f"https://{os.environ['GIT_USER']}:{os.environ['GIT_PASSWORD']}@{giturl.rstrip().split("//")[1]}"
             run_cmd(['git', 'push', pushurl], cwd=dir, env=env)
         else:
             run_cmd(['git', 'push'], cwd=dir, env=env)
@@ -435,7 +435,7 @@ def git_push(dir):
 def git_push_tag(dir, tag_name, force=False):
     if 'GIT_USER' in os.environ and 'GIT_PASSWORD' in os.environ:
         _, giturl, _ = run_cmd(['git', 'config', '--get', 'remote.origin.url'], cwd=dir, std=True)
-        pushurl = str.format('https://{0}:{1}@{2}', os.environ['GIT_USER'], os.environ['GIT_PASSWORD'], giturl.rstrip().split("//")[1])
+        pushurl = f"https://{os.environ['GIT_USER']}:{os.environ['GIT_PASSWORD']}@{giturl.rstrip().split("//")[1]}"
         if force is True:
             run_cmd(['git', 'push', '-f', pushurl, tag_name], cwd=dir)
         else:
@@ -464,7 +464,7 @@ def github_api_request(api=None, url=None, github_api_url='https://api.github.co
         request.get_method = lambda: method
 
         if 'GIT_PASSWORD' in os.environ:
-            request.add_header('Authorization', str.format('token {0}', os.environ['GIT_PASSWORD']))
+            request.add_header('Authorization', f"token {os.environ['GIT_PASSWORD']}")
         else:
             print("Warning: No GitHub credentials provided. This could quickly lead to exceeding the GitHub API rate limit.", file=sys.stderr)
 
