@@ -425,7 +425,8 @@ def git_push(dir):
 
         if 'GIT_USER' in os.environ and 'GIT_PASSWORD' in os.environ:
             _, giturl, _ = run_cmd(['git', 'config', '--get', 'remote.origin.url'], cwd=dir, std=True)
-            pushurl = f"https://{os.environ['GIT_USER']}:{os.environ['GIT_PASSWORD']}@{giturl.rstrip().split("//")[1]}"
+            print(f"GitURL rstripped: {giturl.rstrip()}")
+            pushurl = f"https://{os.environ['GIT_USER']}:{os.environ['GIT_PASSWORD']}@{giturl.rstrip().split('//')[1]}"
             run_cmd(['git', 'push', pushurl], cwd=dir, env=env)
         else:
             run_cmd(['git', 'push'], cwd=dir, env=env)
@@ -435,7 +436,7 @@ def git_push(dir):
 def git_push_tag(dir, tag_name, force=False):
     if 'GIT_USER' in os.environ and 'GIT_PASSWORD' in os.environ:
         _, giturl, _ = run_cmd(['git', 'config', '--get', 'remote.origin.url'], cwd=dir, std=True)
-        pushurl = f"https://{os.environ['GIT_USER']}:{os.environ['GIT_PASSWORD']}@{giturl.rstrip().split("//")[1]}"
+        pushurl = f"https://{os.environ['GIT_USER']}:{os.environ['GIT_PASSWORD']}@{giturl.rstrip().split('//')[1]}"
         if force is True:
             run_cmd(['git', 'push', '-f', pushurl, tag_name], cwd=dir)
         else:
