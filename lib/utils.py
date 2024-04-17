@@ -425,7 +425,6 @@ def git_push(dir):
 
         if 'GIT_USER' in os.environ and 'GIT_PASSWORD' in os.environ:
             _, giturl, _ = run_cmd(['git', 'config', '--get', 'remote.origin.url'], cwd=dir, std=True)
-            print(f"GitURL rstripped: {giturl.rstrip()}")
             pushurl = f"https://{os.environ['GIT_USER']}:{os.environ['GIT_PASSWORD']}@{giturl.rstrip().split('//')[1]}"
             run_cmd(['git', 'push', pushurl], cwd=dir, env=env)
         else:
