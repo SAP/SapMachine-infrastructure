@@ -100,6 +100,8 @@
     description: 'Jobs related to installer packages'
     view-type: list
     regex: '(resign-debian-repository-.*|build-debian-package-.*|rpm-package|apk-package)'
+    job-name:
+        - build-debian-packages
 
 - view:
     name: 'Async Profiler'

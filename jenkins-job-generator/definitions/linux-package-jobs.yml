@@ -306,3 +306,64 @@
                 }}
             }}
         }}
+
+- job:
+    name: build-debian-packages
+    description: 'Trigger debian package builds on all platforms.'
+    project-type: pipeline
+    sandbox: true
+    concurrent: false
+    properties:
+        - build-discarder:
+            num-to-keep: 20
+    parameters:
+        - string:
+            name: GIT_TAG_NAME
+            default: ''
+            description: 'The Git tag to create a debian package from.'
+        - bool:
+            name: PUBLISH
+            default: false
+            description: 'When set to true, the resulting packages will be published.'
+        - bool:
+            name: BUILD_LINUX_AARCH64
+            default: true
+        - bool:
+            name: BUILD_LINUX_PPC64LE
+            default: true
+        - bool:
+            name: BUILD_LINUX_X86_64
+            default: true
+    dsl: |
+        pipeline {{
+            agent {{
+                label 'build_service'
+            }}
+            stages {{
+                stage("Trigger Builds") {{
+                    steps {{
+                        script {{
+                            def platforms = [
+                                "linux_aarch64": params.BUILD_LINUX_AARCH64,
+                                "linux_ppc64le": params.BUILD_LINUX_PPC64LE,
+                                "linux_x86_64": params.BUILD_LINUX_X86_64,
+                            ]
+
+                            for (p in platforms) {{
+                                if (p.value) {{
+                                    build job: 'build-debian-package-' + p.key,
+                                        propagate: false,
+                                        wait: false,
+                                        parameters: [
+                                            string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
+                                            string(name: 'PUBLISH', value: params.PUBLISH)
+                                        ]
+                                }} else {{
+                                    println "Skipping build for " + p.key + " (build=" + p.value + ")."
+                                }}
+                            }}
+                        }}
+                    }}
+                }}
+            }}
+        }}
