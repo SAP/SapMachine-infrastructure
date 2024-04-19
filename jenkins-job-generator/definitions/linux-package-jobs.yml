@@ -346,7 +346,7 @@
                             def platforms = [
                                 "linux_aarch64": params.BUILD_LINUX_AARCH64,
                                 "linux_ppc64le": params.BUILD_LINUX_PPC64LE,
-                                "linux_x86_64": params.BUILD_LINUX_X86_64,
+                                "linux_x86_64": params.BUILD_LINUX_X86_64
                             ]
 
                             for (p in platforms) {{
@@ -356,7 +356,7 @@
                                         wait: false,
                                         parameters: [
                                             string(name: 'GIT_TAG_NAME', value: params.GIT_TAG_NAME),
-                                            string(name: 'PUBLISH', value: params.PUBLISH)
+                                            [$class: 'BooleanParameterValue', name: 'PUBLISH', value: params.PUBLISH]
                                         ]
                                 }} else {{
                                     println "Skipping build for " + p.key + " (build=" + p.value + ")."
