@@ -1,53 +1,12 @@
 - job:
-    name: docker-manifest
-    description: 'Generates the docker manifest for using at docker-library/official-images.'
+    name: generate-docker
+    description: 'Update docker files for SapMachine official images and generate a manifest for using at docker-library/official-images.'
     project-type: pipeline
     sandbox: true
     concurrent: false
     properties:
         - build-discarder:
-            num-to-keep: 50
-    dsl: |
-        pipeline {{
-            agent {{
-                label 'infrastructure'
-            }}
-            stages {{
-                stage("Checkout Infrastructure Repository") {{
-                    steps {{
-                        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
-                    }}
-                }}
-                stage('Generate Manifest') {{
-                    agent {{
-                        docker {{
-                            image 'infrastructure-x86_64'
-                            reuseNode true
-                            label 'infrastructure'
-                        }}
-                    }}
-                    steps {{
-                        sh "python3 SapMachine-infrastructure/lib/generate_docker_manifest.py"
-                        archiveArtifacts 'sapmachine'
-                    }}
-                }}
-            }}
-            post {{
-                cleanup {{
-                    cleanWs()
-                }}
-            }}
-        }}
-
-- job:
-    name: generate-dockerfiles
-    description: 'Regenerates and updates docker files for SapMachine official images.'
-    project-type: pipeline
-    sandbox: true
-    concurrent: false
-    properties:
-        - build-discarder:
-            num-to-keep: 50
+            num-to-keep: 20
     parameters:
         - bool:
             name: FORCE
@@ -64,7 +23,7 @@
                         checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'SapMachine-infrastructure']], userRemoteConfigs: [[credentialsId: 'SapMachine-github', url: 'https://github.com/SAP/SapMachine-infrastructure.git']]]
                     }}
                 }}
-                stage('Generate Dockerfiles') {{
+                stage('Update Dockerfiles') {{
                     agent {{
                         docker {{
                             image 'infrastructure-x86_64'
@@ -81,8 +40,21 @@
                             }}
                         }}
                         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'SapMachine-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD']]) {{
-                            sh "cd SapMachine-infrastructure && python3 lib/generate_dockerfiles.py $FORCE_REGENERATE"
+                            sh "python3 SapMachine-infrastructure/lib/generate_dockerfiles.py $FORCE_REGENERATE"
                         }}
+                    }}
+                }}
+                stage('Generate Manifest') {{
+                    agent {{
+                        docker {{
+                            image 'infrastructure-x86_64'
+                            reuseNode true
+                            label 'infrastructure'
+                        }}
+                    }}
+                    steps {{
+                        sh "python3 SapMachine-infrastructure/lib/generate_docker_manifest.py"
+                        archiveArtifacts 'sapmachine'
                     }}
                 }}
             }}
