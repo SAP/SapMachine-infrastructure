@@ -66,6 +66,7 @@
     job-name:
         - generate-release-data
         - jtreg
+        - publish-windows-msi
         - repository-update-and-tag
         - upload-ossrh
 
@@ -98,9 +99,7 @@
     name: 'Packages'
     description: 'Jobs related to installer packages'
     view-type: list
-    regex: '(resign-debian-repository-.*|build-debian-package-.*|rpm-package|apk-package|publish-macos-packages-.*)'
-    job-name:
-        - publish-windows-msi
+    regex: '(resign-debian-repository-.*|build-debian-package-.*|rpm-package|apk-package)'
 
 - view:
     name: 'Async Profiler'
