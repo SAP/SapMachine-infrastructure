@@ -7,7 +7,7 @@ RUN apt-get update \
     && chmod 644 /etc/apt/trusted.gpg.d/sapmachine.gpg \
     && echo "deb http://dist.sapmachine.io/debian/$(dpkg --print-architecture)/ ./" > /etc/apt/sources.list.d/sapmachine.list \
     && apt-get update \
-    && apt-get -y --no-install-recommends install sapmachine-11-jdk=11.0.22 \
+    && apt-get -y --no-install-recommends install sapmachine-11-jdk=11.0.23 \
     && apt-get remove -y --purge --autoremove ca-certificates gnupg \
     && rm -rf "$GNUPGHOME" /var/lib/apt/lists/*
 
