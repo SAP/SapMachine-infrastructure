@@ -126,14 +126,20 @@ def extract_archive(archive, target, remove_archive=False):
     else:
         move(archive, target)
 
-def download_file(url, target, headers={}):
+
+def download_file(url, target, headers=None, token=None):
+    if headers is None:
+        headers = {}
     print(f"Downloading {url} to {target}...")
 
     if exists(target):
         remove(target)
 
-    if 'GIT_PASSWORD' in os.environ and 'Authorization' not in headers:
-        headers['Authorization'] = f"token {os.environ['GIT_PASSWORD']}"
+    if 'Authorization' not in headers:
+        if token is not None:
+            headers['Authorization'] = f"token {token}"
+        elif 'GIT_PASSWORD' in os.environ:
+            headers['Authorization'] = f"token {os.environ['GIT_PASSWORD']}"
 
     response = requests.get(url, headers=headers, stream=True)
 
@@ -443,7 +449,7 @@ def git_push_tag(dir, tag_name, force=False):
     else:
         run_cmd(['git', 'push', 'origin', tag_name], cwd=dir)
 
-def github_api_request(api=None, url=None, github_api_url='https://api.github.com', github_org='SAP', repository='SapMachine', data=None, method='GET', per_page=None, content_type=None, url_parameter=[]):
+def github_api_request(api=None, url=None, github_api_url='https://api.github.com', github_org='SAP', repository='SapMachine', data=None, method='GET', per_page=None, content_type=None, url_parameter=[], token=None):
     if api is None and url is None:
         return None
 
@@ -463,8 +469,10 @@ def github_api_request(api=None, url=None, github_api_url='https://api.github.co
         request = Request(url, data=data)
         request.get_method = lambda: method
 
-        if 'GIT_PASSWORD' in os.environ:
-            request.add_header('Authorization', f"token {os.environ['GIT_PASSWORD']}")
+        if token is not None:
+            request.add_header('Authorization', str.format('token {0}', token))
+        elif 'GIT_PASSWORD' in os.environ:
+            request.add_header('Authorization', str.format('token {0}', os.environ['GIT_PASSWORD']))
         else:
             print("Warning: No GitHub credentials provided. This could quickly lead to exceeding the GitHub API rate limit.", file=sys.stderr)
 
