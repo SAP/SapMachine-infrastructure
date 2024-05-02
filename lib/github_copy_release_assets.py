@@ -1,5 +1,5 @@
 '''
-Copyright (c) 2018-2024 by SAP SE, Walldorf, Germany.
+Copyright (c) 2024 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
@@ -136,7 +136,6 @@ def github_copy_asset(asset_name, asset_url, upload_url, src_token=None, tgt_tok
                 retry -= 1
         return 1
     return 0
-
 
 if __name__ == "__main__":
     sys.exit(main())
