@@ -103,8 +103,6 @@
     properties:
         - build-discarder:
             num-to-keep: 60
-    triggers:
-        - timed: "@midnight"
     dsl: |
         pipeline {{
             agent {{
