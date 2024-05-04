@@ -151,14 +151,6 @@ def download_file(url, target, headers=None, token=None):
     else:
         raise Exception(f"Download failed: {response.status_code}")
 
-def download_github_release_assets(release_name, api='https://api.github.com', org='SAP', repo='SapMachine', destination='tmp'):
-    if not os.path.exists(destination):
-        os.makedirs(destination)
-
-    assets = github_api_request(api=f"releases/tags/{release_name}", github_api_url=api, github_org=org, repository=repo)
-    for asset in assets["assets"]:
-        download_file(asset["url"], os.path.join(destination, asset["name"]), {'Accept': 'application/octet-stream'})
-
 def download_text(url):
     headers = {'Authorization': f"token {os.environ['GIT_PASSWORD']}" } if 'GIT_PASSWORD' in os.environ else None
     response = requests.get(url, headers=headers)
