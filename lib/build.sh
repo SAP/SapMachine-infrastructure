@@ -49,6 +49,11 @@ if [[ ! -z $JDK_BUILD ]]; then
   _JDK_BUILD=" -b $JDK_BUILD"
 fi
 
+# avoid unwanted path settings in the jdk shared libs (can be observed with dump)
+if [[ $UNAME == AIX ]]; then
+  LIBPATH=
+fi
+
 echo "PATH before configure and make: ${PATH}"
 
 # need to do the python call first and the eval in a second step to bail out on $? != 0
