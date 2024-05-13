@@ -25,45 +25,59 @@ Directory: ${directory}'''
 
 dockerfile_version_pattern_ubuntu = re.compile('sapmachine-(\d+)-(jdk|jre)(-headless)?=(\S+)')
 
-def fill_image_template_ubuntu(git_dir, dockerfiles_subdir, major, dockerpath, dockertag, isLatest, isLatestLts):
-    dockerfile_path = join(dockerfiles_subdir, major, dockerpath, 'Dockerfile')
+def fill_image_template_ubuntu(git_dir, dockerfiles_subdir, major, ubuntu_ver, type, isLatest, isLatestLts):
+    #dockerpath: 'ubuntu/jre-headless', dockertag: 'jre-headless-ubuntu'
+    dockerfile_path = join(dockerfiles_subdir, major, 'ubuntu', f'{ubuntu_ver[0]}_{ubuntu_ver[1]}', type, 'Dockerfile')
+    dockertag = f'{type}-ubuntu'
     with open(join(git_dir, dockerfile_path), 'r') as dockerfile:
         version_match = dockerfile_version_pattern_ubuntu.search(dockerfile.read())
     version = version_match.group(4)
     _, git_commit, _ = utils.run_cmd(['git', 'log', '-n', '1', '--pretty=format:%H', '--', dockerfile_path], cwd=git_dir, std=True)
-    tags = [str.format('{0}-{1}', major, dockertag)]
-    tags.append(str.format('{0}-{1}-jammy', major, dockertag))
-    tags.append(str.format('{0}-{1}-22.04', major, dockertag))
-    if major != version:
-        tags.append(str.format('{0}-{1}', version, dockertag))
-        tags.append(str.format('{0}-{1}-jammy', version, dockertag))
-        tags.append(str.format('{0}-{1}-22.04', version, dockertag))
-    if isLatest:
-        tags.append(str.format('{0}', dockertag))
-        tags.append(str.format('{0}-jammy', dockertag))
-        tags.append(str.format('{0}-jammy-22.04', dockertag))
-    if isLatestLts:
-        tags.append(str.format('lts-{0}', dockertag))
-        tags.append(str.format('lts-{0}-jammy', dockertag))
-        tags.append(str.format('lts-{0}-22.04', dockertag))
-    if dockertag == 'jdk-ubuntu':
-        tags.append(major)
-        tags.append(str.format('{0}-ubuntu-jammy', major))
-        tags.append(str.format('{0}-ubuntu-22.04', major))
-        if major != version:
-            tags.append(version)
-            tags.append(str.format('{0}-ubuntu-jammy', version))
-            tags.append(str.format('{0}-ubuntu-22.04', version))
+    tags = []
+    if ubuntu_ver[3] is True:
+        if dockertag == 'jdk-ubuntu':
+            if isLatest:
+                tags.append('latest')
         if isLatest:
-            tags.append('latest')
-            tags.append('ubuntu-jammy')
-            tags.append('ubuntu-22.04')
+            tags.append(f'{dockertag}')
+        if dockertag == 'jdk-ubuntu':
+            tags.append(major)
+            if isLatestLts:
+                tags.append('lts')
+        tags.append(f'{major}-{dockertag}')
         if isLatestLts:
-            tags.append('lts')
-            tags.append('lts-ubuntu-jammy')
-            tags.append('lts-ubuntu-22.04')
+            tags.append(f'lts-{dockertag}')
+        if dockertag == 'jdk-ubuntu':
+            if major != version:
+                tags.append(version)
+        if major != version:
+            tags.append(f'{version}-{dockertag}')
 
-    return Template(template_image).substitute(tags=", ".join(tags), git_commit=git_commit, directory=str.format('{0}/{1}/{2}', dockerfiles_subdir, major, dockerpath))
+    if dockertag == 'jdk-ubuntu':
+        if isLatest:
+            tags.append(f'ubuntu-{ubuntu_ver[2]}')
+            tags.append(f'ubuntu-{ubuntu_ver[0]}.{ubuntu_ver[1]}')
+        tags.append(f'{major}-ubuntu-{ubuntu_ver[2]}')
+        tags.append(f'{major}-ubuntu-{ubuntu_ver[0]}.{ubuntu_ver[1]}')
+        if isLatestLts:
+            tags.append(f'lts-ubuntu-{ubuntu_ver[2]}')
+            tags.append(f'lts-ubuntu-{ubuntu_ver[0]}.{ubuntu_ver[1]}')
+        if major != version:
+            tags.append(f'{version}-ubuntu-{ubuntu_ver[2]}')
+            tags.append(f'{version}-ubuntu-{ubuntu_ver[0]}.{ubuntu_ver[1]}')
+    tags.append(f'{major}-{dockertag}-{ubuntu_ver[2]}')
+    tags.append(f'{major}-{dockertag}-{ubuntu_ver[0]}.{ubuntu_ver[1]}')
+    if isLatest:
+        tags.append(f'{dockertag}-{ubuntu_ver[2]}')
+        tags.append(f'{dockertag}-{ubuntu_ver[2]}-{ubuntu_ver[0]}.{ubuntu_ver[1]}')
+    if isLatestLts:
+        tags.append(f'lts-{dockertag}-{ubuntu_ver[2]}')
+        tags.append(f'lts-{dockertag}-{ubuntu_ver[0]}.{ubuntu_ver[1]}')
+    if major != version:
+        tags.append(f'{version}-{dockertag}-{ubuntu_ver[2]}')
+        tags.append(f'{version}-{dockertag}-{ubuntu_ver[0]}.{ubuntu_ver[1]}')
+
+    return Template(template_image).substitute(tags=", ".join(tags), git_commit=git_commit, directory=f'{dockerfiles_subdir}/{major}/ubuntu/{ubuntu_ver[0]}_{ubuntu_ver[1]}/{type}')
 
 template_image_distroless = '''Tags: ${tags}
 Architectures: amd64, arm64, ppc64le
@@ -110,27 +124,29 @@ def main(argv=None):
     latest = '00'
     releases = []
 
-    for _, dirs, _ in os.walk(join(git_dir, dockerfiles_subdir), topdown=False):
-        for dir in dirs:
-            if re.match(r"\d\d\d?", dir):
-                releases.append(dir)
-                if int(dir) > int(latest):
-                    latest = dir
-                if utils.sapmachine_is_lts(dir) and int(dir) > int(latest_lts):
-                    latest_lts = dir
+    for dir in os.listdir(join(git_dir, dockerfiles_subdir)):
+        if re.match(r"\d\d\d?", dir):
+            releases.append(dir)
+            if int(dir) > int(latest):
+                latest = dir
+            if utils.sapmachine_is_lts(dir) and int(dir) > int(latest_lts):
+                latest_lts = dir
 
-    releases.sort()
+    releases.sort(reverse=True)
 
     images = []
+    image_types = ['jdk', 'jdk-headless', 'jre', 'jre-headless']
 
     for release in releases:
         isLatest = release == latest
         isLatestLts = release == latest_lts
-
-        images.append(fill_image_template_ubuntu(git_dir, dockerfiles_subdir, release, 'ubuntu/jre-headless', 'jre-headless-ubuntu', isLatest, isLatestLts))
-        images.append(fill_image_template_ubuntu(git_dir, dockerfiles_subdir, release, 'ubuntu/jre', 'jre-ubuntu', isLatest, isLatestLts))
-        images.append(fill_image_template_ubuntu(git_dir, dockerfiles_subdir, release, 'ubuntu/jdk-headless', 'jdk-headless-ubuntu', isLatest, isLatestLts))
-        images.append(fill_image_template_ubuntu(git_dir, dockerfiles_subdir, release, 'ubuntu/jdk', 'jdk-ubuntu', isLatest, isLatestLts))
+        # Active releases as per https://ubuntu.com/about/release-cycle
+        for ubuntu_ver in [('24', '04', 'noble', True),
+                           ('23', '10', 'mantic', False),
+                           ('22', '04', 'jammy', False),
+                           ('20', '04', 'focal', False)]:
+            for type in image_types:
+                images.append(fill_image_template_ubuntu(git_dir, dockerfiles_subdir, release, ubuntu_ver, type, isLatest, isLatestLts))
 
         #images.append(fill_image_template_distroless(git_dir, dockerfiles_subdir, release, 'distroless/debian11/latest', 'distroless-debian11', isLatest, isLatestLts))
         #images.append(fill_image_template_distroless(git_dir, dockerfiles_subdir, release, 'distroless/debian11/nonroot', 'distroless-debian11-nonroot', isLatest, isLatestLts))
