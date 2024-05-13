@@ -1,5 +1,5 @@
 '''
-Copyright (c) 2017-2023 by SAP SE, Walldorf, Germany.
+Copyright (c) 2017-2024 by SAP SE, Walldorf, Germany.
 All rights reserved. Confidential and proprietary.
 '''
 
@@ -10,10 +10,9 @@ import utils
 
 from os.path import join
 from string import Template
-from utils import github_api_request
 from versions import SapMachineTag
 
-dockerfile_template_ubuntu = '''FROM ubuntu:22.04
+dockerfile_template_ubuntu = '''FROM ubuntu:${ubuntu_version}
 
 RUN apt-get update \\
     && apt-get -y --no-install-recommends install ca-certificates gnupg \\
@@ -30,25 +29,6 @@ ENV JAVA_HOME=/usr/lib/jvm/sapmachine-${major}
 
 CMD ["jshell"]
 '''
-
-dockerfile_template_ubuntu_latest = '''FROM ubuntu:23.10
-
-RUN apt-get update \\
-    && apt-get -y --no-install-recommends install ca-certificates gnupg \\
-    && export GNUPGHOME="$$(mktemp -d)" \\
-    && gpg --no-default-keyring --keyring gnupg-ring:/etc/apt/trusted.gpg.d/sapmachine.gpg --batch --keyserver hkps://keys.openpgp.org --recv-keys CACB9FE09150307D1D22D82962754C3B3ABCFE23 \\
-    && chmod 644 /etc/apt/trusted.gpg.d/sapmachine.gpg \\
-    && echo "deb http://dist.sapmachine.io/debian/$$(dpkg --print-architecture)/ ./" > /etc/apt/sources.list.d/sapmachine.list \\
-    && apt-get update \\
-    && apt-get -y --no-install-recommends install ${pkg_version} \\
-    && apt-get remove -y --purge --autoremove ca-certificates gnupg \\
-    && rm -rf "$$GNUPGHOME" /var/lib/apt/lists/*
-
-ENV JAVA_HOME=/usr/lib/jvm/sapmachine-${major}
-
-CMD ["jshell"]
-'''
-
 
 dockerfile_template_distroless = '''FROM gcr.io/distroless/java${distrolessvers}-debian11:${type} as distroless
 
@@ -127,20 +107,12 @@ docker run -it --rm myapp
 ```
 '''
 
-def write_dockerfile_ubuntu(base_dir, type, major, version_string):
+def write_dockerfile_ubuntu(base_dir, ubuntu_version, type, major, version_string):
     dockerfile_dir = join(base_dir, type)
     os.makedirs(dockerfile_dir)
     with open(join(dockerfile_dir, 'Dockerfile'), 'w+') as dockerfile:
             dockerfile.write(Template(dockerfile_template_ubuntu).substitute(
-                pkg_version=str.format('sapmachine-{0}-{1}={2}', major, type, version_string),
-                major=major
-            ))
-
-def write_dockerfile_ubuntu_latest(base_dir, type, major, version_string):
-    dockerfile_dir = join(base_dir, type)
-    os.makedirs(dockerfile_dir)
-    with open(join(dockerfile_dir, 'Dockerfile'), 'w+') as dockerfile:
-            dockerfile.write(Template(dockerfile_template_ubuntu_latest).substitute(
+                ubuntu_version=ubuntu_version,
                 pkg_version=str.format('sapmachine-{0}-{1}={2}', major, type, version_string),
                 major=major
             ))
@@ -164,8 +136,10 @@ def process_release(release, infrastructure_tags, dockerfiles_dir, args):
     major = str(tag.get_major())
     skip_tag = False
     major_dir = join(dockerfiles_dir, major)
-    ubuntu_dir = join(major_dir, 'ubuntu')
-    ubuntu_latest_dir = join(major_dir, 'ubuntu_latest')
+    ubuntu_24_04_dir = join(major_dir, 'ubuntu', '24_04')
+    ubuntu_23_10_dir = join(major_dir, 'ubuntu', '23_10')
+    ubuntu_22_04_dir = join(major_dir, 'ubuntu', '22_04')
+    ubuntu_20_04_dir = join(major_dir, 'ubuntu', '20_04')
     distroless_dir = join(major_dir, 'distroless')
 
     for infrastructure_tag in infrastructure_tags:
@@ -176,29 +150,35 @@ def process_release(release, infrastructure_tags, dockerfiles_dir, args):
               break
 
     if not skip_tag:
-        # Write ubuntu short term release dockerfiles
-        utils.remove_if_exists(ubuntu_latest_dir)
-        os.makedirs(ubuntu_latest_dir)
-        write_dockerfile_ubuntu_latest(ubuntu_latest_dir, 'jre', major, version_string)
-        write_dockerfile_ubuntu_latest(ubuntu_latest_dir, 'jre-headless', major, version_string)
-        write_dockerfile_ubuntu_latest(ubuntu_latest_dir, 'jdk', major, version_string)
-        write_dockerfile_ubuntu_latest(ubuntu_latest_dir, 'jdk-headless', major, version_string)
+        # Write ubuntu 24.04 dockerfiles
+        utils.remove_if_exists(ubuntu_24_04_dir)
+        os.makedirs(ubuntu_24_04_dir)
+        for type in ['jre', 'jre-headless', 'jdk', 'jdk-headless']:
+            write_dockerfile_ubuntu(ubuntu_24_04_dir, '24.04', type, major, version_string)
 
-        # Write ubuntu LTS dockerfiles
-        utils.remove_if_exists(ubuntu_dir)
-        os.makedirs(ubuntu_dir)
-        write_dockerfile_ubuntu(ubuntu_dir, 'jre', major, version_string)
-        write_dockerfile_ubuntu(ubuntu_dir, 'jre-headless', major, version_string)
-        write_dockerfile_ubuntu(ubuntu_dir, 'jdk', major, version_string)
-        write_dockerfile_ubuntu(ubuntu_dir, 'jdk-headless', major, version_string)
+        # Write ubuntu 23.10 dockerfiles
+        utils.remove_if_exists(ubuntu_23_10_dir)
+        os.makedirs(ubuntu_23_10_dir)
+        for type in ['jre', 'jre-headless', 'jdk', 'jdk-headless']:
+            write_dockerfile_ubuntu(ubuntu_23_10_dir, '23.10', type, major, version_string)
+
+        # Write ubuntu 22.04 dockerfiles
+        utils.remove_if_exists(ubuntu_22_04_dir)
+        os.makedirs(ubuntu_22_04_dir)
+        for type in ['jre', 'jre-headless', 'jdk', 'jdk-headless']:
+            write_dockerfile_ubuntu(ubuntu_22_04_dir, '22.04', type, major, version_string)
+
+        # Write ubuntu 20.04 dockerfiles
+        utils.remove_if_exists(ubuntu_20_04_dir)
+        os.makedirs(ubuntu_20_04_dir)
+        for type in ['jre', 'jre-headless', 'jdk', 'jdk-headless']:
+            write_dockerfile_ubuntu(ubuntu_20_04_dir, '20.04', type, major, version_string)
 
         # Write distroless dockerfiles
         utils.remove_if_exists(distroless_dir)
         os.makedirs(distroless_dir)
-        write_dockerfile_distroless(distroless_dir, 'latest', major, version_string)
-        write_dockerfile_distroless(distroless_dir, 'nonroot', major, version_string)
-        write_dockerfile_distroless(distroless_dir, 'debug', major, version_string)
-        write_dockerfile_distroless(distroless_dir, 'debug-nonroot', major, version_string)
+        for type in ['latest', 'nonroot', 'debug', 'debug-nonroot']:
+            write_dockerfile_distroless(distroless_dir, type, major, version_string)
 
         # Write the readme
         if utils.sapmachine_is_lts(major):
