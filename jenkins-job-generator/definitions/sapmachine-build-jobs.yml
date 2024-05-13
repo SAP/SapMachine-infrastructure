@@ -418,7 +418,7 @@
                                     reportName: "JT Report ${{env.TESTSUITE}}"
                                 ]
                                 // persist data for test trend graph
-                                {{langtools_junit_call|}}
+                                {langtools_junit_call|}
                                 script {{
                                     if (findFiles([glob: 'test_report_${{env.TESTSUITE}}/JTwork/**/hs_err_pid*.log']).size() > 0) {{
                                         archiveArtifacts allowEmptyArchive: true, artifacts: "test_report_${{env.TESTSUITE}}/JTwork/**/hs_err_pid*.log"
