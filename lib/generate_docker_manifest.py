@@ -69,7 +69,7 @@ def fill_image_template_ubuntu(git_dir, dockerfiles_subdir, major, ubuntu_ver, t
     tags.append(f'{major}-{dockertag}-{ubuntu_ver[0]}.{ubuntu_ver[1]}')
     if isLatest:
         tags.append(f'{dockertag}-{ubuntu_ver[2]}')
-        tags.append(f'{dockertag}-{ubuntu_ver[2]}-{ubuntu_ver[0]}.{ubuntu_ver[1]}')
+        tags.append(f'{dockertag}-{ubuntu_ver[0]}.{ubuntu_ver[1]}')
     if isLatestLts:
         tags.append(f'lts-{dockertag}-{ubuntu_ver[2]}')
         tags.append(f'lts-{dockertag}-{ubuntu_ver[0]}.{ubuntu_ver[1]}')
