@@ -142,7 +142,6 @@ def main(argv=None):
         isLatestLts = release == latest_lts
         # Active releases as per https://ubuntu.com/about/release-cycle
         for ubuntu_ver in [('24', '04', 'noble', True),
-                           ('23', '10', 'mantic', False),
                            ('22', '04', 'jammy', False),
                            ('20', '04', 'focal', False)]:
             for type in image_types:

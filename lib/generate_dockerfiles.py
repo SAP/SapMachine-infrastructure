@@ -136,12 +136,7 @@ def process_release(release, infrastructure_tags, dockerfiles_dir, args):
     major = str(tag.get_major())
     skip_tag = False
     major_dir = join(dockerfiles_dir, major)
-    ubuntu_24_04_dir = join(major_dir, 'ubuntu', '24_04')
-    ubuntu_23_10_dir = join(major_dir, 'ubuntu', '23_10')
-    ubuntu_22_04_dir = join(major_dir, 'ubuntu', '22_04')
-    ubuntu_20_04_dir = join(major_dir, 'ubuntu', '20_04')
     image_types = ['jre-headless', 'jre', 'jdk-headless', 'jdk']
-    distroless_dir = join(major_dir, 'distroless')
 
     for infrastructure_tag in infrastructure_tags:
         if infrastructure_tag['name'] == version_string:
@@ -152,30 +147,28 @@ def process_release(release, infrastructure_tags, dockerfiles_dir, args):
 
     if not skip_tag:
         # Write ubuntu 24.04 dockerfiles
+        ubuntu_24_04_dir = join(major_dir, 'ubuntu', '24_04')
         utils.remove_if_exists(ubuntu_24_04_dir)
         os.makedirs(ubuntu_24_04_dir)
         for type in image_types:
             write_dockerfile_ubuntu(ubuntu_24_04_dir, '24.04', type, major, version_string)
 
-        # Write ubuntu 23.10 dockerfiles
-        utils.remove_if_exists(ubuntu_23_10_dir)
-        os.makedirs(ubuntu_23_10_dir)
-        for type in image_types:
-            write_dockerfile_ubuntu(ubuntu_23_10_dir, '23.10', type, major, version_string)
-
         # Write ubuntu 22.04 dockerfiles
+        ubuntu_22_04_dir = join(major_dir, 'ubuntu', '22_04')
         utils.remove_if_exists(ubuntu_22_04_dir)
         os.makedirs(ubuntu_22_04_dir)
         for type in image_types:
             write_dockerfile_ubuntu(ubuntu_22_04_dir, '22.04', type, major, version_string)
 
         # Write ubuntu 20.04 dockerfiles
+        ubuntu_20_04_dir = join(major_dir, 'ubuntu', '20_04')
         utils.remove_if_exists(ubuntu_20_04_dir)
         os.makedirs(ubuntu_20_04_dir)
         for type in image_types:
             write_dockerfile_ubuntu(ubuntu_20_04_dir, '20.04', type, major, version_string)
 
         # Write distroless dockerfiles
+        distroless_dir = join(major_dir, 'distroless')
         utils.remove_if_exists(distroless_dir)
         os.makedirs(distroless_dir)
         for type in ['latest', 'nonroot', 'debug', 'debug-nonroot']:
