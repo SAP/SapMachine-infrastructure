@@ -37,10 +37,10 @@ def main(argv=None):
                         required=False)
     args = parser.parse_args()
 
-    src_assets, src_release_id, _ = github_get_release(github=args.src_github, github_org=args.src_github_org,
+    src_assets, src_release_id, _, _ = github_get_release(github=args.src_github, github_org=args.src_github_org,
                                                        tag=args.tag, repository=args.src_repository,
                                                        token=args.src_github_token)
-    tgt_asset_names, tgt_release_id, tgt_upload_url = github_create_release(github=args.tgt_github,
+    tgt_asset_names, tgt_release_id, tgt_upload_url, tgt_html_url = github_create_release(github=args.tgt_github,
                                                                             github_org=args.tgt_github_org,
                                                                             tag=args.tag,
                                                                             description=args.description,
@@ -52,6 +52,8 @@ def main(argv=None):
         if f not in tgt_asset_names:
             github_copy_asset(asset_name=f, asset_url=u, src_token=args.src_github_token,
                               tgt_token=args.tgt_github_token, upload_url=tgt_upload_url)
+        else:
+            print(f"Skipping file {f} because it already exists in {tgt_html_url}")
 
 
 def github_get_release(github, github_org, tag, repository='SapMachine', token=None):
@@ -61,18 +63,19 @@ def github_get_release(github, github_org, tag, repository='SapMachine', token=N
                                            repository=repository, token=token)
         release_id = release['id']
         upload_url = release['upload_url']
+        html_url = release['html_url']
         for asset in release['assets']:
             assets[asset['name']] = asset['url']
     except HTTPError as httpError:
         print(f"Release {tag} does not seem to exist: {httpError.code} ({httpError.reason})")
         release_id = upload_url = None
-    return assets, release_id, upload_url
+    return assets, release_id, upload_url, html_url
 
 
 def github_create_release(tag, github, github_org, description, prerelease, repository='SapMachine', token=None):
     upload_url = None
-    asset_names, release_id, upload_url = github_get_release(github, github_org, tag, repository=repository,
-                                                             token=token)
+    asset_names, release_id, upload_url, html_url = github_get_release(github, github_org, tag, repository=repository,
+                                                                       token=token)
 
     if release_id is None:
         # release does not exist yet -> create it
@@ -83,6 +86,7 @@ def github_create_release(tag, github, github_org, description, prerelease, repo
                                                 token=token)
             release_id = response['id']
             upload_url = response['upload_url']
+            html_url = response['html_url']
             print(f"Created release \"{tag}\"")
         except HTTPError:
             print(f"Error creating release \"{tag}\". Maybe it exists now, check...")
@@ -91,11 +95,12 @@ def github_create_release(tag, github, github_org, description, prerelease, repo
                                                    github_org=github_org, repository=repository, token=token)
                 release_id = release['id']
                 upload_url = release['upload_url']
+                html_url = release['html_url']
                 print(f"Yes, release id: {release_id}")
             except HTTPError as httpError:
                 print(f"Nope, must be something else: {httpError.code} ({httpError.reason})")
                 return 1
-    return asset_names, release_id, upload_url
+    return asset_names, release_id, upload_url, html_url
 
 
 def github_copy_asset(asset_name, asset_url, upload_url, src_token=None, tgt_token=None):
