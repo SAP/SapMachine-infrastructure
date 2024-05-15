@@ -84,9 +84,9 @@ def github_create_release(tag, github, github_org, description, prerelease, repo
             response = utils.github_api_request('releases', github_api_url=github, github_org=github_org, data=data,
                                                 method='POST', content_type='application/json', repository=repository,
                                                 token=token)
-            release_id = response[0]['id']
-            upload_url = response[0]['upload_url']
-            html_url = response[0]['html_url']
+            release_id = response['id']
+            upload_url = response['upload_url']
+            html_url = response['html_url']
             print(f"Created release \"{tag}\"")
         except HTTPError:
             print(f"Error creating release \"{tag}\". Maybe it exists now, check...")
