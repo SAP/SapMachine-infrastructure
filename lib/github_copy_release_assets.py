@@ -68,7 +68,7 @@ def github_get_release(github, github_org, tag, repository='SapMachine', token=N
             assets[asset['name']] = asset['url']
     except HTTPError as httpError:
         print(f"Release {tag} does not seem to exist: {httpError.code} ({httpError.reason})")
-        release_id = upload_url = None
+        release_id = upload_url = html_url = None
     return assets, release_id, upload_url, html_url
 
 
@@ -84,9 +84,9 @@ def github_create_release(tag, github, github_org, description, prerelease, repo
             response = utils.github_api_request('releases', github_api_url=github, github_org=github_org, data=data,
                                                 method='POST', content_type='application/json', repository=repository,
                                                 token=token)
-            release_id = response['id']
-            upload_url = response['upload_url']
-            html_url = response['html_url']
+            release_id = response[0]['id']
+            upload_url = response[0]['upload_url']
+            html_url = response[0]['html_url']
             print(f"Created release \"{tag}\"")
         except HTTPError:
             print(f"Error creating release \"{tag}\". Maybe it exists now, check...")
@@ -96,7 +96,6 @@ def github_create_release(tag, github, github_org, description, prerelease, repo
                 release_id = release['id']
                 upload_url = release['upload_url']
                 html_url = release['html_url']
-                print(f"Yes, release id: {release_id}")
             except HTTPError as httpError:
                 print(f"Nope, must be something else: {httpError.code} ({httpError.reason})")
                 return 1
