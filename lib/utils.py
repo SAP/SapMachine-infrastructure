@@ -441,7 +441,7 @@ def git_push_tag(dir, tag_name, force=False):
     else:
         run_cmd(['git', 'push', 'origin', tag_name], cwd=dir)
 
-def github_api_request(api=None, url=None, github_api_url='https://api.github.com', github_org='SAP', repository='SapMachine', data=None, method='GET', per_page=None, content_type=None, url_parameter=[], token=None):
+def github_api_request(api=None, url=None, github_api_url='https://api.github.com', github_org='SAP', repository='SapMachine', data=None, method='GET', per_page=None, content_type=None, url_parameter=[], token=None, add_headers=None):
     if api is None and url is None:
         return None
 
@@ -473,6 +473,10 @@ def github_api_request(api=None, url=None, github_api_url='https://api.github.co
 
         if data is not None:
             request.add_header('Content-Length', len(data))
+
+        if add_headers is not None:
+            for key, value in add_headers.items():
+                request.add_header(key, value)
 
         response = urlopen(request)
         link = response.info().get('Link')
