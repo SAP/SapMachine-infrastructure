@@ -83,7 +83,7 @@ def github_create_release(tag, github, github_org, description, prerelease, repo
         try:
             response = utils.github_api_request('releases', github_api_url=github, github_org=github_org, data=data,
                                                 method='POST', content_type='application/json', repository=repository,
-                                                token=token)
+                                                token=token, add_headers={"Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28"})
             release_id = response['id']
             upload_url = response['upload_url']
             html_url = response['html_url']
