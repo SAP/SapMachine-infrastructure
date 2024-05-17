@@ -476,10 +476,10 @@ def github_api_request(api=None, url=None, github_api_url='https://api.github.co
                 request.add_header(key, value)
 
         try:
-            print(f'Request URL: {url}')
+            #print(f'Request URL: {url}')
             response = urlopen(request)
         except HTTPError as e:
-            print(f'Encountered HTTPError: {e.code}')
+            #print(f'Encountered HTTPError: {e.code}')
             if raiseError is True:
                 raise
             else:
