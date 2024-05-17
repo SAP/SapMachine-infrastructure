@@ -103,14 +103,6 @@
         - build-debian-packages
 
 - view:
-    name: 'Async Profiler'
-    description: 'Async Profiler Builds and other related jobs'
-    view-type: list
-    regex: 'build-async-profiler-.*'
-    job-name:
-        - async-prof-repo-update
-
-- view:
     name: 'JMC'
     description: 'JMC Builds and other related jobs'
     view-type: list

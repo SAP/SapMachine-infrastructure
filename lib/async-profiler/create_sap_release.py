@@ -12,15 +12,15 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 import utils
 
-def get_release_by_tag(releases, tag):
-    for release in releases:
-        if release['tag_name'] == tag:
-            return release
-    return None
-
 def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('-t', '--tag', help='the release tag', metavar='TAG', required=True)
+    parser.add_argument('--tgt-github', default='https://api.github.com', help='the target github api url',
+                        metavar='TGT_GITHUB', required=False)
+    parser.add_argument('--tgt-github-org', default='SAP', help='the target github org',
+                        metavar='TGT_GITHUB_ORG', required=False)
+    parser.add_argument('--tgt-github-token', help='the target github security token', metavar='TGT_GITHUB_TOKEN',
+                        required=False)
     args = parser.parse_args()
 
     # upstream release must exist
@@ -30,13 +30,13 @@ def main(argv=None):
         return -1
 
     # sap release must not yet exist
-    sap_release = utils.github_api_request(api=f'releases/tags/{args.tag}', repository='async-profiler', raiseError=False)
+    sap_release = utils.github_api_request(api=f'releases/tags/{args.tag}', github=args.tgt_github, github_org=args.tgt_github_org, repository='async-profiler', token=args.tgt_github_token, raiseError=False)
     if sap_release is not None:
         print(f'SAP release {args.tag} already exists.')
         return -1
 
     # a tag must exist in SAP repository
-    sap_tags = utils.github_api_request(api='tags', repository='async-profiler', per_page=100)
+    sap_tags = utils.github_api_request(api='tags', github=args.tgt_github, github_org=args.tgt_github_org, repository='async-profiler', token=args.tgt_github_token, per_page=100)
     sap_tag_exists = False
     for x in sap_tags:
         if x['name'] == args.tag:
@@ -47,7 +47,7 @@ def main(argv=None):
         return -1
 
     data = json.dumps({"tag_name": args.tag, "name": upstream_release['name'], "body": upstream_release['body']})
-    utils.github_api_request(api='releases', repository='async-profiler', data=data, method='POST', add_headers={"Content-Type": "application/json"})
+    utils.github_api_request(api='releases', github=args.tgt_github, github_org=args.tgt_github_org, repository='async-profiler', token=args.tgt_github_token, data=data, method='POST', add_headers={"Content-Type": "application/json"})
 
     return 0
 
