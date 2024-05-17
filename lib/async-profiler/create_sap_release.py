@@ -30,13 +30,13 @@ def main(argv=None):
         return -1
 
     # sap release must not yet exist
-    sap_release = utils.github_api_request(api=f'releases/tags/{args.tag}', github=args.tgt_github, github_org=args.tgt_github_org, repository='async-profiler', token=args.tgt_github_token, raiseError=False)
+    sap_release = utils.github_api_request(api=f'releases/tags/{args.tag}', github_api_url=args.tgt_github, github_org=args.tgt_github_org, repository='async-profiler', token=args.tgt_github_token, raiseError=False)
     if sap_release is not None:
         print(f'SAP release {args.tag} already exists.')
         return -1
 
     # a tag must exist in SAP repository
-    sap_tags = utils.github_api_request(api='tags', github=args.tgt_github, github_org=args.tgt_github_org, repository='async-profiler', token=args.tgt_github_token, per_page=100)
+    sap_tags = utils.github_api_request(api='tags', github_api_url=args.tgt_github, github_org=args.tgt_github_org, repository='async-profiler', token=args.tgt_github_token, per_page=100)
     sap_tag_exists = False
     for x in sap_tags:
         if x['name'] == args.tag:
@@ -47,7 +47,7 @@ def main(argv=None):
         return -1
 
     data = json.dumps({"tag_name": args.tag, "name": upstream_release['name'], "body": upstream_release['body']})
-    utils.github_api_request(api='releases', github=args.tgt_github, github_org=args.tgt_github_org, repository='async-profiler', token=args.tgt_github_token, data=data, method='POST', add_headers={"Content-Type": "application/json"})
+    utils.github_api_request(api='releases', github_api_url=args.tgt_github, github_org=args.tgt_github_org, repository='async-profiler', token=args.tgt_github_token, data=data, method='POST', add_headers={"Content-Type": "application/json"})
 
     return 0
 
