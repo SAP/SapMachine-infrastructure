@@ -82,8 +82,8 @@ def github_create_release(tag, github, github_org, description, prerelease, repo
         data = json.dumps({"tag_name": tag, "name": tag, "body": description, "draft": False, "prerelease": prerelease})
         try:
             response = utils.github_api_request('releases', github_api_url=github, github_org=github_org, data=data,
-                                                method='POST', content_type='application/json', repository=repository,
-                                                token=token, add_headers={"Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28"})
+                                                method='POST', repository=repository, token=token,
+                                                add_headers={"Content-Type": "application/json", "Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28"})
             release_id = response['id']
             upload_url = response['upload_url']
             html_url = response['html_url']
@@ -130,7 +130,7 @@ def github_copy_asset(asset_name, asset_url, upload_url, src_token=None, tgt_tok
             try:
                 # upload the asset file
                 print(f'Uploading asset "{asset_name}" with a length of {str(asset_length)} bytes...')
-                utils.github_api_request(url=upload_url, data=asset_data, method='POST', content_type=asset_mime_type,
+                utils.github_api_request(url=upload_url, data=asset_data, method='POST', add_headers={"Content-Type": asset_mime_type},
                                          token=tgt_token)
                 return 0
             except IOError as e:

@@ -441,7 +441,7 @@ def git_push_tag(dir, tag_name, force=False):
     else:
         run_cmd(['git', 'push', 'origin', tag_name], cwd=dir)
 
-def github_api_request(api=None, url=None, github_api_url='https://api.github.com', github_org='SAP', repository='SapMachine', data=None, method='GET', per_page=None, content_type=None, url_parameter=[], token=None, add_headers=None):
+def github_api_request(api=None, url=None, github_api_url='https://api.github.com', github_org='SAP', repository='SapMachine', data=None, method='GET', per_page=None, url_parameter=[], token=None, add_headers=None, raiseError=True):
     if api is None and url is None:
         return None
 
@@ -468,9 +468,6 @@ def github_api_request(api=None, url=None, github_api_url='https://api.github.co
         else:
             print("Warning: No GitHub credentials provided. This could quickly lead to exceeding the GitHub API rate limit.", file=sys.stderr)
 
-        if content_type is not None:
-            request.add_header('Content-Type', content_type)
-
         if data is not None:
             request.add_header('Content-Length', len(data))
 
@@ -478,7 +475,13 @@ def github_api_request(api=None, url=None, github_api_url='https://api.github.co
             for key, value in add_headers.items():
                 request.add_header(key, value)
 
-        response = urlopen(request)
+        try:
+            response = urlopen(request)
+        except(HTTPError):
+            if raiseError is True:
+                raise
+            else:
+                return None
         link = response.info().get('Link')
 
         try:

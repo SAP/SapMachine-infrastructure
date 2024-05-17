@@ -27,7 +27,7 @@ def main(argv=None):
                                                 repository='async-profiler',
                                                 data=data,
                                                 method='POST',
-                                                content_type='application/json')
+                                                add_headers={"Content-Type": "application/json"})
             print(tag, end='')
             return 0
     print('No new releases', end='')

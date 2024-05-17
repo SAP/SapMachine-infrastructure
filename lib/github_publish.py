@@ -35,7 +35,7 @@ def main(argv=None):
         # release does not exist yet -> create it
         data = json.dumps({ "tag_name": args.tag, "name": args.tag, "body": args.description, "draft": False, "prerelease": args.prerelease })
         try:
-            response = utils.github_api_request('releases', github_api_url=args.github, github_org=args.github_org, data=data, method='POST', content_type='application/json')
+            response = utils.github_api_request('releases', github_api_url=args.github, github_org=args.github_org, data=data, method='POST', add_headers={"Content-Type": "application/json"})
             release_id = response['id']
             upload_url = response['upload_url']
             print(f"Created release \"{args.tag}\"")
@@ -83,7 +83,7 @@ def main(argv=None):
             try:
                 # upload the asset file
                 print(f'Uploading asset "{asset_name}" with a length of {str(asset_length)} bytes...')
-                utils.github_api_request(url=upload_url, data=asset_data, method='POST', content_type=asset_mime_type)
+                utils.github_api_request(url=upload_url, data=asset_data, method='POST', add_headers={"Content-Type": asset_mime_type})
                 return 0
             except IOError as e:
                 # _type, value, _traceback = sys.exc_info()

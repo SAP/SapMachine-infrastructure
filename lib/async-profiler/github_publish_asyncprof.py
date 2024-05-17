@@ -82,7 +82,7 @@ def main(argv=None):
                 upload the asset file
                 '''
                 print(str.format('uploading asset "{0}" with a length of {1} bytes ...', asset_name, str(asset_length)))
-                utils.github_api_request(url=upload_url, data=asset_data, method='POST', content_type=asset_mime_type)
+                utils.github_api_request(url=upload_url, data=asset_data, method='POST', add_headers={"Content-Type": asset_mime_type})
                 rc = 0
                 break
             except IOError as e:
