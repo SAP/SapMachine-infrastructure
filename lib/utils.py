@@ -462,9 +462,9 @@ def github_api_request(api=None, url=None, github_api_url='https://api.github.co
         request.get_method = lambda: method
 
         if token is not None:
-            request.add_header('Authorization', str.format('token {0}', token))
+            request.add_header('Authorization', f'token {token}')
         elif 'GIT_PASSWORD' in os.environ:
-            request.add_header('Authorization', str.format('token {0}', os.environ['GIT_PASSWORD']))
+            request.add_header('Authorization', f'token {os.environ["GIT_PASSWORD"]}')
         else:
             print("Warning: No GitHub credentials provided. This could quickly lead to exceeding the GitHub API rate limit.", file=sys.stderr)
 
@@ -476,6 +476,7 @@ def github_api_request(api=None, url=None, github_api_url='https://api.github.co
                 request.add_header(key, value)
 
         try:
+            print(f'Request URL: ${url}')
             response = urlopen(request)
         except(HTTPError):
             if raiseError is True:
