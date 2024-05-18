@@ -29,11 +29,11 @@ def main(argv=None):
         print(f'Upstream release {args.tag} not found.')
         return -1
 
-    # sap release must not yet exist
+    # if sap release exists, all is good.
     sap_release = utils.github_api_request(api=f'releases/tags/{args.tag}', github_api_url=args.tgt_github, github_org=args.tgt_github_org, repository='async-profiler', token=args.tgt_github_token, raiseError=False)
     if sap_release is not None:
         print(f'SAP release {args.tag} already exists.')
-        return -1
+        return 0
 
     # a tag must exist in SAP repository
     sap_tags = utils.github_api_request(api='tags', github_api_url=args.tgt_github, github_org=args.tgt_github_org, repository='async-profiler', token=args.tgt_github_token, per_page=100)
