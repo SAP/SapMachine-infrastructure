@@ -112,7 +112,7 @@ def fill_image_template_distroless(git_dir, dockerfiles_subdir, major, dockerpat
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
-    parser.add_argument('-d', '--directory', default='dockerfiles/official', help='the subdirectory in the GitHub repository, containing the Dockerfiles', metavar='DIR')
+    parser.add_argument('-d', '--directory', default='dockerfiles', help='the subdirectory in the GitHub repository, containing the Dockerfiles', metavar='DIR')
     parser.add_argument('-m', '--manifest', default='sapmachine', help='the output manifest file (name and/or path)', metavar='FILE')
     args = parser.parse_args()
 

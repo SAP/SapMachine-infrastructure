@@ -259,7 +259,7 @@ def main(argv=None):
     os.makedirs(workdir)
     utils.git_clone('github.com/SAP/SapMachine-infrastructure', 'master', workdir)
 
-    dockerfiles_dir = join(workdir, 'dockerfiles', 'official')
+    dockerfiles_dir = join(workdir, 'dockerfiles')
     removed = []
     for f in os.listdir(dockerfiles_dir):
         if not int(f) in docker_releases:
