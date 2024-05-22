@@ -44,39 +44,32 @@ def remove_sensitive_data(config_xml, elements):
     config.write(config_xml)
 
 def copy_configurations(src_dir, target_dir):
-    exclude_dirs = ['users', 'secrets', 'workspace', '.cache', 'caches', 'logs', 'plugins', 'fingerprints']
-    exclude_files = ['credentials.xml']
+    exclude_dirs = ['users', 'workspace', '.cache', 'caches', 'logs', 'plugins', 'fingerprints']
 
     for root, dirs, files in os.walk(src_dir, topdown=True):
         path_elements = os.path.relpath(root, start=src_dir).split(os.path.sep)
 
         if len(path_elements) > 0:
             if ((path_elements[0] in exclude_dirs) or
-               (path_elements[0] == 'jobs' and 'builds' in path_elements)):
+                (path_elements[0] == 'jobs' and 'builds' in path_elements)):
                 dirs[:] = []
                 files[:] = []
                 continue
 
         for file in files:
-            if file.endswith('.xml') and file not in exclude_files:
-                config_xml = join(root, file)
-                config_xml_path = os.path.relpath(config_xml, start=src_dir)
-                config_xml_dir = os.path.dirname(config_xml_path)
-                config_xml_target_dir = join(target_dir, config_xml_dir)
+            if (file.endswith('.xml') or
+                (file.startswith('secret.key')) or
+                ((len(path_elements) > 0) and path_elements[0] == 'secrets')):
+                bfile = join(root, file)
+                bfile_target_dir = join(target_dir, os.path.dirname(os.path.relpath(bfile, start=src_dir)))
 
-                print(str.format('found configuration "{0}"', config_xml))
+                print(f'saving file "{bfile}"')
 
-                #print(str.format('config_xml="{0}"\nconfig_xml_path="{1}"\nconfig_xml_dir="{2}"\ntarget_dir="{3}"\n\n',
-                #    config_xml,
-                #    config_xml_path,
-                #    config_xml_dir,
-                #    config_xml_target_dir))
+                if not os.path.exists(bfile_target_dir):
+                    os.makedirs(bfile_target_dir)
 
-                if not os.path.exists(config_xml_target_dir):
-                    os.makedirs(config_xml_target_dir)
-
-                shutil.copy(config_xml, config_xml_target_dir)
-                remove_sensitive_data(join(config_xml_target_dir, file), ['privateKey', 'password'])
+                shutil.copy(bfile, bfile_target_dir)
+                #remove_sensitive_data(join(bfile_target_dir, file), ['privateKey', 'password'])
 
 def create_plugin_list(src_dir, target_dir):
     import json
