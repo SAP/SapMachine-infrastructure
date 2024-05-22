@@ -110,10 +110,11 @@ def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('-s', '--srcdir', help='the source directory (Jenkins home directory)', metavar='DIR', required=True)
     parser.add_argument('-r', '--backuprepo', help='the backup repository', metavar='REPO', default='github.com/SAP/SapMachine-infrastructure.git')
+    parser.add_argument('-b', '--backupbranch', help='the backup branch', metavar='REPO', default='backupJenkins')
     parser.add_argument('-d', '--dryrun', help='do not push the Jenkins configuration', action='store_true', default=False)
     args = parser.parse_args()
 
-    git_clone(args.backuprepo, "backupJenkins", "SapMachine-Backup")
+    git_clone(args.backuprepo, args.backupbranch, "SapMachine-Backup")
     target_dir = join("SapMachine-Backup", jenkins_configuration)
 
     utils.remove_if_exists(target_dir)
