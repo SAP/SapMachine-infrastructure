@@ -96,8 +96,22 @@ def create_plugin_list(src_dir, target_dir):
                             properties[prop[0]] = prop[1]
                     plugin_list.append(properties)
 
-    with open(join(target_dir, 'plugin_list.json'), 'w+') as out:
+    with open(join(target_dir, 'plugin_list.json'), 'w') as out:
         out.write(json.dumps(plugin_list, indent=4, sort_keys=True))
+
+    plugins = ""
+    for plugin in plugin_list:
+        if 'Short-Name' in plugin:
+            plugins.append(f'{plugin['Short-Name']}:{plugin['Plugin-Version']}\n')
+        else:
+            # In case 'Short-Name' is missing, print some more information
+            print("Short-Name missing for:")
+            for key in plugin:
+                print(str.format("{0}:{1}", key, plugin[key]))
+            print("")
+
+    with open(join(target_dir, 'plugins.txt'), 'w') as out:
+        out.write(plugins)
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
