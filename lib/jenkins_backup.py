@@ -28,7 +28,7 @@ def push_backup(local_repo):
     env['GIT_COMMITTER_EMAIL'] = env['GIT_AUTHOR_EMAIL']
 
     utils.run_cmd(['git', 'add', jenkins_configuration], cwd=local_repo)
-    utils.run_cmd(['git', 'commit', '-m', 'Updated Jenkins configuration.'], cwd=local_repo, env=env)
+    utils.run_cmd(['git', 'commit', '-m', 'Update Jenkins configuration'], cwd=local_repo, env=env)
     utils.run_cmd(['git', 'pull', credurl, branch, '--rebase'], cwd=local_repo, env=env)
     utils.run_cmd(['git', 'push', credurl], cwd=local_repo, env=env)
 
