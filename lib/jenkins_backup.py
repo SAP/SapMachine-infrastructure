@@ -102,7 +102,7 @@ def create_plugin_list(src_dir, target_dir):
     plugins = ""
     for plugin in plugin_list:
         if 'Short-Name' in plugin:
-            plugins.append(f"{plugin['Short-Name']}:{plugin['Plugin-Version']}\n")
+            plugins += f"{plugin['Short-Name']}:{plugin['Plugin-Version']}\n"
         else:
             # In case 'Short-Name' is missing, print some more information
             print("Short-Name missing for:")
