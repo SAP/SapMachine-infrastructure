@@ -102,12 +102,12 @@ def create_plugin_list(src_dir, target_dir):
     plugins = ""
     for plugin in plugin_list:
         if 'Short-Name' in plugin:
-            plugins.append(f'{plugin['Short-Name']}:{plugin['Plugin-Version']}\n')
+            plugins.append(f"{plugin['Short-Name']}:{plugin['Plugin-Version']}\n")
         else:
             # In case 'Short-Name' is missing, print some more information
             print("Short-Name missing for:")
             for key in plugin:
-                print(str.format("{0}:{1}", key, plugin[key]))
+                print(f"{key}:{plugin[key]}")
             print("")
 
     with open(join(target_dir, 'plugins.txt'), 'w') as out:
