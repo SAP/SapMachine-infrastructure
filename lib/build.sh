@@ -50,9 +50,9 @@ if [[ ! -z $JDK_BUILD ]]; then
 fi
 
 # avoid unwanted path settings in the jdk shared libs (can be observed with dump)
-if [[ $UNAME == AIX ]]; then
-  LIBPATH=
-fi
+#if [[ $UNAME == AIX ]]; then
+#  LIBPATH=
+#fi
 
 echo "PATH before configure and make: ${PATH}"
 
