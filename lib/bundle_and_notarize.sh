@@ -5,6 +5,7 @@ set -e
 # Send notarization request and wait for completion. If unsuccessful, print request log and exit with error.
 KEYCHAIN_PROFILE=sapmachine-notarization
 notarize() {
+  security unlock-keychain -p changeit ~/jenkins.keychain
   notaryout=$(set -x && xcrun notarytool submit $2 --keychain ~/jenkins.keychain --keychain-profile "$KEYCHAIN_PROFILE" --output-format=json --wait "$1")
   rc=$?
   echo $notaryout
@@ -14,6 +15,7 @@ notarize() {
     echo "Notarization result for $1: $status (rc=$rc, id=$id)"
   else
     echo "Notarization of $1 failed: $status (rc=$rc, id=$id). Printing Log and exiting."
+    security unlock-keychain -p changeit ~/jenkins.keychain
     xcrun notarytool log --keychain ~/jenkins.keychain --keychain-profile "$KEYCHAIN_PROFILE" --output-format=json $id
     exit 1
   fi
@@ -50,7 +52,6 @@ fi
 # Prepare
 rm -rf *.dmg
 DMG_NOTARIZE_BASE="${WORKSPACE}/dmg_notarize_base"
-security unlock-keychain -p changeit ~/jenkins.keychain
 
 # JDK
 notarize "${WORKSPACE}/${ARCHIVE_NAME_JDK}" "--force"
