@@ -49,17 +49,6 @@ if [[ ! -z $JDK_BUILD ]]; then
   _JDK_BUILD=" -b $JDK_BUILD"
 fi
 
-# avoid unwanted path settings in the jdk shared libs (can be observed with dump)
-if [[ $UNAME == AIX ]]; then
-  LIBPATH=
-fi
-
-echo "PATH before configure and make: ${PATH}"
-
-# need to do the python call first and the eval in a second step to bail out on $? != 0
-_CONFIGURE_OPTS=$(python3 ../SapMachine-infrastructure/lib/get_configure_opts.py $_GIT_TAG $_JDK_BUILD)
-eval _CONFIGURE_OPTS=(${_CONFIGURE_OPTS})
-
 # test/trace call to codesign to have some indication of potential problems
 if [ "$UNAME" = Darwin ] && [ "$RELEASE_BUILD" = true ]; then
   echo "Unlocking keychain and testing codesign availability..."
@@ -73,6 +62,13 @@ if [ "$UNAME" = Darwin ] && [ "$RELEASE_BUILD" = true ]; then
   fi
 fi
 
+echo "PATH before configure: ${PATH}"
+echo "LIBPATH before configure: ${LIBPATH}"
+
+# need to do the python call first and the eval in a second step to bail out on $? != 0
+_CONFIGURE_OPTS=$(python3 ../SapMachine-infrastructure/lib/get_configure_opts.py $_GIT_TAG $_JDK_BUILD)
+eval _CONFIGURE_OPTS=(${_CONFIGURE_OPTS})
+
 (set -x && bash ./configure \
 --with-boot-jdk=$BOOT_JDK \
 "${_CONFIGURE_OPTS[@]}" \
@@ -81,5 +77,13 @@ $_CONFIGURE_OS_OPTIONS \
 --disable-dtrace \
 --with-freetype=bundled \
 $EXTRA_CONFIGURE_OPTIONS)
+
+# use empty LIBPATH to avoid unwanted path settings in the shared libs of the jdk image (can be observed with dump)
+if [[ $UNAME == AIX ]]; then
+  LIBPATH=
+fi
+
+echo "PATH before make: ${PATH}"
+echo "LIBPATH before make: ${LIBPATH}"
 
 (set -x && make $EXTRA_MAKE_OPTIONS product-bundles legacy-bundles test-image)
