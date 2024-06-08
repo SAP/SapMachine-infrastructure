@@ -19,17 +19,40 @@ cd $WORKSPACE
 #if [[ $REPO_PATH == "jdk11u" ]]; then
 #  rm -rf $REPO_PATH
 #fi
-
-if [ ! -d $REPO_PATH ]; then
-  git clone "$REPO_URL$REPO" $REPO_PATH
-  cd $REPO_PATH
-  git checkout -b "$REPO"
+if [[ $REPO == "openjdk/jdk" ]]; then
+  if [ ! -d $REPO_PATH ]; then
+    git clone "$REPO_URL$REPO" $REPO_PATH
+    cd $REPO_PATH
+    git checkout -b "$REPO"
+    git push --follow-tags $SAPMACHINE_GIT_REPOSITORY "$REPO"
+    git checkout -b "openjdk/jdk23" jdk23
+    git push --follow-tags $SAPMACHINE_GIT_REPOSITORY "openjdk/jdk23"
+  else
+    cd $REPO_PATH
+    git checkout "$REPO"
+    git fetch origin
+    git remote prune origin
+    git rebase origin/master
+    git push --follow-tags $SAPMACHINE_GIT_REPOSITORY "$REPO"
+    if git show-ref --verify --quiet refs/heads/openjdk/jdk23; then
+      git checkout "openjdk/jdk23"
+      git rebase origin/jdk23
+    else
+      git checkout -b "openjdk/jdk23" jdk23
+    fi
+    git push --follow-tags $SAPMACHINE_GIT_REPOSITORY "openjdk/jdk23"
+  fi
 else
-  cd $REPO_PATH
-  git checkout "$REPO"
-  git fetch origin
-  git remote prune origin
-  git rebase origin/master
+  if [ ! -d $REPO_PATH ]; then
+    git clone "$REPO_URL$REPO" $REPO_PATH
+    cd $REPO_PATH
+    git checkout -b "$REPO"
+  else
+    cd $REPO_PATH
+    git checkout "$REPO"
+    git fetch origin
+    git remote prune origin
+    git rebase origin/master
+  fi
+  git push --follow-tags $SAPMACHINE_GIT_REPOSITORY "$REPO"
 fi
-
-git push --follow-tags $SAPMACHINE_GIT_REPOSITORY "$REPO"
