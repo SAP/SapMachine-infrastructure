@@ -25,7 +25,7 @@ if [[ $REPO == "openjdk/jdk" ]]; then
     cd $REPO_PATH
     git checkout -b "$REPO"
     git push --follow-tags $SAPMACHINE_GIT_REPOSITORY "$REPO"
-    git checkout -b "openjdk/jdk23" jdk23
+    git checkout -b "openjdk/jdk23" origin/jdk23
     git push --follow-tags $SAPMACHINE_GIT_REPOSITORY "openjdk/jdk23"
   else
     cd $REPO_PATH
@@ -38,7 +38,7 @@ if [[ $REPO == "openjdk/jdk" ]]; then
       git checkout "openjdk/jdk23"
       git rebase origin/jdk23
     else
-      git checkout -b "openjdk/jdk23" jdk23
+      git checkout -b "openjdk/jdk23" origin/jdk23
     fi
     git push --follow-tags $SAPMACHINE_GIT_REPOSITORY "openjdk/jdk23"
   fi
