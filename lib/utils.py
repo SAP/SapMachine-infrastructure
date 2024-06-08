@@ -526,7 +526,7 @@ def get_sapmachine_releases(major = None):
         except Exception as e:
             print(f'Release data for {str(major)} could not be loaded: {e}')
 
-    return json.loads(download_text(download_text(f"https://sap.github.io/SapMachine/assets/data/sapmachine-releases-all.json")))
+    return json.loads(download_text(f"https://sap.github.io/SapMachine/assets/data/sapmachine-releases-all.json"))
 
 def sapmachine_asset_base_pattern():
     return '[^-]+-([^-]+)-([^_]+)_([^_]+)_bin'
