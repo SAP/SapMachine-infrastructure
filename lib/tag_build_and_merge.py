@@ -243,7 +243,6 @@ def main(argv=None):
         print("No active sapmachine branches found")
         return 0
 
-
     # fetch all tags
     print("Fetching GitHub tags...")
     tags = utils.get_github_tags()
@@ -268,7 +267,7 @@ def main(argv=None):
 
     # go through all sapmachine branches
     for sapmachine_branch in sapmachine_branches:
-        print(str.format('Processing branch "{0}" ({1})...', sapmachine_branch[0], sapmachine_branch[1]))
+        print(f'Processing branch "{sapmachine_branch[0]}" ({sapmachine_branch[1]})...')
 
         # checkout and update branch
         utils.run_cmd(str.format('git checkout {0}', sapmachine_branch[0]).split(' '))
