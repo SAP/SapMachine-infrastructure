@@ -505,10 +505,11 @@ class Generator:
         self.loggerich.log_status(f"Creating {self.args.output_prefix}-latest.json...")
         json_root = OrderedDict()
         for major in utils.sapmachine_dev_releases():
-            id = str(major) + "-ea"
-            d_major = {'label': f"SapMachine {major}", 'lts': True if utils.sapmachine_is_lts(major) else False, 'ea': True}
-            self.process_major_release_latest(self.sm_releases[str(major)]['updates'].values(), d_major, True)
-            json_root[id] = d_major
+            if str(major) in self.sm_releases:
+                id = str(major) + "-ea"
+                d_major = {'label': f"SapMachine {major}", 'lts': True if utils.sapmachine_is_lts(major) else False, 'ea': True}
+                self.process_major_release_latest(self.sm_releases[str(major)]['updates'].values(), d_major, True)
+                json_root[id] = d_major
 
         for major in utils.sapmachine_active_releases():
             id = str(major) + "-ea"
