@@ -596,9 +596,10 @@ class Generator:
         majors = []
         assets = OrderedDict()
         for major in utils.sapmachine_dev_releases():
-            id = str(major) + "-ea"
-            majors.append({'id': id, 'label': f"SapMachine {major}", 'lts': True if utils.sapmachine_is_lts(major) else False, 'ea': True})
-            self.process_major_release(self.sm_releases[str(major)]['updates'].values(), assets, id, True)
+            if str(major) in self.sm_releases:
+                id = str(major) + "-ea"
+                majors.append({'id': id, 'label': f"SapMachine {major}", 'lts': True if utils.sapmachine_is_lts(major) else False, 'ea': True})
+                self.process_major_release(self.sm_releases[str(major)]['updates'].values(), assets, id, True)
 
         for major in utils.sapmachine_active_releases():
             id = str(major) + "-ea"
