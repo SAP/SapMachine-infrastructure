@@ -87,7 +87,7 @@ def extract_os_arch_type(asset_name):
     return {'os': os_name, 'arch': arch, 'type': java_type}
 
 # Fetch stats and append timestamp
-def append_stats_to_csv(stats, file_name="release_stats.csv"):
+def append_stats_to_csv(stats, file_name="stats/release_stats.csv"):
     unique_id = str(uuid.uuid4())  # Generate a unique ID for the entire run
     timestamp = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')  # Format timestamp as yyyy-mm-dd HH:MM:SS
     data = []
