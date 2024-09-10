@@ -10,11 +10,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # 1. Checkout the release-stats branch
+    # 1. Checkout the current branch
     - name: Checkout repository
       uses: actions/checkout@v3
       with:
-        ref: release-stats  # Specify the branch to check out
+        ref: ${{ github.ref_name }}  # Dynamically use the current branch
 
     # 2. Set up Python environment
     - name: Set up Python
@@ -46,17 +46,17 @@ jobs:
     # 7. Fetch the latest changes and rebase
     - name: Fetch and rebase
       run: |
-        git fetch origin release-stats
-        git rebase origin/release-stats || { echo "Rebase failed, resolving conflicts"; exit 1; }
+        git fetch origin ${{ github.ref_name }}
+        git rebase origin/${{ github.ref_name }} || { echo "Rebase failed, resolving conflicts"; exit 1; }
 
     # 8. Apply stashed changes after rebase
     - name: Apply stashed changes
       run: |
         git stash pop || { echo "No stashed changes to apply"; }
 
-    # 9. Commit and push the changes back to the release-stats branch
+    # 9. Commit and push the changes back to the current branch
     - name: Commit and push changes
       run: |
         git add release_stats.csv
         git commit -m "Add nightly snapshot for $(date +'%Y-%m-%d %H:%M:%S')" || echo "No changes to commit"
-        git push origin release-stats || { echo "Push failed, please check the logs"; exit 1; }
+        git push origin ${{ github.ref_name }} || { echo "Push failed, please check the logs"; exit 1; }
