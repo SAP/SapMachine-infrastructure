@@ -27,36 +27,40 @@ jobs:
       run: |
         pip install requests pandas
 
-    # 4. Run the Python script to fetch and append download stats
+    # 4. Create stats directory (if it doesn't exist)
+    - name: Create stats directory
+      run: mkdir -p stats
+
+    # 5. Run the Python script to fetch and append download stats
     - name: Run Python script to fetch and append download stats
       run: python .github/scripts/fetch_and_append_stats.py
 
-    # 5. Configure Git for committing
+    # 6. Configure Git for committing
     - name: Configure Git
       run: |
         git config --local user.email "sapmachine@sap.com"
         git config --local user.name "SapMachine Github Actions Bot"
 
-    # 6. Stash any changes before rebase
+    # 7. Stash any changes before rebase
     - name: Stash changes
       run: |
         git add .
         git stash
 
-    # 7. Fetch the latest changes and rebase
+    # 8. Fetch the latest changes and rebase
     - name: Fetch and rebase
       run: |
         git fetch origin ${{ github.ref_name }}
         git rebase origin/${{ github.ref_name }} || { echo "Rebase failed, resolving conflicts"; exit 1; }
 
-    # 8. Apply stashed changes after rebase
+    # 9. Apply stashed changes after rebase
     - name: Apply stashed changes
       run: |
         git stash pop || { echo "No stashed changes to apply"; }
 
-    # 9. Commit and push the changes back to the current branch
+    # 10. Commit and push the changes back to the current branch
     - name: Commit and push changes
       run: |
-        git add release_stats.csv
+        git add stats/release_stats.csv
         git commit -m "Add nightly snapshot for $(date +'%Y-%m-%d %H:%M:%S')" || echo "No changes to commit"
         git push origin ${{ github.ref_name }} || { echo "Push failed, please check the logs"; exit 1; }
