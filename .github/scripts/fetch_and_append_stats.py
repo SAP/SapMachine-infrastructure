@@ -1,9 +1,12 @@
-
 import requests
 import pandas as pd
 from datetime import datetime
 import uuid
 import re
+import os
+
+# Set the maximum file size limit (in bytes) for the CSV
+MAX_FILE_SIZE = 50 * 1024 * 1024  # 50MB
 
 # Function to fetch download stats for all releases
 def fetch_release_stats():
@@ -56,7 +59,7 @@ def fetch_release_stats():
 def extract_os_arch_type(asset_name):
     patterns = {
         'linux': r'linux',
-        'macos': r'macos|osx',  # Updated to include both macos and osx
+        'macos': r'(macos|osx)',  # Handles both macos and osx, normalized to 'macos'
         'windows': r'windows',
         'alpine': r'alpine',
         'aarch64': r'aarch64',
@@ -78,13 +81,34 @@ def extract_os_arch_type(asset_name):
     
     # Extract OS and architecture
     for key, pattern in patterns.items():
-        if re.search(pattern, asset_name):
+        if re.search(pattern, asset_name, re.IGNORECASE):
             if key in ['linux', 'macos', 'windows', 'alpine']:
                 os_name = 'macos' if key == 'macos' else key
             elif key in ['aarch64', 'x64', 'x86', 'ppc64le']:
                 arch = key
     
     return {'os': os_name, 'arch': arch, 'type': java_type}
+
+# Function to find the next version number for the rotated file
+def get_next_version(file_name):
+    base_name = file_name.rstrip('.csv')
+    version = 1
+    
+    # Loop through existing files and find the highest version number
+    while os.path.exists(f"{base_name}_{version:03}.csv"):
+        version += 1
+    
+    return f"{base_name}_{version:03}.csv"
+
+# Function to rotate CSV file if it exceeds the max size
+def rotate_csv(file_name):
+    if os.path.exists(file_name) and os.path.getsize(file_name) >= MAX_FILE_SIZE:
+        # Get the next version of the file based on the existing files
+        new_file_name = get_next_version(file_name)
+        
+        # Rename the current file
+        os.rename(file_name, new_file_name)
+        print(f"Rotated {file_name} to {new_file_name}")
 
 # Fetch stats and append timestamp
 def append_stats_to_csv(stats, file_name="stats/release_stats.csv"):
@@ -107,6 +131,12 @@ def append_stats_to_csv(stats, file_name="stats/release_stats.csv"):
         })
     
     df = pd.DataFrame(data)
+    
+    # Ensure the directory exists
+    os.makedirs(os.path.dirname(file_name), exist_ok=True)
+    
+    # Check if the CSV file needs to be rotated due to size
+    rotate_csv(file_name)
     
     # Append to CSV file
     try:
