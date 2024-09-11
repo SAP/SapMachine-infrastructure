@@ -1,32 +1,66 @@
-name: Release Stats
+name: Nightly Snapshot of Release Download Statistics
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # Runs every night at midnight
+    - cron: '0 1 * * *'  # Runs every day at 1:00 AM (UTC)
+  workflow_dispatch:  # Allows manual triggering
 
 jobs:
-  fetch_release_stats:
+  collect-stats:
     runs-on: ubuntu-latest
 
     steps:
+    # 1. Checkout the current branch
     - name: Checkout repository
-      uses: actions/checkout@v2
-      
+      uses: actions/checkout@v3
+      with:
+        ref: ${{ github.ref_name }}  # Dynamically use the current branch
+
+    # 2. Set up Python environment
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: '3.x'
 
+    # 3. Install required Python dependencies
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip
-        pip install pandas requests
-    
-    - name: Run Python script
-      run: python path/to/your_script.py
+        pip install requests pandas
 
-    - name: Upload CSV files (artifacts)
-      uses: actions/upload-artifact@v2
-      with:
-        name: release-stats
-        path: stats/*.csv  # Upload all CSVs in the stats directory
+    # 4. Create stats directory (if it doesn't exist)
+    - name: Create stats directory
+      run: mkdir -p stats
+
+    # 5. Run the Python script to fetch and append download stats with file rotation
+    - name: Run Python script to fetch and append download stats
+      run: python .github/scripts/fetch_and_append_stats.py
+
+    # 6. Configure Git for committing
+    - name: Configure Git
+      run: |
+        git config --local user.email "sapmachine@sap.com"
+        git config --local user.name "SapMachine Github Actions Bot"
+
+    # 7. Stash any changes before rebase
+    - name: Stash changes
+      run: |
+        git add .
+        git stash
+
+    # 8. Fetch the latest changes and rebase
+    - name: Fetch and rebase
+      run: |
+        git fetch origin ${{ github.ref_name }}
+        git rebase origin/${{ github.ref_name }} || { echo "Rebase failed, resolving conflicts"; exit 1; }
+
+    # 9. Apply stashed changes after rebase
+    - name: Apply stashed changes
+      run: |
+        git stash pop || { echo "No stashed changes to apply"; }
+
+    # 10. Commit and push the changes back to the current branch
+    - name: Commit and push changes
+      run: |
+        git add stats/release_stats*.csv
+        git commit -m "Add nightly snapshot for $(date +'%Y-%m-%d %H:%M:%S')" || echo "No changes to commit"
+        git push origin ${{ github.ref_name }} || { echo "Push failed, please check the logs"; exit 1; }
