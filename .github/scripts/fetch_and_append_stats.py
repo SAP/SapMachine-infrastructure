@@ -2,11 +2,8 @@ import requests
 import pandas as pd
 from datetime import datetime
 import uuid
-import re
 import os
-
-# Set the maximum file size limit (in bytes) for the CSV
-MAX_FILE_SIZE = 50 * 1024 * 1024  # 50MB
+import shutil
 
 # Function to fetch download stats for all releases
 def fetch_release_stats():
@@ -89,35 +86,38 @@ def extract_os_arch_type(asset_name):
     
     return {'os': os_name, 'arch': arch, 'type': java_type}
 
-# Function to find the next version number for the rotated file
-def get_next_version(file_name):
-    # Remove the file extension using os.path.splitext
-    base_name, ext = os.path.splitext(file_name)
+# Function to find the next available archive file name (with a counter for uniqueness)
+def get_next_archive_file_name(base_name="stats/release_stats", date_suffix=None):
+    # Use the current date if no date is provided
+    if date_suffix is None:
+        date_suffix = datetime.utcnow().strftime('%Y-%m-%d')
     
-    # Ensure 'release_stats' instead of 'release_stat'
-    if base_name == "release_stat":
-        base_name = "release_stats"
+    counter = 1
+    while True:
+        archive_file_name = f"{base_name}_{date_suffix}-{counter:03}.csv"
+        if not os.path.exists(archive_file_name):
+            return archive_file_name
+        counter += 1
 
-    version = 1
-    
-    # Loop through existing files and find the highest version number
-    while os.path.exists(f"{base_name}_{version:03}.csv"):
-        version += 1
-    
-    return f"{base_name}_{version:03}.csv"
-
-# Function to rotate CSV file if it exceeds the max size
-def rotate_csv(file_name):
-    if os.path.exists(file_name) and os.path.getsize(file_name) >= MAX_FILE_SIZE:
-        # Get the next version of the file based on the existing files
-        new_file_name = get_next_version(file_name)
+# Function to archive the previous release stats file
+def archive_previous_stats(file_name="stats/release_stats.csv"):
+    # Check if the release_stats.csv exists
+    if os.path.exists(file_name):
+        # Extract the modification time of the current file
+        mod_time = os.path.getmtime(file_name)
+        archive_date = datetime.utcfromtimestamp(mod_time).strftime('%Y-%m-%d')
         
-        # Rename the current file
-        os.rename(file_name, new_file_name)
-        print(f"Rotated {file_name} to {new_file_name}")
+        # Get the next available file name (with a counter for uniqueness)
+        archive_file_name = get_next_archive_file_name(date_suffix=archive_date)
+        
+        # Move the current file to the new archive file name
+        shutil.move(file_name, archive_file_name)
+        print(f"Archived previous stats to {archive_file_name}")
+    else:
+        print(f"No previous stats file found at {file_name} to archive.")
 
-# Fetch stats and append timestamp
-def append_stats_to_csv(stats, file_name="stats/release_stats.csv"):
+# Function to write the new stats to release_stats.csv
+def write_stats_to_csv(stats, file_name="stats/release_stats.csv"):
     unique_id = str(uuid.uuid4())  # Generate a unique ID for the entire run
     timestamp = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')  # Format timestamp as yyyy-mm-dd HH:MM:SS
     data = []
@@ -141,19 +141,17 @@ def append_stats_to_csv(stats, file_name="stats/release_stats.csv"):
     # Ensure the directory exists
     os.makedirs(os.path.dirname(file_name), exist_ok=True)
     
-    # Check if the CSV file needs to be rotated due to size
-    rotate_csv(file_name)
-    
-    # Append to CSV file
-    try:
-        existing_df = pd.read_csv(file_name)
-        df = pd.concat([existing_df, df], ignore_index=True)
-    except FileNotFoundError:
-        df.to_csv(file_name, index=False)  # Create the file if it doesn't exist
-    else:
-        df.to_csv(file_name, index=False)
+    # Write the new data to release_stats.csv
+    df.to_csv(file_name, index=False)
+    print(f"New stats written to {file_name}")
 
 # Main execution
 if __name__ == "__main__":
+    # Archive the previous release_stats.csv (if it exists)
+    archive_previous_stats()
+
+    # Fetch new stats from the GitHub API
     stats = fetch_release_stats()
-    append_stats_to_csv(stats)
+
+    # Write the new stats to release_stats.csv
+    write_stats_to_csv(stats)
