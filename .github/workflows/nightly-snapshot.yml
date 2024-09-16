@@ -5,16 +5,20 @@ on:
     - cron: '0 1 * * *'  # Runs every day at 1:00 AM (UTC)
   workflow_dispatch:  # Allows manual triggering
 
+permissions:
+  contents: write  # Ensure write permissions
+
 jobs:
   collect-stats:
     runs-on: ubuntu-latest
 
     steps:
-    # 1. Checkout the repository (will default to the main branch if release_stats doesn't exist)
+    # 1. Checkout the repository with GitHub token for authentication
     - name: Checkout repository
       uses: actions/checkout@v3
       with:
-        ref: main  # Checkout the main branch initially
+        token: ${{ secrets.GITHUB_TOKEN }}
+        fetch-depth: 0  # Fetch full history
 
     # 2. Set up Python environment
     - name: Set up Python
@@ -31,7 +35,7 @@ jobs:
     - name: Create stats directory
       run: mkdir -p stats
 
-    # 5. Check if "release_stats" branch exists and create it if not
+    # 5. Check if "release_stats" branch exists and create if necessary
     - name: Check if release_stats branch exists
       run: |
         git fetch origin
@@ -41,8 +45,7 @@ jobs:
           echo "Branch release_stats does not exist. Creating branch."
           git checkout -b release_stats
           git push origin release_stats
-        fi
-
+          
     # 6. Checkout the "release_stats" branch
     - name: Checkout "release_stats" branch
       run: git checkout release_stats
@@ -57,7 +60,7 @@ jobs:
         git config --local user.email "sapmachine@sap.com"
         git config --local user.name "SapMachine Github Actions Bot"
 
-    # 9. Commit and push the changes to the "release_stats" branch
+    # 9. Commit and push changes to the "release_stats" branch
     - name: Commit and push changes
       run: |
         git add stats/release_stats*.csv
