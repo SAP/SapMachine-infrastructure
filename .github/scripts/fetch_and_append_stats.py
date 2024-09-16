@@ -1,9 +1,9 @@
 import requests
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, timezone
 import uuid
+import re  # Ensure this import is present
 import os
-import shutil
 
 # Function to fetch download stats for all releases
 def fetch_release_stats():
@@ -85,73 +85,3 @@ def extract_os_arch_type(asset_name):
                 arch = key
     
     return {'os': os_name, 'arch': arch, 'type': java_type}
-
-# Function to find the next available archive file name (with a counter for uniqueness)
-def get_next_archive_file_name(base_name="stats/release_stats", date_suffix=None):
-    # Use the current date if no date is provided
-    if date_suffix is None:
-        date_suffix = datetime.utcnow().strftime('%Y-%m-%d')
-    
-    counter = 1
-    while True:
-        archive_file_name = f"{base_name}_{date_suffix}-{counter:03}.csv"
-        if not os.path.exists(archive_file_name):
-            return archive_file_name
-        counter += 1
-
-# Function to archive the previous release stats file
-def archive_previous_stats(file_name="stats/release_stats.csv"):
-    # Check if the release_stats.csv exists
-    if os.path.exists(file_name):
-        # Extract the modification time of the current file
-        mod_time = os.path.getmtime(file_name)
-        archive_date = datetime.utcfromtimestamp(mod_time).strftime('%Y-%m-%d')
-        
-        # Get the next available file name (with a counter for uniqueness)
-        archive_file_name = get_next_archive_file_name(date_suffix=archive_date)
-        
-        # Move the current file to the new archive file name
-        shutil.move(file_name, archive_file_name)
-        print(f"Archived previous stats to {archive_file_name}")
-    else:
-        print(f"No previous stats file found at {file_name} to archive.")
-
-# Function to write the new stats to release_stats.csv
-def write_stats_to_csv(stats, file_name="stats/release_stats.csv"):
-    unique_id = str(uuid.uuid4())  # Generate a unique ID for the entire run
-    timestamp = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')  # Format timestamp as yyyy-mm-dd HH:MM:SS
-    data = []
-    
-    for stat in stats:
-        data.append({
-            'id': unique_id,  # Use the same unique ID for all rows in this run
-            'timestamp': timestamp,
-            'release_name': stat['release_name'],
-            'release_id': stat['release_id'],
-            'is_prerelease': stat['is_prerelease'],
-            'asset_name': stat['asset_name'],
-            'os_name': stat['os_name'],
-            'architecture': stat['architecture'],
-            'java_type': stat['java_type'],
-            'total_downloads': stat['total_downloads']
-        })
-    
-    df = pd.DataFrame(data)
-    
-    # Ensure the directory exists
-    os.makedirs(os.path.dirname(file_name), exist_ok=True)
-    
-    # Write the new data to release_stats.csv
-    df.to_csv(file_name, index=False)
-    print(f"New stats written to {file_name}")
-
-# Main execution
-if __name__ == "__main__":
-    # Archive the previous release_stats.csv (if it exists)
-    archive_previous_stats()
-
-    # Fetch new stats from the GitHub API
-    stats = fetch_release_stats()
-
-    # Write the new stats to release_stats.csv
-    write_stats_to_csv(stats)
