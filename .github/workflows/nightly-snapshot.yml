@@ -13,12 +13,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # 1. Checkout the repository with GitHub token for authentication
+    # 1. Checkout the repository
     - name: Checkout repository
       uses: actions/checkout@v3
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        fetch-depth: 0  # Fetch full history
+        fetch-depth: 0  # Fetch full history to ensure the branch is fully available
 
     # 2. Set up Python environment
     - name: Set up Python
@@ -35,17 +35,10 @@ jobs:
     - name: Create stats directory
       run: mkdir -p stats
 
-    # 5. Check if "release_stats" branch exists and create if necessary
-    - name: Check if release_stats branch exists
+    # 5. Checkout the release_stats branch
+    - name: Checkout release_stats branch
       run: |
-        git fetch origin
-        if git show-ref --verify --quiet refs/heads/release_stats; then
-          echo "Branch release_stats exists. Checking it out."
-          git checkout release_stats
-        else
-          echo "Branch release_stats does not exist. Creating branch."
-          git checkout -b release_stats
-          git push origin release_stats
+        git checkout release_stats || git checkout -b release_stats
 
     # 6. Run the Python script to fetch and append download stats
     - name: Run Python script to fetch and append download stats
