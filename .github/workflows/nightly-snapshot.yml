@@ -10,11 +10,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # 1. Checkout the specific "release_stats" branch
-    - name: Checkout "release_stats" branch
+    # 1. Checkout the repository (will default to the main branch if release_stats doesn't exist)
+    - name: Checkout repository
       uses: actions/checkout@v3
       with:
-        ref: release_stats  # Always operate on the release_stats branch
+        ref: main  # Checkout the main branch initially
 
     # 2. Set up Python environment
     - name: Set up Python
@@ -31,17 +31,33 @@ jobs:
     - name: Create stats directory
       run: mkdir -p stats
 
-    # 5. Run the Python script to fetch and append download stats
+    # 5. Check if "release_stats" branch exists and create it if not
+    - name: Check if release_stats branch exists
+      run: |
+        git fetch origin
+        if git show-ref --verify --quiet refs/heads/release_stats; then
+          echo "Branch release_stats exists."
+        else
+          echo "Branch release_stats does not exist. Creating branch."
+          git checkout -b release_stats
+          git push origin release_stats
+        fi
+
+    # 6. Checkout the "release_stats" branch
+    - name: Checkout "release_stats" branch
+      run: git checkout release_stats
+
+    # 7. Run the Python script to fetch and append download stats
     - name: Run Python script to fetch and append download stats
       run: python .github/scripts/fetch_and_append_stats.py
 
-    # 6. Configure Git for committing
+    # 8. Configure Git for committing
     - name: Configure Git
       run: |
         git config --local user.email "sapmachine@sap.com"
         git config --local user.name "SapMachine Github Actions Bot"
 
-    # 7. Commit and push the changes to the "release_stats" branch
+    # 9. Commit and push the changes to the "release_stats" branch
     - name: Commit and push changes
       run: |
         git add stats/release_stats*.csv
