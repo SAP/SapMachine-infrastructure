@@ -2,8 +2,11 @@ import requests
 import pandas as pd
 from datetime import datetime, timezone
 import uuid
-import re  # Ensure this import is present
+import re
 import os
+
+# Set the maximum file size limit (in bytes) for the CSV
+MAX_FILE_SIZE = 50 * 1024 * 1024  # 50MB
 
 # Function to fetch download stats for all releases
 def fetch_release_stats():
@@ -85,3 +88,78 @@ def extract_os_arch_type(asset_name):
                 arch = key
     
     return {'os': os_name, 'arch': arch, 'type': java_type}
+
+# Function to find the next version number for the rotated file
+def get_next_version(file_name):
+    # Remove the file extension using os.path.splitext
+    base_name, ext = os.path.splitext(file_name)
+    
+    # Ensure 'release_stats' instead of 'release_stat'
+    if base_name == "release_stat":
+        base_name = "release_stats"
+
+    version = 1
+    
+    # Loop through existing files and find the highest version number
+    while os.path.exists(f"{base_name}_{version:03}.csv"):
+        version += 1
+    
+    return f"{base_name}_{version:03}.csv"
+
+# Function to archive the current CSV file with a timestamp
+def archive_csv(file_name):
+    if os.path.exists(file_name):
+        # Get the last modification time and format it
+        mod_time = os.path.getmtime(file_name)
+        archive_date = datetime.fromtimestamp(mod_time, tz=timezone.utc).strftime('%Y-%m-%d')
+        
+        # Find the next available version number for the archive file
+        version = 1
+        while os.path.exists(f"stats/release_stats_{archive_date}-{version:03}.csv"):
+            version += 1
+        
+        archive_file_name = f"stats/release_stats_{archive_date}-{version:03}.csv"
+        os.rename(file_name, archive_file_name)
+        print(f"Archived previous stats to {archive_file_name}")
+
+# Fetch stats and append timestamp
+def append_stats_to_csv(stats, file_name="stats/release_stats.csv"):
+    unique_id = str(uuid.uuid4())  # Generate a unique ID for the entire run
+    timestamp = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')  # Format timestamp as yyyy-mm-dd HH:MM:SS
+    data = []
+    
+    for stat in stats:
+        data.append({
+            'id': unique_id,  # Use the same unique ID for all rows in this run
+            'timestamp': timestamp,
+            'release_name': stat['release_name'],
+            'release_id': stat['release_id'],
+            'is_prerelease': stat['is_prerelease'],
+            'asset_name': stat['asset_name'],
+            'os_name': stat['os_name'],
+            'architecture': stat['architecture'],
+            'java_type': stat['java_type'],
+            'total_downloads': stat['total_downloads']
+        })
+    
+    df = pd.DataFrame(data)
+    
+    # Ensure the directory exists
+    os.makedirs(os.path.dirname(file_name), exist_ok=True)
+    
+    # Archive the current CSV file before writing new data
+    archive_csv(file_name)
+    
+    # Append to CSV file
+    try:
+        existing_df = pd.read_csv(file_name)
+        df = pd.concat([existing_df, df], ignore_index=True)
+    except FileNotFoundError:
+        df.to_csv(file_name, index=False)  # Create the file if it doesn't exist
+    else:
+        df.to_csv(file_name, index=False)
+
+# Main execution
+if __name__ == "__main__":
+    stats = fetch_release_stats()
+    append_stats_to_csv(stats)
