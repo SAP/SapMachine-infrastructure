@@ -40,27 +40,24 @@ jobs:
       run: |
         git fetch origin
         if git show-ref --verify --quiet refs/heads/release_stats; then
-          echo "Branch release_stats exists."
+          echo "Branch release_stats exists. Checking it out."
+          git checkout release_stats
         else
           echo "Branch release_stats does not exist. Creating branch."
           git checkout -b release_stats
           git push origin release_stats
-          
-    # 6. Checkout the "release_stats" branch
-    - name: Checkout "release_stats" branch
-      run: git checkout release_stats
 
-    # 7. Run the Python script to fetch and append download stats
+    # 6. Run the Python script to fetch and append download stats
     - name: Run Python script to fetch and append download stats
       run: python .github/scripts/fetch_and_append_stats.py
 
-    # 8. Configure Git for committing
+    # 7. Configure Git for committing
     - name: Configure Git
       run: |
         git config --local user.email "sapmachine@sap.com"
         git config --local user.name "SapMachine Github Actions Bot"
 
-    # 9. Commit and push changes to the "release_stats" branch
+    # 8. Commit and push changes to the "release_stats" branch
     - name: Commit and push changes
       run: |
         git add stats/release_stats*.csv
