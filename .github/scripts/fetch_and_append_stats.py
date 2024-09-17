@@ -4,6 +4,11 @@ from datetime import datetime
 import uuid
 import os
 import shutil
+import re
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
 
 # Function to fetch download stats for all releases
 def fetch_release_stats():
@@ -11,12 +16,16 @@ def fetch_release_stats():
     url = "https://api.github.com/repos/SAP/SapMachine/releases"
     
     while url:
-        response = requests.get(url)
-        response.raise_for_status()
-        data = response.json()
-        releases.extend(data)
-        # Get the URL for the next page, if it exists
-        url = response.links.get('next', {}).get('url')
+        try:
+            response = requests.get(url)
+            response.raise_for_status()
+            data = response.json()
+            releases.extend(data)
+            # Get the URL for the next page, if it exists
+            url = response.links.get('next', {}).get('url')
+        except requests.RequestException as e:
+            logging.error(f"Error fetching data from GitHub API: {e}")
+            break
     
     stats = []
     for release in releases:
@@ -33,7 +42,7 @@ def fetch_release_stats():
             
             total_downloads = asset['download_count']
             
-            # Extract OS, architecture, and type (jre/jdk) from the asset name using regex
+            # Extract OS, architecture, and type (jre/jdk) from the asset name
             os_arch_type = extract_os_arch_type(asset_name)
             os_name = os_arch_type.get('os')
             arch = os_arch_type.get('arch')
@@ -99,9 +108,9 @@ def archive_previous_stats(file_name="stats/release_stats.csv"):
         
         # Move the current file to the new archive file name
         shutil.move(file_name, archive_file_name)
-        print(f"Archived previous stats to {archive_file_name}")
+        logging.info(f"Archived previous stats to {archive_file_name}")
     else:
-        print(f"No previous stats file found at {file_name} to archive.")
+        logging.info(f"No previous stats file found at {file_name} to archive.")
 
 # Function to write the new stats to release_stats.csv
 def write_stats_to_csv(stats, file_name="stats/release_stats.csv"):
@@ -130,7 +139,7 @@ def write_stats_to_csv(stats, file_name="stats/release_stats.csv"):
     
     # Write the new data to release_stats.csv
     df.to_csv(file_name, index=False)
-    print(f"New stats written to {file_name}")
+    logging.info(f"New stats written to {file_name}")
 
 # Main execution
 if __name__ == "__main__":
