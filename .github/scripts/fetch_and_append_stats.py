@@ -1,12 +1,9 @@
 import requests
 import pandas as pd
-from datetime import datetime, timezone
+from datetime import datetime
 import uuid
-import re
 import os
-
-# Set the maximum file size limit (in bytes) for the CSV
-MAX_FILE_SIZE = 50 * 1024 * 1024  # 50MB
+import shutil
 
 # Function to fetch download stats for all releases
 def fetch_release_stats():
@@ -89,41 +86,25 @@ def extract_os_arch_type(asset_name):
     
     return {'os': os_name, 'arch': arch, 'type': java_type}
 
-# Function to find the next version number for the rotated file
-def get_next_version(file_name):
-    # Remove the file extension using os.path.splitext
-    base_name, ext = os.path.splitext(file_name)
-    
-    # Ensure 'release_stats' instead of 'release_stat'
-    if base_name == "release_stat":
-        base_name = "release_stats"
-
-    version = 1
-    
-    # Loop through existing files and find the highest version number
-    while os.path.exists(f"{base_name}_{version:03}.csv"):
-        version += 1
-    
-    return f"{base_name}_{version:03}.csv"
-
-# Function to archive the current CSV file with a timestamp
-def archive_csv(file_name):
+# Function to archive the previous release stats file
+def archive_previous_stats(file_name="stats/release_stats.csv"):
+    # Check if the release_stats.csv exists
     if os.path.exists(file_name):
-        # Get the last modification time and format it
+        # Extract the modification time of the current file
         mod_time = os.path.getmtime(file_name)
-        archive_date = datetime.fromtimestamp(mod_time, tz=timezone.utc).strftime('%Y-%m-%d')
+        archive_date = datetime.utcfromtimestamp(mod_time).strftime('%Y-%m-%d')
         
-        # Find the next available version number for the archive file
-        version = 1
-        while os.path.exists(f"stats/release_stats_{archive_date}-{version:03}.csv"):
-            version += 1
+        # Construct the new file name with the date suffix
+        archive_file_name = f"stats/release_stats_{archive_date}.csv"
         
-        archive_file_name = f"stats/release_stats_{archive_date}-{version:03}.csv"
-        os.rename(file_name, archive_file_name)
+        # Move the current file to the new archive file name
+        shutil.move(file_name, archive_file_name)
         print(f"Archived previous stats to {archive_file_name}")
+    else:
+        print(f"No previous stats file found at {file_name} to archive.")
 
-# Fetch stats and append timestamp
-def append_stats_to_csv(stats, file_name="stats/release_stats.csv"):
+# Function to write the new stats to release_stats.csv
+def write_stats_to_csv(stats, file_name="stats/release_stats.csv"):
     unique_id = str(uuid.uuid4())  # Generate a unique ID for the entire run
     timestamp = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')  # Format timestamp as yyyy-mm-dd HH:MM:SS
     data = []
@@ -147,19 +128,17 @@ def append_stats_to_csv(stats, file_name="stats/release_stats.csv"):
     # Ensure the directory exists
     os.makedirs(os.path.dirname(file_name), exist_ok=True)
     
-    # Archive the current CSV file before writing new data
-    archive_csv(file_name)
-    
-    # Append to CSV file
-    try:
-        existing_df = pd.read_csv(file_name)
-        df = pd.concat([existing_df, df], ignore_index=True)
-    except FileNotFoundError:
-        df.to_csv(file_name, index=False)  # Create the file if it doesn't exist
-    else:
-        df.to_csv(file_name, index=False)
+    # Write the new data to release_stats.csv
+    df.to_csv(file_name, index=False)
+    print(f"New stats written to {file_name}")
 
 # Main execution
 if __name__ == "__main__":
+    # Archive the previous release_stats.csv (if it exists)
+    archive_previous_stats()
+
+    # Fetch new stats from the GitHub API
     stats = fetch_release_stats()
-    append_stats_to_csv(stats)
+
+    # Write the new stats to release_stats.csv
+    write_stats_to_csv(stats)
