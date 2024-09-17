@@ -1,10 +1,10 @@
+import os
+import re
 import requests
 import pandas as pd
 from datetime import datetime
 import uuid
-import os
 import shutil
-import re
 import logging
 
 # Configure logging
@@ -112,8 +112,17 @@ def archive_previous_stats(file_name="stats/release_stats.csv"):
     else:
         logging.info(f"No previous stats file found at {file_name} to archive.")
 
-# Function to write the new stats to release_stats.csv
-def write_stats_to_csv(stats, file_name="stats/release_stats.csv"):
+# Function to get the next available file name with a three-digit counter
+def get_next_filename(base_name="stats/release_stats"):
+    counter = 1
+    while True:
+        file_name = f"{base_name}_{datetime.now().strftime('%Y-%m-%d')}_{counter:03d}.csv"
+        if not os.path.exists(file_name):
+            return file_name
+        counter += 1
+
+# Function to write the new stats to a CSV file with unique name
+def write_stats_to_csv(stats, base_name="stats/release_stats"):
     unique_id = str(uuid.uuid4())  # Generate a unique ID for the entire run
     timestamp = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')  # Format timestamp as yyyy-mm-dd HH:MM:SS
     data = []
@@ -135,9 +144,12 @@ def write_stats_to_csv(stats, file_name="stats/release_stats.csv"):
     df = pd.DataFrame(data)
     
     # Ensure the directory exists
-    os.makedirs(os.path.dirname(file_name), exist_ok=True)
+    os.makedirs(os.path.dirname(base_name), exist_ok=True)
     
-    # Write the new data to release_stats.csv
+    # Get the next available file name
+    file_name = get_next_filename(base_name)
+    
+    # Write the new data to the CSV file
     df.to_csv(file_name, index=False)
     logging.info(f"New stats written to {file_name}")
 
@@ -149,5 +161,5 @@ if __name__ == "__main__":
     # Fetch new stats from the GitHub API
     stats = fetch_release_stats()
 
-    # Write the new stats to release_stats.csv
+    # Write the new stats to a uniquely named CSV file
     write_stats_to_csv(stats)
