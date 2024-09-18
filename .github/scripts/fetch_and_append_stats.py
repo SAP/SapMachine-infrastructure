@@ -102,8 +102,9 @@ def extract_os_arch_type(asset_name):
 # Function to get the next available file name with a three-digit counter
 def get_next_filename(base_name="stats/release_stats"):
     counter = 1
+    date_suffix = datetime.now().strftime('%Y-%m-%d')  # Get the date once
     while True:
-        file_name = f"{base_name}_{datetime.now().strftime('%Y-%m-%d')}_{counter:03d}.csv"
+        file_name = f"{base_name}_{date_suffix}_{counter:03d}.csv"
         if not os.path.exists(file_name):
             return file_name
         counter += 1
@@ -112,10 +113,8 @@ def get_next_filename(base_name="stats/release_stats"):
 def archive_previous_stats(file_name="stats/release_stats.csv"):
     # Check if the release_stats.csv exists
     if os.path.exists(file_name):
-        # Generate a base name with date
-        date_suffix = datetime.now().strftime('%Y-%m-%d')
-        # Find the next available counter for today's file
-        new_file_name = get_next_filename(base_name=f"stats/release_stats_{date_suffix}")
+        # Generate a base name with the current date
+        new_file_name = get_next_filename(base_name="stats/release_stats")
         # Rename the old stats file
         shutil.move(file_name, new_file_name)
         logging.info(f"Archived previous stats to {new_file_name}")
