@@ -68,6 +68,7 @@ def extract_os_arch_type(asset_name):
         'macos': r'(macos|osx)',  # Handles both macos and osx, normalized to 'macos'
         'windows': r'windows',
         'alpine': r'alpine',
+        'aix': r'aix',  # Add pattern for AIX
         'aarch64': r'aarch64',
         'x64': r'x64',
         'x86': r'x86',
@@ -79,38 +80,24 @@ def extract_os_arch_type(asset_name):
     arch = None
     java_type = None
     
+    # Convert asset name to lowercase to ensure case-insensitive matching
+    asset_name_lower = asset_name.lower()
+
     # Extract the JRE or JDK type
-    if 'jre' in asset_name.lower():
+    if 'jre' in asset_name_lower:
         java_type = 'jre'
-    elif 'jdk' in asset_name.lower():
+    elif 'jdk' in asset_name_lower:
         java_type = 'jdk'
     
     # Extract OS and architecture
     for key, pattern in patterns.items():
-        if re.search(pattern, asset_name, re.IGNORECASE):
-            if key in ['linux', 'macos', 'windows', 'alpine']:
+        if re.search(pattern, asset_name_lower):
+            if key in ['linux', 'macos', 'windows', 'alpine', 'aix']:  # Handle AIX
                 os_name = 'macos' if key == 'macos' else key
             elif key in ['aarch64', 'x64', 'x86', 'ppc64le']:
                 arch = key
     
     return {'os': os_name, 'arch': arch, 'type': java_type}
-
-# Function to archive the previous release stats file
-def archive_previous_stats(file_name="stats/release_stats.csv"):
-    # Check if the release_stats.csv exists
-    if os.path.exists(file_name):
-        # Extract the modification time of the current file
-        mod_time = os.path.getmtime(file_name)
-        archive_date = datetime.utcfromtimestamp(mod_time).strftime('%Y-%m-%d')
-        
-        # Construct the new file name with the date suffix
-        archive_file_name = f"stats/release_stats_{archive_date}.csv"
-        
-        # Move the current file to the new archive file name
-        shutil.move(file_name, archive_file_name)
-        logging.info(f"Archived previous stats to {archive_file_name}")
-    else:
-        logging.info(f"No previous stats file found at {file_name} to archive.")
 
 # Function to get the next available file name with a three-digit counter
 def get_next_filename(base_name="stats/release_stats"):
@@ -121,8 +108,22 @@ def get_next_filename(base_name="stats/release_stats"):
             return file_name
         counter += 1
 
-# Function to write the new stats to a CSV file with unique name
-def write_stats_to_csv(stats, base_name="stats/release_stats"):
+# Function to archive the previous release_stats.csv file
+def archive_previous_stats(file_name="stats/release_stats.csv"):
+    # Check if the release_stats.csv exists
+    if os.path.exists(file_name):
+        # Generate a base name with date
+        date_suffix = datetime.now().strftime('%Y-%m-%d')
+        # Find the next available counter for today's file
+        new_file_name = get_next_filename(base_name=f"stats/release_stats_{date_suffix}")
+        # Rename the old stats file
+        shutil.move(file_name, new_file_name)
+        logging.info(f"Archived previous stats to {new_file_name}")
+    else:
+        logging.info(f"No previous stats file found at {file_name} to archive.")
+
+# Function to write the new stats to a CSV file (always named release_stats.csv)
+def write_stats_to_csv(stats, file_name="stats/release_stats.csv"):
     unique_id = str(uuid.uuid4())  # Generate a unique ID for the entire run
     timestamp = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')  # Format timestamp as yyyy-mm-dd HH:MM:SS
     data = []
@@ -144,12 +145,9 @@ def write_stats_to_csv(stats, base_name="stats/release_stats"):
     df = pd.DataFrame(data)
     
     # Ensure the directory exists
-    os.makedirs(os.path.dirname(base_name), exist_ok=True)
+    os.makedirs(os.path.dirname(file_name), exist_ok=True)
     
-    # Get the next available file name
-    file_name = get_next_filename(base_name)
-    
-    # Write the new data to the CSV file
+    # Write the new data to the CSV file (overwriting if it exists)
     df.to_csv(file_name, index=False)
     logging.info(f"New stats written to {file_name}")
 
@@ -161,5 +159,5 @@ if __name__ == "__main__":
     # Fetch new stats from the GitHub API
     stats = fetch_release_stats()
 
-    # Write the new stats to a uniquely named CSV file
+    # Write the new stats to the release_stats.csv file
     write_stats_to_csv(stats)
