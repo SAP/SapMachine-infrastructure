@@ -3,7 +3,6 @@ import re
 import requests
 import pandas as pd
 from datetime import datetime
-import uuid
 import shutil
 import logging
 
@@ -65,14 +64,15 @@ def fetch_release_stats():
 def extract_os_arch_type(asset_name):
     patterns = {
         'linux': r'linux',
-        'macos': r'(macos|osx)',  # Handles both macos and osx, normalized to 'macos'
+        'macos': r'(macos|osx)',  # Normalize both 'macos' and 'osx' to 'macos'
         'windows': r'windows',
         'alpine': r'alpine',
-        'aix': r'aix',  # Add pattern for AIX
+        'aix': r'aix',  # AIX OS
         'aarch64': r'aarch64',
         'x64': r'x64',
         'x86': r'x86',
         'ppc64le': r'ppc64le',
+        'ppc64': r'ppc64',  # Add pattern for ppc64 (specific to AIX)
         'musl': r'musl'
     }
     
@@ -92,9 +92,9 @@ def extract_os_arch_type(asset_name):
     # Extract OS and architecture
     for key, pattern in patterns.items():
         if re.search(pattern, asset_name_lower):
-            if key in ['linux', 'macos', 'windows', 'alpine', 'aix']:  # Handle AIX
-                os_name = 'macos' if key == 'macos' else key
-            elif key in ['aarch64', 'x64', 'x86', 'ppc64le']:
+            if key in ['linux', 'macos', 'windows', 'alpine', 'aix']:  # Handle OS
+                os_name = key
+            elif key in ['aarch64', 'x64', 'x86', 'ppc64le', 'ppc64']:  # Handle architecture
                 arch = key
     
     return {'os': os_name, 'arch': arch, 'type': java_type}
@@ -123,13 +123,11 @@ def archive_previous_stats(file_name="stats/release_stats.csv"):
 
 # Function to write the new stats to a CSV file (always named release_stats.csv)
 def write_stats_to_csv(stats, file_name="stats/release_stats.csv"):
-    unique_id = str(uuid.uuid4())  # Generate a unique ID for the entire run
     timestamp = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')  # Format timestamp as yyyy-mm-dd HH:MM:SS
     data = []
     
     for stat in stats:
         data.append({
-            'id': unique_id,  # Use the same unique ID for all rows in this run
             'timestamp': timestamp,
             'release_name': stat['release_name'],
             'release_id': stat['release_id'],
