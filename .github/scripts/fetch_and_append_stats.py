@@ -123,7 +123,8 @@ def archive_previous_stats(file_name="stats/release_stats.csv"):
 
 # Function to write the new stats to a CSV file (always named release_stats.csv)
 def write_stats_to_csv(stats, file_name="stats/release_stats.csv"):
-    timestamp = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')  # Format timestamp as yyyy-mm-dd HH:MM:SS
+    # Format timestamp as ISO 8601 format: 'yyyy-MM-ddTHH:mm:ss'
+    timestamp = datetime.utcnow().isoformat(timespec='seconds')
     data = []
     
     for stat in stats:
