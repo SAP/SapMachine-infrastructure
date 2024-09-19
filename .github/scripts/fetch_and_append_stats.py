@@ -69,10 +69,10 @@ def extract_os_arch_type(asset_name):
         'alpine': r'alpine',
         'aix': r'aix',  # AIX OS
         'aarch64': r'aarch64',
-        'x64': r'x64',
+        'x64': r'(x64|x86_64)',
         'x86': r'x86',
         'ppc64le': r'ppc64le',
-        'ppc64': r'ppc64',  # Add pattern for ppc64 (specific to AIX)
+        'ppc64': r'ppc64',  
         'musl': r'musl'
     }
     
