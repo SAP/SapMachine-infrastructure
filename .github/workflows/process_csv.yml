@@ -14,9 +14,6 @@ jobs:
       with:
         ref: release_stats  # Check out the release_stats branch
 
-    - name: Install dependencies
-      run: sudo apt-get install jq
-
     - name: Configure Git
       run: |
         git config --local user.email "sapmachine@sap.com"
