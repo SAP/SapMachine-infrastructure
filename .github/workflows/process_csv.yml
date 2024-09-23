@@ -66,10 +66,13 @@ jobs:
         git add stats/*.csv
         git commit -m "Update CSV files: set os_name to Linux for RPM files" || echo "No changes to commit"
 
+        # Check git status
+        git status
+
         # Check if there are any changes before trying to push
         if ! git diff --cached --quiet; then
             git push origin "$BRANCH_NAME"
-            hub pull-request -m "Update CSV files: set os_name to Linux for RPM files" || echo "Failed to create PR."
+            gh pr create --title "Update CSV files: set os_name to Linux for RPM files" --body "Automated update of CSV files." || echo "Failed to create PR."
         else
             echo "No changes made; skipping PR creation."
         fi
