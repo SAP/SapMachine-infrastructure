@@ -11,6 +11,8 @@ jobs:
     steps:
     - name: Checkout the repository
       uses: actions/checkout@v3
+      with:
+        ref: release_stats  # Check out the release_stats branch
 
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -29,9 +31,9 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        # Fetch CSV files
+        # Fetch CSV files from the stats folder
         files=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
-          "https://api.github.com/repos/SAP/SapMachine-Infrastructure/contents/stats?ref=release_stats" | \
+          "https://api.github.com/repos/SAP/SapMachine-infrastructure/contents/stats?ref=release_stats" | \
           jq -r '.[] | select(.name | endswith(".csv")) | .path')
 
         # Create a new branch for changes
@@ -45,53 +47,11 @@ jobs:
           
           # Fetch and decode CSV content
           csv_content=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
-            "https://api.github.com/repos/SAP/SapMachine-Infrastructure/contents/$file?ref=release_stats" | \
+            "https://api.github.com/repos/SAP/SapMachine-infrastructure/contents/$file?ref=release_stats" | \
             jq -r '.content' | base64 --decode)
 
           # Output original content for debugging
           echo "Original Content:"
           echo "$csv_content"
 
-          # Modify the CSV content
-          modified_content=$(echo "$csv_content" | awk -F, '
-            BEGIN {OFS=","}
-            {
-              if ($5 ~ /\.rpm$/) {
-                $6 = "Linux";  # Update os_name (6th column) if asset_name (5th column) ends with .rpm
-                print "Modified line: " $0;  # Print modified line for debugging
-              }
-              print
-            }')
-
-          # Output modified content for debugging
-          echo "Modified Content:"
-          echo "$modified_content"
-
-          # Create the directory structure if it doesn't exist
-          mkdir -p "$(dirname "$file")"
-
-          # Check if the modified content differs from the original
-          if [[ "$csv_content" != "$modified_content" ]]; then
-            changes_made=true  # Set flag if changes are detected
-            # Write the modified content back to the original file
-            echo "$modified_content" > "$file"
-            # Add the modified file to git
-            git add "$file"
-          fi
-        done
-
-        # Commit the changes if any were made
-        if [ "$changes_made" = true ]; then
-          git commit -m "Update CSV files: set os_name to Linux for RPM files"
-
-          # Create a pull request
-          gh pr create --base release_stats --head $BRANCH_NAME --title "Update CSV Files" --body "This PR updates the os_name to Linux for RPM files."
-        else
-          echo "No changes made; skipping PR creation."
-        fi
-
-    - name: Push changes to remote
-      run: |
-        if [ "$changes_made" = true ]; then
-          git push origin $BRANCH_NAME
-        fi
+        
