@@ -63,7 +63,7 @@ def fetch_release_stats():
 # Function to extract OS, architecture, and java type (jre/jdk) from asset name
 def extract_os_arch_type(asset_name):
     patterns = {
-        'linux': r'linux',
+        'linux': r'(linux|\.rpm$)',  # Added .rpm files as Linux
         'macos': r'(macos|osx)',  # Normalize both 'macos' and 'osx' to 'macos'
         'windows': r'windows',
         'alpine': r'alpine',
