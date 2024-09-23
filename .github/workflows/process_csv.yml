@@ -20,6 +20,11 @@ jobs:
     - name: Install dependencies
       run: sudo apt-get install jq
 
+    - name: Configure Git
+      run: |
+        git config --local user.email "sapmachine@sap.com"
+        git config --local user.name "SapMachine Github Actions Bot"
+
     - name: Run CSV processing
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
