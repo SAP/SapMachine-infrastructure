@@ -22,8 +22,8 @@ jobs:
 
     - name: Configure Git
       run: |
-        git config --global user.email "your_email@example.com"
-        git config --global user.name "Your Name"
+        git config --local user.email "sapmachine@sap.com"
+        git config --local user.name "SapMachine Github Actions Bot"
 
     - name: Run CSV processing
       env:
