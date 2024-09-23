@@ -62,18 +62,16 @@ jobs:
               print
             }')
 
-          # Output modified content for debugging
-          echo "Modified Content:"
-          echo "$modified_content"
-
           # Check if changes were made
           if [[ "$csv_content" != "$modified_content" ]]; then
             changes_made=true  # Set flag if changes are detected
             echo "Changes made to $file"
             # Write the modified content back to the original file in the stats directory
-            echo "$modified_content" | base64 | tr -d '\n' | curl -X PUT -H "Authorization: token $GITHUB_TOKEN" \
+            encoded_content=$(echo "$modified_content" | base64 | tr -d '\n')
+            sha=$(curl -s -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/SAP/SapMachine-Infrastructure/contents/$file?ref=release_stats" | jq -r '.sha')
+            curl -X PUT -H "Authorization: token $GITHUB_TOKEN" \
               -H "Content-Type: application/json" \
-              -d "{\"message\": \"Update CSV file: $file\", \"content\": \"$(cat -)\", \"sha\": \"$(curl -s -H \"Authorization: token $GITHUB_TOKEN\" \"https://api.github.com/repos/SAP/SapMachine-Infrastructure/contents/$file?ref=release_stats\" | jq -r '.sha')\"}" \
+              -d "{\"message\": \"Update CSV file: $file\", \"content\": \"$encoded_content\", \"sha\": \"$sha\"}" \
               "https://api.github.com/repos/SAP/SapMachine-Infrastructure/contents/$file"
           else
             echo "No changes made to $file"
@@ -82,14 +80,10 @@ jobs:
 
         # Commit the changes if any were made
         if [ "$changes_made" = true ]; then
+          # Push changes to the new branch
+          git push origin $BRANCH_NAME
           # Create a pull request
           gh pr create --base release_stats --head $BRANCH_NAME --title "Update CSV Files" --body "This PR updates the os_name to Linux for RPM files."
         else
           echo "No changes made; skipping PR creation."
-        fi
-
-    - name: Push changes to remote
-      run: |
-        if [ "$changes_made" = true ]; then
-          git push origin $BRANCH_NAME
         fi
