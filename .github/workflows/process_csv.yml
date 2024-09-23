@@ -54,8 +54,9 @@ jobs:
             BEGIN {OFS=","}
             {
               if ($5 ~ /\.rpm$/) {
-                if ($6 == "") {  # Check if os_name is empty
+                if ($6 == "") {
                   $6 = "linux";  # Update os_name (6th column) to "linux"
+                  changed = 1;  # Mark as changed
                 }
               }
               print
@@ -65,14 +66,17 @@ jobs:
           echo "Modified Content:"
           echo "$modified_content"
 
-          # Check if the modified content differs from the original
+          # Check if changes were made
           if [[ "$csv_content" != "$modified_content" ]]; then
             changes_made=true  # Set flag if changes are detected
+            echo "Changes made to $file"
             # Write the modified content back to the original file in the stats directory
             echo "$modified_content" | base64 | tr -d '\n' | curl -X PUT -H "Authorization: token $GITHUB_TOKEN" \
               -H "Content-Type: application/json" \
               -d "{\"message\": \"Update CSV file: $file\", \"content\": \"$(cat -)\", \"sha\": \"$(curl -s -H \"Authorization: token $GITHUB_TOKEN\" \"https://api.github.com/repos/SAP/SapMachine-Infrastructure/contents/$file?ref=release_stats\" | jq -r '.sha')\"}" \
               "https://api.github.com/repos/SAP/SapMachine-Infrastructure/contents/$file"
+          else
+            echo "No changes made to $file"
           fi
         done
 
