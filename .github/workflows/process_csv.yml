@@ -1,99 +1,76 @@
 name: Update CSV Files
 
 on:
-  workflow_dispatch:  # Allow manual execution
+  workflow_dispatch: # Allows the workflow to be triggered manually
 
 jobs:
-  update-csv:
+  update_csv:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
       with:
-        ref: release_stats  # Checkout the release_stats branch
+        ref: release_stats
 
-    - name: Set up Git config
+    - name: Set up Git configuration
       run: |
         git config --local user.email "sapmachine@sap.com"
         git config --local user.name "SapMachine Github Actions Bot"
 
-    - name: Fetch and Update CSV files
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Fetch and process CSV files
       run: |
-        # Fetch CSV files from the stats folder
-        response=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
-          "https://api.github.com/repos/SAP/SapMachine-Infrastructure/contents/stats?ref=release_stats")
+        GITHUB_FOLDER="https://api.github.com/repos/SAP/SapMachine-infrastructure/contents/stats?ref=release_stats"
+        response=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "$GITHUB_FOLDER")
 
-        # Print the response for debugging
-        echo "API Response: $response"
+        files=$(echo "$response" | jq -r '.[] | select(.name | endswith(".csv")) | .download_url')
 
-        files=$(echo "$response" | jq -r '.[] | select(.name | endswith(".csv")) | .path')
-
-        # Output the files being processed for debugging
-        echo "Found CSV files:"
-        echo "$files"
-
-        changes_made=false  # Flag to track if changes were made
+        BRANCH_NAME="update-csv-$(date +%s)"
+        git checkout -b "$BRANCH_NAME"
 
         for file in $files; do
-          echo "Processing $file"
-          
-          # Fetch and decode CSV content
-          csv_response=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
-            "https://api.github.com/repos/SAP/SapMachine-Infrastructure/contents/$file?ref=release_stats")
+            echo "Processing $file"
+            csv_content=$(curl -s "$file")
 
-          # Print the response for debugging
-          echo "CSV Fetch Response: $csv_response"
+            # Debug: Print the first 3 lines of the original content
+            echo "Original Content:"
+            echo "$csv_content" | head -n 3
 
-          csv_content=$(echo "$csv_response" | jq -r '.content' | base64 --decode)
+            if [[ -z "$csv_content" ]]; then
+                echo "No content found for $file"
+                continue
+            fi
 
-          # Output the first three lines of the original content for debugging
-          echo "Original Content (first 3 lines):"
-          echo "$csv_content" | head -n 3
-
-          # Modify the CSV content
-          modified_content=$(echo "$csv_content" | awk -F, '
-            BEGIN {OFS=","}
+            modified_content=$(echo "$csv_content" | awk -F, '
             {
-              if ($5 ~ /\.rpm$/) {
-                if ($6 == "") {
-                  $6 = "linux";  # Update os_name (6th column) to "linux"
-                  changed = 1;  # Mark as changed
+                for (i = 1; i <= NF; i++) {
+                    if ($i ~ /\.rpm$/ && $(i+5) == "") {
+                        $(i+5) = "linux";  # Change the os_name field
+                    }
                 }
-              }
-              print
+                print $0
             }')
 
-          # Check if changes were made
-          if [[ "$csv_content" != "$modified_content" ]]; then
-            changes_made=true  # Set flag if changes are detected
-            echo "Changes made to $file"
-            # Write the modified content back to the original file in the stats directory
-            encoded_content=$(echo "$modified_content" | base64 | tr -d '\n')
-            sha=$(echo "$csv_response" | jq -r '.sha')
-            curl -X PUT -H "Authorization: token $GITHUB_TOKEN" \
-              -H "Content-Type: application/json" \
-              -d "{\"message\": \"Update CSV file: $file\", \"content\": \"$encoded_content\", \"sha\": \"$sha\"}" \
-              "https://api.github.com/repos/SAP/SapMachine-Infrastructure/contents/$file"
-          else
-            echo "No changes made to $file"
-          fi
+            # Debug: Print the modified content
+            echo "Modified Content:"
+            echo "$modified_content" | head -n 3
+
+            if [[ "$csv_content" != "$modified_content" ]]; then
+                temp_file="modified_${file##*/}"
+                echo "$modified_content" > "$temp_file"
+                mv "$temp_file" "stats/${file##*/}"
+                echo "Updated stats/${file##*/}"
+            else
+                echo "No changes made to $file"
+            fi
         done
 
-        # Create a pull request if changes were made
-        if $changes_made; then
-          echo "Creating pull request for changes..."
-          branch_name="update-csv-$(date +%s)"
-          git checkout -b $branch_name
-          git add stats/*
-          git commit -m "Update CSV files: set os_name to Linux for RPM files"
-          git push origin $branch_name
-          curl -X POST -H "Authorization: token $GITHUB_TOKEN" \
-            -H "Accept: application/vnd.github.v3+json" \
-            -d "{\"title\": \"Update CSV files\", \"head\": \"$branch_name\", \"base\": \"release_stats\"}" \
-            "https://api.github.com/repos/SAP/SapMachine-Infrastructure/pulls"
+        git add stats/*.csv
+        git commit -m "Update CSV files: set os_name to Linux for RPM files"
+
+        if ! git diff --cached --quiet; then
+            git push origin "$BRANCH_NAME"
+            hub pull-request -m "Update CSV files: set os_name to Linux for RPM files" || echo "Failed to create PR."
         else
-          echo "No changes to commit; skipping pull request creation."
+            echo "No changes made; skipping PR creation."
         fi
