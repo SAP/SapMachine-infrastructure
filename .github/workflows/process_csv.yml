@@ -56,8 +56,14 @@ jobs:
             echo "$modified_content" | head -n 3 || echo "Failed to print modified content"
 
             if [[ "$csv_content" != "$modified_content" ]]; then
-                echo "$modified_content" > "stats/${file##*/}"
-                echo "Updated stats/${file##*/}"
+                # Write to a temporary file first
+                temp_file="stats/temp_${file##*/}"
+                echo "$modified_content" > "$temp_file"
+                echo "Updated temp file: $temp_file"
+                
+                # Move the temporary file to the original location
+                mv "$temp_file" "stats/${file##*/}"
+                echo "Moved $temp_file to stats/${file##*/}"
             else
                 echo "No changes made to $file"
             fi
