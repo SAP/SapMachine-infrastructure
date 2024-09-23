@@ -49,6 +49,9 @@ jobs:
               print
             }')
 
+          # Create the directory structure if it doesn't exist
+          mkdir -p "$(dirname "$file")"
+
           # Write the modified content back to the original file
           echo "$modified_content" > "$file"
 
