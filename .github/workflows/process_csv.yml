@@ -54,8 +54,9 @@ jobs:
             BEGIN {OFS=","}
             {
               if ($5 ~ /\.rpm$/) {
-                $6 = "Linux";  # Update os_name (6th column) if asset_name (5th column) ends with .rpm
-                print "Modified line: " $0;  # Print modified line for debugging
+                if ($6 == "") {  # Check if os_name is empty
+                  $6 = "linux";  # Update os_name (6th column) to "linux"
+                }
               }
               print
             }')
