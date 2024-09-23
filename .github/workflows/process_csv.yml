@@ -18,7 +18,7 @@ jobs:
         python-version: '3.x'
 
     - name: Install dependencies
-      run: pip install pandas requests jq
+      run: sudo apt-get install jq
 
     - name: Run CSV processing
       env:
@@ -42,18 +42,18 @@ jobs:
             jq -r '.content' | base64 --decode)
 
           # Modify the CSV content
-          echo "$csv_content" | awk -F, '
+          modified_content=$(echo "$csv_content" | awk -F, '
             BEGIN {OFS=","}
             {
               if ($5 ~ /\.rpm$/) $6 = "Linux";  # Update os_name (6th column) if asset_name (5th column) ends with .rpm
               print
-            }' > modified_$file
+            }')
 
-          # Move modified file to the correct path
-          mv modified_$file $file
+          # Write the modified content back to the original file
+          echo "$modified_content" > "$file"
 
           # Add the modified file to git
-          git add $file
+          git add "$file"
         done
 
         # Commit the changes
