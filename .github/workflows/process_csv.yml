@@ -1,0 +1,67 @@
+name: Parse and Modify CSV Files
+
+on:
+  workflow_dispatch:  # Allows manual triggering of the workflow
+  schedule:
+    - cron: '0 0 * * *'  # Optional: Runs daily at midnight
+
+jobs:
+  process_csv:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout the repository
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: pip install pandas requests jq
+
+    - name: Run CSV processing
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        # Fetch CSV files
+        files=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
+          "https://api.github.com/repos/SAP/SapMachine-Infrastructure/contents/stats?ref=release_stats" | \
+          jq -r '.[] | select(.name | endswith(".csv")) | .path')
+
+        # Create a new branch for changes
+        BRANCH_NAME="update-csv-${{ github.run_id }}"
+        git checkout -b $BRANCH_NAME
+
+        for file in $files; do
+          echo "Processing $file"
+          
+          # Fetch and decode CSV content
+          csv_content=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
+            "https://api.github.com/repos/SAP/SapMachine-Infrastructure/contents/$file?ref=release_stats" | \
+            jq -r '.content' | base64 --decode)
+
+          # Modify the CSV content
+          echo "$csv_content" | awk -F, '
+            BEGIN {OFS=","}
+            {
+              if ($5 ~ /\.rpm$/) $6 = "Linux";  # Update os_name (6th column) if asset_name (5th column) ends with .rpm
+              print
+            }' > modified_$file
+
+          # Move modified file to the correct path
+          mv modified_$file $file
+
+          # Add the modified file to git
+          git add $file
+        done
+
+        # Commit the changes
+        git commit -m "Update CSV files: set os_name to Linux for RPM files"
+
+        # Create a pull request
+        gh pr create --base release_stats --head $BRANCH_NAME --title "Update CSV Files" --body "This PR updates the os_name to Linux for RPM files."
+
+    - name: Push changes to remote
+      run: |
+        git push origin $BRANCH_NAME
