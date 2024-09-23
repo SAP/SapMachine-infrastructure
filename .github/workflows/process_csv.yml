@@ -1,36 +1,11 @@
-name: Parse and Modify CSV Files
-
-on:
-  workflow_dispatch:  # Allows manual triggering of the workflow
-  schedule:
-    - cron: '0 0 * * *'  # Optional: Runs daily at midnight
-
-jobs:
-  process_csv:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout the repository
-      uses: actions/checkout@v3
-      with:
-        ref: release_stats  # Check out the release_stats branch
-
-    - name: Configure Git
-      run: |
-        git config --local user.email "sapmachine@sap.com"
-        git config --local user.name "SapMachine Github Actions Bot"
-
-    - name: Run CSV processing
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        # Create a new branch for changes
-        BRANCH_NAME="update-csv-${{ github.run_id }}"
-        git checkout -b $BRANCH_NAME
-
         # Fetch CSV files from the stats folder
         files=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
           "https://api.github.com/repos/SAP/SapMachine-Infrastructure/contents/stats?ref=release_stats" | \
           jq -r '.[] | select(.name | endswith(".csv")) | .path')
+
+        # Output the files being processed for debugging
+        echo "Found CSV files:"
+        echo "$files"
 
         changes_made=false  # Flag to track if changes were made
 
@@ -42,9 +17,9 @@ jobs:
             "https://api.github.com/repos/SAP/SapMachine-Infrastructure/contents/$file?ref=release_stats" | \
             jq -r '.content' | base64 --decode)
 
-          # Output original content for debugging
-          echo "Original Content:"
-          echo "$csv_content"
+          # Output the first three lines of the original content for debugging
+          echo "Original Content (first 3 lines):"
+          echo "$csv_content" | head -n 3
 
           # Modify the CSV content
           modified_content=$(echo "$csv_content" | awk -F, '
@@ -74,13 +49,3 @@ jobs:
             echo "No changes made to $file"
           fi
         done
-
-        # Commit the changes if any were made
-        if [ "$changes_made" = true ]; then
-          # Push changes to the new branch
-          git push origin $BRANCH_NAME
-          # Create a pull request
-          gh pr create --base release_stats --head $BRANCH_NAME --title "Update CSV Files" --body "This PR updates the os_name to Linux for RPM files."
-        else
-          echo "No changes made; skipping PR creation."
-        fi
