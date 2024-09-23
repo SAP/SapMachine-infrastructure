@@ -4,81 +4,80 @@ on:
   workflow_dispatch:
 
 jobs:
-  update_csv:
+  update-csv:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-      with:
-        ref: release_stats
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          ref: release_stats
 
-    - name: Set up Git configuration
-      run: |
-        git config --local user.email "sapmachine@sap.com"
-        git config --local user.name "SapMachine Github Actions Bot"
+      - name: Set up Git
+        run: |
+          git config --local user.email "sapmachine@sap.com"
+          git config --local user.name "SapMachine Github Actions Bot"
 
-    - name: Fetch and process CSV files
-      run: |
-        GITHUB_FOLDER="https://api.github.com/repos/SAP/SapMachine-infrastructure/contents/stats?ref=release_stats"
-        response=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "$GITHUB_FOLDER")
+      - name: Fetch CSV files
+        id: fetch_csv
+        run: |
+          files=$(curl -s "https://api.github.com/repos/SAP/SapMachine-infrastructure/contents/stats?ref=release_stats" | jq -r '.[].download_url')
+          for file in $files; do
+              echo "Processing $file"
+              csv_content=$(curl -s "$file")
 
-        files=$(echo "$response" | jq -r '.[] | select(.name | endswith(".csv")) | .download_url')
+              # Debug: Print the first 3 lines of the original content
+              echo "Original Content:"
+              echo "$csv_content" | head -n 3 || echo "Failed to print original content"
 
-        BRANCH_NAME="update-csv-$(date +%s)"
-        git checkout -b "$BRANCH_NAME"
+              if [[ -z "$csv_content" ]]; then
+                  echo "No content found for $file"
+                  continue
+              fi
 
-        for file in $files; do
-            echo "Processing $file"
-            csv_content=$(curl -s "$file")
+              modified_content=$(echo "$csv_content" | awk -F, '
+              {
+                  for (i = 1; i <= NF; i++) {
+                      if ($i ~ /\.rpm$/ && $(i+5) == "") {
+                          $(i+5) = "linux";  # Change the os_name field
+                      }
+                  }
+                  print $0
+              }')
 
-            # Debug: Print the first 3 lines of the original content
-            echo "Original Content:"
-            echo "$csv_content" | head -n 3 || echo "Failed to print original content"
+              # Debug: Print the modified content
+              echo "Modified Content:"
+              echo "$modified_content" | head -n 3 || echo "Failed to print modified content"
 
-            if [[ -z "$csv_content" ]]; then
-                echo "No content found for $file"
-                continue
-            fi
+              if [[ "$csv_content" != "$modified_content" ]]; then
+                  # Write to a temporary file first
+                  temp_file="stats/temp_${file##*/}"
+                  echo "$modified_content" > "$temp_file"
+                  echo "Updated temp file: $temp_file"
 
-            modified_content=$(echo "$csv_content" | awk -F, '
-            {
-                for (i = 1; i <= NF; i++) {
-                    if ($i ~ /\.rpm$/ && $(i+5) == "") {
-                        $(i+5) = "linux";  # Change the os_name field
-                    }
-                }
-                print $0
-            }')
+                  # Move the temporary file to the original location
+                  mv "$temp_file" "stats/${file##*/}"
+                  echo "Moved $temp_file to stats/${file##*/}"
 
-            # Debug: Print the modified content
-            echo "Modified Content:"
-            echo "$modified_content" | head -n 3 || echo "Failed to print modified content"
+                  # Normalize line endings
+                  dos2unix "stats/${file##*/}"
 
-            if [[ "$csv_content" != "$modified_content" ]]; then
-                # Write to a temporary file first
-                temp_file="stats/temp_${file##*/}"
-                echo "$modified_content" > "$temp_file"
-                echo "Updated temp file: $temp_file"
-                
-                # Move the temporary file to the original location
-                mv "$temp_file" "stats/${file##*/}"
-                echo "Moved $temp_file to stats/${file##*/}"
-            else
-                echo "No changes made to $file"
-            fi
-        done
+                  # Explicitly add the modified file
+                  git add "stats/${file##*/}"
+              else
+                  echo "No changes made to $file"
+              fi
+          done
 
-        git add stats/*.csv
-        git commit -m "Update CSV files: set os_name to Linux for RPM files" || echo "No changes to commit"
+          git commit -m "Update CSV files: set os_name to Linux for RPM files" || echo "No changes to commit"
 
-        # Check git status
-        git status
-
-        # Check if there are any changes before trying to push
-        if ! git diff --cached --quiet; then
-            git push origin "$BRANCH_NAME"
-            gh pr create --title "Update CSV files: set os_name to Linux for RPM files" --body "Automated update of CSV files." || echo "Failed to create PR."
-        else
-            echo "No changes made; skipping PR creation."
-        fi
+          # Create a pull request if there are changes
+          if [ "$(git status --porcelain)" ]; then
+              branch_name="update-csv-$(date +%s)"
+              git checkout -b "$branch_name"
+              git push origin "$branch_name"
+              echo "Creating pull request..."
+              gh pr create --title "Update CSV files" --body "This PR updates the CSV files to set os_name to Linux for RPM files." --base release_stats
+          else
+              echo "No changes made; skipping PR creation."
+          fi
