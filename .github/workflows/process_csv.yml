@@ -48,13 +48,24 @@ jobs:
             "https://api.github.com/repos/SAP/SapMachine-Infrastructure/contents/$file?ref=release_stats" | \
             jq -r '.content' | base64 --decode)
 
+          # Output original content for debugging
+          echo "Original Content:"
+          echo "$csv_content"
+
           # Modify the CSV content
           modified_content=$(echo "$csv_content" | awk -F, '
             BEGIN {OFS=","}
             {
-              if ($5 ~ /\.rpm$/) $6 = "Linux";  # Update os_name (6th column) if asset_name (5th column) ends with .rpm
+              if ($5 ~ /\.rpm$/) {
+                $6 = "Linux";  # Update os_name (6th column) if asset_name (5th column) ends with .rpm
+                print "Modified line: " $0;  # Print modified line for debugging
+              }
               print
             }')
+
+          # Output modified content for debugging
+          echo "Modified Content:"
+          echo "$modified_content"
 
           # Create the directory structure if it doesn't exist
           mkdir -p "$(dirname "$file")"
