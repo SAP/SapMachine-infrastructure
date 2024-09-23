@@ -22,8 +22,8 @@ jobs:
 
     - name: Configure Git
       run: |
-        git config --local user.email "sapmachine@sap.com"
-        git config --local user.name "SapMachine Github Actions Bot"
+        git config --global user.email "your_email@example.com"
+        git config --global user.name "Your Name"
 
     - name: Run CSV processing
       env:
@@ -37,6 +37,8 @@ jobs:
         # Create a new branch for changes
         BRANCH_NAME="update-csv-${{ github.run_id }}"
         git checkout -b $BRANCH_NAME
+
+        changes_made=false  # Flag to track if changes were made
 
         for file in $files; do
           echo "Processing $file"
@@ -57,19 +59,28 @@ jobs:
           # Create the directory structure if it doesn't exist
           mkdir -p "$(dirname "$file")"
 
-          # Write the modified content back to the original file
-          echo "$modified_content" > "$file"
-
-          # Add the modified file to git
-          git add "$file"
+          # Check if the modified content differs from the original
+          if [[ "$csv_content" != "$modified_content" ]]; then
+            changes_made=true  # Set flag if changes are detected
+            # Write the modified content back to the original file
+            echo "$modified_content" > "$file"
+            # Add the modified file to git
+            git add "$file"
+          fi
         done
 
-        # Commit the changes
-        git commit -m "Update CSV files: set os_name to Linux for RPM files"
+        # Commit the changes if any were made
+        if [ "$changes_made" = true ]; then
+          git commit -m "Update CSV files: set os_name to Linux for RPM files"
 
-        # Create a pull request
-        gh pr create --base release_stats --head $BRANCH_NAME --title "Update CSV Files" --body "This PR updates the os_name to Linux for RPM files."
+          # Create a pull request
+          gh pr create --base release_stats --head $BRANCH_NAME --title "Update CSV Files" --body "This PR updates the os_name to Linux for RPM files."
+        else
+          echo "No changes made; skipping PR creation."
+        fi
 
     - name: Push changes to remote
       run: |
-        git push origin $BRANCH_NAME
+        if [ "$changes_made" = true ]; then
+          git push origin $BRANCH_NAME
+        fi
