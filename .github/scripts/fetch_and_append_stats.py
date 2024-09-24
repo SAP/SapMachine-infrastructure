@@ -64,7 +64,7 @@ def fetch_release_stats():
 def extract_os_arch_type(asset_name):
     # Define patterns with musl/alpine prioritized over linux
     patterns = {
-        'alpin': r'(alpine|musl)',  # Assign both 'alpine' and 'musl' to 'alpin'
+        'alpine': r'(alpine|musl)',  # Assign both 'alpine' and 'musl' to 'alpin'
         'linux': r'(linux|\.rpm$)',  # Linux pattern, but will not be applied if 'alpin' is matched
         'macos': r'(macos|osx)',  # Normalize both 'macos' and 'osx' to 'macos'
         'windows': r'windows',
@@ -92,11 +92,11 @@ def extract_os_arch_type(asset_name):
     # First, check for musl or alpine, prioritize over other OS patterns
     for key, pattern in patterns.items():
         if re.search(pattern, asset_name_lower):
-            if key == 'alpin':  # Prioritize assigning 'alpin' for alpine/musl
-                os_name = 'alpin'
-                break  # Once alpin is found, we can skip further OS checks
+            if key == 'alpine':  # Prioritize assigning 'alpine' for alpine/musl
+                os_name = 'alpine'
+                break  # Once alpine is found, we can skip further OS checks
             elif key in ['linux', 'macos', 'windows', 'aix'] and os_name is None:
-                os_name = key  # Assign Linux, macOS, etc., only if alpin wasn't matched
+                os_name = key  # Assign Linux, macOS, etc., only if alpine wasn't matched
     
     # Extract architecture
     for key, pattern in patterns.items():
