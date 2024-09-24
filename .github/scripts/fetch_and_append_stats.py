@@ -62,18 +62,18 @@ def fetch_release_stats():
 
 # Function to extract OS, architecture, and java type (jre/jdk) from asset name
 def extract_os_arch_type(asset_name):
+    # Define patterns with musl/alpine prioritized over linux
     patterns = {
-        'linux': r'(linux|\.rpm$)',  # Added .rpm files as Linux
+        'alpin': r'(alpine|musl)',  # Assign both 'alpine' and 'musl' to 'alpin'
+        'linux': r'(linux|\.rpm$)',  # Linux pattern, but will not be applied if 'alpin' is matched
         'macos': r'(macos|osx)',  # Normalize both 'macos' and 'osx' to 'macos'
         'windows': r'windows',
-        'alpine': r'alpine',
         'aix': r'aix',  # AIX OS
         'aarch64': r'aarch64',
         'x64': r'(x64|x86_64)',
         'x86': r'\bx86\b',
         'ppc64le': r'ppc64le',
-        'ppc64': r'ppc64',  
-        'musl': r'musl'
+        'ppc64': r'ppc64'
     }
     
     os_name = None
@@ -89,16 +89,23 @@ def extract_os_arch_type(asset_name):
     elif 'jdk' in asset_name_lower:
         java_type = 'jdk'
     
-    # Extract OS and architecture
+    # First, check for musl or alpine, prioritize over other OS patterns
     for key, pattern in patterns.items():
         if re.search(pattern, asset_name_lower):
-            if key in ['linux', 'macos', 'windows', 'alpine', 'aix']:  # Handle OS
-                os_name = key
-            elif key in ['aarch64', 'x64', 'x86', 'ppc64le', 'ppc64']:  # Handle architecture
+            if key == 'alpin':  # Prioritize assigning 'alpin' for alpine/musl
+                os_name = 'alpin'
+                break  # Once alpin is found, we can skip further OS checks
+            elif key in ['linux', 'macos', 'windows', 'aix'] and os_name is None:
+                os_name = key  # Assign Linux, macOS, etc., only if alpin wasn't matched
+    
+    # Extract architecture
+    for key, pattern in patterns.items():
+        if re.search(pattern, asset_name_lower):
+            if key in ['aarch64', 'x64', 'x86', 'ppc64le', 'ppc64']:  # Handle architecture
                 arch = key
     
     return {'os': os_name, 'arch': arch, 'type': java_type}
-
+    
 # Function to get the next available file name with a three-digit counter
 def get_next_filename(base_name="stats/release_stats"):
     counter = 1
