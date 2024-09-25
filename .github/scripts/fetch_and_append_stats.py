@@ -62,13 +62,12 @@ def fetch_release_stats():
 
 # Function to extract OS, architecture, and java type (jre/jdk) from asset name
 def extract_os_arch_type(asset_name):
-    # Define patterns with musl/alpine prioritized over linux
     patterns = {
-        'alpine': r'(alpine|musl)',  # Assign both 'alpine' and 'musl' to 'alpin'
-        'linux': r'(linux|\.rpm$)',  # Linux pattern, but will not be applied if 'alpin' is matched
-        'macos': r'(macos|osx)',  # Normalize both 'macos' and 'osx' to 'macos'
+        'alpine': r'(alpine|musl)',
+        'linux': r'(linux|\.rpm$)',
+        'macos': r'(macos|osx)',
         'windows': r'windows',
-        'aix': r'aix',  # AIX OS
+        'aix': r'aix',
         'aarch64': r'aarch64',
         'x64': r'(x64|x86_64)',
         'x86': r'\bx86\b',
@@ -88,28 +87,33 @@ def extract_os_arch_type(asset_name):
         java_type = 'jre'
     elif 'jdk' in asset_name_lower:
         java_type = 'jdk'
-    
-    # First, check for musl or alpine, prioritize over other OS patterns
+
     for key, pattern in patterns.items():
         if re.search(pattern, asset_name_lower):
             if key == 'alpine':  # Prioritize assigning 'alpine' for alpine/musl
                 os_name = 'alpine'
-                break  # Once alpine is found, we can skip further OS checks
+                break 
             elif key in ['linux', 'macos', 'windows', 'aix'] and os_name is None:
-                os_name = key  # Assign Linux, macOS, etc., only if alpine wasn't matched
+                os_name = key  
     
     # Extract architecture
     for key, pattern in patterns.items():
         if re.search(pattern, asset_name_lower):
-            if key in ['aarch64', 'x64', 'x86', 'ppc64le', 'ppc64']:  # Handle architecture
+            if key in ['aarch64', 'x64', 'x86', 'ppc64le', 'ppc64']: 
                 arch = key
     
     return {'os': os_name, 'arch': arch, 'type': java_type}
-    
-# Function to get the next available file name with a three-digit counter
+
+# Function to get the next available file name with a three-digit counter, using the file's creation date
 def get_next_filename(base_name="stats/release_stats"):
     counter = 1
-    date_suffix = datetime.now().strftime('%Y-%m-%d')  # Get the date once
+    date_suffix = datetime.now().strftime('%Y-%m-%d')  # Use the current date initially
+    
+    # If the file already exists, get its creation date
+    if os.path.exists(f"{base_name}.csv"):
+        creation_time = os.path.getctime(f"{base_name}.csv")
+        date_suffix = datetime.fromtimestamp(creation_time).strftime('%Y-%m-%d')
+    
     while True:
         file_name = f"{base_name}_{date_suffix}_{counter:03d}.csv"
         if not os.path.exists(file_name):
@@ -120,7 +124,7 @@ def get_next_filename(base_name="stats/release_stats"):
 def archive_previous_stats(file_name="stats/release_stats.csv"):
     # Check if the release_stats.csv exists
     if os.path.exists(file_name):
-        # Generate a base name with the current date
+        # Generate a base name with the creation date
         new_file_name = get_next_filename(base_name="stats/release_stats")
         # Rename the old stats file
         shutil.move(file_name, new_file_name)
