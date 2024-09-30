@@ -6,10 +6,10 @@ RUN apt-get update \
     && chmod 644 /etc/apt/trusted.gpg.d/sapmachine.asc \
     && echo "deb https://dist.sapmachine.io/debian/$(dpkg --print-architecture)/ ./" > /etc/apt/sources.list.d/sapmachine.list \
     && apt-get update \
-    && apt-get -y --no-install-recommends install sapmachine-17-jdk-headless=17.0.12 \
+    && apt-get -y --no-install-recommends install sapmachine-23-jdk-headless=23 \
     && apt-get remove -y --purge --autoremove wget \
     && rm -rf /var/lib/apt/lists/*
 
-ENV JAVA_HOME=/usr/lib/jvm/sapmachine-17
+ENV JAVA_HOME=/usr/lib/jvm/sapmachine-23
 
 CMD ["jshell"]
