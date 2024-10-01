@@ -1,0 +1,36 @@
+name: Publish SapMachine container images based on Garden Linux to the SAP GitHub Registry
+
+on:
+  workflow_call:
+    inputs:
+      sapMachineVersion:
+        type: string
+        description: "SapMachine version (e.g. 21)"
+      gardenLinuxVersion:
+        type: string
+        description: "GardenLinux version (e.g. 1592)"        
+jobs:
+  publish_container:
+    name: publish gardenlinux container base image
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      # 1. Checkout the repository
+      - uses: actions/checkout@v4
+      # 2. Run the Python script to fetch and append download stats
+      - name: Publish images
+        run: |
+            SM_FLAVOURS=(jdk jdk-headless jre jre-headless)
+            SM_REGISTRY="ghcr.io/sap/sapmachine"
+            cd dockerfiles/${{ inputs.sapMachineVersion }}/gardenlinux/${{ inputs.gardenLinuxVersion }}
+            podman login -u token -p ${{ github.token }} ghcr.io
+            for sm_flvr in "${SM_FLAVOURS[@]}" ; do
+              tag=${{ inputs.sapMachineVersion }}-${sm_flvr}-gl-${{ inputs.gardenLinuxVersion }}
+              cd ${sm_flvr}
+              podman manifest create ${SM_REGISTRY}:$tag
+              podman build --platform linux/amd64,linux/arm64 --manifest ${SM_REGISTRY}:$tag .
+              podman manifest push ${SM_REGISTRY}:$tag
+              cd ..
+            done
