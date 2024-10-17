@@ -1,0 +1,14 @@
+name: publish gardenlinux containers to github.com
+on:
+  workflow_dispatch:
+
+jobs:
+  publish_images:
+    strategy:
+        matrix:
+          sapMachineVersion: [17, 21]
+          gardenLinuxVersion: [1592]   
+    uses: ./.github/workflows/publish-container-images.yaml
+    with:
+      sapMachineVersion: ${{ matrix.sapMachineVersion }}
+      gardenLinuxVersion:  ${{ matrix.gardenLinuxVersion }}
