@@ -12,7 +12,7 @@ on:
 jobs:
   publish_container:
     name: publish gardenlinux container base image
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     defaults:
       run:
         shell: bash
