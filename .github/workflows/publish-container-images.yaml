@@ -31,7 +31,7 @@ jobs:
               tag=${{ inputs.sapMachineVersion }}-${sm_flvr}-gl-${{ inputs.gardenLinuxVersion }}
               cd ${sm_flvr}
               podman manifest create ${SM_REGISTRY}:$tag
-              podman build --platform linux/amd64,linux/arm64 --manifest ${SM_REGISTRY}:$tag .
+              podman build --platform linux/amd64 --manifest ${SM_REGISTRY}:$tag .
               podman manifest push ${SM_REGISTRY}:$tag
               cd ..
             done
