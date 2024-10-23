@@ -1,4 +1,4 @@
-name: Publish SapMachine container images based on Garden Linux to the SAP GitHub Registry
+name: build & publish SapMachine Garden Linux container image
 
 on:
   workflow_call:
@@ -12,15 +12,12 @@ on:
 jobs:
   publish_container:
     name: publish gardenlinux container base image
-#   runs-on: ubuntu-latest
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     defaults:
       run:
         shell: bash
     steps:
-      # 1. Checkout the repository
       - uses: actions/checkout@v4
-      # 2. Run the Python script to fetch and append download stats
       - name: Publish images
         run: |
             SM_FLAVOURS=(jdk jdk-headless jre jre-headless)
