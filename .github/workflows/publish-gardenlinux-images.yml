@@ -1,7 +1,5 @@
 name: Build and Publish SapMachine container images to the SAP GitHub Container Registry
 on:
-  schedule:
-    - cron: '0 1 * * *'  # Runs every day at 1:00 AM (UTC)
   workflow_dispatch:
 
 jobs:
