@@ -3,20 +3,22 @@ layout: default
 title: SapMachine
 ---
 
-**SapMachine** is a free, open-source, non-commercial, cross-platform, and fully-functional production-grade version of the Open Java Development Kit (OpenJDK).
-Built and supported by SAP, it provides a robust and reliable Java environment.
+**SapMachine** is a distribution of the [OpenJDK](https://openjdk.org/) maintained by <a href="https://sap.com">SAP</a>. It is designed to be free, cross-platform, production-ready, and [Java SE certified](https://github.com/SAP/SapMachine/wiki/Certification-and-Java-Compatibility). This distribution serves as the default Java Runtime for SAP's numerous applications and services.
 
 <img align="left" width="240" src="assets/images/logo_circular.svg" alt="Logo of SapMachine">
 
-Following the release cadence of the OpenJDK, a new feature release is shipped every six months, with one designated as a long-term support release every two years.
-Update releases for active versions are provided every quarter. So SapMachine offers long-term support, regular performance improvements and timely security updates.
+SapMachine supports all major operating systems.
+It comes with long-term support releases that include bug fixes and performance updates; you can learn more about support and maintenance in our [Wiki](https://github.com/SAP/SapMachine/wiki/Maintenance-and-Support).
 
-For SAP, the default JDK is SapMachine. It is the engine of countless applications and services, in cloud deployments as well as standalone on-premise installations at both, SAP and its customers.
+Our goal is to keep SapMachine as close to OpenJDK as possible,
+only adding additional features when absolutely necessary; you can find a list of these in the [Wiki](https://github.com/SAP/SapMachine/wiki/Differences-between-SapMachine-and-OpenJDK).
 
-SapMachine is available on a variety of Operating System/CPU architecture combinations, and it is certified to adhere to the Java SE standard.
-It can serve as a drop-in replacement for any JDK in Java-based applications, ranging from small desktop applications to high-performance, large-scale server applications.
+Our team's many contributions to the OpenJDK and the ecosystem include the [PowerPC/AIX support](http://openjdk.java.net/projects/ppc-aix-port/), [elastic Metaspace](https://openjdk.org/jeps/387),
+ [helpful NullPointerExceptions](https://openjdk.org/jeps/358), a [website for JFR events](https://sap.github.io/SapMachine/jfrevents/) and more.
 
 ## Download
+
+In the following, you find downloads of SapMachine and our build of [JDK Mission Control (JMC)](https://openjdk.org/projects/jmc/):
 
 <select id="sapmachine_major_select" class="download_select">
 </select>
@@ -50,17 +52,9 @@ It can serve as a drop-in replacement for any JDK in Java-based applications, ra
 
 ## Documentation
 
-Check out our [FAQ's](https://github.com/SAP/SapMachine/wiki/Frequently-Asked-Questions) and [wikipages](https://github.com/SAP/SapMachine/wiki) for information about:
+Check out our [FAQ's](https://github.com/SAP/SapMachine/wiki/Frequently-Asked-Questions) and [Wiki pages](https://github.com/SAP/SapMachine/wiki) for more information, including:
 
 * [Installation](https://github.com/SAP/SapMachine/wiki/Installation) and [Docker Images](https://github.com/SAP/SapMachine/wiki/Docker-Images)
+* [Maintenance and Support](https://github.com/SAP/SapMachine/wiki/Maintenance-and-Support)
 * [Certifications and Java Compatibility](https://github.com/SAP/SapMachine/wiki/Certification-and-Java-Compatibility)
-* [Features contributed by SAP to OpenJDK](https://github.com/SAP/SapMachine/wiki/Features-Contributed-by-SAP)
-* [Differences between SapMachine and OpenJDK](https://github.com/SAP/SapMachine/wiki/Differences-between-SapMachine-and-OpenJDK).
-
-## License
-
-This project is OpenSource and as an OpenJDK-distribution, SapMachine is free to use for everyone accepting the [GPLv2 license](https://github.com/SAP/SapMachine/blob/sapmachine/LICENSE).
-
-<hr>
-
-2017-2024 by [SAP SE](https://www.sap.com)
+* [Differences between SapMachine and OpenJDK](https://github.com/SAP/SapMachine/wiki/Differences-between-SapMachine-and-OpenJDK)
