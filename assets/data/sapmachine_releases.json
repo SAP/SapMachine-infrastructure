@@ -71,13 +71,21 @@
     "24-ea": {
       "releases": [
         {
+          "tag": "sapmachine-24+26",
+          "jdk": {
+            "linux-x64-musl": "https://github.com/SAP/SapMachine/releases/download/sapmachine-24%2B26/sapmachine-jdk-24-ea.26_linux-x64-musl_bin.tar.gz"
+          },
+          "jre": {
+            "linux-x64-musl": "https://github.com/SAP/SapMachine/releases/download/sapmachine-24%2B26/sapmachine-jre-24-ea.26_linux-x64-musl_bin.tar.gz"
+          }
+        },
+        {
           "tag": "sapmachine-24+25",
           "jdk": {
             "aix-ppc64": "https://github.com/SAP/SapMachine/releases/download/sapmachine-24%2B25/sapmachine-jdk-24-ea.25_aix-ppc64_bin.tar.gz",
             "linux-aarch64": "https://github.com/SAP/SapMachine/releases/download/sapmachine-24%2B25/sapmachine-jdk-24-ea.25_linux-aarch64_bin.tar.gz",
             "linux-ppc64le": "https://github.com/SAP/SapMachine/releases/download/sapmachine-24%2B25/sapmachine-jdk-24-ea.25_linux-ppc64le_bin.tar.gz",
             "linux-x64": "https://github.com/SAP/SapMachine/releases/download/sapmachine-24%2B25/sapmachine-jdk-24-ea.25_linux-x64_bin.tar.gz",
-            "linux-x64-musl": "https://github.com/SAP/SapMachine/releases/download/sapmachine-24%2B25/sapmachine-jdk-24-ea.25_linux-x64-musl_bin.tar.gz",
             "macos-aarch64-installer": "https://github.com/SAP/SapMachine/releases/download/sapmachine-24%2B25/sapmachine-jdk-24-ea.25_macos-aarch64_bin.dmg",
             "macos-aarch64": "https://github.com/SAP/SapMachine/releases/download/sapmachine-24%2B25/sapmachine-jdk-24-ea.25_macos-aarch64_bin.tar.gz",
             "macos-x64-installer": "https://github.com/SAP/SapMachine/releases/download/sapmachine-24%2B25/sapmachine-jdk-24-ea.25_macos-x64_bin.dmg",
@@ -89,7 +97,6 @@
             "linux-aarch64": "https://github.com/SAP/SapMachine/releases/download/sapmachine-24%2B25/sapmachine-jre-24-ea.25_linux-aarch64_bin.tar.gz",
             "linux-ppc64le": "https://github.com/SAP/SapMachine/releases/download/sapmachine-24%2B25/sapmachine-jre-24-ea.25_linux-ppc64le_bin.tar.gz",
             "linux-x64": "https://github.com/SAP/SapMachine/releases/download/sapmachine-24%2B25/sapmachine-jre-24-ea.25_linux-x64_bin.tar.gz",
-            "linux-x64-musl": "https://github.com/SAP/SapMachine/releases/download/sapmachine-24%2B25/sapmachine-jre-24-ea.25_linux-x64-musl_bin.tar.gz",
             "macos-aarch64-installer": "https://github.com/SAP/SapMachine/releases/download/sapmachine-24%2B25/sapmachine-jre-24-ea.25_macos-aarch64_bin.dmg",
             "macos-aarch64": "https://github.com/SAP/SapMachine/releases/download/sapmachine-24%2B25/sapmachine-jre-24-ea.25_macos-aarch64_bin.tar.gz",
             "macos-x64-installer": "https://github.com/SAP/SapMachine/releases/download/sapmachine-24%2B25/sapmachine-jre-24-ea.25_macos-x64_bin.dmg",
@@ -100,13 +107,21 @@
       ],
       "checksums": [
         {
+          "tag": "sapmachine-24+26",
+          "jdk": {
+            "linux-x64-musl": "sha256 506eee26a0279fa763f6d042f898365cde9d439469ab2aed88946684cc6dafe8"
+          },
+          "jre": {
+            "linux-x64-musl": "sha256 2cc2f5aa212d315fff4d47392005327f526750ba7e40a15aefc63b6e0952d997"
+          }
+        },
+        {
           "tag": "sapmachine-24+25",
           "jdk": {
             "aix-ppc64": "sha256 89498e440c5e663e70a70e8e02c8be92b6be73f538af7f45423363c421f739d0",
             "linux-aarch64": "sha256 967f75c145a69f6e550b8ef10b97f5fa939daf73a0081c5aff8becac3935c615",
             "linux-ppc64le": "sha256 b771912dac52094bb6fefd72aceeaeed1d9a292d4d2963902977886e28980b1c",
             "linux-x64": "sha256 610eb2f48713a3bc1b3a52405206294a2f39902802ce01addc4d5c2ffe044e34",
-            "linux-x64-musl": "sha256 65aeb84608a9ce503f9abd4bf15abe73b9c8c90a0b2426d3f7e8e15241b23927",
             "macos-aarch64-installer": "sha256 492fd787794deaeb970bf294ee45a2bb8a3b7b6582d7569bce3dc61cb7686502",
             "macos-aarch64": "sha256 ece45f6ff8cf1afefc35c5874c4da5290535040e3d268dc3ff9afb0b3818ae35",
             "macos-x64-installer": "sha256 e7ed3fd45ef571dc2acd47d36f80d02f417de680d45ff3cb971333d20d77d8a2",
@@ -118,7 +133,6 @@
             "linux-aarch64": "sha256 e827768574ba390111b39cac537b06ca15d3eaf56c163626aeadf05f63979fcb",
             "linux-ppc64le": "sha256 d1d3fb5212f9bedb1da3265ae31112b81b54f9b213aa3d04cad45cc7a2288e54",
             "linux-x64": "sha256 5fb6ee0893f778f8310a44e08476d6a12fd0c89ab6f8b25f0941ab096f496b85",
-            "linux-x64-musl": "sha256 a5bd7924ee21e6c9757d647ad5cf98269e6d1d96bebcb307fe8a83548861e023",
             "macos-aarch64-installer": "sha256 95178334ed0359194e91261b19bc550326a9ccbdca8d3274bec65a3ff4f0a067",
             "macos-aarch64": "sha256 9d739be9d31f9e56a992952187391da308c61e4f25ff87f7bab7025ac69dbaed",
             "macos-x64-installer": "sha256 f04547809e3f599ee7e7757a06dc5ed81153b553c5f33a69eeaa521a10b923df",
