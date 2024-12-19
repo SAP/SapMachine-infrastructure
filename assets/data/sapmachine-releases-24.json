@@ -2,6 +2,44 @@
   "lts": "false",
   "updates": {
     "24": {
+      "sapmachine-24+28": {
+        "url": "https://github.com/SAP/SapMachine/releases/tag/sapmachine-24%2B28",
+        "ea": "true",
+        "assets": {
+          "jdk": {
+            "linux-x64": {
+              "tar.gz": {
+                "name": "sapmachine-jdk-24-ea.28_linux-x64_bin.tar.gz",
+                "checksum": "7e8a5683959a90742929862de8b2653173c2053c8b2da2c6f0469e41875fcad3",
+                "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-24%2B28/sapmachine-jdk-24-ea.28_linux-x64_bin.tar.gz"
+              }
+            },
+            "linux-x64-musl": {
+              "tar.gz": {
+                "name": "sapmachine-jdk-24-ea.28_linux-x64-musl_bin.tar.gz",
+                "checksum": "ca1350fefbf5567f7e6ebb382954c6f25e8b944cc2522badd3b5c9d145786143",
+                "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-24%2B28/sapmachine-jdk-24-ea.28_linux-x64-musl_bin.tar.gz"
+              }
+            }
+          },
+          "jre": {
+            "linux-x64": {
+              "tar.gz": {
+                "name": "sapmachine-jre-24-ea.28_linux-x64_bin.tar.gz",
+                "checksum": "5886aae4899d025f8a599c52645792674ab1dac3b9d4fd618d3a6d72d2abb293",
+                "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-24%2B28/sapmachine-jre-24-ea.28_linux-x64_bin.tar.gz"
+              }
+            },
+            "linux-x64-musl": {
+              "tar.gz": {
+                "name": "sapmachine-jre-24-ea.28_linux-x64-musl_bin.tar.gz",
+                "checksum": "91c42ead5d8636add33da624dd572422c9ce6d5bbf7c1a4d29b82fe4bc96d741",
+                "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-24%2B28/sapmachine-jre-24-ea.28_linux-x64-musl_bin.tar.gz"
+              }
+            }
+          }
+        }
+      },
       "sapmachine-24+27": {
         "url": "https://github.com/SAP/SapMachine/releases/tag/sapmachine-24%2B27",
         "ea": "true",
