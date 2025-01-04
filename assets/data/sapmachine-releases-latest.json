@@ -27,6 +27,14 @@
             "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B4/sapmachine-jdk-25-ea.4_linux-x64-musl_bin.tar.gz",
             "checksum": "sha256 cd3a17d68869246abf58f5bd9f051a4e97885d3566fd134faef1f314f65968fe"
           },
+          "macos-aarch64-installer": {
+            "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B4/sapmachine-jdk-25-ea.4_macos-aarch64_bin.dmg",
+            "checksum": "sha256 933f98f0b305fbcd6356b086f13a98ac1bf54888dbf4f79784b406810a0d7684"
+          },
+          "macos-aarch64": {
+            "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B4/sapmachine-jdk-25-ea.4_macos-aarch64_bin.tar.gz",
+            "checksum": "sha256 9d0a3928e213eafc8a6ff2e20061d8543fa15c8595f199bd22accb615f3dd8e5"
+          },
           "macos-x64-installer": {
             "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B4/sapmachine-jdk-25-ea.4_macos-x64_bin.dmg",
             "checksum": "sha256 7d89feded5e453077c96091f5fd687985748a189fd3036892332f19bf53e2cc2"
@@ -57,6 +65,14 @@
             "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B4/sapmachine-jre-25-ea.4_linux-x64-musl_bin.tar.gz",
             "checksum": "sha256 57781ea0bf6aab594a23eeec3ca1d6bc5d6c79869ddbd150fdee1dd4856753ba"
           },
+          "macos-aarch64-installer": {
+            "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B4/sapmachine-jre-25-ea.4_macos-aarch64_bin.dmg",
+            "checksum": "sha256 ff367fc6714fcb1bddb515acbd417824f2029dd96deb6001685a39504177e7d3"
+          },
+          "macos-aarch64": {
+            "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B4/sapmachine-jre-25-ea.4_macos-aarch64_bin.tar.gz",
+            "checksum": "sha256 34f1330da64d003dbbd4896b667b9ef7aa79af0d949be1f1c0441a497298be25"
+          },
           "macos-x64-installer": {
             "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B4/sapmachine-jre-25-ea.4_macos-x64_bin.dmg",
             "checksum": "sha256 635b85539d56bc201aba2280115b01b7578613fd40738d239806efabeaf5f28d"
@@ -70,28 +86,12 @@
       {
         "tag": "sapmachine-25+3",
         "jdk": {
-          "macos-aarch64-installer": {
-            "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B3/sapmachine-jdk-25-ea.3_macos-aarch64_bin.dmg",
-            "checksum": "sha256 e0b831bf924433a458c72aadc6b7ba4ddbd856bb03e7061a58aab854c3a8f131"
-          },
-          "macos-aarch64": {
-            "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B3/sapmachine-jdk-25-ea.3_macos-aarch64_bin.tar.gz",
-            "checksum": "sha256 e74080b02c5a9387dc231f0c60a131ed2bc34d2394504bdf31d8c2af5e5b9f68"
-          },
           "windows-x64": {
             "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B3/sapmachine-jdk-25-ea.3_windows-x64_bin.zip",
             "checksum": "sha256 3a4ef30a8d15064e2a004312ec27a1b83bb5cf9c4aace541a62b807660da930e"
           }
         },
         "jre": {
-          "macos-aarch64-installer": {
-            "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B3/sapmachine-jre-25-ea.3_macos-aarch64_bin.dmg",
-            "checksum": "sha256 14ad5db35df44913a6008fe400dde7b0d19aec6d6161879eb75f2fd235d31c84"
-          },
-          "macos-aarch64": {
-            "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B3/sapmachine-jre-25-ea.3_macos-aarch64_bin.tar.gz",
-            "checksum": "sha256 e83dd2e932ee29dab8c79110ee768777394ad9fe458d48d9853583e08906de7d"
-          },
           "windows-x64": {
             "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B3/sapmachine-jre-25-ea.3_windows-x64_bin.zip",
             "checksum": "sha256 ad07f6e3b1c94a4ee24a55a20e0efbfa8a831f388fdd48dc21913564bdd9b565"
