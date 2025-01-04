@@ -2,6 +2,30 @@
   "lts": "false",
   "updates": {
     "25": {
+      "sapmachine-25+4": {
+        "url": "https://github.com/SAP/SapMachine/releases/tag/sapmachine-25%2B4",
+        "ea": "true",
+        "assets": {
+          "jdk": {
+            "linux-x64-musl": {
+              "tar.gz": {
+                "name": "sapmachine-jdk-25-ea.4_linux-x64-musl_bin.tar.gz",
+                "checksum": "cd3a17d68869246abf58f5bd9f051a4e97885d3566fd134faef1f314f65968fe",
+                "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B4/sapmachine-jdk-25-ea.4_linux-x64-musl_bin.tar.gz"
+              }
+            }
+          },
+          "jre": {
+            "linux-x64-musl": {
+              "tar.gz": {
+                "name": "sapmachine-jre-25-ea.4_linux-x64-musl_bin.tar.gz",
+                "checksum": "57781ea0bf6aab594a23eeec3ca1d6bc5d6c79869ddbd150fdee1dd4856753ba",
+                "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B4/sapmachine-jre-25-ea.4_linux-x64-musl_bin.tar.gz"
+              }
+            }
+          }
+        }
+      },
       "sapmachine-25+3": {
         "url": "https://github.com/SAP/SapMachine/releases/tag/sapmachine-25%2B3",
         "ea": "true",
