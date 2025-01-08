@@ -104,16 +104,12 @@ def extract_os_arch_type(asset_name):
     
     return {'os': os_name, 'arch': arch, 'type': java_type}
 
-# Function to get the next available file name with a three-digit counter, using the file's creation date
-def get_next_filename(base_name="stats/release_stats"):
+# Function to get the next available file name with a consistent date
+def get_next_filename(base_name="stats/release_stats", date_suffix=None):
     counter = 1
-    date_suffix = datetime.now().strftime('%Y-%m-%d')  # Use the current date initially
-    
-    # If the file already exists, get its creation date
-    if os.path.exists(f"{base_name}.csv"):
-        creation_time = os.path.getctime(f"{base_name}.csv")
-        date_suffix = datetime.fromtimestamp(creation_time).strftime('%Y-%m-%d')
-    
+    if date_suffix is None:
+        date_suffix = datetime.now().strftime('%Y-%m-%d')  # Default to current date
+
     while True:
         file_name = f"{base_name}_{date_suffix}_{counter:03d}.csv"
         if not os.path.exists(file_name):
@@ -122,10 +118,23 @@ def get_next_filename(base_name="stats/release_stats"):
 
 # Function to archive the previous release_stats.csv file
 def archive_previous_stats(file_name="stats/release_stats.csv"):
-    # Check if the release_stats.csv exists
     if os.path.exists(file_name):
-        # Generate a base name with the creation date
-        new_file_name = get_next_filename(base_name="stats/release_stats")
+        try:
+            # Read the first timestamp from the existing file
+            df = pd.read_csv(file_name)
+            if 'timestamp' in df.columns and not df.empty:
+                # Extract the date part of the first timestamp
+                content_timestamp = pd.to_datetime(df['timestamp'].iloc[0]).strftime('%Y-%m-%d')
+            else:
+                # Fallback to the file's creation time if no timestamp column exists
+                content_timestamp = datetime.fromtimestamp(os.path.getctime(file_name)).strftime('%Y-%m-%d')
+        except Exception as e:
+            logging.error(f"Error reading timestamp from {file_name}: {e}")
+            content_timestamp = datetime.fromtimestamp(os.path.getctime(file_name)).strftime('%Y-%m-%d')
+
+        # Generate a base name with the extracted date
+        new_file_name = get_next_filename(base_name="stats/release_stats", date_suffix=content_timestamp)
+
         # Rename the old stats file
         shutil.move(file_name, new_file_name)
         logging.info(f"Archived previous stats to {new_file_name}")
@@ -134,7 +143,6 @@ def archive_previous_stats(file_name="stats/release_stats.csv"):
 
 # Function to write the new stats to a CSV file (always named release_stats.csv)
 def write_stats_to_csv(stats, file_name="stats/release_stats.csv"):
-    # Format timestamp as ISO 8601 format: 'yyyy-MM-ddTHH:mm:ss'
     timestamp = datetime.utcnow().isoformat(timespec='seconds')
     data = []
     
@@ -152,11 +160,7 @@ def write_stats_to_csv(stats, file_name="stats/release_stats.csv"):
         })
     
     df = pd.DataFrame(data)
-    
-    # Ensure the directory exists
     os.makedirs(os.path.dirname(file_name), exist_ok=True)
-    
-    # Write the new data to the CSV file (overwriting if it exists)
     df.to_csv(file_name, index=False)
     logging.info(f"New stats written to {file_name}")
 
