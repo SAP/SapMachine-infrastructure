@@ -148,20 +148,72 @@
         "ea": "true",
         "assets": {
           "jdk": {
+            "aix-ppc64": {
+              "tar.gz": {
+                "name": "sapmachine-jdk-23.0.2-ea.7_aix-ppc64_bin.tar.gz",
+                "checksum": "de5eee3078e102421876d8b9594c9b64acffe04005dba74d834ff6c8ee23f0e0",
+                "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-23.0.2%2B7/sapmachine-jdk-23.0.2-ea.7_aix-ppc64_bin.tar.gz"
+              }
+            },
+            "linux-x64": {
+              "tar.gz": {
+                "name": "sapmachine-jdk-23.0.2-ea.7_linux-x64_bin.tar.gz",
+                "checksum": "c8af36a03227bf3cc88247a3732e39ca6a986561b7c2cd0d532b5d6f731021b2",
+                "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-23.0.2%2B7/sapmachine-jdk-23.0.2-ea.7_linux-x64_bin.tar.gz"
+              }
+            },
             "linux-x64-musl": {
               "tar.gz": {
                 "name": "sapmachine-jdk-23.0.2-ea.7_linux-x64-musl_bin.tar.gz",
                 "checksum": "f61ba1bf112e16b302abd5026acfd0f3932ad739754e96203d525c149c7baa96",
                 "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-23.0.2%2B7/sapmachine-jdk-23.0.2-ea.7_linux-x64-musl_bin.tar.gz"
               }
+            },
+            "macos-aarch64": {
+              "dmg": {
+                "name": "sapmachine-jdk-23.0.2-ea.7_macos-aarch64_bin.dmg",
+                "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-23.0.2%2B7/sapmachine-jdk-23.0.2-ea.7_macos-aarch64_bin.dmg",
+                "checksum": "9f497b589a3a83759806c6c53c72c95850e48bd3a1a0108720eb286adcdfa46d"
+              },
+              "tar.gz": {
+                "name": "sapmachine-jdk-23.0.2-ea.7_macos-aarch64_bin.tar.gz",
+                "checksum": "14d1780e2a75271298ef71bb8c05ba1f73ad77aebf8f8290d588453aabd7ee11",
+                "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-23.0.2%2B7/sapmachine-jdk-23.0.2-ea.7_macos-aarch64_bin.tar.gz"
+              }
             }
           },
           "jre": {
+            "aix-ppc64": {
+              "tar.gz": {
+                "name": "sapmachine-jre-23.0.2-ea.7_aix-ppc64_bin.tar.gz",
+                "checksum": "7c4e759c9cbb0087bff1e446a6d2d787c33e0fbea04159821056d8178a0539c0",
+                "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-23.0.2%2B7/sapmachine-jre-23.0.2-ea.7_aix-ppc64_bin.tar.gz"
+              }
+            },
+            "linux-x64": {
+              "tar.gz": {
+                "name": "sapmachine-jre-23.0.2-ea.7_linux-x64_bin.tar.gz",
+                "checksum": "54b13d77a2890a705d82d71532bcafee94495188d882e0c3dd6c94af0ae4ed4e",
+                "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-23.0.2%2B7/sapmachine-jre-23.0.2-ea.7_linux-x64_bin.tar.gz"
+              }
+            },
             "linux-x64-musl": {
               "tar.gz": {
                 "name": "sapmachine-jre-23.0.2-ea.7_linux-x64-musl_bin.tar.gz",
                 "checksum": "15aad2b744476e51d7589d0c4081fb594cd12f90a9c844732c3d7fbaadf7eb41",
                 "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-23.0.2%2B7/sapmachine-jre-23.0.2-ea.7_linux-x64-musl_bin.tar.gz"
+              }
+            },
+            "macos-aarch64": {
+              "dmg": {
+                "name": "sapmachine-jre-23.0.2-ea.7_macos-aarch64_bin.dmg",
+                "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-23.0.2%2B7/sapmachine-jre-23.0.2-ea.7_macos-aarch64_bin.dmg",
+                "checksum": "0edadd2456fe9cb0c0cba399c7ac7a9f6e57ad2ef848bce578affbf38c714c69"
+              },
+              "tar.gz": {
+                "name": "sapmachine-jre-23.0.2-ea.7_macos-aarch64_bin.tar.gz",
+                "checksum": "152164e551226afe5ae5d072b00b1eab361eb2297c6865e07432ca255dd30dd6",
+                "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-23.0.2%2B7/sapmachine-jre-23.0.2-ea.7_macos-aarch64_bin.tar.gz"
               }
             }
           }
