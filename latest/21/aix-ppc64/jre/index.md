@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Latest SapMachine 21 Release for aix-ppc64
-checksum: sha256 cb646693c78e253c21b82f6f68f8945c88a9855fa0595df6511dc9053d4082eb
+checksum: sha256 205eef4db859ed78700fe51a8d6acc61fddb97acf5abe4cb0a7bde58e15f5540
 redirect_to:
-  - https://github.com/SAP/SapMachine/releases/download/sapmachine-21.0.5/sapmachine-jre-21.0.5_aix-ppc64_bin.tar.gz
+  - https://github.com/SAP/SapMachine/releases/download/sapmachine-21.0.6/sapmachine-jre-21.0.6_aix-ppc64_bin.tar.gz
 ---
