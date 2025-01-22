@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Latest SapMachine 23 Release for windows-x64
-checksum: sha256 9716fb95d6536dacd18fb5b89b7364eb1a8a3626b19712a0b08bcca3df84e1a6
+checksum: sha256 cc0c6203dc5e4fe3a9457a22cd6df3d13ebeb80d04c6a5cfffa4091e39d2ab81
 redirect_to:
-  - https://github.com/SAP/SapMachine/releases/download/sapmachine-23.0.1/sapmachine-jre-23.0.1_windows-x64_bin.zip
+  - https://github.com/SAP/SapMachine/releases/download/sapmachine-23.0.2/sapmachine-jre-23.0.2_windows-x64_bin.zip
 ---

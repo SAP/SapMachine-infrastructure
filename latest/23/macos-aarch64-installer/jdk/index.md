@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Latest SapMachine 23 Release for macos-aarch64-installer
-checksum: sha256 2901ff85a1bf7a317a785acbd246a77d4cef1d0fb9c6914119319cf251d200bb
+checksum: sha256 80eb38e4ae04927e32aace36ddfdd79c8532765855aca5bb3b3c54b21dfe30fa
 redirect_to:
-  - https://github.com/SAP/SapMachine/releases/download/sapmachine-23.0.1/sapmachine-jdk-23.0.1_macos-aarch64_bin.dmg
+  - https://github.com/SAP/SapMachine/releases/download/sapmachine-23.0.2/sapmachine-jdk-23.0.2_macos-aarch64_bin.dmg
 ---

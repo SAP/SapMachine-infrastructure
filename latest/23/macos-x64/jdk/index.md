@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Latest SapMachine 23 Release for macos-x64
-checksum: sha256 c3c9602fbf9c022792bf31459aceddf0b6510a7ee0126b82344eafb9797aa0f2
+checksum: sha256 9e25bc013fe82552155d28b2c5b1d5573cebb4c8fd0d24cf93643e4e125f8592
 redirect_to:
-  - https://github.com/SAP/SapMachine/releases/download/sapmachine-23.0.1/sapmachine-jdk-23.0.1_macos-x64_bin.tar.gz
+  - https://github.com/SAP/SapMachine/releases/download/sapmachine-23.0.2/sapmachine-jdk-23.0.2_macos-x64_bin.tar.gz
 ---

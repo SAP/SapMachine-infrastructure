@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Latest SapMachine 23 Release for linux-ppc64le
-checksum: sha256 040d2d3102f7e00f5a1937985b23bda63e66230746d5c98bb99bc69003f67d67
+checksum: sha256 3faf26249ac2722049b059c518db21171f21dac90321c0a36ecaa5392e72476e
 redirect_to:
-  - https://github.com/SAP/SapMachine/releases/download/sapmachine-23.0.1/sapmachine-jdk-23.0.1_linux-ppc64le_bin.tar.gz
+  - https://github.com/SAP/SapMachine/releases/download/sapmachine-23.0.2/sapmachine-jdk-23.0.2_linux-ppc64le_bin.tar.gz
 ---
