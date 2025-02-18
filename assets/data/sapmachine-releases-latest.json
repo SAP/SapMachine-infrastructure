@@ -7,6 +7,10 @@
       {
         "tag": "sapmachine-25+10",
         "jdk": {
+          "aix-ppc64": {
+            "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B10/sapmachine-jdk-25-ea.10_aix-ppc64_bin.tar.gz",
+            "checksum": "sha256 6e5602276ddfad6f6fa6c68219f0978458498ef49e5fbe84348f5f1514a5a417"
+          },
           "linux-x64": {
             "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B10/sapmachine-jdk-25-ea.10_linux-x64_bin.tar.gz",
             "checksum": "sha256 ecaad26770318f959a578f7c969befda087a25d7a69dd95823999300d7512622"
@@ -17,6 +21,10 @@
           }
         },
         "jre": {
+          "aix-ppc64": {
+            "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B10/sapmachine-jre-25-ea.10_aix-ppc64_bin.tar.gz",
+            "checksum": "sha256 6f4ac36f749013ccaefe2bfb8a2bbf6aa3019a5e9202b04ad4259f3e59743869"
+          },
           "linux-x64": {
             "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B10/sapmachine-jre-25-ea.10_linux-x64_bin.tar.gz",
             "checksum": "sha256 70d25042bf290a190e0752d5800cfba22523354dd149b26aa49ac8b4eb378a28"
@@ -30,10 +38,6 @@
       {
         "tag": "sapmachine-25+9",
         "jdk": {
-          "aix-ppc64": {
-            "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B9/sapmachine-jdk-25-ea.9_aix-ppc64_bin.tar.gz",
-            "checksum": "sha256 74a2499d7f8d9a2ddf520674b440e48a5793c1fca7b7a4259b78d787f784479f"
-          },
           "linux-aarch64": {
             "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B9/sapmachine-jdk-25-ea.9_linux-aarch64_bin.tar.gz",
             "checksum": "sha256 821a588593d5aeefbfc410897ecb93fb2533c20c5040564e352045f58000362e"
@@ -64,10 +68,6 @@
           }
         },
         "jre": {
-          "aix-ppc64": {
-            "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B9/sapmachine-jre-25-ea.9_aix-ppc64_bin.tar.gz",
-            "checksum": "sha256 47d52344db36ef172a264299dd55e5aacf3054c5de78a3b4121c9052509c1561"
-          },
           "linux-aarch64": {
             "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B9/sapmachine-jre-25-ea.9_linux-aarch64_bin.tar.gz",
             "checksum": "sha256 9bb9133f713663474ae0a2facc3fa34409a2202bc9730199bc3b6b1b5e1cca1c"
