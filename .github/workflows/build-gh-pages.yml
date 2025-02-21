@@ -2,6 +2,9 @@
 name: Build and deploy sapmachine.io page
 
 on:
+  # Allows to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
   # Runs on pushes targeting the gh-pages branch
   push:
     branches: ["gh-pages"]
