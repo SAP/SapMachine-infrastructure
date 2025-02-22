@@ -77,9 +77,17 @@
     "25-ea": {
       "releases": [
         {
+          "tag": "sapmachine-25+11",
+          "jdk": {
+            "aix-ppc64": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B11/sapmachine-jdk-25-ea.11_aix-ppc64_bin.tar.gz"
+          },
+          "jre": {
+            "aix-ppc64": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B11/sapmachine-jre-25-ea.11_aix-ppc64_bin.tar.gz"
+          }
+        },
+        {
           "tag": "sapmachine-25+10",
           "jdk": {
-            "aix-ppc64": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B10/sapmachine-jdk-25-ea.10_aix-ppc64_bin.tar.gz",
             "linux-aarch64": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B10/sapmachine-jdk-25-ea.10_linux-aarch64_bin.tar.gz",
             "linux-ppc64le": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B10/sapmachine-jdk-25-ea.10_linux-ppc64le_bin.tar.gz",
             "linux-x64": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B10/sapmachine-jdk-25-ea.10_linux-x64_bin.tar.gz",
@@ -91,7 +99,6 @@
             "windows-x64": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B10/sapmachine-jdk-25-ea.10_windows-x64_bin.zip"
           },
           "jre": {
-            "aix-ppc64": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B10/sapmachine-jre-25-ea.10_aix-ppc64_bin.tar.gz",
             "linux-aarch64": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B10/sapmachine-jre-25-ea.10_linux-aarch64_bin.tar.gz",
             "linux-ppc64le": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B10/sapmachine-jre-25-ea.10_linux-ppc64le_bin.tar.gz",
             "linux-x64": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B10/sapmachine-jre-25-ea.10_linux-x64_bin.tar.gz",
@@ -106,9 +113,17 @@
       ],
       "checksums": [
         {
+          "tag": "sapmachine-25+11",
+          "jdk": {
+            "aix-ppc64": "sha256 eb2c3bcc0c5a510222a835378c9a25fcee29bb1d5fc87d9a1d785a81e0e5f27e"
+          },
+          "jre": {
+            "aix-ppc64": "sha256 7550d895f8371c3f1bda938aae77377c03c1eeb01d4afbf7f1e8938218df8670"
+          }
+        },
+        {
           "tag": "sapmachine-25+10",
           "jdk": {
-            "aix-ppc64": "sha256 6e5602276ddfad6f6fa6c68219f0978458498ef49e5fbe84348f5f1514a5a417",
             "linux-aarch64": "sha256 51c0a9ec3b95ffaf4897671d0a816f41b75bd60b1ac5aff62cc96d20eb173ecb",
             "linux-ppc64le": "sha256 261566f4da68ccf0468a26580300e90d56b8534432d50815e802b54bb6cd3cda",
             "linux-x64": "sha256 ecaad26770318f959a578f7c969befda087a25d7a69dd95823999300d7512622",
@@ -120,7 +135,6 @@
             "windows-x64": "sha256 a6b13b028242d96d18513bd5500c787e1ba77c47776ecb116f190a8d58a6c254"
           },
           "jre": {
-            "aix-ppc64": "sha256 6f4ac36f749013ccaefe2bfb8a2bbf6aa3019a5e9202b04ad4259f3e59743869",
             "linux-aarch64": "sha256 43a0677228e166a7e6cea7d5120087e1d4b708843ed8f8435a16e03832e2ae85",
             "linux-ppc64le": "sha256 d8c43d869c975c383c2f4452fe71a9eafa21d7b4fd57e3a0ce7b994de36dfad2",
             "linux-x64": "sha256 70d25042bf290a190e0752d5800cfba22523354dd149b26aa49ac8b4eb378a28",
