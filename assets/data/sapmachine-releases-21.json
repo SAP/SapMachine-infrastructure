@@ -1,6 +1,40 @@
 {
   "updates": {
     "21.0.7": {
+      "sapmachine-21.0.7+3": {
+        "url": "https://github.com/SAP/SapMachine/releases/tag/sapmachine-21.0.7%2B3",
+        "ea": "true",
+        "assets": {
+          "jdk": {
+            "macos-aarch64": {
+              "dmg": {
+                "name": "sapmachine-jdk-21.0.7-ea.3_macos-aarch64_bin.dmg",
+                "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-21.0.7%2B3/sapmachine-jdk-21.0.7-ea.3_macos-aarch64_bin.dmg",
+                "checksum": "9458e9dbd208d4e01d6802ef1e41d96942bfa131723a479e236758c7d5eecc04"
+              },
+              "tar.gz": {
+                "name": "sapmachine-jdk-21.0.7-ea.3_macos-aarch64_bin.tar.gz",
+                "checksum": "c38802a7da0a3522eed529deddfe96495e56a2effd6938d4ed55ed6af8404138",
+                "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-21.0.7%2B3/sapmachine-jdk-21.0.7-ea.3_macos-aarch64_bin.tar.gz"
+              }
+            }
+          },
+          "jre": {
+            "macos-aarch64": {
+              "dmg": {
+                "name": "sapmachine-jre-21.0.7-ea.3_macos-aarch64_bin.dmg",
+                "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-21.0.7%2B3/sapmachine-jre-21.0.7-ea.3_macos-aarch64_bin.dmg",
+                "checksum": "f70841fabe37e7a81c9047e94c6093f5407793d8e7fe0ca52c2a781d8f4503df"
+              },
+              "tar.gz": {
+                "name": "sapmachine-jre-21.0.7-ea.3_macos-aarch64_bin.tar.gz",
+                "checksum": "feb42cf95ec891134cb7e5e34b7257eb3a35c1d402c5b14e616c8787e8c7af7b",
+                "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-21.0.7%2B3/sapmachine-jre-21.0.7-ea.3_macos-aarch64_bin.tar.gz"
+              }
+            }
+          }
+        }
+      },
       "sapmachine-21.0.7+2": {
         "url": "https://github.com/SAP/SapMachine/releases/tag/sapmachine-21.0.7%2B2",
         "ea": "true",
