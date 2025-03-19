@@ -1,0 +1,16 @@
+# used for creating the new Feature Release Build in March and September.
+# CPU update  in January/April/July/October are done via publish-gardenlinux-images.yml
+name: ONCE Build and Publish SapMachine container images to the SAP GitHub Container Registry
+on:
+  workflow_dispatch:
+
+jobs:
+  publish_images:
+    strategy:
+        matrix:
+          sapMachineVersion: [24]
+          gardenLinuxVersion: [1592]
+    uses: ./.github/workflows/publish-container-images.yaml
+    with:
+      sapMachineVersion: ${{ matrix.sapMachineVersion }}
+      gardenLinuxVersion:  ${{ matrix.gardenLinuxVersion }}
