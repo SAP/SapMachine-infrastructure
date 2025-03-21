@@ -83,11 +83,19 @@
     "25-ea": {
       "releases": [
         {
+          "tag": "sapmachine-25+14",
+          "jdk": {
+            "linux-ppc64le": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B14/sapmachine-jdk-25-ea.14_linux-ppc64le_bin.tar.gz"
+          },
+          "jre": {
+            "linux-ppc64le": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B14/sapmachine-jre-25-ea.14_linux-ppc64le_bin.tar.gz"
+          }
+        },
+        {
           "tag": "sapmachine-25+13",
           "jdk": {
             "aix-ppc64": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B13/sapmachine-jdk-25-ea.13_aix-ppc64_bin.tar.gz",
             "linux-aarch64": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B13/sapmachine-jdk-25-ea.13_linux-aarch64_bin.tar.gz",
-            "linux-ppc64le": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B13/sapmachine-jdk-25-ea.13_linux-ppc64le_bin.tar.gz",
             "linux-x64": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B13/sapmachine-jdk-25-ea.13_linux-x64_bin.tar.gz",
             "linux-x64-musl": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B13/sapmachine-jdk-25-ea.13_linux-x64-musl_bin.tar.gz",
             "macos-aarch64-installer": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B13/sapmachine-jdk-25-ea.13_macos-aarch64_bin.dmg",
@@ -99,7 +107,6 @@
           "jre": {
             "aix-ppc64": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B13/sapmachine-jre-25-ea.13_aix-ppc64_bin.tar.gz",
             "linux-aarch64": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B13/sapmachine-jre-25-ea.13_linux-aarch64_bin.tar.gz",
-            "linux-ppc64le": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B13/sapmachine-jre-25-ea.13_linux-ppc64le_bin.tar.gz",
             "linux-x64": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B13/sapmachine-jre-25-ea.13_linux-x64_bin.tar.gz",
             "linux-x64-musl": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B13/sapmachine-jre-25-ea.13_linux-x64-musl_bin.tar.gz",
             "macos-aarch64-installer": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B13/sapmachine-jre-25-ea.13_macos-aarch64_bin.dmg",
