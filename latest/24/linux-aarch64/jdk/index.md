@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Latest SapMachine 24 Release for linux-aarch64
-checksum: sha256 2fba750a5afdb192c816fa5def46502b3d8df972c3759cc573cbb855e46173bf
+checksum: sha256 3c8f777be1fad2dbbfc6d7e4ea55cfcbb91b3e0cc063e9e96f573b3d0238485d
 redirect_to:
-  - https://github.com/SAP/SapMachine/releases/download/sapmachine-24/sapmachine-jdk-24_linux-aarch64_bin.tar.gz
+  - https://github.com/SAP/SapMachine/releases/download/sapmachine-24.0.1/sapmachine-jdk-24.0.1_linux-aarch64_bin.tar.gz
 ---

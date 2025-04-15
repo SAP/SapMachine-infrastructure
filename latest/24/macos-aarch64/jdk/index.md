@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Latest SapMachine 24 Release for macos-aarch64
-checksum: sha256 620cb45627a30cd1152f7be4903b341d612034af766ff5711e40a35f04672537
+checksum: sha256 771ecd30dde8f48257fcebfbeaab23a31fc4302ca45186c9e6682b9b5154813a
 redirect_to:
-  - https://github.com/SAP/SapMachine/releases/download/sapmachine-24/sapmachine-jdk-24_macos-aarch64_bin.tar.gz
+  - https://github.com/SAP/SapMachine/releases/download/sapmachine-24.0.1/sapmachine-jdk-24.0.1_macos-aarch64_bin.tar.gz
 ---
