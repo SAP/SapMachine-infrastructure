@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Latest SapMachine 21 Release for linux-ppc64le
-checksum: sha256 1e497085eeb796221cc0b23f9321a287124ecdf6cd208c29b53ca8b1344271fd
+checksum: sha256 a633d02eacf1457919ca064f50a4c9ac2ba4034f209975a37686df7cba70bfe8
 redirect_to:
-  - https://github.com/SAP/SapMachine/releases/download/sapmachine-21.0.6/sapmachine-jre-21.0.6_linux-ppc64le_bin.tar.gz
+  - https://github.com/SAP/SapMachine/releases/download/sapmachine-21.0.7/sapmachine-jre-21.0.7_linux-ppc64le_bin.tar.gz
 ---

@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Latest SapMachine 21 Release for windows-x64
-checksum: sha256 084f185e4f524e37f281c87d003c45c3b6eff18e69a591fbb05f232cb1abb9a9
+checksum: sha256 1d1c4dc0e35d5b360c5d92a55f7362ca80ae77cf32f1e9ac4baf3f0feac30d91
 redirect_to:
-  - https://github.com/SAP/SapMachine/releases/download/sapmachine-21.0.6/sapmachine-jre-21.0.6_windows-x64_bin.zip
+  - https://github.com/SAP/SapMachine/releases/download/sapmachine-21.0.7/sapmachine-jre-21.0.7_windows-x64_bin.zip
 ---
