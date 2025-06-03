@@ -503,12 +503,36 @@
           "linux-x64": {
             "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-17.0.16%2B5/sapmachine-jdk-17.0.16-ea.5_linux-x64_bin.tar.gz",
             "checksum": "sha256 4883f47bf65f312624011b70d80219c2301bc44567f103c94a0046f803834964"
+          },
+          "linux-x64-musl": {
+            "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-17.0.16%2B5/sapmachine-jdk-17.0.16-ea.5_linux-x64-musl_bin.tar.gz",
+            "checksum": "sha256 659f40b3373559c144e3a70a22e6d7629bf1f58d029ffac3a0e535e984623efc"
+          },
+          "macos-aarch64-installer": {
+            "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-17.0.16%2B5/sapmachine-jdk-17.0.16-ea.5_macos-aarch64_bin.dmg",
+            "checksum": "sha256 5ea988194d20353fed6d1aa8f603fb75bf548904a0cae1607581cc867f12545e"
+          },
+          "macos-aarch64": {
+            "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-17.0.16%2B5/sapmachine-jdk-17.0.16-ea.5_macos-aarch64_bin.tar.gz",
+            "checksum": "sha256 4a46fa4f55380e1a8fae78a05f4e704cc595578c2cd2eccc3369ec753ac28122"
           }
         },
         "jre": {
           "linux-x64": {
             "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-17.0.16%2B5/sapmachine-jre-17.0.16-ea.5_linux-x64_bin.tar.gz",
             "checksum": "sha256 c1d35952480626330b7166e1f430123b9903c085517e80b6ac287a6d235f7520"
+          },
+          "linux-x64-musl": {
+            "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-17.0.16%2B5/sapmachine-jre-17.0.16-ea.5_linux-x64-musl_bin.tar.gz",
+            "checksum": "sha256 29dee4dabe06e4e50a4146763638111ebaf4a5510d4b31a3f2797da5ef840d82"
+          },
+          "macos-aarch64-installer": {
+            "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-17.0.16%2B5/sapmachine-jre-17.0.16-ea.5_macos-aarch64_bin.dmg",
+            "checksum": "sha256 e9a9b56846b64baf383ea2294664454bd149eb8a3656cc1dde62a425711419a7"
+          },
+          "macos-aarch64": {
+            "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-17.0.16%2B5/sapmachine-jre-17.0.16-ea.5_macos-aarch64_bin.tar.gz",
+            "checksum": "sha256 0ced3f5f0362c89353b7da7586f12e255645f5dd1035521288778d8605cd73fe"
           }
         }
       },
@@ -522,18 +546,6 @@
           "linux-ppc64le": {
             "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-17.0.16%2B4/sapmachine-jdk-17.0.16-ea.4_linux-ppc64le_bin.tar.gz",
             "checksum": "sha256 587ae1bb62f58d624d882788d5f1c22117e9e45a3b09f2c25c19da8d6f291601"
-          },
-          "linux-x64-musl": {
-            "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-17.0.16%2B4/sapmachine-jdk-17.0.16-ea.4_linux-x64-musl_bin.tar.gz",
-            "checksum": "sha256 96496bd6cc01f599748ec6894c69fd4c05c6717406353acaf7590dfbdfb22162"
-          },
-          "macos-aarch64-installer": {
-            "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-17.0.16%2B4/sapmachine-jdk-17.0.16-ea.4_macos-aarch64_bin.dmg",
-            "checksum": "sha256 b16e36b1bd1c70e503542d603c1fc601c9573ebcdac99ccb4c6493928179aa7e"
-          },
-          "macos-aarch64": {
-            "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-17.0.16%2B4/sapmachine-jdk-17.0.16-ea.4_macos-aarch64_bin.tar.gz",
-            "checksum": "sha256 63129a2fb4aefff17330405b96f9b8365a135db03c37b1ebe196e368a957077b"
           },
           "macos-x64-installer": {
             "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-17.0.16%2B4/sapmachine-jdk-17.0.16-ea.4_macos-x64_bin.dmg",
@@ -556,18 +568,6 @@
           "linux-ppc64le": {
             "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-17.0.16%2B4/sapmachine-jre-17.0.16-ea.4_linux-ppc64le_bin.tar.gz",
             "checksum": "sha256 165e5c45b7518646857c9ca752bb0765745595a30cfb4300c61062eca9efc8e0"
-          },
-          "linux-x64-musl": {
-            "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-17.0.16%2B4/sapmachine-jre-17.0.16-ea.4_linux-x64-musl_bin.tar.gz",
-            "checksum": "sha256 ba657153e33796276ee6390dfcd8f68397bc0fb54bbf0b09f4ce77a4fc26f974"
-          },
-          "macos-aarch64-installer": {
-            "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-17.0.16%2B4/sapmachine-jre-17.0.16-ea.4_macos-aarch64_bin.dmg",
-            "checksum": "sha256 5a3eeb25b841acc8ac5ec2a6b25f12a0f73ce087d27ed3d3d70eaca563027a1e"
-          },
-          "macos-aarch64": {
-            "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-17.0.16%2B4/sapmachine-jre-17.0.16-ea.4_macos-aarch64_bin.tar.gz",
-            "checksum": "sha256 80c18764f52f11e67b784e0cbe8a3fed6a11e2564d4561690529871c5b43753e"
           },
           "macos-x64-installer": {
             "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-17.0.16%2B4/sapmachine-jre-17.0.16-ea.4_macos-x64_bin.dmg",
