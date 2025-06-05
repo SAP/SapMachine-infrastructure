@@ -17,12 +17,18 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/checkout@v4
-      - name: Publish images
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install qemu dependency for multi-arch build
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y qemu-user-static
+          
+      - name: Publish SapMachine images
         run: |
             SM_FLAVOURS=(jdk jdk-headless jre jre-headless)
             SM_REGISTRY="ghcr.io/sap/sapmachine"
-            sudo apt-get install -y qemu-user-static
             cd dockerfiles/${{ inputs.sapMachineVersion }}/gardenlinux/${{ inputs.gardenLinuxVersion }}
             podman login -u token -p ${{ github.token }} ghcr.io
             for sm_flvr in "${SM_FLAVOURS[@]}" ; do
