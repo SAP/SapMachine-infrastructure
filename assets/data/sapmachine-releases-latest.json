@@ -105,6 +105,14 @@
             "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B27/sapmachine-jdk-25-ea.27_aix-ppc64_bin.tar.gz",
             "checksum": "sha256 ee65c3d22733d239409fc740580f2986b634779937e5076fd3d3d9d38a5bcbb7"
           },
+          "linux-aarch64": {
+            "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B27/sapmachine-jdk-25-ea.27_linux-aarch64_bin.tar.gz",
+            "checksum": "sha256 b604d5b0bab05ef0699982af45ec8b3f6dc74b140460b9648bfe4dec8ba0e7d8"
+          },
+          "linux-ppc64le": {
+            "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B27/sapmachine-jdk-25-ea.27_linux-ppc64le_bin.tar.gz",
+            "checksum": "sha256 dafcb1b69c6933946ce13ca64ae54c13f07a502515a5657f06448ee6bd263791"
+          },
           "linux-x64": {
             "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B27/sapmachine-jdk-25-ea.27_linux-x64_bin.tar.gz",
             "checksum": "sha256 91fdf891952c909b151c72207a272c76e6312ae621af916a37a684cbdc2dc853"
@@ -127,6 +135,14 @@
             "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B27/sapmachine-jre-25-ea.27_aix-ppc64_bin.tar.gz",
             "checksum": "sha256 674ecb3635e89cdabea8a24cdb8931a7d841f3c56b9be8af0864ac53dcf497f9"
           },
+          "linux-aarch64": {
+            "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B27/sapmachine-jre-25-ea.27_linux-aarch64_bin.tar.gz",
+            "checksum": "sha256 603d24c2365bfb3c903d45cb9365f23a9135c4fab96442844896e9be6268fdad"
+          },
+          "linux-ppc64le": {
+            "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B27/sapmachine-jre-25-ea.27_linux-ppc64le_bin.tar.gz",
+            "checksum": "sha256 a47dc103c3825a7f531db5940b5e974924e96c9356fbc97126df31dbe39f2eac"
+          },
           "linux-x64": {
             "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B27/sapmachine-jre-25-ea.27_linux-x64_bin.tar.gz",
             "checksum": "sha256 8984a972fc3fde0ca5f33cda5ffebb190628f52a5561ccb6ec61361d7c684307"
@@ -148,14 +164,6 @@
       {
         "tag": "sapmachine-25+26",
         "jdk": {
-          "linux-aarch64": {
-            "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B26/sapmachine-jdk-25-ea.26_linux-aarch64_bin.tar.gz",
-            "checksum": "sha256 ab01160cdb40bbe42957d3e5fc73753be156d59136b04ffa535db84e8c14ea98"
-          },
-          "linux-ppc64le": {
-            "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B26/sapmachine-jdk-25-ea.26_linux-ppc64le_bin.tar.gz",
-            "checksum": "sha256 90c23e9d4175b2757a7772759fd2480b886c7b4b0d67ee64bc2d0977d2909312"
-          },
           "macos-x64-installer": {
             "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B26/sapmachine-jdk-25-ea.26_macos-x64_bin.dmg",
             "checksum": "sha256 70cff6a799209031af0eed5d14f7cc82fe610ca0a7bfd9953e02c0e934e36f8d"
@@ -170,14 +178,6 @@
           }
         },
         "jre": {
-          "linux-aarch64": {
-            "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B26/sapmachine-jre-25-ea.26_linux-aarch64_bin.tar.gz",
-            "checksum": "sha256 015450075a8a2dcaf96eb99096cfbe554cc4a3287d7b369677c3c0799a8c1e8c"
-          },
-          "linux-ppc64le": {
-            "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B26/sapmachine-jre-25-ea.26_linux-ppc64le_bin.tar.gz",
-            "checksum": "sha256 19d50b01c93b6d493fc4a0ecba310070e4e6258f01aa34a4cd38fccc6fad51a5"
-          },
           "macos-x64-installer": {
             "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-25%2B26/sapmachine-jre-25-ea.26_macos-x64_bin.dmg",
             "checksum": "sha256 50ad4fefe8dadb1533a2ae731a962b46e172a3693e306c7c0cf0de8bc38122bb"
