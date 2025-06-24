@@ -601,6 +601,10 @@
       {
         "tag": "sapmachine-17.0.16+7",
         "jdk": {
+          "linux-aarch64": {
+            "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-17.0.16%2B7/sapmachine-jdk-17.0.16-ea.7_linux-aarch64_bin.tar.gz",
+            "checksum": "sha256 32137e29dbcaf9d8159e2384074490e484e253b93cae62494e51425b5f61dacb"
+          },
           "linux-ppc64le": {
             "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-17.0.16%2B7/sapmachine-jdk-17.0.16-ea.7_linux-ppc64le_bin.tar.gz",
             "checksum": "sha256 505414d6215bb79e9c6d6e969153506bf8a4dc8a8ded9d4d8c3c5117d6e47fdb"
@@ -635,6 +639,10 @@
           }
         },
         "jre": {
+          "linux-aarch64": {
+            "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-17.0.16%2B7/sapmachine-jre-17.0.16-ea.7_linux-aarch64_bin.tar.gz",
+            "checksum": "sha256 db5edc9b4bcf6444206a4938a69abef6dfda796b5b20c9c17b85670afa6f51e3"
+          },
           "linux-ppc64le": {
             "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-17.0.16%2B7/sapmachine-jre-17.0.16-ea.7_linux-ppc64le_bin.tar.gz",
             "checksum": "sha256 edadcc6a6ca0b93e20a1bdb18b37c1fc43f32dae9ad7ea4716c9be19a4e48a8d"
@@ -666,21 +674,6 @@
           "windows-x64": {
             "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-17.0.16%2B7/sapmachine-jre-17.0.16-ea.7_windows-x64_bin.zip",
             "checksum": "sha256 865f4851e6a88948eae7d4997f6b63598904fe75a35a1c440a2d5722e2e716d1"
-          }
-        }
-      },
-      {
-        "tag": "sapmachine-17.0.16+6",
-        "jdk": {
-          "linux-aarch64": {
-            "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-17.0.16%2B6/sapmachine-jdk-17.0.16-ea.6_linux-aarch64_bin.tar.gz",
-            "checksum": "sha256 60833b84ad96e6260ecbff71b091812398dc6434c9ae8e0742a4dd388e4b25ca"
-          }
-        },
-        "jre": {
-          "linux-aarch64": {
-            "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-17.0.16%2B6/sapmachine-jre-17.0.16-ea.6_linux-aarch64_bin.tar.gz",
-            "checksum": "sha256 639c39da226fbf1240494275787a483d5ad71cfe280ebd7534fc4ac40ef41714"
           }
         }
       },
