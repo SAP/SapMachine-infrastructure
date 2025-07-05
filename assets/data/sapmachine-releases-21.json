@@ -1,6 +1,44 @@
 {
   "updates": {
     "21.0.8": {
+      "sapmachine-21.0.8+8": {
+        "url": "https://github.com/SAP/SapMachine/releases/tag/sapmachine-21.0.8%2B8",
+        "ea": "true",
+        "assets": {
+          "jdk": {
+            "linux-x64": {
+              "tar.gz": {
+                "name": "sapmachine-jdk-21.0.8-ea.8_linux-x64_bin.tar.gz",
+                "checksum": "c9a28471d2f63eaad774bc38bf091aad19b676121bd8fc082865af741064076e",
+                "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-21.0.8%2B8/sapmachine-jdk-21.0.8-ea.8_linux-x64_bin.tar.gz"
+              }
+            },
+            "linux-x64-musl": {
+              "tar.gz": {
+                "name": "sapmachine-jdk-21.0.8-ea.8_linux-x64-musl_bin.tar.gz",
+                "checksum": "3086009db5b3fd34dc3e0ce538a77ff2dfe28ec86dc61a15cd7fc7e22de2f84b",
+                "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-21.0.8%2B8/sapmachine-jdk-21.0.8-ea.8_linux-x64-musl_bin.tar.gz"
+              }
+            }
+          },
+          "jre": {
+            "linux-x64": {
+              "tar.gz": {
+                "name": "sapmachine-jre-21.0.8-ea.8_linux-x64_bin.tar.gz",
+                "checksum": "6a7f0b2f0cf5eaf5eeab6edf89e74a50592b55c03d998906a1429e31844272b3",
+                "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-21.0.8%2B8/sapmachine-jre-21.0.8-ea.8_linux-x64_bin.tar.gz"
+              }
+            },
+            "linux-x64-musl": {
+              "tar.gz": {
+                "name": "sapmachine-jre-21.0.8-ea.8_linux-x64-musl_bin.tar.gz",
+                "checksum": "7fbb37a7ca8e46cef6310c7c781884874fd9adb4c1554a1b181652d9892ec9ce",
+                "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-21.0.8%2B8/sapmachine-jre-21.0.8-ea.8_linux-x64-musl_bin.tar.gz"
+              }
+            }
+          }
+        }
+      },
       "sapmachine-21.0.8+7": {
         "url": "https://github.com/SAP/SapMachine/releases/tag/sapmachine-21.0.8%2B7",
         "ea": "true",
