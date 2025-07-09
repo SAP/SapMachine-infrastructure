@@ -7,6 +7,10 @@
       {
         "tag": "sapmachine-26+5",
         "jdk": {
+          "aix-ppc64": {
+            "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-26%2B5/sapmachine-jdk-26-ea.5_aix-ppc64_bin.tar.gz",
+            "checksum": "sha256 ee97f3961ca15fa57e07a400d4efad9da9cea10fdb97dbc66a9c8c93a2ecbb9d"
+          },
           "linux-x64": {
             "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-26%2B5/sapmachine-jdk-26-ea.5_linux-x64_bin.tar.gz",
             "checksum": "sha256 3039e1e2b3584fcf7b216dce61898bf099ccb6457f69b0f05bd9bbae01337f38"
@@ -25,6 +29,10 @@
           }
         },
         "jre": {
+          "aix-ppc64": {
+            "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-26%2B5/sapmachine-jre-26-ea.5_aix-ppc64_bin.tar.gz",
+            "checksum": "sha256 5f490b244f79dda6910e8fd349301bdaadfdca2eeb8eac63dc338cfacc085207"
+          },
           "linux-x64": {
             "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-26%2B5/sapmachine-jre-26-ea.5_linux-x64_bin.tar.gz",
             "checksum": "sha256 bf00d763f32a840370827bbb45c6a690ede45eb48bd04edd6387f7bfb5ce53d1"
@@ -46,10 +54,6 @@
       {
         "tag": "sapmachine-26+4",
         "jdk": {
-          "aix-ppc64": {
-            "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-26%2B4/sapmachine-jdk-26-ea.4_aix-ppc64_bin.tar.gz",
-            "checksum": "sha256 21ca836bb222e7556f2e5041d4155e8235e4cac50142321edd6c5a7d936ad65d"
-          },
           "linux-aarch64": {
             "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-26%2B4/sapmachine-jdk-26-ea.4_linux-aarch64_bin.tar.gz",
             "checksum": "sha256 e592e9581a28e0ad5ac65ea26d047befd83ee6da3c66a21be9be3aef8ebdb631"
@@ -72,10 +76,6 @@
           }
         },
         "jre": {
-          "aix-ppc64": {
-            "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-26%2B4/sapmachine-jre-26-ea.4_aix-ppc64_bin.tar.gz",
-            "checksum": "sha256 f743c95036b103c998a1b552116d4aef33ad11c47ac0d7d3e79f877c9a98749b"
-          },
           "linux-aarch64": {
             "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-26%2B4/sapmachine-jre-26-ea.4_linux-aarch64_bin.tar.gz",
             "checksum": "sha256 666219629b216802ede907d3c3c2eb4b36e2fbc7d4e9255042f4e9e89ee09620"
