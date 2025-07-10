@@ -143,31 +143,18 @@ All rights reserved. Confidential and proprietary.
 
     function getOsSelectValue(ignoreInstaller = false) {
         try {
-            var isMac = navigator.platform.toUpperCase().indexOf('MAC') !== -1
-            var isWindows = navigator.platform.toUpperCase().indexOf('WIN') !== -1
-            var isLinux = navigator.platform.toUpperCase().indexOf('LINUX') !== -1
-
-            if (isMac) {
-                return (ignoreInstaller ? 'macos-x64' : 'macos-x64-installer');
+            if (navigator.userAgent.toUpperCase().includes('MAC')) {
+                return "macos-aarch64" + (ignoreInstaller ? "" : "-installer");
             }
 
-            if (isWindows) {
-                return (ignoreInstaller ? 'windows-x64' : 'windows-x64-installer');
-            }
-
-            if (isLinux) {
-                if (navigator.platform.toUpperCase().indexOf('PPC64LE') !== -1) {
-                    return 'linux-ppc64le'
-                }
-                if (navigator.platform.toUpperCase().indexOf('PPC64') !== -1) {
-                    return 'linux-ppc64'
-                }
+            if (navigator.userAgent.toUpperCase().includes('WIN')) {
+                return "windows-x64" + (ignoreInstaller ? "" : "-installer");
             }
         } catch (e) {
-            // ignore
+            // No handling, just ensure a default value is returned.
         }
 
-        return 'linux-x64'
+        return "linux-x64"
     }
 
 	function extendArray (target, source) {
