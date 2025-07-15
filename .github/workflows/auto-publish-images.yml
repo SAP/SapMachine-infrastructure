@@ -1,0 +1,55 @@
+name: Automatically build & publish SapMachine on Garden Linux container images
+
+# 0. Run daily
+#
+# 1a. Fetch latest versions of SapMachine and Garden Linux
+# 1b. SapMachine: https://github.tools.sap/SapMachine/SapMachine-infrastructure/blob/master/releases.json (only major release)
+#                 see tools infra: generate_dockerfiles.py to retrieve version from Github
+# 1c. Garden Linux: docker run -it --rm ghcr.io/gardenlinux/glrd "glrd --active --type patch --fields Version --no-header"
+#
+# 2a. Compute all combinations of SAPMACHINE_VER x GARDENLINUX_VER
+# 2b. Read file at <LOCATION> and check if the combination was already released as image.
+# 2c. If yes skip.
+# 2d. If no -> build image and release. Save release info in file at <LOCATION>.
+#
+# 3.
+
+on:
+  workflow_call:
+    inputs:
+      sapMachineVersion:
+        type: string
+        description: "SapMachine major version (e.g. 21)"
+      gardenLinuxVersion:
+        type: string
+        description: "GardenLinux major version (e.g. 1592)"        
+jobs:
+  publish_container:
+    name: publish gardenlinux container base image
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install qemu dependency for multi-arch build
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y qemu-user-static
+          
+      - name: Publish SapMachine images
+        run: |
+            SM_FLAVOURS=(jdk jdk-headless jre jre-headless)
+            SM_REGISTRY="ghcr.io/sap/sapmachine"
+            cd dockerfiles/${{ inputs.sapMachineVersion }}/gardenlinux/${{ inputs.gardenLinuxVersion }}
+            podman login -u token -p ${{ github.token }} ghcr.io
+            for sm_flvr in "${SM_FLAVOURS[@]}" ; do
+              tag=${{ inputs.sapMachineVersion }}-${sm_flvr}-gl-${{ inputs.gardenLinuxVersion }}
+              cd ${sm_flvr}
+              podman manifest create ${SM_REGISTRY}:$tag
+              podman build --platform linux/amd64,linux/arm64 --manifest ${SM_REGISTRY}:$tag .
+              podman manifest push ${SM_REGISTRY}:$tag
+              cd ..
+            done
