@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Latest SapMachine 24 Release for windows-x64-installer
-checksum: sha256 316fda99889a2541e28376e4a15609db746a2f36785c0da3b89f3b6e3f93e6c4
+checksum: sha256 9719ec530c6330df96c5200b651dbdfc909fee34e519a2c391cfb434fa4a6f91
 redirect_to:
-  - https://github.com/SAP/SapMachine/releases/download/sapmachine-24.0.1/sapmachine-jre-24.0.1_windows-x64_bin.msi
+  - https://github.com/SAP/SapMachine/releases/download/sapmachine-24.0.2/sapmachine-jre-24.0.2_windows-x64_bin.msi
 ---
