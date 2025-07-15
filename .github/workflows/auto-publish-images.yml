@@ -1,0 +1,108 @@
+name: Automatically build & publish SapMachine on Garden Linux container images
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Daily at midnight
+  workflow_dispatch:
+
+env:
+  GARDEN_LINUX_IMAGE: ghcr.io/gardenlinux/gardenlinux
+  GARDEN_LINUX_VER: TODO
+  SAPMACHINE_VERSION: TODO
+  TARGET_IMAGE: WILL_BE_SET
+
+    # TODO: how to use flavor/version here?
+    # inputs:
+    #   sapMachineVersion:
+    #     type: string
+    #     description: "SapMachine major version (e.g. 21)"
+    #   gardenLinuxVersion:
+    #     type: string
+    #     description: "GardenLinux major version (e.g. 1592)"        
+
+jobs:
+  docker-login:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Login to registry
+        run: |
+          podman login -u token -p ${{ github.token }} ghcr.io
+
+  conditional-build:
+    runs-on: ubuntu-24.04
+    needs: docker-login
+
+    strategy:
+      matrix:
+        flavor: ["jdk", "jdk-headless", "jre", "jre-headless"]
+        sapmachineVersion: [24, 21, 17, 11] # TODO: generate this in another action or update by hand
+        gardenVersion: [1592, 1877] # TODO: generate this in another action or update by hand
+
+    steps:
+      - name: Retrieve existing image and extract labels
+        # id: inspect_target
+        # continue-on-error: true
+        run: |
+          set -euo pipefail
+          TARGET_IMAGE="ghcr.io/sap/sapmachine:${{sapmachineVersion}}-${{matrix.flavor}}-gl-${{matrix.gardenVersion}"
+          if podman pull $TARGET_IMAGE; then
+            SAPMACHINE_CHECKSUM=$(podman inspect $TARGET_IMAGE --format '{{ index .Labels "sapmachine.checksum" }}')
+            GARDEN_LINUX_IMAGEID=$(podman inspect $TARGET_IMAGE --format '{{ index .Labels "gardenlinux.id" }}')
+          else
+            echo "Target image not found.. forcing rebuild."
+            SAPMACHINE_CHECKSUM=""
+            GARDEN_LINUX_IMAGEID=""
+          fi
+          echo "SAPMACHINE_CHECKSUM=$SAPMACHINE_CHECKSUM" >> $GITHUB_ENV
+          echo "GARDEN_LINUX_IMAGEID=$GARDEN_LINUX_IMAGEID" >> $GITHUB_ENV
+
+      - name: Pull base image and get corresponding image id
+        run: |
+          BASE_IMAGE=ghcr.io/gardenlinux/gardenlinux:${{matrix.gardenVersion}}
+          podman pull $BASE_IMAGE
+          CURRENT_IMAGEID=$(podman image inspect $BASE_IMAGE --format '{{.Id}}')
+          echo "CURRENT_IMAGEID=$CURRENT_IMAGEID" >> $GITHUB_ENV
+
+      - name: Get current package checksum for sapmachine deb package
+        run: |
+          cd dockerfiles/
+          podman build --target checksum-stage -t checksum-temp .
+          CURRENT_CHECKSUM=$(podman run --rm checksum-temp cat /checksum.txt)
+          echo "CURRENT_CHECKSUM=$CURRENT_CHECKSUM" >> $GITHUB_ENV
+
+      - name: Decide whether to build
+        run: |
+          echo "Garden Linux image changed: $GARDEN_LINUX_IMAGEID != $CURRENT_IMAGEID"
+          echo "SapMachine .deb package changed: $SAPMACHINE_CHECKSUM != $CURRENT_CHECKSUM"
+          if [[ -z "$GARDEN_LINUX_IMAGEID != $CURRENT_IMAGEID" || "$SAPMACHINE_CHECKSUM != $CURRENT_CHECKSUM" ]]; then
+            echo "NEED_BUILD=true" >> $GITHUB_ENV
+          else
+            echo "NEED_BUILD=false" >> $GITHUB_ENV
+          fi
+
+      - name: Build and push image
+        if: env.NEED_BUILD == 'true'
+        run: |
+          podman build --target main-stage --build-arg GARDEN_LINUX_MAJOR_VER="${{ matrix.gardenVersion }}" --build-arg SAPMACHINE_MAJOR_VER="${{ matrix.sapmachineVersion }}" --build-arg SAPMACHINE_FLAVOR="${{ matrix.flavor }}" --build-arg SAPMACHINE_CHECKSUM="$SAPMACHINE_CHECKSUM" --build-arg GARDEN_LINUX_IMAGEID="$GARDEN_LINUX_IMAGEID" -t "ghcr.io/sap/sapmachine:${{ matrix.sapmachineVersion }}-${{ matrix.flavor }}-gl-${{ matrix.gardenVersion }}" .
+          echo "TODO: PUBLISH"
+          # podman build \
+          #   --build-arg BASE_IMAGE_DIGEST=$CURRENT_BASE_DIGEST \
+          #   --build-arg DEB_PACKAGE_CHECKSUM=$CURRENT_PACKAGE_CHECKSUM \
+          #   -t docker.io/your-namespace/your-target-image:latest .
+          #
+          # podman push docker.io/your-namespace/your-target-image:latest
+#             SM_FLAVOURS=(jdk jdk-headless jre jre-headless)
+#             SM_REGISTRY="ghcr.io/sap/sapmachine"
+#             cd dockerfiles/${{ inputs.sapMachineVersion }}/gardenlinux/${{ inputs.gardenLinuxVersion }}
+#             podman login -u token -p ${{ github.token }} ghcr.io
+#             for sm_flvr in "${SM_FLAVOURS[@]}" ; do
+#               tag=${{ inputs.sapMachineVersion }}-${sm_flvr}-gl-${{ inputs.gardenLinuxVersion }}
+#               cd ${sm_flvr}
+#               podman manifest create ${SM_REGISTRY}:$tag
+#               podman build --platform linux/amd64,linux/arm64 --manifest ${SM_REGISTRY}:$tag .
+#               podman manifest push ${SM_REGISTRY}:$tag
+#               cd ..
+#             done
+#
+#
+#
