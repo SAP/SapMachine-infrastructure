@@ -7,20 +7,58 @@
         "ea": "true",
         "assets": {
           "jdk": {
+            "linux-x64": {
+              "tar.gz": {
+                "name": "sapmachine-jdk-26-ea.6_linux-x64_bin.tar.gz",
+                "checksum": "39eaf52d25424ad133794bd3c97b8fd136abf06e7d87f26ddd6bdf0245b5ca6a",
+                "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-26%2B6/sapmachine-jdk-26-ea.6_linux-x64_bin.tar.gz"
+              }
+            },
             "linux-x64-musl": {
               "tar.gz": {
                 "name": "sapmachine-jdk-26-ea.6_linux-x64-musl_bin.tar.gz",
                 "checksum": "6dba1a9e47679aa7eafa733604f7d1c2e096bc75e7691434f14dce44add695f9",
                 "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-26%2B6/sapmachine-jdk-26-ea.6_linux-x64-musl_bin.tar.gz"
               }
+            },
+            "macos-aarch64": {
+              "dmg": {
+                "name": "sapmachine-jdk-26-ea.6_macos-aarch64_bin.dmg",
+                "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-26%2B6/sapmachine-jdk-26-ea.6_macos-aarch64_bin.dmg",
+                "checksum": "d9add97ca8d47a9157010141d5569a73d43c53f2927e535d4cd573b9bb9bca08"
+              },
+              "tar.gz": {
+                "name": "sapmachine-jdk-26-ea.6_macos-aarch64_bin.tar.gz",
+                "checksum": "02c93b446d45f35022840882328ec846593878dd42a3904c39a84d70210a5321",
+                "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-26%2B6/sapmachine-jdk-26-ea.6_macos-aarch64_bin.tar.gz"
+              }
             }
           },
           "jre": {
+            "linux-x64": {
+              "tar.gz": {
+                "name": "sapmachine-jre-26-ea.6_linux-x64_bin.tar.gz",
+                "checksum": "1e519b0a9664216a9f7688112b2a13547308d61c4d4e93f84159750001796a7d",
+                "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-26%2B6/sapmachine-jre-26-ea.6_linux-x64_bin.tar.gz"
+              }
+            },
             "linux-x64-musl": {
               "tar.gz": {
                 "name": "sapmachine-jre-26-ea.6_linux-x64-musl_bin.tar.gz",
                 "checksum": "766def28145db874c32abc72aced3cf3650c3835aac9c3aa25e318e9e660cf91",
                 "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-26%2B6/sapmachine-jre-26-ea.6_linux-x64-musl_bin.tar.gz"
+              }
+            },
+            "macos-aarch64": {
+              "dmg": {
+                "name": "sapmachine-jre-26-ea.6_macos-aarch64_bin.dmg",
+                "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-26%2B6/sapmachine-jre-26-ea.6_macos-aarch64_bin.dmg",
+                "checksum": "f734b56f3db0c28975c6cb87faa511951faab413ccefaeefc91fefc2f2a18529"
+              },
+              "tar.gz": {
+                "name": "sapmachine-jre-26-ea.6_macos-aarch64_bin.tar.gz",
+                "checksum": "f38000480012ef63f5a959074ee2180a24c96ed1aec6480d4b447a6424f9474f",
+                "url": "https://github.com/SAP/SapMachine/releases/download/sapmachine-26%2B6/sapmachine-jre-26-ea.6_macos-aarch64_bin.tar.gz"
               }
             }
           }
