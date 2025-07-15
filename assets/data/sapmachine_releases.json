@@ -197,9 +197,17 @@
     "24-ea": {
       "releases": [
         {
+          "tag": "sapmachine-24.0.2+12",
+          "jdk": {
+            "aix-ppc64": "https://github.com/SAP/SapMachine/releases/download/sapmachine-24.0.2%2B12/sapmachine-jdk-24.0.2-ea.12_aix-ppc64_bin.tar.gz"
+          },
+          "jre": {
+            "aix-ppc64": "https://github.com/SAP/SapMachine/releases/download/sapmachine-24.0.2%2B12/sapmachine-jre-24.0.2-ea.12_aix-ppc64_bin.tar.gz"
+          }
+        },
+        {
           "tag": "sapmachine-24.0.2+1",
           "jdk": {
-            "aix-ppc64": "https://github.com/SAP/SapMachine/releases/download/sapmachine-24.0.2%2B1/sapmachine-jdk-24.0.2-ea.1_aix-ppc64_bin.tar.gz",
             "linux-aarch64": "https://github.com/SAP/SapMachine/releases/download/sapmachine-24.0.2%2B1/sapmachine-jdk-24.0.2-ea.1_linux-aarch64_bin.tar.gz",
             "linux-ppc64le": "https://github.com/SAP/SapMachine/releases/download/sapmachine-24.0.2%2B1/sapmachine-jdk-24.0.2-ea.1_linux-ppc64le_bin.tar.gz",
             "linux-x64": "https://github.com/SAP/SapMachine/releases/download/sapmachine-24.0.2%2B1/sapmachine-jdk-24.0.2-ea.1_linux-x64_bin.tar.gz",
@@ -211,7 +219,6 @@
             "windows-x64": "https://github.com/SAP/SapMachine/releases/download/sapmachine-24.0.2%2B1/sapmachine-jdk-24.0.2-ea.1_windows-x64_bin.zip"
           },
           "jre": {
-            "aix-ppc64": "https://github.com/SAP/SapMachine/releases/download/sapmachine-24.0.2%2B1/sapmachine-jre-24.0.2-ea.1_aix-ppc64_bin.tar.gz",
             "linux-aarch64": "https://github.com/SAP/SapMachine/releases/download/sapmachine-24.0.2%2B1/sapmachine-jre-24.0.2-ea.1_linux-aarch64_bin.tar.gz",
             "linux-ppc64le": "https://github.com/SAP/SapMachine/releases/download/sapmachine-24.0.2%2B1/sapmachine-jre-24.0.2-ea.1_linux-ppc64le_bin.tar.gz",
             "linux-x64": "https://github.com/SAP/SapMachine/releases/download/sapmachine-24.0.2%2B1/sapmachine-jre-24.0.2-ea.1_linux-x64_bin.tar.gz",
@@ -226,9 +233,17 @@
       ],
       "checksums": [
         {
+          "tag": "sapmachine-24.0.2+12",
+          "jdk": {
+            "aix-ppc64": "sha256 758508aa0e55c492bd35813d0cce44f2768bc5e2b1be9ab9fdcfc9b2b22ad287"
+          },
+          "jre": {
+            "aix-ppc64": "sha256 3904efcd121d7e31aeda2b221d0055878e6a4d0fcf205e1180516811a508dde5"
+          }
+        },
+        {
           "tag": "sapmachine-24.0.2+1",
           "jdk": {
-            "aix-ppc64": "sha256 3efdf0d0a65c1116d5929abd93ca285504375fcbe01062f926df64ad44695776",
             "linux-aarch64": "sha256 b5c8f7f9df8d2742e32bd6680606baaa1cd0c4ddd554547899cdcba21146f1c5",
             "linux-ppc64le": "sha256 e053389fe569c8957d4675eebc4cf81633b31a9478f424dab935c7cc723cf863",
             "linux-x64": "sha256 3067b284d169ce482f97735c3aad521e2bf84d6d087c6b44857606eef208cd9f",
@@ -240,7 +255,6 @@
             "windows-x64": "sha256 968ece45613364cc5f7ffee93c37287ce4fa063bf232913385d3465069def6fa"
           },
           "jre": {
-            "aix-ppc64": "sha256 caaa288f2d494e08ba290bcc6a774f093e4456fddef9f6c52a5a51fe09dca2c6",
             "linux-aarch64": "sha256 15663d818974660472d5330159000c47cf4ab7a0cbbec5f76d646fbbfee6b9e2",
             "linux-ppc64le": "sha256 76728c632be5793c3f24a520c67021132b289abb8a0c1f01c6392e7185f3b83f",
             "linux-x64": "sha256 3df366380f2f6f48e70c233cbe1fed68d1f519bb2a62f5fba438441ea90aa86d",
