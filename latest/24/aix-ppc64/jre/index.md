@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Latest SapMachine 24 Release for aix-ppc64
-checksum: sha256 83b83faa4aecb90e74820f5ec27c6081d4a8bdaef6446a4f4b618c6200d7122f
+checksum: sha256 f8006ef91eb5476da82b6f4a8447e68968062d4b67f5cc5346ef2a62135b3e21
 redirect_to:
-  - https://github.com/SAP/SapMachine/releases/download/sapmachine-24.0.1/sapmachine-jre-24.0.1_aix-ppc64_bin.tar.gz
+  - https://github.com/SAP/SapMachine/releases/download/sapmachine-24.0.2/sapmachine-jre-24.0.2_aix-ppc64_bin.tar.gz
 ---
