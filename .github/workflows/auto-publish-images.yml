@@ -1,8 +1,8 @@
 name: Automatically build & publish SapMachine on Garden Linux container images
 
 on:
-  schedule:
-    - cron: '0 0 * * *'  # Daily at midnight
+  # schedule:
+  #   - cron: '0 0 * * *'  # Daily at midnight
   workflow_dispatch:
 
 env:
