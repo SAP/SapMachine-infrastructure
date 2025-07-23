@@ -11,15 +11,6 @@ env:
   SAPMACHINE_VERSION: TODO
   TARGET_IMAGE: WILL_BE_SET
 
-    # TODO: how to use flavor/version here?
-    # inputs:
-    #   sapMachineVersion:
-    #     type: string
-    #     description: "SapMachine major version (e.g. 21)"
-    #   gardenLinuxVersion:
-    #     type: string
-    #     description: "GardenLinux major version (e.g. 1592)"        
-
 jobs:
   docker-login:
     runs-on: ubuntu-24.04
