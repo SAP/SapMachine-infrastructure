@@ -13,4 +13,4 @@ RUN apt-get update && \
 
 ENV JAVA_HOME=/usr/lib/jvm/sapmachine-21
 
-CMD ["jshell"]
+CMD ["bash"]
