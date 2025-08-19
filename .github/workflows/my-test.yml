@@ -4,6 +4,8 @@ on:
     repository_dispatch:
         types: [from-wdf]
     workflow_dispatch:
+    push:
+        branches: [ "github_triggers_workflow" ]
 jobs:
     build:
         runs-on: ubuntu-latest
