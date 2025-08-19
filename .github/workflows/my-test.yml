@@ -1,0 +1,11 @@
+name: Triggered workflow from wdf
+
+on:
+    repository_dispatch:
+        types: [from-wdf]
+    workflow_dispatch:
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - run: echo "Triggered from Enterprise instance!"
