@@ -2,7 +2,7 @@ name: Triggered workflow from wdf
 
 on:
     repository_dispatch:
-        types: [from-wdf]
+        types: [gh-page-build-on-infra]
     workflow_dispatch:
     push:
         branches: [ "github_triggers_workflow" ]
