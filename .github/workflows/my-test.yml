@@ -1,9 +1,12 @@
 name: Triggered workflow from wdf
 
 on:
-    repository_dispatch:
-        types: [gh-page-build-on-infra]
     workflow_dispatch:
+        inputs:
+            event_type:
+                description: 'Event type'
+                required: false
+                default: 'gh-page-build-on-infra'
     push:
         branches: [ "github_triggers_workflow"]
 jobs:
