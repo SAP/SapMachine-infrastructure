@@ -5,7 +5,7 @@ on:
         types: [gh-page-build-on-infra]
     workflow_dispatch:
     push:
-        branches: [ "github_triggers_workflow" ]
+        branches: [ "github_triggers_workflow", "main" ]
 jobs:
     build:
         runs-on: ubuntu-latest
