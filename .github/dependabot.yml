@@ -1,31 +1,7 @@
 version: 2
 updates:
-  # Keep Docker dependencies up-to-date
-  - package-ecosystem: "docker"
-    directory: "/dockerfiles" # Überwacht alle Dockerfiles im Verzeichnis
-    schedule:
-      interval: "weekly"
-
   # Keep GitHub Actions workflows up-to-date
   - package-ecosystem: "github-actions"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-
-  # Keep npm dependencies up-to-date (falls npm verwendet wird)
-#  - package-ecosystem: "npm"
-#    directory: "/"
-#    schedule:
-#      interval: "weekly"
-
-  # Keep Maven dependencies up-to-date (falls Maven verwendet wird)
-#  - package-ecosystem: "maven"
-#    directory: "/"
-#    schedule:
-#      interval: "weekly"
-
-  # Keep Python dependencies up-to-date (falls Python verwendet wird)
-  - package-ecosystem: "pip"
     directory: "/"
     schedule:
       interval: "weekly"
