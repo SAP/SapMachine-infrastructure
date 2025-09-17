@@ -8,7 +8,7 @@ jobs:
   publish_images:
     strategy:
         matrix:
-          sapMachineVersion: [17, 21, 24]
+          sapMachineVersion: [17, 21, 25]
           gardenLinuxVersion: [1592]
     uses: ./.github/workflows/publish-container-images.yml
     with:
