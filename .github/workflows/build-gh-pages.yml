@@ -4,6 +4,11 @@ name: Build and deploy sapmachine.io page
 on:
   # Allows to run this workflow manually from the Actions tab
   workflow_dispatch:
+    inputs:
+      event_type:
+        description: 'Event type'
+        required: false
+        default: 'gh-page-build'
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
@@ -18,25 +23,17 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # Trigger (build on SAP/SapMachine) job
-  trigger:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Trigger build in SAP/SapMachine repo
-        uses: peter-evans/repository-dispatch@v3
-        with:
-          token: '${{ secrets.SAPMACHINE_TRIGGER_TOKEN }}'
-          repository: SAP/SapMachine
-          event-type: gh-page-build
-
   # Build job
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout repo from GitHub Tools SAP
         uses: actions/checkout@v5
         with:
-          ref: 'gh-pages'
+          repository: SapMachine/SapMachineIOPage
+          token: ${{ secrets.GHE_PAT }}
+          github-server-url: https://github.tools.sap
+          ref: 'main'
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Build with Jekyll
