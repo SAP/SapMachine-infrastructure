@@ -47,7 +47,7 @@ jobs:
         uses: s4u/setup-maven-action@v1.18.0
       - name: Checkout and run jfrevents-site-generator
         run: |
-          git clone https://github.com/parttimenerd/jfrevents-site-generator /tmp/generator
+          git clone https://github.com/SAP/sapmachine-jfrevents-site-generator /tmp/generator
           (cd /tmp/generator; bin/publish.py clean build_site)
           rm -fr jfrevents
           mv /tmp/generator/site jfrevents
