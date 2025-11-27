@@ -1,4 +1,4 @@
-FROM ghcr.io/gardenlinux/gardenlinux:1592
+FROM ghcr.io/gardenlinux/gardenlinux:1592.15
 
 RUN apt-get update && \
     apt-get -y --no-install-recommends install wget && \
