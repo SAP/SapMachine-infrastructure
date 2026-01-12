@@ -1,4 +1,4 @@
-FROM ghcr.io/gardenlinux/gardenlinux:1592
+FROM ghcr.io/gardenlinux/gardenlinux:1877
 
 ADD --chmod=644 --chown=root:root https://dist.sapmachine.io/debian/sapmachine.key /etc/apt/trusted.gpg.d/sapmachine.asc
 
