@@ -4,7 +4,7 @@ ADD --chmod=644 --chown=root:root https://dist.sapmachine.io/debian/sapmachine.k
 
 RUN echo "deb https://dist.sapmachine.io/debian/$(dpkg --print-architecture)/ ./" > /etc/apt/sources.list.d/sapmachine.list && \
     apt-get update && \
-    apt-get -y --no-install-recommends install sapmachine-25-jdk=25.0.1 && \
+    apt-get -y --no-install-recommends install sapmachine-25-jdk=25.0.2 && \
     rm -rf /var/lib/apt/lists/* && \
     java -version
 
