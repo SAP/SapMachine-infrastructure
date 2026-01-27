@@ -22,6 +22,8 @@ def fetch_release_stats():
         headers["Authorization"] = f"token {token}"
 
     page = 1
+    fetch_error = None
+    
     while url:
         try:
             response = requests.get(url, headers=headers)
@@ -51,10 +53,16 @@ def fetch_release_stats():
                 break
             else:
                 logging.error(f"HTTP error on page {page}: {e}")
+                fetch_error = e
                 break
         except Exception as e:
             logging.error(f"Unexpected error on page {page}: {e}")
+            fetch_error = e
             break
+
+    # If there was an error during fetching, raise it
+    if fetch_error:
+        raise RuntimeError(f"Failed to fetch complete release stats: {fetch_error}")
 
     stats = []
     for release in releases:
@@ -182,6 +190,12 @@ def write_stats_to_csv(stats, file_name="stats/release_stats.csv"):
 
 # Main execution
 if __name__ == "__main__":
-    archive_previous_stats()
-    stats = fetch_release_stats()
-    write_stats_to_csv(stats)
+    try:
+        archive_previous_stats()
+        stats = fetch_release_stats()
+        write_stats_to_csv(stats)
+        logging.info("Stats fetch and write completed successfully.")
+    except Exception as e:
+        logging.error(f"Script failed: {e}")
+        logging.error("CSV file was not written due to incomplete data fetch.")
+        exit(1)
