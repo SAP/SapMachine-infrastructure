@@ -1,0 +1,30 @@
+name: Pull and Republish SapMachine Images without -1877 Suffix
+
+on:
+  workflow_dispatch:
+
+jobs:
+  republish_images:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install qemu dependency for multi-arch build
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y qemu-user-static
+
+      - name: Pull and Republish SapMachine images for 25-jre-headless-gl-1877
+        run: |
+          SM_REGISTRY="ghcr.io/sap/sapmachine"
+          cd dockerfiles/25/gardenlinux/1877
+          podman login -u token -p ${{ github.token }} ghcr.io
+          old_tag=25-jre-headless-gl-1877
+          new_tag=25-jre-headless
+          podman pull ${SM_REGISTRY}:$old_tag
+          podman tag ${SM_REGISTRY}:$old_tag ${SM_REGISTRY}:$new_tag
+          podman push ${SM_REGISTRY}:$new_tag
