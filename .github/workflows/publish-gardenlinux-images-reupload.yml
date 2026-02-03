@@ -27,4 +27,5 @@ jobs:
           new_tag=25-jre-headless
           podman pull ${SM_REGISTRY}:$old_tag
           podman tag ${SM_REGISTRY}:$old_tag ${SM_REGISTRY}:$new_tag
+          podman push ${SM_REGISTRY}:$old_tag
           podman push ${SM_REGISTRY}:$new_tag
