@@ -10,22 +10,102 @@ jobs:
       run:
         shell: bash
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-
-      - name: Install qemu dependency for multi-arch build
+      - name: Authenticate with GitHub Container Registry
         run: |
-          sudo apt-get update
-          sudo apt-get install -y qemu-user-static
+          podman login -u token -p ${{ github.token }} ghcr.io
+
+      - name: Pull and Republish SapMachine images for 17-jdk-gl-1877
+        run: |
+          SM_REGISTRY="ghcr.io/sap/sapmachine"
+          old_tag=17-jdk-gl-1877
+          new_tag=17-jdk
+          podman tag ${SM_REGISTRY}:$old_tag ${SM_REGISTRY}:$new_tag
+          podman push ${SM_REGISTRY}:$new_tag
+
+      - name: Pull and Republish SapMachine images for 17-jdk-headless-gl-1877
+        run: |
+          SM_REGISTRY="ghcr.io/sap/sapmachine"
+          old_tag=17-jdk-headless-gl-1877
+          new_tag=17-jdk-headless
+          podman tag ${SM_REGISTRY}:$old_tag ${SM_REGISTRY}:$new_tag
+          podman push ${SM_REGISTRY}:$new_tag
+
+      - name: Pull and Republish SapMachine images for 17-jre-gl-1877
+        run: |
+          SM_REGISTRY="ghcr.io/sap/sapmachine"
+          old_tag=17-jre-gl-1877
+          new_tag=17-jre
+          podman tag ${SM_REGISTRY}:$old_tag ${SM_REGISTRY}:$new_tag
+          podman push ${SM_REGISTRY}:$new_tag
+
+      - name: Pull and Republish SapMachine images for 17-jre-headless-gl-1877
+        run: |
+          SM_REGISTRY="ghcr.io/sap/sapmachine"
+          old_tag=17-jre-headless-gl-1877
+          new_tag=17-jre-headless
+          podman tag ${SM_REGISTRY}:$old_tag ${SM_REGISTRY}:$new_tag
+          podman push ${SM_REGISTRY}:$new_tag
+
+      - name: Pull and Republish SapMachine images for 21-jdk-gl-1877
+        run: |
+          SM_REGISTRY="ghcr.io/sap/sapmachine"
+          old_tag=21-jdk-gl-1877
+          new_tag=21-jdk
+          podman tag ${SM_REGISTRY}:$old_tag ${SM_REGISTRY}:$new_tag
+          podman push ${SM_REGISTRY}:$new_tag
+
+      - name: Pull and Republish SapMachine images for 21-jdk-headless-gl-1877
+        run: |
+          SM_REGISTRY="ghcr.io/sap/sapmachine"
+          old_tag=21-jdk-headless-gl-1877
+          new_tag=21-jdk-headless
+          podman tag ${SM_REGISTRY}:$old_tag ${SM_REGISTRY}:$new_tag
+          podman push ${SM_REGISTRY}:$new_tag
+
+      - name: Pull and Republish SapMachine images for 21-jre-gl-1877
+        run: |
+          SM_REGISTRY="ghcr.io/sap/sapmachine"
+          old_tag=21-jre-gl-1877
+          new_tag=21-jre
+          podman tag ${SM_REGISTRY}:$old_tag ${SM_REGISTRY}:$new_tag
+          podman push ${SM_REGISTRY}:$new_tag
+
+      - name: Pull and Republish SapMachine images for 21-jre-headless-gl-1877
+        run: |
+          SM_REGISTRY="ghcr.io/sap/sapmachine"
+          old_tag=21-jre-headless-gl-1877
+          new_tag=21-jre-headless
+          podman tag ${SM_REGISTRY}:$old_tag ${SM_REGISTRY}:$new_tag
+          podman push ${SM_REGISTRY}:$new_tag
+
+      - name: Pull and Republish SapMachine images for 25-jdk-gl-1877
+        run: |
+          SM_REGISTRY="ghcr.io/sap/sapmachine"
+          old_tag=25-jdk-gl-1877
+          new_tag=25-jdk
+          podman tag ${SM_REGISTRY}:$old_tag ${SM_REGISTRY}:$new_tag
+          podman push ${SM_REGISTRY}:$new_tag
+
+      - name: Pull and Republish SapMachine images for 25-jdk-headless-gl-1877
+        run: |
+          SM_REGISTRY="ghcr.io/sap/sapmachine"
+          old_tag=25-jdk-headless-gl-1877
+          new_tag=25-jdk-headless
+          podman tag ${SM_REGISTRY}:$old_tag ${SM_REGISTRY}:$new_tag
+          podman push ${SM_REGISTRY}:$new_tag
+
+      - name: Pull and Republish SapMachine images for 25-jre-gl-1877
+        run: |
+          SM_REGISTRY="ghcr.io/sap/sapmachine"
+          old_tag=25-jre-gl-1877
+          new_tag=25-jre
+          podman tag ${SM_REGISTRY}:$old_tag ${SM_REGISTRY}:$new_tag
+          podman push ${SM_REGISTRY}:$new_tag
 
       - name: Pull and Republish SapMachine images for 25-jre-headless-gl-1877
         run: |
           SM_REGISTRY="ghcr.io/sap/sapmachine"
-          cd dockerfiles/25/gardenlinux/1877
-          podman login -u token -p ${{ github.token }} ghcr.io
           old_tag=25-jre-headless-gl-1877
           new_tag=25-jre-headless
-          podman pull ${SM_REGISTRY}:$old_tag
           podman tag ${SM_REGISTRY}:$old_tag ${SM_REGISTRY}:$new_tag
-          podman push ${SM_REGISTRY}:$old_tag
           podman push ${SM_REGISTRY}:$new_tag
