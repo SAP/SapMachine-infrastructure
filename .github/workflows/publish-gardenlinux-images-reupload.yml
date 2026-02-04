@@ -39,7 +39,7 @@ jobs:
 
             # Tag the image with the short tag
             podman tag ${SM_REGISTRY}:$tag ${SM_REGISTRY}:$short_tag
-            podman manifest create ${SM_REGISTRY}:$short_tag
+            podman manifest create --replace ${SM_REGISTRY}:$short_tag
             podman manifest push ${SM_REGISTRY}:$short_tag
 
             cd ..
