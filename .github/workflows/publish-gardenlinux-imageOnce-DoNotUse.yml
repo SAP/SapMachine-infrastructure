@@ -1,7 +1,6 @@
 # used for creating the new Feature Release Build in March and September.
 # CPU updates in January/April/July/October are done via publish-gardenlinux-images.yml
-name: Build and Publish ONCE SapMachine new Feature Releases container images to the SAP GitHub Container Registry
-on:
+name: GL1877: Build and Publish SapMachine on Garden Linux 1877
   workflow_dispatch:
 
 jobs:
