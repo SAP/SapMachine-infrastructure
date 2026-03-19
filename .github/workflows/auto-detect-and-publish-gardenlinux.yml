@@ -1,0 +1,196 @@
+# ==============================================================================
+# auto-detect-and-publish-gardenlinux.yml
+#
+# Automatically detects new SapMachine GA releases or new GardenLinux active
+# minor versions, generates Dockerfiles on-the-fly, and builds + publishes
+# multi-arch container images to ghcr.io/sap/sapmachine.
+#
+# Logic:
+#   - New SapMachine version → build it against ALL known GardenLinux versions
+#   - New GardenLinux version → build ALL known SapMachine versions against it
+#   - Both new → full cross-product of all SM × all GL
+#   - Neither new → skip entirely
+#
+# Schedule: Runs daily at 06:00 UTC. Can also be triggered manually.
+# ==============================================================================
+name: Auto-detect and publish SapMachine GardenLinux images
+
+on:
+  schedule:
+    - cron: '0 6 * * *'   # Daily at 06:00 UTC
+  workflow_dispatch:       # Allow manual trigger
+
+permissions:
+  contents: write          # To commit updated known-versions file
+  packages: write          # To push container images to GHCR
+
+concurrency:
+  group: "gardenlinux-auto-publish"
+  cancel-in-progress: false
+
+jobs:
+  # ============================================================================
+  # Job 1: Detect new versions and compute the build matrix
+  # ============================================================================
+  detect:
+    name: Detect new SapMachine / GardenLinux versions
+    runs-on: ubuntu-24.04
+    outputs:
+      has_new_versions: ${{ steps.detect.outputs.has_new_versions }}
+      build_matrix:     ${{ steps.detect.outputs.build_matrix }}
+      new_sm_versions:  ${{ steps.detect.outputs.new_sm_versions }}
+      new_gl_versions:  ${{ steps.detect.outputs.new_gl_versions }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install jq
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq jq
+
+      - name: Run version detection
+        id: detect
+        run: |
+          chmod +x .github/scripts/detect-new-versions.sh
+          .github/scripts/detect-new-versions.sh
+
+      - name: Summary
+        run: |
+          echo "### Version Detection Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Has new versions:** ${{ steps.detect.outputs.has_new_versions }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **New SapMachine versions:** ${{ steps.detect.outputs.new_sm_versions }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **New GardenLinux versions:** ${{ steps.detect.outputs.new_gl_versions }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Build matrix size:** $(echo '${{ steps.detect.outputs.build_matrix }}' | jq 'length')" >> $GITHUB_STEP_SUMMARY
+
+  # ============================================================================
+  # Job 2: Commit the updated known-versions file back to the repo
+  # ============================================================================
+  update-known-versions:
+    name: Update known versions file
+    needs: [detect, build-and-publish]
+    if: needs.detect.outputs.has_new_versions == 'true'
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install jq
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq jq
+
+      - name: Update versions.json from detection outputs
+        env:
+          NEW_SM: ${{ needs.detect.outputs.new_sm_versions }}
+          NEW_GL: ${{ needs.detect.outputs.new_gl_versions }}
+          BUILD_MATRIX: ${{ needs.detect.outputs.build_matrix }}
+        run: |
+          # Update SapMachine versions from the build matrix
+          for row in $(echo "${BUILD_MATRIX}" | jq -r '.[] | "\(.sm_major)=\(.sm_version)"' | sort -u); do
+            sm_major="${row%%=*}"
+            sm_ver="${row#*=}"
+            jq --arg m "${sm_major}" --arg v "${sm_ver}" '.sapmachine[$m] = $v' \
+              .github/known-versions/versions.json > tmp.json && mv tmp.json .github/known-versions/versions.json
+          done
+          # Update GardenLinux versions from the build matrix
+          for row in $(echo "${BUILD_MATRIX}" | jq -r '.[] | "\(.gl_major)=\(.gl_version)"' | sort -u); do
+            gl_major="${row%%=*}"
+            gl_ver="${row#*=}"
+            jq --arg m "${gl_major}" --arg v "${gl_ver}" '.gardenlinux[$m] = $v' \
+              .github/known-versions/versions.json > tmp.json && mv tmp.json .github/known-versions/versions.json
+          done
+          echo "Updated versions.json:"
+          cat .github/known-versions/versions.json
+
+      # - name: Commit and push updated versions
+      #   run: |
+      #     git config --local user.email "sapmachine@sap.com"
+      #     git config --local user.name "SapMachine Github Actions Bot"
+      #     git add .github/known-versions/versions.json
+      #     git diff --cached --quiet || git commit -m "chore: update known SapMachine/GardenLinux versions [skip ci]"
+      #     git push
+
+  # ============================================================================
+  # Job 3: Build and publish container images (matrix strategy)
+  # ============================================================================
+  # build-and-publish:
+  #   name: "Build SM ${{ matrix.combo.sm_major }} (${{ matrix.combo.sm_version }}) on GL ${{ matrix.combo.gl_major }} (${{ matrix.combo.gl_version }})"
+  #   needs: detect
+  #   if: needs.detect.outputs.has_new_versions == 'true'
+  #   runs-on: ubuntu-24.04
+  #   strategy:
+  #     fail-fast: false
+  #     max-parallel: 4
+  #     matrix:
+  #       combo: ${{ fromJson(needs.detect.outputs.build_matrix) }}
+  #   defaults:
+  #     run:
+  #       shell: bash
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v6
+
+  #     - name: Install qemu dependency for multi-arch build
+  #       run: |
+  #         sudo apt-get update
+  #         sudo apt-get install -y qemu-user-static
+
+  #     - name: Generate Dockerfiles
+  #       run: |
+  #         chmod +x .github/scripts/generate-dockerfile.sh
+  #         SM_MAJOR="${{ matrix.combo.sm_major }}"
+  #         SM_VERSION="${{ matrix.combo.sm_version }}"
+  #         GL_MAJOR="${{ matrix.combo.gl_major }}"
+  #         GL_VERSION="${{ matrix.combo.gl_version }}"
+
+  #         for flavour in jdk jdk-headless jre jre-headless; do
+  #           .github/scripts/generate-dockerfile.sh \
+  #             "${SM_MAJOR}" "${SM_VERSION}" "${GL_VERSION}" "${flavour}" \
+  #             "build/${SM_MAJOR}/gardenlinux/${GL_MAJOR}/${flavour}"
+  #         done
+
+  #     - name: Login to GHCR
+  #       run: |
+  #         podman login -u token -p ${{ github.token }} ghcr.io
+
+  #     - name: Build and push multi-arch images
+  #       run: |
+  #         SM_FLAVOURS=(jdk jdk-headless jre jre-headless)
+  #         SM_REGISTRY="ghcr.io/sap/sapmachine"
+  #         SM_MAJOR="${{ matrix.combo.sm_major }}"
+  #         SM_VERSION="${{ matrix.combo.sm_version }}"
+  #         GL_MAJOR="${{ matrix.combo.gl_major }}"
+  #         GL_VERSION="${{ matrix.combo.gl_version }}"
+
+  #         for sm_flvr in "${SM_FLAVOURS[@]}"; do
+  #           build_dir="build/${SM_MAJOR}/gardenlinux/${GL_MAJOR}/${sm_flvr}"
+  #           tag="${SM_MAJOR}-${sm_flvr}-gl-${GL_MAJOR}"
+
+  #           echo "::group::Building ${SM_REGISTRY}:${tag}"
+  #           cd "${build_dir}"
+
+  #           podman manifest create "${SM_REGISTRY}:${tag}"
+  #           podman build --platform linux/amd64,linux/arm64 --manifest "${SM_REGISTRY}:${tag}" .
+  #           podman manifest push "${SM_REGISTRY}:${tag}"
+
+  #           echo "✅ Pushed ${SM_REGISTRY}:${tag}"
+  #           echo "::endgroup::"
+
+  #           cd "${GITHUB_WORKSPACE}"
+  #         done
+
+  #     - name: Summary
+  #       run: |
+  #         SM_MAJOR="${{ matrix.combo.sm_major }}"
+  #         SM_VERSION="${{ matrix.combo.sm_version }}"
+  #         GL_MAJOR="${{ matrix.combo.gl_major }}"
+  #         GL_VERSION="${{ matrix.combo.gl_version }}"
+  #         echo "### Published Images" >> $GITHUB_STEP_SUMMARY
+  #         echo "" >> $GITHUB_STEP_SUMMARY
+  #         echo "Base: ghcr.io/gardenlinux/gardenlinux:${GL_VERSION}" >> $GITHUB_STEP_SUMMARY
+  #         echo "" >> $GITHUB_STEP_SUMMARY
+  #         for flvr in jdk jdk-headless jre jre-headless; do
+  #           echo "- \`ghcr.io/sap/sapmachine:${SM_MAJOR}-${flvr}-gl-${GL_MAJOR}\`" >> $GITHUB_STEP_SUMMARY
+  #         done
