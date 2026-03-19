@@ -58,14 +58,14 @@ jobs:
           chmod +x .github/scripts/detect-new-versions.sh
           .github/scripts/detect-new-versions.sh
 
-      - name: Summary
-        run: |
-          echo "### Version Detection Results" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- **Has new versions:** ${{ steps.detect.outputs.has_new_versions }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **New SapMachine versions:** ${{ steps.detect.outputs.new_sm_versions }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **New GardenLinux versions:** ${{ steps.detect.outputs.new_gl_versions }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Build matrix size:** $(echo '${{ steps.detect.outputs.build_matrix }}' | jq 'length')" >> $GITHUB_STEP_SUMMARY
+      # - name: Summary
+      #   run: |
+      #     echo "### Version Detection Results" >> $GITHUB_STEP_SUMMARY
+      #     echo "" >> $GITHUB_STEP_SUMMARY
+      #     echo "- **Has new versions:** ${{ steps.detect.outputs.has_new_versions }}" >> $GITHUB_STEP_SUMMARY
+      #     echo "- **New SapMachine versions:** ${{ steps.detect.outputs.new_sm_versions }}" >> $GITHUB_STEP_SUMMARY
+      #     echo "- **New GardenLinux versions:** ${{ steps.detect.outputs.new_gl_versions }}" >> $GITHUB_STEP_SUMMARY
+      #     echo "- **Build matrix size:** $(echo '${{ steps.detect.outputs.build_matrix }}' | jq 'length')" >> $GITHUB_STEP_SUMMARY
 
   # ============================================================================
   # Job 2: Commit the updated known-versions file back to the repo
