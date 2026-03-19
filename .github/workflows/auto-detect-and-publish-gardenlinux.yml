@@ -19,6 +19,7 @@ on:
   schedule:
     - cron: '0 6 * * *'   # Daily at 06:00 UTC
   workflow_dispatch:       # Allow manual trigger
+  push:
 
 permissions:
   contents: write          # To commit updated known-versions file
