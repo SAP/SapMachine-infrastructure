@@ -19,7 +19,6 @@ on:
   schedule:
     - cron: '0 6 * * *'   # Daily at 06:00 UTC
   workflow_dispatch:       # Allow manual trigger
-  push:
 
 permissions:
   contents: write          # To commit updated known-versions file
@@ -100,13 +99,13 @@ jobs:
           echo "Overwritten versions.json with current source data:"
           cat .github/known-versions/versions.json
 
-      # - name: Commit and push updated versions
-      #   run: |
-      #     git config --local user.email "sapmachine@sap.com"
-      #     git config --local user.name "SapMachine Github Actions Bot"
-      #     git add .github/known-versions/versions.json
-      #     git diff --cached --quiet || git commit -m "chore: update known SapMachine/GardenLinux versions [skip ci]"
-      #     git push
+      - name: Commit and push updated versions
+        run: |
+          git config --local user.email "sapmachine@sap.com"
+          git config --local user.name "SapMachine Github Actions Bot"
+          git add .github/known-versions/versions.json
+          git diff --cached --quiet || git commit -m "Update known SapMachine/GardenLinux versions"
+          git push
 
   # ============================================================================
   # Job 3: Build and publish container images (matrix strategy)
