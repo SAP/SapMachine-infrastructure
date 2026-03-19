@@ -243,24 +243,24 @@ fi
 ALL_SM_JSON='{}'
 for major in "${!CURRENT_SM_VERSIONS[@]}"; do
   ver="${CURRENT_SM_VERSIONS[$major]}"
-  ALL_SM_JSON=$(echo "${ALL_SM_JSON}" | jq --arg m "${major}" --arg v "${ver}" '.[$m] = $v')
+  ALL_SM_JSON=$(echo "${ALL_SM_JSON}" | jq -c --arg m "${major}" --arg v "${ver}" '.[$m] = $v')
 done
 
 ALL_GL_JSON='{}'
 for gl_major in "${!CURRENT_GL_VERSIONS[@]}"; do
   gl_ver="${CURRENT_GL_VERSIONS[$gl_major]}"
-  ALL_GL_JSON=$(echo "${ALL_GL_JSON}" | jq --arg m "${gl_major}" --arg v "${gl_ver}" '.[$m] = $v')
+  ALL_GL_JSON=$(echo "${ALL_GL_JSON}" | jq -c --arg m "${gl_major}" --arg v "${gl_ver}" '.[$m] = $v')
 done
 
-# Write to GITHUB_OUTPUT (multi-line safe)
+# Write to GITHUB_OUTPUT – all JSON values MUST be compact (single-line)
 if [[ -n "${GITHUB_OUTPUT:-}" ]]; then
   {
     echo "has_new_versions=${HAS_NEW}"
-    echo "new_sm_versions=${SM_OUT}"
-    echo "new_gl_versions=${GL_OUT}"
-    echo "build_matrix=${MATRIX_JSON}"
-    echo "all_sm_versions=${ALL_SM_JSON}"
-    echo "all_gl_versions=${ALL_GL_JSON}"
+    echo "new_sm_versions=$(echo "${SM_OUT}" | jq -c '.')"
+    echo "new_gl_versions=$(echo "${GL_OUT}" | jq -c '.')"
+    echo "build_matrix=$(echo "${MATRIX_JSON}" | jq -c '.')"
+    echo "all_sm_versions=$(echo "${ALL_SM_JSON}" | jq -c '.')"
+    echo "all_gl_versions=$(echo "${ALL_GL_JSON}" | jq -c '.')"
   } >> "${GITHUB_OUTPUT}"
 else
   # For local testing
