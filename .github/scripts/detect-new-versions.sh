@@ -61,8 +61,7 @@ echo "::endgroup::"
 echo "::group::Fetching GardenLinux active minor versions"
 # Use the glrd container with JSON output to get all active minor releases,
 # then extract the latest (highest) minor version per major.
-GL_JSON=$(docker run --rm ghcr.io/gardenlinux/glrd \
-  glrd --active --type minor --output-format json 2>/dev/null || echo '{"releases":[]}')
+GL_JSON=$(docker run --rm ghcr.io/gardenlinux/glrd "glrd --active --type minor --output-format json" 2>/dev/null || echo '{"releases":[]}')
 
 # Build a map: gl_major → latest minor version string (e.g. "1592" → "1592.18")
 # For versions < 2017: format is major.minor (e.g. 1592.18)
