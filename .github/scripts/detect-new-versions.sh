@@ -274,21 +274,21 @@ fi
 if [[ "${HAS_NEW}" == "true" ]]; then
   echo "::group::Updating known versions file"
 
-#   UPDATED_JSON=$(cat "${KNOWN_VERSIONS_FILE}")
+  UPDATED_JSON=$(cat "${KNOWN_VERSIONS_FILE}")
 
-#   # Update SapMachine versions
-#   for major in "${!CURRENT_SM_VERSIONS[@]}"; do
-#     ver="${CURRENT_SM_VERSIONS[$major]}"
-#     UPDATED_JSON=$(echo "${UPDATED_JSON}" | jq --arg m "${major}" --arg v "${ver}" '.sapmachine[$m] = $v')
-#   done
+  # Update SapMachine versions
+  for major in "${!CURRENT_SM_VERSIONS[@]}"; do
+    ver="${CURRENT_SM_VERSIONS[$major]}"
+    UPDATED_JSON=$(echo "${UPDATED_JSON}" | jq --arg m "${major}" --arg v "${ver}" '.sapmachine[$m] = $v')
+  done
 
-#   # Update GardenLinux versions (map format: major → latest minor)
-#   for gl_major in "${!ALL_GL_VERSIONS[@]}"; do
-#     gl_ver="${ALL_GL_VERSIONS[$gl_major]}"
-#     UPDATED_JSON=$(echo "${UPDATED_JSON}" | jq --arg m "${gl_major}" --arg v "${gl_ver}" '.gardenlinux[$m] = $v')
-#   done
+  # Update GardenLinux versions (map format: major → latest minor)
+  for gl_major in "${!ALL_GL_VERSIONS[@]}"; do
+    gl_ver="${ALL_GL_VERSIONS[$gl_major]}"
+    UPDATED_JSON=$(echo "${UPDATED_JSON}" | jq --arg m "${gl_major}" --arg v "${gl_ver}" '.gardenlinux[$m] = $v')
+  done
 
-#   echo "${UPDATED_JSON}" | jq '.' > "${KNOWN_VERSIONS_FILE}"
+  echo "${UPDATED_JSON}" | jq '.' > "${KNOWN_VERSIONS_FILE}"
   echo "Updated ${KNOWN_VERSIONS_FILE}:"
   cat "${KNOWN_VERSIONS_FILE}"
   echo "::endgroup::"
