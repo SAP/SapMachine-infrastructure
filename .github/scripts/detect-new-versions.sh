@@ -149,23 +149,12 @@ echo "::endgroup::"
 # ---------------------------------------------------------------------------
 echo "::group::Building matrix"
 
-# Collect ALL SM versions (known + current)
-declare -A ALL_SM_VERSIONS
-for major in ${KNOWN_SM_MAJORS}; do
-  ALL_SM_VERSIONS["${major}"]=$(jq -r --arg m "${major}" '.sapmachine[$m]' "${KNOWN_VERSIONS_FILE}")
-done
-for major in "${!CURRENT_SM_VERSIONS[@]}"; do
-  ALL_SM_VERSIONS["${major}"]="${CURRENT_SM_VERSIONS[$major]}"
-done
-
-# Collect ALL GL versions (known + current, with current overriding known)
-declare -A ALL_GL_VERSIONS
-while IFS='=' read -r gl_major gl_ver; do
-  ALL_GL_VERSIONS["${gl_major}"]="${gl_ver}"
-done < <(jq -r '.gardenlinux | to_entries[] | "\(.key)=\(.value)"' "${KNOWN_VERSIONS_FILE}")
-for gl_major in "${!CURRENT_GL_VERSIONS[@]}"; do
-  ALL_GL_VERSIONS["${gl_major}"]="${CURRENT_GL_VERSIONS[$gl_major]}"
-done
+# Use ONLY the current versions from sources — not the known file.
+# This ensures stale versions (no longer active) never appear in the matrix.
+# shellcheck disable=SC2034
+declare -n ALL_SM_VERSIONS=CURRENT_SM_VERSIONS
+# shellcheck disable=SC2034
+declare -n ALL_GL_VERSIONS=CURRENT_GL_VERSIONS
 
 MATRIX_JSON="[]"
 
