@@ -1,0 +1,29 @@
+# ==============================================================================
+# auto-detect-and-publish-gardenlinux.yml
+#
+# Automatically detects new SapMachine GA releases or new GardenLinux active
+# minor versions, generates Dockerfiles on-the-fly, and builds + publishes
+# multi-arch container images to ghcr.io/sap/sapmachine.
+#
+# Logic:
+#   - New SapMachine version → build it against ALL known GardenLinux versions
+#   - New GardenLinux version → build ALL known SapMachine versions against it
+#   - Both new → full cross-product of all SM × all GL
+#   - Neither new → skip entirely
+#
+# Schedule: Runs daily at 06:00 UTC. Can also be triggered manually.
+# ==============================================================================
+name: Auto-detect and publish SapMachine GardenLinux images
+
+on:
+  schedule:
+    - cron: '0 6 * * *'   # Daily at 06:00 UTC
+  workflow_dispatch:       # Allow manual trigger
+
+permissions:
+  contents: write          # To commit updated known-versions file
+  packages: write          # To push container images to GHCR
+
+concurrency:
+  group: "gardenlinux-auto-publish"
+  cancel-in-progress: false
