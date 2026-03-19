@@ -250,6 +250,19 @@ if [[ ${#NEW_GL_ITEMS[@]} -gt 0 ]]; then
   done
 fi
 
+# Build full current-state JSON maps (for overriding versions.json in Job 2)
+ALL_SM_JSON='{}'
+for major in "${!CURRENT_SM_VERSIONS[@]}"; do
+  ver="${CURRENT_SM_VERSIONS[$major]}"
+  ALL_SM_JSON=$(echo "${ALL_SM_JSON}" | jq --arg m "${major}" --arg v "${ver}" '.[$m] = $v')
+done
+
+ALL_GL_JSON='{}'
+for gl_major in "${!CURRENT_GL_VERSIONS[@]}"; do
+  gl_ver="${CURRENT_GL_VERSIONS[$gl_major]}"
+  ALL_GL_JSON=$(echo "${ALL_GL_JSON}" | jq --arg m "${gl_major}" --arg v "${gl_ver}" '.[$m] = $v')
+done
+
 # Write to GITHUB_OUTPUT (multi-line safe)
 if [[ -n "${GITHUB_OUTPUT:-}" ]]; then
   {
@@ -257,6 +270,8 @@ if [[ -n "${GITHUB_OUTPUT:-}" ]]; then
     echo "new_sm_versions=${SM_OUT}"
     echo "new_gl_versions=${GL_OUT}"
     echo "build_matrix=${MATRIX_JSON}"
+    echo "all_sm_versions=${ALL_SM_JSON}"
+    echo "all_gl_versions=${ALL_GL_JSON}"
   } >> "${GITHUB_OUTPUT}"
 else
   # For local testing
@@ -266,30 +281,31 @@ else
   echo "new_sm_versions=${SM_OUT}"
   echo "new_gl_versions=${GL_OUT}"
   echo "build_matrix=${MATRIX_JSON}"
+  echo "all_sm_versions=${ALL_SM_JSON}"
+  echo "all_gl_versions=${ALL_GL_JSON}"
 fi
 
 # ---------------------------------------------------------------------------
-# 8. Update the known versions file
+# 8. Override the known versions file with current data from sources
+#    This completely replaces the file – stale versions (e.g. a GL major
+#    that is no longer active, or an SM version that was removed) are dropped.
 # ---------------------------------------------------------------------------
-if [[ "${HAS_NEW}" == "true" ]]; then
-  echo "::group::Updating known versions file"
+echo "::group::Overriding known versions file with current source data"
 
-  UPDATED_JSON=$(cat "${KNOWN_VERSIONS_FILE}")
+# Build fresh JSON from CURRENT_SM_VERSIONS and CURRENT_GL_VERSIONS only
+FRESH_JSON='{"sapmachine": {}, "gardenlinux": {}}'
 
-  # Update SapMachine versions
-  for major in "${!CURRENT_SM_VERSIONS[@]}"; do
-    ver="${CURRENT_SM_VERSIONS[$major]}"
-    UPDATED_JSON=$(echo "${UPDATED_JSON}" | jq --arg m "${major}" --arg v "${ver}" '.sapmachine[$m] = $v')
-  done
+for major in "${!CURRENT_SM_VERSIONS[@]}"; do
+  ver="${CURRENT_SM_VERSIONS[$major]}"
+  FRESH_JSON=$(echo "${FRESH_JSON}" | jq --arg m "${major}" --arg v "${ver}" '.sapmachine[$m] = $v')
+done
 
-  # Update GardenLinux versions (map format: major → latest minor)
-  for gl_major in "${!ALL_GL_VERSIONS[@]}"; do
-    gl_ver="${ALL_GL_VERSIONS[$gl_major]}"
-    UPDATED_JSON=$(echo "${UPDATED_JSON}" | jq --arg m "${gl_major}" --arg v "${gl_ver}" '.gardenlinux[$m] = $v')
-  done
+for gl_major in "${!CURRENT_GL_VERSIONS[@]}"; do
+  gl_ver="${CURRENT_GL_VERSIONS[$gl_major]}"
+  FRESH_JSON=$(echo "${FRESH_JSON}" | jq --arg m "${gl_major}" --arg v "${gl_ver}" '.gardenlinux[$m] = $v')
+done
 
-  echo "${UPDATED_JSON}" | jq '.' > "${KNOWN_VERSIONS_FILE}"
-  echo "Updated ${KNOWN_VERSIONS_FILE}:"
-  cat "${KNOWN_VERSIONS_FILE}"
-  echo "::endgroup::"
-fi
+echo "${FRESH_JSON}" | jq '.' > "${KNOWN_VERSIONS_FILE}"
+echo "Overwritten ${KNOWN_VERSIONS_FILE} with current source data:"
+cat "${KNOWN_VERSIONS_FILE}"
+echo "::endgroup::"

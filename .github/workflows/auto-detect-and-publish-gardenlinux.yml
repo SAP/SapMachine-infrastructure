@@ -41,6 +41,8 @@ jobs:
       build_matrix:     ${{ steps.detect.outputs.build_matrix }}
       new_sm_versions:  ${{ steps.detect.outputs.new_sm_versions }}
       new_gl_versions:  ${{ steps.detect.outputs.new_gl_versions }}
+      all_sm_versions:  ${{ steps.detect.outputs.all_sm_versions }}
+      all_gl_versions:  ${{ steps.detect.outputs.all_gl_versions }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -83,27 +85,19 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq jq
 
-      - name: Update versions.json from detection outputs
+      - name: Override versions.json with current source data
         env:
-          NEW_SM: ${{ needs.detect.outputs.new_sm_versions }}
-          NEW_GL: ${{ needs.detect.outputs.new_gl_versions }}
-          BUILD_MATRIX: ${{ needs.detect.outputs.build_matrix }}
+          ALL_SM: ${{ needs.detect.outputs.all_sm_versions }}
+          ALL_GL: ${{ needs.detect.outputs.all_gl_versions }}
         run: |
-          # Update SapMachine versions from the build matrix
-          for row in $(echo "${BUILD_MATRIX}" | jq -r '.[] | "\(.sm_major)=\(.sm_version)"' | sort -u); do
-            sm_major="${row%%=*}"
-            sm_ver="${row#*=}"
-            jq --arg m "${sm_major}" --arg v "${sm_ver}" '.sapmachine[$m] = $v' \
-              .github/known-versions/versions.json > tmp.json && mv tmp.json .github/known-versions/versions.json
-          done
-          # Update GardenLinux versions from the build matrix
-          for row in $(echo "${BUILD_MATRIX}" | jq -r '.[] | "\(.gl_major)=\(.gl_version)"' | sort -u); do
-            gl_major="${row%%=*}"
-            gl_ver="${row#*=}"
-            jq --arg m "${gl_major}" --arg v "${gl_ver}" '.gardenlinux[$m] = $v' \
-              .github/known-versions/versions.json > tmp.json && mv tmp.json .github/known-versions/versions.json
-          done
-          echo "Updated versions.json:"
+          # Build a completely fresh versions.json from current source data.
+          # This drops any SM or GL versions that are no longer active.
+          jq -n \
+            --argjson sm "${ALL_SM}" \
+            --argjson gl "${ALL_GL}" \
+            '{ sapmachine: $sm, gardenlinux: $gl }' \
+            > .github/known-versions/versions.json
+          echo "Overwritten versions.json with current source data:"
           cat .github/known-versions/versions.json
 
       # - name: Commit and push updated versions
