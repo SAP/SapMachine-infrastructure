@@ -126,7 +126,7 @@ jobs:
             cd "${build_dir}"
 
             podman manifest create "${SM_REGISTRY}:${tag}"
-            # podman build --platform linux/amd64,linux/arm64 --manifest "${SM_REGISTRY}:${tag}" .
+            podman build --platform linux/amd64,linux/arm64 --manifest "${SM_REGISTRY}:${tag}" .
             # podman manifest push "${SM_REGISTRY}:${tag}"
 
             echo "✅ Pushed ${SM_REGISTRY}:${tag}"
@@ -155,7 +155,6 @@ jobs:
   update-known-versions:
     name: Update known versions file
     needs: [detect, build-and-publish]
-    #needs: [detect]
     if: needs.detect.outputs.has_new_versions == 'true'
     runs-on: ubuntu-24.04
     steps:
