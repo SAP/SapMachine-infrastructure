@@ -67,7 +67,90 @@ jobs:
           echo "- **Build matrix size:** $(echo '${{ steps.detect.outputs.build_matrix }}' | jq 'length')" >> $GITHUB_STEP_SUMMARY
 
   # ============================================================================
-  # Job 2: Commit the updated known-versions file back to the repo
+  # Job 2: Build and publish container images (matrix strategy)
+  # ============================================================================
+  build-and-publish:
+    name: "Build SM ${{ matrix.combo.sm_major }} (${{ matrix.combo.sm_version }}) on GL ${{ matrix.combo.gl_major }} (${{ matrix.combo.gl_version }})"
+    needs: detect
+    if: needs.detect.outputs.has_new_versions == 'true'
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        combo: ${{ fromJson(needs.detect.outputs.build_matrix) }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install qemu dependency for multi-arch build
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y qemu-user-static
+
+      - name: Generate Dockerfiles
+        run: |
+          chmod +x .github/scripts/generate-dockerfile.sh
+          SM_MAJOR="${{ matrix.combo.sm_major }}"
+          SM_VERSION="${{ matrix.combo.sm_version }}"
+          GL_MAJOR="${{ matrix.combo.gl_major }}"
+          GL_VERSION="${{ matrix.combo.gl_version }}"
+
+          for flavour in jdk jdk-headless jre jre-headless; do
+            .github/scripts/generate-dockerfile.sh \
+              "${SM_MAJOR}" "${SM_VERSION}" "${GL_VERSION}" "${flavour}" \
+              "build/${SM_MAJOR}/gardenlinux/${GL_MAJOR}/${flavour}"
+          done
+
+      - name: Login to GHCR
+        run: |
+          podman login -u token -p ${{ github.token }} ghcr.io
+
+      - name: Build and push multi-arch images
+        run: |
+          SM_FLAVOURS=(jdk jdk-headless jre jre-headless)
+          SM_REGISTRY="ghcr.io/sap/sapmachine"
+          SM_MAJOR="${{ matrix.combo.sm_major }}"
+          SM_VERSION="${{ matrix.combo.sm_version }}"
+          GL_MAJOR="${{ matrix.combo.gl_major }}"
+          GL_VERSION="${{ matrix.combo.gl_version }}"
+
+          for sm_flvr in "${SM_FLAVOURS[@]}"; do
+            build_dir="build/${SM_MAJOR}/gardenlinux/${GL_MAJOR}/${sm_flvr}"
+            tag="${SM_MAJOR}-${sm_flvr}-gl-${GL_MAJOR}"
+
+            echo "::group::Building ${SM_REGISTRY}:${tag}"
+            cd "${build_dir}"
+
+            podman manifest create "${SM_REGISTRY}:${tag}"
+            # podman build --platform linux/amd64,linux/arm64 --manifest "${SM_REGISTRY}:${tag}" .
+            # podman manifest push "${SM_REGISTRY}:${tag}"
+
+            echo "✅ Pushed ${SM_REGISTRY}:${tag}"
+            echo "::endgroup::"
+
+            cd "${GITHUB_WORKSPACE}"
+          done
+
+      - name: Summary
+        run: |
+          SM_MAJOR="${{ matrix.combo.sm_major }}"
+          SM_VERSION="${{ matrix.combo.sm_version }}"
+          GL_MAJOR="${{ matrix.combo.gl_major }}"
+          GL_VERSION="${{ matrix.combo.gl_version }}"
+          echo "### Published Images" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Base: ghcr.io/gardenlinux/gardenlinux:${GL_VERSION}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          for flvr in jdk jdk-headless jre jre-headless; do
+            echo "- \`ghcr.io/sap/sapmachine:${SM_MAJOR}-${flvr}-gl-${GL_MAJOR}\`" >> $GITHUB_STEP_SUMMARY
+          done
+
+  # ============================================================================
+  # Job 3: Commit the updated known-versions file back to the repo
   # ============================================================================
   update-known-versions:
     name: Update known versions file
@@ -106,86 +189,3 @@ jobs:
           git add .github/known-versions/versions.json
           git diff --cached --quiet || git commit -m "Update known SapMachine/GardenLinux versions"
           git push
-
-  # ============================================================================
-  # Job 3: Build and publish container images (matrix strategy)
-  # ============================================================================
-  # build-and-publish:
-  #   name: "Build SM ${{ matrix.combo.sm_major }} (${{ matrix.combo.sm_version }}) on GL ${{ matrix.combo.gl_major }} (${{ matrix.combo.gl_version }})"
-  #   needs: detect
-  #   if: needs.detect.outputs.has_new_versions == 'true'
-  #   runs-on: ubuntu-24.04
-  #   strategy:
-  #     fail-fast: false
-  #     max-parallel: 4
-  #     matrix:
-  #       combo: ${{ fromJson(needs.detect.outputs.build_matrix) }}
-  #   defaults:
-  #     run:
-  #       shell: bash
-  #   steps:
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v6
-
-  #     - name: Install qemu dependency for multi-arch build
-  #       run: |
-  #         sudo apt-get update
-  #         sudo apt-get install -y qemu-user-static
-
-  #     - name: Generate Dockerfiles
-  #       run: |
-  #         chmod +x .github/scripts/generate-dockerfile.sh
-  #         SM_MAJOR="${{ matrix.combo.sm_major }}"
-  #         SM_VERSION="${{ matrix.combo.sm_version }}"
-  #         GL_MAJOR="${{ matrix.combo.gl_major }}"
-  #         GL_VERSION="${{ matrix.combo.gl_version }}"
-
-  #         for flavour in jdk jdk-headless jre jre-headless; do
-  #           .github/scripts/generate-dockerfile.sh \
-  #             "${SM_MAJOR}" "${SM_VERSION}" "${GL_VERSION}" "${flavour}" \
-  #             "build/${SM_MAJOR}/gardenlinux/${GL_MAJOR}/${flavour}"
-  #         done
-
-  #     - name: Login to GHCR
-  #       run: |
-  #         podman login -u token -p ${{ github.token }} ghcr.io
-
-  #     - name: Build and push multi-arch images
-  #       run: |
-  #         SM_FLAVOURS=(jdk jdk-headless jre jre-headless)
-  #         SM_REGISTRY="ghcr.io/sap/sapmachine"
-  #         SM_MAJOR="${{ matrix.combo.sm_major }}"
-  #         SM_VERSION="${{ matrix.combo.sm_version }}"
-  #         GL_MAJOR="${{ matrix.combo.gl_major }}"
-  #         GL_VERSION="${{ matrix.combo.gl_version }}"
-
-  #         for sm_flvr in "${SM_FLAVOURS[@]}"; do
-  #           build_dir="build/${SM_MAJOR}/gardenlinux/${GL_MAJOR}/${sm_flvr}"
-  #           tag="${SM_MAJOR}-${sm_flvr}-gl-${GL_MAJOR}"
-
-  #           echo "::group::Building ${SM_REGISTRY}:${tag}"
-  #           cd "${build_dir}"
-
-  #           podman manifest create "${SM_REGISTRY}:${tag}"
-  #           podman build --platform linux/amd64,linux/arm64 --manifest "${SM_REGISTRY}:${tag}" .
-  #           podman manifest push "${SM_REGISTRY}:${tag}"
-
-  #           echo "✅ Pushed ${SM_REGISTRY}:${tag}"
-  #           echo "::endgroup::"
-
-  #           cd "${GITHUB_WORKSPACE}"
-  #         done
-
-  #     - name: Summary
-  #       run: |
-  #         SM_MAJOR="${{ matrix.combo.sm_major }}"
-  #         SM_VERSION="${{ matrix.combo.sm_version }}"
-  #         GL_MAJOR="${{ matrix.combo.gl_major }}"
-  #         GL_VERSION="${{ matrix.combo.gl_version }}"
-  #         echo "### Published Images" >> $GITHUB_STEP_SUMMARY
-  #         echo "" >> $GITHUB_STEP_SUMMARY
-  #         echo "Base: ghcr.io/gardenlinux/gardenlinux:${GL_VERSION}" >> $GITHUB_STEP_SUMMARY
-  #         echo "" >> $GITHUB_STEP_SUMMARY
-  #         for flvr in jdk jdk-headless jre jre-headless; do
-  #           echo "- \`ghcr.io/sap/sapmachine:${SM_MAJOR}-${flvr}-gl-${GL_MAJOR}\`" >> $GITHUB_STEP_SUMMARY
-  #         done
