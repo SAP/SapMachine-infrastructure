@@ -230,7 +230,7 @@ jobs:
           echo "${EOF}" >> "${GITHUB_OUTPUT}"
 
       - name: Send failure notification email
-        uses: dawidd6/action-send-mail@v3
+        uses: dawidd6/action-send-mail@v16
         with:
           server_address: ${{ secrets.SMTP_SERVER }}
           server_port: ${{ secrets.SMTP_PORT }}
@@ -239,5 +239,4 @@ jobs:
           subject: "❌ GardenLinux image pipeline failed – ${{ github.repository }}"
           to: ${{ secrets.NOTIFY_EMAIL_RECIPIENTS }}
           from: "GitHub Actions <${{ secrets.SMTP_USERNAME }}>"
-          content_type: text/plain
           body: ${{ steps.failure-info.outputs.message }}
