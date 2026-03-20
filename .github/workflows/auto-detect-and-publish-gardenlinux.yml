@@ -238,5 +238,5 @@ jobs:
           password: ${{ secrets.SMTP_PASSWORD }}
           subject: "❌ GardenLinux image pipeline failed – ${{ github.repository }}"
           to: ${{ secrets.NOTIFY_EMAIL_RECIPIENTS }}
-          from: "GitHub Actions <${{ secrets.SMTP_USERNAME }}>"
+          from: "GitHub Actions <${{ secrets.SMTP_FROM_ADDRESS }}>"
           body: ${{ steps.failure-info.outputs.message }}
