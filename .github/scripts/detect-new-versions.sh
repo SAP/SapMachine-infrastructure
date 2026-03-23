@@ -34,7 +34,7 @@ cat "${KNOWN_VERSIONS_FILE}"
 echo ""
 echo "::endgroup::"
 
-KNOWN_SM_MAJORS=$(jq -r '.sapmachine | keys[]' "${KNOWN_VERSIONS_FILE}")
+#KNOWN_SM_MAJORS=$(jq -r '.sapmachine | keys[]' "${KNOWN_VERSIONS_FILE}")
 
 # ---------------------------------------------------------------------------
 # 2. Fetch current SapMachine GA versions
