@@ -240,7 +240,7 @@ if [[ ${#NEW_GL_ITEMS[@]} -gt 0 ]]; then
   done
 fi
 
-# Build full current-state JSON maps (for overriding versions.json in Job 2)
+# Build full current-state JSON maps (for overriding versions.json in Job 3)
 ALL_SM_JSON='{}'
 for major in "${!CURRENT_SM_VERSIONS[@]}"; do
   ver="${CURRENT_SM_VERSIONS[$major]}"
