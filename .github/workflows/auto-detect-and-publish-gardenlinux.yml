@@ -173,11 +173,11 @@ jobs:
         run: |
           # Build a completely fresh versions.json from current source data.
           # This drops any SM or GL versions that are no longer active.
-          #jq -n \
-          #  --argjson sm "${ALL_SM}" \
-          #  --argjson gl "${ALL_GL}" \
-          #  '{ sapmachine: $sm, gardenlinux: $gl }' \
-          #  > .github/known-versions/versions.json
+          jq -n \
+            --argjson sm "${ALL_SM}" \
+            --argjson gl "${ALL_GL}" \
+            '{ sapmachine: $sm, gardenlinux: $gl }' \
+            > .github/known-versions/versions.json
           echo "Overwritten versions.json with current source data:"
           cat .github/known-versions/versions.json
 
