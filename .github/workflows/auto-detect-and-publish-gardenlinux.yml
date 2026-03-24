@@ -126,8 +126,8 @@ jobs:
             cd "${build_dir}"
 
             podman manifest create "${SM_REGISTRY}:${tag}"
-            # podman build --platform linux/amd64,linux/arm64 --manifest "${SM_REGISTRY}:${tag}" .
-            # podman manifest push "${SM_REGISTRY}:${tag}"
+            podman build --platform linux/amd64,linux/arm64 --manifest "${SM_REGISTRY}:${tag}" .
+            podman manifest push "${SM_REGISTRY}:${tag}"
 
             echo "✅ Pushed ${SM_REGISTRY}:${tag}"
             echo "::endgroup::"
