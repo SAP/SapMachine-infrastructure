@@ -120,18 +120,29 @@ jobs:
 
           for sm_flvr in "${SM_FLAVOURS[@]}"; do
             build_dir="build/${SM_MAJOR}/gardenlinux/${GL_MAJOR}/${sm_flvr}"
-            tag="${SM_MAJOR}-${sm_flvr}-gl-${GL_MAJOR}"
+            local_manifest="localhost/sapmachine-${SM_MAJOR}-${sm_flvr}-gl-${GL_MAJOR}"
 
-            echo "::group::Building ${SM_REGISTRY}:${tag}"
+            TAGS=(
+              "${SM_MAJOR}-${sm_flvr}-gl"
+              "${SM_VERSION}-${sm_flvr}-gl"
+              "${SM_MAJOR}-${sm_flvr}-gl-${GL_MAJOR}"
+              "${SM_MAJOR}-${sm_flvr}-gl-${GL_VERSION}"
+              "${SM_VERSION}-${sm_flvr}-gl-${GL_MAJOR}"
+              "${SM_VERSION}-${sm_flvr}-gl-${GL_VERSION}"
+            )
+
+            echo "::group::Building ${sm_flvr} (SM ${SM_MAJOR} / GL ${GL_MAJOR})"
             cd "${build_dir}"
 
-            podman manifest create "${SM_REGISTRY}:${tag}"
-            podman build --platform linux/amd64,linux/arm64 --manifest "${SM_REGISTRY}:${tag}" .
-            podman manifest push "${SM_REGISTRY}:${tag}"
+            podman manifest create "${local_manifest}"
+            # podman build --platform linux/amd64,linux/arm64 --manifest "${local_manifest}" .
 
-            echo "✅ Pushed ${SM_REGISTRY}:${tag}"
+            for tag in "${TAGS[@]}"; do
+              # podman manifest push "${local_manifest}" "${SM_REGISTRY}:${tag}"
+              echo "✅ Pushed ${SM_REGISTRY}:${tag}"
+            done
+
             echo "::endgroup::"
-
             cd "${GITHUB_WORKSPACE}"
           done
 
@@ -146,7 +157,12 @@ jobs:
           echo "Base: ghcr.io/gardenlinux/gardenlinux:${GL_VERSION}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           for flvr in jdk jdk-headless jre jre-headless; do
+            echo "- \`ghcr.io/sap/sapmachine:${SM_MAJOR}-${flvr}-gl\`" >> $GITHUB_STEP_SUMMARY
+            echo "- \`ghcr.io/sap/sapmachine:${SM_VERSION}-${flvr}-gl\`" >> $GITHUB_STEP_SUMMARY
             echo "- \`ghcr.io/sap/sapmachine:${SM_MAJOR}-${flvr}-gl-${GL_MAJOR}\`" >> $GITHUB_STEP_SUMMARY
+            echo "- \`ghcr.io/sap/sapmachine:${SM_MAJOR}-${flvr}-gl-${GL_VERSION}\`" >> $GITHUB_STEP_SUMMARY
+            echo "- \`ghcr.io/sap/sapmachine:${SM_VERSION}-${flvr}-gl-${GL_MAJOR}\`" >> $GITHUB_STEP_SUMMARY
+            echo "- \`ghcr.io/sap/sapmachine:${SM_VERSION}-${flvr}-gl-${GL_VERSION}\`" >> $GITHUB_STEP_SUMMARY
           done
 
   # ============================================================================
