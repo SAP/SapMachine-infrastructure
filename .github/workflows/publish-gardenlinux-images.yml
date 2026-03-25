@@ -1,6 +1,6 @@
 # used for creating the new CPU Release Build in January/April/July/October.
 # new feature releases updates in March and Septemberb are done via publish-gardenlinux-imagesONCE-DoNotUse.yml
-name: GL1592-Build and Publish SapMachine on Garden Linux
+name: GL1877-Build and Publish SapMachine on Garden Linux
 on:
   workflow_dispatch:
 
@@ -8,8 +8,8 @@ jobs:
   publish_images:
     strategy:
         matrix:
-          sapMachineVersion: [17, 21, 25]
-          gardenLinuxVersion: [1592]
+          sapMachineVersion: [17, 21, 25, 26]
+          gardenLinuxVersion: [1877]
     uses: ./.github/workflows/publish-container-images.yml
     with:
       sapMachineVersion: ${{ matrix.sapMachineVersion }}
