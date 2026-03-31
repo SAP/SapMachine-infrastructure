@@ -16,8 +16,8 @@
 name: Auto-detect and publish SapMachine GardenLinux images
 
 on:
-  schedule:
-    - cron: '0 6 * * *'   # Daily at 06:00 UTC
+  #schedule:
+  #  - cron: '0 6 * * *'    # Daily at 06:00 UTC
   workflow_dispatch:       # Allow manual trigger
 
 permissions:
@@ -27,3 +27,14 @@ permissions:
 concurrency:
   group: "gardenlinux-auto-publish"
   cancel-in-progress: false
+
+jobs:
+  # ============================================================================
+  # Job 1: Detect new versions and compute the build matrix
+  # ============================================================================
+  detect:
+    name: Detect new SapMachine / GardenLinux versions
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Print message
+        run: echo "Hello, GitHub Actions!"
