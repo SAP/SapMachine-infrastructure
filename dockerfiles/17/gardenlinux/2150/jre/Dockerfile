@@ -1,4 +1,4 @@
-FROM ghcr.io/gardenlinux/gardenlinux:1877.16
+FROM ghcr.io/gardenlinux/gardenlinux:2150.2.0
 
 ENV LANG=C.UTF-8
 ENV JAVA_VERSION=17.0.19
@@ -8,10 +8,10 @@ ADD --chmod=644 --chown=root:root https://dist.sapmachine.io/debian/sapmachine.k
 
 RUN echo "deb https://dist.sapmachine.io/debian/$(dpkg --print-architecture)/ ./" > /etc/apt/sources.list.d/sapmachine.list && \
     apt-get update && \
-    apt-get -y --no-install-recommends install sapmachine-17-jdk-headless=17.0.19 && \
+    apt-get -y --no-install-recommends install sapmachine-17-jre=17.0.19 && \
     rm -rf /var/lib/apt/lists/* && \
     java -XshowSettings:properties -version
 
 ENV JAVA_HOME=/usr/lib/jvm/sapmachine-17
 
-CMD ["jshell"]
+CMD ["bash"]
