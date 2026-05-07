@@ -1,4 +1,4 @@
-FROM ghcr.io/gardenlinux/gardenlinux:1877.16
+FROM ghcr.io/gardenlinux/gardenlinux:2150.2.0
 
 ENV LANG=C.UTF-8
 ENV JAVA_VERSION=26.0.1
@@ -8,10 +8,10 @@ ADD --chmod=644 --chown=root:root https://dist.sapmachine.io/debian/sapmachine.k
 
 RUN echo "deb https://dist.sapmachine.io/debian/$(dpkg --print-architecture)/ ./" > /etc/apt/sources.list.d/sapmachine.list && \
     apt-get update && \
-    apt-get -y --no-install-recommends install sapmachine-26-jdk-headless=26.0.1 && \
+    apt-get -y --no-install-recommends install sapmachine-26-jre-headless=26.0.1 && \
     rm -rf /var/lib/apt/lists/* && \
     java -XshowSettings:properties -version
 
 ENV JAVA_HOME=/usr/lib/jvm/sapmachine-26
 
-CMD ["jshell"]
+CMD ["bash"]
