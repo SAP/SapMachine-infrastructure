@@ -66,6 +66,7 @@ jobs:
           echo "- **New GardenLinux versions:** ${{ steps.detect.outputs.new_gl_versions }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Build matrix size:** $(echo '${{ steps.detect.outputs.build_matrix }}' | jq 'length')" >> $GITHUB_STEP_SUMMARY
 
+          
   # ============================================================================
   # Job 2: Build and publish container images (matrix strategy)
   # ============================================================================
