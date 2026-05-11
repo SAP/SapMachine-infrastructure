@@ -8,3 +8,4 @@ RUN wget -qO /etc/apk/keys/sapmachine-apk.rsa.pub https://dist.sapmachine.io/alp
 ENV JAVA_HOME=/usr/lib/jvm/java-21-sapmachine-jdk
 
 CMD ["jshell"]
+
