@@ -32,6 +32,7 @@ jobs:
     outputs:
       matrix: ${{ steps.build-matrix.outputs.matrix }}
       has_changes: ${{ steps.build-matrix.outputs.has_changes }}
+      image_types: ${{ steps.build-matrix.outputs.image_types }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -169,9 +170,12 @@ jobs:
           fi
 
           MATRIX=$(echo "$MATRIX_ITEMS" | jq -c '{include: .}')
+          IMAGE_TYPES=$(jq -c '[.containers.gardenlinux.image_types[]]' releases.json)
           echo "Build matrix: $MATRIX"
+          echo "Image types: $IMAGE_TYPES"
           echo "has_changes=true" >> "$GITHUB_OUTPUT"
           echo "matrix=${MATRIX}" >> "$GITHUB_OUTPUT"
+          echo "image_types=${IMAGE_TYPES}" >> "$GITHUB_OUTPUT"
 
   # ============================================================================
   # Job 2: Build and publish multi-arch container images for each changed pair
@@ -196,14 +200,6 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y qemu-user-static
 
-      - name: Fetch releases.json
-        run: |
-          curl -sfL \
-            -H "Authorization: token ${{ secrets.GHE_PAT }}" \
-            -H "Accept: application/vnd.github.raw+json" \
-            "https://github.tools.sap/api/v3/repos/SapMachine/SapMachine-infrastructure/contents/releases.json?ref=master" \
-            -o releases.json
-
       - name: Build and publish images
         run: |
           set -euo pipefail
@@ -214,8 +210,8 @@ jobs:
           GL_FULL="${{ matrix.gardenLinuxFullVersion }}"
           SM_REGISTRY="ghcr.io/sap/sapmachine"
 
-          # Read image types from releases.json
-          readarray -t SM_FLAVOURS < <(jq -r '.containers.gardenlinux.image_types[]' releases.json)
+          # Read image types from detect-changes job output
+          readarray -t SM_FLAVOURS < <(echo '${{ needs.detect-changes.outputs.image_types }}' | jq -r '.[]')
 
           echo "Building SapMachine ${SM_FULL} on GardenLinux ${GL_FULL}"
           echo "Flavours: ${SM_FLAVOURS[*]}"
