@@ -61,12 +61,12 @@ jobs:
             MATRIX_ITEMS=$(jq -c '
               [.latest_versions | to_entries[] | {sm: .key, smFull: .value}] as $sm_list |
               [.containers.gardenlinux.versions | to_entries[] | {gl: .key, glFull: .value}] as $gl_list |
-              [($sm_list[] | . as $sm | $gl_list[] | {
+              [$sm_list[] as $sm | $gl_list[] as $gl | {
                 sapMachineVersion: $sm.sm,
                 sapMachineFullVersion: $sm.smFull,
                 gardenLinuxVersion: $gl.gl,
                 gardenLinuxFullVersion: $gl.glFull
-              })]' releases.json)
+              }]' releases.json)
 
           else
             # --- Auto-detect from git diff ---
