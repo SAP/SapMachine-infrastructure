@@ -40,8 +40,10 @@ jobs:
 
       - name: Fetch releases.json
         run: |
-          HTTP_CODE=$(curl -sL -w "%{http_code}" -H "Authorization: token ${{ secrets.GHE_PAT }}" \
-            "https://github.tools.sap/raw/SapMachine/SapMachine-infrastructure/master/releases.json" \
+          HTTP_CODE=$(curl -sL -w "%{http_code}" \
+            -H "Authorization: token ${{ secrets.GHE_PAT }}" \
+            -H "Accept: application/vnd.github.raw+json" \
+            "https://github.tools.sap/api/v3/repos/SapMachine/SapMachine-infrastructure/contents/releases.json?ref=master" \
             -o releases.json)
           echo "HTTP status: $HTTP_CODE"
 
@@ -196,8 +198,10 @@ jobs:
 
       - name: Fetch releases.json
         run: |
-          curl -sfL -H "Authorization: token ${{ secrets.GHE_PAT }}" \
-            "https://github.tools.sap/raw/SapMachine/SapMachine-infrastructure/master/releases.json" \
+          curl -sfL \
+            -H "Authorization: token ${{ secrets.GHE_PAT }}" \
+            -H "Accept: application/vnd.github.raw+json" \
+            "https://github.tools.sap/api/v3/repos/SapMachine/SapMachine-infrastructure/contents/releases.json?ref=master" \
             -o releases.json
 
       - name: Build and publish images
