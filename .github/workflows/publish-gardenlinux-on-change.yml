@@ -40,7 +40,7 @@ jobs:
 
       - name: Fetch releases.json
         run: |
-          HTTP_CODE=$(curl -s -w "%{http_code}" -H "Authorization: token ${{ secrets.GHE_PAT }}" \
+          HTTP_CODE=$(curl -sL -w "%{http_code}" -H "Authorization: token ${{ secrets.GHE_PAT }}" \
             "https://github.tools.sap/raw/SapMachine/SapMachine-infrastructure/master/releases.json" \
             -o releases.json)
           echo "HTTP status: $HTTP_CODE"
@@ -196,7 +196,7 @@ jobs:
 
       - name: Fetch releases.json
         run: |
-          curl -sf -H "Authorization: token ${{ secrets.GHE_PAT }}" \
+          curl -sfL -H "Authorization: token ${{ secrets.GHE_PAT }}" \
             "https://github.tools.sap/raw/SapMachine/SapMachine-infrastructure/master/releases.json" \
             -o releases.json
 
