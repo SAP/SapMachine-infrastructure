@@ -7,14 +7,11 @@ on:
       - 'dockerfiles/**/gardenlinux/**'
   workflow_dispatch:
     inputs:
-      sapMachineVersion:
-        type: string
-        description: "SapMachine major version (e.g. 25). Leave empty to auto-detect from last commit."
+      force:
+        type: boolean
+        description: "Force build all latest_versions × gardenlinux versions from releases.json"
         required: false
-      gardenLinuxVersion:
-        type: string
-        description: "GardenLinux short version (e.g. 2150). Leave empty to auto-detect from last commit."
-        required: false
+        default: false
 
 permissions:
   contents: read
@@ -55,18 +52,29 @@ jobs:
         run: |
           set -euo pipefail
 
-          # --- Determine changed (smVersion, glVersion) pairs ---
-          if [[ -n "${{ inputs.sapMachineVersion }}" && -n "${{ inputs.gardenLinuxVersion }}" ]]; then
-            # Manual trigger with explicit versions
-            echo "Using manually provided versions: SM=${{ inputs.sapMachineVersion }}, GL=${{ inputs.gardenLinuxVersion }}"
-            PAIRS="${{ inputs.sapMachineVersion }}/${{ inputs.gardenLinuxVersion }}"
+          FORCE="${{ inputs.force }}"
+
+          if [[ "$FORCE" == "true" ]]; then
+            # --- Force mode: full cross-product of latest_versions × gardenlinux versions ---
+            echo "Force mode enabled — building all SM × GL combinations from releases.json"
+
+            MATRIX_ITEMS=$(jq -c '
+              [.latest_versions | to_entries[] | {sm: .key, smFull: .value}] as $sm_list |
+              [.containers.gardenlinux.versions | to_entries[] | {gl: .key, glFull: .value}] as $gl_list |
+              [($sm_list[] | . as $sm | $gl_list[] | {
+                sapMachineVersion: $sm.sm,
+                sapMachineFullVersion: $sm.smFull,
+                gardenLinuxVersion: $gl.gl,
+                gardenLinuxFullVersion: $gl.glFull
+              })]' releases.json)
+
           else
-            # Auto-detect from git diff
+            # --- Auto-detect from git diff ---
             if [[ "${{ github.event_name }}" == "push" ]]; then
               BASE="${{ github.event.before }}"
               HEAD="${{ github.sha }}"
             else
-              # workflow_dispatch without inputs: diff against previous commit
+              # workflow_dispatch without force: diff against previous commit
               BASE="HEAD~1"
               HEAD="HEAD"
             fi
@@ -97,36 +105,36 @@ jobs:
               echo 'matrix={"include":[]}' >> "$GITHUB_OUTPUT"
               exit 0
             fi
+
+            echo "Detected pairs: $PAIRS"
+
+            # Validate pairs against releases.json and resolve full versions
+            MATRIX_ITEMS="[]"
+            for pair in $PAIRS; do
+              SM_VER=$(echo "$pair" | cut -d'/' -f1)
+              GL_VER=$(echo "$pair" | cut -d'/' -f2)
+
+              # Resolve full SapMachine version from latest_versions
+              SM_FULL=$(jq -r --arg v "$SM_VER" '.latest_versions[$v] // empty' releases.json)
+              if [[ -z "$SM_FULL" ]]; then
+                echo "::warning::SapMachine version ${SM_VER} not found in latest_versions — skipping"
+                continue
+              fi
+
+              # Resolve full GardenLinux version from containers.gardenlinux.versions
+              GL_FULL=$(jq -r --arg v "$GL_VER" '.containers.gardenlinux.versions[$v] // empty' releases.json)
+              if [[ -z "$GL_FULL" ]]; then
+                echo "::warning::GardenLinux version ${GL_VER} not found in containers.gardenlinux.versions — skipping"
+                continue
+              fi
+
+              echo "Validated: SM ${SM_VER} (${SM_FULL}), GL ${GL_VER} (${GL_FULL})"
+              MATRIX_ITEMS=$(echo "$MATRIX_ITEMS" | jq -c \
+                --arg sm "$SM_VER" --arg smFull "$SM_FULL" \
+                --arg gl "$GL_VER" --arg glFull "$GL_FULL" \
+                '. + [{"sapMachineVersion": $sm, "sapMachineFullVersion": $smFull, "gardenLinuxVersion": $gl, "gardenLinuxFullVersion": $glFull}]')
+            done
           fi
-
-          echo "Detected pairs: $PAIRS"
-
-          # --- Validate pairs against releases.json and resolve full versions ---
-          MATRIX_ITEMS="[]"
-          for pair in $PAIRS; do
-            SM_VER=$(echo "$pair" | cut -d'/' -f1)
-            GL_VER=$(echo "$pair" | cut -d'/' -f2)
-
-            # Resolve full SapMachine version from latest_versions
-            SM_FULL=$(jq -r --arg v "$SM_VER" '.latest_versions[$v] // empty' releases.json)
-            if [[ -z "$SM_FULL" ]]; then
-              echo "::warning::SapMachine version ${SM_VER} not found in latest_versions — skipping"
-              continue
-            fi
-
-            # Resolve full GardenLinux version from containers.gardenlinux.versions
-            GL_FULL=$(jq -r --arg v "$GL_VER" '.containers.gardenlinux.versions[$v] // empty' releases.json)
-            if [[ -z "$GL_FULL" ]]; then
-              echo "::warning::GardenLinux version ${GL_VER} not found in containers.gardenlinux.versions — skipping"
-              continue
-            fi
-
-            echo "Validated: SM ${SM_VER} (${SM_FULL}), GL ${GL_VER} (${GL_FULL})"
-            MATRIX_ITEMS=$(echo "$MATRIX_ITEMS" | jq -c \
-              --arg sm "$SM_VER" --arg smFull "$SM_FULL" \
-              --arg gl "$GL_VER" --arg glFull "$GL_FULL" \
-              '. + [{"sapMachineVersion": $sm, "sapMachineFullVersion": $smFull, "gardenLinuxVersion": $gl, "gardenLinuxFullVersion": $glFull}]')
-          done
 
           if [[ $(echo "$MATRIX_ITEMS" | jq 'length') -eq 0 ]]; then
             echo "No valid version pairs found after validation."
