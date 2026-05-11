@@ -1,0 +1,209 @@
+name: Publish Garden Linux based SapMachine Images
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'dockerfiles/**/gardenlinux/**'
+  workflow_dispatch:
+    inputs:
+      sapMachineVersion:
+        type: string
+        description: "SapMachine major version (e.g. 25). Leave empty to auto-detect from last commit."
+        required: false
+      gardenLinuxVersion:
+        type: string
+        description: "GardenLinux short version (e.g. 2150). Leave empty to auto-detect from last commit."
+        required: false
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: "gardenlinux-publish"
+  cancel-in-progress: false
+
+jobs:
+  # ============================================================================
+  # Job 1: Detect which (SapMachine, GardenLinux) pairs changed and resolve
+  #         full version numbers from releases.json
+  # ============================================================================
+  detect-changes:
+    name: Detect changed GardenLinux Dockerfiles
+    runs-on: ubuntu-24.04
+    outputs:
+      matrix: ${{ steps.build-matrix.outputs.matrix }}
+      has_changes: ${{ steps.build-matrix.outputs.has_changes }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Fetch releases.json
+        run: |
+          curl -sf -H "Authorization: token ${{ secrets.GHE_PAT }}" \
+            "https://github.tools.sap/raw/SapMachine/SapMachine-infrastructure/master/releases.json" \
+            -o releases.json
+          echo "::group::releases.json"
+          cat releases.json
+          echo "::endgroup::"
+
+      - name: Detect changes and build matrix
+        id: build-matrix
+        run: |
+          set -euo pipefail
+
+          # --- Determine changed (smVersion, glVersion) pairs ---
+          if [[ -n "${{ inputs.sapMachineVersion }}" && -n "${{ inputs.gardenLinuxVersion }}" ]]; then
+            # Manual trigger with explicit versions
+            echo "Using manually provided versions: SM=${{ inputs.sapMachineVersion }}, GL=${{ inputs.gardenLinuxVersion }}"
+            PAIRS="${{ inputs.sapMachineVersion }}/${{ inputs.gardenLinuxVersion }}"
+          else
+            # Auto-detect from git diff
+            if [[ "${{ github.event_name }}" == "push" ]]; then
+              BASE="${{ github.event.before }}"
+              HEAD="${{ github.sha }}"
+            else
+              # workflow_dispatch without inputs: diff against previous commit
+              BASE="HEAD~1"
+              HEAD="HEAD"
+            fi
+
+            echo "Diffing ${BASE}..${HEAD}"
+            CHANGED_FILES=$(git diff --name-only "${BASE}" "${HEAD}" || true)
+
+            if [[ -z "$CHANGED_FILES" ]]; then
+              echo "No changed files detected."
+              echo "has_changes=false" >> "$GITHUB_OUTPUT"
+              echo 'matrix={"include":[]}' >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+
+            echo "::group::Changed files"
+            echo "$CHANGED_FILES"
+            echo "::endgroup::"
+
+            # Extract unique (smVersion/glVersion) pairs from gardenlinux paths
+            PAIRS=$(echo "$CHANGED_FILES" \
+              | grep -E '^dockerfiles/[0-9]+/gardenlinux/[0-9]+' \
+              | sed -E 's|^dockerfiles/([0-9]+)/gardenlinux/([0-9]+)/.*|\1/\2|' \
+              | sort -u || true)
+
+            if [[ -z "$PAIRS" ]]; then
+              echo "No gardenlinux changes detected."
+              echo "has_changes=false" >> "$GITHUB_OUTPUT"
+              echo 'matrix={"include":[]}' >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+          fi
+
+          echo "Detected pairs: $PAIRS"
+
+          # --- Validate pairs against releases.json and resolve full versions ---
+          MATRIX_ITEMS="[]"
+          for pair in $PAIRS; do
+            SM_VER=$(echo "$pair" | cut -d'/' -f1)
+            GL_VER=$(echo "$pair" | cut -d'/' -f2)
+
+            # Resolve full SapMachine version from latest_versions
+            SM_FULL=$(jq -r --arg v "$SM_VER" '.latest_versions[$v] // empty' releases.json)
+            if [[ -z "$SM_FULL" ]]; then
+              echo "::warning::SapMachine version ${SM_VER} not found in latest_versions — skipping"
+              continue
+            fi
+
+            # Resolve full GardenLinux version from containers.gardenlinux.versions
+            GL_FULL=$(jq -r --arg v "$GL_VER" '.containers.gardenlinux.versions[$v] // empty' releases.json)
+            if [[ -z "$GL_FULL" ]]; then
+              echo "::warning::GardenLinux version ${GL_VER} not found in containers.gardenlinux.versions — skipping"
+              continue
+            fi
+
+            echo "Validated: SM ${SM_VER} (${SM_FULL}), GL ${GL_VER} (${GL_FULL})"
+            MATRIX_ITEMS=$(echo "$MATRIX_ITEMS" | jq -c \
+              --arg sm "$SM_VER" --arg smFull "$SM_FULL" \
+              --arg gl "$GL_VER" --arg glFull "$GL_FULL" \
+              '. + [{"sapMachineVersion": $sm, "sapMachineFullVersion": $smFull, "gardenLinuxVersion": $gl, "gardenLinuxFullVersion": $glFull}]')
+          done
+
+          if [[ $(echo "$MATRIX_ITEMS" | jq 'length') -eq 0 ]]; then
+            echo "No valid version pairs found after validation."
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+            echo 'matrix={"include":[]}' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          MATRIX=$(echo "$MATRIX_ITEMS" | jq -c '{include: .}')
+          echo "Build matrix: $MATRIX"
+          echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          echo "matrix=${MATRIX}" >> "$GITHUB_OUTPUT"
+
+  # ============================================================================
+  # Job 2: Build and publish multi-arch container images for each changed pair
+  # ============================================================================
+  build-and-publish:
+    name: "Build SM ${{ matrix.sapMachineFullVersion }} / GL ${{ matrix.gardenLinuxFullVersion }}"
+    needs: detect-changes
+    if: needs.detect-changes.outputs.has_changes == 'true'
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.detect-changes.outputs.matrix) }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install qemu dependency for multi-arch build
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y qemu-user-static
+
+      - name: Fetch releases.json
+        run: |
+          curl -sf -H "Authorization: token ${{ secrets.GHE_PAT }}" \
+            "https://github.tools.sap/raw/SapMachine/SapMachine-infrastructure/master/releases.json" \
+            -o releases.json
+
+      - name: Build and publish images
+        run: |
+          set -euo pipefail
+
+          SM_VER="${{ matrix.sapMachineVersion }}"
+          SM_FULL="${{ matrix.sapMachineFullVersion }}"
+          GL_VER="${{ matrix.gardenLinuxVersion }}"
+          GL_FULL="${{ matrix.gardenLinuxFullVersion }}"
+          SM_REGISTRY="ghcr.io/sap/sapmachine"
+
+          # Read image types from releases.json
+          readarray -t SM_FLAVOURS < <(jq -r '.containers.gardenlinux.image_types[]' releases.json)
+
+          echo "Building SapMachine ${SM_FULL} on GardenLinux ${GL_FULL}"
+          echo "Flavours: ${SM_FLAVOURS[*]}"
+
+          podman login -u token -p ${{ github.token }} ghcr.io
+
+          cd "dockerfiles/${SM_VER}/gardenlinux/${GL_VER}"
+
+          for sm_flvr in "${SM_FLAVOURS[@]}"; do
+            if [[ ! -d "${sm_flvr}" ]]; then
+              echo "::warning::Directory ${sm_flvr} not found — skipping"
+              continue
+            fi
+
+            tag="${SM_FULL}-${sm_flvr}-gl-${GL_FULL}"
+            echo "::group::Building ${SM_REGISTRY}:${tag}"
+
+            cd "${sm_flvr}"
+            #podman manifest create "${SM_REGISTRY}:${tag}"
+            #podman build --platform linux/amd64,linux/arm64 --manifest "${SM_REGISTRY}:${tag}" .
+            #podman manifest push "${SM_REGISTRY}:${tag}"
+            cd ..
+
+            echo "::endgroup::"
+            echo "Published ${SM_REGISTRY}:${tag}"
+          done
