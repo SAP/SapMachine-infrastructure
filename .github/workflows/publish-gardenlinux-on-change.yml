@@ -226,8 +226,8 @@ jobs:
           echo "::group::Building ${SM_REGISTRY}:${tag}"
 
           cd "dockerfiles/${SM_VER}/gardenlinux/${GL_VER}/${FLAVOUR}"
-          #podman manifest create "${SM_REGISTRY}:${tag}"
-          #podman build --platform linux/amd64,linux/arm64 --manifest "${SM_REGISTRY}:${tag}" .
+          podman manifest create "${SM_REGISTRY}:${tag}"
+          podman build --platform linux/amd64,linux/arm64 --manifest "${SM_REGISTRY}:${tag}" .
           #podman manifest push "${SM_REGISTRY}:${tag}"
 
           echo "::endgroup::"
