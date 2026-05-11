@@ -32,7 +32,6 @@ jobs:
     outputs:
       matrix: ${{ steps.build-matrix.outputs.matrix }}
       has_changes: ${{ steps.build-matrix.outputs.has_changes }}
-      image_types: ${{ steps.build-matrix.outputs.image_types }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -83,12 +82,14 @@ jobs:
 
             MATRIX_ITEMS=$(jq -c '. as $root |
               [.latest_versions | to_entries[] | . as $sm |
-               $root.containers.gardenlinux.versions | to_entries[] |
+               $root.containers.gardenlinux.versions | to_entries[] | . as $gl |
+               $root.containers.gardenlinux.image_types[] | . as $flvr |
                {
                  sapMachineVersion: $sm.key,
                  sapMachineFullVersion: $sm.value,
-                 gardenLinuxVersion: .key,
-                 gardenLinuxFullVersion: .value
+                 gardenLinuxVersion: $gl.key,
+                 gardenLinuxFullVersion: $gl.value,
+                 flavour: $flvr
                }
               ]' releases.json)
 
@@ -119,26 +120,27 @@ jobs:
             echo "$CHANGED_FILES"
             echo "::endgroup::"
 
-            # Extract unique (smVersion/glVersion) pairs from gardenlinux paths
-            PAIRS=$(echo "$CHANGED_FILES" \
-              | grep -E '^dockerfiles/[0-9]+/gardenlinux/[0-9]+' \
-              | sed -E 's|^dockerfiles/([0-9]+)/gardenlinux/([0-9]+)/.*|\1/\2|' \
+            # Extract unique (smVersion/glVersion/flavour) triples from gardenlinux paths
+            TRIPLES=$(echo "$CHANGED_FILES" \
+              | grep -E '^dockerfiles/[0-9]+/gardenlinux/[0-9]+/[^/]+/' \
+              | sed -E 's|^dockerfiles/([0-9]+)/gardenlinux/([0-9]+)/([^/]+)/.*|\1/\2/\3|' \
               | sort -u || true)
 
-            if [[ -z "$PAIRS" ]]; then
+            if [[ -z "$TRIPLES" ]]; then
               echo "No gardenlinux changes detected."
               echo "has_changes=false" >> "$GITHUB_OUTPUT"
               echo 'matrix={"include":[]}' >> "$GITHUB_OUTPUT"
               exit 0
             fi
 
-            echo "Detected pairs: $PAIRS"
+            echo "Detected triples: $TRIPLES"
 
-            # Validate pairs against releases.json and resolve full versions
+            # Validate triples against releases.json and resolve full versions
             MATRIX_ITEMS="[]"
-            for pair in $PAIRS; do
-              SM_VER=$(echo "$pair" | cut -d'/' -f1)
-              GL_VER=$(echo "$pair" | cut -d'/' -f2)
+            for triple in $TRIPLES; do
+              SM_VER=$(echo "$triple" | cut -d'/' -f1)
+              GL_VER=$(echo "$triple" | cut -d'/' -f2)
+              FLAVOUR=$(echo "$triple" | cut -d'/' -f3)
 
               # Resolve full SapMachine version from latest_versions
               SM_FULL=$(jq -r --arg v "$SM_VER" '.latest_versions[$v] // empty' releases.json)
@@ -154,11 +156,19 @@ jobs:
                 continue
               fi
 
-              echo "Validated: SM ${SM_VER} (${SM_FULL}), GL ${GL_VER} (${GL_FULL})"
+              # Validate flavour against image_types
+              VALID_FLAVOUR=$(jq -r --arg f "$FLAVOUR" '.containers.gardenlinux.image_types[] | select(. == $f)' releases.json)
+              if [[ -z "$VALID_FLAVOUR" ]]; then
+                echo "::warning::Flavour ${FLAVOUR} not in image_types — skipping"
+                continue
+              fi
+
+              echo "Validated: SM ${SM_VER} (${SM_FULL}), GL ${GL_VER} (${GL_FULL}), flavour ${FLAVOUR}"
               MATRIX_ITEMS=$(echo "$MATRIX_ITEMS" | jq -c \
                 --arg sm "$SM_VER" --arg smFull "$SM_FULL" \
                 --arg gl "$GL_VER" --arg glFull "$GL_FULL" \
-                '. + [{"sapMachineVersion": $sm, "sapMachineFullVersion": $smFull, "gardenLinuxVersion": $gl, "gardenLinuxFullVersion": $glFull}]')
+                --arg flvr "$FLAVOUR" \
+                '. + [{"sapMachineVersion": $sm, "sapMachineFullVersion": $smFull, "gardenLinuxVersion": $gl, "gardenLinuxFullVersion": $glFull, "flavour": $flvr}]')
             done
           fi
 
@@ -170,18 +180,15 @@ jobs:
           fi
 
           MATRIX=$(echo "$MATRIX_ITEMS" | jq -c '{include: .}')
-          IMAGE_TYPES=$(jq -c '[.containers.gardenlinux.image_types[]]' releases.json)
           echo "Build matrix: $MATRIX"
-          echo "Image types: $IMAGE_TYPES"
           echo "has_changes=true" >> "$GITHUB_OUTPUT"
           echo "matrix=${MATRIX}" >> "$GITHUB_OUTPUT"
-          echo "image_types=${IMAGE_TYPES}" >> "$GITHUB_OUTPUT"
 
   # ============================================================================
   # Job 2: Build and publish multi-arch container images for each changed pair
   # ============================================================================
   build-and-publish:
-    name: "Build SM ${{ matrix.sapMachineFullVersion }} / GL ${{ matrix.gardenLinuxFullVersion }}"
+    name: "Build SM ${{ matrix.sapMachineFullVersion }} / GL ${{ matrix.gardenLinuxFullVersion }} / ${{ matrix.flavour }}"
     needs: detect-changes
     if: needs.detect-changes.outputs.has_changes == 'true'
     runs-on: ubuntu-24.04
@@ -208,33 +215,20 @@ jobs:
           SM_FULL="${{ matrix.sapMachineFullVersion }}"
           GL_VER="${{ matrix.gardenLinuxVersion }}"
           GL_FULL="${{ matrix.gardenLinuxFullVersion }}"
+          FLAVOUR="${{ matrix.flavour }}"
           SM_REGISTRY="ghcr.io/sap/sapmachine"
 
-          # Read image types from detect-changes job output
-          readarray -t SM_FLAVOURS < <(echo '${{ needs.detect-changes.outputs.image_types }}' | jq -r '.[]')
-
-          echo "Building SapMachine ${SM_FULL} on GardenLinux ${GL_FULL}"
-          echo "Flavours: ${SM_FLAVOURS[*]}"
+          echo "Building SapMachine ${SM_FULL} on GardenLinux ${GL_FULL} — flavour ${FLAVOUR}"
 
           podman login -u token -p ${{ github.token }} ghcr.io
 
-          cd "dockerfiles/${SM_VER}/gardenlinux/${GL_VER}"
+          tag="${SM_FULL}-${FLAVOUR}-gl-${GL_FULL}"
+          echo "::group::Building ${SM_REGISTRY}:${tag}"
 
-          for sm_flvr in "${SM_FLAVOURS[@]}"; do
-            if [[ ! -d "${sm_flvr}" ]]; then
-              echo "::warning::Directory ${sm_flvr} not found — skipping"
-              continue
-            fi
+          cd "dockerfiles/${SM_VER}/gardenlinux/${GL_VER}/${FLAVOUR}"
+          #podman manifest create "${SM_REGISTRY}:${tag}"
+          #podman build --platform linux/amd64,linux/arm64 --manifest "${SM_REGISTRY}:${tag}" .
+          #podman manifest push "${SM_REGISTRY}:${tag}"
 
-            tag="${SM_FULL}-${sm_flvr}-gl-${GL_FULL}"
-            echo "::group::Building ${SM_REGISTRY}:${tag}"
-
-            cd "${sm_flvr}"
-            #podman manifest create "${SM_REGISTRY}:${tag}"
-            #podman build --platform linux/amd64,linux/arm64 --manifest "${SM_REGISTRY}:${tag}" .
-            #podman manifest push "${SM_REGISTRY}:${tag}"
-            cd ..
-
-            echo "::endgroup::"
-            echo "Published ${SM_REGISTRY}:${tag}"
-          done
+          echo "::endgroup::"
+          echo "Published ${SM_REGISTRY}:${tag}"

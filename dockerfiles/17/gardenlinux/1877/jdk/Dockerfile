@@ -15,4 +15,3 @@ RUN echo "deb https://dist.sapmachine.io/debian/$(dpkg --print-architecture)/ ./
 ENV JAVA_HOME=/usr/lib/jvm/sapmachine-17
 
 CMD ["jshell"]
-
