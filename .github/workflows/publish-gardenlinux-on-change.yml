@@ -40,12 +40,29 @@ jobs:
 
       - name: Fetch releases.json
         run: |
-          curl -sf -H "Authorization: token ${{ secrets.GHE_PAT }}" \
+          HTTP_CODE=$(curl -s -w "%{http_code}" -H "Authorization: token ${{ secrets.GHE_PAT }}" \
             "https://github.tools.sap/raw/SapMachine/SapMachine-infrastructure/master/releases.json" \
-            -o releases.json
+            -o releases.json)
+          echo "HTTP status: $HTTP_CODE"
+
+          if [[ "$HTTP_CODE" != "200" ]]; then
+            echo "::error::Failed to fetch releases.json (HTTP $HTTP_CODE)"
+            cat releases.json || true
+            exit 1
+          fi
+
+          if ! jq empty releases.json 2>/dev/null; then
+            echo "::error::releases.json is not valid JSON. Content:"
+            head -20 releases.json
+            exit 1
+          fi
+
           echo "::group::releases.json"
-          cat releases.json
+          jq . releases.json
           echo "::endgroup::"
+          echo "Top-level keys: $(jq -r 'keys | join(", ")' releases.json)"
+          echo "latest_versions: $(jq -c '.latest_versions' releases.json)"
+          echo "gardenlinux versions: $(jq -c '.containers.gardenlinux.versions' releases.json)"
 
       - name: Detect changes and build matrix
         id: build-matrix
