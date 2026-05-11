@@ -1,0 +1,19 @@
+name: Publish Garden Linux based SapMachine Images
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'dockerfiles/**/gardenlinux/**'
+  workflow_dispatch:
+    inputs:
+      sapMachineVersion:
+        type: string
+        description: "SapMachine major version (e.g. 25). Leave empty to auto-detect from last commit."
+        required: false
+      gardenLinuxVersion:
+        type: string
+        description: "GardenLinux short version (e.g. 2150). Leave empty to auto-detect from last commit."
+        required: false
+
+jobs:
