@@ -58,18 +58,21 @@ jobs:
             # --- Force mode: full cross-product of latest_versions × gardenlinux versions ---
             echo "Force mode enabled — building all SM × GL combinations from releases.json"
 
-            MATRIX_ITEMS="[]"
-            for SM_VER in $(jq -r '.latest_versions | keys[]' releases.json); do
-              SM_FULL=$(jq -r --arg v "$SM_VER" '.latest_versions[$v]' releases.json)
-              for GL_VER in $(jq -r '.containers.gardenlinux.versions | keys[]' releases.json); do
-                GL_FULL=$(jq -r --arg v "$GL_VER" '.containers.gardenlinux.versions[$v]' releases.json)
-                echo "Adding: SM ${SM_VER} (${SM_FULL}), GL ${GL_VER} (${GL_FULL})"
-                MATRIX_ITEMS=$(echo "$MATRIX_ITEMS" | jq -c \
-                  --arg sm "$SM_VER" --arg smFull "$SM_FULL" \
-                  --arg gl "$GL_VER" --arg glFull "$GL_FULL" \
-                  '. + [{"sapMachineVersion": $sm, "sapMachineFullVersion": $smFull, "gardenLinuxVersion": $gl, "gardenLinuxFullVersion": $glFull}]')
-              done
-            done
+            echo "SM versions in releases.json: $(jq -r '[.latest_versions | keys[]] | join(", ")' releases.json)"
+            echo "GL versions in releases.json: $(jq -r '[.containers.gardenlinux.versions | keys[]] | join(", ")' releases.json)"
+
+            MATRIX_ITEMS=$(jq -c '. as $root |
+              [.latest_versions | to_entries[] | . as $sm |
+               $root.containers.gardenlinux.versions | to_entries[] |
+               {
+                 sapMachineVersion: $sm.key,
+                 sapMachineFullVersion: $sm.value,
+                 gardenLinuxVersion: .key,
+                 gardenLinuxFullVersion: .value
+               }
+              ]' releases.json)
+
+            echo "Force matrix items: $MATRIX_ITEMS"
 
           else
             # --- Auto-detect from git diff ---
