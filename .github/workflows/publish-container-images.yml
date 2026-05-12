@@ -8,7 +8,12 @@ on:
         description: "SapMachine version (e.g. 21)"
       gardenLinuxVersion:
         type: string
-        description: "GardenLinux version (e.g. 1592)"        
+        description: "GardenLinux version (e.g. 1592)"
+
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   publish_container:
     name: publish gardenlinux container base image
