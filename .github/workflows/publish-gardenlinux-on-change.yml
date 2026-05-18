@@ -199,9 +199,6 @@ jobs:
       run:
         shell: bash
     steps:
-      - name: Wait for step "Generate Manifest" in jenkins job "generate-docker" to finish
-        run: sleep 30
-
       - name: Checkout repository
         uses: actions/checkout@v6
 
