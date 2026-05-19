@@ -220,16 +220,36 @@ jobs:
 
           echo "Building SapMachine ${SM_FULL} on GardenLinux ${GL_FULL} — flavour ${FLAVOUR}"
 
+          # Look up all tags for this image from sapmachine-gl-tags.json
+          DIR="dockerfiles/${SM_VER}/gardenlinux/${GL_VER}/${FLAVOUR}"
+          TAGS=$(jq -c --arg d "$DIR" '.[$d] // empty' sapmachine-gl-tags.json)
+
+          if [[ -z "$TAGS" || "$TAGS" == "null" ]]; then
+            echo "::warning::No tags found for ${DIR} in sapmachine-gl-tags.json — using fallback tag"
+            TAGS="[\"${SM_FULL}-${FLAVOUR}-gl-${GL_FULL}\"]"
+          fi
+
+          TAG_COUNT=$(echo "$TAGS" | jq 'length')
+          echo "Tags to apply (${TAG_COUNT}): $(echo "$TAGS" | jq -r 'join(", ")')"
+
           podman login -u token -p ${{ github.token }} ghcr.io
 
-          tag="${SM_FULL}-${FLAVOUR}-gl-${GL_FULL}"
-          echo "::group::Building ${SM_REGISTRY}:${tag}"
+          # Build the multi-arch image once using the first tag as the manifest name
+          FIRST_TAG=$(echo "$TAGS" | jq -r '.[0]')
+          echo "::group::Building ${SM_REGISTRY}:${FIRST_TAG}"
 
-          cd "dockerfiles/${SM_VER}/gardenlinux/${GL_VER}/${FLAVOUR}"
-          podman manifest create "${SM_REGISTRY}:${tag}"
-          podman build --platform linux/amd64,linux/arm64 --manifest "${SM_REGISTRY}:${tag}" .
-          # TODO: tackle "tags" and "user inputs" before uncommenting the push step below.
-          #podman manifest push "${SM_REGISTRY}:${tag}"
+          cd "${DIR}"
+          podman manifest create "${SM_REGISTRY}:${FIRST_TAG}"
+          podman build --platform linux/amd64,linux/arm64 --manifest "${SM_REGISTRY}:${FIRST_TAG}" .
 
           echo "::endgroup::"
-          echo "Published ${SM_REGISTRY}:${tag}"
+
+          # Push the manifest to all tags
+          echo "::group::Pushing ${TAG_COUNT} tags"
+          for tag in $(echo "$TAGS" | jq -r '.[]'); do
+            echo "Pushing ${SM_REGISTRY}:${tag}"
+            podman manifest push "${SM_REGISTRY}:${FIRST_TAG}" "docker://${SM_REGISTRY}:${tag}"
+          done
+          echo "::endgroup::"
+
+          echo "Published ${TAG_COUNT} tags for ${DIR}"
