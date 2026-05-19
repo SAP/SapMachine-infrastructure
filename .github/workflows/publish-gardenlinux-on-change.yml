@@ -2,7 +2,7 @@ name: Publish Garden Linux based SapMachine Images
 
 on:
   push:
-    branches: [publish_gardenlinux_tags]
+    branches: [master]
     paths:
       - 'dockerfiles/**/gardenlinux/**'
   workflow_dispatch:
@@ -248,7 +248,7 @@ jobs:
           echo "::group::Pushing ${TAG_COUNT} tags"
           for tag in $(echo "$TAGS" | jq -r '.[]'); do
             echo "Pushing ${SM_REGISTRY}:${tag}"
-            #podman manifest push "${SM_REGISTRY}:${FIRST_TAG}" "docker://${SM_REGISTRY}:${tag}"
+            podman manifest push "${SM_REGISTRY}:${FIRST_TAG}" "docker://${SM_REGISTRY}:${tag}"
           done
           echo "::endgroup::"
 
