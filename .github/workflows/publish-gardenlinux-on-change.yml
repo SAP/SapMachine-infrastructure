@@ -7,11 +7,21 @@ on:
       - 'dockerfiles/**/gardenlinux/**'
   workflow_dispatch:
     inputs:
-      force:
-        type: boolean
-        description: "Force build all latest_versions × gardenlinux versions from releases.json"
+      sapMachineVersion:
+        type: string
+        description: "SapMachine major version, e.g. 21, 25, 26. Leave empty for all."
         required: false
-        default: false
+        default: ''
+      gardenLinuxVersion:
+        type: string
+        description: "GardenLinux major version, e.g. 1877, 2150. Leave empty for all."
+        required: false
+        default: ''
+      flavour:
+        type: string
+        description: "Image type, e.g. jdk, jdk-headless, jre, jre-headless. Leave empty for all."
+        required: false
+        default: ''
 
 permissions:
   contents: read
@@ -71,40 +81,69 @@ jobs:
         run: |
           set -euo pipefail
 
-          FORCE="${{ inputs.force }}"
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            # --- Manual dispatch: build combinations based on provided inputs ---
+            SM_INPUT="${{ inputs.sapMachineVersion }}"
+            GL_INPUT="${{ inputs.gardenLinuxVersion }}"
+            FLAVOUR_INPUT="${{ inputs.flavour }}"
 
-          if [[ "$FORCE" == "true" ]]; then
-            # --- Force mode: full cross-product of latest_versions × gardenlinux versions ---
-            echo "Force mode enabled — building all SM × GL combinations from releases.json"
+            echo "Manual dispatch — SM: '${SM_INPUT}', GL: '${GL_INPUT}', Flavour: '${FLAVOUR_INPUT}'"
 
-            echo "SM versions in releases.json: $(jq -r '[.latest_versions | keys[]] | join(", ")' releases.json)"
-            echo "GL versions in releases.json: $(jq -r '[.containers.gardenlinux.versions | keys[]] | join(", ")' releases.json)"
+            # Validate non-empty inputs against releases.json
+            if [[ -n "$SM_INPUT" ]]; then
+              SM_CHECK=$(jq -r --arg v "$SM_INPUT" '.latest_versions[$v] // empty' releases.json)
+              if [[ -z "$SM_CHECK" ]]; then
+                echo "::error::SapMachine version '${SM_INPUT}' not found in releases.json latest_versions"
+                echo "Available: $(jq -r '[.latest_versions | keys[]] | join(", ")' releases.json)"
+                echo "has_changes=false" >> "$GITHUB_OUTPUT"
+                echo 'matrix={"include":[]}' >> "$GITHUB_OUTPUT"
+                exit 1
+              fi
+            fi
 
-            MATRIX_ITEMS=$(jq -c '. as $root |
-              [.latest_versions | to_entries[] | . as $sm |
-               $root.containers.gardenlinux.versions | to_entries[] | . as $gl |
-               $root.containers.gardenlinux.image_types[] | . as $flvr |
+            if [[ -n "$GL_INPUT" ]]; then
+              GL_CHECK=$(jq -r --arg v "$GL_INPUT" '.containers.gardenlinux.versions[$v] // empty' releases.json)
+              if [[ -z "$GL_CHECK" ]]; then
+                echo "::error::GardenLinux version '${GL_INPUT}' not found in releases.json containers.gardenlinux.versions"
+                echo "Available: $(jq -r '[.containers.gardenlinux.versions | keys[]] | join(", ")' releases.json)"
+                echo "has_changes=false" >> "$GITHUB_OUTPUT"
+                echo 'matrix={"include":[]}' >> "$GITHUB_OUTPUT"
+                exit 1
+              fi
+            fi
+
+            if [[ -n "$FLAVOUR_INPUT" ]]; then
+              FLAVOUR_CHECK=$(jq -r --arg f "$FLAVOUR_INPUT" '.containers.gardenlinux.image_types[] | select(. == $f)' releases.json)
+              if [[ -z "$FLAVOUR_CHECK" ]]; then
+                echo "::error::Flavour '${FLAVOUR_INPUT}' not found in releases.json containers.gardenlinux.image_types"
+                echo "Available: $(jq -r '.containers.gardenlinux.image_types | join(", ")' releases.json)"
+                echo "has_changes=false" >> "$GITHUB_OUTPUT"
+                echo 'matrix={"include":[]}' >> "$GITHUB_OUTPUT"
+                exit 1
+              fi
+            fi
+
+            # Build cross-product, filtering by any provided inputs
+            MATRIX_ITEMS=$(jq -c --arg sm "$SM_INPUT" --arg gl "$GL_INPUT" --arg flvr "$FLAVOUR_INPUT" '
+              . as $root |
+              [.latest_versions | to_entries[] | select($sm == "" or .key == $sm) | . as $s |
+               $root.containers.gardenlinux.versions | to_entries[] | select($gl == "" or .key == $gl) | . as $g |
+               $root.containers.gardenlinux.image_types[] | select($flvr == "" or . == $flvr) | . as $f |
                {
-                 sapMachineVersion: $sm.key,
-                 sapMachineFullVersion: $sm.value,
-                 gardenLinuxVersion: $gl.key,
-                 gardenLinuxFullVersion: $gl.value,
-                 flavour: $flvr
+                 sapMachineVersion: $s.key,
+                 sapMachineFullVersion: $s.value,
+                 gardenLinuxVersion: $g.key,
+                 gardenLinuxFullVersion: $g.value,
+                 flavour: $f
                }
               ]' releases.json)
 
-            echo "Force matrix items: $MATRIX_ITEMS"
+            echo "Dispatch matrix items: $MATRIX_ITEMS"
 
           else
-            # --- Auto-detect from git diff ---
-            if [[ "${{ github.event_name }}" == "push" ]]; then
-              BASE="${{ github.event.before }}"
-              HEAD="${{ github.sha }}"
-            else
-              # workflow_dispatch without force: diff against previous commit
-              BASE="HEAD~1"
-              HEAD="HEAD"
-            fi
+            # --- Auto-detect from git diff (push event) ---
+            BASE="${{ github.event.before }}"
+            HEAD="${{ github.sha }}"
 
             echo "Diffing ${BASE}..${HEAD}"
             CHANGED_FILES=$(git diff --name-only "${BASE}" "${HEAD}" || true)
