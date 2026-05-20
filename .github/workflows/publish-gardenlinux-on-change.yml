@@ -12,14 +12,14 @@ on:
         description: "SapMachine major version, e.g. 21, 25, 26. Leave empty for all."
         required: false
         default: ''
-      gardenLinuxVersion:
-        type: string
-        description: "GardenLinux major version, e.g. 1877, 2150. Leave empty for all."
-        required: false
-        default: ''
       flavour:
         type: string
         description: "Image type, e.g. jdk, jdk-headless, jre, jre-headless. Leave empty for all."
+        required: false
+        default: ''
+      gardenLinuxVersion:
+        type: string
+        description: "GardenLinux major version, e.g. 1877, 2150. Leave empty for all."
         required: false
         default: ''
 
