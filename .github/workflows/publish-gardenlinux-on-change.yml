@@ -296,7 +296,7 @@ jobs:
   # ============================================================================
   # Job 3: Re-push latest multi-arch image to be appeared on top of Github Container Registry
   # ============================================================================
-  Repush-latest:
+  repush-latest:
     name: Re-push latest tag to be appeared on top of Github Container Registry
     needs: 
       - detect-changes
@@ -322,3 +322,52 @@ jobs:
 
           # Push — new digest forces GHCR to update the "last pushed" timestamp
           podman manifest push ghcr.io/sap/sapmachine:latest docker://ghcr.io/sap/sapmachine:latest
+
+  # ============================================================================
+  # Job 4: Send failure notification email if any previous job failed
+  # ============================================================================
+  notify-on-failure:
+    name: Send failure notification email
+    needs:
+      - detect-changes
+      - build-and-publish
+      - repush-latest
+    if: failure()
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Build failure message
+        id: failure-info
+        run: |
+          cat <<'EOF' > message.txt
+          One or more jobs in the GardenLinux image pipeline failed.
+
+          Repository  : ${{ github.repository }}
+          Workflow    : ${{ github.workflow }}
+          Run ID      : ${{ github.run_id }}
+          Triggered by: ${{ github.actor }} (${{ github.event_name }})
+          Ref         : ${{ github.ref }}
+
+          Action run URL:
+          https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+          Job results:
+            detect-changes   : ${{ needs.detect-changes.result }}
+            build-and-publish: ${{ needs.build-and-publish.result }}
+            repush-latest    : ${{ needs.repush-latest.result }}
+          EOF
+
+          echo "message<<EOF_DELIM" >> "$GITHUB_OUTPUT"
+          cat message.txt >> "$GITHUB_OUTPUT"
+          echo "EOF_DELIM" >> "$GITHUB_OUTPUT"
+
+      - name: Send failure notification email
+        uses: dawidd6/action-send-mail@v16
+        with:
+          server_address: ${{ secrets.SMTP_SERVER }}
+          server_port: ${{ secrets.SMTP_PORT }}
+          username: ${{ secrets.SMTP_USERNAME }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+          subject: "❌ GardenLinux image pipeline failed – ${{ github.repository }}"
+          to: ${{ secrets.NOTIFY_EMAIL_RECIPIENTS }}
+          from: "GitHub Actions <${{ secrets.SMTP_FROM_ADDRESS }}>"
+          body: ${{ steps.failure-info.outputs.message }}
