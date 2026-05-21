@@ -2,7 +2,7 @@ name: Publish Garden Linux based SapMachine Images
 
 on:
   push:
-    branches: [user_input]
+    branches: [master]
     paths:
       - 'dockerfiles/**/gardenlinux/**'
   workflow_dispatch:
