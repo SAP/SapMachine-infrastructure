@@ -292,3 +292,33 @@ jobs:
           echo "::endgroup::"
 
           echo "Published ${TAG_COUNT} tags for ${DIR}"
+
+  # ============================================================================
+  # Job 3: Re-push latest multi-arch image to be appeared on top of Github Container Registry
+  # ============================================================================
+  Repush-latest:
+    name: Re-push latest tag to be appeared on top of Github Container Registry
+    needs: 
+      - detect-changes
+      - build-and-publish
+    if: needs.detect-changes.outputs.has_changes == 'true'
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Re-push latest multi-arch image
+        run: |
+          set -euo pipefail
+
+          podman login -u token -p ${{ github.token }} ghcr.io
+
+          # Get per-platform digests from the existing manifest list
+          RAW=$(skopeo inspect --raw --creds token:${{ github.token }} docker://ghcr.io/sap/sapmachine:latest)
+          AMD64_DIGEST=$(echo "$RAW" | jq -r '.manifests[] | select(.platform.architecture=="amd64") | .digest')
+          ARM64_DIGEST=$(echo "$RAW" | jq -r '.manifests[] | select(.platform.architecture=="arm64") | .digest')
+
+          # Create a new manifest list from the same platform images
+          podman manifest create ghcr.io/sap/sapmachine:latest
+          podman manifest add ghcr.io/sap/sapmachine:latest docker://ghcr.io/sap/sapmachine@${AMD64_DIGEST}
+          podman manifest add ghcr.io/sap/sapmachine:latest docker://ghcr.io/sap/sapmachine@${ARM64_DIGEST}
+
+          # Push — new digest forces GHCR to update the "last pushed" timestamp
+          podman manifest push ghcr.io/sap/sapmachine:latest docker://ghcr.io/sap/sapmachine:latest
