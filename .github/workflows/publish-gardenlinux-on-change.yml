@@ -294,7 +294,7 @@ jobs:
           echo "Published ${TAG_COUNT} tags for ${DIR}"
 
   # ============================================================================
-  # Job 3: Re-push latest multi-arch image to be appeared on top of Github Container Registry
+  # Job 3: Re-push latest multi-arch image to make it appear on top of Github Container Registry UI
   # ============================================================================
   repush-latest:
     name: Re-push latest tag to be appeared on top of Github Container Registry
