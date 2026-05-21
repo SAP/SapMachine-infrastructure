@@ -212,7 +212,7 @@ jobs:
           fi
 
           if [[ $(echo "$MATRIX_ITEMS" | jq 'length') -eq 0 ]]; then
-            echo "No valid version pairs found after validation."
+            echo "No image types identified/selected."
             echo "has_changes=false" >> "$GITHUB_OUTPUT"
             echo 'matrix={"include":[]}' >> "$GITHUB_OUTPUT"
             exit 0
