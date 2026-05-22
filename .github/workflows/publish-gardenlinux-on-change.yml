@@ -255,7 +255,7 @@ jobs:
           GL_VER="${{ matrix.gardenLinuxVersion }}"
           GL_FULL="${{ matrix.gardenLinuxFullVersion }}"
           FLAVOUR="${{ matrix.flavour }}"
-          SM_REGISTRY="ghcr.io/sap/sapmachine"
+          SM_REGISTRY="ghcr.io/raeesorg/sapmachine-infrastructure"
 
           echo "Building SapMachine ${SM_FULL} on GardenLinux ${GL_FULL} — flavour ${FLAVOUR}"
 
@@ -308,20 +308,21 @@ jobs:
         run: |
           set -euo pipefail
 
+          SM_REGISTRY="ghcr.io/raeesorg/sapmachine-infrastructure"
           podman login -u token -p ${{ github.token }} ghcr.io
 
           # Get per-platform digests from the existing manifest list
-          RAW=$(skopeo inspect --raw --creds token:${{ github.token }} docker://ghcr.io/sap/sapmachine:latest)
+          RAW=$(skopeo inspect --raw --creds token:${{ github.token }} "docker://${SM_REGISTRY}:latest")
           AMD64_DIGEST=$(echo "$RAW" | jq -r '.manifests[] | select(.platform.architecture=="amd64") | .digest')
           ARM64_DIGEST=$(echo "$RAW" | jq -r '.manifests[] | select(.platform.architecture=="arm64") | .digest')
 
           # Create a new manifest list from the same platform images
-          podman manifest create ghcr.io/sap/sapmachine:latest
-          podman manifest add ghcr.io/sap/sapmachine:latest docker://ghcr.io/sap/sapmachine@${AMD64_DIGEST}
-          podman manifest add ghcr.io/sap/sapmachine:latest docker://ghcr.io/sap/sapmachine@${ARM64_DIGEST}
+          podman manifest create "${SM_REGISTRY}:latest"
+          podman manifest add "${SM_REGISTRY}:latest" "docker://${SM_REGISTRY}@${AMD64_DIGEST}"
+          podman manifest add "${SM_REGISTRY}:latest" "docker://${SM_REGISTRY}@${ARM64_DIGEST}"
 
           # Push — new digest forces GHCR to update the "last pushed" timestamp
-          podman manifest push ghcr.io/sap/sapmachine:latest docker://ghcr.io/sap/sapmachine:latest
+          podman manifest push "${SM_REGISTRY}:latest" "docker://${SM_REGISTRY}:latest"
 
   # ============================================================================
   # Job 4: Send failure notification email if any previous job failed
