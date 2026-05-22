@@ -271,7 +271,8 @@ jobs:
           TAG_COUNT=$(echo "$TAGS" | jq 'length')
           echo "Tags to apply (${TAG_COUNT}): $(echo "$TAGS" | jq -r 'join(", ")')"
 
-          podman login -u token -p ${{ github.token }} ghcr.io
+          #podman login -u token -p ${{ github.token }} ghcr.io
+          podman login -u raeesorg -p ${{ secrets.RAEESORG_GHCR_PAT }} ghcr.io
 
           # Build the multi-arch image once using the first tag as the manifest name
           FIRST_TAG=$(echo "$TAGS" | jq -r '.[0]')
@@ -309,10 +310,12 @@ jobs:
           set -euo pipefail
 
           SM_REGISTRY="ghcr.io/raeesorg/sapmachine-infrastructure"
-          podman login -u token -p ${{ github.token }} ghcr.io
+          podman login -u raeesorg -p ${{ secrets.RAEESORG_GHCR_PAT }} ghcr.io
+          RAW=$(skopeo inspect --raw --creds raeesorg:${{ secrets.RAEESORG_GHCR_PAT }} "docker://${SM_REGISTRY}:latest")
+          #podman login -u token -p ${{ github.token }} ghcr.io
 
           # Get per-platform digests from the existing manifest list
-          RAW=$(skopeo inspect --raw --creds token:${{ github.token }} "docker://${SM_REGISTRY}:latest")
+          #RAW=$(skopeo inspect --raw --creds token:${{ github.token }} "docker://${SM_REGISTRY}:latest")
           AMD64_DIGEST=$(echo "$RAW" | jq -r '.manifests[] | select(.platform.architecture=="amd64") | .digest')
           ARM64_DIGEST=$(echo "$RAW" | jq -r '.manifests[] | select(.platform.architecture=="arm64") | .digest')
 
