@@ -42,6 +42,8 @@ jobs:
     outputs:
       matrix: ${{ steps.build-matrix.outputs.matrix }}
       has_changes: ${{ steps.build-matrix.outputs.has_changes }}
+      has_latest_build: ${{ steps.build-matrix.outputs.has_latest_build }}
+      latest_item: ${{ steps.build-matrix.outputs.latest_item }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -215,13 +217,52 @@ jobs:
             echo "No image types identified/selected."
             echo "has_changes=false" >> "$GITHUB_OUTPUT"
             echo 'matrix={"include":[]}' >> "$GITHUB_OUTPUT"
+            echo "has_latest_build=false" >> "$GITHUB_OUTPUT"
+            echo 'latest_item={}' >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
-          MATRIX=$(echo "$MATRIX_ITEMS" | jq -c '{include: .}')
-          echo "Build matrix: $MATRIX"
-          echo "has_changes=true" >> "$GITHUB_OUTPUT"
-          echo "matrix=${MATRIX}" >> "$GITHUB_OUTPUT"
+          # Identify if any matrix item carries the "latest" tag in sapmachine-gl-tags.json
+          LATEST_ITEM=""
+          for item in $(echo "$MATRIX_ITEMS" | jq -c '.[]'); do
+            SM_V=$(echo "$item" | jq -r '.sapMachineVersion')
+            GL_V=$(echo "$item" | jq -r '.gardenLinuxVersion')
+            FLVR=$(echo "$item" | jq -r '.flavour')
+            DIR="dockerfiles/${SM_V}/gardenlinux/${GL_V}/${FLVR}"
+            HAS_LATEST=$(jq -r --arg d "$DIR" '(.[$d] // []) | if any(. == "latest") then "true" else "false" end' sapmachine-gl-tags.json)
+            if [[ "$HAS_LATEST" == "true" ]]; then
+              LATEST_ITEM="$item"
+              echo "Found latest-tagged item: ${DIR}"
+              break
+            fi
+          done
+
+          if [[ -n "$LATEST_ITEM" ]]; then
+            echo "has_latest_build=true" >> "$GITHUB_OUTPUT"
+            echo "latest_item=${LATEST_ITEM}" >> "$GITHUB_OUTPUT"
+            # Remove the latest item from the main matrix so it builds last
+            NON_LATEST=$(echo "$MATRIX_ITEMS" | jq -c --argjson latest "$LATEST_ITEM" '[ .[] | select(. != $latest) ]')
+            echo "Non-latest matrix items: $NON_LATEST"
+          else
+            echo "has_latest_build=false" >> "$GITHUB_OUTPUT"
+            echo 'latest_item={}' >> "$GITHUB_OUTPUT"
+            NON_LATEST="$MATRIX_ITEMS"
+          fi
+
+          # Set has_changes based on whether there's anything to build at all
+          if [[ $(echo "$NON_LATEST" | jq 'length') -eq 0 && -z "$LATEST_ITEM" ]]; then
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+            echo 'matrix={"include":[]}' >> "$GITHUB_OUTPUT"
+          else
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+            if [[ $(echo "$NON_LATEST" | jq 'length') -gt 0 ]]; then
+              MATRIX=$(echo "$NON_LATEST" | jq -c '{include: .}')
+            else
+              MATRIX='{"include":[]}'
+            fi
+            echo "Build matrix: $MATRIX"
+            echo "matrix=${MATRIX}" >> "$GITHUB_OUTPUT"
+          fi
 
   # ============================================================================
   # Job 2: Build and publish multi-arch container images for each changed pair
@@ -229,7 +270,7 @@ jobs:
   build-and-publish:
     name: "Build SM ${{ matrix.sapMachineFullVersion }} / GL ${{ matrix.gardenLinuxFullVersion }} / ${{ matrix.flavour }}"
     needs: detect-changes
-    if: needs.detect-changes.outputs.has_changes == 'true'
+    if: needs.detect-changes.outputs.has_changes == 'true' && fromJson(needs.detect-changes.outputs.matrix).include[0] != null
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
@@ -295,14 +336,97 @@ jobs:
           echo "Published ${TAG_COUNT} tags for ${DIR}"
 
   # ============================================================================
-  # Job 3: Re-push latest multi-arch image to make it appear on top of Github Container Registry UI
+  # Job 3: Build and publish the "latest"-tagged image last to ensure it appears
+  #         on top of Github Container Registry UI
   # ============================================================================
-  repush-latest:
-    name: Re-push latest tag to be appeared on top of Github Container Registry
-    needs: 
+  build-latest:
+    name: "Build latest (SM ${{ fromJson(needs.detect-changes.outputs.latest_item).sapMachineFullVersion }} / GL ${{ fromJson(needs.detect-changes.outputs.latest_item).gardenLinuxFullVersion }} / ${{ fromJson(needs.detect-changes.outputs.latest_item).flavour }})"
+    needs:
       - detect-changes
       - build-and-publish
-    if: needs.detect-changes.outputs.has_changes == 'true'
+    if: |
+      always() &&
+      needs.detect-changes.outputs.has_latest_build == 'true' &&
+      (needs.build-and-publish.result == 'success' || needs.build-and-publish.result == 'skipped')
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install qemu dependency for multi-arch build
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y qemu-user-static
+
+      - name: Build and publish latest image
+        run: |
+          set -euo pipefail
+
+          SM_VER="${{ fromJson(needs.detect-changes.outputs.latest_item).sapMachineVersion }}"
+          SM_FULL="${{ fromJson(needs.detect-changes.outputs.latest_item).sapMachineFullVersion }}"
+          GL_VER="${{ fromJson(needs.detect-changes.outputs.latest_item).gardenLinuxVersion }}"
+          GL_FULL="${{ fromJson(needs.detect-changes.outputs.latest_item).gardenLinuxFullVersion }}"
+          FLAVOUR="${{ fromJson(needs.detect-changes.outputs.latest_item).flavour }}"
+          SM_REGISTRY="ghcr.io/raeesorg/sapmachine-infrastructure"
+
+          echo "Building latest-tagged image: SapMachine ${SM_FULL} on GardenLinux ${GL_FULL} — flavour ${FLAVOUR}"
+
+          # Look up all tags for this image from sapmachine-gl-tags.json
+          DIR="dockerfiles/${SM_VER}/gardenlinux/${GL_VER}/${FLAVOUR}"
+          TAGS=$(jq -c --arg d "$DIR" '.[$d] // empty' sapmachine-gl-tags.json)
+
+          if [[ -z "$TAGS" || "$TAGS" == "null" ]]; then
+            echo "::warning::No tags found for ${DIR} in sapmachine-gl-tags.json — using fallback tag"
+            TAGS="[\"${SM_FULL}-${FLAVOUR}-gl-${GL_FULL}\"]"
+          fi
+
+          # Reorder tags so "latest" is pushed last
+          TAGS=$(echo "$TAGS" | jq -c '([.[] | select(. != "latest")] + [.[] | select(. == "latest")])')
+
+          TAG_COUNT=$(echo "$TAGS" | jq 'length')
+          echo "Tags to apply (${TAG_COUNT}): $(echo "$TAGS" | jq -r 'join(", ")')"
+
+          #podman login -u token -p ${{ github.token }} ghcr.io
+          podman login -u raeesorg -p ${{ secrets.RAEESORG_GHCR_PAT }} ghcr.io
+
+          # Build the multi-arch image once using the first tag as the manifest name
+          FIRST_TAG=$(echo "$TAGS" | jq -r '.[0]')
+          echo "::group::Building ${SM_REGISTRY}:${FIRST_TAG}"
+
+          cd "${DIR}"
+          podman manifest create "${SM_REGISTRY}:${FIRST_TAG}"
+          podman build --platform linux/amd64,linux/arm64 --manifest "${SM_REGISTRY}:${FIRST_TAG}" .
+
+          echo "::endgroup::"
+
+          # Push the manifest to all tags ("latest" is last)
+          echo "::group::Pushing ${TAG_COUNT} tags"
+          for tag in $(echo "$TAGS" | jq -r '.[]'); do
+            echo "Pushing ${SM_REGISTRY}:${tag}"
+            podman manifest push "${SM_REGISTRY}:${FIRST_TAG}" "docker://${SM_REGISTRY}:${tag}"
+          done
+          echo "::endgroup::"
+
+          echo "Published ${TAG_COUNT} tags for ${DIR} (latest pushed last)"
+
+  # ============================================================================
+  # Job 4: Re-push latest multi-arch image ONLY when the latest-tagged image was
+  #         not built in this run (i.e. only non-latest images were changed)
+  # ============================================================================
+  repush-latest:
+    name: Re-push latest tag to appear on top of Github Container Registry
+    needs:
+      - detect-changes
+      - build-and-publish
+      - build-latest
+    if: |
+      always() &&
+      needs.detect-changes.outputs.has_changes == 'true' &&
+      needs.detect-changes.outputs.has_latest_build == 'false' &&
+      (needs.build-and-publish.result == 'success' || needs.build-and-publish.result == 'skipped')
     runs-on: ubuntu-24.04
     steps:
       - name: Re-push latest multi-arch image
@@ -328,13 +452,14 @@ jobs:
           podman manifest push "${SM_REGISTRY}:latest" "docker://${SM_REGISTRY}:latest"
 
   # ============================================================================
-  # Job 4: Send failure notification email if any previous job failed
+  # Job 5: Send failure notification email if any previous job failed
   # ============================================================================
   notify-on-failure:
     name: Send failure notification email
     needs:
       - detect-changes
       - build-and-publish
+      - build-latest
       - repush-latest
     if: failure()
     runs-on: ubuntu-24.04
@@ -357,6 +482,7 @@ jobs:
           Job results:
             detect-changes   : ${{ needs.detect-changes.result }}
             build-and-publish: ${{ needs.build-and-publish.result }}
+            build-latest     : ${{ needs.build-latest.result }}
             repush-latest    : ${{ needs.repush-latest.result }}
           EOF
 
