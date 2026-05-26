@@ -445,8 +445,8 @@ jobs:
 
           # Create a new manifest list from the same platform images
           podman manifest create "${SM_REGISTRY}:latest"
-          podman manifest add "${SM_REGISTRY}:latest" "docker://${SM_REGISTRY}@${AMD64_DIGEST}"
-          podman manifest add "${SM_REGISTRY}:latest" "docker://${SM_REGISTRY}@${ARM64_DIGEST}"
+          podman manifest add --annotation "org.opencontainers.image.revision=$(date -u +%Y%m%d%H%M%S)" "${SM_REGISTRY}:latest" "docker://${SM_REGISTRY}@${AMD64_DIGEST}"
+          podman manifest add --annotation "org.opencontainers.image.revision=$(date -u +%Y%m%d%H%M%S)" "${SM_REGISTRY}:latest" "docker://${SM_REGISTRY}@${ARM64_DIGEST}"
 
           # Push — new digest forces GHCR to update the "last pushed" timestamp
           podman manifest push "${SM_REGISTRY}:latest" "docker://${SM_REGISTRY}:latest"
