@@ -317,8 +317,8 @@ jobs:
 
           # Create a new manifest list from the same platform images
           podman manifest create ghcr.io/sap/sapmachine:latest
-          podman manifest add ghcr.io/sap/sapmachine:latest docker://ghcr.io/sap/sapmachine@${AMD64_DIGEST}
-          podman manifest add ghcr.io/sap/sapmachine:latest docker://ghcr.io/sap/sapmachine@${ARM64_DIGEST}
+          podman manifest add --annotation "org.opencontainers.image.revision=$(date -u +%Y%m%d%H%M%S)" ghcr.io/sap/sapmachine:latest docker://ghcr.io/sap/sapmachine@${AMD64_DIGEST}
+          podman manifest add --annotation "org.opencontainers.image.revision=$(date -u +%Y%m%d%H%M%S)" ghcr.io/sap/sapmachine:latest docker://ghcr.io/sap/sapmachine@${ARM64_DIGEST}
 
           # Push — new digest forces GHCR to update the "last pushed" timestamp
           podman manifest push ghcr.io/sap/sapmachine:latest docker://ghcr.io/sap/sapmachine:latest
