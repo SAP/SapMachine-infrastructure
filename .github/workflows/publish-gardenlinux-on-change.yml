@@ -38,6 +38,8 @@ jobs:
   # ============================================================================
   detect-changes:
     name: Detect changed GardenLinux Dockerfiles
+    environment:
+      name: github-pages
     runs-on: ubuntu-24.04
     outputs:
       matrix: ${{ steps.build-matrix.outputs.matrix }}
@@ -328,6 +330,8 @@ jobs:
   # ============================================================================
   notify-on-failure:
     name: Send failure notification email
+    environment:
+      name: github-pages
     needs:
       - detect-changes
       - build-and-publish
