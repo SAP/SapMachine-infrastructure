@@ -326,7 +326,7 @@ jobs:
           podman manifest push ghcr.io/sap/sapmachine:latest docker://ghcr.io/sap/sapmachine:latest
 
   # ============================================================================
-  # Job 4: Send failure notification email if any previous job failed
+  # Job 4: Send failure notification email if any previous jobs failed
   # ============================================================================
   notify-on-failure:
     name: Send failure notification email
