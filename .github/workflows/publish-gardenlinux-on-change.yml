@@ -238,6 +238,8 @@ jobs:
   # ============================================================================
   build-and-publish:
     name: "Build SM ${{ matrix.sapMachineFullVersion }} / GL ${{ matrix.gardenLinuxFullVersion }} / ${{ matrix.flavour }}"
+    environment:
+      name: github-pages
     needs: detect-changes
     if: needs.detect-changes.outputs.has_changes == 'true'
     runs-on: ubuntu-24.04
@@ -309,6 +311,8 @@ jobs:
   # ============================================================================
   repush-latest:
     name: Re-push latest tag to be appeared on top of Github Container Registry
+    environment:
+      name: github-pages
     needs: 
       - detect-changes
       - build-and-publish
