@@ -238,8 +238,6 @@ jobs:
   # ============================================================================
   build-and-publish:
     name: "Build SM ${{ matrix.sapMachineFullVersion }} / GL ${{ matrix.gardenLinuxFullVersion }} / ${{ matrix.flavour }}"
-    environment:
-      name: github-pages
     needs: detect-changes
     if: needs.detect-changes.outputs.has_changes == 'true'
     runs-on: ubuntu-24.04
@@ -268,7 +266,7 @@ jobs:
           GL_VER="${{ matrix.gardenLinuxVersion }}"
           GL_FULL="${{ matrix.gardenLinuxFullVersion }}"
           FLAVOUR="${{ matrix.flavour }}"
-          SM_REGISTRY="ghcr.io/raeesorg/sapmachine-infrastructure"
+          SM_REGISTRY="ghcr.io/sap/sapmachine"
 
           echo "Building SapMachine ${SM_FULL} on GardenLinux ${GL_FULL} — flavour ${FLAVOUR}"
 
@@ -284,7 +282,7 @@ jobs:
           TAG_COUNT=$(echo "$TAGS" | jq 'length')
           echo "Tags to apply (${TAG_COUNT}): $(echo "$TAGS" | jq -r 'join(", ")')"
 
-          podman login -u token -p ${{ secrets.PAT_OF_RAEESORG }} ghcr.io
+          podman login -u token -p ${{ github.token }} ghcr.io
 
           # Build the multi-arch image once using the first tag as the manifest name
           FIRST_TAG=$(echo "$TAGS" | jq -r '.[0]')
@@ -311,8 +309,6 @@ jobs:
   # ============================================================================
   repush-latest:
     name: Re-push latest tag to be appeared on top of Github Container Registry
-    environment:
-      name: github-pages
     needs: 
       - detect-changes
       - build-and-publish
@@ -323,11 +319,11 @@ jobs:
         run: |
           set -euo pipefail
 
-          SM_REGISTRY="ghcr.io/raeesorg/sapmachine-infrastructure"
-          podman login -u token -p ${{ secrets.PAT_OF_RAEESORG }} ghcr.io
+          SM_REGISTRY="ghcr.io/sap/sapmachine"
+          podman login -u token -p ${{ github.token }} ghcr.io
 
           # Get per-platform digests from the existing manifest list
-          RAW=$(skopeo inspect --raw --creds token:${{ secrets.PAT_OF_RAEESORG }} docker://$SM_REGISTRY:latest)
+          RAW=$(skopeo inspect --raw --creds token:${{ github.token }} docker://$SM_REGISTRY:latest)
           AMD64_DIGEST=$(echo "$RAW" | jq -r '.manifests[] | select(.platform.architecture=="amd64") | .digest')
           ARM64_DIGEST=$(echo "$RAW" | jq -r '.manifests[] | select(.platform.architecture=="arm64") | .digest')
 
