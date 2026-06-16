@@ -42,6 +42,8 @@ jobs:
 
     # 6. Run the Python script to fetch and append download stats
     - name: Run Python script to fetch and append download stats
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: python .github/scripts/fetch_and_append_stats.py
 
     # 7. Configure Git for committing
