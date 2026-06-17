@@ -32,14 +32,15 @@ REPO = "SapMachine"
 GRAPHQL_QUERY = """
 query($owner: String!, $repo: String!, $cursor: String) {
   repository(owner: $owner, name: $repo) {
-    releases(first: 25, after: $cursor, orderBy: {field: CREATED_AT, direction: DESC}) {
+    releases(first: 15, after: $cursor, orderBy: {field: CREATED_AT, direction: DESC}) {
       pageInfo { hasNextPage endCursor }
       nodes {
+        id
         databaseId
         name
         tagName
         isPrerelease
-        releaseAssets(first: 25) {
+        releaseAssets(first: 30) {
           pageInfo { hasNextPage endCursor }
           nodes {
             name
@@ -54,10 +55,10 @@ query($owner: String!, $repo: String!, $cursor: String) {
 
 # Falls ein Release mehr als 100 Assets hat, paginieren wir die Assets nach.
 GRAPHQL_ASSETS_QUERY = """
-query($owner: String!, $repo: String!, $releaseId: ID!, $cursor: String) {
+query($releaseId: ID!, $cursor: String) {
   node(id: $releaseId) {
     ... on Release {
-      releaseAssets(first: 100, after: $cursor) {
+      releaseAssets(first: 50, after: $cursor) {
         pageInfo { hasNextPage endCursor }
         nodes { name downloadCount }
       }
@@ -67,8 +68,16 @@ query($owner: String!, $repo: String!, $releaseId: ID!, $cursor: String) {
 """
 
 
-def _post_graphql(query, variables, headers, max_attempts=4):
-    """POST with retry on transient errors (5xx, timeouts)."""
+# HTTP status codes considered transient (worth retrying with backoff).
+# - 5xx: server errors / timeouts
+# - 403: GitHub's secondary rate limit / abuse detection often surfaces
+#        as 403 with a "rate limit" message in the body
+# - 429: explicit rate limit
+_RETRYABLE_STATUS = {403, 429, 500, 502, 503, 504}
+
+
+def _post_graphql(query, variables, headers, max_attempts=6):
+    """POST with retry on transient errors (5xx, 403/429 rate limits, timeouts)."""
     last_exc = None
     for attempt in range(1, max_attempts + 1):
         try:
@@ -78,19 +87,26 @@ def _post_graphql(query, variables, headers, max_attempts=4):
                 headers=headers,
                 timeout=60,
             )
-            if resp.status_code in (502, 503, 504):
+            if resp.status_code in _RETRYABLE_STATUS:
+                # Honor Retry-After if present, else exponential backoff.
+                retry_after = resp.headers.get("Retry-After")
+                if retry_after and retry_after.isdigit():
+                    wait = int(retry_after)
+                else:
+                    wait = 2 ** attempt
                 logging.warning(
-                    "GraphQL %d on attempt %d, retrying...", resp.status_code, attempt
+                    "GraphQL HTTP %d on attempt %d (body: %s), sleeping %ds...",
+                    resp.status_code, attempt, resp.text[:200], wait,
                 )
-                time.sleep(2 ** attempt)
+                time.sleep(wait)
                 continue
             resp.raise_for_status()
             body = resp.json()
             if "errors" in body:
-                # Some GraphQL errors are transient (rate limit). Retry once.
                 err_str = str(body["errors"])
-                if "rate limit" in err_str.lower() or "timeout" in err_str.lower():
-                    logging.warning("Transient GraphQL error: %s", err_str)
+                lowered = err_str.lower()
+                if any(t in lowered for t in ("rate limit", "timeout", "secondary")):
+                    logging.warning("Transient GraphQL error: %s", err_str[:200])
                     time.sleep(2 ** attempt)
                     continue
                 raise RuntimeError(f"GraphQL errors: {body['errors']}")
@@ -105,6 +121,23 @@ def _post_graphql(query, variables, headers, max_attempts=4):
     raise RuntimeError(
         f"GraphQL request failed after {max_attempts} attempts: {last_exc}"
     )
+
+
+def _fetch_remaining_assets(release_node_id, after_cursor, headers):
+    """Fetch additional asset pages for a release that has >30 assets."""
+    extra_assets = []
+    cursor = after_cursor
+    while cursor is not None:
+        body = _post_graphql(
+            GRAPHQL_ASSETS_QUERY,
+            {"releaseId": release_node_id, "cursor": cursor},
+            headers,
+        )
+        page = body["data"]["node"]["releaseAssets"]
+        extra_assets.extend(page["nodes"])
+        cursor = page["pageInfo"]["endCursor"] if page["pageInfo"]["hasNextPage"] else None
+        time.sleep(0.3)
+    return extra_assets
 
 
 def fetch_release_stats():
@@ -123,15 +156,21 @@ def fetch_release_stats():
         page = body["data"]["repository"]["releases"]
         for node in page["nodes"]:
             assets = list(node["releaseAssets"]["nodes"])
-            # Asset-Pagination falls >100 Assets pro Release (sehr selten)
-            if node["releaseAssets"]["pageInfo"]["hasNextPage"]:
-                logging.warning(
-                    "Release %s has >100 assets, paginating...", node["tagName"]
+            # If the release has more assets than fit on one page,
+            # fetch the rest through the dedicated assets-only query.
+            asset_page_info = node["releaseAssets"]["pageInfo"]
+            if asset_page_info["hasNextPage"]:
+                logging.info(
+                    "Release %s has >30 assets, fetching remaining pages...",
+                    node["tagName"],
                 )
-                # databaseId reicht hier nicht, wir brauchen die GraphQL node id.
-                # Fuer Einfachheit: ueberspringen und Warnung loggen.
-                # (In der Praxis hat SapMachine ~22 Assets pro Release,
-                #  also ist das nie ein Problem.)
+                extra = _fetch_remaining_assets(
+                    node["id"], asset_page_info["endCursor"], headers,
+                )
+                assets.extend(extra)
+                logging.info(
+                    "  -> total %d assets for %s", len(assets), node["tagName"],
+                )
 
             releases.append({
                 "id": node["databaseId"],
@@ -147,7 +186,7 @@ def fetch_release_stats():
         if not page["pageInfo"]["hasNextPage"]:
             break
         cursor = page["pageInfo"]["endCursor"]
-        time.sleep(0.3)  # nett zur API
+        time.sleep(0.5)  # nett zur API
 
     logging.info("Fetched %d releases via GraphQL.", len(releases))
 
