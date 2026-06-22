@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo from GitHub Tools SAP
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: SapMachine/SapMachineIOPage
           token: ${{ secrets.GHE_PAT }}

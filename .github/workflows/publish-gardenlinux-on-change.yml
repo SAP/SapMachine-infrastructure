@@ -46,7 +46,7 @@ jobs:
       has_changes: ${{ steps.build-matrix.outputs.has_changes }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -250,7 +250,7 @@ jobs:
         shell: bash
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Install qemu dependency for multi-arch build
         run: |
