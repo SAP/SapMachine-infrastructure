@@ -46,15 +46,19 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: python .github/scripts/fetch_and_append_stats.py
 
-    # 7. Configure Git for committing
+    # 7. Generate month-over-month download increase dataset
+    - name: Generate monthly download increase files
+      run: python .github/scripts/generate_monthly_download_increase.py
+
+    # 8. Configure Git for committing
     - name: Configure Git
       run: |
         git config --local user.email "sapmachine@sap.com"
         git config --local user.name "SapMachine Github Actions Bot"
 
-    # 8. Commit and push changes to the "release_stats" branch
+    # 9. Commit and push changes to the "release_stats" branch
     - name: Commit and push changes
       run: |
-        git add stats/release_stats*.csv
+        git add stats/release_stats*.csv stats/monthly_download_increase.csv stats/monthly_download_increase.json
         git commit -m "Add nightly snapshot for $(date +'%Y-%m-%d %H:%M:%S')" || echo "No changes to commit"
         git push origin release_stats || { echo "Push failed, please check the logs"; exit 1; }
