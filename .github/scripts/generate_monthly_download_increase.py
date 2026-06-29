@@ -19,6 +19,7 @@ import json
 import logging
 
 import pandas as pd
+from pandas.errors import EmptyDataError
 
 
 logging.basicConfig(level=logging.INFO)
@@ -40,6 +41,10 @@ def _read_snapshot_summary(path: Path) -> SnapshotSummary | None:
     """Read one snapshot CSV and return aggregate total downloads for the file."""
     try:
         df = pd.read_csv(path)
+    except EmptyDataError:
+        # Historical archives can occasionally contain empty files.
+        logging.info("Skipping empty/unreadable file %s", path)
+        return None
     except Exception as exc:
         logging.warning("Skipping unreadable file %s: %s", path, exc)
         return None
@@ -93,7 +98,8 @@ def _build_monthly_table(summaries: list[SnapshotSummary]) -> pd.DataFrame:
         subset=["snapshot_timestamp_utc"], keep="last"
     )
 
-    df["month"] = df["snapshot_timestamp_utc"].dt.to_period("M")
+    # Use string month keys to avoid tz-drop warnings from Period conversion.
+    df["month"] = df["snapshot_timestamp_utc"].dt.strftime("%Y-%m")
 
     # For each month, keep the last available snapshot as month-end baseline.
     month_end = (
@@ -129,9 +135,16 @@ def _write_outputs(monthly_df: pd.DataFrame) -> None:
     monthly_df = monthly_df.rename(columns={"total_downloads": "total_downloads_end_of_month"})
     monthly_df.to_csv(OUTPUT_CSV, index=False)
 
+    json_ready_df = monthly_df.copy()
+    json_ready_df["snapshot_timestamp_utc"] = (
+        pd.to_datetime(json_ready_df["snapshot_timestamp_utc"], utc=True, errors="coerce")
+        .dt.strftime("%Y-%m-%dT%H:%M:%SZ")
+    )
+    json_ready_df = json_ready_df.astype(object).where(pd.notna(json_ready_df), None)
+
     payload = {
         "generated_at_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
-        "rows": monthly_df.where(pd.notna(monthly_df), None).to_dict(orient="records"),
+        "rows": json_ready_df.to_dict(orient="records"),
     }
     OUTPUT_JSON.write_text(json.dumps(payload, indent=2), encoding="utf-8")
 
