@@ -1,4 +1,4 @@
-FROM ghcr.io/gardenlinux/gardenlinux:1877.20
+FROM ghcr.io/gardenlinux/gardenlinux:1877.21
 
 ENV LANG=C.UTF-8
 ENV JAVA_VERSION=21.0.12
