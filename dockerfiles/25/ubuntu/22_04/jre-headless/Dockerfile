@@ -8,7 +8,7 @@ RUN apt-get update && \
     wget -qO /etc/apt/sources.list.d/sapmachine.sources \
       https://dist.sapmachine.io/debian/sapmachine.sources && \
     apt-get update && \
-    apt-get -y --no-install-recommends install sapmachine-25-jre-headless=25.0.4 && \
+    apt-get -y --no-install-recommends install sapmachine-25-jre-headless=25.0.4.1 && \
     apt-get remove -y --purge --autoremove ca-certificates gnupg wget && \
     rm -rf "$GNUPGHOME" /var/lib/apt/lists/*
 
