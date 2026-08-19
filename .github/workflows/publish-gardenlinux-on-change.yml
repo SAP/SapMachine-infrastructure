@@ -252,10 +252,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v7
 
-      - name: Install qemu dependency for multi-arch build
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y qemu-user-static
+      - name: Set up QEMU for multi-arch build
+        uses: docker/setup-qemu-action@v3
 
       - name: Build and publish images
         run: |
