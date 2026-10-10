@@ -9,12 +9,6 @@ RUN dpkgArch="$(dpkg --print-architecture)"; \
 		'amd64') \
 			url='https://github.com/SAP/SapMachine/releases/download/sapmachine-17.0.20.1/sapmachine-jdk-17.0.20.1_linux-x64_bin.tar.gz'; \
 			;; \
-		'arm64') \
-			url='https://github.com/SAP/SapMachine/releases/download/sapmachine-17.0.20.1/sapmachine-jdk-17.0.20.1_linux-aarch64_bin.tar.gz'; \
-			;; \
-		'ppc64el') \
-			url='https://github.com/SAP/SapMachine/releases/download/sapmachine-17.0.20.1/sapmachine-jdk-17.0.20.1_linux-ppc64le_bin.tar.gz'; \
-			;; \
 		*) echo >&2 "error: unsupported architecture '$dpkgArch'"; exit 1 ;; \
 	esac; \
     wget -O sapmachine.tar.gz $url --progress=dot:giga

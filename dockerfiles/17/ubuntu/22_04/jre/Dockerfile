@@ -10,7 +10,7 @@ RUN apt-get update && \
         echo 'URIs: https://dist.sapmachine.io/debian'; \
         echo 'Suites: stable'; \
         echo 'Components: main'; \
-        echo 'Architectures: amd64 arm64 ppc64el'; \
+        echo 'Architectures: amd64'; \
         echo 'Signed-By: /usr/share/keyrings/sapmachine.gpg'; \
     } > /etc/apt/sources.list.d/sapmachine.sources && \
     apt-get update && \
