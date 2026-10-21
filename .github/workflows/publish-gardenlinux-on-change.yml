@@ -306,8 +306,8 @@ jobs:
   # Job 3: Re-push latest multi-arch image to make it appear on top of Github Container Registry UI
   # ============================================================================
   repush-latest:
-    name: Re-push latest tag to be appeared on top of Github Container Registry
-    needs: 
+    name: Re-push latest
+    needs:
       - detect-changes
       - build-and-publish
     if: needs.detect-changes.outputs.has_changes == 'true'
