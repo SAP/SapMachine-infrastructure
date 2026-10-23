@@ -7,7 +7,7 @@ RUN apt-get update && apt-get -y --no-install-recommends install ca-certificates
 RUN dpkgArch="$(dpkg --print-architecture)"; \
     case "${dpkgArch}" in \
 		'amd64') \
-			url='https://github.com/SAP/SapMachine/releases/download/sapmachine-17.0.21/sapmachine-jdk-17.0.21_linux-x64_bin.tar.gz'; \
+			url='https://github.com/SAP/SapMachine/releases/download/sapmachine-17.0.21.0.2/sapmachine-jdk-17.0.21.0.2_linux-x64_bin.tar.gz'; \
 			;; \
 		*) echo >&2 "error: unsupported architecture '$dpkgArch'"; exit 1 ;; \
 	esac; \
@@ -17,7 +17,7 @@ COPY --from=distroless / /distroless
 
 RUN tar xzf sapmachine.tar.gz && \
     rm -rf /distroless/etc/java-17-openjdk /distroless/usr/lib/jvm/java-17-openjdk-amd64 && \
-    mv sapmachine-jdk-17.0.21 /distroless/usr/lib/jvm/java-17-openjdk-amd64
+    mv sapmachine-jdk-17.0.21.0.2 /distroless/usr/lib/jvm/java-17-openjdk-amd64
 
 FROM scratch
 COPY --from=builder /distroless /
@@ -25,6 +25,6 @@ COPY --from=builder /distroless /
 ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/busybox
 ENV SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
 ENV LANG=C.UTF-8
-ENV JAVA_VERSION=17.0.21
+ENV JAVA_VERSION=17.0.21.0.2
 
 ENTRYPOINT [ "/usr/bin/java", "-jar" ]
