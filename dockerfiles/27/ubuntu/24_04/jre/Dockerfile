@@ -14,7 +14,7 @@ RUN apt-get update && \
         echo 'Signed-By: /usr/share/keyrings/sapmachine.gpg'; \
     } > /etc/apt/sources.list.d/sapmachine.sources && \
     apt-get update && \
-    apt-get -y --no-install-recommends install sapmachine-27-jre=27.0.1 && \
+    apt-get -y --no-install-recommends install sapmachine-27-jre=27.0.1.0.2 && \
     apt-get remove -y --purge --autoremove ca-certificates gnupg && \
     rm -rf "$GNUPGHOME" /var/lib/apt/lists/*
 
