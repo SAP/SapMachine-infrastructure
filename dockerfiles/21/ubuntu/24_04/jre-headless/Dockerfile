@@ -14,7 +14,7 @@ RUN apt-get update && \
         echo 'Signed-By: /usr/share/keyrings/sapmachine.gpg'; \
     } > /etc/apt/sources.list.d/sapmachine.sources && \
     apt-get update && \
-    apt-get -y --no-install-recommends install sapmachine-21-jre-headless=21.0.13.0.2 && \
+    apt-get -y --no-install-recommends install sapmachine-21-jre-headless=21.0.13.0.3 && \
     apt-get remove -y --purge --autoremove ca-certificates gnupg && \
     rm -rf "$GNUPGHOME" /var/lib/apt/lists/*
 
