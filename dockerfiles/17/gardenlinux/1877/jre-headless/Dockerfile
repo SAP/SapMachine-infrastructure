@@ -1,7 +1,7 @@
 FROM ghcr.io/gardenlinux/gardenlinux:1877.26
 
 ENV LANG=C.UTF-8
-ENV JAVA_VERSION=17.0.21.0.2
+ENV JAVA_VERSION=17.0.21.0.3
 ENV MALLOC_ARENA_MAX=1
 
 RUN apt-get update && \
@@ -11,7 +11,7 @@ RUN apt-get update && \
     wget -qO /etc/apt/sources.list.d/sapmachine.sources \
       https://dist.sapmachine.io/debian/sapmachine.sources && \
     apt-get update && \
-    apt-get -y --no-install-recommends install sapmachine-17-jre-headless=17.0.21.0.2 && \
+    apt-get -y --no-install-recommends install sapmachine-17-jre-headless=17.0.21.0.3 && \
     apt-get remove -y --purge --autoremove wget gnupg && \
     rm -rf /var/lib/apt/lists/* && \
     java -XshowSettings:properties -version
