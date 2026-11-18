@@ -50,18 +50,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Fetch releases.json
+      - name: Validate releases.json
         run: |
-          HTTP_CODE=$(curl -sL -w "%{http_code}" \
-            -H "Authorization: token ${{ secrets.GHE_PAT }}" \
-            -H "Accept: application/vnd.github.raw+json" \
-            "https://github.tools.sap/api/v3/repos/SapMachine/SapMachine-infrastructure/contents/releases.json?ref=master" \
-            -o releases.json)
-          echo "HTTP status: $HTTP_CODE"
-
-          if [[ "$HTTP_CODE" != "200" ]]; then
-            echo "::error::Failed to fetch releases.json (HTTP $HTTP_CODE)"
-            cat releases.json || true
+          if [[ ! -f releases.json ]]; then
+            echo "::error::releases.json not found in repository"
             exit 1
           fi
 

@@ -1,0 +1,96 @@
+{
+    "head_release": 28,
+    "dev_releases": [
+        28
+    ],
+    "active_releases": [
+        27,
+        25,
+        21,
+        17
+    ],
+    "lts_releases": [
+        25,
+        21,
+        17
+    ],
+    "releases_no_download": [],
+    "latest_versions": {
+        "27": "27.0.1.1",
+        "25": "25.0.5.1",
+        "21": "21.0.13.1",
+        "17": "17.0.21.1"
+    },
+    "containers": {
+        "gardenlinux": {
+            "versions": {
+                "1877": "1877.28",
+                "2150": "2150.15.0"
+            },
+            "image_types": [
+                "jre-headless",
+                "jre",
+                "jdk-headless",
+                "jdk"
+            ]
+        },
+        "ubuntu": {
+            "versions": [
+                {
+                    "version": "24.04",
+                    "codename": "noble",
+                    "default": true
+                },
+                {
+                    "version": "22.04",
+                    "codename": "jammy",
+                    "default": false
+                }
+            ],
+            "image_types": [
+                "jre-headless",
+                "jre",
+                "jdk-headless",
+                "jdk"
+            ],
+            "gpg_key_id": "CACB9FE09150307D1D22D82962754C3B3ABCFE23",
+            "repo_url": "https://dist.sapmachine.io/debian"
+        },
+        "alpine": {
+            "versions": [
+                {
+                    "version": "3.24",
+                    "default": false
+                },
+                {
+                    "version": "3.23",
+                    "default": true
+                },
+                {
+                    "version": "3.22",
+                    "default": false
+                },
+                {
+                    "version": "3.21",
+                    "default": false
+                }
+            ],
+            "image_types": [
+                "jre",
+                "jdk"
+            ],
+            "gpg_key_hash": "4444e47cabf35695f9406692848de191d3b7cbd47dcdc1ffb62f4f70aea06e89"
+        },
+        "distroless": {
+            "versions": [
+                "debian11"
+            ],
+            "image_types": [
+                "latest",
+                "nonroot",
+                "debug",
+                "debug-nonroot"
+            ]
+        }
+    }
+}
